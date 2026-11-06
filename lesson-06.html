@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Lowest Ceiling</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-05.html">← Lesson 5</a>
+<a href="lesson-07.html">Lesson 7 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 6 of 26</span>
+  <h1>The Lowest Ceiling</h1>
+  <p class="lead">Maximum and supremum, minimum and infimum, the consequences of completeness (Archimedes, density of ℚ, nested intervals, uncountability of ℝ), and accumulation points (Häufungspunkte).</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-5-5">Recap of lesson 5 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s0-warm-up-closed-sets-and">0. Warm-up: closed sets and unions (5 min)</a>
+</li>
+<li><a href="#s1-the-story-the-lowest-ceiling">1. The story: the lowest ceiling</a>
+</li>
+<li><a href="#s2-maximum-and-minimum">2. Maximum and minimum</a>
+</li>
+<li><a href="#s3-bounds">3. Bounds</a>
+</li>
+<li><a href="#s4-the-supremum">4. The supremum</a>
+<ol>
+<li><a href="#proof-a">Proof A: the supremum exists (Satz 2.59)</a></li>
+<li><a href="#supremum-versus-maximum">Supremum versus maximum</a></li>
+<li><a href="#infimum">Infimum</a></li>
+<li><a href="#when-there-is-no-ceiling">When there is no ceiling: improper values (§2.5.3, p. 108)</a></li>
+</ol></li>
+<li><a href="#s5-the-exam-recipe-for-compute">5. The exam recipe for “compute sup X and prove it”</a>
+<ol>
+<li><a href="#proof-b">Proof B: an open set never contains its supremum (Einsiedler HS21 #7(d))</a></li>
+</ol></li>
+<li><a href="#s6-consequences-of-completeness-with-proofs">6. Consequences of completeness, with proofs</a>
+<ol>
+<li><a href="#6-1-the-archimedean-principle">6.1 The Archimedean principle (Satz 2.68, p. 111)</a></li>
+<li><a href="#proof-c">Proof C: $\frac1n$ gets below every $\varepsilon$ (Archimedes (iii))</a></li>
+<li><a href="#6-2-is-dense-in">6.2 ℚ is dense in ℝ (Korollar 2.70, p. 112)</a></li>
+<li><a href="#proof-d">Proof D: ℚ is dense in ℝ, a fraction in every gap (Korollar 2.70)</a></li>
+<li><a href="#6-3-nested-intervals-intervallschachtelungsprinzip">6.3 Nested intervals (Intervallschachtelungsprinzip, Satz 2.77, p. 115)</a></li>
+<li><a href="#proof-e">Proof E: nested intervals have a common point (Satz 2.77)</a></li>
+<li><a href="#6-4-is-uncountable-korollar">6.4 ℝ is uncountable (Korollar 2.81, p. 116)</a></li>
+<li><a href="#proof-f">Proof F: ℝ is uncountable (Alice beats every list)</a></li>
+</ol></li>
+<li><a href="#s7-accumulation-points-h-ufungspunkte">7. Accumulation points (Häufungspunkte)</a>
+<ol>
+<li><a href="#proof-g">Proof G: a bounded infinite set has an accumulation point (Satz 2.75, p. 113)</a></li>
+</ol></li>
+<li><a href="#s8-worked-examples">8. Worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: $\sup(0,1)=1$, and there is no maximum</a></li>
+<li><a href="#we-2">Worked example 2: $X=\left\{1-\tfrac1n : n\in\mathbb{N}\right\}$</a></li>
+<li><a href="#we-3">Worked example 3: $\sup(A+B)=\sup A+\sup B$ (Proposition 2.63, p. 107)</a></li>
+</ol></li>
+<li><a href="#s9-your-turn">9. Your turn</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (compute)</a></li>
+<li><a href="#ex-2">Exercise 2 (Felder HS22, 3.MC1)</a></li>
+<li><a href="#ex-3">Exercise 3 (Einsiedler HS21, #7, true/false)</a></li>
+<li><a href="#ex-4">Exercise 4 (Einsiedler mock HS21, #8, true/false)</a></li>
+<li><a href="#ex-5">Exercise 5 (accumulation points)</a></li>
+<li><a href="#ex-6">Exercise 6 (proof)</a></li>
+<li><a href="#ex-7">Exercise 7 (consequences of completeness)</a></li>
+<li><a href="#bonus">Bonus: $\sqrt2$ exists (Wichtige Übung 2.11, p. 81)</a></li>
+</ol></li>
+<li><a href="#s10-for-wonder-optional-5-min">10. For wonder</a>
+</li>
+<li><a href="#s11-what-we-skipped">11. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) state the definition of the supremum in both forms, (2) find sup, inf, max and min of a set and <em>prove</em> your answer with the ε-recipe, (3) decide the true/false statements about sup in Exercises 3 and 4, (4) find the accumulation points of a set using the formal definition, and (5) explain how completeness gives the Archimedean principle, density of ℚ and nested intervals, and reproduce at least one of those proofs.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p105">p. 105</a>, Definitions 2.56–2.58:</strong> maximum, minimum, upper and lower bounds, bounded sets.</li>
+      <li><strong><a class="pl" href="script.html#p105">p. 105–106</a>, Satz 2.59:</strong> every non-empty set that is bounded above has a least upper bound, the supremum. It also gives the ε-form (2′).</li>
+      <li><strong><a class="pl" href="script.html#p107">p. 107</a>, Übung 2.61, Propositions 2.62–2.63:</strong> the infimum, and $\sup(cA)=c\sup A$ for $c&gt;0$, and $\sup(A+B)=\sup A+\sup B$.</li>
+      <li><strong><a class="pl" href="script.html#p108">p. 108</a>, §2.5.3:</strong> $\sup X=+\infty$ if $X$ is not bounded above, and $\sup\emptyset=-\infty$.</li>
+      <li><strong><a class="pl" href="script.html#p111">p. 111</a>, Satz 2.68:</strong> the Archimedean principle, e.g. for every $\varepsilon&gt;0$ there is $n\in\mathbb{N}$ with $\tfrac1n&lt;\varepsilon$.</li>
+      <li><strong><a class="pl" href="script.html#p112">p. 112</a>, Korollar 2.70:</strong> between any two real numbers there is a rational number.</li>
+      <li><strong><a class="pl" href="script.html#p113">p. 113</a>, Definition 2.73 and Satz 2.75:</strong> accumulation points of a set, and every bounded infinite set has one.</li>
+      <li><strong><a class="pl" href="script.html#p115">p. 115–116</a>, Satz 2.77 and Korollar 2.81:</strong> nested closed bounded intervals have a common point, and so $\mathbb{R}$ is uncountable.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+Sup and inf appear in Einsiedler's true/false blocks (HS21 #7, mock #8, both in your exercises) and as a definition question (HS22 MC1, also in your exercises). More importantly, the ε-form of the supremum is the engine of many later proofs: the intermediate value theorem (<a class="xl" href="lesson-07.html#s6-the-proof-worth-7-9">lesson 7</a>), the integral (<a class="xl" href="lesson-09.html#s3-lower-and-upper-integrals-tiles">lesson 9</a>) and limsup/liminf (<a class="xl" href="lesson-11.html#s4-limit-superior-and-limit-inferior">lesson 11</a>). Accumulation points come back with sequences and Bolzano–Weierstrass (<a class="xl" href="lesson-12.html#s2-subsequences-and-bolzano-weierstrass">lesson 12</a>).</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-5-5">Recap of <a class="xl" href="lesson-05.html">lesson 5</a> (5 min)</h3>
+<ul>
+  <li><strong>$\mathbb C$:</strong> $z=x+yi$, multiply out and use $i^2=-1$; divide with the conjugate; $|z|^2=z\bar z$. $\mathbb C$ has no order.</li>
+  <li><strong>Triangle inequality:</strong> $|x+y|\le|x|+|y|$ (“sandwich, add, unsandwich” with rule (e)).</li>
+  <li><strong>Open:</strong> every point has a bubble $(x-\varepsilon,x+\varepsilon)$ inside the set. <strong>Closed:</strong> the complement is open. Open contains none of its border points, closed contains all of them.</li>
+</ul>
+<ol class="gq">
+  <li><p>Open, closed, both or neither: $[0,1)$, $\{0\}$, $\mathbb R$?</p>
+  <details><summary>Answer</summary><div><p>Neither (border point $0$ in, $1$ out); closed (its border point $0$ is in it); both (no border points).</p></div></details></li>
+  <li><p>Show $|x-y|\le|x|+|y|$ in one line.</p>
+  <details><summary>Answer</summary><div><p>$|x-y|=|x+(-y)|$, and this is $\le|x|+|-y|=|x|+|y|$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>maximum / minimum</td><td>Maximum / Minimum, $\max X$ / $\min X$</td></tr>
+    <tr><td>upper bound / lower bound</td><td>obere Schranke / untere Schranke</td></tr>
+    <tr><td>bounded above / below</td><td>von oben / von unten beschränkt</td></tr>
+    <tr><td>bounded</td><td>beschränkt</td></tr>
+    <tr><td>supremum, least upper bound</td><td>Supremum, kleinste obere Schranke</td></tr>
+    <tr><td>infimum, greatest lower bound</td><td>Infimum, grösste untere Schranke</td></tr>
+    <tr><td>extended real line</td><td>erweiterte Zahlengerade</td></tr>
+    <tr><td>Archimedean principle</td><td>Archimedisches Prinzip</td></tr>
+    <tr><td>floor function, integer part</td><td>Abrundungsfunktion, ganzzahliger Anteil $\lfloor x\rfloor$</td></tr>
+    <tr><td>dense</td><td>dicht</td></tr>
+    <tr><td>accumulation point, limit point</td><td>Häufungspunkt</td></tr>
+    <tr><td>isolated point</td><td>isolierter Punkt</td></tr>
+    <tr><td>nested intervals (principle)</td><td>Intervallschachtelung(sprinzip)</td></tr>
+    <tr><td>uncountable</td><td>überabzählbar</td></tr>
+    <tr><td>corollary</td><td>Korollar</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s0-warm-up-closed-sets-and">0. Warm-up: closed sets and unions <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(5 min)</span></h2>
+<p>In <a class="xl" href="lesson-05.html#ex-6">lesson 5</a> (Exercise 6) you proved: a union of open sets is open, and an intersection of <em>two</em> open sets is open. The mirror rules for closed sets follow by taking complements. The tool is <strong>De Morgan's law</strong> (<em>Regeln von De Morgan</em>): the complement of a union is the intersection of the complements, and vice versa.</p>
+<div class="math-display">$$\begin{aligned}&amp;\mathbb{R}\setminus(A\cup B)=(\mathbb{R}\setminus A)\cap(\mathbb{R}\setminus B)\\&amp;\mathbb{R}\setminus(A\cap B)=(\mathbb{R}\setminus A)\cup(\mathbb{R}\setminus B)\end{aligned}.$$</div>
+<div class="box">
+<p><strong>Claim.</strong> If $A,B\subseteq\mathbb{R}$ are closed, then $A\cup B$ is closed.</p>
+<p><strong>Proof.</strong> $A$ and $B$ are closed, so $\mathbb{R}\setminus A$ and $\mathbb{R}\setminus B$ are open (definition of closed). Their intersection is open (<a class="xl" href="lesson-05.html#ex-6">lesson 5</a>, Exercise 6(d)). By De Morgan, that intersection is $\mathbb{R}\setminus(A\cup B)$. So the complement of $A\cup B$ is open, which means $A\cup B$ is closed. <span class="qed">∎</span></p>
+</div>
+<p>In the same way, an intersection of <em>any</em> number of closed sets is closed (its complement is a union of open sets). Summary, worth memorising for true/false blocks:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th></th><th>Open sets</th><th>Closed sets</th></tr></thead>
+  <tbody>
+    <tr><td>any union (even infinitely many)</td><td>open ✓</td><td>not always: $\bigcup_{n}\left[\tfrac1n,1\right]=(0,1]$</td></tr>
+    <tr><td>any intersection (even infinitely many)</td><td>not always: $\bigcap_n\left(-\tfrac1n,\tfrac1n\right)=\{0\}$</td><td>closed ✓</td></tr>
+    <tr><td>finite union or intersection</td><td>open ✓</td><td>closed ✓</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-lowest-ceiling">1. The story: the lowest ceiling</h2>
+<div class="story">
+<p>The Dragon Guild keeps its dragons in a great hall. Each dragon hovers at its own height, and the heights form a set $X$ of real numbers.</p>
+<p>The builders must put in a <strong>ceiling</strong>: a height that every dragon is at or below. Many heights work. A ceiling at a thousand metres is safe, but wasteful. The Guildmaster wants the <strong>lowest possible ceiling</strong>.</p>
+<p>Sometimes there is a <strong>tallest dragon</strong>, and the lowest ceiling sits right on top of its head. But one season the dragons hover at heights $0,\ \tfrac12,\ \tfrac23,\ \tfrac34,\dots$, getting ever closer to $1$. No dragon is the tallest, because there's always a taller one. Yet the lowest ceiling clearly exists: it's at height $1$, touched by no dragon, but approached by all of them.</p>
+<p>The builders' test for “this is the lowest ceiling” has two parts. <em>First:</em> no dragon is above it. <em>Second:</em> lower it by any amount, however tiny, and some dragon pokes through.</p>
+<p>And why must a lowest ceiling exist at all? Because the realm of real numbers has no holes. That's the completeness axiom from <a class="xl" href="lesson-04.html#deep-dive-reading-the-completeness">lesson 4</a>.</p>
+</div>
+<p>In the formal language: the ceilings are <strong>upper bounds</strong>, the tallest dragon is the <strong>maximum</strong>, and the lowest ceiling is the <strong>supremum</strong>.</p>
+
+<h2 id="s2-maximum-and-minimum">2. Maximum and minimum</h2>
+<p><strong>Maximum (Definition 2.56, <a class="pl" href="script.html#p105">p. 105</a>).</strong> $x_0=\max X$ if</p>
+<div class="math-display">$$x_0\in X\qquad\text{and}\qquad\forall x\in X:\ x\le x_0.$$</div>
+<p>Both parts matter: $x_0$ must be <em>in</em> the set, and nothing in the set is bigger. The <strong>minimum</strong> (Definition 2.57) is the same with $\ge$.</p>
+<ul>
+  <li><strong>Unique if it exists.</strong> If $x_0$ and $x_0'$ are both maxima, then $x_0\le x_0'$ (because $x_0\in X$ and $x_0'$ is a maximum) and $x_0'\le x_0$ (the same reason, swapped). So $x_0=x_0'$.</li>
+  <li><strong>Every non-empty finite set has a maximum.</strong> For example $\max\{3,-1,7\}=7$.</li>
+  <li><strong>$[a,b]$ has maximum $b$.</strong></li>
+  <li><strong>$(0,1)$ has no maximum.</strong> Proof by contradiction: suppose $m=\max(0,1)$. Then $0&lt;m&lt;1$, and the midpoint $\tfrac{m+1}{2}$ satisfies $m&lt;\tfrac{m+1}{2}&lt;1$. So it's an element of $(0,1)$ bigger than $m$, contradicting $m$ being the maximum. <span class="qed">∎</span></li>
+  <li><strong>$\mathbb{R}$ and $[a,\infty)$ have no maximum,</strong> because $x+1&gt;x$ for every $x$.</li>
+</ul>
+
+<h2 id="s3-bounds">3. Bounds</h2>
+<p><strong>Definition 2.58 (<a class="pl" href="script.html#p105">p. 105</a>).</strong> $s\in\mathbb{R}$ is an <strong>upper bound</strong> (<em>obere Schranke</em>) of $X$ if</p>
+<div class="math-display">$$\forall x\in X:\ x\le s.$$</div>
+<p>$X$ is <strong>bounded above</strong> (<em>von oben beschränkt</em>) if it has at least one upper bound. Lower bounds and “bounded below” are the same with $\ge$. $X$ is <strong>bounded</strong> (<em>beschränkt</em>) if it is bounded above and below.</p>
+<p>Notice the difference to the maximum: an upper bound does <em>not</em> have to lie in $X$. For $(0,1)$, the numbers $1$, $2$ and $100$ are all upper bounds, and none of them is in the set. The number $0.9$ is not an upper bound, because $0.95\in(0,1)$ is bigger.</p>
+
+<h2 id="s4-the-supremum">4. The supremum</h2>
+<p><strong>Satz 2.59 (<a class="pl" href="script.html#p105">p. 105–106</a>).</strong> Let $X\subseteq\mathbb{R}$ be <strong>non-empty</strong> and <strong>bounded above</strong>. Then $X$ has a least upper bound $s_0=\sup X$. Formally, $s_0$ is characterised by:</p>
+<div class="box">
+<p><strong>(1) $s_0$ is an upper bound:</strong></p>
+<div class="math-display">$$\forall x\in X:\ x\le s_0.$$</div>
+<p><strong>(2) $s_0$ is at most every upper bound:</strong></p>
+<div class="math-display">$$\forall s\in\mathbb{R}:\ \big(\,(\forall x\in X:\ x\le s)\ \Longrightarrow\ s_0\le s\,\big).$$</div>
+<p><em>Read aloud:</em> “whenever $s$ is an upper bound, $s_0\le s$.”</p>
+</div>
+<p>In practice, condition (2) is awkward to check, because you'd have to think about all upper bounds at once. The script gives an equivalent version that is much more usable:</p>
+<div class="box">
+<p><strong>(2′) Anything smaller is not an upper bound:</strong></p>
+<div class="math-display">$$\forall\,\varepsilon>0\ \ \exists\,x\in X:\ x>s_0-\varepsilon.$$</div>
+<p><em>Read aloud:</em> “for every $\varepsilon&gt;0$, the number $s_0-\varepsilon$ is beaten by some element of $X$.” (Lower the ceiling by $\varepsilon$, and some dragon pokes through.) It's a <a class="xl" href="lesson-01.html#s1-the-story-the-duel">lesson 1</a> duel: the Doubter picks $\varepsilon$, and the Champion must find an element of $X$ above $s_0-\varepsilon$.</p>
+</div>
+<figure style="margin:0" aria-label="The set X of numbers 1 minus 1 over n on the number line, piling up towards 1. The upper bounds form the ray from 1 to the right. The supremum 1 is the left end of that ray. A shaded window from 1 minus epsilon to 1 always contains elements of X.">
+<svg viewBox="0 0 640 150" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util);font-size:17px">
+<rect x="310" y="52" width="90" height="36" rx="4" style="fill:var(--accent-soft);opacity:1"/>
+<line x1="20" y1="70" x2="620" y2="70" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="400" y1="70" x2="620" y2="70" style="stroke:var(--story-edge)" stroke-width="7"/>
+<circle cx="40.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="220.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="280.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="310.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="328.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="340.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="348.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="355.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="360.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="364.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="367.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="370.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="372.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="374.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="376.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="377.5" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="378.8" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="380.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="381.1" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="382.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="382.9" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="383.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="384.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="385.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="385.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="386.2" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="386.7" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="387.1" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="387.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="400.0" cy="70" r="6" style="fill:var(--bg);stroke:var(--story-edge)" stroke-width="2.5"/>
+<line x1="400" y1="40" x2="400" y2="100" style="stroke:var(--story-edge)" stroke-width="2"/>
+<line x1="310" y1="44" x2="310" y2="96" style="stroke:var(--exam-edge)" stroke-width="2" stroke-dasharray="4 3"/>
+<text x="40" y="112" text-anchor="middle" style="fill:var(--ink)">0</text>
+<text x="220" y="112" text-anchor="middle" style="fill:var(--ink)">½</text>
+<text x="400" y="30" text-anchor="middle" style="fill:var(--story-edge)">sup X = 1</text>
+<text x="310" y="30" text-anchor="middle" style="fill:var(--exam-edge)">1 − ε</text>
+<text x="510" y="112" text-anchor="middle" style="fill:var(--story-edge)">all upper bounds</text>
+<text x="350" y="140" text-anchor="middle" style="fill:var(--muted);font-size:15px">some element of X lies in here, for every ε &gt; 0</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$X=\{1-\tfrac1n\}$: the dots crowd towards $1$. The upper bounds are exactly the numbers $\ge1$ (thick ray), and the supremum is where that ray starts. Condition (2′) says: the shaded window $(1-\varepsilon,1]$ always contains an element of $X$, however small $\varepsilon$ is.</figcaption>
+</figure>
+<p><strong>Why (2) and (2′) say the same thing.</strong></p>
+<ul>
+  <li><em>(2) ⇒ (2′).</em> Let $\varepsilon&gt;0$. Then $s_0-\varepsilon&lt;s_0$. By (2), every upper bound is $\ge s_0$, so $s_0-\varepsilon$ is not an upper bound. “Not an upper bound” is the negation of $\forall x\in X: x\le s_0-\varepsilon$, which is $\exists x\in X: x&gt;s_0-\varepsilon$. That's (2′).</li>
+  <li><em>(2′) ⇒ (2).</em> Suppose $s$ is an upper bound with $s&lt;s_0$. Put $\varepsilon=s_0-s&gt;0$. By (2′) there is an $x\in X$ with $x&gt;s_0-\varepsilon=s$, so $s$ is not an upper bound after all. Contradiction. So every upper bound satisfies $s\ge s_0$, which is (2).</li>
+</ul>
+<h3 id="proof-a">Proof A: the supremum exists (Satz 2.59)</h3>
+<p><strong>The idea.</strong> Put the set $X$ on the left and all its upper bounds on the right. They are two armies with $X$ entirely to the left, so the completeness axiom puts a number $c$ between them. Being right of $X$ makes $c$ an upper bound; being left of all upper bounds makes it the least one.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>To show:</strong> some $c$ satisfies (1) and (2). Existence of a number: the only tool is the completeness axiom (<a class="xl" href="lesson-04.html#deep-dive-reading-the-completeness">lesson 4</a>), so we must build two sets and check its three conditions.</li>
+  <li><strong>(2) mentions “all upper bounds”</strong>, which suggests the second set.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Line up all the possible ceilings as the second army.</p></div><div class="sp-formal"><p>Let $Y=\{s\in\mathbb R:\ s\text{ is an upper bound of }X\}$. $Y\neq\emptyset$ since $X$ is bounded above, and $X\neq\emptyset$ by assumption.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Every dragon is below every ceiling.</p></div><div class="sp-formal"><p>For $x\in X$ and $y\in Y$ we have $x\le y$, by the definition of an upper bound.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Completeness puts a height between the dragons and the ceilings.</p></div><div class="sp-formal"><p>By the completeness axiom there is $c\in\mathbb R$ with $x\le c\le y$ for all $x\in X$, $y\in Y$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Above every dragon, below every ceiling: the lowest ceiling.</p></div><div class="sp-formal"><p>$x\le c$ for all $x\in X$ is (1), and $c\le y$ for every upper bound $y$ is (2). So $c=\sup X$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-complete">two armies for completeness</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $Y$ be the set of upper bounds of $X$. Both sets are non-empty and $x\le y$ for all $x\in X$, $y\in Y$. By completeness there is $c$ with $x\le c\le y$ for all such $x,y$: so $c$ is an upper bound of $X$, and at most every upper bound. Hence $c=\sup X$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $Y$ non-empty? Name the hypothesis you use.</p>
+  <details><summary>Answer</summary><div><p>Because $X$ is bounded above: by definition it has at least one upper bound, and that upper bound lies in $Y$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the last line: which inequality gives condition (1), and which gives condition (2)?</p>
+  <details><summary>Answer</summary><div><p>$x\le c$ for all $x\in X$ says $c$ is an upper bound, which is (1). $c\le y$ for every $y\in Y$ says $c$ is at most every upper bound, which is (2). So $c=\sup X$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p>Uniqueness: if $s_0$ and $s_0'$ both satisfy (1) and (2), each is an upper bound, so by (2) each is $\le$ the other. Hence they're equal.</p>
+
+<h3 id="supremum-versus-maximum">Supremum versus maximum</h3>
+<ul>
+  <li>If $\max X$ exists, then $\sup X=\max X$. (The maximum is an upper bound, and every upper bound $s$ is $\ge$ it, because the maximum is an element of $X$.)</li>
+  <li>If $\sup X\in X$, then $\sup X$ is the maximum (it's an element that is an upper bound).</li>
+  <li>So: <strong>the maximum exists exactly when the supremum belongs to the set.</strong> The supremum always exists (for non-empty, bounded-above sets), and the maximum is the special case where it's attained.</li>
+</ul>
+
+<h3 id="infimum">Infimum</h3>
+<p>The <strong>infimum</strong> $\inf X$ (Übung 2.61, <a class="pl" href="script.html#p107">p. 107</a>) is the greatest lower bound. It exists for every non-empty set that is bounded below. Its two conditions mirror the supremum's:</p>
+<div class="math-display">$$\text{(1) }\ \forall x\in X:\ x\ge i_0,\qquad\text{(2′) }\ \forall\varepsilon>0\ \exists x\in X:\ x&lt;i_0+\varepsilon.$$</div>
+<p>A useful shortcut: $\inf X=-\sup(-X)$, where $-X=\{-x: x\in X\}$. Flipping the line upside down turns floors into ceilings.</p>
+
+<h3 id="when-there-is-no-ceiling">When there is no ceiling: improper values (§2.5.3, <a class="pl" href="script.html#p108">p. 108</a>)</h3>
+<p>The script extends the definition to every subset of $\mathbb{R}$, using the symbols $\pm\infty$ (which are not real numbers):</p>
+<ul>
+  <li>If $X$ is not bounded above, $\sup X=+\infty$. If $X$ is not bounded below, $\inf X=-\infty$. For example $\sup\mathbb{N}=+\infty$.</li>
+  <li>$\sup\emptyset=-\infty$ and $\inf\emptyset=+\infty$. This looks strange, but it's consistent: <em>every</em> real number is an upper bound of $\emptyset$ (there is no element to violate it), so there's no least one.</li>
+</ul>
+
+<h2 id="s5-the-exam-recipe-for-compute">5. The exam recipe for “compute sup X and prove it”</h2>
+<div class="exam"><span class="label">Exam technique</span>
+<ol>
+  <li><strong>Guess</strong> $s_0$. Write out a few elements, or sketch them on the line.</li>
+  <li><strong>Prove (1):</strong> show $x\le s_0$ for an arbitrary $x\in X$.</li>
+  <li><strong>Prove (2′):</strong> let $\varepsilon&gt;0$ be arbitrary, and name an explicit $x\in X$ with $x&gt;s_0-\varepsilon$. Here the Archimedean principle (<a class="xl" href="#s6-consequences-of-completeness-with-proofs">section 6</a>) is often what you need.</li>
+  <li><strong>Max or not?</strong> Check whether $s_0\in X$. If yes, $s_0=\max X$. If no, there is no maximum.</li>
+</ol>
+<p>For the infimum it's the same with (1) $x\ge i_0$ and (2′) $x&lt;i_0+\varepsilon$.</p></div>
+
+<h3 id="proof-b">Proof B: an open set never contains its supremum (Einsiedler HS21 #7(d))</h3>
+<div class="box"><p><strong>Claim.</strong> If $A\subseteq\mathbb R$ is open, non-empty and bounded above, then $\sup A\notin A$. (This is Lemma 10.13, <a class="pl" href="script.html#p483">p. 483</a>.)</p></div>
+<p><strong>The idea.</strong> If the ceiling were a citizen of an open kingdom, it would have breathing space, including a bit above itself. That bit is in $A$ and above the ceiling: impossible.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>A “not in” claim:</strong> contradiction. “Suppose $s=\sup A\in A$.”</li>
+  <li><strong>Open</strong> gives, for the point $s\in A$, some $\varepsilon&gt;0$ with $(s-\varepsilon,s+\varepsilon)\subseteq A$.</li>
+  <li><strong>The contradiction</strong> will be with (1): an element of $A$ bigger than $s$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Suppose the ceiling is a citizen.</p></div><div class="sp-formal"><p>Suppose, for contradiction, that $s=\sup A\in A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Citizens of an open kingdom have breathing space.</p></div><div class="sp-formal"><p>Since $A$ is open, there is $\varepsilon&gt;0$ with $(s-\varepsilon,s+\varepsilon)\subseteq A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Step a little above the ceiling: still in the kingdom.</p></div><div class="sp-formal"><p>Then $s+\frac\varepsilon2\in A$, since $\left|s+\frac\varepsilon2-s\right|=\frac\varepsilon2&lt;\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A dragon above the ceiling: contradiction.</p></div><div class="sp-formal"><p>But $s+\frac\varepsilon2&gt;s$, so $s$ is not an upper bound of $A$, contradicting (1). Hence $\sup A\notin A$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-contra">assume the opposite</a> <a class="mvl" href="moves.html#m-eps">use a definition with its ε</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Suppose $s=\sup A\in A$. As $A$ is open, $(s-\varepsilon,s+\varepsilon)\subseteq A$ for some $\varepsilon&gt;0$, so $s+\frac\varepsilon2\in A$ with $s+\frac\varepsilon2&gt;s$, contradicting that $s$ is an upper bound. <span class="qed">∎</span></p>
+<p>If $A$ isn't bounded above, $\sup A=+\infty\notin A$ anyway, so the statement holds for every non-empty open set.</p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Assume</strong> $s=\sup A\in A$.</li>
+  <li><strong>Open:</strong> an interval $(s-\varepsilon,s+\varepsilon)\subseteq A$.</li>
+  <li><strong>The point $s+\frac\varepsilon2$</strong> is in $A$ and above $s$: contradiction with (1).</li>
+</ol>
+<p>In short: “an interval around the sup pokes above it”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why $s+\frac\varepsilon2$ and not $s+\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>The bubble is open: $s+\varepsilon$ itself is not in $(s-\varepsilon,s+\varepsilon)$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Does the claim hold for $A=(0,1)\cup\{2\}$? What breaks in the proof?</p>
+  <details><summary>Answer</summary><div><p>No: $\sup A=2\in A$. The set isn't open (no bubble around $2$), so step 2 fails.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof from the exam box alone.</p></li>
+</ol></div>
+
+<h2 id="s6-consequences-of-completeness-with-proofs">6. Consequences of completeness, with proofs</h2>
+<p>Everything in this section is a consequence of “ℝ has no holes”. Each result is proved from the supremum (or from the previous result), so you can see the chain. Here is the map:</p>
+<div class="cmap" role="img" aria-label="Map: the completeness axiom gives the existence of the supremum, which gives four consequences: the Archimedean principle and from it the density of the rationals; nested intervals and from them the uncountability of the reals; existence of accumulation points; and existence of square roots.">
+  <div class="node root">Completeness axiom (16), <a class="pl" href="script.html#p80">p. 80</a><br><small>no holes in ℝ</small></div>
+  <div class="arrow">↓</div>
+  <div class="node root">Supremum exists (Satz 2.59)</div>
+  <div class="arrow">↓</div>
+  <div class="branches">
+    <div class="node">6.1 Archimedes (2.68)<span class="arrow">↓</span>6.2 ℚ is dense (2.70)</div>
+    <div class="node">6.3 Nested intervals (2.77)<span class="arrow">↓</span>6.4 ℝ is uncountable (2.81)</div>
+    <div class="node">Accumulation points exist (2.75)<br><small><a class="xl" href="#s7-accumulation-points-h-ufungspunkte">section 7</a></small></div>
+    <div class="node">√2 exists (Übung 2.11)<br><small>Bonus exercise</small></div>
+  </div>
+</div>
+<p>One fact about integers is used below: <strong>no integer lies strictly between $n$ and $n+1$</strong>. So for integers $m,n$, $m&lt;n+1$ implies $m\le n$ (script Lemma 2.18, <a class="pl" href="script.html#p84">p. 84</a>, and Übung 2.26, <a class="pl" href="script.html#p88">p. 88</a>).</p>
+
+<h3 id="6-1-the-archimedean-principle">6.1 The Archimedean principle (Satz 2.68, <a class="pl" href="script.html#p111">p. 111</a>)</h3>
+<div class="box">
+<ol type="i">
+  <li>Every non-empty subset of $\mathbb{Z}$ that is bounded above has a maximum.</li>
+  <li>For every $x\in\mathbb{R}$ there is exactly one $n\in\mathbb{Z}$ with $n\le x&lt;n+1$. It is written $\lfloor x\rfloor$, the floor of $x$ (<em>Abrundungsfunktion</em>).</li>
+  <li>For every $\varepsilon&gt;0$ there is an $n\in\mathbb{N}$ with $\tfrac1n&lt;\varepsilon$ (Proof C below).</li>
+</ol>
+<p><strong>Proof of (i).</strong> Let $E\subseteq\mathbb{Z}$ be non-empty and bounded above. By Satz 2.59, $s=\sup E$ exists. By (2′) with $\varepsilon=1$, there is an $n_0\in E$ with $n_0&gt;s-1$, that is, $s&lt;n_0+1$. Now let $m\in E$ be arbitrary. By (1), $m\le s&lt;n_0+1$, so $m&lt;n_0+1$, and since $m,n_0$ are integers, $m\le n_0$. So $n_0\in E$ is at least every element of $E$: it's the maximum. <span class="qed">∎</span></p>
+<p><strong>Proof of (ii), existence.</strong> First let $x\ge0$. The set $E=\{n\in\mathbb{Z}: n\le x\}$ is non-empty ($0\in E$, because $x\ge0$) and bounded above by $x$. By (i) it has a maximum $n$. Then $n\le x$ (because $n\in E$), and $n+1\notin E$ (because $n+1&gt;n=\max E$), which means $n+1&gt;x$.</p>
+<p>Now let $x&lt;0$. Apply the first case to $-x&gt;0$: there is $\ell\in\mathbb{Z}$ with $\ell\le -x&lt;\ell+1$. If $-x=\ell$, then $n=-\ell$ satisfies $n=x&lt;n+1$. Otherwise $\ell&lt;-x&lt;\ell+1$; multiplying by $-1$ gives $-\ell-1&lt;x&lt;-\ell$, so $n=-\ell-1$ works.</p>
+<p><strong>Proof of (ii), uniqueness.</strong> Suppose $n_1\le x&lt;n_1+1$ and $n_2\le x&lt;n_2+1$. Then $n_1\le x&lt;n_2+1$, so $n_1&lt;n_2+1$, so $n_1\le n_2$. By symmetry $n_2\le n_1$. Hence $n_1=n_2$. <span class="qed">∎</span></p>
+</div>
+<h3 id="proof-c">Proof C: $\frac1n$ gets below every $\varepsilon$ (Archimedes (iii))</h3>
+<p><strong>The idea.</strong> “$\frac1n&lt;\varepsilon$” is the same as “$n&gt;\frac1\varepsilon$”. So we need a natural number beyond $\frac1\varepsilon$, and (ii) hands us the integer just after it.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>A “for all, exists” statement:</strong> “Let $\varepsilon&gt;0$.” … “so $n\in\mathbb N$ and $\frac1n&lt;\varepsilon$.”</li>
+  <li><strong>$n$ must be a natural number</strong>, so check $n\ge1$ at the end.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The Doubter names a tiny tolerance.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$. Then $\frac1\varepsilon&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Find the integer step just past $\frac1\varepsilon$.</p></div><div class="sp-formal"><p>By (ii) there is $m\in\mathbb Z$ with $m\le\frac1\varepsilon&lt;m+1$. Let $n=m+1$. Then $n&gt;\frac1\varepsilon&gt;0$, so $n\in\mathbb N$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Flip both sides.</p></div><div class="sp-formal"><p>Multiplying $n&gt;\frac1\varepsilon$ by the positive number $\frac\varepsilon n$ gives $\varepsilon&gt;\frac1n$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-arch">choose n by Archimedes</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\varepsilon&gt;0$. By (ii) there is $m\in\mathbb Z$ with $m\le\frac1\varepsilon&lt;m+1$. Then $n=m+1&gt;\frac1\varepsilon&gt;0$, so $n\in\mathbb N$ and $\frac1n&lt;\varepsilon$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $n=m+1$ a natural number, and not just an integer?</p>
+  <details><summary>Answer</summary><div><p>$n&gt;\frac1\varepsilon&gt;0$, and a positive integer is at least $1$, so $n\in\mathbb N$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the last step with its reason: from $n&gt;\frac1\varepsilon$ to $\frac1n&lt;\varepsilon$.</p>
+  <details><summary>Answer</summary><div><p>Multiply both sides by the positive number $\frac\varepsilon n$. Multiplying by a positive number keeps the inequality (an order axiom), so $\varepsilon&gt;\frac1n$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<p><strong>Why completeness is needed.</strong> It feels obvious that $\mathbb{N}$ is unbounded. But there are ordered fields satisfying axioms 1–15 that contain “infinitely large” elements, bigger than every natural number. In such a field, (iii) fails. Completeness rules them out. Notice also: (ii) says exactly that $\mathbb{N}$ is not bounded above, since for every $x$ there's an integer $n+1&gt;x$.</p>
+
+<h3 id="6-2-is-dense-in">6.2 ℚ is dense in ℝ (Korollar 2.70, <a class="pl" href="script.html#p112">p. 112</a>)</h3>
+<div class="box">
+<p><strong>Statement.</strong> For all $a,b\in\mathbb{R}$ with $a&lt;b$ there is an $r\in\mathbb{Q}$ with $a&lt;r&lt;b$.</p>
+<figure style="margin:0" aria-label="Fractions with denominator 8 placed on the number line as a grid. The gap between a and b is wider than one grid step, so the grid point 4/8 lands inside the gap.">
+<svg viewBox="0 0 640 120" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util);font-size:17px">
+<rect x="247" y="50" width="135" height="40" rx="4" style="fill:var(--accent-soft);opacity:1"/>
+<line x1="20" y1="70" x2="620" y2="70" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="85" y1="60" x2="85" y2="80" style="stroke:var(--muted)" stroke-width="1.5"/>
+<text x="85" y="108" text-anchor="middle" style="fill:var(--muted);font-size:15px">2/8</text>
+<line x1="198" y1="60" x2="198" y2="80" style="stroke:var(--muted)" stroke-width="1.5"/>
+<text x="198" y="108" text-anchor="middle" style="fill:var(--muted);font-size:15px">3/8</text>
+<line x1="310" y1="60" x2="310" y2="80" style="stroke:var(--accent)" stroke-width="3"/>
+<text x="310" y="108" text-anchor="middle" style="fill:var(--accent);font-size:15px">4/8</text>
+<line x1="422" y1="60" x2="422" y2="80" style="stroke:var(--muted)" stroke-width="1.5"/>
+<text x="422" y="108" text-anchor="middle" style="fill:var(--muted);font-size:15px">5/8</text>
+<line x1="535" y1="60" x2="535" y2="80" style="stroke:var(--muted)" stroke-width="1.5"/>
+<text x="535" y="108" text-anchor="middle" style="fill:var(--muted);font-size:15px">6/8</text>
+<line x1="247" y1="44" x2="247" y2="96" style="stroke:var(--story-edge)" stroke-width="2"/>
+<line x1="382" y1="44" x2="382" y2="96" style="stroke:var(--story-edge)" stroke-width="2"/>
+<text x="247" y="36" text-anchor="middle" style="fill:var(--story-edge)">a</text>
+<text x="382" y="36" text-anchor="middle" style="fill:var(--story-edge)">b</text>
+<circle cx="310.0" cy="70" r="6" style="fill:var(--accent)"/>
+
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The idea of Korollar 2.70: lay down the grid of fractions $\tfrac nm$ with step $\tfrac1m&lt;b-a$. A grid finer than the gap cannot step over it.</figcaption>
+</figure>
+</div>
+<h3 id="proof-d">Proof D: ℚ is dense in ℝ, a fraction in every gap (Korollar 2.70)</h3>
+<p><strong>The idea.</strong> Lay down the grid of fractions with step $\frac1m$, finer than the gap $b-a$ (Archimedes). Walk along the grid to the first point right of $a$. Since the step is smaller than the gap, it can't jump over $b$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Start:</strong> “Let $a&lt;b$.” <strong>End:</strong> “so $r=\frac nm\in\mathbb Q$ satisfies $a&lt;r&lt;b$.” So we must find integers $n$ and $m\ge1$.</li>
+  <li><strong>Tools available:</strong> Archimedes (iii) gives a small $\frac1m$; Archimedes (ii) gives the integer $n$ just above a real number.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Choose a grid finer than the gap.</p></div><div class="sp-formal"><p>Let $a&lt;b$. Since $b-a&gt;0$, Archimedes (iii) gives $m\in\mathbb N$ with $\frac1m&lt;b-a$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Find the first grid point to the right of $a$.</p></div><div class="sp-formal"><p>By Archimedes (ii) for $x=ma$ there is $n\in\mathbb Z$ with $n-1\le ma&lt;n$. Dividing by $m&gt;0$: $\frac{n-1}m\le a&lt;\frac nm$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>One step from at most $a$ can't reach $b$.</p></div><div class="sp-formal"><p><span class="math-display" style="display:block">$$\frac nm=\frac{n-1}m+\frac1m\le a+\frac1m&lt;a+(b-a)=b.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The grid point sits in the gap.</p></div><div class="sp-formal"><p>So $a&lt;\frac nm&lt;b$, and $r=\frac nm\in\mathbb Q$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-arch">choose n by Archimedes</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $a&lt;b$. Choose $m\in\mathbb N$ with $\frac1m&lt;b-a$, and $n\in\mathbb Z$ with $n-1\le ma&lt;n$. Then $a&lt;\frac nm\le a+\frac1m&lt;b$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Grid:</strong> $\frac1m&lt;b-a$ (Archimedes).</li>
+  <li><strong>First grid point after $a$:</strong> $n-1\le ma&lt;n$ (floor).</li>
+  <li><strong>Doesn't overshoot:</strong> $\frac nm\le a+\frac1m&lt;b$.</li>
+</ol>
+<p>In short: “grid finer than the gap, first point after $a$”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where is $\frac1m&lt;b-a$ used?</p>
+  <details><summary>Answer</summary><div><p>In the last inequality: $a+\frac1m&lt;a+(b-a)=b$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Run the proof for $a=0.3$, $b=0.4$. Which $m$ and $n$ do you get?</p>
+  <details><summary>Answer</summary><div><p>$b-a=0.1$, so $m=11$ works ($\frac1{11}\approx0.091$). $ma=3.3$, so $n=4$, and $r=\frac4{11}\approx0.364$. ✓</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof from the exam box alone.</p></li>
+</ol></div>
+<div class="box">
+<p><strong>The irrationals are dense too.</strong> Given $a&lt;b$, apply the statement to $a-\sqrt2&lt;b-\sqrt2$: there's a rational $r$ with $a-\sqrt2&lt;r&lt;b-\sqrt2$. Then $a&lt;r+\sqrt2&lt;b$, and $r+\sqrt2$ is irrational (if it were rational, $\sqrt2=(r+\sqrt2)-r$ would be too).</p>
+</div>
+<p>So every interval $(x-\varepsilon,x+\varepsilon)$ contains both rationals and irrationals. That's why $\mathbb{Q}$ was neither open nor closed in <a class="xl" href="lesson-05.html#example-a-is-neither-open">lesson 5</a>.</p>
+
+<h3 id="6-3-nested-intervals-intervallschachtelungsprinzip">6.3 Nested intervals (Intervallschachtelungsprinzip, Satz 2.77, <a class="pl" href="script.html#p115">p. 115</a>)</h3>
+<div class="box">
+<p><strong>Statement.</strong> Let $I_n=[a_n,b_n]$ be non-empty, closed, bounded intervals with $I_1\supseteq I_2\supseteq I_3\supseteq\cdots$, that is, $a_1\le a_2\le\dots\le b_2\le b_1$. Then</p>
+<div class="math-display">$$\bigcap_{n=1}^{\infty}I_n=\Big[\,\sup_n a_n,\ \inf_n b_n\,\Big]\neq\emptyset.$$</div>
+<figure style="margin:0" aria-label="Six closed intervals stacked under each other, each inside the previous one and shrinking. A dashed vertical line passes through all of them, marking a point common to every interval.">
+<svg viewBox="0 0 640 210" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util);font-size:17px">
+<line x1="70" y1="28" x2="630" y2="28" style="stroke:var(--accent)" stroke-width="5"/>
+<line x1="70" y1="21" x2="70" y2="35" style="stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="630" y1="21" x2="630" y2="35" style="stroke:var(--accent)" stroke-width="2.5"/>
+<text x="18" y="34" text-anchor="start" style="fill:var(--ink);font-size:15px">I₁</text>
+<line x1="160" y1="54" x2="590" y2="54" style="stroke:var(--accent)" stroke-width="5"/>
+<line x1="160" y1="47" x2="160" y2="61" style="stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="590" y1="47" x2="590" y2="61" style="stroke:var(--accent)" stroke-width="2.5"/>
+<text x="18" y="60" text-anchor="start" style="fill:var(--ink);font-size:15px">I₂</text>
+<line x1="260" y1="80" x2="550" y2="80" style="stroke:var(--accent)" stroke-width="5"/>
+<line x1="260" y1="73" x2="260" y2="87" style="stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="550" y1="73" x2="550" y2="87" style="stroke:var(--accent)" stroke-width="2.5"/>
+<text x="18" y="86" text-anchor="start" style="fill:var(--ink);font-size:15px">I₃</text>
+<line x1="320" y1="106" x2="500" y2="106" style="stroke:var(--accent)" stroke-width="5"/>
+<line x1="320" y1="99" x2="320" y2="113" style="stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="500" y1="99" x2="500" y2="113" style="stroke:var(--accent)" stroke-width="2.5"/>
+<text x="18" y="112" text-anchor="start" style="fill:var(--ink);font-size:15px">I₄</text>
+<line x1="360" y1="132" x2="460" y2="132" style="stroke:var(--accent)" stroke-width="5"/>
+<line x1="360" y1="125" x2="360" y2="139" style="stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="460" y1="125" x2="460" y2="139" style="stroke:var(--accent)" stroke-width="2.5"/>
+<text x="18" y="138" text-anchor="start" style="fill:var(--ink);font-size:15px">I₅</text>
+<line x1="382" y1="158" x2="442" y2="158" style="stroke:var(--accent)" stroke-width="5"/>
+<line x1="382" y1="151" x2="382" y2="165" style="stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="442" y1="151" x2="442" y2="165" style="stroke:var(--accent)" stroke-width="2.5"/>
+<text x="18" y="164" text-anchor="start" style="fill:var(--ink);font-size:15px">I₆</text>
+<line x1="410" y1="14" x2="410" y2="180" style="stroke:var(--story-edge)" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="410" y="198" text-anchor="middle" style="fill:var(--story-edge);font-size:15px">a point in every Iₙ</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Nested closed intervals $I_1\supseteq I_2\supseteq\dots$: completeness guarantees a point (dashed line) that lies in all of them. Take $a=\sup\{a_n\}$, the highest left end.</figcaption>
+</figure>
+</div>
+<h3 id="proof-e">Proof E: nested intervals have a common point (Satz 2.77)</h3>
+<p><strong>The idea.</strong> The left ends climb, the right ends fall, and no left end ever passes any right end. So $a=\sup a_n$ (the highest left end) exists and is still left of every right end. It lies in every interval.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>To use $\sup_n a_n$</strong>, show $\{a_n\}$ is bounded above. Candidates for bounds: the $b_m$.</li>
+  <li><strong>$x\in I_n$ for all $n$</strong> means $a_n\le x\le b_n$ for all $n$: an upper bound of the $a$'s and a lower bound of the $b$'s.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>No left end passes a right end, even from different intervals.</p></div><div class="sp-formal"><p>Let $k,m\in\mathbb N$ and $n=\max(k,m)$. By nesting, $a_k\le a_n\le b_n\le b_m$, so $a_k\le b_m$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the highest left end exists, and stays left of every right end.</p></div><div class="sp-formal"><p>So $\{a_k\}$ is non-empty and bounded above by every $b_m$; $a=\sup_ka_k$ exists, and by (2) $a\le b_m$ for all $m$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Likewise the lowest right end.</p></div><div class="sp-formal"><p>So $a$ is a lower bound of $\{b_m\}$; $b=\inf_mb_m$ exists and $a\le b$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The common points are exactly what lies between.</p></div><div class="sp-formal"><p>$x\in\bigcap_nI_n$ $\iff$ $a_n\le x\le b_n$ for all $n$ $\iff$ $a\le x\le b$, by (1) and (2) for $\sup$ and $\inf$. So $\bigcap_nI_n=[a,b]\neq\emptyset$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-ub">sup ≤ an upper bound</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>For all $k,m$, with $n=\max(k,m)$: $a_k\le a_n\le b_n\le b_m$. So $a=\sup_ka_k$ exists and $a\le b_m$ for all $m$; hence $b=\inf_mb_m$ exists and $a\le b$. Finally $x\in\bigcap I_n$ iff $x$ is an upper bound of the $a_n$ and a lower bound of the $b_n$, iff $a\le x\le b$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does the first line need $n=\max(k,m)$?</p>
+  <details><summary>Answer</summary><div><p>$a_k$ and $b_m$ come from different intervals. The interval $I_n$ lies inside both $I_k$ and $I_m$, so $a_k\le a_n$ and $b_n\le b_m$, and $a_n\le b_n$ connects them.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Give the reason for $a\le b$ in one line.</p>
+  <details><summary>Answer</summary><div><p>$a\le b_m$ for every $m$, so $a$ is a lower bound of $\{b_m\}$. The infimum $b$ is the greatest lower bound, so $a\le b$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<div class="box">
+<p><strong>Both conditions are needed.</strong> Not closed: $\bigcap_n\left(0,\tfrac1n\right]=\emptyset$, since any $x&gt;0$ is excluded once $\tfrac1n&lt;x$ (Archimedes). Not bounded: $\bigcap_n[n,\infty)=\emptyset$, since any $x$ is excluded once $n&gt;x$.</p>
+</div>
+
+<h3 id="6-4-is-uncountable-korollar">6.4 ℝ is uncountable (Korollar 2.81, <a class="pl" href="script.html#p116">p. 116</a>)</h3>
+<div class="story"><p><strong>The game of Alice and Bob.</strong> Bob claims he can list all numbers in $[0,1]$ as $x_1,x_2,x_3,\dots$ Alice doesn't believe him. Each time Bob names a number, Alice shrinks her closed interval so that it avoids that number. At the end, nested intervals hand her a number Bob never named.</p></div>
+<div class="box">
+<p><strong>Statement.</strong> There is no surjective map $\mathbb{N}\to[0,1]$. So $[0,1]$, and hence $\mathbb{R}$, is uncountable.</p>
+</div>
+<h3 id="proof-f">Proof F: ℝ is uncountable (Alice beats every list)</h3>
+<p><strong>The idea.</strong> Each time Bob names $x_n$, Alice keeps a closed third of her current interval that avoids $x_n$. Nested intervals give a point in all of them, and it differs from every $x_n$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>“Not surjective”:</strong> “Let $n\mapsto x_n$ be any map $\mathbb N\to[0,1]$” … “so $x\in[0,1]$ with $x\neq x_n$ for all $n$.”</li>
+  <li><strong>The tool to produce $x$:</strong> nested intervals (Proof E), so build $I_1\supseteq I_2\supseteq\dots$ closed, bounded, non-empty.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Bob names his first number; Alice moves away from it.</p></div><div class="sp-formal"><p>Let $n\mapsto x_n$ be a map $\mathbb N\to[0,1]$. If $x_1\in[0,\frac12]$, let $I_1=[\frac23,1]$; otherwise $I_1=[0,\frac13]$. Then $x_1\notin I_1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Each new number: keep the third on the far side.</p></div><div class="sp-formal"><p>Given $I_n$: if $x_{n+1}\notin I_n$, let $I_{n+1}=I_n$. If $x_{n+1}$ is in the left half of $I_n$, let $I_{n+1}$ be its right third; otherwise its left third. Then $I_{n+1}\subseteq I_n$ and $x_{n+1}\notin I_{n+1}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Completeness hands Alice a point in every interval.</p></div><div class="sp-formal"><p>By Proof E there is $x\in\bigcap_nI_n\subseteq[0,1]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Bob never named it.</p></div><div class="sp-formal"><p>For each $n$: $x\in I_n$ and $x_n\notin I_n$, so $x\neq x_n$. Hence the map is not surjective. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-diag">beat every entry of a list</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Given $n\mapsto x_n$, choose closed intervals $I_1\supseteq I_2\supseteq\dots$ in $[0,1]$ with $x_n\notin I_n$ (keep the third of $I_{n-1}$ on the far side of $x_n$). By nested intervals some $x$ lies in all $I_n$, so $x\neq x_n$ for every $n$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why thirds, and not the two closed halves?</p>
+  <details><summary>Answer</summary><div><p>The closed halves $[l,\text{mid}]$ and $[\text{mid},r]$ share the midpoint. If Bob names the midpoint, neither half avoids it. The far third always leaves a gap between it and the named number.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the last line with its reason: why is $x\neq x_n$ for every $n$?</p>
+  <details><summary>Answer</summary><div><p>For each $n$, $x\in I_n$ (it lies in all the intervals) and $x_n\notin I_n$ (by construction), so $x\neq x_n$. Hence the map $n\mapsto x_n$ is not surjective.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<div class="box">
+<p>Uncountability of $\mathbb{R}$ then follows from script Lemma 1.80 (<a class="pl" href="script.html#p51">p. 51</a>): a subset of a countable set is countable, and $[0,1]\subseteq\mathbb{R}$.</p>
+</div>
+<p>This is a second proof, besides Cantor's diagonal argument from <a class="xl" href="lesson-03.html#proof-c">lesson 3</a>. Here completeness does the work, in the form of nested intervals.</p>
+
+<h2 id="s7-accumulation-points-h-ufungspunkte">7. Accumulation points (Häufungspunkte)</h2>
+<div class="story"><p>Some places on the line are <em>crowded</em>: however closely you look around them, you always find other members of the set nearby. Those crowded places are the accumulation points. A member standing alone, with nobody else nearby, is isolated.</p></div>
+<p><strong>Definition 2.73 (<a class="pl" href="script.html#p113">p. 113</a>).</strong> Let $A\subseteq\mathbb{R}$ and $x_0\in\mathbb{R}$. Then $x_0$ is an <strong>accumulation point</strong> (<em>Häufungspunkt</em>) of $A$ if</p>
+<div class="math-display">$$\forall\,\varepsilon>0\ \ \exists\,a\in A:\ \ 0&lt;|a-x_0|&lt;\varepsilon.$$</div>
+<p><em>Read aloud:</em> “every $\varepsilon$-neighbourhood of $x_0$ contains a point of $A$ <strong>other than $x_0$ itself</strong>.” The part $0&lt;|a-x_0|$ means exactly $a\neq x_0$. The point $x_0$ may or may not be in $A$, as with border points.</p>
+<p><strong>Compare with border points (<a class="xl" href="lesson-05.html#3-7-finding-the-border">lesson 5</a>).</strong> They're different notions:</p>
+<ul>
+  <li>Border point: every neighbourhood meets $A$ <em>and</em> the complement. Accumulation point: every neighbourhood contains points of $A$ <em>other than $x_0$</em>.</li>
+  <li>For $A=(0,1)$, the point $\tfrac12$ is an accumulation point (it's surrounded by points of $A$), but not a border point.</li>
+  <li>For $A=\{0\}\cup(1,2)$, the point $0$ is a border point but not an accumulation point. It's an <strong>isolated point</strong> of $A$: some neighbourhood contains no other point of $A$.</li>
+</ul>
+<figure style="margin:0" aria-label="The points 1 over n on the number line, crowding towards 0. A window around 0 contains infinitely many of them, so 0 is an accumulation point, though not in the set. A small window around 1 contains no other point, so 1 is isolated.">
+<svg viewBox="0 0 640 125" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util);font-size:17px">
+<rect x="15" y="52" width="90" height="36" rx="4" style="fill:var(--accent-soft);opacity:1"/>
+<line x1="20" y1="70" x2="620" y2="70" style="stroke:var(--muted)" stroke-width="1.5"/>
+<circle cx="580.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="320.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="233.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="190.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="164.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="146.7" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="134.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="125.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="117.8" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="112.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="107.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="103.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="100.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="97.1" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="94.7" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="92.5" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="90.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="88.9" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="87.4" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="86.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="84.8" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="83.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="82.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="81.7" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="80.8" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="80.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="79.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="78.6" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="77.9" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="77.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="76.8" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="76.2" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="75.8" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="75.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="74.9" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="74.4" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="74.1" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="73.7" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="73.3" cy="70" r="4.5" style="fill:var(--accent)"/>
+<circle cx="60.0" cy="70" r="6" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<text x="60" y="112" text-anchor="middle" style="fill:var(--ink)">0</text>
+<text x="580" y="112" text-anchor="middle" style="fill:var(--ink)">1</text>
+<text x="320" y="112" text-anchor="middle" style="fill:var(--ink)">½</text>
+<text x="110" y="30" text-anchor="start" style="fill:var(--accent);font-size:15px">accumulation point (not in A)</text>
+<line x1="108" y1="36" x2="65" y2="58" style="stroke:var(--accent)" stroke-width="1.5"/>
+<rect x="540" y="52" width="80" height="36" rx="4" style="fill:var(--story);opacity:1"/>
+<circle cx="580.0" cy="70" r="4.5" style="fill:var(--accent)"/>
+<text x="580" y="30" text-anchor="middle" style="fill:var(--story-edge);font-size:15px">isolated point</text>
+
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$A=\{\tfrac1n\}$. Every $\varepsilon$-neighbourhood of $0$ contains infinitely many elements, so $0$ is a Häufungspunkt. Around $1$, the neighbourhood with $\varepsilon=\tfrac12$ contains no element other than $1$, so $1$ is isolated.</figcaption>
+</figure>
+<p><strong>Calibration:</strong></p>
+<ul>
+  <li>$(0,1)$: the accumulation points are all of $[0,1]$.</li>
+  <li>$\left\{\tfrac1n:n\in\mathbb{N}\right\}$: only $0$. Each $\tfrac1n$ itself is isolated.</li>
+  <li>A finite set has no accumulation points (Übung 2.74): choose $\varepsilon$ smaller than the distance from $x_0$ to every other element.</li>
+  <li>$\mathbb{Z}$ has none either: neighbours are $1$ apart, so $\varepsilon=\tfrac12$ works around any point.</li>
+  <li>$\mathbb{Q}$: every real number, because $\mathbb{Q}$ is dense.</li>
+</ul>
+<h3 id="proof-g">Proof G: a bounded infinite set has an accumulation point (Satz 2.75, <a class="pl" href="script.html#p113">p. 113</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Every bounded infinite set $A\subseteq\mathbb{R}$ has at least one accumulation point. (Infinitely many points squeezed into a bounded space must crowd together somewhere.) This is another consequence of completeness, and Einsiedler asked for it in FS22 as a “state and prove” question.</p></div>
+<p><strong>The idea.</strong> Walk along the line from left to right and count the points of $A$ behind you. At the left wall there are finitely many; at the right wall, all of $A$, infinitely many. The place where “finitely many” switches to “infinitely many” is a supremum, and every window around it must contain infinitely many points.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>To show:</strong> some $x_0$ with $\forall\varepsilon&gt;0\ \exists a\in A:\ 0&lt;|a-x_0|&lt;\varepsilon$. A number has to be produced, and the only tool so far is the supremum. First line: “Let $A\subseteq[m,M]$ be infinite, and let $X=\dots$”. Last line: “so $x_0$ is an accumulation point of $A$.”</li>
+  <li><strong>The gap:</strong> for an arbitrary $\varepsilon&gt;0$, show the window $(x_0-\varepsilon,x_0+\varepsilon]$ contains infinitely many points of $A$: use (2′) on the left of $x_0$ and (1) on the right.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Mark every spot that has only finitely many dragons behind it.</p></div><div class="sp-formal"><p>Let $A\subseteq[m,M]$ be infinite, and let $X=\{\,x\in\mathbb{R}:\ A\cap(-\infty,x]\text{ is finite}\,\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The left wall is such a spot; the right wall is not. So the switching place exists.</p></div><div class="sp-formal"><p>$m\in X$, because $A\cap(-\infty,m]\subseteq\{m\}$. If $x\ge M$, then $A\cap(-\infty,x]=A$ is infinite, so $x\notin X$; hence $M$ is an upper bound of $X$. So $x_0=\sup X$ exists (Proof A). Let $\varepsilon&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A little before the switch: still finitely many behind you.</p></div><div class="sp-formal"><p>By (2′) there is $x\in X$ with $x&gt;x_0-\varepsilon$. Then $A\cap(-\infty,x_0-\varepsilon]\subseteq A\cap(-\infty,x]$, which is finite.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A little after the switch: infinitely many.</p></div><div class="sp-formal"><p>$x_0+\varepsilon&gt;x_0=\sup X$, so by (1) $x_0+\varepsilon\notin X$. That is, $A\cap(-\infty,x_0+\varepsilon]$ is infinite.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So infinitely many crowd into the window around the switch.</p></div><div class="sp-formal"><p>Removing the finite set from the infinite one, $A\cap(x_0-\varepsilon,x_0+\varepsilon]$ is infinite. Removing also the (at most two) points $x_0$ and $x_0+\varepsilon$, there is still an $a\in A$ with $0&lt;|a-x_0|&lt;\varepsilon$. Since $\varepsilon&gt;0$ was arbitrary, $x_0$ is an accumulation point of $A$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-sup">the supremum trick</a> <a class="mvl" href="moves.html#m-approx">approach a supremum</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $A\subseteq[m,M]$ be infinite and $X=\{x\in\mathbb{R}: A\cap(-\infty,x]\text{ is finite}\}$. Then $m\in X$, and every $x\ge M$ is not in $X$, so $x_0=\sup X$ exists. Let $\varepsilon&gt;0$. By (2′) some $x\in X$ satisfies $x&gt;x_0-\varepsilon$, so $A\cap(-\infty,x_0-\varepsilon]$ is finite. By (1), $x_0+\varepsilon\notin X$, so $A\cap(-\infty,x_0+\varepsilon]$ is infinite. Hence $A\cap(x_0-\varepsilon,x_0+\varepsilon]$ is infinite and contains some $a\neq x_0$ with $|a-x_0|&lt;\varepsilon$. So $x_0$ is an accumulation point. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>The set:</strong> $X=\{x: A\cap(-\infty,x]\text{ finite}\}$, with $m\in X$ and upper bound $M$. Put $x_0=\sup X$.</li>
+  <li><strong>Left of $x_0$:</strong> (2′) gives $x\in X$ above $x_0-\varepsilon$, so only finitely many points of $A$ are $\le x_0-\varepsilon$.</li>
+  <li><strong>Right of $x_0$:</strong> (1) gives $x_0+\varepsilon\notin X$, so infinitely many points of $A$ are $\le x_0+\varepsilon$.</li>
+  <li><strong>Subtract:</strong> infinitely many points in $(x_0-\varepsilon,x_0+\varepsilon]$; pick one other than $x_0$ and $x_0+\varepsilon$.</li>
+</ol>
+<p>In short: “count what's behind you, take the sup of the switch, the window is crowded”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $m\in X$?</p>
+  <details><summary>Answer</summary><div><p>$A\subseteq[m,M]$, so every point of $A$ that is $\le m$ equals $m$. Hence $A\cap(-\infty,m]\subseteq\{m\}$ has at most one element, which is finite.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write steps 2 and 3 of the exam box as full sentences, with the reasons.</p>
+  <details><summary>Answer</summary><div><p>“By (2′) there is $x\in X$ with $x&gt;x_0-\varepsilon$. Then $A\cap(-\infty,x_0-\varepsilon]\subseteq A\cap(-\infty,x]$, which is finite. Since $x_0+\varepsilon&gt;\sup X$, condition (1) gives $x_0+\varepsilon\notin X$, so $A\cap(-\infty,x_0+\varepsilon]$ is infinite.”</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p>The sequence version of this result is Bolzano–Weierstrass, in <a class="xl" href="lesson-12.html#s2-subsequences-and-bolzano-weierstrass">lesson 12</a>.</p>
+<p><strong>Equivalent form (Übung 2.76):</strong> $x_0$ is an accumulation point exactly when every $\varepsilon$-neighbourhood of $x_0$ contains <em>infinitely many</em> points of $A$. (The idea: if some neighbourhood had only finitely many, shrink $\varepsilon$ below the smallest of their distances to $x_0$, and none would remain.)</p>
+
+<h2 id="s8-worked-examples">8. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+  <h3 id="we-1">Worked example 1: $\sup(0,1)=1$, and there is no maximum</h3>
+  <ol class="gq">
+    <li><p>Guess the supremum and prove (1).</p>
+    <details><summary>Answer</summary><div><p>$s_0=1$. Every $x\in(0,1)$ satisfies $x&lt;1$, so $1$ is an upper bound.</p></div></details></li>
+    <li><p>For (2′): given $\varepsilon&gt;0$, try $x=1-\frac\varepsilon2$. When does that fail?</p>
+    <details><summary>Answer</summary><div><p>When $\varepsilon$ is large: for $\varepsilon=5$, $1-\frac\varepsilon2=-1.5\notin(0,1)$.</p></div></details></li>
+    <li><p>Repair it, and check all three requirements.</p>
+    <details><summary>Answer</summary><div><p>Take $x=\max\left(1-\frac\varepsilon2,\frac12\right)$. Then $x\ge1-\frac\varepsilon2&gt;1-\varepsilon$; $x&lt;1$ since both candidates are $&lt;1$; and $x\ge\frac12&gt;0$. So $x\in(0,1)$ and $x&gt;1-\varepsilon$. It's the same trick as the $\min$ in <a class="xl" href="lesson-05.html#ex-6">lesson 5</a>. <span class="qed">∎</span></p></div></details></li>
+    <li><p>Is there a maximum?</p>
+    <details><summary>Answer</summary><div><p>No: $1\notin(0,1)$, and the maximum exists exactly when the supremum belongs to the set.</p></div></details></li>
+  </ol>
+</div>
+<div class="box">
+  <h3 id="we-2">Worked example 2: $X=\left\{1-\tfrac1n : n\in\mathbb{N}\right\}$</h3>
+  <p>The elements are $0,\ \tfrac12,\ \tfrac23,\ \tfrac34,\dots$ (the dragons from the story).</p>
+  <ol class="gq">
+    <li><p>Prove that $1$ is an upper bound.</p>
+    <details><summary>Answer</summary><div><p>For every $n$, $\frac1n&gt;0$, so $1-\frac1n&lt;1$.</p></div></details></li>
+    <li><p>Prove (2′) for $s_0=1$. Which tool gives the element?</p>
+    <details><summary>Answer</summary><div><p>Let $\varepsilon&gt;0$. By Archimedes (Proof C) there is $n$ with $\frac1n&lt;\varepsilon$; then $1-\frac1n&gt;1-\varepsilon$ and $1-\frac1n\in X$. So $\sup X=1$, not attained (that would need $\frac1n=0$).</p></div></details></li>
+    <li><p>Find $\inf X$. Is it a minimum?</p>
+    <details><summary>Answer</summary><div><p>$0=1-\frac11\in X$, and $1-\frac1n\ge0$ since $\frac1n\le1$. So $0=\min X=\inf X$.</p></div></details></li>
+    <li><p>What are the accumulation points?</p>
+    <details><summary>Answer</summary><div><p>Only $1$: the element from (2′) satisfies $0&lt;\left|1-\frac1n-1\right|=\frac1n&lt;\varepsilon$. Every other point is isolated or has a neighbourhood with no element at all.</p></div></details></li>
+  </ol>
+</div>
+<div class="box">
+  <h3 id="we-3">Worked example 3: $\sup(A+B)=\sup A+\sup B$ (Proposition 2.63, <a class="pl" href="script.html#p107">p. 107</a>)</h3>
+  <p>Let $A,B\subseteq\mathbb{R}$ be non-empty and bounded above, $A+B=\{a+b: a\in A,\ b\in B\}$, $s_A=\sup A$, $s_B=\sup B$.</p>
+  <ol class="gq">
+    <li><p>Show (1): $s_A+s_B$ is an upper bound of $A+B$.</p>
+    <details><summary>Answer</summary><div><p>An element of $A+B$ is $a+b$ with $a\le s_A$ and $b\le s_B$ (by (1) for $A$ and $B$). Adding (axiom 14): $a+b\le s_A+s_B$. In particular $\sup(A+B)$ exists.</p></div></details></li>
+    <li><p>For (2′), given $\varepsilon&gt;0$: how much room do you give $A$ and $B$ each?</p>
+    <details><summary>Answer</summary><div><p>$\frac\varepsilon2$ each: choose $a\in A$ with $a&gt;s_A-\frac\varepsilon2$ and $b\in B$ with $b&gt;s_B-\frac\varepsilon2$.</p></div></details></li>
+    <li><p>Finish.</p>
+    <details><summary>Answer</summary><div><p>Adding: $a+b&gt;s_A+s_B-\varepsilon$ and $a+b\in A+B$. So $\sup(A+B)=s_A+s_B$. <span class="qed">∎</span></p></div></details></li>
+  </ol>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-approx">approach a supremum</a> <a class="mvl" href="moves.html#m-half">ε/2 twice</a></p>
+</div>
+
+<p><strong>Why it's cool.</strong> The supremum turns “there is no largest element” into a number you can compute with. With it you proved two facts that seem to contradict each other: between any two reals there is a fraction ($\mathbb Q$ is dense), and yet there are far more reals than fractions ($\mathbb R$ is uncountable).</p>
+
+<h2 id="s9-your-turn">9. Your turn</h2>
+<div class="box">
+  <h3 id="ex-1">Exercise 1 (compute)</h3>
+  <p>For each set, find $\sup$, $\inf$, and say whether $\max$ and $\min$ exist. For (a) and (b), prove the supremum with the recipe from <a class="xl" href="#s5-the-exam-recipe-for-compute">section 5</a>.</p>
+  <p>(a) $[0,2)$ &nbsp; (b) $\left\{\tfrac1n : n\in\mathbb{N}\right\}$ (prove the infimum) &nbsp; (c) $\left\{(-1)^n+\tfrac1n : n\in\mathbb{N}\right\}$ &nbsp; (d) $\{x\in\mathbb{Q} : x^2&lt;2\}$ &nbsp; (e) $\mathbb{N}$ and $\emptyset$</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a) $[0,2)$:</strong> $\sup=2$, no max. $\inf=\min=0$.</p>
+  <p><em>Frame:</em> the recipe from <a class="xl" href="#s5-the-exam-recipe-for-compute">section 5</a>: guess, prove (1) for an arbitrary element, prove (2′) for an arbitrary $\varepsilon$ with an explicit element, then check membership. <em>Moves:</em> <a class="mvl" href="moves.html#m-approx">approach a supremum</a>.</p>
+  <ul>
+    <li>(1): every $x\in[0,2)$ satisfies $x&lt;2$, so $2$ is an upper bound.</li>
+    <li>(2′): let $\varepsilon&gt;0$ and take $x=\max\left(2-\tfrac\varepsilon2,\ 0\right)$. Then $x\ge 2-\tfrac\varepsilon2&gt;2-\varepsilon$, and $0\le x&lt;2$, so $x\in[0,2)$.</li>
+    <li>$2\notin[0,2)$, so there's no maximum. $0\in[0,2)$ and $0\le x$ for all $x$ in the set, so $0$ is the minimum.</li>
+  </ul>
+  <p><strong>(b) $\left\{\tfrac1n\right\}=\left\{1,\tfrac12,\tfrac13,\dots\right\}$:</strong> $\sup=\max=1$. $\inf=0$, no min.</p>
+  <ul>
+    <li>$1=\tfrac11$ is in the set, and $\tfrac1n\le1$ for all $n\ge1$. So $1$ is the maximum, hence the supremum.</li>
+    <li>Infimum, (1): $\tfrac1n&gt;0$ for every $n$, so $0$ is a lower bound.</li>
+    <li>Infimum, (2′): let $\varepsilon&gt;0$. By the Archimedean principle there is $n\in\mathbb{N}$ with $\tfrac1n&lt;\varepsilon=0+\varepsilon$. So $0+\varepsilon$ is not a lower bound.</li>
+    <li>$0$ is not in the set ($\tfrac1n\neq0$), so there's no minimum.</li>
+  </ul>
+  <p><strong>(c) $\left\{(-1)^n+\tfrac1n\right\}$:</strong> write out the elements. Odd $n$: $-1+1=0$, $-1+\tfrac13=-\tfrac23$, $-1+\tfrac15=-\tfrac45$, …, climbing down towards $-1$. Even $n$: <span class="math-display" style="display:block">$$1+\tfrac12=\tfrac32,\ 1+\tfrac14=\tfrac54,\ 1+\tfrac16=\tfrac76,\dots,$$</span>falling towards $1$.</p>
+  <ul>
+    <li>$\sup=\max=\tfrac32$ (attained at $n=2$). Every even-$n$ element is $1+\tfrac1n\le1+\tfrac12$, and every odd-$n$ element is $-1+\tfrac1n\le0$.</li>
+    <li>$\inf=-1$, no min. (1): every element is $\ge -1+\tfrac1n&gt;-1$. (2′): for $\varepsilon&gt;0$ take an odd $n$ with $\tfrac1n&lt;\varepsilon$ (Archimedes gives some $m$ with $\tfrac1m&lt;\varepsilon$, and $n=2m+1$ works too, since $\tfrac1{2m+1}&lt;\tfrac1m$). Then $-1+\tfrac1n&lt;-1+\varepsilon$. And $-1$ is never attained, since $\tfrac1n\neq0$.</li>
+  </ul>
+  <p><strong>(d) $\{x\in\mathbb{Q}: x^2&lt;2\}$:</strong> this is $\mathbb{Q}\cap(-\sqrt2,\sqrt2)$. $\sup=\sqrt2$ and $\inf=-\sqrt2$. Neither is attained, because $\pm\sqrt2$ is irrational, so there's no max or min. (2′) works by density of $\mathbb{Q}$: for every $\varepsilon&gt;0$ there is a rational number between $\sqrt2-\varepsilon$ and $\sqrt2$. This is the classic example of why we need $\mathbb{R}$: inside $\mathbb{Q}$, this set has no least upper bound at all.</p>
+  <p><strong>(e)</strong> $\mathbb{N}$: not bounded above, so $\sup\mathbb{N}=+\infty$ and there's no max. $\inf\mathbb{N}=\min\mathbb{N}=1$ (the script uses $\mathbb{N}=\{1,2,3,\dots\}$). $\emptyset$: $\sup\emptyset=-\infty$ and $\inf\emptyset=+\infty$, by the convention in §2.5.3. No max or min, since there are no elements.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-2">Exercise 2 (Felder HS22, 3.MC1)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">HS22 exam</a></p>
+  <p>The supremum of a non-empty bounded subset $A$ of $\mathbb{R}$ is</p>
+  <p>(A) the smallest number $s\in\mathbb{R}$ such that $x\le s$ for all $x\in A$.<br>
+  (B) the smallest number $s\in A$ such that $x\le s$ for all $x\in A$.<br>
+  (C) the smallest number $s\in A$ such that there is an $x\in A$ with $x\le s$.<br>
+  (D) the smallest number $s\in\mathbb{R}$ such that there is an $x\in A$ with $x\le s$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer A.</strong> “Smallest $s$ with $x\le s$ for all $x\in A$” is exactly “least upper bound”: conditions (1) and (2).</p>
+  <ul>
+    <li>(B) demands $s\in A$. That's the maximum, which may not exist. For $A=(0,1)$ there is no such $s$.</li>
+    <li>(C) and (D) say “there is an $x$ with $x\le s$”. That only asks $s$ to beat <em>one</em> element, not all. For (D) the set of such $s$ is $[\inf A,\infty)$ or $(\inf A,\infty)$, which has nothing to do with the supremum. For (C), the smallest such $s\in A$ would be the minimum.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-3">Exercise 3 (Einsiedler HS21, #7, true/false)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Let $A\subseteq\mathbb{R}$, $A\neq\emptyset$, and $-A=\{-x: x\in A\}$. Always true?</p>
+  <p>(a) $A$ is unbounded if and only if $\max(\sup A,\ \sup(-A))=\infty$.<br>
+  (b) If $A$ is finite, then $\max A=\sup A$.<br>
+  (c) If $\min A$ exists, then $\min A=-\max(-A)$.<br>
+  (d) If $A$ is open, then $\sup A\notin A$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>All four are true:</strong> T, T, T, T. (Yes, that happens. The instructions say 0–4 statements can be true.)</p>
+  <ul>
+    <li><strong>(a) True.</strong> $\sup(-A)=-\inf A$, by the shortcut in <a class="xl" href="#s4-the-supremum">section 4</a>. So $\sup(-A)=\infty$ exactly when $\inf A=-\infty$, that is, when $A$ isn't bounded below. Hence $\max(\sup A,\sup(-A))=\infty$ exactly when $A$ isn't bounded above or isn't bounded below, which is exactly “$A$ is unbounded”.</li>
+    <li><strong>(b) True.</strong> A non-empty finite set has a maximum, and whenever the maximum exists, it equals the supremum (<a class="xl" href="#s4-the-supremum">section 4</a>).</li>
+    <li><strong>(c) True.</strong> Let $m=\min A$. Then $m\in A$ and $m\le x$ for all $x\in A$. Multiplying by $-1$ flips the inequality: $-m\ge -x$ for all $x\in A$, so $-m\ge y$ for every $y\in-A$. And $-m\in -A$. So $-m=\max(-A)$, which means $m=-\max(-A)$.</li>
+    <li><strong>(d) True.</strong> This is Proof B.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-4">Exercise 4 (Einsiedler mock HS21, #8, true/false)</h3>
+  <p>Let $A,B\subseteq\mathbb{R}$ be non-empty and bounded above. True in general?</p>
+  <p>(a) If $A\subseteq B$, then $\sup A\le\sup B$.<br>
+  (b) If $A\subseteq B$ and $A\neq B$, then $\sup A&lt;\sup B$.<br>
+  (c) $\sup(A+B)=\sup A+\sup B$.<br>
+  (d) $\sup(AB)=\sup A\cdot\sup B$, where $AB=\{ab: a\in A,\ b\in B\}$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer: T, F, T, F.</strong></p>
+  <ul>
+    <li><strong>(a) True.</strong> See Exercise 6 for the proof.</li>
+    <li><strong>(b) False.</strong> Counterexample: $A=(0,1)$ and $B=(0,1]$. Then $A\subseteq B$, $A\neq B$, but $\sup A=1=\sup B$. (Adding elements below the ceiling doesn't raise it.)</li>
+    <li><strong>(c) True.</strong> This is Worked example 3: give $A$ and $B$ room $\frac\varepsilon2$ each in (2′).</li>
+    <li><strong>(d) False.</strong> Negative numbers break it. Counterexample: $A=B=\{-2,-1\}$. Then $AB=\{4,2,1\}$, so $\sup(AB)=4$, while $\sup A\cdot\sup B=(-1)(-1)=1$. The rule does hold when $A,B$ consist of positive numbers.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-5">Exercise 5 (accumulation points)</h3>
+  <p>Find all accumulation points, and say which of them belong to the set.</p>
+  <p>(a) $(0,1)\cup\{2\}$ &nbsp; (b) $\left\{\tfrac1n : n\in\mathbb{N}\right\}\cup\{5\}$ &nbsp; (c) $\mathbb{Q}\cap[0,1]$ &nbsp; (d) $\left\{(-1)^n+\tfrac1n : n\in\mathbb{N}\right\}$</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(a) $(0,1)\cup\{2\}$:</strong> the accumulation points are $[0,1]$. For $x_0\in[0,1]$ and $\varepsilon&gt;0$, the interval $(x_0-\varepsilon,x_0+\varepsilon)$ contains infinitely many points of $(0,1)$, so in particular one different from $x_0$. The point $2$ is <em>not</em> an accumulation point: with $\varepsilon=\tfrac12$, the interval $(1.5,2.5)$ contains no point of the set except $2$ itself. So $2$ is an isolated point. Of the accumulation points, those in $(0,1)$ belong to the set, and $0$, $1$ don't.</li>
+    <li><strong>(b) $\left\{\tfrac1n\right\}\cup\{5\}$:</strong> only $0$, which is not in the set. For every $\varepsilon&gt;0$ Archimedes gives $\tfrac1n$ with $0&lt;|\tfrac1n-0|&lt;\varepsilon$. Every $\tfrac1n$ is isolated: take $\varepsilon$ smaller than the gap to its neighbours, $\varepsilon=\tfrac1n-\tfrac1{n+1}$. The point $5$ is isolated too.</li>
+    <li><strong>(c) $\mathbb{Q}\cap[0,1]$:</strong> all of $[0,1]$. For $x_0\in[0,1]$ and $\varepsilon&gt;0$, the interval $(x_0-\varepsilon,x_0+\varepsilon)\cap[0,1]$ contains a non-trivial interval, and by density of $\mathbb{Q}$ a rational number other than $x_0$ inside it. Points outside $[0,1]$ have a neighbourhood missing $[0,1]$. Rational points of $[0,1]$ belong to the set, and irrational ones don't.</li>
+    <li><strong>(d) $\left\{(-1)^n+\tfrac1n\right\}$:</strong> exactly $-1$ and $1$, and neither belongs to the set. Near $1$: for $\varepsilon&gt;0$ pick an even $n$ with $\tfrac1n&lt;\varepsilon$; then $0&lt;|1+\tfrac1n-1|=\tfrac1n&lt;\varepsilon$. Near $-1$: the same with odd $n$. Any other point is at positive distance from both $\pm1$, and only finitely many elements are closer to it than half that distance, so it is not an accumulation point (by the equivalent form at the end of <a class="xl" href="#s7-accumulation-points-h-ufungspunkte">section 7</a>: an accumulation point has infinitely many points nearby). This is a preview of <a class="xl" href="lesson-11.html#s4-limit-superior-and-limit-inferior">lesson 11</a>: the sequence $(-1)^n+\tfrac1n$ has the two “accumulation values” $\pm1$.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-6">Exercise 6 (proof)</h3>
+  <p>Prove Exercise 4(a) properly: if $A\subseteq B$, $A\neq\emptyset$ and $B$ is bounded above, then $A$ is bounded above and $\sup A\le\sup B$. <em>Hint:</em> use (1) for $B$, then (2) for $A$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> two claims. For “bounded above”, name an upper bound of $A$ (the obvious candidate is $\sup B$). For $\sup A\le\sup B$, use (2) for $A$: it needs exactly one upper bound of $A$ in hand. <em>Moves:</em> <a class="mvl" href="moves.html#m-ub">sup ≤ an upper bound</a>.</p>
+  <ul>
+    <li><strong>$A$ is bounded above:</strong> let $s_B=\sup B$, which exists because $B$ is bounded above and non-empty (it contains $A\neq\emptyset$). By (1) for $B$, $b\le s_B$ for all $b\in B$. Every $a\in A$ is also in $B$ (since $A\subseteq B$), so $a\le s_B$. Hence $s_B$ is an upper bound of $A$, and $A$ is bounded above. Since $A\neq\emptyset$, $\sup A$ exists.</li>
+    <li><strong>$\sup A\le\sup B$:</strong> by (2) for $A$, $\sup A$ is at most every upper bound of $A$. We just showed that $s_B$ is an upper bound of $A$. So $\sup A\le s_B=\sup B$. <span class="qed">∎</span></li>
+  </ul>
+  <p>Notice how short this is when you use (2) and not (2′). Use whichever form fits: (2) when you already have an upper bound in hand, (2′) when you need to construct elements.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-7">Exercise 7 (consequences of completeness)</h3>
+  <p>(a) Use Archimedes to prove $\bigcap_{n\in\mathbb{N}}\left(0,\tfrac1n\right)=\emptyset$. Why doesn't this contradict nested intervals?<br>
+  (b) Let $I_n=\left[-\tfrac1n,\tfrac1n\right]$. Compute $\bigcap_n I_n$ using the formula from 6.3.<br>
+  (c) Find a rational number between $\sqrt2$ and $1.42$ by following the proof in 6.2 (use $\sqrt2\approx1.41421$).</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> <em>Frame:</em> to show a set is empty, assume it has an element and reach a contradiction. <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>, <a class="mvl" href="moves.html#m-arch">choose $n$ by Archimedes</a>.</p>
+  <p>Suppose $x\in\bigcap_n(0,\tfrac1n)$. Then $x\in(0,1)$, so $x&gt;0$. By Archimedes (iii) with $\varepsilon=x$ there is $n$ with $\tfrac1n&lt;x$, so $x\notin(0,\tfrac1n)$. Contradiction, so the intersection is empty. This doesn't contradict 6.3 because the intervals $(0,\tfrac1n)$ are not closed. The “missing” common point would be $0$, which none of them contains.</p>
+  <p><strong>(b)</strong> $a_n=-\tfrac1n$ and $b_n=\tfrac1n$. Then $\sup_n a_n=0$: every $-\tfrac1n&lt;0$, and for $\varepsilon&gt;0$ Archimedes gives $-\tfrac1n&gt;-\varepsilon$. In the same way $\inf_n b_n=0$. So $\bigcap_n I_n=[0,0]=\{0\}$.</p>
+  <p><strong>(c)</strong> $a=\sqrt2\approx1.41421$ and $b=1.42$, so $b-a\approx0.00579$. We need $\tfrac1m&lt;0.00579$, that is $m&gt;172.7$; take $m=200$. Then $ma\approx282.84$, so the integer $n$ with $n-1\le ma&lt;n$ is $n=283$. The proof gives $r=\tfrac{283}{200}=1.415$. Check: $1.41421&lt;1.415&lt;1.42$. ✓ (Any other rational number in between, such as $1.417$, is also a correct answer.)</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="bonus">Bonus: $\sqrt2$ exists (Wichtige Übung 2.11, <a class="pl" href="script.html#p81">p. 81</a>)</h3>
+  <p>Let $X=\{x\in\mathbb{R}: x\ge0,\ x^2&lt;2\}$ and $s=\sup X$. Show that $s^2=2$. <em>Hint:</em> show that $s^2&lt;2$ and $s^2&gt;2$ both lead to contradictions. If $s^2&lt;2$, find a small $h&gt;0$ with $(s+h)^2&lt;2$. If $s^2&gt;2$, find a small $h&gt;0$ such that $s-h$ is still an upper bound.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> to show $s^2=2$, rule out $s^2&lt;2$ and $s^2&gt;2$, each by contradiction: the first with (1) (an element above $s$), the second with (2) (an upper bound below $s$). <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>.</p>
+  <p><strong>Setup.</strong> $X$ is non-empty ($1\in X$, since $1^2=1&lt;2$) and bounded above by $2$: if $x\ge2$ then $x^2\ge4&gt;2$, so every $x\in X$ satisfies $x&lt;2$. So $s=\sup X$ exists, and $s\ge1$ because $1\in X$.</p>
+  <p><strong>Case $s^2&lt;2$ is impossible.</strong> Let $h=\min\left(1,\ \dfrac{2-s^2}{2s+2}\right)&gt;0$. Since $h\le1$, we have $h^2\le h$, so</p>
+  <div class="math-display">$$\begin{aligned}(s+h)^2&amp;=s^2+2sh+h^2\\&amp;\le  s^2+h(2s+1)\\&amp;\le  s^2+\frac{(2-s^2)(2s+1)}{2s+2}\\&amp;&lt;s^2+(2-s^2)\\&amp;=2\end{aligned}.$$</div>
+  <p>The last step uses $\tfrac{2s+1}{2s+2}&lt;1$ and $2-s^2&gt;0$. So $s+h\in X$, but $s+h&gt;s$, contradicting (1) for $s$.</p>
+  <p><strong>Case $s^2&gt;2$ is impossible.</strong> Let $h=\dfrac{s^2-2}{2s}&gt;0$. Then $h&lt;s$ (because $s^2-2&lt;2s^2$), so $s-h&gt;0$, and</p>
+  <div class="math-display">$$(s-h)^2=s^2-2sh+h^2>s^2-2sh=s^2-(s^2-2)=2.$$</div>
+  <p>Now take any $x\in X$. Then $x^2&lt;2&lt;(s-h)^2$, and both $x$ and $s-h$ are $\ge0$. For non-negative numbers, $x^2&lt;y^2$ implies $x&lt;y$ (if $x\ge y\ge0$, then $x^2\ge y^2$). So $x&lt;s-h$. Hence $s-h$ is an upper bound of $X$ smaller than $s$, contradicting (2) for $s$.</p>
+  <p>Since $s^2&lt;2$ and $s^2&gt;2$ are both impossible, trichotomy (axiom 10) gives $s^2=2$. <span class="qed">∎</span> So $\sqrt2$ exists in $\mathbb{R}$, and this is exactly where completeness was needed. In $\mathbb{Q}$, the same set has no supremum.</p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> the core is Exercise 1 (5 parts), Exercise 2 (1), Exercise 3 (4) and Exercise 4 (4), which makes 14. If you have 11 of 14, you're done. Exercises 5 and 6 are important practice but don't count against you. The Bonus is optional.</p>
+</div>
+
+<h2 id="s10-for-wonder-optional-5-min">10. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Area is a supremum.</strong> How do you define the area under a curve? Fill the region with rectangles that fit inside it, and take the <em>supremum</em> of all their total areas. That's the Riemann integral (<a class="xl" href="lesson-09.html#s3-lower-and-upper-integrals-tiles">lesson 9</a>), and the script hints at it in Figur 1.2. Archimedes did exactly this for the parabola around 250 BC, without having the word.</p>
+<p><strong>Good fractions.</strong> Density says every real number can be approximated by fractions. But some approximations are astonishingly efficient. Übung 2.72 (Dirichlet) shows that for every irrational $a$ there are infinitely many fractions $\tfrac pq$ with $\left|a-\tfrac pq\right|&lt;\tfrac1{q^2}$. The Chinese astronomer Zu Chongzhi found $\pi\approx\tfrac{355}{113}$ around 480 AD. It's correct to six decimal places, from a denominator of only $113$.</p>
+<p><strong>Why the supremum is the axiom in disguise.</strong> The script remarks (<a class="pl" href="script.html#p106">p. 106</a>) that “every non-empty bounded-above set has a supremum” is <em>equivalent</em> to the completeness axiom. Many books take it as the axiom. In $\mathbb{Q}$ it fails: Exercise 1(d) is a bounded set of rationals with no rational least upper bound. That one missing ceiling is the hole at $\sqrt2$.</p>
+
+<h2 id="s11-what-we-skipped">11. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Proposition 2.62, $\sup(cA)=c\sup A$ for $c&gt;0$ (<a class="pl" href="script.html#p107">p. 107</a>).</strong> Low priority: same proof pattern as Worked example 3, using $\tfrac{\varepsilon}{c}$.</li>
+  <li><strong>Calculation rules with $\pm\infty$ and Übungen 2.64–2.67 (<a class="pl" href="script.html#p108">p. 108–109</a>).</strong> Low priority.</li>
+  <li><strong>Übungen 2.71–2.72 (<a class="pl" href="script.html#p112">p. 112</a>):</strong> every real number is the supremum of the rationals below it, and Dirichlet's approximation theorem. Low priority (Dirichlet is in For wonder).</li>
+  <li><strong>Übung 2.76 in full (<a class="pl" href="script.html#p114">p. 114</a>)</strong> (accumulation point ⇔ infinitely many points nearby) and <strong>Übungen 2.79–2.80 (<a class="pl" href="script.html#p115">p. 115–116</a>)</strong> on intervals. Low priority.</li>
+  <li><strong>The Cantor set (§2.6.5, <a class="pl" href="script.html#p117">p. 117–120</a>).</strong> Optional, a beautiful “For wonder” topic for later.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-07.html">lesson 7</a>, continuity and the intermediate value theorem. That's fully new territory, and the supremum from today is the key to the proof.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-05.html">← Lesson 5: The Quarter-Turn Spell</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-07.html">Lesson 7: The Unbroken Road →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

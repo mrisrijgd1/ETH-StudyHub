@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tiles and Canopies</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-08.html">← Lesson 8</a>
+<a href="lesson-10.html">Lesson 10 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 9 of 26</span>
+  <h1>Tiles and Canopies</h1>
+  <p class="lead">What an integral actually is: squeeze a function between step functions from below and from above, and call it integrable when the two sides can be pushed together. Then the 7-point exam proof that every monotone function is integrable.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-8-5">Recap of lesson 8 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-tiles-and-canopies">1. The story: tiles and canopies</a>
+</li>
+<li><a href="#s2-step-functions-the-rectangles">2. Step functions: the rectangles</a>
+</li>
+<li><a href="#s3-lower-and-upper-integrals-tiles">3. Lower and upper integrals (tiles and canopies): the definition of the integral</a>
+<ol>
+<li><a href="#proof-a">Proof A: every lower step-function integral is at most every upper one (every tiling is at most every canopy)</a></li>
+</ol></li>
+<li><a href="#s4-the-squeeze-the-criterion">4. The squeeze: the ε-criterion</a>
+<ol>
+<li><a href="#proof-b">Proof B: the ε-criterion</a></li>
+</ol></li>
+<li><a href="#s5-the-glittering-field-a-function">5. The Glittering Field: a function that is not integrable</a>
+<ol>
+<li><a href="#proof-c">Proof C: the Dirichlet function is not integrable</a></li>
+</ol></li>
+<li><a href="#s6-the-rules-of-the-integral">6. The rules of the integral</a>
+<ol>
+<li><a href="#proof-d">Proof D: monotonicity, and the triangle inequality</a></li>
+</ol></li>
+<li><a href="#s7-the-rising-slope-monotone-functions">7. The Rising Slope: monotone functions are integrable (worth 7 exam points)</a>
+<ol>
+<li><a href="#proof-e">Proof E: monotone functions are integrable</a></li>
+<li><a href="#consequences-piecewise-monotone-functions-and">Consequences: piecewise monotone functions and polynomials</a></li>
+</ol></li>
+<li><a href="#s8-using-the-theorems">8. Using the theorems</a>
+<ol>
+<li><a href="#we-1">Worked example 1: compute $\int_0^1 x\,dx$ with lower and upper sums</a></li>
+<li><a href="#we-2">Worked example 2: continuous functions are integrable (Figalli HS23 B1, 7 points; Satz 4.42, p. 205)</a></li>
+</ol></li>
+<li><a href="#s9-your-turn">9. Your turn</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (integral of a step function)</a></li>
+<li><a href="#ex-2">Exercise 2 (multiple choice, built from Felder HS22 MC5, Kobel-Keller HS24 #10 and Figalli FS24 MC9)</a></li>
+<li><a href="#ex-3">Exercise 3 (the twin of Worked example 1, Übung 4.15, p. 186)</a></li>
+<li><a href="#ex-4">Exercise 4 (proof)</a></li>
+<li><a href="#ex-5">Exercise 5 (which theorems?)</a></li>
+<li><a href="#ex-6">Exercise 6 (proof with the ε-criterion)</a></li>
+<li><a href="#bonus">Bonus</a></li>
+</ol></li>
+<li><a href="#s10-for-wonder-optional-5-min">10. For wonder</a>
+</li>
+<li><a href="#s11-what-we-skipped">11. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) compute the integral of a step function, (2) define lower and upper sums, the lower and upper integral, and “Riemann integrable”, (3) state the ε-criterion (squeeze $f$ between step functions $u\le f\le o$ with $\int(o-u)&lt;\varepsilon$) and use it, (4) explain why the Dirichlet function is not integrable, (5) state the rules of the integral (linear, monotone, triangle inequality, additive over intervals), and (6) <strong>state and prove that monotone functions are integrable</strong>, a 7-point exam question on its own.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p178">p. 178</a>, Definitions 4.1–4.3:</strong> partition (<em>Zerlegung</em>), step function (<em>Treppenfunktion</em>), refinement.</li>
+      <li><strong><a class="pl" href="script.html#p179">p. 179–180</a>, Definition 4.4, Lemma 4.5, Definition 4.6:</strong> the integral of a step function, and why it doesn't depend on the partition.</li>
+      <li><strong><a class="pl" href="script.html#p181">p. 181–182</a>, Lemmas 4.7 and 4.8:</strong> the integral of step functions is linear and monotone.</li>
+      <li><strong><a class="pl" href="script.html#p183">p. 183</a>, Definitions 4.10–4.11:</strong> lower and upper sums, lower and upper integral, Riemann integrable.</li>
+      <li><strong><a class="pl" href="script.html#p184">p. 184–185</a>, Proposition 4.12:</strong> the characterisations of integrability, including the ε-criterion.</li>
+      <li><strong><a class="pl" href="script.html#p186">p. 186</a>, Beispiel 4.17:</strong> the Dirichlet function is not integrable.</li>
+      <li><strong><a class="pl" href="script.html#p188">p. 188–194</a>, Section 4.3:</strong> linearity (Satz 4.19), monotonicity and the triangle inequality (Satz 4.24, <a class="pl" href="script.html#p190">p. 190</a>), additivity over intervals (Satz 4.26, <a class="pl" href="script.html#p193">p. 193</a>).</li>
+      <li><strong><a class="pl" href="script.html#p195">p. 195–198</a>, Section 4.4:</strong> what the integral means: area, mass, work.</li>
+      <li><strong><a class="pl" href="script.html#p199">p. 199–200</a>, Satz 4.31:</strong> monotone functions are integrable, with the proof we do in <a class="xl" href="#s7-the-rising-slope-monotone-functions">section 7</a>. <em>Korollar 4.34, <a class="pl" href="script.html#p200">p. 200</a>:</em> piecewise monotone functions too.</li>
+      <li><strong><a class="pl" href="script.html#p205">p. 205</a>, Satz 4.42</strong> (from section 4.7): continuous functions are integrable. We do it as Worked example 2.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+“Let $f$ be monotone on a compact interval. Show that $f$ is Riemann integrable” is Einsiedler HS21 #5 and Felder HS22 2.A2, 7 points each, word for word. Its twin “continuous functions are Riemann integrable” is Figalli HS23 B1, another 7 points, and it uses the same frame (Worked example 2). The multiple-choice blocks keep asking which functions are integrable: Felder HS22 MC5 (C), Kobel-Keller HS24 #10, Figalli FS24 MC9 (C) and Einsiedler's mock HS21 #9. Your Exercise 2 is built from them.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-8-5">Recap of <a class="xl" href="lesson-08.html">lesson 8</a> (5 min)</h3>
+<ul>
+  <li><strong>Inverse function theorem:</strong> continuous and strictly monotone on an interval $I$ ⇒ $f(I)$ is an interval and $f^{-1}:f(I)\to I$ is continuous and strictly monotone in the same direction.</li>
+  <li><strong>Boundedness theorem and extreme value theorem:</strong> $f$ continuous on $[a,b]$ ⇒ $f$ is bounded, and it attains a maximum and a minimum. Both fail without “closed” ($x$ on $[0,1)$, $\frac1x$ on $(0,1]$) or without “bounded” ($x$ on $[0,\infty)$).</li>
+  <li><strong>Uniformly continuous:</strong> for every $\varepsilon&gt;0$ there is one $\delta&gt;0$ such that $|x-y|&lt;\delta\Rightarrow|f(x)-f(y)|&lt;\varepsilon$ for <em>all</em> $x,y$. The $\delta$ is chosen before the points.</li>
+  <li><strong>Heine's theorem:</strong> continuous on $[a,b]$ ⇒ uniformly continuous. Frame: “Let $\varepsilon&gt;0$. Let $X$ be the set of $t\in[a,b]$ for which one $\delta$ works on $[a,t]$.” The goal becomes $b\in X$. (Heine comes back today, in Worked example 2.)</li>
+  <li><strong>Moves:</strong> the supremum trick, continuity with a chosen ε, ε/2 twice, the negation recipe, reduce to one case (oBdA). The cards are in the <a href="moves.html">Moves library</a>.</li>
+</ul>
+<ol class="gq">
+  <li><p>Why is $x^2$ not uniformly continuous on $\mathbb{R}$, in one sentence?</p>
+  <details><summary>Answer</summary><div><p>Far out the graph is steep: for $\varepsilon=1$ and any $\delta&gt;0$, the points $x=\frac1\delta$ and $y=\frac1\delta+\frac\delta2$ are closer than $\delta$, but $y^2-x^2=1+\frac{\delta^2}4\ge1$.</p></div></details></li>
+  <li><p>In the proof that the maximum is attained, which helper function did we use, and why?</p>
+  <details><summary>Answer</summary><div><p>$F(x)=\frac1{S-f(x)}$ with $S=\sup f$. If $f$ never reached $S$, $F$ would be continuous on $[a,b]$, hence bounded, but $f$ gets arbitrarily close to $S$, which makes $F$ arbitrarily large.</p></div></details></li>
+  <li><p>Is $f(x)=\frac1x$ on $[1,2]$ guaranteed a maximum?</p>
+  <details><summary>Answer</summary><div><p>Yes. It's continuous and $[1,2]$ is a compact interval, so the extreme value theorem applies. (The maximum is $f(1)=1$.)</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>partition, partition point</td><td>Zerlegung (Unterteilung), Teilungspunkt</td></tr>
+    <tr><td>finer partition, common refinement</td><td>feinere Zerlegung, gemeinsame Verfeinerung</td></tr>
+    <tr><td>step function</td><td>Treppenfunktion (TF)</td></tr>
+    <tr><td>interval of constancy, constant value</td><td>Konstanzintervall, Konstanzwert</td></tr>
+    <tr><td>lower sum, upper sum</td><td>Untersumme, Obersumme</td></tr>
+    <tr><td>lower integral, upper integral</td><td>unteres Integral, oberes Integral</td></tr>
+    <tr><td>Riemann integrable</td><td>Riemann-integrierbar</td></tr>
+    <tr><td>integrand, limits of integration</td><td>Integrand, Integrationsgrenzen</td></tr>
+    <tr><td>ε-criterion for integrability</td><td>Charakterisierung (iii) der Riemann-Integrierbarkeit (Proposition 4.12)</td></tr>
+    <tr><td>linearity, monotonicity</td><td>Linearität, Monotonie</td></tr>
+    <tr><td>additivity over intervals</td><td>Intervalladditivität, Additionseigenschaft</td></tr>
+    <tr><td>monotonically increasing / decreasing</td><td>monoton wachsend / fallend</td></tr>
+    <tr><td>piecewise monotone</td><td>stückweise monoton</td></tr>
+    <tr><td>telescoping sum</td><td>Teleskopsumme</td></tr>
+    <tr><td>Archimedean principle</td><td>Archimedisches Prinzip</td></tr>
+    <tr><td>positive part, negative part</td><td>Positivteil, Negativteil</td></tr>
+    <tr><td>Dirichlet function</td><td>Dirichlet-Funktion</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-tiles-and-canopies">1. The story: tiles and canopies</h2>
+<div class="story">
+<p>The queen wants to tax every field by its <strong>area</strong>. But her surveyors only know how to measure one shape: a <strong>rectangle</strong>, width times height. Fields have curved, hilly edges. How can rectangles ever measure a hill?</p>
+<p>Two guilds offer their services. The <strong>Tilers</strong> lay flat rectangular tiles <em>under</em> the ground, never poking out above it. The <strong>Tentmakers</strong> stretch flat canopies <em>over</em> the ground, never touching it from below. Every tiling is too small and every canopy is too big, so the true area, if it means anything, must lie in between.</p>
+<p>The Royal Assessor makes a rule. A field is <strong>measurable</strong> if the two guilds can be pushed to agree: for every tolerance $\varepsilon$, however tiny, there is a tiling and a canopy whose areas differ by less than $\varepsilon$. Then exactly one number lies between all tilings and all canopies, and that number <em>is</em> the area.</p>
+<p>Most fields pass. But in the far north lies the <strong>Glittering Field</strong>, where every patch of ground, however narrow, contains enchanted stones standing at height $1$ and plain earth at height $0$. Every tile must sit at height $0$ or lower, every canopy at height $1$ or higher, and the guilds never agree. That field cannot be taxed.</p>
+<p>And then there is the <strong>Rising Slope</strong>, a field that only ever climbs from west to east. There the guilds win with one beautiful trick: the gaps between tiles and canopy slide sideways into a single thin column. Proving that trick works is the main goal of today.</p>
+<p>In maths: the rectangles are <strong>step functions</strong>, the tiles are <strong>lower sums</strong>, the canopies are <strong>upper sums</strong>, “measurable” is <strong>Riemann integrable</strong>, the Glittering Field is the <strong>Dirichlet function</strong>, and the Rising Slope is any <strong>monotone function</strong>.</p>
+</div>
+
+<h2 id="s2-step-functions-the-rectangles">2. Step functions: the rectangles</h2>
+<p>Throughout, $a&lt;b$ are real numbers and we work on the compact interval $[a,b]$.</p>
+<div class="box">
+<p><strong>Partition (Definition 4.1, <a class="pl" href="script.html#p178">p. 178</a>).</strong> A partition of $[a,b]$ is a finite list of points</p>
+<div class="math-display">$$Z=\{a=x_0&lt;x_1&lt;\dots&lt;x_{n-1}&lt;x_n=b\}.$$</div>
+<p>A partition $Z'$ is <em>finer</em> than $Z$ if it contains all the points of $Z$ (and maybe more). The <em>common refinement</em> of two partitions uses all the points of both.</p>
+<p><strong>Step function (Definition 4.2, <a class="pl" href="script.html#p178">p. 178</a>).</strong> $f:[a,b]\to\mathbb{R}$ is a step function if there is a partition $Z$ and numbers $c_1,\dots,c_n$ with $f(x)=c_k$ for all $x\in(x_{k-1},x_k)$. At the partition points themselves, $f$ may take any values.</p>
+<p><strong>Integral of a step function (Definitions 4.4 and 4.6, <a class="pl" href="script.html#p179">p. 179–180</a>).</strong></p>
+<div class="math-display">$$\int_a^b f\,dx=\sum_{k=1}^n c_k\,(x_k-x_{k-1})=\sum_{k=1}^n c_k\,\Delta x_k.$$</div>
+</div>
+<figure style="margin:0" aria-label="A step function with four pieces. The pieces at heights 1.5, 2.5 and 1 give rectangles above the axis, the piece at height minus 1 gives a rectangle below the axis. The values at the partition points are drawn separately as dots.">
+<svg viewBox="0 0 640 250" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="40.0" y1="170.0" x2="600.0" y2="170.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="60.0" y1="20.0" x2="60.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="60.0" y="95.0" width="100.0" height="75.0" style="fill:var(--accent);fill-opacity:0.28;stroke:var(--accent)" stroke-width="1.2"/><line x1="60.0" y1="95.0" x2="160.0" y2="95.0" style="stroke:var(--accent)" stroke-width="3.5"/><circle cx="60.0" cy="95.0" r="4.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="160.0" cy="95.0" r="4.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><text x="110.0" y="85.0" text-anchor="middle" style="fill:var(--accent);font-size:15px">c₁ = 1.5</text><rect x="160.0" y="45.0" width="150.0" height="125.0" style="fill:var(--accent);fill-opacity:0.28;stroke:var(--accent)" stroke-width="1.2"/><line x1="160.0" y1="45.0" x2="310.0" y2="45.0" style="stroke:var(--accent)" stroke-width="3.5"/><circle cx="160.0" cy="45.0" r="4.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="310.0" cy="45.0" r="4.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><text x="235.0" y="35.0" text-anchor="middle" style="fill:var(--accent);font-size:15px">c₂ = 2.5</text><rect x="310.0" y="170.0" width="100.0" height="50.0" style="fill:var(--k-c);fill-opacity:0.28;stroke:var(--k-c)" stroke-width="1.2"/><line x1="310.0" y1="220.0" x2="410.0" y2="220.0" style="stroke:var(--k-c)" stroke-width="3.5"/><circle cx="310.0" cy="220.0" r="4.5" style="fill:var(--surface);stroke:var(--k-c);stroke-width:2.2"/><circle cx="410.0" cy="220.0" r="4.5" style="fill:var(--surface);stroke:var(--k-c);stroke-width:2.2"/><text x="360.0" y="242.0" text-anchor="middle" style="fill:var(--k-c);font-size:15px">c₃ = −1</text><rect x="410.0" y="120.0" width="170.0" height="50.0" style="fill:var(--accent);fill-opacity:0.28;stroke:var(--accent)" stroke-width="1.2"/><line x1="410.0" y1="120.0" x2="580.0" y2="120.0" style="stroke:var(--accent)" stroke-width="3.5"/><circle cx="410.0" cy="120.0" r="4.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="580.0" cy="120.0" r="4.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><text x="495.0" y="110.0" text-anchor="middle" style="fill:var(--accent);font-size:15px">c₄ = 1</text><circle cx="60.0" cy="70.0" r="5" style="fill:var(--story-edge)"/><text x="60.0" y="188.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₀</text><circle cx="160.0" cy="145.0" r="5" style="fill:var(--story-edge)"/><text x="160.0" y="188.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₁</text><circle cx="310.0" cy="70.0" r="5" style="fill:var(--story-edge)"/><text x="310.0" y="162.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₂</text><circle cx="410.0" cy="185.0" r="5" style="fill:var(--story-edge)"/><text x="410.0" y="162.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₃</text><circle cx="580.0" cy="95.0" r="5" style="fill:var(--story-edge)"/><text x="580.0" y="188.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₄</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Each piece is a rectangle of width $\Delta x_k$ and height $c_k$. Pieces below the axis count negatively, so the integral is a <em>signed</em> area. The dots at the partition points don't matter: a single point is a rectangle of width $0$.</figcaption>
+</figure>
+<p><strong>Why this is well-defined (Lemma 4.5, <a class="pl" href="script.html#p179">p. 179</a>).</strong> A step function has many partitions that work: you can always add extra points. So we must check the sum doesn't depend on the partition. Adding one point $y$ inside the piece $(x_{\ell-1},x_\ell)$ splits one rectangle into two with the same height:</p>
+<div class="math-display">$$c_\ell(x_\ell-x_{\ell-1})=c_\ell(x_\ell-y)+c_\ell(y-x_{\ell-1}),$$</div>
+<p>so the sum doesn't change. Adding points one at a time (induction) handles any finer partition, and two arbitrary partitions are compared through their common refinement. The values at partition points never enter the sum at all.</p>
+<p><strong>Two rules for step functions (Lemmas 4.7 and 4.8, <a class="pl" href="script.html#p181">p. 181–182</a>).</strong> If $f,g$ are step functions and $s\in\mathbb{R}$, then $f+g$ and $sf$ are step functions, and</p>
+<div class="math-display">$$\begin{aligned}&amp;\int_a^b(f+g)\,dx=\int_a^b f\,dx+\int_a^b g\,dx\\&amp;\int_a^b sf\,dx=s\int_a^b f\,dx\\&amp;f\le  g\ \Rightarrow\ \int_a^b f\,dx\le \int_a^b g\,dx\end{aligned}.$$</div>
+<p>The reason is the same for all three: take the common refinement of the two partitions. On each of its pieces both $f$ and $g$ are constant, say $c_k$ and $d_k$, and then everything is a statement about the finite sums $\sum c_k\Delta x_k$ and $\sum d_k\Delta x_k$. For example, $f\le g$ gives $c_k\le d_k$ for every $k$, so $\sum c_k\Delta x_k\le\sum d_k\Delta x_k$.</p>
+
+<h2 id="s3-lower-and-upper-integrals-tiles">3. Lower and upper integrals (tiles and canopies): the definition of the integral</h2>
+<p>Now let $f:[a,b]\to\mathbb{R}$ be any <strong>bounded</strong> function, say $|f|\le M$. The tiles are step functions $u\le f$, the canopies are step functions $o\ge f$. (Constant step functions $-M$ and $M$ show that both kinds exist.)</p>
+<div class="box">
+<p><strong>Definition 4.10 (<a class="pl" href="script.html#p183">p. 183</a>).</strong> The set of <em>lower sums</em> and the set of <em>upper sums</em> are</p>
+<div class="math-display">$$\begin{aligned}&amp;\mathcal U(f)=\Big\{\int_a^b u\,dx\ :\ u\text{ step function},\ u\le  f\Big\}\\&amp;\mathcal O(f)=\Big\{\int_a^b o\,dx\ :\ o\text{ step function},\ f\le  o\Big\}\end{aligned}.$$</div>
+<p><strong>Definition 4.11 (<a class="pl" href="script.html#p183">p. 183</a>).</strong> The <em>lower integral</em> is $\underline I(f)=\sup\mathcal U(f)$, the best tiling. The <em>upper integral</em> is $\overline I(f)=\inf\mathcal O(f)$, the best canopy. $f$ is <strong>Riemann integrable</strong> if $\underline I(f)=\overline I(f)$, and then this common value is $\int_a^b f\,dx$.</p>
+</div>
+<p>For this definition to make sense, we need the best tiling to be no bigger than the best canopy. That is our first proof.</p>
+<h3 id="proof-a">Proof A: every lower step-function integral is at most every upper one (every tiling is at most every canopy)</h3>
+<p><strong>Claim (<a class="pl" href="script.html#p183">p. 183</a>, inequality (4.2)).</strong> For every bounded $f$: if $u\le f\le o$ are step functions, then $\int_a^b u\,dx\le\int_a^b o\,dx$. Consequently $\underline I(f)\le\overline I(f)$.</p>
+<p><strong>The idea.</strong> A tile lies under the ground and a canopy lies over it, so the tile lies under the canopy, and the step-function rule “$u\le o$ gives $\int u\le\int o$” does the rest. The second sentence is pure supremum logic: each canopy is a ceiling for all tilings, so it's also a ceiling for the best tiling.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $u,o$ be step functions with $u\le f\le o$.”</li>
+  <li><strong>Last line:</strong> “…so $\sup\mathcal U(f)\le\inf\mathcal O(f)$.” To prove a $\sup$ is $\le$ something, show that something is an upper bound. To prove something is $\le$ an $\inf$, show it's a lower bound.</li>
+  <li><strong>The gap to fill:</strong> compare one tiling with one canopy.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Take any tiling and any canopy over the same field.</p></div><div class="sp-formal"><p>Let $u,o$ be step functions with $u\le f\le o$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The tiles are under the ground, the ground is under the canopy, so the tiles are under the canopy, and their area is smaller.</p></div><div class="sp-formal"><p>Then $u\le o$, so by monotonicity of the integral of step functions (<a class="xl" href="#s2-step-functions-the-rectangles">section 2</a>), $\int_a^b u\,dx\le\int_a^b o\,dx$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So any one canopy is a ceiling over <em>all</em> tilings, and therefore over the best tiling too.</p></div><div class="sp-formal"><p>Fix $o$. Every element of $\mathcal U(f)$ is $\le\int_a^b o\,dx$, so $\int_a^b o\,dx$ is an upper bound of $\mathcal U(f)$. As the supremum is the <em>least</em> upper bound, $\underline I(f)=\sup\mathcal U(f)\le\int_a^b o\,dx$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>That holds for every canopy, so the best tiling is a floor under all canopies, and therefore under the best canopy.</p></div><div class="sp-formal"><p>As $o$ was arbitrary, $\underline I(f)$ is a lower bound of $\mathcal O(f)$. As the infimum is the <em>greatest</em> lower bound, $\underline I(f)\le\inf\mathcal O(f)=\overline I(f)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-ub">sup ≤ an upper bound</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $u,o$ be step functions with $u\le f\le o$. Then $u\le o$, so $\int_a^b u\,dx\le\int_a^b o\,dx$ by monotonicity for step functions. Hence each $\int_a^b o\,dx$ is an upper bound of $\mathcal U(f)$, so $\underline I(f)\le\int_a^b o\,dx$. Hence $\underline I(f)$ is a lower bound of $\mathcal O(f)$, so $\underline I(f)\le\overline I(f)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Fill the blank: “Every element of $\mathcal U(f)$ is $\le\int_a^b o\,dx$, so ______, hence $\sup\mathcal U(f)\le\int_a^b o\,dx$.”</p>
+  <details><summary>Answer</summary><div><p>“$\int_a^b o\,dx$ is an upper bound of $\mathcal U(f)$, and the supremum is the least upper bound.”</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Given the first two sentences of the one-piece proof, write the last two.</p>
+  <details><summary>Answer</summary><div><p>“Hence $\underline I(f)\le\int_a^b o\,dx$ for every such $o$, so $\underline I(f)$ is a lower bound of $\mathcal O(f)$, and $\underline I(f)\le\inf\mathcal O(f)=\overline I(f)$.”</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Cover the proof, write all four sentences from the frame alone, then compare with the one-piece proof.</p></li>
+</ol></div>
+
+<h2 id="s4-the-squeeze-the-criterion">4. The squeeze: the ε-criterion</h2>
+<p>Computing a supremum over <em>all</em> tilings is hopeless in practice. The following criterion says you only ever need <em>one good pair</em> for each tolerance. It's the tool behind every integrability proof in this course.</p>
+<div class="box">
+<p><strong>The ε-criterion (Proposition 4.12, (i)⇔(iii), <a class="pl" href="script.html#p184">p. 184</a>).</strong> A bounded function $f:[a,b]\to\mathbb{R}$ is Riemann integrable if and only if for every $\varepsilon&gt;0$ there are step functions $u\le f\le o$ with</p>
+<div class="math-display">$$\int_a^b(o-u)\,dx&lt;\varepsilon.$$</div>
+</div>
+<p class="legend">For the exam, cite it as “the ε-criterion for Riemann integrability” and write out the condition once. The script also lists a third equivalent form (ii), “exactly one number lies between all lower and all upper sums”; that's the Royal Assessor's rule from the story.</p>
+<h3 id="proof-b">Proof B: the ε-criterion</h3>
+<p><strong>The idea.</strong> “⇒”: if the best tiling equals the best canopy, then there are tilings and canopies as close to that common value as we like, from below and from above. Take each within $\frac\varepsilon2$. “⇐”: the lower and the upper integral are trapped between $\int u$ and $\int o$, so their distance is less than $\varepsilon$, for every $\varepsilon$. A distance that's smaller than every positive number is $0$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>“⇒”</strong> starts with “Let $\varepsilon&gt;0$.” and must end with “…so $u\le f\le o$ and $\int(o-u)&lt;\varepsilon$.” The gap: <em>find</em> $u$ and $o$. They come from the definition of $\sup$ and $\inf$.</li>
+  <li><strong>“⇐”</strong> must end with “…so $\underline I(f)=\overline I(f)$.” We already have “$\le$” from Proof A. The gap: show $\overline I(f)-\underline I(f)&lt;\varepsilon$ for every $\varepsilon&gt;0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p><strong>(⇒)</strong> The field is measurable, with area $I$. The Assessor names a tolerance.</p></div><div class="sp-formal"><p>Let $f$ be integrable, $I=\underline I(f)=\overline I(f)$, and let $\varepsilon&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$I$ is the best tiling, so a tiling just a little below $I$ isn't the best: some real tiling beats it.</p></div><div class="sp-formal"><p>Since $I-\frac\varepsilon2&lt;I=\sup\mathcal U(f)$, the number $I-\frac\varepsilon2$ is not an upper bound of $\mathcal U(f)$. So there is a step function $u\le f$ with $\int_a^b u\,dx&gt;I-\frac\varepsilon2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The same from above, with a canopy.</p></div><div class="sp-formal"><p>Likewise, $I+\frac\varepsilon2$ is not a lower bound of $\mathcal O(f)$, so there is a step function $o\ge f$ with $\int_a^b o\,dx&lt;I+\frac\varepsilon2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Then the canopy and the tiling are less than $\varepsilon$ apart.</p></div><div class="sp-formal"><p>By linearity for step functions, <span class="math-display" style="display:block">$$\begin{aligned}\int_a^b(o-u)\,dx&amp;=\int_a^b o\,dx-\int_a^b u\,dx\\&amp;&lt;\Big(I+\frac\varepsilon2\Big)-\Big(I-\frac\varepsilon2\Big)\\&amp;=\varepsilon\end{aligned}.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p><strong>(⇐)</strong> Now suppose the guilds can always be pushed within any tolerance. The best tiling and the best canopy sit between the given tiling and canopy.</p></div><div class="sp-formal"><p>Assume the condition, and let $\varepsilon&gt;0$. Take $u\le f\le o$ with $\int_a^b(o-u)\,dx&lt;\varepsilon$. Then $\int_a^b u\,dx\le\underline I(f)$ (sup is an upper bound) and $\overline I(f)\le\int_a^b o\,dx$ (inf is a lower bound).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So they are less than $\varepsilon$ apart, for every $\varepsilon$, and they can only be equal.</p></div><div class="sp-formal"><p>With Proof A: <span class="math-display" style="display:block">$$0\le\overline I(f)-\underline I(f)\le\int_a^b o\,dx-\int_a^b u\,dx&lt;\varepsilon.$$</span> As $\varepsilon&gt;0$ was arbitrary, $\overline I(f)-\underline I(f)=0$, so $f$ is integrable. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-approx">approach a supremum</a> <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-alleps">smaller than every ε</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(⇒) Let $I=\underline I(f)=\overline I(f)$ and $\varepsilon&gt;0$. As $I-\frac\varepsilon2$ is not an upper bound of $\mathcal U(f)$, there is a step function $u\le f$ with $\int_a^b u\,dx&gt;I-\frac\varepsilon2$. Likewise there is a step function $o\ge f$ with $\int_a^b o\,dx&lt;I+\frac\varepsilon2$. By linearity, $\int_a^b(o-u)\,dx&lt;\varepsilon$.</p>
+<p>(⇐) Let $\varepsilon&gt;0$ and $u\le f\le o$ with $\int_a^b(o-u)\,dx&lt;\varepsilon$. Then $\int_a^b u\,dx\le\underline I(f)\le\overline I(f)\le\int_a^b o\,dx$, so $0\le\overline I(f)-\underline I(f)&lt;\varepsilon$. As $\varepsilon$ was arbitrary, $\underline I(f)=\overline I(f)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<p><strong>(⇒)</strong></p><ol>
+  <li><strong>Approach from below:</strong> $I-\frac\varepsilon2$ is not an upper bound of $\mathcal U(f)$, so there's a step function $u\le f$ with $\int u&gt;I-\frac\varepsilon2$.</li>
+  <li><strong>Approach from above:</strong> $I+\frac\varepsilon2$ is not a lower bound of $\mathcal O(f)$, so there's a step function $o\ge f$ with $\int o&lt;I+\frac\varepsilon2$.</li>
+  <li><strong>Subtract</strong> (linearity): $\int(o-u)&lt;\varepsilon$.</li>
+</ol>
+<p><strong>(⇐)</strong></p><ol>
+  <li><strong>Sandwich:</strong> $\int u\le\underline I(f)\le\overline I(f)\le\int o$ (Proof A in the middle).</li>
+  <li><strong>So</strong> $0\le\overline I(f)-\underline I(f)&lt;\varepsilon$.</li>
+  <li><strong>ε arbitrary</strong> ⇒ $\underline I(f)=\overline I(f)$.</li>
+</ol>
+<p>In short: “ε/2 below, ε/2 above, subtract” and “sandwich, smaller than every ε”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> In “⇒”, why is there a step function $u\le f$ with $\int_a^b u\,dx&gt;I-\frac\varepsilon2$? Write the one sentence.</p>
+  <details><summary>Answer</summary><div><p>“Since $I-\frac\varepsilon2&lt;\sup\mathcal U(f)$, it is not an upper bound of $\mathcal U(f)$, so some element of $\mathcal U(f)$, that is some $\int_a^b u\,dx$ with $u\le f$, is bigger than it.”</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write the whole “⇐” direction (three sentences).</p>
+  <details><summary>Answer</summary><div><p>See the second paragraph of the one-piece proof. Check that you used Proof A for “$\underline I\le\overline I$” and said “as $\varepsilon$ was arbitrary”.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write both directions from the frame alone, then compare.</p></li>
+</ol></div>
+
+<h2 id="s5-the-glittering-field-a-function">5. The Glittering Field: a function that is not integrable</h2>
+<div class="box">
+<p><strong>Beispiel 4.17 (<a class="pl" href="script.html#p186">p. 186</a>).</strong> The Dirichlet function $f=\mathbb 1_{\mathbb Q}$ on $[0,1]$, with $f(x)=1$ for rational $x$ and $f(x)=0$ for irrational $x$, has $\overline I(f)=1$ and $\underline I(f)=0$. So it is bounded but <strong>not</strong> Riemann integrable.</p>
+</div>
+<div class="need"><span class="label">You'll need these</span>
+<ul>
+  <li><strong>$\mathbb Q$ is dense</strong> (<a class="xl" href="lesson-06.html#6-2-is-dense-in">lesson 6</a>, Korollar 2.70): every interval $(x,y)$ with $x&lt;y$ contains a rational number.</li>
+  <li><strong>The irrationals are dense too:</strong> pick a rational $q$ with $x-\sqrt2&lt;q&lt;y-\sqrt2$. Then $q+\sqrt2\in(x,y)$, and it's irrational, because otherwise $\sqrt2=(q+\sqrt2)-q$ would be rational.</li>
+  <li><strong>Telescoping sum:</strong> $\sum_{k=1}^n(x_k-x_{k-1})=x_n-x_0$. All the middle terms cancel.</li>
+</ul></div>
+<h3 id="proof-c">Proof C: the Dirichlet function is not integrable</h3>
+<p><strong>The idea.</strong> Every piece of every partition contains a rational point, where $f=1$, so every canopy has height at least $1$ on every piece: its area is at least $1$. Every piece also contains an irrational point, where $f=0$, so every tile has height at most $0$: its area is at most $0$. The guilds stay a full $1$ apart forever.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>The goal</strong> “$\overline I(f)=1$” is about an infimum, so it splits into two lines: “every upper sum is $\ge1$” and “some upper sum equals $1$”.</li>
+  <li><strong>First line:</strong> “Let $o$ be a step function with $f\le o$, with partition $Z=\{0=x_0&lt;\dots&lt;x_n=1\}$ and values $c_k$.”</li>
+  <li><strong>The gap to fill:</strong> show $c_k\ge1$ for every $k$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Take any canopy over the Glittering Field, and look at one of its flat pieces.</p></div><div class="sp-formal"><p>Let $o\ge f$ be a step function with partition $Z=\{0=x_0&lt;\dots&lt;x_n=1\}$ and $o=c_k$ on $(x_{k-1},x_k)$. Fix $k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Under that piece there's an enchanted stone at height $1$, and the canopy must clear it.</p></div><div class="sp-formal"><p>By density of $\mathbb Q$ there is a rational $x\in(x_{k-1},x_k)$. Then $1=f(x)\le o(x)=c_k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So every piece of the canopy is at height $1$ or more, and the canopy's area is at least the field's width, $1$.</p></div><div class="sp-formal"><p>Hence <span class="math-display" style="display:block">$$\int_0^1 o\,dx=\sum_{k=1}^n c_k\Delta x_k\ge\sum_{k=1}^n\Delta x_k=x_n-x_0=1.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A flat canopy at height exactly $1$ is allowed, so the best canopy is exactly $1$.</p></div><div class="sp-formal"><p>So $1$ is a lower bound of $\mathcal O(f)$, and the constant step function $o=1\ge f$ has $\int_0^1 o\,dx=1\in\mathcal O(f)$. Hence $\overline I(f)=\min\mathcal O(f)=1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>From below it's the mirror image, with plain earth at height $0$ under every tile.</p></div><div class="sp-formal"><p>Likewise, by density of the irrationals, every step function $u\le f$ has value $\le0$ on every piece, so $\int_0^1 u\,dx\le0$, and $u=0$ gives $0$. Hence $\underline I(f)=0\neq1=\overline I(f)$: $f$ is not integrable. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-dense">density in every piece</a> <a class="mvl" href="moves.html#m-tele">telescoping sum</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $o\ge f$ be a step function, constant $=c_k$ on $(x_{k-1},x_k)$ for a partition $0=x_0&lt;\dots&lt;x_n=1$. Each piece contains a rational $x$, so $c_k=o(x)\ge f(x)=1$, and $\int_0^1 o\,dx=\sum c_k\Delta x_k\ge\sum\Delta x_k=1$. Since $o=1$ has integral $1$, $\overline I(f)=1$. Similarly, each piece contains an irrational $x$, so every step function $u\le f$ has $\int_0^1u\,dx\le0$, and $u=0$ gives $\underline I(f)=0$. As $0\neq1$, $f$ is not Riemann integrable. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Upper integral:</strong> take any step function $o\ge f$ with its partition. Every piece contains a rational, so every value $c_k\ge1$.</li>
+  <li><strong>Telescope:</strong> $\int o\ge\sum\Delta x_k=1$, and $o=1$ achieves it, so $\overline I(f)=1$.</li>
+  <li><strong>Lower integral:</strong> every piece contains an irrational, so every step function $u\le f$ has values $\le0$, and $u=0$ achieves it, so $\underline I(f)=0$.</li>
+  <li><strong>Conclude:</strong> $0\neq1$, so $f$ is not integrable.</li>
+</ol>
+<p>In short: “a rational in every piece, an irrational in every piece”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Fill in the lower-integral half: “Each piece $(x_{k-1},x_k)$ contains ______, so for a step function $u\le f$ with value $d_k$ there, $d_k\le$ ______.”</p>
+  <details><summary>Answer</summary><div><p>“…an irrational number $x$, so $d_k=u(x)\le f(x)=0$.”</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write the lower-integral half in full, as carefully as the upper half above.</p>
+  <details><summary>Answer</summary><div><p>Let $u\le f$ be a step function with partition $0=x_0&lt;\dots&lt;x_n=1$ and $u=d_k$ on $(x_{k-1},x_k)$. By density of the irrationals each piece contains an irrational $x$, so $d_k=u(x)\le f(x)=0$. Hence $\int_0^1u\,dx=\sum d_k\Delta x_k\le0$, so $0$ is an upper bound of $\mathcal U(f)$. The step function $u=0$ satisfies $u\le f$ and has integral $0$, so $\underline I(f)=\max\mathcal U(f)=0$.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the frame alone, then compare.</p></li>
+</ol></div>
+<p class="legend">Why it's cool: the Dirichlet function only takes the two values $0$ and $1$, and it's as bounded as a function can be. Being bounded is not enough to be integrable, and neither is having finitely many values. What breaks integrability is <em>wild jumping in every interval</em>. Monotone functions can't do that, as we'll see in <a class="xl" href="#s7-the-rising-slope-monotone-functions">section 7</a>.</p>
+<h2 id="s6-the-rules-of-the-integral">6. The rules of the integral</h2>
+<p>These are the rules you'll use all the time when computing. For the exam you need to <em>state</em> them correctly. Their proofs are sup/inf bookkeeping, and no old exam asks for them, so here we prove only monotonicity, which is short. The rest are on the skip list.</p>
+<div class="box">
+<p><strong>Linearity (Satz 4.19, <a class="pl" href="script.html#p188">p. 188</a>).</strong> If $f,g$ are integrable on $[a,b]$ and $s\in\mathbb{R}$, then $f+g$ and $sf$ are integrable and $\int_a^b(f+g)\,dx=\int_a^b f\,dx+\int_a^b g\,dx$, $\int_a^b sf\,dx=s\int_a^b f\,dx$.</p>
+<p><strong>Monotonicity (Satz 4.24 (i), (ii), <a class="pl" href="script.html#p190">p. 190</a>).</strong> If $f,g$ are integrable, then $f\ge0\Rightarrow\int_a^b f\,dx\ge0$, and $f\le g\Rightarrow\int_a^b f\,dx\le\int_a^b g\,dx$.</p>
+<p><strong>Triangle inequality (Satz 4.24 (iii), <a class="pl" href="script.html#p190">p. 190</a>).</strong> If $f$ is integrable, then so is $|f|$, and $\left|\int_a^b f\,dx\right|\le\int_a^b|f|\,dx$.</p>
+<p><strong>Additivity over intervals (Satz 4.26, <a class="pl" href="script.html#p193">p. 193</a>).</strong> For $a&lt;b&lt;c$: $f$ is integrable on $[a,c]$ if and only if it is integrable on $[a,b]$ and on $[b,c]$, and then $\int_a^c f\,dx=\int_a^b f\,dx+\int_b^c f\,dx$. With the convention $\int_b^a f\,dx=-\int_a^b f\,dx$ and $\int_a^a f\,dx=0$, the formula holds for $a,b,c$ in any order (Wichtige Übung 4.27).</p>
+<p><strong>Changing finitely many values (Übung 4.22, <a class="pl" href="script.html#p190">p. 190</a>)</strong> changes neither integrability nor the integral. (Your Exercise 6 does one point.)</p>
+</div>
+<h3 id="proof-d">Proof D: monotonicity, and the triangle inequality</h3>
+<p><strong>The idea.</strong> For $f\ge0$, the flat tile at height $0$ is a legal tiling, so the best tiling is at least $0$. For $f\le g$, apply that to $g-f\ge0$. For the triangle inequality, use $-|f|\le f\le|f|$ and monotonicity twice. (That $|f|$ is integrable is part of the theorem, and we take it from the script here.)</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li>(i) must end with “$\int_a^b f\,dx\ge0$”, and $\int_a^b f\,dx=\sup\mathcal U(f)$, so it's enough to find <em>one</em> element of $\mathcal U(f)$ that is $\ge0$.</li>
+  <li>(ii) and (iii) are inequalities between integrals, so the first move is to turn them into “an integral is $\ge0$” and use (i).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(i) If the ground is never below sea level, a tile lying flat on sea level is allowed. So the best tiling is at least $0$.</p></div><div class="sp-formal"><p>Let $f\ge0$ be integrable. The step function $u=0$ satisfies $u\le f$, so $0=\int_a^b u\,dx\in\mathcal U(f)$, and $0\le\sup\mathcal U(f)=\int_a^b f\,dx$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(ii) If one field is everywhere at least as high as another, the difference is never below sea level.</p></div><div class="sp-formal"><p>Let $f\le g$ be integrable. By linearity $g-f$ is integrable, and $g-f\ge0$, so by (i) <span class="math-display" style="display:block">$$\int_a^b g\,dx-\int_a^b f\,dx=\int_a^b(g-f)\,dx\ge0.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(iii) The field lies between its own reflection $-|f|$ and its height $|f|$, so its area does too.</p></div><div class="sp-formal"><p>Let $f$ be integrable; then $|f|$ is integrable (part of the theorem, taken from the script). From $-|f|\le f\le|f|$, (ii) and linearity: $-\int_a^b|f|\,dx\le\int_a^b f\,dx\le\int_a^b|f|\,dx$, which says $\left|\int_a^b f\,dx\right|\le\int_a^b|f|\,dx$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-ub">sup ≥ any element</a> <a class="mvl" href="moves.html#m-diff">reduce to “≥ 0”</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(i) If $f\ge0$, then $u=0$ is a step function with $u\le f$, so $0\in\mathcal U(f)$ and $\int_a^b f\,dx=\sup\mathcal U(f)\ge0$. (ii) If $f\le g$, then $g-f$ is integrable by linearity and $g-f\ge0$, so by (i) $\int_a^b g\,dx-\int_a^b f\,dx=\int_a^b(g-f)\,dx\ge0$. (iii) $|f|$ is integrable (taken from the script). From $-|f|\le f\le|f|$, (ii) and linearity give $-\int_a^b|f|\,dx\le\int_a^b f\,dx\le\int_a^b|f|\,dx$, that is, $\left|\int_a^b f\,dx\right|\le\int_a^b|f|\,dx$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $\int_a^b f\,dx\ge0$ when $f\ge0$? One sentence.</p>
+  <details><summary>Answer</summary><div><p>“$u=0$ is a step function with $u\le f$, so $0\in\mathcal U(f)$ and $\int_a^b f\,dx=\sup\mathcal U(f)\ge0$.”</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write (ii) from (i).</p>
+  <details><summary>Answer</summary><div><p>“By linearity $g-f$ is integrable with $g-f\ge0$, so by (i) $\int_a^b g\,dx-\int_a^b f\,dx$, which equals $\int_a^b(g-f)\,dx$, is $\ge0$.”</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write (i), (ii) and the inequality in (iii) from the frame alone.</p></li>
+</ol></div>
+<p><strong>What the integral means (Section 4.4, <a class="pl" href="script.html#p195">p. 195–198</a>).</strong> One definition, many meanings. If $f\ge0$, $\int_a^b f\,dx$ is the area under the graph. If $\rho(x)$ is the density of a rod in kg per metre, $\int_a^b\rho\,dx$ is its mass. If $P(t)$ is the power a house draws in watts, $\int_a^b P\,dt$ is the energy it used, and with solar panels feeding back, the sign says whether the house used or produced energy overall. The script's point: because the integral is defined abstractly, with tiles and canopies, it can mean all of these at once. Defined as “the area under the curve”, it would be circular, since we have no definition of area for curved shapes without it.</p>
+
+<h2 id="s7-the-rising-slope-monotone-functions">7. The Rising Slope: monotone functions are integrable (worth 7 exam points)</h2>
+<div class="box">
+<p><strong>Satz 4.31 (<a class="pl" href="script.html#p199">p. 199</a>).</strong> Every monotone function $f:[a,b]\to\mathbb{R}$ is Riemann integrable.</p>
+</div>
+<div class="need"><span class="label">You'll need these</span>
+<ul>
+  <li><strong>Monotonically increasing</strong> (<em>monoton wachsend</em>): $x\le y\Rightarrow f(x)\le f(y)$. Not strict; flat parts are allowed.</li>
+  <li><strong>Monotone ⇒ bounded on $[a,b]$:</strong> $f(a)\le f(x)\le f(b)$ for all $x$. (Exercise 3 of <a class="xl" href="lesson-08.html#ex-3">lesson 8</a>.) So the definition applies.</li>
+  <li><strong>The ε-criterion</strong> from <a class="xl" href="#s4-the-squeeze-the-criterion">section 4</a>.</li>
+  <li><strong>Archimedean principle</strong> (<a class="xl" href="lesson-06.html#6-1-the-archimedean-principle">lesson 6</a>): for every real $r$ there is $n\in\mathbb N$ with $n&gt;r$.</li>
+  <li><strong>Telescoping sum</strong>: <span class="math-display" style="display:block">$$\sum_{k=1}^n\big(f(x_k)-f(x_{k-1})\big)=f(x_n)-f(x_0).$$</span></li>
+</ul></div>
+<p class="legend"><span class="label">Colour code</span>tiles $\class{k-del}{u}$ green, canopy $\class{k-c}{o}$ rose, $\class{k-eps}{\varepsilon}$ blue.</p>
+<h3 id="proof-e">Proof E: monotone functions are integrable</h3>
+<p><strong>The idea.</strong> Cut $[a,b]$ into $n$ pieces of equal width $\frac{b-a}n$. On each piece, an increasing $f$ is lowest at the left end and highest at the right end. So tile each piece at its left-end height and put the canopy at its right-end height. The gap on piece $k$ is a thin rectangle of height $f(x_k)-f(x_{k-1})$. Now slide all the gaps sideways into one column: their heights stack up exactly from $f(a)$ to $f(b)$, so the total gap is <em>one</em> rectangle of width $\frac{b-a}n$ and height $f(b)-f(a)$. Choose $n$ large and it's as thin as you like.</p>
+<figure style="margin:0" aria-label="An increasing curve over four equal pieces. Green tiles sit at the left-end height of each piece, rose gap rectangles reach up to the right-end height. On the right, the four rose gaps are stacked into one column of width b minus a over n and height f of b minus f of a.">
+<svg viewBox="0 0 640 290" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="255.0" x2="420.0" y2="255.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="45.0" y1="12.0" x2="45.0" y2="275.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="45.0" y="231.8" width="95.0" height="23.2" style="fill:var(--k-del);fill-opacity:0.25;stroke:var(--k-del)" stroke-width="1.2"/><rect x="45.0" y="172.6" width="95.0" height="59.2" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><rect x="140.0" y="172.6" width="95.0" height="82.4" style="fill:var(--k-del);fill-opacity:0.25;stroke:var(--k-del)" stroke-width="1.2"/><rect x="140.0" y="130.1" width="95.0" height="42.5" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><rect x="235.0" y="130.1" width="95.0" height="124.9" style="fill:var(--k-del);fill-opacity:0.25;stroke:var(--k-del)" stroke-width="1.2"/><rect x="235.0" y="78.7" width="95.0" height="51.4" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><rect x="330.0" y="78.7" width="95.0" height="176.3" style="fill:var(--k-del);fill-opacity:0.25;stroke:var(--k-del)" stroke-width="1.2"/><rect x="330.0" y="16.0" width="95.0" height="62.7" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><path d="M 45.0 231.8 L 48.2 222.3 L 51.3 218.3 L 54.5 215.2 L 57.7 212.6 L 60.8 210.3 L 64.0 208.2 L 67.2 206.2 L 70.3 204.3 L 73.5 202.6 L 76.7 200.9 L 79.8 199.3 L 83.0 197.7 L 86.2 196.1 L 89.3 194.6 L 92.5 193.1 L 95.7 191.7 L 98.8 190.3 L 102.0 188.9 L 105.2 187.5 L 108.3 186.1 L 111.5 184.7 L 114.7 183.4 L 117.8 182.0 L 121.0 180.7 L 124.2 179.3 L 127.3 178.0 L 130.5 176.6 L 133.7 175.3 L 136.8 174.0 L 140.0 172.6 L 143.2 171.3 L 146.3 170.0 L 149.5 168.6 L 152.7 167.3 L 155.8 165.9 L 159.0 164.6 L 162.2 163.2 L 165.3 161.9 L 168.5 160.5 L 171.7 159.2 L 174.8 157.8 L 178.0 156.4 L 181.2 155.0 L 184.3 153.6 L 187.5 152.2 L 190.7 150.8 L 193.8 149.4 L 197.0 148.0 L 200.2 146.5 L 203.3 145.1 L 206.5 143.6 L 209.7 142.2 L 212.8 140.7 L 216.0 139.2 L 219.2 137.7 L 222.3 136.2 L 225.5 134.7 L 228.7 133.2 L 231.8 131.7 L 235.0 130.1 L 238.2 128.6 L 241.3 127.0 L 244.5 125.5 L 247.7 123.9 L 250.8 122.3 L 254.0 120.7 L 257.2 119.1 L 260.3 117.5 L 263.5 115.8 L 266.7 114.2 L 269.8 112.5 L 273.0 110.8 L 276.2 109.2 L 279.3 107.5 L 282.5 105.8 L 285.7 104.0 L 288.8 102.3 L 292.0 100.6 L 295.2 98.8 L 298.3 97.1 L 301.5 95.3 L 304.7 93.5 L 307.8 91.7 L 311.0 89.9 L 314.2 88.1 L 317.3 86.2 L 320.5 84.4 L 323.7 82.5 L 326.8 80.6 L 330.0 78.7 L 333.2 76.8 L 336.3 74.9 L 339.5 73.0 L 342.7 71.1 L 345.8 69.1 L 349.0 67.2 L 352.2 65.2 L 355.3 63.2 L 358.5 61.2 L 361.7 59.2 L 364.8 57.1 L 368.0 55.1 L 371.2 53.0 L 374.3 51.0 L 377.5 48.9 L 380.7 46.8 L 383.8 44.7 L 387.0 42.6 L 390.2 40.4 L 393.3 38.3 L 396.5 36.1 L 399.7 33.9 L 402.8 31.7 L 406.0 29.5 L 409.2 27.3 L 412.3 25.1 L 415.5 22.9 L 418.7 20.6 L 421.8 18.3 L 425.0 16.0" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><text x="45.0" y="272.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₀</text><text x="140.0" y="272.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₁</text><text x="235.0" y="272.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₂</text><text x="330.0" y="272.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₃</text><text x="425.0" y="272.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">x₄</text><line x1="438.0" y1="255.0" x2="593.0" y2="255.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="468.0" y="172.6" width="95.0" height="59.2" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><rect x="468.0" y="130.1" width="95.0" height="42.5" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><rect x="468.0" y="78.7" width="95.0" height="51.4" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><rect x="468.0" y="16.0" width="95.0" height="62.7" style="fill:var(--k-c);fill-opacity:0.35;stroke:var(--k-c)" stroke-width="1.2"/><line x1="573.0" y1="231.8" x2="573.0" y2="16.0" style="stroke:var(--ink)" stroke-width="1.5"/><text x="580.0" y="117.9" text-anchor="start" style="fill:var(--ink);font-size:14px">f(b)</text><text x="580.0" y="135.9" text-anchor="start" style="fill:var(--ink);font-size:14px">− f(a)</text><line x1="468.0" y1="247.0" x2="563.0" y2="247.0" style="stroke:var(--ink)" stroke-width="1.5"/><text x="515.0" y="272.0" text-anchor="middle" style="fill:var(--ink);font-size:14px">(b−a)/n</text><path d="M 424 127.4 L 458 127.4" style="stroke:var(--muted);fill:none" stroke-width="2" marker-end="url(#ar)"/><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker></defs><text x="441.0" y="117.4" text-anchor="middle" style="fill:var(--muted);font-size:13px">slide</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Left: tiles (green) at the left-end heights, gaps (rose) up to the right-end heights. Right: the four gaps slid into one column. Its height is $f(b)-f(a)$ because the gaps stack without overlap, and its width is $\frac{b-a}n$, so its area is $\frac{(b-a)(f(b)-f(a))}{n}$.</figcaption>
+</figure>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>The goal</strong> “$f$ is Riemann integrable” with the ε-criterion forces the <strong>first line</strong> “Let $\class{k-eps}{\varepsilon}&gt;0$.” and the <strong>last lines</strong> “…so $\class{k-del}{u}\le f\le\class{k-c}{o}$ and $\int_a^b(\class{k-c}{o}-\class{k-del}{u})\,dx&lt;\class{k-eps}{\varepsilon}$. By the ε-criterion, $f$ is integrable.”</li>
+  <li>Before that: one line for “oBdA increasing”, one line for “$f$ is bounded”.</li>
+  <li><strong>The gap to fill:</strong> build $\class{k-del}{u}$ and $\class{k-c}{o}$ (equal pieces, left and right ends), check $\class{k-del}{u}\le f\le\class{k-c}{o}$, compute $\int(\class{k-c}{o}-\class{k-del}{u})$, choose $n$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A slope that only falls is a rising slope seen from the other side. So we only treat the rising one.</p></div><div class="sp-formal"><p>Without loss of generality $f$ is increasing; otherwise replace $f$ by $-f$, which is increasing, and use linearity ($f=(-1)\cdot(-f)$). Then $f(a)\le f(x)\le f(b)$ for all $x\in[a,b]$, so $f$ is bounded.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The Assessor names a tolerance. The guilds cut the field into $n$ equal strips; they'll choose how many at the end.</p></div><div class="sp-formal"><p>Let $\class{k-eps}{\varepsilon}&gt;0$ and $n\in\mathbb N$ (chosen below). Let $x_k=a+k\frac{b-a}n$ for $k=0,\dots,n$, so $\Delta x_k=\frac{b-a}n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>On each strip, tiles at the height of the strip's west end, the lowest point of that strip. The canopy at the height of its east end, the highest point.</p></div><div class="sp-formal"><p>Define step functions <span class="math-display" style="display:block">$$\class{k-del}{u}(x)=\begin{cases}f(x_{k-1})&amp;x\in[x_{k-1},x_k),\ k=1,\dots,n\\ f(b)&amp;x=b,\end{cases}$$</span> <span class="math-display" style="display:block">$$\class{k-c}{o}(x)=\begin{cases}f(a)&amp;x=a\\ f(x_k)&amp;x\in(x_{k-1},x_k],\ k=1,\dots,n.\end{cases}$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Because the slope only rises, the west end really is lowest and the east end really is highest. So the tiles stay under the ground and the canopy over it.</p></div><div class="sp-formal"><p>$\class{k-del}{u}\le f$: if $x=b$, then $\class{k-del}{u}(x)=f(x)$. Otherwise $x\in[x_{k-1},x_k)$ for some $k$, and $x_{k-1}\le x$ gives $\class{k-del}{u}(x)=f(x_{k-1})\le f(x)$. Likewise $f\le\class{k-c}{o}$: for $x\in(x_{k-1},x_k]$, $x\le x_k$ gives $f(x)\le f(x_k)=\class{k-c}{o}(x)$. Also $\class{k-c}{o}(a)=f(a)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The gaps: one thin rectangle per strip. Slide them into one column; the heights telescope from $f(a)$ to $f(b)$.</p></div><div class="sp-formal"><p>On $(x_{k-1},x_k)$, $\class{k-c}{o}-\class{k-del}{u}=f(x_k)-f(x_{k-1})$. So <span class="math-display" style="display:block">$$\begin{aligned}\int_a^b(\class{k-c}{o}-\class{k-del}{u})\,dx&amp;=\sum_{k=1}^n\big(f(x_k)-f(x_{k-1})\big)\frac{b-a}n\\&amp;=\frac{b-a}n\big(f(b)-f(a)\big),\end{aligned}$$</span> by the telescoping sum.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Make the strips thin enough and the column is thinner than the tolerance.</p></div><div class="sp-formal"><p>By the Archimedean principle choose $n&gt;\frac{(b-a)(f(b)-f(a))}{\class{k-eps}{\varepsilon}}$. Then $\int_a^b(\class{k-c}{o}-\class{k-del}{u})\,dx&lt;\class{k-eps}{\varepsilon}$, with $\class{k-del}{u}\le f\le\class{k-c}{o}$. As $\class{k-eps}{\varepsilon}&gt;0$ was arbitrary, $f$ is Riemann integrable by the ε-criterion. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-obda">reduce to one case (oBdA)</a> <a class="mvl" href="moves.html#m-squeeze">the ε-criterion</a> <a class="mvl" href="moves.html#m-tele">telescoping sum</a> <a class="mvl" href="moves.html#m-arch">choose n by Archimedes</a></p>
+<details><summary>The proof in one piece (as you'd write it in the exam)</summary><div>
+<p>Without loss of generality $f$ is increasing (otherwise consider $-f$ and use linearity). Then $f(a)\le f\le f(b)$, so $f$ is bounded. Let $\varepsilon&gt;0$, $n\in\mathbb N$, and $x_k=a+k\frac{b-a}n$ for $k=0,\dots,n$. Define step functions $u,o$ by $u=f(x_{k-1})$ on $[x_{k-1},x_k)$, $u(b)=f(b)$, and $o=f(x_k)$ on $(x_{k-1},x_k]$, $o(a)=f(a)$. Since $f$ is increasing, $u\le f\le o$. Moreover</p>
+<div class="math-display">$$\begin{aligned}\int_a^b(o-u)\,dx&amp;=\sum_{k=1}^n\big(f(x_k)-f(x_{k-1})\big)\frac{b-a}n\\&amp;=\frac{(b-a)\big(f(b)-f(a)\big)}n\end{aligned},$$</div>
+<p>which is $&lt;\varepsilon$ if we choose $n&gt;\frac{(b-a)(f(b)-f(a))}{\varepsilon}$ (Archimedean principle). By the ε-criterion, $f$ is Riemann integrable. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>oBdA increasing</strong> (else $-f$). Then $f(a)\le f\le f(b)$, so $f$ is bounded.</li>
+  <li><strong>Let $\varepsilon&gt;0$</strong> and cut into $n$ equal pieces: $x_k=a+k\frac{b-a}n$.</li>
+  <li><strong>Define $u$ and $o$:</strong> $u=f(x_{k-1})$ on $[x_{k-1},x_k)$, $o=f(x_k)$ on $(x_{k-1},x_k]$, plus $u(b)=f(b)$, $o(a)=f(a)$. Monotone ⇒ $u\le f\le o$.</li>
+  <li><strong>Telescope:</strong> the gaps $f(x_k)-f(x_{k-1})$ sum to $f(b)-f(a)$, so $\int(o-u)=\frac{(b-a)(f(b)-f(a))}n$.</li>
+  <li><strong>Archimedes:</strong> choose $n&gt;\frac{(b-a)(f(b)-f(a))}\varepsilon$, so $\int(o-u)&lt;\varepsilon$. <strong>ε-criterion</strong> ⇒ integrable.</li>
+</ol>
+<p>In short: “oBdA, equal pieces, $u$ at left ends and $o$ at right ends, telescope, Archimedes, ε-criterion”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Fill the blank: “On $(x_{k-1},x_k)$ we have $o-u=$ ______, so $\int_a^b(o-u)\,dx=$ ______ $=\frac{(b-a)(f(b)-f(a))}n$ by ______.”</p>
+  <details><summary>Answer</summary><div><p>“$f(x_k)-f(x_{k-1})$”, “$\sum_{k=1}^n\big(f(x_k)-f(x_{k-1})\big)\frac{b-a}n$”, “the telescoping sum”.</p></div></details></li>
+  <li><p><strong>Rung 2 (4 min).</strong> You're given the partition and the definitions of $u$ and $o$. Write the rest: why $u\le f\le o$, the computation, the choice of $n$, the conclusion.</p>
+  <details><summary>Answer</summary><div><p>Compare with the last two sentences of the one-piece proof, plus the check: “For $x\in[x_{k-1},x_k)$, $u(x)=f(x_{k-1})\le f(x)$ since $f$ is increasing, and $u(b)=f(b)$; similarly $f\le o$.” Points are usually lost for forgetting the choice of $n$ or the sentence “by the ε-criterion”.</p></div></details></li>
+  <li><p><strong>Rung 3 (8 min).</strong> Cover the page and write the whole proof from the frame. This is also today's “write this one down” item.</p></li>
+</ol></div>
+<h3 id="consequences-piecewise-monotone-functions-and">Consequences: piecewise monotone functions and polynomials</h3>
+<p><strong>Korollar 4.34 (<a class="pl" href="script.html#p200">p. 200</a>).</strong> A bounded function that is monotone on each piece $(x_{k-1},x_k)$ of some partition is integrable. <em>Why:</em> on each closed piece $[x_{k-1},x_k]$, change $f$ at the two endpoints to make it monotone there (changing finitely many values doesn't matter), apply Satz 4.31, and glue the pieces with additivity over intervals.</p>
+<p>So $x^2$ is integrable on any $[a,b]$ (decreasing on $(a,0)$, increasing on $(0,b)$), and so is every monomial $x^d$. With linearity, <strong>every polynomial is integrable</strong> on every compact interval. (Satz 4.37, <a class="pl" href="script.html#p202">p. 202</a>, then computes $\int_a^b x^d\,dx=\frac{b^{d+1}-a^{d+1}}{d+1}$ by hand; in <a class="xl" href="lesson-19.html#s2-the-fundamental-theorem">lesson 19</a> you'll get this in one line from the fundamental theorem of calculus.)</p>
+<h2 id="s8-using-the-theorems">8. Using the theorems</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: compute $\int_0^1 x\,dx$ with lower and upper sums</h3>
+<figure style="margin:0" aria-label="A curve with a green lower step function below it and a rose upper step function above it, over four pieces of an interval from a to b.">
+<svg viewBox="0 0 640 250" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="220.0" x2="610.0" y2="220.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50.0" y1="15.0" x2="50.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="50.0" y="96.2" width="130.0" height="57.8" style="fill:var(--k-c);fill-opacity:0.18;stroke:var(--k-c)" stroke-width="1.2"/><rect x="50.0" y="154.0" width="130.0" height="66.0" style="fill:var(--k-del);fill-opacity:0.28;stroke:var(--k-del)" stroke-width="1.2"/><line x1="50.0" y1="96.2" x2="180.0" y2="96.2" style="stroke:var(--k-c)" stroke-width="3"/><line x1="50.0" y1="154.0" x2="180.0" y2="154.0" style="stroke:var(--k-del)" stroke-width="3"/><rect x="180.0" y="38.5" width="130.0" height="57.8" style="fill:var(--k-c);fill-opacity:0.18;stroke:var(--k-c)" stroke-width="1.2"/><rect x="180.0" y="96.2" width="130.0" height="123.8" style="fill:var(--k-del);fill-opacity:0.28;stroke:var(--k-del)" stroke-width="1.2"/><line x1="180.0" y1="38.5" x2="310.0" y2="38.5" style="stroke:var(--k-c)" stroke-width="3"/><line x1="180.0" y1="96.2" x2="310.0" y2="96.2" style="stroke:var(--k-del)" stroke-width="3"/><rect x="310.0" y="37.6" width="130.0" height="31.1" style="fill:var(--k-c);fill-opacity:0.18;stroke:var(--k-c)" stroke-width="1.2"/><rect x="310.0" y="68.8" width="130.0" height="151.2" style="fill:var(--k-del);fill-opacity:0.28;stroke:var(--k-del)" stroke-width="1.2"/><line x1="310.0" y1="37.6" x2="440.0" y2="37.6" style="stroke:var(--k-c)" stroke-width="3"/><line x1="310.0" y1="68.8" x2="440.0" y2="68.8" style="stroke:var(--k-del)" stroke-width="3"/><rect x="440.0" y="68.8" width="130.0" height="31.1" style="fill:var(--k-c);fill-opacity:0.18;stroke:var(--k-c)" stroke-width="1.2"/><rect x="440.0" y="99.9" width="130.0" height="120.1" style="fill:var(--k-del);fill-opacity:0.28;stroke:var(--k-del)" stroke-width="1.2"/><line x1="440.0" y1="68.8" x2="570.0" y2="68.8" style="stroke:var(--k-c)" stroke-width="3"/><line x1="440.0" y1="99.9" x2="570.0" y2="99.9" style="stroke:var(--k-del)" stroke-width="3"/><path d="M 50.0 154.0 L 54.3 153.5 L 58.7 152.8 L 63.0 152.1 L 67.3 151.2 L 71.7 150.2 L 76.0 149.1 L 80.3 147.9 L 84.7 146.5 L 89.0 145.1 L 93.3 143.5 L 97.7 141.9 L 102.0 140.1 L 106.3 138.2 L 110.7 136.3 L 115.0 134.2 L 119.3 132.1 L 123.7 129.9 L 128.0 127.6 L 132.3 125.3 L 136.7 122.8 L 141.0 120.4 L 145.3 117.8 L 149.7 115.2 L 154.0 112.6 L 158.3 109.9 L 162.7 107.2 L 167.0 104.5 L 171.3 101.8 L 175.7 99.0 L 180.0 96.2 L 184.3 93.5 L 188.7 90.7 L 193.0 88.0 L 197.3 85.3 L 201.7 82.6 L 206.0 79.9 L 210.3 77.3 L 214.7 74.7 L 219.0 72.1 L 223.3 69.7 L 227.7 67.2 L 232.0 64.9 L 236.3 62.6 L 240.7 60.4 L 245.0 58.3 L 249.3 56.2 L 253.7 54.3 L 258.0 52.4 L 262.3 50.6 L 266.7 49.0 L 271.0 47.4 L 275.3 46.0 L 279.7 44.6 L 284.0 43.4 L 288.3 42.3 L 292.7 41.3 L 297.0 40.4 L 301.3 39.7 L 305.7 39.0 L 310.0 38.5 L 314.3 38.1 L 318.7 37.8 L 323.0 37.7 L 327.3 37.6 L 331.7 37.7 L 336.0 37.9 L 340.3 38.2 L 344.7 38.6 L 349.0 39.2 L 353.3 39.8 L 357.7 40.6 L 362.0 41.4 L 366.3 42.3 L 370.7 43.4 L 375.0 44.5 L 379.3 45.7 L 383.7 47.0 L 388.0 48.4 L 392.3 49.8 L 396.7 51.3 L 401.0 52.9 L 405.3 54.5 L 409.7 56.2 L 414.0 57.9 L 418.3 59.7 L 422.7 61.4 L 427.0 63.2 L 431.3 65.1 L 435.7 66.9 L 440.0 68.8 L 444.3 70.6 L 448.7 72.4 L 453.0 74.3 L 457.3 76.1 L 461.7 77.8 L 466.0 79.6 L 470.3 81.3 L 474.7 83.0 L 479.0 84.6 L 483.3 86.2 L 487.7 87.7 L 492.0 89.1 L 496.3 90.5 L 500.7 91.8 L 505.0 93.0 L 509.3 94.1 L 513.7 95.2 L 518.0 96.1 L 522.3 96.9 L 526.7 97.7 L 531.0 98.3 L 535.3 98.9 L 539.7 99.3 L 544.0 99.6 L 548.3 99.8 L 552.7 99.9 L 557.0 99.8 L 561.3 99.7 L 565.7 99.4 L 570.0 99.0" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><text x="564.0" y="49.0" text-anchor="end" style="fill:var(--k-c);font-size:15px">o ≥ f</text><text x="115.0" y="187.0" text-anchor="middle" style="fill:var(--k-del);font-size:15px">u ≤ f</text><text x="50.0" y="237.0" text-anchor="middle" style="fill:var(--muted);font-size:16px">a</text><text x="570.0" y="237.0" text-anchor="middle" style="fill:var(--muted);font-size:16px">b</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The general picture: a lower step function $u\le f$ (green) and an upper step function $o\ge f$ (rose). For a monotone $f$ we can take the end-point heights; for a general $f$, the lowest and highest value on each piece.</figcaption>
+</figure>
+<ol class="gq">
+  <li><p>Why is $f(x)=x$ integrable on $[0,1]$, before computing anything?</p>
+  <details><summary>Answer</summary><div><p>It's increasing, so it's integrable because monotone functions are integrable (<a class="xl" href="#s7-the-rising-slope-monotone-functions">section 7</a>).</p></div></details></li>
+  <li><p>Cut $[0,1]$ into $n$ equal pieces. Which values should the lower step function $u$ and the upper step function $o$ take on piece $k$?</p>
+  <details><summary>Answer</summary><div><p>The piece is $[\frac{k-1}n,\frac kn]$. Since $f$ is increasing, take the value at the left end for $u$, $u=\frac{k-1}n$, and at the right end for $o$, $o=\frac kn$.</p></div></details></li>
+  <li><p>Compute $\int_0^1 u\,dx$ and $\int_0^1 o\,dx$. (You need $1+2+\dots+m=\frac{m(m+1)}2$.)</p>
+  <details><summary>Answer</summary><div>
+  <div class="math-display">$$\begin{aligned}&amp;\int_0^1u\,dx=\sum_{k=1}^n\frac{k-1}n\cdot\frac1n=\frac{(n-1)n}{2n^2}=\frac{n-1}{2n}\\&amp;\int_0^1o\,dx=\sum_{k=1}^n\frac kn\cdot\frac1n=\frac{n(n+1)}{2n^2}=\frac{n+1}{2n}\end{aligned}.$$</div></div></details></li>
+  <li><p>Where does $I=\int_0^1x\,dx$ lie, and why?</p>
+  <details><summary>Answer</summary><div><p>$\int u\,dx\in\mathcal U(f)$, so $\int u\,dx\le\sup\mathcal U(f)=I$. Likewise $I=\inf\mathcal O(f)\le\int o\,dx$. So $\frac{n-1}{2n}\le I\le\frac{n+1}{2n}$, for every $n$.</p></div></details></li>
+  <li><p>Conclude the value.</p>
+  <details><summary>Answer</summary><div><p>Both bounds are $\frac12\mp\frac1{2n}$, so $|I-\frac12|\le\frac1{2n}$ for every $n\in\mathbb N$. If $I\neq\frac12$, the Archimedean principle gives $n&gt;\frac1{2|I-1/2|}$, so $\frac1{2n}&lt;|I-\frac12|$: a contradiction. So $\int_0^1x\,dx=\frac12$, the area of the triangle, as it should be.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-2">Worked example 2: continuous functions are integrable (Figalli HS23 B1, 7 points; Satz 4.42, <a class="pl" href="script.html#p205">p. 205</a>)</h3>
+<p><em>Show that every continuous function $f:[a,b]\to\mathbb{R}$ is Riemann integrable.</em> This is the twin of <a class="xl" href="#s7-the-rising-slope-monotone-functions">section 7</a>: same frame, different gap.</p>
+<ol class="gq">
+  <li><p>Write the frame: the first line, and the last lines.</p>
+  <details><summary>Answer</summary><div><p>First: “Let $\varepsilon&gt;0$.” Last: “…so $u\le f\le o$ and $\int_a^b(o-u)\,dx&lt;\varepsilon$. By the ε-criterion, $f$ is integrable.” Also needed early: “$f$ is bounded by the boundedness theorem”.</p></div></details></li>
+  <li><p>In <a class="xl" href="#s7-the-rising-slope-monotone-functions">section 7</a>, monotonicity told us where $f$ is lowest and highest on each piece. What replaces it here, and which theorem do you use?</p>
+  <details><summary>Answer</summary><div><p>On each closed piece $[x_{k-1},x_k]$, $f$ is continuous, so by the extreme value theorem it attains a minimum $m_k$ and a maximum $M_k$. Define the step functions by $u=m_k$ and $o=M_k$ on $[x_{k-1},x_k)$, and $u(b)=m_n$, $o(b)=M_n$. Then $u\le f\le o$.</p></div></details></li>
+  <li><p>The gap on piece $k$ is $M_k-m_k$. We want the total $\sum(M_k-m_k)\Delta x_k$ to be $&lt;\varepsilon$. What would be enough for each $M_k-m_k$?</p>
+  <details><summary>Answer</summary><div><p>$M_k-m_k&lt;\frac\varepsilon{b-a}$ for every $k$, because then</p><div class="math-display">$$\begin{aligned}\sum_{k=1}^n(M_k-m_k)\Delta x_k&amp;&lt;\frac\varepsilon{b-a}\sum_{k=1}^n\Delta x_k\\&amp;=\frac\varepsilon{b-a}(b-a)\\&amp;=\varepsilon\end{aligned}.$$</div></div></details></li>
+  <li><p>Which theorem from <a class="xl" href="lesson-08.html#s6-heine-s-theorem-and-its">lesson 8</a> makes the gap that small on <em>every</em> piece at once, and how do you choose the partition?</p>
+  <details><summary>Answer</summary><div><p>Heine's theorem: $f$ is uniformly continuous, so for $\frac\varepsilon{b-a}$ there is one $\delta&gt;0$ with <span class="math-display" style="display:block">$$|x-y|&lt;\delta\Rightarrow|f(x)-f(y)|&lt;\frac\varepsilon{b-a}.$$</span>Take equal pieces of width $\frac{b-a}n&lt;\delta$ (Archimedes). On piece $k$, $m_k=f(z)$ and $M_k=f(z')$ with $z,z'$ in the same piece, so $|z-z'|\le\frac{b-a}n&lt;\delta$, and $M_k-m_k&lt;\frac\varepsilon{b-a}$.</p></div></details></li>
+  <li><p>Write the proof in one piece.</p>
+  <details><summary>Answer</summary><div><p>Let $\varepsilon&gt;0$. By Heine's theorem $f$ is uniformly continuous, so there is $\delta&gt;0$ with $|f(x)-f(y)|&lt;\frac\varepsilon{b-a}$ whenever $|x-y|&lt;\delta$. Choose $n\in\mathbb N$ with $\frac{b-a}n&lt;\delta$ and let $x_k=a+k\frac{b-a}n$. By the extreme value theorem, $f$ attains a minimum $m_k=f(z_k)$ and a maximum $M_k=f(z_k')$ on $[x_{k-1},x_k]$. Since $|z_k-z_k'|&lt;\delta$, $M_k-m_k&lt;\frac\varepsilon{b-a}$. Define step functions $u=m_k$, $o=M_k$ on $[x_{k-1},x_k)$ and $u(b)=m_n$, $o(b)=M_n$. Then $u\le f\le o$ and</p>
+  <div class="math-display">$$\begin{aligned}\int_a^b(o-u)\,dx&amp;=\sum_{k=1}^n(M_k-m_k)\frac{b-a}n\\&amp;&lt;\frac\varepsilon{b-a}\cdot(b-a)\\&amp;=\varepsilon\end{aligned}.$$</div>
+  <p>By the ε-criterion, $f$ is Riemann integrable. <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-squeeze">the ε-criterion</a> <a class="mvl" href="moves.html#m-arch">choose n by Archimedes</a> <a class="mvl" href="moves.html#m-eps">continuity with a chosen ε</a> (here uniform: $\frac\varepsilon{b-a}$)</p>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Let $\varepsilon&gt;0$.</strong> Heine ⇒ one $\delta$ with <span class="math-display" style="display:block">$$|x-y|&lt;\delta\Rightarrow|f(x)-f(y)|&lt;\frac\varepsilon{b-a}.$$</span></li>
+  <li><strong>Equal pieces</strong> of width $\frac{b-a}n&lt;\delta$ (Archimedes).</li>
+  <li><strong>$u$ = minimum, $o$ = maximum on each piece:</strong> extreme value theorem on each piece gives $m_k$, $M_k$. Put $u=m_k$, $o=M_k$.</li>
+  <li><strong>Small gaps:</strong> $m_k$, $M_k$ are taken at points less than $\delta$ apart, so $M_k-m_k&lt;\frac\varepsilon{b-a}$.</li>
+  <li><strong>Sum:</strong> $\int(o-u)&lt;\frac\varepsilon{b-a}(b-a)=\varepsilon$. <strong>ε-criterion</strong> ⇒ integrable.</li>
+</ol>
+<p>Compared with the monotone proof: steps 1, 2 and 5 are the same. Only the heights change (min and max instead of left and right ends), and Heine makes the gaps small instead of the telescope.</p></div>
+
+</div>
+
+<h2 id="s9-your-turn">9. Your turn</h2>
+<div class="box">
+  <h3 id="ex-1">Exercise 1 (integral of a step function)</h3>
+  <p>On $[0,3]$ let $t=2$ on $(0,1)$, $t=-1$ on $(1,2.5)$, $t=4$ on $(2.5,3)$, and $t(0)=7$, $t(1)=0$, $t(2.5)=-3$, $t(3)=1$. Compute $\int_0^3 t\,dx$. Then compute it again with the finer partition $\{0,1,2,2.5,3\}$ and check you get the same.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p>$\int_0^3t\,dx=2\cdot1+(-1)\cdot1.5+4\cdot0.5$, which is $2-1.5+2=2.5$. The values at $0,1,2.5,3$ don't enter.</p>
+  <p>Finer partition: the piece $(1,2.5)$ splits into $(1,2)$ and $(2,2.5)$, both with value $-1$: <span class="math-display" style="display:block">$$\begin{aligned}2\cdot1+(-1)\cdot1+(-1)\cdot0.5+4\cdot0.5&amp;=2.5\end{aligned}.$$</span>Same, as it must be: the integral of a step function doesn't depend on the partition (<a class="xl" href="#s2-step-functions-the-rectangles">section 2</a>).</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-2">Exercise 2 (multiple choice, built from Felder HS22 MC5, Kobel-Keller HS24 #10 and Figalli FS24 MC9)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">HS22 exam</a> · <a href="pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">FS24 exam with solutions</a> · <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Let $f:[a,b]\to\mathbb{R}$. True or false? (a) If $f$ takes only finitely many different values, then $f$ is Riemann integrable. (b) If $f$ is Riemann integrable, then $f$ is continuous. (c) If $f$ is monotone, then $f$ is Riemann integrable. (d) If $f$ is bounded, then $f$ is Riemann integrable.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(a) False.</strong> The Dirichlet function takes only the values $0$ and $1$ and is not integrable (<a class="xl" href="#s5-the-glittering-field-a-function">section 5</a>).</li>
+    <li><strong>(b) False.</strong> A step function with a jump, like $f=0$ on $[a,m)$ and $f=1$ on $[m,b]$ with $m=\frac{a+b}2$, is integrable (take $u=o=f$, so $\int(o-u)=0&lt;\varepsilon$) but not continuous at $m$.</li>
+    <li><strong>(c) True.</strong> Monotone functions are integrable (<a class="xl" href="#s7-the-rising-slope-monotone-functions">section 7</a>).</li>
+    <li><strong>(d) False.</strong> The Dirichlet function again: bounded by $1$, not integrable.</li>
+  </ul>
+  <p>Scoring like the exam: 4 correct gives 2 points, 3 correct gives 1.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-3">Exercise 3 (the twin of Worked example 1, Übung 4.15, <a class="pl" href="script.html#p186">p. 186</a>)</h3>
+  <p>Show $\int_0^1x^2\,dx=\frac13$ with $n$ equal pieces. You need $1^2+2^2+\dots+m^2=\frac{m(m+1)(2m+1)}6$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> as in Worked example 1: integrable first, then the lower and upper sums for $n$ equal pieces, then trap $I$ between them and let Archimedes finish. <em>Moves:</em> <a class="mvl" href="moves.html#m-arch">choose n by Archimedes</a>.</p>
+  <p><strong>Integrable:</strong> $x^2$ is increasing on $[0,1]$, and monotone functions are integrable. On piece $k$, $[\frac{k-1}n,\frac kn]$, $u=\frac{(k-1)^2}{n^2}$ (left end) and $o=\frac{k^2}{n^2}$ (right end). So</p>
+  <div class="math-display">$$\begin{aligned}&amp;\int_0^1u\,dx=\frac1{n^3}\sum_{k=1}^n(k-1)^2=\frac{(n-1)n(2n-1)}{6n^3}\\&amp;\int_0^1o\,dx=\frac1{n^3}\sum_{k=1}^nk^2=\frac{n(n+1)(2n+1)}{6n^3}\end{aligned}.$$</div>
+  <p><strong>Bounds:</strong> expand: <span class="math-display" style="display:block">$$\begin{aligned}\frac{(n-1)(2n-1)}{6n^2}&amp;=\frac{2n^2-3n+1}{6n^2}\\&amp;=\frac13-\frac1{2n}+\frac1{6n^2}\end{aligned}$$</span>and $\frac{(n+1)(2n+1)}{6n^2}=\frac13+\frac1{2n}+\frac1{6n^2}$. Since $\frac1{6n^2}\le\frac1{2n}$, the integral $I$ satisfies $\frac13-\frac1{2n}\le I\le\frac13+\frac1n$ for all $n$.</p>
+  <p><strong>Value:</strong> so $|I-\frac13|\le\frac1n$ for every $n$, and by the Archimedean principle (as in Worked example 1) $I=\frac13$. This is the “quadrature of the parabola” from the very first lecture, now proved in the language of chapter 4.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-4">Exercise 4 (proof)</h3>
+  <p>Prove that a monotonically <em>decreasing</em> $f:[a,b]\to\mathbb{R}$ is integrable directly, without reducing to $-f$. At which end of each piece should the lower step function $u$ take its value now?</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Frame:</strong> as in <a class="xl" href="#s7-the-rising-slope-monotone-functions">section 7</a>. Now $f$ is <em>highest</em> at the left end of each piece, so $u$ takes the value at the <em>right</em> end and $o$ the value at the left end.</p>
+  <p><strong>Proof.</strong> $f(b)\le f\le f(a)$, so $f$ is bounded. Let $\varepsilon&gt;0$, $n\in\mathbb N$, $x_k=a+k\frac{b-a}n$. Let $u=f(x_k)$ on $(x_{k-1},x_k]$, $u(a)=f(a)$, and $o=f(x_{k-1})$ on $[x_{k-1},x_k)$, $o(b)=f(b)$. For $x\in(x_{k-1},x_k]$, $x\le x_k$ gives $f(x)\ge f(x_k)=u(x)$; and $u(a)=f(a)$. So $u\le f$, and likewise $f\le o$. Then</p>
+  <div class="math-display">$$\begin{aligned}\int_a^b(o-u)\,dx&amp;=\sum_{k=1}^n\big(f(x_{k-1})-f(x_k)\big)\frac{b-a}n\\&amp;=\frac{(b-a)\big(f(a)-f(b)\big)}n\\&amp;&lt;\varepsilon\end{aligned}$$</div>
+  <p>for $n&gt;\frac{(b-a)(f(a)-f(b))}\varepsilon$. By the ε-criterion, $f$ is integrable. <span class="qed">∎</span></p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-squeeze">the ε-criterion</a> <a class="mvl" href="moves.html#m-tele">telescoping sum</a> <a class="mvl" href="moves.html#m-arch">choose n by Archimedes</a></p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-5">Exercise 5 (which theorems?)</h3>
+  <p>Explain in two or three sentences each why these are integrable: (a) $f(x)=x^2$ on $[-1,2]$, (b) $f(x)=\sqrt{1-x^2}$ on $[0,1]$ (Übung 4.32, <a class="pl" href="script.html#p200">p. 200</a>), (c) $f(x)=\lfloor x\rfloor$ on $[0,3]$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> $x^2$ is decreasing on $[-1,0]$ and increasing on $[0,2]$, so it is integrable on each because monotone functions are integrable, and on $[-1,2]$ by additivity over intervals. (Or: it's a polynomial, or it's continuous.)</p>
+  <p><strong>(b)</strong> For $0\le x&lt;y\le1$ we have $x^2&lt;y^2$, so $1-x^2&gt;1-y^2\ge0$, and since $\sqrt{\ }$ is increasing (<a class="xl" href="lesson-08.html#the-payoff-th-roots-beispiel">lesson 8</a>), $\sqrt{1-x^2}&gt;\sqrt{1-y^2}$. So $f$ is decreasing, hence integrable. (Or: it's continuous, by Worked example 2.) Its integral is $\frac\pi4$, a quarter of the unit disc, which you'll be able to compute in <a class="xl" href="lesson-19.html#s3-computing-integrals-with-antiderivatives">lesson 19</a>.</p>
+  <p><strong>(c)</strong> $\lfloor x\rfloor$ is increasing, so integrable. In fact it's a step function: $0$ on $(0,1)$, $1$ on $(1,2)$, $2$ on $(2,3)$, so $\int_0^3\lfloor x\rfloor\,dx=0+1+2=3$. Note it is <em>not</em> continuous, so only the monotone theorem applies, not Worked example 2.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-6">Exercise 6 (proof with the ε-criterion)</h3>
+  <p>Let $f:[0,1]\to\mathbb{R}$ with $f(\frac12)=5$ and $f(x)=0$ for all other $x$. Show directly with the ε-criterion that $f$ is integrable, and that $\int_0^1f\,dx=0$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Frame:</strong> “Let $\varepsilon&gt;0$. … so $u\le f\le o$ and $\int(o-u)&lt;\varepsilon$.” The gap: an upper step function that equals $5$ only on a very short interval around $\frac12$.</p>
+  <p><strong>Proof.</strong> Let $\varepsilon&gt;0$ and $\eta=\min(\frac\varepsilon{20},\frac14)$. Let $u=0$, and let $o=5$ on $[\frac12-\eta,\frac12+\eta]$ and $o=0$ elsewhere. Both are step functions (partition $0&lt;\frac12-\eta&lt;\frac12+\eta&lt;1$), and $u\le f\le o$. Then <span class="math-display" style="display:block">$$\int_0^1(o-u)\,dx=5\cdot2\eta=10\eta\le\frac\varepsilon2&lt;\varepsilon.$$</span>By the ε-criterion $f$ is integrable.</p>
+  <p><strong>Value:</strong> $0=\int u\le\int_0^1f\,dx\le\int o=10\eta$, and $\eta$ can be made as small as we like, so $\int_0^1f\,dx=0$. (We took $\eta\le\frac14$ only so that $[\frac12-\eta,\frac12+\eta]\subseteq[0,1]$.) <span class="qed">∎</span></p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-squeeze">the ε-criterion</a> <a class="mvl" href="moves.html#m-alleps">smaller than every ε</a></p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="bonus">Bonus</h3>
+  <p>Let $g(x)=1$ for rational $x$ and $g(x)=-1$ for irrational $x$, on $[0,1]$. Show that $|g|$ is integrable but $g$ is not. So the converse of “$f$ integrable ⇒ $|f|$ integrable” is false.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> two claims. “$|g|$ integrable” is one line. “$g$ not integrable” means $\underline I(g)\neq\overline I(g)$, so bound every upper and every lower step function, as for the Dirichlet function in Proof C.</p>
+  <p>$|g|=1$ is constant, hence a step function, hence integrable. For $g$: every piece of every partition contains a rational and an irrational point, so, exactly as in <a class="xl" href="#s5-the-glittering-field-a-function">section 5</a>, every step function $o\ge g$ has values $\ge1$ and every step function $u\le g$ has values $\le-1$ on every piece. So $\overline I(g)=1$ and $\underline I(g)=-1$, which differ. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (1), Exercise 2 (2), Exercise 3 (2) and Exercise 5 (2) make 7. If you have 5 of 7, you're done. Exercises 4 and 6 and the Bonus are proof practice and don't count against you.</p>
+</div>
+
+<h2 id="s10-for-wonder-optional-5-min">10. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Archimedes did this 2,250 years ago.</strong> Around 250 BC, Archimedes computed the area under a parabola by trapping it between inscribed and circumscribed shapes and showing the gap can be made smaller than any given amount. That is precisely the ε-criterion, without the word “function”. Your Exercise 3 is his result, and it's also where the course began (section 1.1 of the script, the “Quadratur der Parabel” in the first lecture).</p>
+<p><strong>The popcorn function</strong> (Übung 4.25, <a class="pl" href="script.html#p192">p. 192</a>). Let $g(x)=\frac1q$ if $x=\frac pq$ in lowest terms, and $g(x)=0$ if $x$ is irrational, on $[0,1]$. It is discontinuous at every rational number, so its jumps are dense, just like the Dirichlet function's. Yet it <em>is</em> integrable, with integral $0$! The reason: for any $\varepsilon$, only finitely many points have $g(x)\ge\varepsilon$ (those with $q\le\frac1\varepsilon$), and finitely many spikes can be covered by narrow tents, as in Exercise 6. Its graph looks like popcorn bursting from the axis.</p>
+<p><strong>Where this leads.</strong> Lebesgue proved in 1902 that a bounded function is Riemann integrable exactly when its set of discontinuities is “negligible” (has measure zero). The rationals are negligible, which explains the popcorn function. Lebesgue then built a better integral, which even integrates the Dirichlet function (its integral is $0$). That's the integral of measure theory, later in the Bachelor (the course “Mass und Integral”).</p>
+
+<h2 id="s11-what-we-skipped">11. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>The induction in Lemma 4.5 (<a class="pl" href="script.html#p180">p. 180</a>)</strong>, adding partition points one at a time. Low priority; the one-point step is in <a class="xl" href="#s2-step-functions-the-rectangles">section 2</a>.</li>
+  <li><strong>Übung 4.9 (<a class="pl" href="script.html#p182">p. 182</a>):</strong> gluing two step functions. Low priority.</li>
+  <li><strong>Proposition 4.12 (ii) (<a class="pl" href="script.html#p184">p. 184</a>)</strong> and the cycle (i)⇒(iii)⇒(ii)⇒(i). We proved (i)⇔(iii) directly. Low priority.</li>
+  <li><strong>Übung 4.14 and Wichtige Übung 4.16 (<a class="pl" href="script.html#p185">p. 185–186</a>):</strong> step functions are integrable, and a criterion using only special families of tiles and canopies. Medium priority; 4.16 is what makes Worked example 1 fully rigorous in one line.</li>
+  <li><strong>Proofs of linearity (Satz 4.19, <a class="pl" href="script.html#p188">p. 188</a>) and additivity over intervals (Satz 4.26, <a class="pl" href="script.html#p193">p. 193</a>)</strong>, and Übungen 4.20–4.22. Medium priority; no old exam asks for them, but the sup/inf bookkeeping is good practice.</li>
+  <li><strong>Changing finitely many values (Übung 4.22, <a class="pl" href="script.html#p190">p. 190</a>):</strong> the proof that an integrable function stays integrable, with the same integral, if you change it at finitely many points. Medium priority; Exercise 6 does one concrete case, and it's used for piecewise monotone functions.</li>
+  <li><strong>Integrability of $|f|$ (proof of Satz 4.24 (iii), <a class="pl" href="script.html#p191">p. 191</a>)</strong> via the positive part $f^+=\max(0,f)$, and Übung 4.23. Medium priority.</li>
+  <li><strong>Additive interval functions (Definition 4.29, Proposition 4.30, <a class="pl" href="script.html#p195">p. 195</a>)</strong> and the physics in 4.4.3–4.4.4. Low priority.</li>
+  <li><strong>Integrals of monomials by hand (Satz 4.37, <a class="pl" href="script.html#p202">p. 202</a>) and Übungen 4.36, 4.38, 4.41.</strong> Low priority; <a class="xl" href="lesson-19.html#s2-the-fundamental-theorem">lesson 19</a> does them with the fundamental theorem.</li>
+  <li><strong>The sandwich criterion with continuous functions (Proposition 4.44, <a class="pl" href="script.html#p206">p. 206</a>).</strong> Low priority.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-10.html">lesson 10</a>, metric spaces and open and closed sets (chapter 5).</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-08.html">← Lesson 8: The Walled Garden</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-10.html">Lesson 10: The Measure of Distance →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

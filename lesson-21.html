@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Seer of the Carts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-20.html">← Lesson 20</a>
+<a href="lesson-22.html">Lesson 22 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 21 of 26</span>
+  <h1>The Seer of the Carts</h1>
+  <p class="lead"><strong>Taylor approximation</strong>: the best polynomial of degree $n$ near a point, built from the derivatives at that point. <strong>Taylor's theorem with integral remainder</strong> (an exam proof) says exactly how far off it is. Then the quick estimates, the Lagrange form of the remainder, and the exam skill “compute the Taylor expansion up to order 4” with all its shortcuts, plus limits and extremum tests as applications. Script section 9.4.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-20-5">Recap of lesson 20 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-seer-of">1. The story: the seer of the carts</a>
+</li>
+<li><a href="#s2-taylor-polynomials">2. Taylor polynomials</a>
+<ol>
+<li><a href="#we-1">Worked example 1: the Taylor polynomials to know</a></li>
+</ol></li>
+<li><a href="#s3-taylor-s-theorem-with-integral">3. Taylor&#x27;s theorem with integral remainder</a>
+<ol>
+<li><a href="#proof-a">Proof A: Taylor&#x27;s theorem with integral remainder (Theorem 9.46, p. 447–448)</a></li>
+<li><a href="#we-2">Worked example 2: inequalities from the sign of the remainder</a></li>
+</ol></li>
+<li><a href="#s4-how-big-is-the-error">4. How big is the error?</a>
+<ol>
+<li><a href="#proof-b">Proof B: the Taylor estimate (Korollar 9.47, p. 448–449)</a></li>
+<li><a href="#proof-c">Proof C: the Lagrange form of the remainder (Übung 9.48 (c), p. 449)</a></li>
+<li><a href="#we-3">Worked example 3: numbers with a guaranteed error</a></li>
+<li><a href="#we-4">Worked example 4: when is a function equal to its Taylor series?</a></li>
+</ol></li>
+<li><a href="#s5-computing-expansions-fast">5. Computing expansions fast</a>
+<ol>
+<li><a href="#proof-d">Proof D: the Taylor polynomial is the only good approximation (uniqueness)</a></li>
+<li><a href="#the-rules-for-as">The rules for $O$ (as $x\to0$)</a></li>
+<li><a href="#we-5">Worked example 5: building expansions</a></li>
+</ol></li>
+<li><a href="#s6-using-expansions-limits-and-extrema">6. Using expansions: limits and extrema</a>
+<ol>
+<li><a href="#we-6">Worked example 6: limits by expansion</a></li>
+<li><a href="#proof-e">Proof E: the higher-derivative test for extrema (Beispiel 9.49, p. 449–450)</a></li>
+<li><a href="#we-7">Worked example 7: when the second derivative is zero</a></li>
+</ol></li>
+<li><a href="#s7-worked-examples-computing-taylor-expansions">7. Worked examples: computing Taylor expansions</a>
+<ol>
+<li><a href="#the-decision-list-for-compute">The decision list for “compute the Taylor expansion at $0$ up to order $n$”</a></li>
+<li><a href="#we-8">Worked example 8: which building blocks?</a></li>
+</ol></li>
+<li><a href="#s8-exercises">8. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Figalli HS23, K3, 2 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (Figalli FS24, K3, 2 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (Figalli FS26, K3, 2 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (PVK mock HS25, K3, 2 points)</a></li>
+<li><a href="#ex-5">Exercise 5 (exam style, 2 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (2017 summer exam, question 12, 5 points)</a></li>
+<li><a href="#ex-7">Exercise 7 (limits by expansion)</a></li>
+<li><a href="#ex-8">Exercise 8 (higher-derivative test)</a></li>
+<li><a href="#ex-9">Exercise 9 (a square root by hand)</a></li>
+<li><a href="#bonus">Bonus (2018 winter exam, question 2, 3 points, Analysis II)</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. For wonder</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) write down the Taylor polynomial of a function at a point and know the ones of $e^x$, $\sin$, $\cos$, $\log(1+x)$, $\frac1{1-x}$ and $(1+x)^\alpha$ at $0$, (2) state and <strong>prove Taylor's theorem with integral remainder</strong> (induction and integration by parts), (3) bound the error with $\frac{M_{n+1}|x-x_0|^{n+1}}{(n+1)!}$, (4) <strong>compute a Taylor expansion up to order 3 or 4 quickly</strong> by substituting, multiplying and composing known ones, with correct $O(x^{n+1})$ bookkeeping, (5) use expansions for limits and to decide extrema when $f''(x_0)=0$.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p446">p. 446–449</a>, Section 9.4:</strong> the Taylor polynomial and Taylor series, the function whose Taylor series vanishes, Taylor's theorem with integral remainder, the Taylor estimate, the Cauchy and Lagrange remainders.</li>
+      <li><strong><a class="pl" href="script.html#p449">p. 449–450</a>:</strong> the higher-derivative test for extrema.</li>
+      <li><strong><a class="pl" href="script.html#p450">p. 450–451</a>, Section 9.4.1:</strong> analytic functions.</li>
+      <li><strong><a class="pl" href="script.html#p451">p. 451–453</a>, Section 9.4.2 (starred):</strong> Newton's method. For wonder only.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+“Compute the Taylor expansion at $0$ up to order 3 (or 4)” is a 2-point question K3 in every recent Figalli exam (HS23, FS24, FS26) and in the PVK mock, and it is pure technique: today's sections 5 and 7 make it routine. “Prove Taylor's theorem with integral remainder” was a 5-point question in the 2017 summer exam, and the statement is on the official formula sheet. Expansions also make limit questions quick (Kobel-Keller HS24 question 12, 3 points, was <a class="xl" href="lesson-18.html#ex-9">lesson 18</a>'s Exercise 9 (d)).</div>
+
+<div class="box"><h3 id="recap-of-lesson-20-5">Recap of <a class="xl" href="lesson-20.html">lesson 20</a> (5 min)</h3>
+<ul>
+  <li><strong>Improper integrals</strong> are limits of ordinary integrals; $\int_1^\infty x^{-\alpha}$ converges iff $\alpha&gt;1$, $\int_0^1x^{-\alpha}$ iff $\alpha&lt;1$; compare at each problem point.</li>
+  <li>From <a class="xl" href="lesson-17.html#s2-the-derivative">lessons 17</a> and <a class="xl" href="lesson-19.html#proof-d">19</a>: the derivative is the cart's <strong>climb gauge</strong>: near a point, a graph is a straight line plus a small error, <span class="math-display" style="display:block">$$f(x)=f(x_0)+f'(x_0)(x-x_0)+o(x-x_0)$$</span>; integration by parts is $\int_a^buv'=\bigl[uv\bigr]_a^b-\int_a^bu'v$.</li>
+</ul>
+<ol class="gq">
+  <li><p>What is $\frac{d}{dt}\left(-\frac{(x-t)^2}{2}\right)$, with $x$ fixed?</p>
+  <details><summary>Answer</summary><div><p>$(x-t)$. The chain rule gives $-\frac{2(x-t)}2\cdot(-1)=x-t$. This little derivative is the engine of today's main proof.</p></div></details></li>
+  <li><p><a class="xl" href="lesson-16.html#s6-sine-cosine-and-euler-s">Lesson 16</a>: write the series of $e^x$, $\sin x$ and $\cos x$.</p>
+  <details><summary>Answer</summary><div><p>$e^x=\sum\frac{x^k}{k!}$, $\sin x=x-\frac{x^3}{3!}+\frac{x^5}{5!}-\dots$, $\cos x=1-\frac{x^2}{2!}+\frac{x^4}{4!}-\dots$ (all on the formula sheet). Today we see they are the Taylor series of these functions.</p></div></details></li>
+  <li><p><a class="xl" href="lesson-13.html#s6-landau-notation-and">Lesson 13</a>: what does $f(x)=O(x^4)$ as $x\to0$ mean?</p>
+  <details><summary>Answer</summary><div><p>There are $C$ and $\delta&gt;0$ with $|f(x)|\le C|x|^4$ for $0&lt;|x|&lt;\delta$. So $f$ is at most a constant times $x^4$ near $0$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>Taylor polynomial, $n$-th Taylor approximation</td><td>Taylorpolynom, $n$-te Taylor-Approximation</td></tr>
+    <tr><td>Taylor series</td><td>Taylorreihe</td></tr>
+    <tr><td>Taylor expansion up to order $n$</td><td>Taylorentwicklung bis zur Ordnung $n$</td></tr>
+    <tr><td>expansion point</td><td>Entwicklungspunkt, Fusspunkt</td></tr>
+    <tr><td>remainder, integral remainder</td><td>Restglied, Integral-Restglied</td></tr>
+    <tr><td>Lagrange remainder</td><td>Restglied nach Lagrange</td></tr>
+    <tr><td>smooth, analytic</td><td>glatt, analytisch</td></tr>
+    <tr><td>Newton's method</td><td>Newton-Verfahren</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-seer-of">1. The story: the seer of the carts</h2>
+<div class="story">
+<p>At the crossroads lives a seer who predicts where a cart will be later, using only what its gauges show <em>now</em>. The simplest prediction uses the height and the climb gauge from <a class="xl" href="lesson-17.html#s1-the-story-the-cart-s">lesson 17</a>: “it will keep climbing at this speed.” That is a straight line, and it is good only for a moment, because the road bends away at once. So the seer adds a second gauge, which shows how fast the climbing speed itself is changing (is the cart speeding up its climb, or slowing down?). With it, the prediction becomes a parabola. A third gauge shows how fast <em>that</em> is changing, and so on: every gauge makes the prediction fit for longer.</p>
+<p>Every prediction comes with a slip of paper, the <em>error ledger</em>, that says how far the true road can be from the prediction. The ledger has a formula: it depends on how wild the road's next bend is, and it shrinks very fast near the point. With enough gauges, many roads are predicted perfectly over long distances. But the seer also meets the strange road from <a class="xl" href="lesson-17.html#s10-for-wonder-optional-5-min">lesson 17</a>, where every gauge at the point reads zero and the road still rises later: no prediction from the gauges can see it.</p>
+</div>
+<p>In maths: the gauges are the derivatives $f'(x_0),f''(x_0),\dots$, the prediction from $n$ gauges is the <strong>Taylor polynomial</strong> $P_n$, the polynomial of degree $\le n$ with the same first $n$ derivatives as $f$ at $x_0$. The error ledger is the <strong>remainder</strong> $R_n=f-P_n$, and <strong>Taylor's theorem</strong> writes it as an integral of $f^{(n+1)}$. The strange road is $\psi(x)=e^{-1/x}$ ($x&gt;0$), $\psi=0$ ($x\le0$): every Taylor polynomial at $0$ is $0$.</p>
+
+<h2 id="s2-taylor-polynomials">2. Taylor polynomials</h2>
+<div class="box">
+<p><strong>Definition.</strong> Let $f:(a,b)\to\mathbb R$ (or $\mathbb C$) be $n$ times differentiable and $x_0\in(a,b)$. The <strong>$n$-th Taylor polynomial</strong> (Taylor approximation) of $f$ at $x_0$ is</p>
+<span class="math-display" style="display:block">$$\begin{aligned}P_n(x)&amp;=\sum_{k=0}^n\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k\\&amp;=f(x_0)+f'(x_0)(x-x_0)\\&amp;\quad+\frac{f''(x_0)}2(x-x_0)^2+\dots\end{aligned}$$</span>
+<p>The script writes $P^f_{x_0,n}$. If $f$ is smooth (differentiable infinitely often), the <strong>Taylor series</strong> of $f$ at $x_0$ is the power series $\sum_{k=0}^\infty\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k$.</p>
+</div>
+<p><strong>Why the $k!$.</strong> Differentiate $(x-x_0)^k$ $j$ times and put $x=x_0$: you get $0$ for $j\neq k$ and $k!$ for $j=k$. So the $k!$ cancels exactly, and $P_n^{(k)}(x_0)=f^{(k)}(x_0)$ for $k=0,\dots,n$. $P_n$ is the one polynomial of degree $\le n$ that agrees with $f$ to order $n$ at $x_0$ (the seer's prediction from the first $n$ gauges). $P_1$ is the tangent line from <a class="xl" href="lesson-17.html#s2-the-derivative">lesson 17</a>.</p>
+
+<div class="box">
+<h3 id="we-1">Worked example 1: the Taylor polynomials to know</h3>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<ol class="gq">
+  <li><p>$f(x)=e^x$ at $0$: what are all the derivatives at $0$, and what is $P_n$?</p>
+  <details><summary>Answer</summary><div><p>$f^{(k)}=e^x$, so $f^{(k)}(0)=1$ and $P_n(x)=\sum_{k=0}^n\frac{x^k}{k!}$: the partial sums of the exponential series.</p></div></details></li>
+  <li><p>$\sin$ and $\cos$ at $0$.</p>
+  <details><summary>Answer</summary><div><p>The derivatives of $\sin$ cycle $\sin,\cos,-\sin,-\cos$, with values $0,1,0,-1$ at $0$. So $\sin x$ has $P_5(x)=x-\frac{x^3}6+\frac{x^5}{120}$, only odd powers, and $\cos x$ has $P_4(x)=1-\frac{x^2}2+\frac{x^4}{24}$, only even powers. Again the partial sums of the series from <a class="xl" href="lesson-16.html#s6-sine-cosine-and-euler-s">lesson 16</a>.</p></div></details></li>
+  <li><p>$\log(1+x)$ at $0$.</p>
+  <details><summary>Answer</summary><div><p>$f'=(1+x)^{-1}$, $f''=-(1+x)^{-2}$, $f'''=2(1+x)^{-3}$, and in general <span class="math-display" style="display:block">$$f^{(k)}=(-1)^{k-1}(k-1)!\,(1+x)^{-k}.$$</span>So $\frac{f^{(k)}(0)}{k!}=\frac{(-1)^{k-1}}k$ and <span class="math-display" style="display:block">$$\begin{aligned}P_n(x)&amp;=x-\frac{x^2}2+\frac{x^3}3-\dots\\&amp;\quad+(-1)^{n-1}\frac{x^n}n\end{aligned}$$</span>(<a class="xl" href="lesson-19.html#we-3">lesson 19</a>'s log series, on the formula sheet).</p></div></details></li>
+  <li><p>$\frac1{1-x}$ and $(1+x)^\alpha$ at $0$ ($\alpha\in\mathbb R$).</p>
+  <details><summary>Answer</summary><div><p>$\frac1{1-x}$: $f^{(k)}(0)=k!$, so $P_n=1+x+x^2+\dots+x^n$ (the geometric series). $(1+x)^\alpha$: <span class="math-display" style="display:block">$$f^{(k)}(0)=\alpha(\alpha-1)\cdots(\alpha-k+1),$$</span>so</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;(1+x)^\alpha:\\&amp;P_2(x)=1+\alpha x+\frac{\alpha(\alpha-1)}2x^2,\end{aligned}$$</span>
+  <p>for example $\sqrt{1+x}$ has $P_2(x)=1+\frac x2-\frac{x^2}8$.</p></div></details></li>
+  <li><p>$\log x$ at $x_0=1$, up to order 3.</p>
+  <details><summary>Answer</summary><div><p>Write $x=1+h$: $\log x=\log(1+h)$, so <span class="math-display" style="display:block">$$\begin{aligned}P_3(x)&amp;=(x-1)-\frac{(x-1)^2}2+\frac{(x-1)^3}3\end{aligned}.$$</span>(Moving the point to $0$ by $h=x-x_0$ is the standard trick.)</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s3-taylor-s-theorem-with-integral">3. Taylor's theorem with integral remainder</h2>
+<figure style="margin:.4rem 0" aria-label="The graph of sine from minus 4 to 4 with three of its Taylor polynomials at 0: the line y equals x, the cubic P3, and the quintic P5. Near 0 all four curves lie on top of each other; further out, the higher the degree, the longer the polynomial stays close to sine.">
+<svg viewBox="0 0 640 320" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="20" y1="160" x2="620" y2="160" style="stroke:var(--muted)" stroke-width="1.2"/><line x1="320" y1="15" x2="320" y2="305" style="stroke:var(--muted)" stroke-width="1.2"/><line x1="32" y1="156" x2="32" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="32" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">-4</text><line x1="104" y1="156" x2="104" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="104" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">-3</text><line x1="176" y1="156" x2="176" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="176" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">-2</text><line x1="248" y1="156" x2="248" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="248" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">-1</text><line x1="392" y1="156" x2="392" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="392" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">1</text><line x1="464" y1="156" x2="464" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="464" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">2</text><line x1="536" y1="156" x2="536" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="536" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">3</text><line x1="608" y1="156" x2="608" y2="164" style="stroke:var(--muted)" stroke-width="1.2"/><text x="608" y="182" text-anchor="middle" font-size="15" style="fill:var(--muted)">4</text><path d="M155.2 301.9 L156.7 300.6 L158.2 299.3 L159.7 298.0 L161.2 296.7 L162.8 295.4 L164.3 294.1 L165.8 292.8 L167.3 291.5 L168.8 290.2 L170.3 288.9 L171.8 287.6 L173.3 286.3 L174.8 285.0 L176.4 283.7 L177.9 282.4 L179.4 281.1 L180.9 279.8 L182.4 278.5 L183.9 277.2 L185.4 275.9 L186.9 274.6 L188.5 273.3 L190.0 272.0 L191.5 270.7 L193.0 269.4 L194.5 268.1 L196.0 266.8 L197.5 265.5 L199.0 264.2 L200.6 262.9 L202.1 261.6 L203.6 260.3 L205.1 259.0 L206.6 257.6 L208.1 256.3 L209.6 255.0 L211.1 253.7 L212.6 252.4 L214.2 251.1 L215.7 249.8 L217.2 248.5 L218.7 247.2 L220.2 245.9 L221.7 244.6 L223.2 243.3 L224.7 242.0 L226.3 240.7 L227.8 239.4 L229.3 238.1 L230.8 236.8 L232.3 235.5 L233.8 234.2 L235.3 232.9 L236.8 231.6 L238.4 230.3 L239.9 229.0 L241.4 227.7 L242.9 226.4 L244.4 225.1 L245.9 223.8 L247.4 222.5 L248.9 221.2 L250.4 219.9 L252.0 218.6 L253.5 217.3 L255.0 216.0 L256.5 214.7 L258.0 213.4 L259.5 212.1 L261.0 210.8 L262.5 209.5 L264.1 208.2 L265.6 206.9 L267.1 205.6 L268.6 204.3 L270.1 203.0 L271.6 201.7 L273.1 200.4 L274.6 199.1 L276.2 197.8 L277.7 196.5 L279.2 195.2 L280.7 193.9 L282.2 192.6 L283.7 191.2 L285.2 189.9 L286.7 188.6 L288.2 187.3 L289.8 186.0 L291.3 184.7 L292.8 183.4 L294.3 182.1 L295.8 180.8 L297.3 179.5 L298.8 178.2 L300.3 176.9 L301.9 175.6 L303.4 174.3 L304.9 173.0 L306.4 171.7 L307.9 170.4 L309.4 169.1 L310.9 167.8 L312.4 166.5 L314.0 165.2 L315.5 163.9 L317.0 162.6 L318.5 161.3 L320.0 160.0 L321.5 158.7 L323.0 157.4 L324.5 156.1 L326.0 154.8 L327.6 153.5 L329.1 152.2 L330.6 150.9 L332.1 149.6 L333.6 148.3 L335.1 147.0 L336.6 145.7 L338.1 144.4 L339.7 143.1 L341.2 141.8 L342.7 140.5 L344.2 139.2 L345.7 137.9 L347.2 136.6 L348.7 135.3 L350.2 134.0 L351.8 132.7 L353.3 131.4 L354.8 130.1 L356.3 128.8 L357.8 127.5 L359.3 126.1 L360.8 124.8 L362.3 123.5 L363.8 122.2 L365.4 120.9 L366.9 119.6 L368.4 118.3 L369.9 117.0 L371.4 115.7 L372.9 114.4 L374.4 113.1 L375.9 111.8 L377.5 110.5 L379.0 109.2 L380.5 107.9 L382.0 106.6 L383.5 105.3 L385.0 104.0 L386.5 102.7 L388.0 101.4 L389.6 100.1 L391.1 98.8 L392.6 97.5 L394.1 96.2 L395.6 94.9 L397.1 93.6 L398.6 92.3 L400.1 91.0 L401.6 89.7 L403.2 88.4 L404.7 87.1 L406.2 85.8 L407.7 84.5 L409.2 83.2 L410.7 81.9 L412.2 80.6 L413.7 79.3 L415.3 78.0 L416.8 76.7 L418.3 75.4 L419.8 74.1 L421.3 72.8 L422.8 71.5 L424.3 70.2 L425.8 68.9 L427.4 67.6 L428.9 66.3 L430.4 65.0 L431.9 63.7 L433.4 62.3 L434.9 61.0 L436.4 59.7 L437.9 58.4 L439.4 57.1 L441.0 55.8 L442.5 54.5 L444.0 53.2 L445.5 51.9 L447.0 50.6 L448.5 49.3 L450.0 48.0 L451.5 46.7 L453.1 45.4 L454.6 44.1 L456.1 42.8 L457.6 41.5 L459.1 40.2 L460.6 38.9 L462.1 37.6 L463.6 36.3 L465.2 35.0 L466.7 33.7 L468.2 32.4 L469.7 31.1 L471.2 29.8 L472.7 28.5 L474.2 27.2 L475.7 25.9 L477.2 24.6 L478.8 23.3 L480.3 22.0 L481.8 20.7 L483.3 19.4 L484.8 18.1" style="fill:none;stroke:var(--muted)" stroke-width="2.4" stroke-dasharray="5 5"/><path d="M90.2 21.8 L91.7 27.1 L93.2 32.3 L94.7 37.4 L96.2 42.5 L97.7 47.4 L99.2 52.3 L100.8 57.0 L102.3 61.7 L103.8 66.3 L105.3 70.9 L106.8 75.3 L108.3 79.7 L109.8 84.0 L111.3 88.2 L112.9 92.3 L114.4 96.4 L115.9 100.3 L117.4 104.2 L118.9 108.0 L120.4 111.8 L121.9 115.4 L123.4 119.0 L125.0 122.5 L126.5 126.0 L128.0 129.3 L129.5 132.6 L131.0 135.8 L132.5 139.0 L134.0 142.1 L135.5 145.1 L137.0 148.0 L138.6 150.9 L140.1 153.7 L141.6 156.4 L143.1 159.1 L144.6 161.7 L146.1 164.2 L147.6 166.6 L149.1 169.0 L150.7 171.4 L152.2 173.6 L153.7 175.8 L155.2 178.0 L156.7 180.1 L158.2 182.1 L159.7 184.0 L161.2 185.9 L162.8 187.8 L164.3 189.5 L165.8 191.2 L167.3 192.9 L168.8 194.5 L170.3 196.0 L171.8 197.5 L173.3 199.0 L174.8 200.3 L176.4 201.6 L177.9 202.9 L179.4 204.1 L180.9 205.3 L182.4 206.4 L183.9 207.4 L185.4 208.4 L186.9 209.4 L188.5 210.3 L190.0 211.1 L191.5 211.9 L193.0 212.6 L194.5 213.3 L196.0 214.0 L197.5 214.6 L199.0 215.2 L200.6 215.7 L202.1 216.1 L203.6 216.6 L205.1 216.9 L206.6 217.3 L208.1 217.6 L209.6 217.8 L211.1 218.0 L212.6 218.2 L214.2 218.3 L215.7 218.4 L217.2 218.4 L218.7 218.5 L220.2 218.4 L221.7 218.3 L223.2 218.2 L224.7 218.1 L226.3 217.9 L227.8 217.7 L229.3 217.4 L230.8 217.2 L232.3 216.8 L233.8 216.5 L235.3 216.1 L236.8 215.7 L238.4 215.2 L239.9 214.8 L241.4 214.2 L242.9 213.7 L244.4 213.1 L245.9 212.5 L247.4 211.9 L248.9 211.3 L250.4 210.6 L252.0 209.9 L253.5 209.1 L255.0 208.4 L256.5 207.6 L258.0 206.8 L259.5 206.0 L261.0 205.1 L262.5 204.2 L264.1 203.3 L265.6 202.4 L267.1 201.5 L268.6 200.5 L270.1 199.5 L271.6 198.5 L273.1 197.5 L274.6 196.5 L276.2 195.4 L277.7 194.4 L279.2 193.3 L280.7 192.2 L282.2 191.1 L283.7 189.9 L285.2 188.8 L286.7 187.6 L288.2 186.5 L289.8 185.3 L291.3 184.1 L292.8 182.9 L294.3 181.7 L295.8 180.4 L297.3 179.2 L298.8 178.0 L300.3 176.7 L301.9 175.5 L303.4 174.2 L304.9 172.9 L306.4 171.6 L307.9 170.4 L309.4 169.1 L310.9 167.8 L312.4 166.5 L314.0 165.2 L315.5 163.9 L317.0 162.6 L318.5 161.3 L320.0 160.0 L321.5 158.7 L323.0 157.4 L324.5 156.1 L326.0 154.8 L327.6 153.5 L329.1 152.2 L330.6 150.9 L332.1 149.6 L333.6 148.4 L335.1 147.1 L336.6 145.8 L338.1 144.5 L339.7 143.3 L341.2 142.0 L342.7 140.8 L344.2 139.6 L345.7 138.3 L347.2 137.1 L348.7 135.9 L350.2 134.7 L351.8 133.5 L353.3 132.4 L354.8 131.2 L356.3 130.1 L357.8 128.9 L359.3 127.8 L360.8 126.7 L362.3 125.6 L363.8 124.6 L365.4 123.5 L366.9 122.5 L368.4 121.5 L369.9 120.5 L371.4 119.5 L372.9 118.5 L374.4 117.6 L375.9 116.7 L377.5 115.8 L379.0 114.9 L380.5 114.0 L382.0 113.2 L383.5 112.4 L385.0 111.6 L386.5 110.9 L388.0 110.1 L389.6 109.4 L391.1 108.7 L392.6 108.1 L394.1 107.5 L395.6 106.9 L397.1 106.3 L398.6 105.8 L400.1 105.2 L401.6 104.8 L403.2 104.3 L404.7 103.9 L406.2 103.5 L407.7 103.2 L409.2 102.8 L410.7 102.6 L412.2 102.3 L413.7 102.1 L415.3 101.9 L416.8 101.8 L418.3 101.7 L419.8 101.6 L421.3 101.5 L422.8 101.6 L424.3 101.6 L425.8 101.7 L427.4 101.8 L428.9 102.0 L430.4 102.2 L431.9 102.4 L433.4 102.7 L434.9 103.1 L436.4 103.4 L437.9 103.9 L439.4 104.3 L441.0 104.8 L442.5 105.4 L444.0 106.0 L445.5 106.7 L447.0 107.4 L448.5 108.1 L450.0 108.9 L451.5 109.7 L453.1 110.6 L454.6 111.6 L456.1 112.6 L457.6 113.6 L459.1 114.7 L460.6 115.9 L462.1 117.1 L463.6 118.4 L465.2 119.7 L466.7 121.0 L468.2 122.5 L469.7 124.0 L471.2 125.5 L472.7 127.1 L474.2 128.8 L475.7 130.5 L477.2 132.2 L478.8 134.1 L480.3 136.0 L481.8 137.9 L483.3 139.9 L484.8 142.0 L486.3 144.2 L487.8 146.4 L489.3 148.6 L490.9 151.0 L492.4 153.4 L493.9 155.8 L495.4 158.3 L496.9 160.9 L498.4 163.6 L499.9 166.3 L501.4 169.1 L503.0 172.0 L504.5 174.9 L506.0 177.9 L507.5 181.0 L509.0 184.2 L510.5 187.4 L512.0 190.7 L513.5 194.0 L515.0 197.5 L516.6 201.0 L518.1 204.6 L519.6 208.2 L521.1 212.0 L522.6 215.8 L524.1 219.7 L525.6 223.6 L527.1 227.7 L528.7 231.8 L530.2 236.0 L531.7 240.3 L533.2 244.7 L534.7 249.1 L536.2 253.7 L537.7 258.3 L539.2 263.0 L540.8 267.7 L542.3 272.6 L543.8 277.5 L545.3 282.6 L546.8 287.7 L548.3 292.9 L549.8 298.2" style="fill:none;stroke:var(--story-edge)" stroke-width="2.4" stroke-dasharray="10 5"/><path d="M25.2 299.3 L26.7 293.7 L28.2 288.4 L29.7 283.2 L31.2 278.3 L32.7 273.5 L34.2 268.9 L35.7 264.5 L37.3 260.2 L38.8 256.1 L40.3 252.2 L41.8 248.5 L43.3 244.9 L44.8 241.4 L46.3 238.1 L47.8 235.0 L49.4 232.0 L50.9 229.1 L52.4 226.4 L53.9 223.8 L55.4 221.3 L56.9 219.0 L58.4 216.7 L59.9 214.6 L61.4 212.7 L63.0 210.8 L64.5 209.0 L66.0 207.4 L67.5 205.8 L69.0 204.4 L70.5 203.0 L72.0 201.8 L73.5 200.6 L75.1 199.5 L76.6 198.5 L78.1 197.6 L79.6 196.8 L81.1 196.0 L82.6 195.4 L84.1 194.8 L85.6 194.2 L87.2 193.8 L88.7 193.4 L90.2 193.0 L91.7 192.8 L93.2 192.6 L94.7 192.4 L96.2 192.3 L97.7 192.3 L99.2 192.3 L100.8 192.3 L102.3 192.4 L103.8 192.5 L105.3 192.7 L106.8 192.9 L108.3 193.2 L109.8 193.5 L111.3 193.8 L112.9 194.1 L114.4 194.5 L115.9 194.9 L117.4 195.4 L118.9 195.8 L120.4 196.3 L121.9 196.8 L123.4 197.4 L125.0 197.9 L126.5 198.5 L128.0 199.0 L129.5 199.6 L131.0 200.2 L132.5 200.9 L134.0 201.5 L135.5 202.1 L137.0 202.7 L138.6 203.4 L140.1 204.0 L141.6 204.7 L143.1 205.3 L144.6 206.0 L146.1 206.6 L147.6 207.3 L149.1 207.9 L150.7 208.6 L152.2 209.2 L153.7 209.8 L155.2 210.5 L156.7 211.1 L158.2 211.7 L159.7 212.3 L161.2 212.9 L162.8 213.4 L164.3 214.0 L165.8 214.5 L167.3 215.1 L168.8 215.6 L170.3 216.1 L171.8 216.6 L173.3 217.1 L174.8 217.5 L176.4 218.0 L177.9 218.4 L179.4 218.8 L180.9 219.2 L182.4 219.5 L183.9 219.9 L185.4 220.2 L186.9 220.5 L188.5 220.8 L190.0 221.0 L191.5 221.3 L193.0 221.5 L194.5 221.7 L196.0 221.8 L197.5 222.0 L199.0 222.1 L200.6 222.2 L202.1 222.2 L203.6 222.3 L205.1 222.3 L206.6 222.3 L208.1 222.3 L209.6 222.2 L211.1 222.1 L212.6 222.0 L214.2 221.9 L215.7 221.7 L217.2 221.5 L218.7 221.3 L220.2 221.1 L221.7 220.8 L223.2 220.5 L224.7 220.2 L226.3 219.8 L227.8 219.5 L229.3 219.1 L230.8 218.7 L232.3 218.2 L233.8 217.8 L235.3 217.3 L236.8 216.8 L238.4 216.2 L239.9 215.6 L241.4 215.1 L242.9 214.4 L244.4 213.8 L245.9 213.1 L247.4 212.5 L248.9 211.7 L250.4 211.0 L252.0 210.3 L253.5 209.5 L255.0 208.7 L256.5 207.9 L258.0 207.0 L259.5 206.2 L261.0 205.3 L262.5 204.4 L264.1 203.5 L265.6 202.5 L267.1 201.6 L268.6 200.6 L270.1 199.6 L271.6 198.6 L273.1 197.6 L274.6 196.5 L276.2 195.5 L277.7 194.4 L279.2 193.3 L280.7 192.2 L282.2 191.1 L283.7 189.9 L285.2 188.8 L286.7 187.6 L288.2 186.5 L289.8 185.3 L291.3 184.1 L292.8 182.9 L294.3 181.7 L295.8 180.4 L297.3 179.2 L298.8 178.0 L300.3 176.7 L301.9 175.5 L303.4 174.2 L304.9 172.9 L306.4 171.6 L307.9 170.4 L309.4 169.1 L310.9 167.8 L312.4 166.5 L314.0 165.2 L315.5 163.9 L317.0 162.6 L318.5 161.3 L320.0 160.0 L321.5 158.7 L323.0 157.4 L324.5 156.1 L326.0 154.8 L327.6 153.5 L329.1 152.2 L330.6 150.9 L332.1 149.6 L333.6 148.4 L335.1 147.1 L336.6 145.8 L338.1 144.5 L339.7 143.3 L341.2 142.0 L342.7 140.8 L344.2 139.6 L345.7 138.3 L347.2 137.1 L348.7 135.9 L350.2 134.7 L351.8 133.5 L353.3 132.4 L354.8 131.2 L356.3 130.1 L357.8 128.9 L359.3 127.8 L360.8 126.7 L362.3 125.6 L363.8 124.5 L365.4 123.5 L366.9 122.4 L368.4 121.4 L369.9 120.4 L371.4 119.4 L372.9 118.4 L374.4 117.5 L375.9 116.5 L377.5 115.6 L379.0 114.7 L380.5 113.8 L382.0 113.0 L383.5 112.1 L385.0 111.3 L386.5 110.5 L388.0 109.7 L389.6 109.0 L391.1 108.3 L392.6 107.5 L394.1 106.9 L395.6 106.2 L397.1 105.6 L398.6 104.9 L400.1 104.4 L401.6 103.8 L403.2 103.2 L404.7 102.7 L406.2 102.2 L407.7 101.8 L409.2 101.3 L410.7 100.9 L412.2 100.5 L413.7 100.2 L415.3 99.8 L416.8 99.5 L418.3 99.2 L419.8 98.9 L421.3 98.7 L422.8 98.5 L424.3 98.3 L425.8 98.1 L427.4 98.0 L428.9 97.9 L430.4 97.8 L431.9 97.7 L433.4 97.7 L434.9 97.7 L436.4 97.7 L437.9 97.8 L439.4 97.8 L441.0 97.9 L442.5 98.0 L444.0 98.2 L445.5 98.3 L447.0 98.5 L448.5 98.7 L450.0 99.0 L451.5 99.2 L453.1 99.5 L454.6 99.8 L456.1 100.1 L457.6 100.5 L459.1 100.8 L460.6 101.2 L462.1 101.6 L463.6 102.0 L465.2 102.5 L466.7 102.9 L468.2 103.4 L469.7 103.9 L471.2 104.4 L472.7 104.9 L474.2 105.5 L475.7 106.0 L477.2 106.6 L478.8 107.1 L480.3 107.7 L481.8 108.3 L483.3 108.9 L484.8 109.5 L486.3 110.2 L487.8 110.8 L489.3 111.4 L490.9 112.1 L492.4 112.7 L493.9 113.4 L495.4 114.0 L496.9 114.7 L498.4 115.3 L499.9 116.0 L501.4 116.6 L503.0 117.3 L504.5 117.9 L506.0 118.5 L507.5 119.1 L509.0 119.8 L510.5 120.4 L512.0 121.0 L513.5 121.5 L515.0 122.1 L516.6 122.6 L518.1 123.2 L519.6 123.7 L521.1 124.2 L522.6 124.6 L524.1 125.1 L525.6 125.5 L527.1 125.9 L528.7 126.2 L530.2 126.5 L531.7 126.8 L533.2 127.1 L534.7 127.3 L536.2 127.5 L537.7 127.6 L539.2 127.7 L540.8 127.7 L542.3 127.7 L543.8 127.7 L545.3 127.6 L546.8 127.4 L548.3 127.2 L549.8 127.0 L551.3 126.6 L552.8 126.2 L554.4 125.8 L555.9 125.2 L557.4 124.6 L558.9 124.0 L560.4 123.2 L561.9 122.4 L563.4 121.5 L564.9 120.5 L566.5 119.4 L568.0 118.2 L569.5 117.0 L571.0 115.6 L572.5 114.2 L574.0 112.6 L575.5 111.0 L577.0 109.2 L578.6 107.3 L580.1 105.4 L581.6 103.3 L583.1 101.0 L584.6 98.7 L586.1 96.2 L587.6 93.6 L589.1 90.9 L590.6 88.0 L592.2 85.0 L593.7 81.9 L595.2 78.6 L596.7 75.1 L598.2 71.5 L599.7 67.8 L601.2 63.9 L602.7 59.8 L604.3 55.5 L605.8 51.1 L607.3 46.5 L608.8 41.7 L610.3 36.8 L611.8 31.6 L613.3 26.3 L614.8 20.7" style="fill:none;stroke:var(--accent)" stroke-width="2.4"/><path d="M10.4 103.2 L11.9 103.7 L13.5 104.3 L15.0 104.9 L16.6 105.5 L18.1 106.2 L19.7 106.9 L21.2 107.6 L22.8 108.3 L24.3 109.0 L25.9 109.8 L27.4 110.6 L29.0 111.4 L30.5 112.3 L32.1 113.1 L33.6 114.0 L35.2 114.9 L36.7 115.8 L38.3 116.8 L39.8 117.7 L41.4 118.7 L42.9 119.7 L44.5 120.8 L46.0 121.8 L47.6 122.9 L49.1 123.9 L50.6 125.0 L52.2 126.1 L53.7 127.3 L55.3 128.4 L56.8 129.5 L58.4 130.7 L59.9 131.9 L61.5 133.1 L63.0 134.3 L64.6 135.5 L66.1 136.7 L67.7 138.0 L69.2 139.2 L70.8 140.5 L72.3 141.8 L73.9 143.1 L75.4 144.3 L77.0 145.6 L78.5 146.9 L80.1 148.2 L81.6 149.5 L83.2 150.9 L84.7 152.2 L86.3 153.5 L87.8 154.8 L89.3 156.2 L90.9 157.5 L92.4 158.8 L94.0 160.2 L95.5 161.5 L97.1 162.8 L98.6 164.2 L100.2 165.5 L101.7 166.8 L103.3 168.1 L104.8 169.5 L106.4 170.8 L107.9 172.1 L109.5 173.4 L111.0 174.7 L112.6 176.0 L114.1 177.3 L115.7 178.5 L117.2 179.8 L118.8 181.1 L120.3 182.3 L121.9 183.5 L123.4 184.8 L125.0 186.0 L126.5 187.2 L128.0 188.4 L129.6 189.6 L131.1 190.7 L132.7 191.9 L134.2 193.0 L135.8 194.1 L137.3 195.2 L138.9 196.3 L140.4 197.4 L142.0 198.5 L143.5 199.5 L145.1 200.5 L146.6 201.5 L148.2 202.5 L149.7 203.5 L151.3 204.4 L152.8 205.3 L154.4 206.2 L155.9 207.1 L157.5 207.9 L159.0 208.8 L160.6 209.6 L162.1 210.4 L163.7 211.1 L165.2 211.9 L166.7 212.6 L168.3 213.3 L169.8 214.0 L171.4 214.6 L172.9 215.2 L174.5 215.8 L176.0 216.4 L177.6 216.9 L179.1 217.4 L180.7 217.9 L182.2 218.4 L183.8 218.8 L185.3 219.2 L186.9 219.6 L188.4 220.0 L190.0 220.3 L191.5 220.6 L193.1 220.9 L194.6 221.1 L196.2 221.3 L197.7 221.5 L199.3 221.7 L200.8 221.8 L202.4 221.9 L203.9 221.9 L205.4 222.0 L207.0 222.0 L208.5 222.0 L210.1 221.9 L211.6 221.9 L213.2 221.8 L214.7 221.6 L216.3 221.5 L217.8 221.3 L219.4 221.1 L220.9 220.8 L222.5 220.6 L224.0 220.3 L225.6 219.9 L227.1 219.6 L228.7 219.2 L230.2 218.8 L231.8 218.3 L233.3 217.9 L234.9 217.4 L236.4 216.9 L238.0 216.3 L239.5 215.8 L241.1 215.2 L242.6 214.5 L244.1 213.9 L245.7 213.2 L247.2 212.5 L248.8 211.8 L250.3 211.1 L251.9 210.3 L253.4 209.5 L255.0 208.7 L256.5 207.8 L258.1 207.0 L259.6 206.1 L261.2 205.2 L262.7 204.3 L264.3 203.3 L265.8 202.4 L267.4 201.4 L268.9 200.4 L270.5 199.4 L272.0 198.3 L273.6 197.3 L275.1 196.2 L276.7 195.1 L278.2 194.0 L279.8 192.9 L281.3 191.7 L282.8 190.6 L284.4 189.4 L285.9 188.2 L287.5 187.1 L289.0 185.8 L290.6 184.6 L292.1 183.4 L293.7 182.2 L295.2 180.9 L296.8 179.7 L298.3 178.4 L299.9 177.1 L301.4 175.8 L303.0 174.5 L304.5 173.2 L306.1 171.9 L307.6 170.6 L309.2 169.3 L310.7 168.0 L312.3 166.7 L313.8 165.3 L315.4 164.0 L316.9 162.7 L318.5 161.3 L320.0 160.0 L321.5 158.7 L323.1 157.3 L324.6 156.0 L326.2 154.7 L327.7 153.3 L329.3 152.0 L330.8 150.7 L332.4 149.4 L333.9 148.1 L335.5 146.8 L337.0 145.5 L338.6 144.2 L340.1 142.9 L341.7 141.6 L343.2 140.3 L344.8 139.1 L346.3 137.8 L347.9 136.6 L349.4 135.4 L351.0 134.2 L352.5 132.9 L354.1 131.8 L355.6 130.6 L357.2 129.4 L358.7 128.3 L360.2 127.1 L361.8 126.0 L363.3 124.9 L364.9 123.8 L366.4 122.7 L368.0 121.7 L369.5 120.6 L371.1 119.6 L372.6 118.6 L374.2 117.6 L375.7 116.7 L377.3 115.7 L378.8 114.8 L380.4 113.9 L381.9 113.0 L383.5 112.2 L385.0 111.3 L386.6 110.5 L388.1 109.7 L389.7 108.9 L391.2 108.2 L392.8 107.5 L394.3 106.8 L395.9 106.1 L397.4 105.5 L398.9 104.8 L400.5 104.2 L402.0 103.7 L403.6 103.1 L405.1 102.6 L406.7 102.1 L408.2 101.7 L409.8 101.2 L411.3 100.8 L412.9 100.4 L414.4 100.1 L416.0 99.7 L417.5 99.4 L419.1 99.2 L420.6 98.9 L422.2 98.7 L423.7 98.5 L425.3 98.4 L426.8 98.2 L428.4 98.1 L429.9 98.1 L431.5 98.0 L433.0 98.0 L434.6 98.0 L436.1 98.1 L437.6 98.1 L439.2 98.2 L440.7 98.3 L442.3 98.5 L443.8 98.7 L445.4 98.9 L446.9 99.1 L448.5 99.4 L450.0 99.7 L451.6 100.0 L453.1 100.4 L454.7 100.8 L456.2 101.2 L457.8 101.6 L459.3 102.1 L460.9 102.6 L462.4 103.1 L464.0 103.6 L465.5 104.2 L467.1 104.8 L468.6 105.4 L470.2 106.0 L471.7 106.7 L473.3 107.4 L474.8 108.1 L476.3 108.9 L477.9 109.6 L479.4 110.4 L481.0 111.2 L482.5 112.1 L484.1 112.9 L485.6 113.8 L487.2 114.7 L488.7 115.6 L490.3 116.5 L491.8 117.5 L493.4 118.5 L494.9 119.5 L496.5 120.5 L498.0 121.5 L499.6 122.6 L501.1 123.7 L502.7 124.8 L504.2 125.9 L505.8 127.0 L507.3 128.1 L508.9 129.3 L510.4 130.4 L512.0 131.6 L513.5 132.8 L515.0 134.0 L516.6 135.2 L518.1 136.5 L519.7 137.7 L521.2 138.9 L522.8 140.2 L524.3 141.5 L525.9 142.7 L527.4 144.0 L529.0 145.3 L530.5 146.6 L532.1 147.9 L533.6 149.2 L535.2 150.5 L536.7 151.9 L538.3 153.2 L539.8 154.5 L541.4 155.8 L542.9 157.2 L544.5 158.5 L546.0 159.8 L547.6 161.2 L549.1 162.5 L550.7 163.8 L552.2 165.2 L553.7 166.5 L555.3 167.8 L556.8 169.1 L558.4 170.5 L559.9 171.8 L561.5 173.1 L563.0 174.4 L564.6 175.7 L566.1 176.9 L567.7 178.2 L569.2 179.5 L570.8 180.8 L572.3 182.0 L573.9 183.3 L575.4 184.5 L577.0 185.7 L578.5 186.9 L580.1 188.1 L581.6 189.3 L583.2 190.5 L584.7 191.6 L586.3 192.7 L587.8 193.9 L589.4 195.0 L590.9 196.1 L592.4 197.1 L594.0 198.2 L595.5 199.2 L597.1 200.3 L598.6 201.3 L600.2 202.3 L601.7 203.2 L603.3 204.2 L604.8 205.1 L606.4 206.0 L607.9 206.9 L609.5 207.7 L611.0 208.6 L612.6 209.4 L614.1 210.2 L615.7 211.0 L617.2 211.7 L618.8 212.4 L620.3 213.1 L621.9 213.8 L623.4 214.5 L625.0 215.1 L626.5 215.7 L628.1 216.3 L629.6 216.8" style="fill:none;stroke:var(--ink)" stroke-width="2.4"/><text x="489" y="33" font-size="16" style="fill:var(--muted)">P₁ = x</text><text x="504" y="268" font-size="16" style="fill:var(--story-edge)">P₃</text><text x="576" y="101" font-size="16" style="fill:var(--accent)">P₅</text><text x="39" y="126" font-size="16" style="fill:var(--ink)">sin</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$\sin$ and its Taylor polynomials at $0$: $P_1=x$ (dashed), $P_3=x-\frac{x^3}6$, $P_5=x-\frac{x^3}6+\frac{x^5}{120}$. Each prediction with more gauges follows the curve further out. How far? That is what the remainder tells us.</figcaption>
+</figure>
+
+<h3 id="proof-a">Proof A: Taylor's theorem with integral remainder (Theorem 9.46, <a class="pl" href="script.html#p447">p. 447–448</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $(a,b)\subseteq\mathbb R$ be an open interval, $f:(a,b)\to\mathbb R$ (or $\mathbb C$) $(n+1)$ times <strong>continuously</strong> differentiable, and $x_0\in(a,b)$. Then for all $x\in(a,b)$</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;f(x)=\sum_{k=0}^n\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k+R_n(x),\\&amp;\text{where }R_n(x)=\int_{x_0}^xf^{(n+1)}(t)\,\frac{(x-t)^n}{n!}\,dt.\end{aligned}$$</span>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-19.html#proof-b">lesson 19</a>)</span>
+<ul>
+  <li><strong>The fundamental theorem</strong>: $f(x)=f(x_0)+\int_{x_0}^xf'(t)\,dt$ for continuously differentiable $f$ (<a class="xl" href="lesson-19.html#proof-b">lesson 19</a>, Proof B).</li>
+  <li><strong>Integration by parts</strong>: $\int_{x_0}^xuv'\,dt=\bigl[uv\bigr]_{t=x_0}^{t=x}-\int_{x_0}^xu'v\,dt$.</li>
+</ul></div>
+<p><strong>The idea.</strong> For $n=0$ the theorem <em>is</em> the fundamental theorem: $f(x)=f(x_0)+\int_{x_0}^xf'(t)\,dt$. Each step up is one integration by parts on the remainder: it pulls one more term $\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n$ out of the integral and leaves the next remainder behind. The trick is the choice $v(t)=-\frac{(x-t)^n}{n!}$ with $x$ fixed, whose derivative is $\frac{(x-t)^{n-1}}{(n-1)!}$, exactly the weight in the old remainder.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Shape:</strong> a statement for every $n\ge0$, so induction on $n$: “Claim $A(n)$: for every $(n+1)$ times continuously differentiable $f$ and all $x$, $f(x)=P_n(x)+R_n(x)$.”</li>
+  <li><strong>Base:</strong> $A(0)$ from the fundamental theorem.</li>
+  <li><strong>Step:</strong> assume $A(n-1)$, take $f$ $(n+1)$ times continuously differentiable, and turn $R_{n-1}(x)$ into $\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n+R_n(x)$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The weakest prediction uses no gauge at all: the height at the point, plus everything the climbing adds on the way.</p></div><div class="sp-formal"><p><strong>Base, $n=0$.</strong> $f$ is continuously differentiable, so by the fundamental theorem</p><span class="math-display" style="display:block">$$f(x)=f(x_0)+\int_{x_0}^xf'(t)\,dt=P_0(x)+R_0(x).$$</span><p></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Assume the prediction from $n-1$ gauges and its ledger are correct.</p></div><div class="sp-formal"><p><strong>Step.</strong> Let $n\ge1$, assume $A(n-1)$, and let $f$ be $(n+1)$ times continuously differentiable (in particular $n$ times). By $A(n-1)$,</p>
+<span class="math-display" style="display:block">$$f(x)=P_{n-1}(x)+\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}\,dt.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Grind the ledger once more: choose the two factors cleverly.</p></div><div class="sp-formal"><p>Set $u(t)=f^{(n)}(t)$ and $v(t)=-\frac{(x-t)^n}{n!}$. Then $u'=f^{(n+1)}$ is continuous and $v'(t)=\frac{(x-t)^{n-1}}{(n-1)!}$. By parts:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt\\&amp;\quad=\left[-f^{(n)}(t)\frac{(x-t)^n}{n!}\right]_{t=x_0}^{t=x}\\&amp;\qquad+\int_{x_0}^xf^{(n+1)}(t)\frac{(x-t)^n}{n!}dt.\end{aligned}$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>The bracket is what the new gauge adds to the prediction; what's left is the new ledger.</p></div><div class="sp-formal"><p>At $t=x$ the bracket is $0$; at $t=x_0$ it is $-\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n$. So the bracket equals $\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n$, and</p>
+<span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;=P_{n-1}(x)+\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n+R_n(x)\\&amp;=P_n(x)+R_n(x).\end{aligned}$$</span><p>This is $A(n)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-induct">induction with labelled parts</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>We prove by induction on $n\ge0$: for every $(n+1)$ times continuously differentiable $f:(a,b)\to\mathbb R$ and all $x,x_0\in(a,b)$, $f(x)=P_n(x)+R_n(x)$ with $R_n(x)=\int_{x_0}^xf^{(n+1)}(t)\frac{(x-t)^n}{n!}dt$.</p>
+<p><em>Base $n=0$:</em> by the fundamental theorem, <span class="math-display" style="display:block">$$f(x)=f(x_0)+\int_{x_0}^xf'(t)\,dt=P_0(x)+R_0(x).$$</span></p>
+<p><em>Step:</em> let $n\ge1$ and let $f$ be $(n+1)$ times continuously differentiable. By the induction hypothesis (applied to $f$, which is $n$ times continuously differentiable), $f(x)=P_{n-1}(x)+\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt$. Integrate by parts with $u=f^{(n)}$, $v(t)=-\frac{(x-t)^n}{n!}$, $v'(t)=\frac{(x-t)^{n-1}}{(n-1)!}$, where $u'=f^{(n+1)}$ is continuous:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt\\&amp;\quad=\left[-f^{(n)}(t)\frac{(x-t)^n}{n!}\right]_{x_0}^x+R_n(x)\\&amp;\quad=\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n+R_n(x).\end{aligned}$$</span>
+<p>Hence <span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;=P_{n-1}(x)+\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n+R_n(x)\\&amp;=P_n(x)+R_n(x).\end{aligned}$$</span><span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Base</strong> is the fundamental theorem, $R_0=\int_{x_0}^xf'$.</li>
+  <li><strong>Step</strong>: by parts on $R_{n-1}$ with $u=f^{(n)}$ and $v=-\frac{(x-t)^n}{n!}$.</li>
+  <li><strong>Bracket</strong>: $0$ at $t=x$, gives the new term at $t=x_0$.</li>
+</ol>
+<p><em>In short:</em> “fundamental theorem, then parts with $v=-\frac{(x-t)^n}{n!}$.” Check $v'$ with the chain rule (the minus sign from the inner derivative cancels the minus in front). Say where continuity of $f^{(n+1)}$ is used: it makes the integrand continuous and allows integration by parts.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write out the case $n=1$: what are $u$, $v$, and the result?</p>
+  <details><summary>Answer</summary><div><p>$u=f'$, $v(t)=-(x-t)$, $v'=1$: <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int_{x_0}^xf'(t)\,dt\\&amp;\quad=\bigl[-f'(t)(x-t)\bigr]_{x_0}^x\\&amp;\qquad+\int_{x_0}^xf''(t)(x-t)\,dt\\&amp;\quad=f'(x_0)(x-x_0)\\&amp;\qquad+\int_{x_0}^xf''(t)(x-t)\,dt.\end{aligned}$$</span>So <span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;=f(x_0)+f'(x_0)(x-x_0)\\&amp;\quad+\int_{x_0}^xf''(t)(x-t)\,dt.\end{aligned}$$</span></p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Does the proof still work when $x&lt;x_0$?</p>
+  <details><summary>Answer</summary><div><p>Yes. The fundamental theorem and integration by parts hold for $\int_{x_0}^x$ with $x&lt;x_0$ too (with the convention $\int_{x_0}^x=-\int_x^{x_0}$), and nothing in the proof used $x&gt;x_0$. Only the estimates in the next section need a little care with signs.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: inequalities from the sign of the remainder</h3>
+<ol class="gq">
+  <li><p>Show $e^x\ge1+x+\frac{x^2}2$ for $x\ge0$.</p>
+  <details><summary>Answer</summary><div><p>Taylor with $n=2$ at $0$: $e^x=1+x+\frac{x^2}2+R_2(x)$ with $R_2(x)=\int_0^xe^t\frac{(x-t)^2}2\,dt$. For $x\ge0$ the integrand is $\ge0$ on $[0,x]$, so $R_2(x)\ge0$.</p></div></details></li>
+  <li><p>Is it also true for $x&lt;0$?</p>
+  <details><summary>Answer</summary><div><p>No. For $x&lt;0$, $R_2(x)=-\int_x^0e^t\frac{(x-t)^2}2\,dt&lt;0$ (the integrand is positive for $t\neq x$, and the limits are reversed). So $e^x&lt;1+x+\frac{x^2}2$ for $x&lt;0$; check at $x=-1$: $0.37&lt;0.5$.</p></div></details></li>
+  <li><p>Show $\cos x\ge1-\frac{x^2}2$ for all $x\in\mathbb R$.</p>
+  <details><summary>Answer</summary><div><p>Let $g(x)=\cos x-1+\frac{x^2}2$. Then $g(0)=g'(0)=0$ and $g''(t)=1-\cos t\ge0$. Taylor with $n=1$: $g(x)=\int_0^xg''(t)(x-t)\,dt$. For $x\ge0$, both factors are $\ge0$ on $[0,x]$. For $x&lt;0$, $g(x)=\int_x^0g''(t)(t-x)\,dt$ and again both factors are $\ge0$. So $g(x)\ge0$ for every $x$.</p></div></details></li>
+</ol>
+</div>
+
+
+<h2 id="s4-how-big-is-the-error">4. How big is the error?</h2>
+<p>The integral remainder is exact but rarely computable. What we use in practice is a bound: the ledger never exceeds “the wildest next bend, times distance to the power $n+1$, over $(n+1)!$”.</p>
+
+<h3 id="proof-b">Proof B: the Taylor estimate (Korollar 9.47, <a class="pl" href="script.html#p448">p. 448–449</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f:(a,b)\to\mathbb R$ (or $\mathbb C$) be $(n+1)$ times continuously differentiable, $x_0,x\in(a,b)$, and <span class="math-display" style="display:block">$$M_{n+1}=\max\{|f^{(n+1)}(t)|: t\text{ between }x_0\text{ and }x\}$$</span>. Then</p>
+<span class="math-display" style="display:block">$$|f(x)-P_n(x)|=|R_n(x)|\le\frac{M_{n+1}\,|x-x_0|^{n+1}}{(n+1)!}.$$</span>
+<p>In particular $f(x)=P_n(x)+O\bigl((x-x_0)^{n+1}\bigr)$ as $x\to x_0$.</p>
+</div>
+<p><strong>The idea.</strong> Bound the integrand of $R_n$: replace $|f^{(n+1)}(t)|$ by its maximum $M_{n+1}$ and integrate the rest exactly, $\int_{x_0}^x\frac{(x-t)^n}{n!}dt=\frac{(x-x_0)^{n+1}}{(n+1)!}$. The maximum exists because $f^{(n+1)}$ is continuous on the compact interval between $x_0$ and $x$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Start:</strong> “By Proof A, $R_n(x)=\int_{x_0}^xf^{(n+1)}(t)\frac{(x-t)^n}{n!}dt$. Case $x\ge x_0$.”</li>
+  <li><strong>End:</strong> $|R_n(x)|\le\frac{M_{n+1}|x-x_0|^{n+1}}{(n+1)!}$, then the case $x&lt;x_0$, then the $O$ statement.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The ledger is an integral; the wildest bend bounds it.</p></div><div class="sp-formal"><p>Let $x\ge x_0$. On $[x_0,x]$, $|f^{(n+1)}(t)|\le M_{n+1}$ and $(x-t)^n\ge0$, so by the triangle inequality for integrals</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|R_n(x)|&amp;\le\int_{x_0}^x|f^{(n+1)}(t)|\frac{(x-t)^n}{n!}dt\\&amp;\le\frac{M_{n+1}}{n!}\int_{x_0}^x(x-t)^ndt.\end{aligned}$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>The rest is an integral we can do exactly.</p></div><div class="sp-formal"><p>$\int_{x_0}^x(x-t)^ndt=\left[-\frac{(x-t)^{n+1}}{n+1}\right]_{x_0}^x=\frac{(x-x_0)^{n+1}}{n+1}$, which gives the bound.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Looking left instead of right changes nothing but signs.</p></div><div class="sp-formal"><p>If $x&lt;x_0$: <span class="math-display" style="display:block">$$\begin{aligned}|R_n(x)|&amp;=\left|\int_x^{x_0}f^{(n+1)}(t)\frac{(x-t)^n}{n!}dt\right|\\&amp;\le \frac{M_{n+1}}{n!}\int_x^{x_0}(t-x)^ndt\\&amp;=\frac{M_{n+1}(x_0-x)^{n+1}}{(n+1)!}.\end{aligned}$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Near the point, the ledger shrinks like a high power of the distance.</p></div><div class="sp-formal"><p>For the $O$ statement, fix $\delta&gt;0$ with $[x_0-\delta,x_0+\delta]\subseteq(a,b)$ and let $M$ be the maximum of $|f^{(n+1)}|$ there. For $|x-x_0|\le\delta$, $M_{n+1}\le M$, so $|R_n(x)|\le\frac M{(n+1)!}|x-x_0|^{n+1}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-major">find a majorant (or minorant)</a> <a class="mvl" href="moves.html#m-cases">split into cases</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>By Proof A, $R_n(x)=\int_{x_0}^xf^{(n+1)}(t)\frac{(x-t)^n}{n!}dt$. Let $x\ge x_0$. Since $(x-t)^n\ge0$ on $[x_0,x]$,</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|R_n(x)|&amp;\le\frac{M_{n+1}}{n!}\int_{x_0}^x(x-t)^ndt\\&amp;=\frac{M_{n+1}}{n!}\cdot\frac{(x-x_0)^{n+1}}{n+1}\\&amp;=\frac{M_{n+1}(x-x_0)^{n+1}}{(n+1)!}.\end{aligned}$$</span>
+<p>If $x&lt;x_0$, then <span class="math-display" style="display:block">$$\begin{aligned}|R_n(x)|&amp;\le \frac{M_{n+1}}{n!}\int_x^{x_0}(t-x)^ndt\\&amp;=\frac{M_{n+1}(x_0-x)^{n+1}}{(n+1)!}\end{aligned}$$</span>. For the last statement, choose $\delta&gt;0$ with $[x_0-\delta,x_0+\delta]\subseteq(a,b)$ and $M=\max_{[x_0-\delta,x_0+\delta]}|f^{(n+1)}|$, which exists as $f^{(n+1)}$ is continuous; then $|R_n(x)|\le\frac M{(n+1)!}|x-x_0|^{n+1}$ for $|x-x_0|\le\delta$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where is continuity of $f^{(n+1)}$ used?</p>
+  <details><summary>Answer</summary><div><p>Twice: Proof A needs it, and the maximum $M_{n+1}$ exists because a continuous function on a compact interval attains its maximum (<a class="xl" href="lesson-08.html#proof-c">lesson 8</a>).</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> For $f=\sin$, why does $|\sin x-P_n(x)|\le\frac{|x|^{n+1}}{(n+1)!}$ hold for all $x$, and why does it imply that the sine series converges to $\sin x$?</p>
+  <details><summary>Answer</summary><div><p>Every derivative of $\sin$ is $\pm\sin$ or $\pm\cos$, so $M_{n+1}\le1$. And $\frac{|x|^{n+1}}{(n+1)!}\to0$ as $n\to\infty$ for every fixed $x$ (the factorial beats the power, as in <a class="xl" href="lesson-16.html#s5-the-exponential-series">lesson 16</a>'s exponential series). So $P_n(x)\to\sin x$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="proof-c">Proof C: the Lagrange form of the remainder (Übung 9.48 (c), <a class="pl" href="script.html#p449">p. 449</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f:(a,b)\to\mathbb R$ be $(n+1)$ times differentiable (continuity of $f^{(n+1)}$ is not needed) and $x_0\neq x$ in $(a,b)$. Then there is $\xi$ strictly between $x_0$ and $x$ with</p>
+<span class="math-display" style="display:block">$$f(x)=P_n(x)+\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)^{n+1}.$$</span>
+</div>
+<p>This is the form you may know from school, and for $n=0$ it is exactly the mean value theorem. It gives the same estimate as Proof B, and it is handy for signs: the remainder has the sign of $f^{(n+1)}(\xi)(x-x_0)^{n+1}$.</p>
+<div class="need"><span class="label">You'll need this (<a class="xl" href="lesson-18.html#proof-e">lesson 18</a>)</span>
+<ul>
+  <li><strong>Cauchy's mean value theorem</strong>: for $F,g$ continuous on $[\alpha,\beta]$ and differentiable inside, there is $\xi\in(\alpha,\beta)$ with <span class="math-display" style="display:block">$$\bigl(F(\beta)-F(\alpha)\bigr)g'(\xi)=\bigl(g(\beta)-g(\alpha)\bigr)F'(\xi).$$</span></li>
+</ul></div>
+<p><strong>The idea.</strong> Freeze $x$ and let the <em>expansion point</em> move: $F(t)=\sum_{k=0}^n\frac{f^{(k)}(t)}{k!}(x-t)^k$ is “the seer's prediction made at $t$, for the point $x$”. At $t=x$ it gives $f(x)$, at $t=x_0$ it gives $P_n(x)$, and its derivative telescopes to a single term. Then compare $F$ with $g(t)=(x-t)^{n+1}$ by Cauchy's mean value theorem.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal:</strong> find $\xi$ with $f(x)-P_n(x)$ equal to $\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)^{n+1}$.</li>
+  <li><strong>Tool:</strong> a mean value theorem, so: which functions, on which interval?</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Let the seer ride along from $x_0$ to $x$, predicting the same spot $x$ from wherever the cart is.</p></div><div class="sp-formal"><p>Define $F(t)=\sum_{k=0}^n\frac{f^{(k)}(t)}{k!}(x-t)^k$ for $t$ between $x_0$ and $x$. Then $F(x)=f(x)$ and $F(x_0)=P_n(x)$, so $F(x)-F(x_0)=R_n(x)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>How fast does the prediction change as the seer rides? Almost everything cancels.</p></div><div class="sp-formal"><p>By the product rule,</p>
+<span class="math-display" style="display:block">$$\begin{aligned}F'(t)&amp;=\sum_{k=0}^n\frac{f^{(k+1)}(t)}{k!}(x-t)^k\\&amp;\quad-\sum_{k=1}^n\frac{f^{(k)}(t)}{(k-1)!}(x-t)^{k-1}\\&amp;=\frac{f^{(n+1)}(t)}{n!}(x-t)^n,\end{aligned}$$</span>
+<p>since the second sum is the first without its last term (shift $k\to k+1$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Compare with a simple helper that also vanishes at $x$.</p></div><div class="sp-formal"><p>Let $g(t)=(x-t)^{n+1}$, so $g(x)=0$, $g(x_0)=(x-x_0)^{n+1}$ and $g'(t)=-(n+1)(x-t)^n$. Cauchy's mean value theorem on the interval between $x_0$ and $x$ gives $\xi$ strictly between them with</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;R_n(x)\cdot\bigl(-(n+1)(x-\xi)^n\bigr)\\&amp;\quad=-(x-x_0)^{n+1}\cdot\frac{f^{(n+1)}(\xi)}{n!}(x-\xi)^n.\end{aligned}$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Cancel the common factor.</p></div><div class="sp-formal"><p>Since $\xi\neq x$, $(x-\xi)^n\neq0$. Dividing by $-(n+1)(x-\xi)^n$ gives $R_n(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)^{n+1}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-helper">a helper function</a> <a class="mvl" href="moves.html#m-tele">telescoping sum</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $I$ be the closed interval between $x_0$ and $x$, and for $t\in I$ let $F(t)=\sum_{k=0}^n\frac{f^{(k)}(t)}{k!}(x-t)^k$ and $g(t)=(x-t)^{n+1}$. Both are continuous on $I$ and differentiable, with</p>
+<span class="math-display" style="display:block">$$\begin{aligned}F'(t)&amp;=\sum_{k=0}^n\frac{f^{(k+1)}(t)}{k!}(x-t)^k\\&amp;\quad-\sum_{k=1}^n\frac{f^{(k)}(t)}{(k-1)!}(x-t)^{k-1}\\&amp;=\frac{f^{(n+1)}(t)}{n!}(x-t)^n\end{aligned}$$</span>
+<p>(telescoping) and $g'(t)=-(n+1)(x-t)^n$. Also $F(x)-F(x_0)=f(x)-P_n(x)=R_n(x)$ and $g(x)-g(x_0)=-(x-x_0)^{n+1}$. By Cauchy's mean value theorem there is $\xi$ strictly between $x_0$ and $x$ with <span class="math-display" style="display:block">$$\begin{aligned}&amp;R_n(x)\cdot\bigl(-(n+1)(x-\xi)^n\bigr)\\&amp;\quad=-(x-x_0)^{n+1}\frac{f^{(n+1)}(\xi)}{n!}(x-\xi)^n.\end{aligned}$$</span>As $(x-\xi)^n\neq0$, $R_n(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)^{n+1}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> What does the theorem say for $n=0$?</p>
+  <details><summary>Answer</summary><div><p>$f(x)=f(x_0)+f'(\xi)(x-x_0)$: the mean value theorem.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Use the ordinary mean value theorem on $F$ alone instead of Cauchy's. What do you get?</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}R_n(x)&amp;=F(x)-F(x_0)\\&amp;=F'(\xi)(x-x_0)\\&amp;=\frac{f^{(n+1)}(\xi)}{n!}(x-\xi)^n(x-x_0):\end{aligned}$$</span>the <em>Cauchy</em> form of the remainder (Übung 9.48 (b)). Correct, but less handy than Lagrange's.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: numbers with a guaranteed error</h3>
+<ol class="gq">
+  <li><p>Compute $e$ with an error below $10^{-3}$.</p>
+  <details><summary>Answer</summary><div><p>$f=\exp$, $x_0=0$, $x=1$: $M_{n+1}=\max_{[0,1]}e^t=e&lt;3$, so the error of $P_n(1)=\sum_{k=0}^n\frac1{k!}$ is $&lt;\frac3{(n+1)!}$. For $n=6$: $\frac3{5040}&lt;0.0006$. And <span class="math-display" style="display:block">$$\begin{aligned}P_6(1)&amp;=1+1+\frac12+\frac16+\frac1{24}\\&amp;\quad+\frac1{120}+\frac1{720}\approx2.71806.\end{aligned}$$</span>(True value $2.71828\dots$)</p></div></details></li>
+  <li><p>Estimate the error of $\sin(0.1)\approx0.1-\frac{0.001}6$.</p>
+  <details><summary>Answer</summary><div><p>$x-\frac{x^3}6$ is $P_3$, but also $P_4$, because the $x^4$ coefficient of $\sin$ is $0$. Use $n=4$: $M_5\le1$, so the error is $\le\frac{0.1^5}{120}&lt;10^{-7}$. (With $n=3$ you'd only get $\frac{0.1^4}{24}\approx4\cdot10^{-6}$.) Always use the largest $n$ that gives the same polynomial.</p></div></details></li>
+  <li><p>Estimate $\log(1.1)$ with $P_2$, and bound the error.</p>
+  <details><summary>Answer</summary><div><p>$P_2(0.1)=0.1-\frac{0.01}2=0.095$. $f'''(t)=\frac2{(1+t)^3}\le2$ on $[0,0.1]$, so the error is $\le\frac{2\cdot0.1^3}{6}&lt;3.4\cdot10^{-4}$. (True: $0.09531\dots$, error $3.1\cdot10^{-4}$.)</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="we-4">Worked example 4: when is a function equal to its Taylor series?</h3>
+<ol class="gq">
+  <li><p>Show that $e^x=\sum_{k=0}^\infty\frac{x^k}{k!}$ for every $x\in\mathbb R$ using Proof B (not the definition of $\exp$).</p>
+  <details><summary>Answer</summary><div><p>Between $0$ and $x$, $|f^{(n+1)}(t)|=e^t\le e^{|x|}$. So $|e^x-P_n(x)|\le e^{|x|}\frac{|x|^{n+1}}{(n+1)!}\to0$ as $n\to\infty$. The same works whenever $\max|f^{(n+1)}|\le cA^n$ on the interval (the script's condition for $\exp$, $\sin$, $\cos$ and their sums and products).</p></div></details></li>
+  <li><p>The road the gauges can't see: $\psi(x)=e^{-1/x}$ for $x&gt;0$, $\psi(x)=0$ for $x\le0$, is smooth with $\psi^{(k)}(0)=0$ for all $k$ (<a class="xl" href="lesson-17.html#s10-for-wonder-optional-5-min">lesson 17</a>, For wonder). What is its Taylor series at $0$, and where does it equal $\psi$?</p>
+  <details><summary>Answer</summary><div><p>The Taylor series is $0$. It equals $\psi$ for $x\le0$ and nowhere for $x&gt;0$. So $\psi$ is <strong>not</strong> given by a power series on any interval around $0$: if $\psi=\sum c_kx^k$ on $(-R,R)$, then $c_k=\frac{\psi^{(k)}(0)}{k!}=0$ (<a class="xl" href="lesson-19.html#proof-c">lesson 19</a>, Proof C: power series can be differentiated term by term), so $\psi=0$ on $(-R,R)$, but $\psi(x)&gt;0$ for $x&gt;0$. In Proof B, the derivatives $\psi^{(n+1)}$ grow so fast near $0$ that $\frac{M_{n+1}x^{n+1}}{(n+1)!}$ does not tend to $0$.</p></div></details></li>
+  <li><p>A function that equals its Taylor series near <em>every</em> point is called <strong>analytic</strong>. Is $\frac1{1+x^2}$ analytic on $\mathbb R$? What is the radius of its Taylor series at $0$?</p>
+  <details><summary>Answer</summary><div><p>Yes, it is analytic. At $0$: $\frac1{1+x^2}=\sum(-1)^kx^{2k}$ (geometric with $-x^2$), radius $1$, even though the function is perfectly nice on all of $\mathbb R$. The explanation is complex: $1+z^2=0$ at $z=\pm i$, at distance $1$ from $0$ (For wonder).</p></div></details></li>
+</ol>
+</div>
+<p><strong>Why it's cool.</strong> The Taylor series of $e^x$ at $0$ knows $e^{10}$, and $e^{-50}$, from nothing but the derivatives at the single point $0$. For analytic functions, the infinitely many derivatives at one point carry the whole function: a tiny neighbourhood decides everything, everywhere. And $\psi$ shows this is a special property, not a law of nature: smooth is not enough. Your calculator uses exactly these polynomials, with error bounds like Proof B's, to compute $\sin$ and $\exp$.</p>
+
+<h2 id="s5-computing-expansions-fast">5. Computing expansions fast</h2>
+<p>In the exam, nobody differentiates $\sin(x^2)-\sin^2x$ four times. You build the expansion from the known ones by substituting, adding and multiplying, and you keep track of the error with $O$. One fact makes this legitimate: <em>any</em> polynomial that approximates $f$ to order $n$ <em>is</em> the Taylor polynomial.</p>
+
+<h3 id="proof-d">Proof D: the Taylor polynomial is the only good approximation (uniqueness)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> (1) If $p$ is a polynomial of degree $\le n$ and $p(x)=o\bigl((x-x_0)^n\bigr)$ as $x\to x_0$, then $p=0$.</p>
+<p>(2) Hence: if $f$ is $(n+1)$ times continuously differentiable and $f(x)=Q(x)+o\bigl((x-x_0)^n\bigr)$ for some polynomial $Q$ of degree $\le n$, then $Q=P_n$, the Taylor polynomial.</p>
+<p>($O\bigl((x-x_0)^{n+1}\bigr)$ is in particular $o\bigl((x-x_0)^n\bigr)$, so the same holds with $O\bigl((x-x_0)^{n+1}\bigr)$.)</p>
+</div>
+<p><strong>The idea.</strong> A non-zero polynomial has a lowest term $c_mh^m$ (with $h=x-x_0$), and near $x_0$ it behaves like that term: $\frac{p(x)}{h^m}\to c_m\neq0$. But being $o(h^n)$ with $m\le n$ forces $\frac{p(x)}{h^m}\to0$. For (2), subtract the two approximations of $f$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Hypothesis:</strong> $\frac{p(x)}{(x-x_0)^n}\to0$ as $x\to x_0$.</li>
+  <li><strong>Goal:</strong> all coefficients of $p=\sum_{k=0}^nc_k(x-x_0)^k$ are $0$. Assume one isn't.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Suppose a non-zero polynomial hides inside the error.</p></div><div class="sp-formal"><p><strong>(1)</strong> Write $p(x)=\sum_{k=0}^nc_kh^k$ with $h=x-x_0$, and assume $p\neq0$. Let $m\le n$ be the smallest index with $c_m\neq0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Near the point, the lowest term is all you see.</p></div><div class="sp-formal"><p>For $h\neq0$, $\frac{p(x)}{h^m}=c_m+c_{m+1}h+\dots+c_nh^{n-m}\to c_m$ as $h\to0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>But the error is invisible even at a coarser scale.</p></div><div class="sp-formal"><p>On the other hand $\frac{p(x)}{h^m}=\frac{p(x)}{h^n}\cdot h^{n-m}\to0$, because $\frac{p(x)}{h^n}\to0$ and $h^{n-m}$ is bounded near $0$ (it is $1$ if $m=n$). So $c_m=0$, a contradiction. Hence $p=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two predictions that both fit the road to order $n$ are the same prediction.</p></div><div class="sp-formal"><p><strong>(2)</strong> By Proof B, $f=P_n+O(h^{n+1})=P_n+o(h^n)$. Subtracting $f=Q+o(h^n)$ gives $Q-P_n=o(h^n)$, a polynomial of degree $\le n$. By (1), $Q=P_n$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-contra">assume the opposite</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) Let $h=x-x_0$ and $p=\sum_{k=0}^nc_kh^k$ with $\frac{p}{h^n}\to0$ as $h\to0$. Suppose $p\neq0$ and let $m\le n$ be minimal with $c_m\neq0$. Then for $h\neq0$, $\frac p{h^m}=\sum_{k=m}^nc_kh^{k-m}\to c_m$. But also $\frac p{h^m}=\frac p{h^n}h^{n-m}\to0$, since $\frac p{h^n}\to0$ and $h^{n-m}$ is bounded near $0$. Hence $c_m=0$, a contradiction; so $p=0$.</p>
+<p>(2) By Proof B, $f-P_n=O(h^{n+1})$, which is $o(h^n)$. So $Q-P_n=(f-P_n)-(f-Q)=o(h^n)$ is a polynomial of degree $\le n$, and by (1), $Q=P_n$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does this make “$\sin(x^2)=x^2-\frac{x^6}6+O(x^{10})$, so the Taylor polynomial of order 6 of $\sin(x^2)$ is $x^2-\frac{x^6}6$” correct?</p>
+  <details><summary>Answer</summary><div><p>Substituting $y=x^2$ in $\sin y=y-\frac{y^3}6+O(y^5)$ gives a polynomial of degree $\le6$ plus $O(x^{10})$, which is $o(x^6)$. By (2), that polynomial is $P_6$. No derivatives needed.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Deduce: if $f$ is even (and smooth), its Taylor polynomials at $0$ contain only even powers.</p>
+  <details><summary>Answer</summary><div><p>$f(x)=P_n(x)+o(x^n)$, and replacing $x$ by $-x$: $f(x)=f(-x)=P_n(-x)+o(x^n)$. By uniqueness, $P_n(-x)=P_n(x)$, so the odd coefficients vanish. (Or: the odd derivatives of an even function are odd functions, hence $0$ at $0$.)</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-rules-for-as">The rules for $O$ (as $x\to0$)</h3>
+<ul>
+  <li>$x^k\cdot O(x^m)=O(x^{k+m})$ and $O(x^k)\cdot O(x^m)=O(x^{k+m})$.</li>
+  <li>$O(x^k)+O(x^m)=O(x^{\min(k,m)})$: <strong>the worst error wins</strong>. So expand every piece to the same order.</li>
+  <li>In a product, if one factor starts with $x^j$, the other only needs to be expanded to order $n-j$.</li>
+  <li><strong>Substitute</strong> $y=x^2$, $y=-x$, $y=2x$, … into a known expansion; the error $O(y^m)$ becomes $O(x^{2m})$ etc.</li>
+  <li><strong>Divide</strong> with the geometric series: $\frac1{1-u}=1+u+u^2+O(u^3)$ with $u\to0$.</li>
+  <li><strong>Compose</strong> $g(u(x))$ with $u(0)=0$: insert the expansion of $u$ into that of $g$ and drop powers above $n$.</li>
+</ul>
+</div>
+
+<div class="box">
+<h3 id="we-5">Worked example 5: building expansions</h3>
+<ol class="gq">
+  <li><p>$e^x\sin x$ up to order 3.</p>
+  <details><summary>Answer</summary><div><p>$\sin x$ starts with $x$, so $e^x$ is needed only to order 2:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left(1+x+\tfrac{x^2}2+O(x^3)\right)\\&amp;\quad\cdot\left(x-\tfrac{x^3}6+O(x^4)\right)\\&amp;\quad=x+x^2+\left(\tfrac12-\tfrac16\right)x^3+O(x^4)\\&amp;\quad=x+x^2+\tfrac{x^3}3+O(x^4).\end{aligned}$$</span></div></details></li>
+  <li><p>$\frac1{\cos x}$ up to order 4.</p>
+  <details><summary>Answer</summary><div><p>$\cos x=1-u$ with $u=\frac{x^2}2-\frac{x^4}{24}+O(x^6)$. Then $u^2=\frac{x^4}4+O(x^6)$ and $u^3=O(x^6)$, so</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\frac1{\cos x}&amp;=1+u+u^2+O(u^3)\\&amp;=1+\frac{x^2}2-\frac{x^4}{24}+\frac{x^4}4+O(x^6)\\&amp;=1+\frac{x^2}2+\frac{5x^4}{24}+O(x^6).\end{aligned}$$</span></div></details></li>
+  <li><p>$\tan x$ up to order 3.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\tan x&amp;=\sin x\cdot\frac1{\cos x}\\&amp;=\left(x-\frac{x^3}6\right)\left(1+\frac{x^2}2\right)+O(x^5)\\&amp;=x+\left(\frac12-\frac16\right)x^3+O(x^5)\\&amp;=x+\frac{x^3}3+O(x^5).\end{aligned}$$</span></p></div></details></li>
+  <li><p>$e^{\sin x}$ up to order 3.</p>
+  <details><summary>Answer</summary><div><p>Compose: $u=\sin x=x-\frac{x^3}6+O(x^5)$, $u^2=x^2+O(x^4)$, $u^3=x^3+O(x^5)$. Then</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}e^u&amp;=1+u+\frac{u^2}2+\frac{u^3}6+O(u^4)\\&amp;=1+x-\frac{x^3}6+\frac{x^2}2+\frac{x^3}6+O(x^4)\\&amp;=1+x+\frac{x^2}2+O(x^4).\end{aligned}$$</span>
+  <p>The $x^3$ terms cancel, so the error is in fact $O(x^4)$.</p></div></details></li>
+  <li><p>$\log(\cos x)$ up to order 4.</p>
+  <details><summary>Answer</summary><div><p>$\log(\cos x)=\log(1+v)$ with $v=-\frac{x^2}2+\frac{x^4}{24}+O(x^6)$ and $v^2=\frac{x^4}4+O(x^6)$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\log(1+v)&amp;=v-\frac{v^2}2+O(v^3)\\&amp;=-\frac{x^2}2+\frac{x^4}{24}-\frac{x^4}8+O(x^6)\\&amp;=-\frac{x^2}2-\frac{x^4}{12}+O(x^6).\end{aligned}$$</span></div></details></li>
+</ol>
+</div>
+
+
+<h2 id="s6-using-expansions-limits-and-extrema">6. Using expansions: limits and extrema</h2>
+<p>An expansion shows the <em>first term that doesn't cancel</em>. That's exactly what a “$\frac00$” limit needs, and exactly what decides an extremum when $f''(x_0)=0$.</p>
+
+<div class="box">
+<h3 id="we-6">Worked example 6: limits by expansion</h3>
+<ol class="gq">
+  <li><p>$\displaystyle\lim_{x\to0}\frac{x-\sin x}{x^3}$.</p>
+  <details><summary>Answer</summary><div><p>$x-\sin x=\frac{x^3}6+O(x^5)$, so the quotient is $\frac16+O(x^2)\to\frac16$.</p></div></details></li>
+  <li><p>$\displaystyle\lim_{x\to0}\left(\frac1{\sin^2x}-\frac1{x^2}\right)$.</p>
+  <details><summary>Answer</summary><div><p>Common denominator: $\frac{x^2-\sin^2x}{x^2\sin^2x}$. With <span class="math-display" style="display:block">$$\begin{aligned}\sin^2x&amp;=\left(x-\frac{x^3}6+O(x^5)\right)^2\\&amp;=x^2-\frac{x^4}3+O(x^6),\end{aligned}$$</span>the numerator is $\frac{x^4}3+O(x^6)$ and the denominator $x^4+O(x^6)$. Divide both by $x^4$: the limit is $\frac13$.</p></div></details></li>
+  <li><p>$\displaystyle\lim_{x\to0}\frac{\cos x-e^{-x^2/2}}{x^4}$.</p>
+  <details><summary>Answer</summary><div><p>$\cos x=1-\frac{x^2}2+\frac{x^4}{24}+O(x^6)$ and (substitute $y=-\frac{x^2}2$ in $e^y$) $e^{-x^2/2}=1-\frac{x^2}2+\frac{x^4}8+O(x^6)$. The difference is <span class="math-display" style="display:block">$$\begin{aligned}\left(\frac1{24}-\frac18\right)x^4+O(x^6)&amp;=-\frac{x^4}{12}+O(x^6)\end{aligned},$$</span>so the limit is $-\frac1{12}$. (l'Hôpital would need four rounds.)</p></div></details></li>
+</ol>
+</div>
+
+<h3 id="proof-e">Proof E: the higher-derivative test for extrema (Beispiel 9.49, <a class="pl" href="script.html#p449">p. 449–450</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f:(a,b)\to\mathbb R$ be $n$ times continuously differentiable ($n\ge2$), $x_0\in(a,b)$, with $f'(x_0)=\dots=f^{(n-1)}(x_0)=0$ and $f^{(n)}(x_0)\neq0$.</p>
+<ul>
+  <li>If $n$ is <strong>even</strong>: $f^{(n)}(x_0)&gt;0$ gives a strict local minimum, $f^{(n)}(x_0)&lt;0$ a strict local maximum.</li>
+  <li>If $n$ is <strong>odd</strong>: no local extremum at $x_0$.</li>
+</ul>
+</div>
+<p><strong>The idea.</strong> Taylor of order $n-1$: all middle terms vanish, so $f(x)-f(x_0)$ is just the remainder $\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt$. Near $x_0$, $f^{(n)}$ keeps its sign (continuity), and the sign of $(x-t)^{n-1}$ depends on the side and on whether $n$ is even or odd. (This refines <a class="xl" href="lesson-18.html#proof-a">lesson 18</a>'s second derivative test, which is the case $n=2$.)</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Strict local minimum:</strong> there is $\delta&gt;0$ with $f(x)&gt;f(x_0)$ for $0&lt;|x-x_0|&lt;\delta$.</li>
+  <li><strong>No extremum:</strong> in every neighbourhood there are points with $f(x)&gt;f(x_0)$ and points with $f(x)&lt;f(x_0)$.</li>
+  <li><strong>Reduce:</strong> assume $f^{(n)}(x_0)&gt;0$ (otherwise use $-f$).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The first bend that shows decides; keep it positive near the point.</p></div><div class="sp-formal"><p>Assume $f^{(n)}(x_0)&gt;0$ (otherwise replace $f$ by $-f$, which swaps minimum and maximum). As $f^{(n)}$ is continuous, there is $\delta&gt;0$ with $(x_0-\delta,x_0+\delta)\subseteq(a,b)$ and $f^{(n)}(t)&gt;0$ for $|t-x_0|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>All the lower gauges read zero; only the ledger is left.</p></div><div class="sp-formal"><p>Proof A with $n-1$ (and $f'(x_0)=\dots=f^{(n-1)}(x_0)=0$) gives</p>
+<span class="math-display" style="display:block">$$f(x)-f(x_0)=\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}\,dt.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>To the right, everything is positive.</p></div><div class="sp-formal"><p>For $x\in(x_0,x_0+\delta)$: on $(x_0,x)$, $f^{(n)}(t)&gt;0$ and $(x-t)^{n-1}&gt;0$, so $f(x)-f(x_0)&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>To the left, the sign depends on whether $n$ is even or odd.</p></div><div class="sp-formal"><p>For $x\in(x_0-\delta,x_0)$: $f(x)-f(x_0)=-\int_x^{x_0}f^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt$, and for $t\in(x,x_0)$, $x-t&lt;0$, so $(x-t)^{n-1}$ has the sign $(-1)^{n-1}$. Hence $f(x)-f(x_0)$ has the sign $-(-1)^{n-1}=(-1)^n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Even: higher on both sides. Odd: lower on one side, higher on the other.</p></div><div class="sp-formal"><p>If $n$ is even, $f(x)&gt;f(x_0)$ for all $0&lt;|x-x_0|&lt;\delta$: a strict local minimum. If $n$ is odd, $f(x)&lt;f(x_0)$ to the left and $f(x)&gt;f(x_0)$ to the right, in every neighbourhood: no extremum. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-obda">reduce to one case (oBdA)</a> <a class="mvl" href="moves.html#m-cases">split into cases</a> <a class="mvl" href="moves.html#m-parity">even and odd separately</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Replacing $f$ by $-f$ if necessary, assume $f^{(n)}(x_0)&gt;0$. By continuity of $f^{(n)}$ there is $\delta&gt;0$ with $(x_0-\delta,x_0+\delta)\subseteq(a,b)$ and $f^{(n)}&gt;0$ on it. By Taylor's theorem of order $n-1$, using $f^{(k)}(x_0)=0$ for $1\le k\le n-1$, $f(x)-f(x_0)=\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt$. For $x_0&lt;x&lt;x_0+\delta$ the integrand is positive on $(x_0,x)$, so $f(x)&gt;f(x_0)$. For $x_0-\delta&lt;x&lt;x_0$ we have $f(x)-f(x_0)=-\int_x^{x_0}f^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt$, where the integrand has the sign $(-1)^{n-1}$ on $(x,x_0)$; so $f(x)-f(x_0)$ has the sign $(-1)^n$. If $n$ is even, $f(x)&gt;f(x_0)$ for $0&lt;|x-x_0|&lt;\delta$, a strict local minimum. If $n$ is odd, $f(x)&lt;f(x_0)$ for $x$ slightly left and $f(x)&gt;f(x_0)$ for $x$ slightly right of $x_0$, so there is no local extremum. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> What does the theorem say about $x^4$, $-x^4$ and $x^3$ at $0$? And about $x^5$?</p>
+  <details><summary>Answer</summary><div><p>$x^4$: $n=4$ even, $f^{(4)}=24&gt;0$, strict minimum. $-x^4$: strict maximum. $x^3$ and $x^5$: $n$ odd, no extremum.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Can you see the result directly from <span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;=f(x_0)+\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n\\&amp;\quad+o\bigl((x-x_0)^n\bigr)\end{aligned}$$</span>?</p>
+  <details><summary>Answer</summary><div><p>Yes: $\frac{f(x)-f(x_0)}{(x-x_0)^n}\to\frac{f^{(n)}(x_0)}{n!}&gt;0$, so for $x$ close to $x_0$, $f(x)-f(x_0)$ has the sign of $(x-x_0)^n$: positive on both sides if $n$ is even, a sign change if $n$ is odd. This is the quick version for computations.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-7">Worked example 7: when the second derivative is zero</h3>
+<p>Each function has $f'(0)=0$ and $f''(0)=0$. Decide what happens at $0$ from the expansion (Proof D says its first non-zero term is $\frac{f^{(n)}(0)}{n!}x^n$).</p>
+<ol class="gq">
+  <li><p>$f(x)=x\sin x-x^2$.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}&amp;x\left(x-\frac{x^3}6+O(x^5)\right)-x^2\\&amp;\quad=-\frac{x^4}6+O(x^6)\end{aligned}$$</span>. First term $n=4$ even, coefficient negative: strict local maximum.</p></div></details></li>
+  <li><p>$f(x)=e^x-1-x-\frac{x^2}2$.</p>
+  <details><summary>Answer</summary><div><p>$\frac{x^3}6+O(x^4)$: $n=3$ odd, no extremum (compare Worked example 2: negative left of $0$, positive right).</p></div></details></li>
+  <li><p>$f(x)=\cos x+\frac{x^2}2$.</p>
+  <details><summary>Answer</summary><div><p>$1+\frac{x^4}{24}+O(x^6)$: $n=4$ even, positive: strict local minimum, value $1$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s7-worked-examples-computing-taylor-expansions">7. Worked examples: computing Taylor expansions</h2>
+<p>A mixed set to revise the whole lesson before the exercises. The exam's K3 question is always “up to order 3 or 4, at $0$”, so this is the routine to make automatic.</p>
+<div class="box">
+<h3 id="the-decision-list-for-compute">The decision list for “compute the Taylor expansion at $0$ up to order $n$”</h3>
+<ol>
+  <li><strong>Building blocks</strong> from the table: $e^u$, $\sin u$, $\cos u$, $\log(1+u)$, $(1+u)^\alpha$, $\frac1{1-u}$ (the first four are on the formula sheet).</li>
+  <li><strong>How far for each piece:</strong> to order $n$; a factor that starts with $x^j$ lets the other factor stop at order $n-j$; after substituting $u=x^2$, order $\frac n2$ in $u$ is enough.</li>
+  <li><strong>Combine:</strong> multiply, substitute, compose; drop every power above $n$; collect.</li>
+  <li><strong>Write the error:</strong> $+O(x^{n+1})$ (or $+o(x^n)$, if the question allows it). If the function is even or odd, you may give the better error.</li>
+  <li><strong>Check:</strong> the value at $0$, the parity, and one coefficient by a derivative if time allows.</li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-8">Worked example 8: which building blocks?</h3>
+<ol class="gq">
+  <li><p>$\cosh x-\cos x$ up to order 4.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}&amp;\left(1+\frac{x^2}2+\frac{x^4}{24}\right)\\&amp;\quad-\left(1-\frac{x^2}2+\frac{x^4}{24}\right)+O(x^6)\\&amp;=x^2+O(x^6).\end{aligned}$$</span>The $x^4$ terms cancel; the order-4 polynomial is just $x^2$.</p></div></details></li>
+  <li><p>$\sqrt{1+x}$ up to order 3.</p>
+  <details><summary>Answer</summary><div><p>$(1+x)^{1/2}$ with $\binom{1/2}{2}=\frac{\frac12\cdot(-\frac12)}2=-\frac18$ and $\binom{1/2}{3}=\frac{\frac12\cdot(-\frac12)(-\frac32)}6=\frac1{16}$: $1+\frac x2-\frac{x^2}8+\frac{x^3}{16}+O(x^4)$.</p></div></details></li>
+  <li><p>$\frac{\log(1+x)}{1+x}$ up to order 3.</p>
+  <details><summary>Answer</summary><div><p>$\log(1+x)$ starts with $x$, so $\frac1{1+x}=1-x+x^2+O(x^3)$ is enough:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left(x-\tfrac{x^2}2+\tfrac{x^3}3\right)\left(1-x+x^2\right)+O(x^4)\\&amp;\quad=x-\tfrac32x^2+\left(1+\tfrac12+\tfrac13\right)x^3+O(x^4)\\&amp;\quad=x-\tfrac32x^2+\tfrac{11}6x^3+O(x^4).\end{aligned}$$</span></div></details></li>
+  <li><p>$\arctan x$ up to order 5.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\arctan'(t)&amp;=\frac1{1+t^2}\\&amp;=1-t^2+t^4-\dots\end{aligned}$$</span>for $|t|&lt;1$; integrate term by term (<a class="xl" href="lesson-16.html#proof-e">lesson 16</a>) from $0$ to $x$: $\arctan x=x-\frac{x^3}3+\frac{x^5}5+O(x^7)$.</p></div></details></li>
+  <li><p>$\frac1{(1-x)^2}$ up to order 3.</p>
+  <details><summary>Answer</summary><div><p>Differentiate the geometric series (<a class="xl" href="lesson-19.html#proof-c">lesson 19</a>, Proof C): <span class="math-display" style="display:block">$$\begin{aligned}\frac1{(1-x)^2}&amp;=\sum_{k\ge1}kx^{k-1}\\&amp;=1+2x+3x^2\\&amp;\quad+4x^3+O(x^4).\end{aligned}$$</span>(Or square $1+x+x^2+x^3$.)</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s8-exercises">8. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1–5 count for scoring. Exercises 6–9 are longer, and the Bonus is a two-variable exam question.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Figalli HS23, K3, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">HS23 exam with solutions</a></p>
+  <p>Compute the Taylor polynomial at $0$ up to order 3 of $\cos^2(x)-\cos(x^2)\,e^{x^2}$. Use big-O notation for the remainder.</p><details class="sol"><summary>Solution</summary><div>
+  <p>Everything is even, so we expand to order 3 with errors $O(x^4)$:</p>
+  <p><span class="math-display" style="display:block">$$\begin{aligned}\cos^2x&amp;=\left(1-\frac{x^2}2+O(x^4)\right)^2\\&amp;=1-x^2+O(x^4).\end{aligned}$$</span></p>
+  <p>$\cos(x^2)=1+O(x^4)$ and $e^{x^2}=1+x^2+O(x^4)$, so $\cos(x^2)e^{x^2}=1+x^2+O(x^4)$.</p>
+  <p>Hence <span class="math-display" style="display:block">$$\cos^2(x)-\cos(x^2)e^{x^2}=-2x^2+O(x^4).$$</span>The Taylor polynomial of order 3 is $-2x^2$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Figalli FS24, K3, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">FS24 exam with solutions</a></p>
+  <p>Compute the Taylor expansion at $0$, up to order 4, of $\sin(x^2)-\sin^2(x)$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>$\sin y=y-\frac{y^3}6+O(y^5)$. With $y=x^2$: $\sin(x^2)=x^2+O(x^6)$. And</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\sin^2x&amp;=\left(x-\frac{x^3}6+O(x^5)\right)^2\\&amp;=x^2-\frac{x^4}3+O(x^6).\end{aligned}$$</span>
+  <p>So $\sin(x^2)-\sin^2(x)=\frac{x^4}3+O(x^6)$. (The official solution writes $+O(x^5)$, which is also correct.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Figalli FS26, K3, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Compute the Taylor expansion at $0$ up to order 3 of $f(x)=\log(1+x^2)-\frac{x^2}{1+x}$. Use big-O or small-o notation.</p><details class="sol"><summary>Solution</summary><div>
+  <p>$\log(1+x^2)=x^2+O(x^4)$ (substitute $u=x^2$ in $\log(1+u)=u+O(u^2)$).</p>
+  <p><span class="math-display" style="display:block">$$\begin{aligned}\frac{x^2}{1+x}&amp;=x^2\left(1-x+O(x^2)\right)\\&amp;=x^2-x^3+O(x^4)\end{aligned}$$</span>.</p>
+  <p>So $f(x)=x^3+O(x^4)$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (PVK mock HS25, K3, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK mock exam</a> · <a href="pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">solutions</a></p>
+  <p>Compute the Taylor expansion at $0$, up to order 4, of $e^{x^2}-\cos x$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>$e^{x^2}=1+x^2+\frac{x^4}2+O(x^6)$ and $\cos x=1-\frac{x^2}2+\frac{x^4}{24}+O(x^6)$. So</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}e^{x^2}-\cos x&amp;=\frac32x^2+\left(\frac12-\frac1{24}\right)x^4+O(x^6)\\&amp;=\frac32x^2+\frac{11}{24}x^4+O(x^6).\end{aligned}$$</span>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (exam style, 2 points)</h3>
+  <p>Show that $\left|\sin x-x+\frac{x^3}6\right|\le\frac{|x|^5}{120}$ for all $x\in\mathbb R$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>The Taylor polynomial of order 4 of $\sin$ at $0$ is $P_4(x)=x-\frac{x^3}6$, since $\sin^{(4)}(0)=\sin0=0$. The fifth derivative is $\cos$, so $M_5\le1$ for every $x$. By the Taylor estimate (Proof B), $|\sin x-P_4(x)|\le\frac{1\cdot|x|^5}{5!}=\frac{|x|^5}{120}$.</p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercises 1–5 are 2 points each and make 10. If you have 7 of 10, you're done. Exercises 6–9 and the Bonus are extra practice and don't count against you. Exercise 6 is Proof A as an exam question: do it if Proof A felt good.</p>
+</div>
+
+<div class="box"><h3 id="ex-6">Exercise 6 (2017 summer exam, question 12, 5 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2017-summer-rechnungen-format.pdf&amp;t=2017%20summer%20%28Rechnungen%20format%29">2017 summer exam</a></p>
+  <p>Let $(a,b)\subset\mathbb R$ be an open interval and $f$ an $(n+1)$ times continuously differentiable function on $(a,b)$. Prove Taylor's theorem with integral remainder for $f$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> Proof A: induction on $n$, the fundamental theorem for the base case, integration by parts for the step. <em>Moves:</em> <a class="mvl" href="moves.html#m-induct">induction with labelled parts</a>.</p>
+  <p><strong>Statement.</strong> For $x_0,x\in(a,b)$: <span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;=\sum_{k=0}^n\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k\\&amp;\quad+\int_{x_0}^xf^{(n+1)}(t)\frac{(x-t)^n}{n!}dt.\end{aligned}$$</span></p>
+  <p><strong>Proof by induction on $n$.</strong> <em>Base $n=0$:</em> $f$ is continuously differentiable, so by the fundamental theorem of calculus $f(x)=f(x_0)+\int_{x_0}^xf'(t)\,dt$, which is the claim for $n=0$.</p>
+  <p><em>Step:</em> let $n\ge1$ and assume the claim for $n-1$ (for all $n$ times continuously differentiable functions). Let $f$ be $(n+1)$ times continuously differentiable. By the induction hypothesis,</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;=\sum_{k=0}^{n-1}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k\\&amp;\quad+\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt.\end{aligned}$$</span>
+  <p>Integrate by parts with $u(t)=f^{(n)}(t)$, $u'=f^{(n+1)}$ (continuous), and $v(t)=-\frac{(x-t)^n}{n!}$, $v'(t)=\frac{(x-t)^{n-1}}{(n-1)!}$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int_{x_0}^xf^{(n)}(t)\frac{(x-t)^{n-1}}{(n-1)!}dt\\&amp;\quad=\left[-f^{(n)}(t)\frac{(x-t)^n}{n!}\right]_{t=x_0}^{t=x}\\&amp;\qquad+\int_{x_0}^xf^{(n+1)}(t)\frac{(x-t)^n}{n!}dt\\&amp;\quad=\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n\\&amp;\qquad+\int_{x_0}^xf^{(n+1)}(t)\frac{(x-t)^n}{n!}dt.\end{aligned}$$</span>
+  <p>Inserting this gives the claim for $n$. <span class="qed">∎</span></p>
+  <p>(Grading usually gives points for the statement, the base case, the correct choice of $u$ and $v$, the evaluation of the bracket, and the conclusion.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-7">Exercise 7 (limits by expansion)</h3>
+  <p>Compute: (a) $\lim_{x\to0}\frac{\log(1+x)-x+\frac{x^2}2}{x^3}$; (b) $\lim_{x\to0}\left(\frac1x-\frac1{e^x-1}\right)$; (c) $\lim_{x\to0}\frac{\tan x-x}{x-\sin x}$; (d) $\lim_{x\to\infty}x^2\left(1-\cos\frac1x\right)$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) $\log(1+x)=x-\frac{x^2}2+\frac{x^3}3+O(x^4)$, so the quotient is $\frac13+O(x)\to\frac13$.</p>
+  <p>(b) $\frac1x-\frac1{e^x-1}=\frac{e^x-1-x}{x(e^x-1)}$. Numerator $\frac{x^2}2+O(x^3)$, denominator $x\left(x+O(x^2)\right)=x^2+O(x^3)$. Limit $\frac12$.</p>
+  <p>(c) $\tan x-x=\frac{x^3}3+O(x^5)$ (Worked example 5) and $x-\sin x=\frac{x^3}6+O(x^5)$. Limit $\frac{1/3}{1/6}=2$.</p>
+  <p>(d) Substitute $y=\frac1x\to0^+$: $\frac{1-\cos y}{y^2}=\frac{\frac{y^2}2+O(y^4)}{y^2}\to\frac12$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-8">Exercise 8 (higher-derivative test)</h3>
+  <p>Each function has a critical point at $0$. Decide whether it is a local minimum, a local maximum or neither: (a) $f(x)=\sin x-x\cos x$; (b) $g(x)=\log(1+x^2)-x^2$; (c) $h(x)=e^{x^2}-1-x^2$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) <span class="math-display" style="display:block">$$\begin{aligned}\sin x-x\cos x&amp;=x-\frac{x^3}6-x+\frac{x^3}2+O(x^5)\\&amp;=\frac{x^3}3+O(x^5).\end{aligned}$$</span>By Proof D, $f'(0)=f''(0)=0$ and $f'''(0)=3!\cdot\frac13=2\neq0$; $n=3$ is odd, so there is no extremum.</p>
+  <p>(b) $\log(1+x^2)=x^2-\frac{x^4}2+O(x^6)$, so $g(x)=-\frac{x^4}2+O(x^6)$: $n=4$, $g^{(4)}(0)=-12&lt;0$, strict local maximum.</p>
+  <p>(c) $e^{x^2}=1+x^2+\frac{x^4}2+O(x^6)$, so $h(x)=\frac{x^4}2+O(x^6)$: $n=4$, positive, strict local minimum.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-9">Exercise 9 (a square root by hand)</h3>
+  <p>Approximate $\sqrt{1.1}$ with the Taylor polynomial of order 2 of $\sqrt{1+x}$ at $0$, and show that the error is less than $10^{-4}$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>$P_2(x)=1+\frac x2-\frac{x^2}8$, so <span class="math-display" style="display:block">$$P_2(0.1)=1+0.05-0.00125=1.04875.$$</span></p>
+  <p>$f(x)=(1+x)^{1/2}$ has $f'''(t)=\frac38(1+t)^{-5/2}$, which is at most $\frac38$ on $[0,0.1]$. By Proof B the error is <span class="math-display" style="display:block">$$\begin{aligned}&amp;\le \frac{3/8\cdot0.1^3}{3!}\\&amp;=\frac{0.000375}6\\&amp;=6.25\cdot10^{-5}\\&amp;&lt;10^{-4}\end{aligned}.$$</span>(True value $1.048809\dots$)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (2018 winter exam, question 2, 3 points, Analysis II)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2018-winter-rechnungen-format.pdf&amp;t=2018%20winter%20%28Rechnungen%20format%29">2018 winter exam</a></p>
+  <p>Compute the Taylor approximation of order 3 of $(x,y)\mapsto(x+y)\cos(2x)$ at the origin.</p><details class="sol"><summary>Solution</summary><div>
+  <p>Functions of two variables are Analysis II, but the one-variable tools already do it. <span class="math-display" style="display:block">$$\begin{aligned}\cos(2x)&amp;=1-\frac{(2x)^2}2+O(x^4)\\&amp;=1-2x^2+O(x^4),\end{aligned}$$</span>so</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}(x+y)\cos(2x)&amp;=(x+y)(1-2x^2)\\&amp;\quad+(x+y)\,O(x^4)\\&amp;=x+y-2x^3-2x^2y+\dots\end{aligned}$$</span>
+  <p>The dropped terms have total degree at least 5. The order-3 Taylor polynomial is $x+y-2x^3-2x^2y$ (uniqueness holds in several variables too, as you'll see next year).</p>
+</div></details>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Newton's method doubles the digits.</strong> To find a zero $z$ of $f$, replace $f$ by its tangent at a guess $x_n$ and take the tangent's zero: $x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}$. Taylor with $n=1$ shows $|x_{n+1}-z|\le\frac M{2m}|x_n-z|^2$ (with $M=\max|f''|$, $m=\min|f'|$): the error is <em>squared</em> each step, so the number of correct digits roughly doubles. For $\sqrt2$ ($f(x)=x^2-2$, start $1$): 1.5, 1.41<u>6</u>67, 1.41421<u>5</u>69, 1.41421356237<u>4</u>69 (first wrong digit underlined), against $\sqrt2=1.41421356237309\dots$ Four steps give 12 digits. Your computer computes square roots and divisions in essentially this way. (Script Section 9.4.2, starred.)</p>
+<p><strong>Why $\frac1{1+x^2}$ has radius $1$.</strong> On the real line, nothing happens at $x=\pm1$: the function is smooth and tiny. But a power series converges on a disc in the complex plane, and $\frac1{1+z^2}$ blows up at $z=\pm i$, at distance $1$ from $0$. The real function “feels” poles that are invisible on the real line. That analytic functions are really about the complex plane is the theme of Funktionentheorie in the second year.</p>
+
+<h2 id="s10-what-we-skipped">10. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Übung 9.48 (a), (b) (<a class="pl" href="script.html#p449">p. 449</a>):</strong> the Cauchy form of the remainder. Done: Proof C and its Rung 2.</li>
+  <li><strong>Übung 9.51 (<a class="pl" href="script.html#p450">p. 450</a>):</strong> the bounds $\max|f^{(n+1)}|\le cA^n$ for polynomials, $\exp$, $\sin$, $\cos$, sums and products. Low; the idea is in Worked example 4.</li>
+  <li><strong>Übung 9.52 (<a class="pl" href="script.html#p451">p. 451</a>):</strong> the binomial series $(1+x)^\alpha=\sum\binom\alpha nx^n$ on $(-1,1)$. Low; we use its Taylor polynomials (Worked examples 1 and 8).</li>
+  <li><strong>Remark on holomorphic functions (<a class="pl" href="script.html#p451">p. 451</a>).</strong> Second year; For wonder.</li>
+  <li><strong>Section 9.4.2, Newton's method, Übungen 9.54–9.55 (<a class="pl" href="script.html#p451">p. 451–453</a>, starred).</strong> Low; For wonder.</li>
+  <li><strong>Sections 9.5–9.7 (<a class="pl" href="script.html#p454">p. 454–473</a>):</strong> numerical integration (rectangle, trapezoid and Simpson rules), Landau notation II, the Wallis product, Stirling's formula, the asymptotics of the harmonic series, areas, arc length, path integrals, solids of revolution. None of them appears in the exams we have. Low; the review after <a class="xl" href="lesson-22.html">lesson 22</a> checks this again.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-22.html">lesson 22</a>, differential equations (Section 8.5): separable equations, linear equations of first order, and second order with constant coefficients. They are a 4-point question in 8 of the 9 exams.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-20.html">← Lesson 20: Roads Without End</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-22.html">Lesson 22: The Rails of the Plain →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Skipped topics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+</nav>
+<header>
+<span class="eyebrow">Analysis 1 · Skipped topics</span>
+<h1>Skipped topics</h1>
+<p class="lead">Everything the lessons leave out, lesson by lesson, so nothing gets lost. Once the essential lessons are done, each item gets a short recap.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<li><a href="#revision-list-covered-but-only">Revision list (covered, but only skimmed)</a>
+</li>
+<li><a href="#rungs">Rungs with extra results (cover in the refresher)</a>
+</li>
+<li><a href="#exercises">Exercises to do in the refresher</a>
+</li>
+<li><a href="#from-lesson-1-1-1">From lesson 1 (§1.1–1.3)</a>
+</li>
+<li><a href="#from-lesson-2-1-4">From lesson 2 (§1.4)</a>
+</li>
+<li><a href="#from-lesson-3-1-5">From lesson 3 (§1.5–1.7)</a>
+</li>
+<li><a href="#from-lesson-4-1-8">From lesson 4 (§1.8, §2.1–2.2)</a>
+</li>
+<li><a href="#from-lesson-5-2-3">From lesson 5 (§2.3–2.4)</a>
+</li>
+<li><a href="#from-lesson-6-2-5">From lesson 6 (§2.5–2.6)</a>
+</li>
+<li><a href="#from-lesson-7-3-4">From lesson 7 (§3.4–3.6)</a>
+</li>
+<li><a href="#from-lesson-8-3-7">From lesson 8 (§3.7–3.8)</a>
+</li>
+<li><a href="#from-lesson-9-riemann-integral">From lesson 9 (Riemann integral, chapter 4)</a>
+</li>
+<li><a href="#from-lesson-10-metric-spaces">From lesson 10 (metric spaces, chapter 5)</a>
+</li>
+<li><a href="#from-lesson-11-sandwich-monotone">From lesson 11 (sandwich, monotone sequences, limsup, §6.1–6.1.2)</a>
+</li>
+<li><a href="#from-lesson-12-bolzano-weierstrass">From lesson 12 (Bolzano–Weierstrass, improper limits, Cauchy sequences, §6.1.3–6.2)</a>
+</li>
+<li><a href="#from-lesson-13-limits-of">From lesson 13 (limits of functions, Riemann sums, Landau, §6.4–6.6)</a>
+</li>
+<li><a href="#from-lesson-14-series-7">From lesson 14 (series, §7.1–7.2)</a>
+</li>
+<li><a href="#from-lesson-15-uniform-convergence">From lesson 15 (uniform convergence, §7.3)</a>
+</li>
+<li><a href="#from-lesson-16-power-series">From lesson 16 (power series, exp, log, sin, cos, §6.3, 7.2.3, 7.4–7.8)</a>
+</li>
+<li><a href="#from-lesson-17-derivatives-rolle">From lesson 17 (derivatives, Rolle, mean value theorem, §8.1–8.2.2)</a>
+</li>
+<li><a href="#from-lesson-18-extrema-convexity">From lesson 18 (extrema, convexity, l&#x27;Hôpital, §8.2.2–8.4)</a>
+</li>
+<li><a href="#from-lesson-19-fundamental-theorem">From lesson 19 (fundamental theorem, integration techniques, §9.1–9.2)</a>
+</li>
+<li><a href="#from-lesson-20-improper-integrals">From lesson 20 (improper integrals, §9.3)</a>
+</li>
+<li><a href="#from-lesson-21-taylor-approximation">From lesson 21 (Taylor approximation, §9.4)</a>
+</li>
+<li><a href="#from-lesson-22-differential-equations">From lesson 22 (differential equations, §8.5)</a>
+</li>
+<li><a href="#found-later">Found later</a>
+</li>
+</ol></details>
+<p>A running list of everything the lessons leave out, so nothing gets lost. Once the essential lessons are done, each item gets a short recap. <strong>Priority</strong> says how much it matters for the exam: <strong>High</strong> = recap soon or fold into a later lesson, <strong>Low</strong> = recap for completeness, <strong>Optional</strong> = read only for interest. Two checklists come first: <a href="#rungs">rungs with extra results</a> and <a href="#exercises">exercises to do in the refresher</a>. We tick them off one by one in the refresher phase.</p>
+<h2 id="revision-list-covered-but-only">Revision list (covered, but only skimmed)</h2>
+<p>Things that were in a lesson but need a second, proper pass.</p>
+<p>Nothing here right now. (The boundedness proof from <a class="xl" href="lesson-08.html#proof-b">lesson 8</a> was rewritten in the new proof format on 2026-10-26, so it&#x27;s reread there.)</p>
+<h2 id="rungs">Rungs with extra results (cover in the refresher)</h2>
+<p>Some rungs of the proof-writing ladders prove or show something new (an extra result, a consequence, or a counterexample that shows why a hypothesis is needed). If you skipped those rungs, this is where they live. <strong>★</strong> = useful for the exam. Each row becomes <strong>Done</strong> once we have covered it in the refresher phase.</p>
+<div class="table-wrap"><table>
+<tr><th>Where</th><th>What it shows</th><th>Exam</th><th>Status</th></tr>
+<tr><td><a href="lesson-03.html#proof-a">Lesson 3, Proof A</a>, Rung 2</td><td>&quot;same remainder mod m&quot; is an equivalence relation with m classes.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-03.html#proof-c">Lesson 3, Proof C</a>, Rung 2</td><td>there is not even a *surjection* from ℕ onto the 0/1 sequences (no list, even with repetitions, contains them all).</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-04.html#proof-b">Lesson 4, Proof B</a>, Rung 2</td><td>√3 is irrational (via &quot;3 | n² ⇒ 3 | n&quot;).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-05.html#proof-a">Lesson 5, Proof A</a>, Rung 2</td><td>|x+y| ≤ |x| − |y| is false (x = 0, y = 1).</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-06.html#proof-b">Lesson 6, Proof B</a>, Rung 2</td><td>the claim fails for (0,1) ∪ {2}, which is not open.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-08.html#proof-d">Lesson 8, Proof D</a>, Rung 2</td><td>x² *is* uniformly continuous on [0,1].</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-10.html#proof-d">Lesson 10, Proof D</a>, Rung 2</td><td>the scalar rule αaₙ → αA, with its own ε-proof.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-11.html#proof-a">Lesson 11, Proof A</a>, Rung 2</td><td>the sandwich lemma still works if the inequalities only hold from some n₀ on.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-11.html#proof-b">Lesson 11, Proof B</a>, Rung 2</td><td>a *decreasing* bounded sequence converges (to its infimum), with a full proof.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-11.html#proof-c">Lesson 11, Proof C</a>, Rung 2</td><td>the two limsup properties written in quantifiers.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-14.html#proof-b">Lesson 14, Proof B</a>, Rung 2</td><td>unbounded partial sums ⇒ divergent.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-14.html#proof-c">Lesson 14, Proof C</a>, Rung 1</td><td>the comparison test needs aₖ ≥ 0 (counterexample aₖ = −1).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-14.html#proof-c">Lesson 14, Proof C</a>, Rung 2</td><td>comparing &quot;from some N on&quot; is enough.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-14.html#proof-e">Lesson 14, Proof E</a>, Rung 2</td><td>the Leibniz error bound 0 ≤ S − s₂ₙ ≤ a₂ₙ₊₁.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-14.html#proof-f">Lesson 14, Proof F</a>, Rung 1</td><td>convergent does not imply absolutely convergent (alternating harmonic series).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-14.html#proof-g">Lesson 14, Proof G</a>, Rung 2</td><td>the α &gt; 1 half of the root test.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-15.html#proof-b">Lesson 15, Proof B</a>, Rung 2</td><td>a one-line exam trick: xⁿ is not uniformly convergent on [0,1], because the limit jumps.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-15.html#proof-d">Lesson 15, Proof D</a>, Rung 1</td><td>Σ sin(kx)/k² converges uniformly on ℝ, and its sum is continuous.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-15.html#proof-d">Lesson 15, Proof D</a>, Rung 2</td><td>the geometric series is uniform on [−a,a] for a &lt; 1, but the M-test fails on (−1,1).</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#proof-a">Lesson 16, Proof A</a>, Rung 2</td><td>Σ zⁿ is not uniform on the open unit disc.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#proof-b">Lesson 16, Proof B</a>, Rung 2</td><td>a series where the ratio formula fails but the root formula works.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#proof-c">Lesson 16, Proof C</a>, Rung 1</td><td>e^(−z) = 1/e^z and e^z ≠ 0.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#proof-c">Lesson 16, Proof C</a>, Rung 2</td><td>|e^z| = e^(Re z), so |e^(it)| = 1.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#proof-d">Lesson 16, Proof D</a>, Rungs 1 and 2</td><td>cos² + sin² = 1 and the double-angle formulas.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#proof-e">Lesson 16, Proof E</a>, Rung 1</td><td>∫ eˣ and ∫ cos via term-by-term integration.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-a">Lesson 17, Proof A</a>, Rung 2</td><td>|x| is continuous but not differentiable at 0.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-b">Lesson 17, Proof B</a>, Rung 2</td><td>the power rule (xⁿ)′ = nxⁿ⁻¹, by induction.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-d">Lesson 17, Proof D</a>, Rung 2</td><td>the cube root is not differentiable at 0 (why f′(x₀) ≠ 0 is needed).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-e">Lesson 17, Proof E</a>, Rung 1</td><td>f(x) = x on [0,1] has a maximum with f′ ≠ 0 (why &quot;interior&quot; is needed).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-f">Lesson 17, Proof F</a>, Rungs 1 and 2</td><td>counterexamples that show each hypothesis of Rolle&#x27;s theorem is needed.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-g">Lesson 17, Proof G</a>, Rung 2</td><td>a second helper function for the mean value theorem.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-h">Lesson 17, Proof H</a>, Rung 1</td><td>increasing ⇒ f′ ≥ 0, and x³ shows strictly increasing does *not* give f′ &gt; 0.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#proof-h">Lesson 17, Proof H</a>, Rung 2</td><td>f′ = g′ on an interval ⇒ f = g + C.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#proof-a">Lesson 18, Proof A</a>, Rung 2</td><td>the sign-change test also works where f is not differentiable (|x| at 0).</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#proof-b">Lesson 18, Proof B</a>, Rung 1</td><td>the slope of the whole chord lies between the two slopes (Felder FS23 uses this).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#proof-c">Lesson 18, Proof C</a>, Rung 1</td><td>x log x is strictly convex and log is strictly concave.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#proof-c">Lesson 18, Proof C</a>, Rung 2</td><td>a convex function lies above all its tangents (Figalli HS23 A1(c)).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#proof-d">Lesson 18, Proof D</a>, Rung 2</td><td>the AM–GM inequality via Jensen.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#proof-e">Lesson 18, Proof E</a>, Rung 2</td><td>g(x) = x turns Cauchy&#x27;s mean value theorem into the ordinary one.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#proof-f">Lesson 18, Proof F</a>, Rung 2</td><td>l&#x27;Hôpital for x → ∞.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#proof-a">Lesson 19, Proof A</a>, Rung 2</td><td>without continuity, F(x) = ∫f need not be differentiable (F = max(x,0)).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#proof-b">Lesson 19, Proof B</a>, Rung 1</td><td>on a union of two intervals, antiderivatives can differ by more than a constant.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#proof-b">Lesson 19, Proof B</a>, Rung 2</td><td>the mean value theorem for integrals.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#proof-c">Lesson 19, Proof C</a>, Rung 1</td><td>exp′ = exp in one line.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#proof-c">Lesson 19, Proof C</a>, Rung 2</td><td>Σ n xⁿ = x/(1−x)² (this is <a class="xl" href="lesson-16.html#we-5">lesson 16</a>&#x27;s worked example 5, the fast way).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#proof-e">Lesson 19, Proof E</a>, Rung 2</td><td>what the &quot;other way round&quot; substitution (x = sin θ) needs.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-a">Lesson 20, Proof A</a>, Rung 1</td><td>∫₀^∞ x^(−α) never converges.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-a">Lesson 20, Proof A</a>, Rung 2</td><td>∫₀^∞ e^(−x) = 1 and ∫₀^∞ 1/(1+x²) = π/2.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-b">Lesson 20, Proof B</a>, Rung 1</td><td>∫ e^(−x²) converges (the bell curve).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-b">Lesson 20, Proof B</a>, Rung 2</td><td>∫₂^∞ 1/log x diverges.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-c">Lesson 20, Proof C</a>, Rung 1</td><td>∫ sin x / x² converges absolutely.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-c">Lesson 20, Proof C</a>, Rung 2</td><td>∫₁^∞ sin x / x converges (a classic, by parts).</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-d">Lesson 20, Proof D</a>, Rung 2</td><td>the p-test via the integral test.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#proof-e">Lesson 20, Proof E</a>, Rung 2</td><td>why Γ(s) needs s &gt; 0.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#proof-b">Lesson 21, Proof B</a>, Rung 2</td><td>the sine series converges to sin x for every x.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#proof-c">Lesson 21, Proof C</a>, Rung 1</td><td>n = 0 is the mean value theorem.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#proof-c">Lesson 21, Proof C</a>, Rung 2</td><td>the Cauchy form of the remainder.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#proof-d">Lesson 21, Proof D</a>, Rung 1</td><td>why substituting into a known expansion (sin(x²)) gives the Taylor polynomial.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#proof-d">Lesson 21, Proof D</a>, Rung 2</td><td>even functions have only even powers.</td><td>★</td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#proof-e">Lesson 21, Proof E</a>, Rung 2</td><td>the higher-derivative test seen directly from little-o.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#proof-b">Lesson 22, Proof B</a>, Rung 1</td><td>variation of constants gives the same formula.</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#proof-b">Lesson 22, Proof B</a>, Rung 2</td><td>the theorem needs an interval (y′ = y/x).</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#proof-c">Lesson 22, Proof C</a>, Rungs 1 and 2</td><td>the solution set is affine when g ≠ 0, and superposition fails for y′ = y².</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#proof-d">Lesson 22, Proof D</a>, Rung 2</td><td>an initial value problem y(x₀), y′(x₀) has exactly one solution.</td><td>★</td><td>Open</td></tr>
+</table></div>
+<h2 id="exercises">Exercises to do in the refresher</h2>
+<p>Two things live here. First, every exercise of <a class="xl" href="lesson-01.html">lessons 1</a>–<a class="xl" href="lesson-22.html">22</a> gets done again <em>properly</em>, on paper, in the refresher phase: the first pass was in your head, to move fast. Second, the extra exercises after the “Scoring yourself” box in <a class="xl" href="lesson-16.html#s8-exercises">lessons 16</a>–<a class="xl" href="lesson-22.html">22</a> were skipped on the first pass, so they are listed one by one. <strong>Exam</strong> ✓ = taken from a real or mock exam. Each row becomes <strong>Done</strong> once we have covered it.</p>
+<div class="table-wrap"><table>
+<tr><th>What</th><th>Note</th><th>Exam</th><th>Status</th></tr>
+<tr><td><strong>All exercises, <a class="xl" href="lesson-01.html#s5-exercises">lessons 1</a>–<a class="xl" href="lesson-22.html#s8-exercises">22</a>, on paper</strong></td><td>Including the scoring ones you already did in your head</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#ex-6">Lesson 16, Exercise 6</a></td><td>PVK mock HS25, MC3</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#ex-7">Lesson 16, Exercise 7</a></td><td>Figalli HS23, MC5</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#ex-8">Lesson 16, Exercise 8</a></td><td>Figalli FS26, MC7</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#ex-9">Lesson 16, Exercise 9</a></td><td>Einsiedler HS21, question 2(b), 3 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#ex-10">Lesson 16, Exercise 10</a></td><td>Einsiedler FS22, question 2(b) ii, 2 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-16.html#bonus">Lesson 16, Bonus</a></td><td>e is irrational</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#ex-4">Lesson 17, Exercise 4</a></td><td>Einsiedler FS22, question 12, 7 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#ex-5">Lesson 17, Exercise 5</a></td><td>2018 winter exam, question 8, 4 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#ex-6">Lesson 17, Exercise 6</a></td><td>PVK mock HS25, question A2 (C) and (D)</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#ex-7">Lesson 17, Exercise 7</a></td><td>a constant in disguise</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#ex-8">Lesson 17, Exercise 8</a></td><td>derivative drill</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#ex-9">Lesson 17, Exercise 9</a></td><td>Einsiedler FS22, question 5, 7 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-17.html#bonus">Lesson 17, Bonus</a></td><td>derivatives can&#x27;t jump (Darboux&#x27;s theorem)</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#ex-5">Lesson 18, Exercise 5</a></td><td>Figalli HS23, question A1, 7 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#ex-6">Lesson 18, Exercise 6</a></td><td>Felder FS23, question 4.A1, 7 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#ex-7">Lesson 18, Exercise 7</a></td><td>Kobel-Keller HS24, question 9, 2 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#ex-8">Lesson 18, Exercise 8</a></td><td>four minimum questions: Felder FS23 1.A1, PVK MC1, Figalli HS23 MC4 and FS26 MC4</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#ex-9">Lesson 18, Exercise 9</a></td><td>limits from the older Einsiedler exams and Kobel-Keller HS24</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#ex-10">Lesson 18, Exercise 10</a></td><td>2011 summer exam, question 4(b)</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-18.html#bonus">Lesson 18, Bonus</a></td><td>a limit of derivatives is a derivative (Übung 8.52)</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#ex-6">Lesson 19, Exercise 6</a></td><td>Einsiedler HS21, question 1c, 3 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#ex-7">Lesson 19, Exercise 7</a></td><td>Einsiedler mock exam HS21, question 1, 2 points each</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#ex-8">Lesson 19, Exercise 8</a></td><td>Einsiedler FS22, question 1a and 1c</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#ex-9">Lesson 19, Exercise 9</a></td><td>Felder HS22, 1.A1 and 1.A2, 2 points each</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#ex-10">Lesson 19, Exercise 10</a></td><td>2018 winter exam, question 12, 5 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#ex-11">Lesson 19, Exercise 11</a></td><td>Einsiedler HS21, question 10 (c) and (d), true or false</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-19.html#bonus">Lesson 19, Bonus</a></td><td>two one-point integrals with a twist (2017 summer exam, 1a and 1b)</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#ex-6">Lesson 20, Exercise 6</a></td><td>PVK mock HS25, question A1, 9 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#ex-7">Lesson 20, Exercise 7</a></td><td>2018 winter exam, question 7, 6 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#ex-8">Lesson 20, Exercise 8</a></td><td>2011 summer exam, question 5b</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#ex-9">Lesson 20, Exercise 9</a></td><td>Übung 9.42</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-20.html#bonus">Lesson 20, Bonus</a></td><td>Euler&#x27;s constant (Übung 9.36, extended)</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#ex-6">Lesson 21, Exercise 6</a></td><td>2017 summer exam, question 12, 5 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#ex-7">Lesson 21, Exercise 7</a></td><td>limits by expansion</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#ex-8">Lesson 21, Exercise 8</a></td><td>higher-derivative test</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#ex-9">Lesson 21, Exercise 9</a></td><td>a square root by hand</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-21.html#bonus">Lesson 21, Bonus</a></td><td>2018 winter exam, question 2, 3 points, Analysis II</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#ex-5">Lesson 22, Exercise 5</a></td><td>Figalli HS23, MC11 and MC12, 4 points each</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#ex-6">Lesson 22, Exercise 6</a></td><td>Figalli FS26, MC13, 4 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#ex-7">Lesson 22, Exercise 7</a></td><td>Felder HS22, 3.MC6, 2 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#ex-8">Lesson 22, Exercise 8</a></td><td>2018 summer exam, question 2, 3 points</td><td>✓</td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#ex-9">Lesson 22, Exercise 9</a></td><td>Übung 8.64, the script</td><td></td><td>Open</td></tr>
+<tr><td><a href="lesson-22.html#bonus">Lesson 22, Bonus</a></td><td>resonance (the script&#x27;s example)</td><td>✓</td><td>Open</td></tr>
+</table></div>
+<h2 id="from-lesson-1-1-1">From <a class="xl" href="lesson-01.html#s7-what-we-skipped">lesson 1</a> (§1.1–1.3)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Implication, equivalence, contrapositive (A ⇒ B ⟺ ¬B ⇒ ¬A), De Morgan for ∧/∨, truth tables</td><td>§1.3</td><td><strong>High</strong></td><td><em>✓ Covered in <a class="xl" href="lesson-04.html">lesson 4</a></em></td></tr>
+<tr><td>Unique existence ∃!</td><td>§1.3</td><td>Low</td><td></td></tr>
+<tr><td>Übung 1.11 (combining quantifiers)</td><td>§1.3</td><td>Low</td><td></td></tr>
+<tr><td>Quadrature of the parabola</td><td>§1.1</td><td>Optional</td><td>A motivating story for integrals. Nice to read before <a class="xl" href="lesson-09.html">lesson 9</a></td></tr>
+<tr><td>Study tips</td><td>§1.2</td><td>Optional</td><td></td></tr>
+</table></div>
+<h2 id="from-lesson-2-1-4">From <a class="xl" href="lesson-02.html#s8-what-we-skipped">lesson 2</a> (§1.4)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Set operations in detail, De Morgan&#x27;s laws for sets (Übung 1.20), power set, products</td><td>§1.4.1</td><td>Low</td><td>Used everywhere, but mostly school-level</td></tr>
+<tr><td>Bijective ⇔ an inverse map exists (Übung 1.42)</td><td>§1.4.2</td><td>Low</td><td></td></tr>
+<tr><td>Übung 1.41 (ii) and (iv)</td><td>§1.4.2</td><td>Low</td><td>Parts (i) and (iii) were covered</td></tr>
+<tr><td>Graph of a function</td><td>§1.4.3</td><td>Low</td><td>Just the horizontal-line picture</td></tr>
+<tr><td>Iterations</td><td>§1.4.6</td><td>Optional</td><td></td></tr>
+<tr><td>Hilbert&#x27;s hotel</td><td>§1.4.7</td><td>Optional</td><td>The idea appears in <a class="xl" href="lesson-03.html">lesson 3</a></td></tr>
+</table></div>
+<h2 id="from-lesson-3-1-5">From <a class="xl" href="lesson-03.html#s8-what-we-skipped">lesson 3</a> (§1.5–1.7)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Number sets ℕ, ℤ, ℚ, ℝ (notation)</td><td>§1.5</td><td>Low</td><td></td></tr>
+<tr><td>Second half of the proof of Proposition 1.67</td><td>§1.6</td><td>Low</td><td></td></tr>
+<tr><td>Construction of ℚ (Beispiel 1.71) and of ℝ via decimals (Beispiel 1.73)</td><td>§1.6</td><td>Optional</td><td></td></tr>
+<tr><td>Proof of the Schubfachprinzip by induction</td><td>§1.7</td><td>Low</td><td>Good induction practice after <a class="xl" href="lesson-04.html#proof-c">lesson 4</a></td></tr>
+<tr><td>Proof of Lemma 1.80 (subsets of countable sets)</td><td>§1.7</td><td>Low</td><td></td></tr>
+<tr><td>Übungen 1.77, 1.78, 1.82, axiom of choice</td><td>§1.7</td><td>Low</td><td></td></tr>
+</table></div>
+<h2 id="from-lesson-4-1-8">From <a class="xl" href="lesson-04.html#s8-what-we-skipped">lesson 4</a> (§1.8, §2.1–2.2)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Existence of square roots from completeness (Wichtige Übung 2.11)</td><td>§2.1.4</td><td><strong>High</strong></td><td>Fold into <a class="xl" href="lesson-06.html#s4-the-supremum">lesson 6</a> (sup), it&#x27;s the same type of argument</td></tr>
+<tr><td>Strong induction and other variants (Wichtige Übung 2.21)</td><td>§2.2.1</td><td>Low</td><td></td></tr>
+<tr><td>More proof methods, finding, writing and reading proofs</td><td>§1.8.3–1.8.10</td><td>Low</td><td>Worth reading once before the exam</td></tr>
+<tr><td>Deriving school algebra from axioms 1–15 (Wichtige Übungen 2.2–2.9)</td><td>§2.1.1–2.1.2</td><td>Low</td><td></td></tr>
+<tr><td>ℕ as the smallest inductive set, Peano axioms (Def. 2.12–Lemma 2.18)</td><td>§2.2.1</td><td>Low</td><td></td></tr>
+<tr><td>ℤ and ℚ inside ℝ, division with remainder</td><td>§2.2.2–2.2.5</td><td>Optional</td><td></td></tr>
+</table></div>
+<h2 id="from-lesson-5-2-3">From <a class="xl" href="lesson-05.html#s7-what-we-skipped">lesson 5</a> (§2.3–2.4)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Open balls and open sets in ℂ (Def. 2.52–2.54, Wichtige Übung 2.53)</td><td><a class="pl" href="script.html#p103">p. 103</a></td><td>Medium</td><td>Returns in <a class="xl" href="lesson-10.html#s3-metrics-distance-between-anything">lesson 10</a> (metric spaces)</td></tr>
+<tr><td>Why ℝ and ∅ are the only subsets of ℝ that are both open and closed (ℝ ist zusammenhängend)</td><td>not in ch. 2</td><td>Low</td><td>Needs completeness; nice recap item</td></tr>
+<tr><td>Interior and closure (Inneres A°, Abschluss = A ∪ ∂A), Def. 10.14</td><td><a class="pl" href="script.html#p483">p. 483</a></td><td>Medium</td><td>Inside/border points already borrowed in <a class="xl" href="lesson-05.html#3-7-finding-the-border">lesson 5</a>; rest returns in <a class="xl" href="lesson-10.html">lesson 10</a></td></tr>
+<tr><td>Full verification that ℂ is a field (proof of Prop. 2.33)</td><td><a class="pl" href="script.html#p93">p. 93–94</a></td><td>Low</td><td>Just computation</td></tr>
+<tr><td>Rules for Re, Im and conjugates (Wichtige Übungen 2.38–2.40)</td><td><a class="pl" href="script.html#p97">p. 97</a></td><td>Low</td><td></td></tr>
+<tr><td>Intervals and neighbourhoods (Def. 2.41–2.43), sign function</td><td><a class="pl" href="script.html#p98">p. 98–100</a></td><td>Low</td><td>&quot;Umgebung&quot; returns with continuity</td></tr>
+<tr><td>Equality in the triangle inequality, √(x²) =</td><td>x</td><td>(Übungen 2.46–2.47)</td><td><a class="pl" href="script.html#p100">p. 100</a></td></tr>
+<tr><td>ℂ as 2×2 matrices (remark)</td><td><a class="pl" href="script.html#p95">p. 95</a></td><td>Optional</td><td>Nice after LinAlg</td></tr>
+</table></div>
+<h2 id="from-lesson-6-2-5">From <a class="xl" href="lesson-06.html#s11-what-we-skipped">lesson 6</a> (§2.5–2.6)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>sup(cA) = c·sup A for c &gt; 0 (Prop. 2.62)</td><td><a class="pl" href="script.html#p107">p. 107</a></td><td>Low</td><td>Same proof pattern as sup(A+B) with ε/c</td></tr>
+<tr><td>Calculation rules with ±∞, Übungen 2.64–2.67</td><td><a class="pl" href="script.html#p108">p. 108–109</a></td><td>Low</td><td>Extended real line, sup of unions/products</td></tr>
+<tr><td>Übungen 2.71–2.72 (every real is a sup of rationals; Dirichlet approximation)</td><td><a class="pl" href="script.html#p112">p. 112</a></td><td>Low</td><td>Density proof now covered in <a class="xl" href="lesson-06.html#6-2-is-dense-in">lesson 6</a>; Dirichlet in For wonder</td></tr>
+<tr><td>Übungen 2.76, 2.79–2.80 (accumulation points via infinitely many points; characterising intervals)</td><td><a class="pl" href="script.html#p114">p. 114</a>, 116</td><td>Low</td><td>Nested intervals itself is now covered with proof in <a class="xl" href="lesson-06.html#6-3-nested-intervals-intervallschachtelungsprinzip">lesson 6</a></td></tr>
+<tr><td>The Cantor set (§2.6.5)</td><td><a class="pl" href="script.html#p117">p. 117–120</a></td><td>Low</td><td>Optional, a For-wonder topic; uncountability of ℝ is covered in <a class="xl" href="lesson-06.html#6-4-is-uncountable-korollar">lesson 6</a></td></tr>
+</table></div>
+<h2 id="from-lesson-7-3-4">From <a class="xl" href="lesson-07.html#s10-what-we-skipped">lesson 7</a> (§3.4–3.6)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>F(D) as a vector space and ring, Übungen 3.35–3.36, 3.38</td><td><a class="pl" href="script.html#p149">p. 149</a></td><td>Low</td><td>More LinAlg than Analysis</td></tr>
+<tr><td>Monotonicity in detail: Beispiel 3.40, Übungen 3.41–3.43</td><td><a class="pl" href="script.html#p150">p. 150–151</a></td><td>Low</td><td>Know the definitions; returns in <a class="xl" href="lesson-08.html#proof-a">lesson 8</a> (inverse functions) and 11</td></tr>
+<tr><td>Full ε-δ proof for products in Prop. 3.50</td><td><a class="pl" href="script.html#p155">p. 155–156</a></td><td>Medium</td><td>Trick: add and subtract f₁(x₀)f₂(x); the statement is what you use</td></tr>
+<tr><td>Übung 3.55: the Dirichlet function 1_ℚ is continuous nowhere</td><td><a class="pl" href="script.html#p157">p. 157</a></td><td>Medium</td><td>Favourite counterexample; returns in <a class="xl" href="lesson-09.html#s5-the-glittering-field-a-function">lesson 9</a> as non-integrable</td></tr>
+<tr><td>Übung 3.56: f continuous ⇔ preimages of open sets are open</td><td><a class="pl" href="script.html#p157">p. 157</a></td><td>Medium</td><td>The topological definition; returns in <a class="xl" href="lesson-10.html">lesson 10</a></td></tr>
+<tr><td>Übung 3.57: continuous functions are locally bounded, locally keep their sign</td><td><a class="pl" href="script.html#p158">p. 158</a></td><td>Medium</td><td>Occasionally handy in proofs</td></tr>
+<tr><td>Complex-valued functions, §3.5.1</td><td><a class="pl" href="script.html#p158">p. 158</a></td><td>Low</td><td>Same with</td></tr>
+</table></div>
+<h2 id="from-lesson-8-3-7">From <a class="xl" href="lesson-08.html#s10-what-we-skipped">lesson 8</a> (§3.7–3.8)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Wichtige Übung 3.64: rules for rational powers</td><td><a class="pl" href="script.html#p161">p. 161</a></td><td>Medium</td><td>Matters once exp and log arrive</td></tr>
+<tr><td>Endpoint bookkeeping in the proof of Satz 3.62 (half-open, unbounded intervals)</td><td><a class="pl" href="script.html#p162">p. 162</a></td><td>Low</td><td>The idea is in part (b) of the lesson</td></tr>
+<tr><td>Übung 3.66: exactly when the m-th root of k is rational</td><td><a class="pl" href="script.html#p164">p. 164</a></td><td>Low</td><td>Via prime factorisations; Lemma 3.65 is in For wonder</td></tr>
+<tr><td>Übung 3.77: second proof of Heine with a continuous choice of δ</td><td><a class="pl" href="script.html#p169">p. 169</a></td><td>Low</td><td></td></tr>
+<tr><td>Übung 3.78 (b)–(d): √x uniformly continuous but not Lipschitz on [0,2], Lipschitz on [1,∞)</td><td><a class="pl" href="script.html#p169">p. 169–170</a></td><td>Medium</td><td>Good multiple-choice material</td></tr>
+<tr><td>Applets 3.72, 3.74</td><td><a class="pl" href="script.html#p167">p. 167</a></td><td>Optional</td><td>Our ε-band figure shows the same</td></tr>
+<tr><td>Complex-valued versions of Satz 3.67 and 3.75</td><td><a class="pl" href="script.html#p165">p. 165</a>, 167</td><td>Low</td><td>Same proofs with the absolute value on ℂ</td></tr>
+<tr><td>HS21 #10 (c)(d), HS22 MC5 (A)(C), HS23 MC3 (D)</td><td>exams</td><td>Done</td><td>HS22 MC5 (A) and HS23 MC3 (D) are in <a class="xl" href="lesson-17.html#we-1">lesson 17</a>, Worked example 1; HS21 #10 (c)(d) is <a class="xl" href="lesson-19.html#ex-1">lesson 19</a>, Exercise 11</td></tr>
+</table></div>
+<h2 id="from-lesson-9-riemann-integral">From <a class="xl" href="lesson-09.html#ex-1">lesson 9</a> (Riemann integral, chapter 4)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Induction in Lemma 4.5 (adding partition points one at a time)</td><td><a class="pl" href="script.html#p180">p. 180</a></td><td>Low</td><td>One-point step is in the lesson</td></tr>
+<tr><td>Übung 4.9: gluing two step functions</td><td><a class="pl" href="script.html#p182">p. 182</a></td><td>Low</td><td></td></tr>
+<tr><td>Proposition 4.12 (ii) and the cycle (i)⇒(iii)⇒(ii)⇒(i)</td><td><a class="pl" href="script.html#p184">p. 184</a></td><td>Low</td><td>We proved (i)⇔(iii) directly</td></tr>
+<tr><td>Übung 4.14 and Wichtige Übung 4.16: step functions are integrable; criterion with special families</td><td><a class="pl" href="script.html#p185">p. 185–186</a></td><td>Medium</td><td>4.16 makes Worked example 1 rigorous in one line</td></tr>
+<tr><td>Proofs of linearity (Satz 4.19) and additivity over intervals (Satz 4.26), Übungen 4.20–4.22</td><td><a class="pl" href="script.html#p188">p. 188–194</a></td><td>Medium</td><td>No old exam asks for them; good sup/inf practice</td></tr>
+<tr><td>Changing an integrable function at finitely many points keeps it integrable, with the same integral (Übung 4.22 does one point; induction gives finitely many)</td><td><a class="pl" href="script.html#p190">p. 190</a></td><td>Medium</td><td>Stated in section 6; used for piecewise monotone functions. Exercise 6 does one concrete case</td></tr>
+<tr><td>Integrability of abs(f) via the positive part (Satz 4.24 (iii) proof), Übung 4.23</td><td><a class="pl" href="script.html#p191">p. 191</a></td><td>Medium</td><td></td></tr>
+<tr><td>Additive interval functions (Def 4.29, Prop 4.30), physics in 4.4.3–4.4.4</td><td><a class="pl" href="script.html#p195">p. 195–198</a></td><td>Low</td><td></td></tr>
+<tr><td>Monomial integrals by hand (Satz 4.37), Übungen 4.36, 4.38, 4.41</td><td><a class="pl" href="script.html#p200">p. 200–204</a></td><td>Done</td><td><a class="xl" href="lesson-19.html#we-2">Lesson 19</a>, Worked example 2 and the table of antiderivatives</td></tr>
+<tr><td>Sandwich criterion with continuous functions (Prop 4.44)</td><td><a class="pl" href="script.html#p206">p. 206</a></td><td>Low</td><td></td></tr>
+<tr><td>Popcorn function is integrable (Übung 4.25)</td><td><a class="pl" href="script.html#p192">p. 192</a></td><td>Optional</td><td>Sketched in For wonder</td></tr>
+</table></div>
+<h2 id="from-lesson-10-metric-spaces">From <a class="xl" href="lesson-10.html#s11-what-we-skipped">lesson 10</a> (metric spaces, chapter 5)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Proof of the Cauchy–Schwarz inequality (triangle inequality for the Euclidean norm)</td><td><a class="pl" href="script.html#p227">p. 227</a></td><td>Low</td><td>Linear Algebra proves it</td></tr>
+<tr><td>Proofs of the product and quotient rules for limits (Proposition 5.30)</td><td><a class="pl" href="script.html#p239">p. 239</a></td><td><strong>Medium</strong></td><td>Sum rule is the model proof; trick: add and subtract a_n·B</td></tr>
+<tr><td>Neighbourhood characterisation of continuity (Proposition 5.50 (iv))</td><td><a class="pl" href="script.html#p247">p. 247</a></td><td>Low</td><td></td></tr>
+<tr><td>Axiom-of-choice remark in sequential ⇒ ε-δ continuity</td><td><a class="pl" href="script.html#p244">p. 244</a></td><td>Optional</td><td></td></tr>
+<tr><td>Übungen on norms, metrics and balls: 5.4, 5.6, 5.9, 5.13, 5.15, 5.18</td><td><a class="pl" href="script.html#p228">p. 228–235</a></td><td>Low</td><td>Exercise 3 and the Bonus cover the typical moves</td></tr>
+<tr><td>Übungen on sequences: 5.23, 5.26, 5.29, 5.33, 5.35</td><td><a class="pl" href="script.html#p237">p. 237–242</a></td><td>Low</td><td></td></tr>
+<tr><td>Cesàro means (Übung 5.36) and subsequences (5.40)</td><td><a class="pl" href="script.html#p242">p. 242–243</a></td><td><strong>Medium</strong></td><td>Good proof practice; Cesàro sketched in For wonder</td></tr>
+<tr><td>Übungen 5.41, 5.43, 5.47, 5.51, 5.54 and the further exercises of chapter 5</td><td><a class="pl" href="script.html#p243">p. 243–251</a></td><td>Low</td><td></td></tr>
+<tr><td>p-adic metric</td><td>not in script</td><td>Optional</td><td>For wonder</td></tr>
+</table></div>
+<h2 id="from-lesson-11-sandwich-monotone">From <a class="xl" href="lesson-11.html#s8-what-we-skipped">lesson 11</a> (sandwich, monotone sequences, limsup, §6.1–6.1.2)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Übung 6.12: the two properties determine the limsup uniquely</td><td><a class="pl" href="script.html#p258">p. 258</a></td><td><strong>Medium</strong></td><td>Used for the practical rule; short contradiction with ε = half the distance between two candidates</td></tr>
+<tr><td>Übung 6.13 (ii)–(iv): liminf version, liminf ≤ limsup, limsup not linear</td><td><a class="pl" href="script.html#p258">p. 258</a></td><td>Low</td><td>Statements are in section 4</td></tr>
+<tr><td>Full details of the n-th root of n tending to 1 (Beispiel 6.4 (iii))</td><td><a class="pl" href="script.html#p255">p. 255</a></td><td>Low</td><td>Idea in the note after Worked example 1</td></tr>
+</table></div>
+<h2 id="from-lesson-12-bolzano-weierstrass">From <a class="xl" href="lesson-12.html#s8-what-we-skipped">lesson 12</a> (Bolzano–Weierstrass, improper limits, Cauchy sequences, §6.1.3–6.2)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Übungen 6.16–6.18: accumulation points of sequences vs. sets, mixing three sequences, accumulation points filling an interval</td><td><a class="pl" href="script.html#p260">p. 260–261</a></td><td>Low</td><td>Sketched in <a class="xl" href="lesson-11.html#s7-for-wonder-optional-5-min">lesson 11</a>&#x27;s For wonder</td></tr>
+<tr><td>Sequential compactness beyond closed intervals; Cauchy sequences in general metric spaces</td><td><a class="pl" href="script.html#p261">p. 261</a>, 263</td><td>Later</td><td>Second semester</td></tr>
+<tr><td>Übung 6.28: Cauchy criterion plus Archimedes gives the completeness axiom</td><td><a class="pl" href="script.html#p265">p. 265</a></td><td>Optional</td><td></td></tr>
+<tr><td>Section 6.3, the exponential function</td><td><a class="pl" href="script.html#p266">p. 266–273</a></td><td>Later</td><td>Not lectured yet (class goes 6.2 → 6.4); comes with series in <a class="xl" href="lesson-16.html#we-6">lesson 16</a></td></tr>
+</table></div>
+<h2 id="from-lesson-13-limits-of">From <a class="xl" href="lesson-13.html#s10-what-we-skipped">lesson 13</a> (limits of functions, Riemann sums, Landau, §6.4–6.6)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Satz 6.47 for general integrable f (squeeze between continuous functions, Prop 4.44)</td><td><a class="pl" href="script.html#p281">p. 281</a></td><td><strong>Medium</strong></td><td>Continuous case is Proof B</td></tr>
+<tr><td>Übungen 6.49–6.50: Riemann sums characterise integrability</td><td><a class="pl" href="script.html#p281">p. 281</a></td><td>Low</td><td></td></tr>
+<tr><td>Vector-valued and complex integrals, triangle inequality (6.5.1, Wichtige Übung 6.51)</td><td><a class="pl" href="script.html#p282">p. 282–283</a></td><td>Low</td><td>Returns with curves</td></tr>
+<tr><td>Beispiel 6.44 (x^x → 1), exponential limits in Übungen 6.45 and 6.52</td><td><a class="pl" href="script.html#p278">p. 278–279</a>, 285</td><td>Later</td><td>Need exp and log (<a class="xl" href="lesson-16.html">lesson 16</a>)</td></tr>
+<tr><td>Übung 6.38 (ii): proofs of the rules for function limits</td><td><a class="pl" href="script.html#p274">p. 274</a></td><td>Low</td><td>Same as for sequences, or via Lemma 6.40</td></tr>
+</table></div>
+
+<h2 id="from-lesson-14-series-7">From <a class="xl" href="lesson-14.html#proof-a">lesson 14</a> (series, §7.1–7.2)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Beispiel 7.5: the diving tower in detail</td><td><a class="pl" href="script.html#p294">p. 294–296</a></td><td>Optional</td><td>It is the lesson's story and For wonder</td></tr>
+<tr><td>Proofs of linearity and grouping (Übung 7.7, Lemma 7.9)</td><td><a class="pl" href="script.html#p296">p. 296–297</a></td><td>Low</td><td>A few lines with partial sums</td></tr>
+<tr><td>Übung 7.13: the comparison test needs non-negative terms</td><td><a class="pl" href="script.html#p298">p. 298</a></td><td>Low</td><td>Rung 1 of Proof C shows why</td></tr>
+<tr><td>Übung 7.18 (ii), Übung 7.19: Σ1/(n log n log log n), expansions in base q</td><td><a class="pl" href="script.html#p299">p. 299–300</a></td><td>Optional</td><td>Part (i) is the Bonus</td></tr>
+<tr><td>Riemann's rearrangement theorem (Satz 7.21) and its proof sketch (Übung 7.23)</td><td><a class="pl" href="script.html#p301">p. 301–302</a></td><td>Optional</td><td>Statement and idea in section 7 and For wonder</td></tr>
+<tr><td>Übung 7.34: why the ratio test can't use limsup</td><td><a class="pl" href="script.html#p308">p. 308</a></td><td>Low</td><td></td></tr>
+<tr><td>Proof that absolutely convergent series can be rearranged (Satz 7.35)</td><td><a class="pl" href="script.html#p308">p. 308</a></td><td>Low</td><td>Statement in section 7</td></tr>
+<tr><td>Products of series, Cauchy product (§7.2.3, Satz 7.36, Korollar 7.37)</td><td><a class="pl" href="script.html#p309">p. 309–312</a></td><td>Later</td><td>Needed for exp(x+y) = exp(x)exp(y) in <a class="xl" href="lesson-16.html">lesson 16</a></td></tr>
+</table></div>
+
+<h2 id="from-lesson-15-uniform-convergence">From <a class="xl" href="lesson-15.html#the-recipe-for-does-converge">lesson 15</a> (uniform convergence, §7.3)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Übung 7.41: uniqueness of the pointwise limit</td><td><a class="pl" href="script.html#p313">p. 313</a></td><td>Low</td><td>One line in section 2</td></tr>
+<tr><td>Übung 7.46 (iii): Beispiele 7.43 and 7.44 are not uniform</td><td><a class="pl" href="script.html#p315">p. 315</a></td><td>Low</td><td>Tents done at the end of section 5; for 7.44 use Proof C</td></tr>
+<tr><td>Remark: the supremum norm is a norm; no norm gives pointwise convergence</td><td><a class="pl" href="script.html#p316">p. 316</a></td><td>Optional</td><td></td></tr>
+<tr><td>Applet 7.47: x^n on smaller intervals</td><td><a class="pl" href="script.html#p316">p. 316</a></td><td>Low</td><td>Covered by Worked example 3</td></tr>
+<tr><td>Proofs of Übungen 7.50 (ii), 7.52 (ii), 7.53</td><td><a class="pl" href="script.html#p318">p. 318</a></td><td>Low</td><td>Statements and reasons in section 7</td></tr>
+<tr><td>Complex-valued functions throughout §7.3</td><td><a class="pl" href="script.html#p313">p. 313–318</a></td><td>Low</td><td>Proofs identical with the complex absolute value</td></tr>
+<tr><td>Einsiedler FS22 question 12 (uniform convergence from |f_n'| ≤ 1)</td><td>exam</td><td>Done</td><td>Now <a class="xl" href="lesson-17.html#ex-4">lesson 17</a>, Exercise 4</td></tr>
+</table></div>
+
+<h2 id="from-lesson-16-power-series">From <a class="xl" href="lesson-16.html#s10-what-we-skipped">lesson 16</a> (power series, exp, log, sin, cos, §6.3, 7.2.3, 7.4–7.8)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Proofs in §6.3.2–6.3.7: properties of exp from the limit definition</td><td><a class="pl" href="script.html#p267">p. 267–271</a></td><td>Low</td><td>One-line reasons in section 2; the series gives cleaner proofs</td></tr>
+<tr><td>Übungen 6.30–6.32, 6.34, 6.36, Applet 6.37</td><td><a class="pl" href="script.html#p268">p. 268–273</a></td><td>Low</td><td></td></tr>
+<tr><td>Proof of the Cauchy product (Satz 7.36, Korollar 7.37), Übung 7.39</td><td><a class="pl" href="script.html#p309">p. 309–311</a></td><td>Low</td><td>Statement in section 4</td></tr>
+<tr><td>Übungen 7.58, 7.59, 7.61, 7.64, 7.67</td><td><a class="pl" href="script.html#p321">p. 321–323</a></td><td>Low</td><td>7.61 = Proof B, 7.64 = Worked example 5</td></tr>
+<tr><td>Proof of Abel's theorem (Satz 7.65), Beispiel 7.66</td><td><a class="pl" href="script.html#p322">p. 322–323</a></td><td>Low</td><td>Statement in Worked example 4</td></tr>
+<tr><td>Series = limit definition of exp (§7.5.1), Übungen 7.69–7.70</td><td><a class="pl" href="script.html#p324">p. 324–327</a></td><td>Low</td><td></td></tr>
+<tr><td>Existence of π (Satz 7.74 proof), Übungen 7.76–7.80</td><td><a class="pl" href="script.html#p330">p. 330–332</a></td><td><strong>Medium</strong> for 7.76 (zeros of sin, cos); rest Low</td><td>Statements in section 6</td></tr>
+<tr><td>Polar coordinates proof (Lemma 7.81), z ↦ z² pictures, Übungen 7.83–7.84</td><td><a class="pl" href="script.html#p333">p. 333–336</a></td><td>Optional</td><td>Roots of unity may return in Linear Algebra</td></tr>
+<tr><td>Complex logarithms (§7.6.5)</td><td><a class="pl" href="script.html#p336">p. 336–338</a></td><td>Optional</td><td>For wonder</td></tr>
+<tr><td>Übung 7.89: sinh/cosh addition formulas</td><td><a class="pl" href="script.html#p341">p. 341</a></td><td>Low</td><td></td></tr>
+<tr><td>§7.8*: digit expansions, Cantor set, devil's staircase, Peano curve</td><td><a class="pl" href="script.html#p342">p. 342–349</a></td><td>Optional</td><td>Starred in the script</td></tr>
+</table></div>
+
+<h2 id="from-lesson-17-derivatives-rolle">From <a class="xl" href="lesson-17.html#s11-what-we-skipped">lesson 17</a> (derivatives, Rolle, mean value theorem, §8.1–8.2.2)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Leibniz notation details, complex-valued derivatives</td><td><a class="pl" href="script.html#p356">p. 356–357</a></td><td>Low</td><td>Same definition, real and imaginary parts separately</td></tr>
+<tr><td>Übung 8.7: power rule via the binomial theorem, kernel of f ↦ f′ on polynomials</td><td><a class="pl" href="script.html#p360">p. 360</a></td><td>Low</td><td>Proof B, Rung 2 does the power rule</td></tr>
+<tr><td>Übungen 8.10, 8.13: (x^−n)′, another nested derivative</td><td><a class="pl" href="script.html#p362">p. 362–363</a></td><td>Low</td><td>Exercise 8 is the same drill</td></tr>
+<tr><td>Übung 8.19: local extrema of x³ − x and |x³ − x|</td><td><a class="pl" href="script.html#p366">p. 366</a></td><td>Done</td><td><a class="xl" href="lesson-18.html#we-1">Lesson 18</a>, Worked example 1</td></tr>
+<tr><td>Beispiel 8.23 proof (ψ = e^(−1/x) is smooth), Übung 8.24 (bump function)</td><td><a class="pl" href="script.html#p368">p. 368–370</a></td><td>Optional</td><td>For wonder</td></tr>
+<tr><td>Übung 8.27: proofs of Korollare 8.25, 8.26 (Leibniz rule, compositions)</td><td><a class="pl" href="script.html#p370">p. 370</a></td><td>Low</td><td>Statements in section 5</td></tr>
+<tr><td>Übungen 8.31, 8.34: C¹ on [a, b] ⇒ Lipschitz, f⁽ⁿ⁾ = 0 ⇒ polynomial</td><td><a class="pl" href="script.html#p372">p. 372–373</a></td><td>Low</td><td>8.31 is Exercise 2 in disguise</td></tr>
+<tr><td>Übung 8.36: increasing ⇔ f′ ≥ 0</td><td><a class="pl" href="script.html#p374">p. 374</a></td><td><strong>Medium</strong></td><td>Converse direction in Proof H, Rung 1</td></tr>
+<tr><td>Korollar 8.37: sufficient conditions for local extrema</td><td><a class="pl" href="script.html#p374">p. 374–375</a></td><td>Done</td><td><a class="xl" href="lesson-18.html#proof-a">Lesson 18</a>, Proof A</td></tr>
+<tr><td>§8.3–8.4: inverse trigonometric and hyperbolic functions in detail</td><td><a class="pl" href="script.html#p384">p. 384–392</a></td><td>Later</td><td>Derivatives in Worked example 4; table in <a class="xl" href="lesson-18.html#s7-a-short-tour-the-inverse">lesson 18</a>, section 7</td></tr>
+</table></div>
+
+<h2 id="from-lesson-18-extrema-convexity">From <a class="xl" href="lesson-18.html#s10-what-we-skipped">lesson 18</a> (extrema, convexity, l'Hôpital, §8.2.2–8.4)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Übung 8.41: strictly convex ⇒ f′ strictly increasing</td><td><a class="pl" href="script.html#p378">p. 378</a></td><td>Low</td><td></td></tr>
+<tr><td>Übung 8.45: harmonic ≤ geometric ≤ arithmetic mean</td><td><a class="pl" href="script.html#p379">p. 379</a></td><td>Low</td><td>Proof D, Rung 2</td></tr>
+<tr><td>Übung 8.46: Jensen for integrals</td><td><a class="pl" href="script.html#p379">p. 379</a></td><td>Low</td><td></td></tr>
+<tr><td>Geometric meaning of Cauchy's mean value theorem (Bemerkung)</td><td><a class="pl" href="script.html#p380">p. 380</a></td><td>Low</td><td></td></tr>
+<tr><td>Proof of l'Hôpital for ∞/∞ and L = ±∞, Übung 8.50 (reductions)</td><td><a class="pl" href="script.html#p381">p. 381–383</a></td><td>Low</td><td>Statement in section 6; Proof F, Rung 2 does x → ∞</td></tr>
+<tr><td>Übung 8.53: second derivative as a limit</td><td><a class="pl" href="script.html#p383">p. 383</a></td><td>Low</td><td></td></tr>
+<tr><td>§8.3.3, 8.3.5–8.3.7, Beispiel 8.54, Übung 8.55: angles, cot, physical example, Snell's law</td><td><a class="pl" href="script.html#p386">p. 386–390</a></td><td>Low</td><td>Snell in For wonder</td></tr>
+<tr><td>§8.4 in detail, Übung 8.56: area functions</td><td><a class="pl" href="script.html#p391">p. 391–392</a></td><td>Low</td><td>Table in section 7</td></tr>
+<tr><td>§8.5: first differential equations</td><td><a class="pl" href="script.html#p393">p. 393–409</a></td><td>Done</td><td><a class="xl" href="lesson-22.html">Lesson 22</a></td></tr>
+<tr><td>§8.6: further exercises for chapter 8</td><td><a class="pl" href="script.html#p410">p. 410–416</a></td><td>Later</td><td>Refresher phase</td></tr>
+</table></div>
+
+<h2 id="from-lesson-19-fundamental-theorem">From <a class="xl" href="lesson-19.html#s12-what-we-skipped">lesson 19</a> (fundamental theorem, integration techniques, §9.1–9.2)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Übung 9.6: fundamental theorem with finitely many discontinuities</td><td><a class="pl" href="script.html#p420">p. 420</a></td><td>Low</td><td></td></tr>
+<tr><td>Übung 9.7: fundamental theorem for complex-valued functions</td><td><a class="pl" href="script.html#p420">p. 420</a></td><td>Low</td><td>Real and imaginary parts separately</td></tr>
+<tr><td>Übung 9.9: F(x) = F(a) + ∫F′ when F′ is only integrable</td><td><a class="pl" href="script.html#p420">p. 420</a></td><td>Low</td><td></td></tr>
+<tr><td>Übungen 9.12–9.14: all derivatives of a power series, comparing coefficients, binomial series</td><td><a class="pl" href="script.html#p421">p. 421–422</a></td><td>Low</td><td>Taylor (<a class="xl" href="lesson-21.html#s2-taylor-polynomials">lesson 21</a>) revisits the idea</td></tr>
+<tr><td>Übung 9.16 (iii)–(iv), Übung 9.20: ∫x^s log x, ∫e^(ax) sin(bx) in general, ∫q(x)/(x²+1)^k</td><td><a class="pl" href="script.html#p426">p. 426</a>, 430</td><td>Low</td><td>Exam cases in Worked examples 4 and 6</td></tr>
+<tr><td>Beispiel 9.23: hyperbolic substitution in detail</td><td><a class="pl" href="script.html#p433">p. 433</a></td><td>Low</td><td>Method in the table of section 8</td></tr>
+<tr><td>Übung 9.24: proof of the half-angle identities</td><td><a class="pl" href="script.html#p434">p. 434</a></td><td>Low</td><td>On the formula sheet</td></tr>
+<tr><td>Übung 9.25: substitution for integrable g</td><td><a class="pl" href="script.html#p436">p. 436</a></td><td>Low</td><td></td></tr>
+<tr><td>§9.2.8: sine and cosine integral as new functions</td><td><a class="pl" href="script.html#p436">p. 436–437</a></td><td>Low</td><td>For wonder</td></tr>
+</table></div>
+
+<h2 id="from-lesson-20-improper-integrals">From <a class="xl" href="lesson-20.html#s10-what-we-skipped">lesson 20</a> (improper integrals, §9.3)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Übung 9.31: ∫ from 1 to ∞ of x^(−α) for complex α</td><td><a class="pl" href="script.html#p438">p. 438</a></td><td>Low</td><td></td></tr>
+<tr><td>The normal distribution function</td><td><a class="pl" href="script.html#p440">p. 440</a></td><td>Low</td><td>Proof B's Rung 1 shows the bell curve integral converges</td></tr>
+<tr><td>Übung 9.36: p-test via the integral test, Σ1/n = log N + O(1)</td><td><a class="pl" href="script.html#p441">p. 441</a></td><td>Done</td><td><a class="xl" href="lesson-20.html#proof-d">Lesson 20</a>, Proof D's Rung 2 and Worked example 2</td></tr>
+<tr><td>Übung 9.37: for which p does ∫ from 0 to ∞ of x sin(x^p) converge?</td><td><a class="pl" href="script.html#p441">p. 441</a></td><td>Medium</td><td><a class="xl" href="lesson-20.html#ex-8">Lesson 20</a> Exercise 8 is p = 3; the same method gives exactly p &gt; 2</td></tr>
+<tr><td>Übung 9.38: for bounded f the improper integral equals the Riemann integral</td><td><a class="pl" href="script.html#p441">p. 441</a></td><td>Low</td><td>Stated in <a class="xl" href="lesson-20.html#s5-integrals-of-unbounded-functions">lesson 20</a>, section 5</td></tr>
+<tr><td>Remark on the Lebesgue integral</td><td><a class="pl" href="script.html#p443">p. 443</a></td><td>Low</td><td>Second year</td></tr>
+<tr><td>Γ is smooth, Γ(1/2) = √π, Übung 9.44 (complex Gamma)</td><td><a class="pl" href="script.html#p444">p. 444–445</a></td><td>Low</td><td>Second semester</td></tr>
+</table></div>
+
+<h2 id="from-lesson-21-taylor-approximation">From <a class="xl" href="lesson-21.html#s10-what-we-skipped">lesson 21</a> (Taylor approximation, §9.4)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>Übung 9.48 (a), (b): Cauchy form of the remainder</td><td><a class="pl" href="script.html#p449">p. 449</a></td><td>Done</td><td><a class="xl" href="lesson-21.html#proof-c">Lesson 21</a>, Proof C and its Rung 2</td></tr>
+<tr><td>Übung 9.51: bounds max|f^(n+1)| ≤ cA^n for polynomials, exp, sin, cos, sums, products</td><td><a class="pl" href="script.html#p450">p. 450</a></td><td>Low</td><td>Idea in <a class="xl" href="lesson-21.html#we-4">lesson 21</a>, Worked example 4</td></tr>
+<tr><td>Übung 9.52: binomial series (1+x)^α on (−1, 1)</td><td><a class="pl" href="script.html#p451">p. 451</a></td><td>Low</td><td>Its Taylor polynomials are used in <a class="xl" href="lesson-21.html#we-1">lesson 21</a></td></tr>
+<tr><td>Remark on holomorphic functions</td><td><a class="pl" href="script.html#p451">p. 451</a></td><td>Low</td><td>Second year; For wonder</td></tr>
+<tr><td>§9.4.2 Newton's method, Übungen 9.54–9.55 (starred)</td><td><a class="pl" href="script.html#p451">p. 451–453</a></td><td>Low</td><td>For wonder</td></tr>
+<tr><td>§9.5–9.7: numerical integration, Landau notation II, Wallis product, Stirling's formula, harmonic series asymptotics, areas, arc length, path integrals, solids of revolution</td><td><a class="pl" href="script.html#p454">p. 454–473</a></td><td>Low</td><td>Not in any exam or PVK we have (checked all of them in the review, 2026-11-06); stays skipped</td></tr>
+<tr><td>2018 winter #2: Taylor in two variables</td><td>Analysis II</td><td>Low</td><td><a class="xl" href="lesson-21.html#bonus">Lesson 21</a> Bonus</td></tr>
+</table></div>
+
+<h2 id="from-lesson-22-differential-equations">From <a class="xl" href="lesson-22.html#s10-what-we-skipped">lesson 22</a> (differential equations, §8.5)</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>§8.5.1 difference equations, Übung 8.58</td><td><a class="pl" href="script.html#p394">p. 394–396</a></td><td>Low</td><td>For wonder (Euler's method)</td></tr>
+<tr><td>Beispiel 8.69 in general: forced damped oscillator, amplitude, beats</td><td><a class="pl" href="script.html#p406">p. 406–409</a></td><td>Low</td><td>Resonance case is the Bonus of <a class="xl" href="lesson-22.html#bonus">lesson 22</a></td></tr>
+<tr><td>Systems of ODEs, Picard–Lindelöf (in the older exams)</td><td>Analysis II</td><td>Low</td><td>Second semester</td></tr>
+</table></div>
+
+<h2 id="found-later">Found later</h2>
+<div class="table-wrap"><table>
+<tr><th>Skipped</th><th>Script</th><th>Priority</th><th>Note</th></tr>
+<tr><td>§3.1: sum and product notation, their rules, the geometric sum</td><td><a class="pl" href="script.html#p127">p. 127–133</a></td><td><strong>Medium</strong></td><td>Found in the review (2026-11-06): no lesson covers it, though <a class="xl" href="lesson-14.html#worked-example-the-geometric-series">lessons 14</a> and <a class="xl" href="lesson-16.html">16</a> use the geometric sum. Short recap in the refresher</td></tr>
+<tr><td>§3.3: factorial, binomial coefficients, the binomial theorem, sums of powers</td><td><a class="pl" href="script.html#p140">p. 140–148</a></td><td><strong>Medium</strong></td><td>Found in the review: used in <a class="xl" href="lesson-16.html#we-1">lessons 16</a> and <a class="xl" href="lesson-17.html#proof-b">17</a> (Cauchy product, power rule). Short recap in the refresher</td></tr>
+<tr><td>§3.2.1 polynomial division; §3.2.3 algebraic and transcendental numbers</td><td><a class="pl" href="script.html#p136">p. 136</a>, 139</td><td>Low</td><td>School material, or For wonder</td></tr>
+<tr><td>§4.9* multidimensional integrals (iterated integrals, centre of mass, polar and spherical coordinates)</td><td><a class="pl" href="script.html#p212">p. 212–223</a></td><td>Low</td><td>Starred insert; Analysis II</td></tr>
+<tr><td>The “Weitere Lernmaterialien” sections at the end of each chapter (§1.9, 2.7, 3.9, 4.8, 6.7, 7.9, 8.6, 9.8): how to use the chapter, extra exercises</td><td>various</td><td>Low</td><td>A pool of extra exercises for the refresher</td></tr>
+<tr><td>§3.2.2: zeros of polynomials and (Lagrange) polynomial interpolation</td><td><a class="pl" href="script.html#p137">p. 137</a></td><td><strong>Medium</strong></td><td>Not in any lesson, but on the official formula sheet. Short page in the refresher (decided 2026-11-06)</td></tr>
+</table></div>
+
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="analysis.html">Analysis home</a>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

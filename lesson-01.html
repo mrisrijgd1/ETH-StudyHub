@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Oath and the Challenge</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-02.html">Lesson 2 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 1 of 26</span>
+  <h1>The Oath and the Challenge</h1>
+  <p class="lead">Quantifiers: reading and negating sentences built from $\forall$ and $\exists$. This is the grammar of every definition in the course.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#warm-up-2-min">Warm-up (2 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-duel">1. The story: the duel</a>
+</li>
+<li><a href="#s2-why-the-order-matters">2. Why the order matters</a>
+</li>
+<li><a href="#s3-negation-switching-sides">3. Negation = switching sides</a>
+</li>
+<li><a href="#s4-worked-example">4. Worked example</a>
+<ol>
+<li><a href="#we-1">Worked example 1: the first item of Wichtige Übung 1.10 (p. 14)</a></li>
+</ol></li>
+<li><a href="#s5-exercises">5. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (negation, the most common exam move)</a></li>
+<li><a href="#ex-2">Exercise 2 (true or false, with a one-line reason)</a></li>
+</ol></li>
+<li><a href="#s6-for-wonder-optional-5-min">6. For wonder</a>
+</li>
+<li><a href="#s7-what-we-skipped">7. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) read any chain of $\forall$ and $\exists$ as a duel and say who chooses what, (2) <strong>negate it in under a minute</strong>, and (3) translate the negation back into one plain sentence.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p8">p. 8–16</a>, Section 1.3 (logical terms):</strong> statements, the logical operations, quantifiers.</li>
+      <li><strong><a class="pl" href="script.html#p13">p. 13</a>:</strong> pointwise and uniform existence (the order of quantifiers).</li>
+      <li><strong><a class="pl" href="script.html#p14">p. 14</a>, formula (1.7) and Wichtige Übung 1.10:</strong> negating quantifiers, “for all” over the empty set.</li>
+    </ul>
+    Optional English parallel: Figalli's notes, Section 1.2.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+Almost every definition you'll meet (supremum, convergence, continuity, Cauchy sequences, uniform convergence) is a sentence built from $\forall$ and $\exists$. The true/false questions and the proofs mostly test whether you can read and negate those sentences. Learn this one skill well and the next chapters get much lighter.</div>
+
+
+<div class="box"><h3 id="warm-up-2-min">Warm-up (2 min)</h3>
+<p>This is the first lesson, so there's nothing to recap yet. Two questions from school instead:</p>
+<ol class="gq">
+  <li><p>“Every student in the room has a phone.” What do you have to find to show this is false?</p>
+  <details><summary>Answer</summary><div><p>One student without a phone. To refute “for all”, one counterexample is enough.</p></div></details></li>
+  <li><p>“Some student in the room speaks Hindi.” What do you have to check to show this is false?</p>
+  <details><summary>Answer</summary><div><p>Every student, and none may speak Hindi. To refute “there exists”, you have to check all of them.</p></div></details></li>
+</ol>
+<p>That swap (refuting “for all” needs one example, refuting “exists” needs all) is the whole lesson in miniature.</p></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>statement</td><td>Aussage</td></tr>
+    <tr><td>quantifier</td><td>Quantor</td></tr>
+    <tr><td>for all ($\forall$) / there exists ($\exists$)</td><td>Allquantor / Existenzquantor</td></tr>
+    <tr><td>negation ($\neg$)</td><td>Negation, Verneinung</td></tr>
+    <tr><td>and ($\wedge$) / or ($\vee$)</td><td>und / oder</td></tr>
+    <tr><td>pointwise existence / uniform existence</td><td>punktweise Existenz / gleichmässige Existenz</td></tr>
+    <tr><td>uniform</td><td>gleichmässig</td></tr>
+    <tr><td>empty set ($\emptyset$)</td><td>leere Menge</td></tr>
+    <tr><td>dense</td><td>dicht</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-duel">1. The story: the duel</h2>
+<div class="story">
+<p>In the old kingdom, mathematicians don't argue. They duel.</p>
+<p>Every mathematical statement is an <strong>oath</strong> sworn by a Champion, and a <strong>Doubter</strong> tries to break it. The symbols tell you who moves:</p>
+<ul>
+  <li><strong>$\forall$ (“for all”) means the Doubter chooses.</strong> “$\forall x\ \dots$” is the Champion saying: <em>pick any $x$ you like, I'll survive it.</em> The Doubter will pick the nastiest $x$ possible.</li>
+  <li><strong>$\exists$ (“there exists”) means the Champion chooses.</strong> “$\exists y\ \dots$” is the Champion saying: <em>I'll produce a $y$ that works.</em> The Champion picks the best one.</li>
+  <li><strong>The order is the order of the duel.</strong> You read left to right, and each player sees every move that came before. Whoever moves later gets to react.</li>
+</ul>
+<p>The oath is <strong>true</strong> exactly when the Champion has a winning strategy, no matter how clever the Doubter is.</p>
+</div>
+
+<h2 id="s2-why-the-order-matters">2. Why the order matters</h2>
+<p>Compare two oaths about the natural numbers:</p>
+<ul>
+  <li>$\forall x\in\mathbb N\ \exists y\in\mathbb N:\ x&lt;y$. The Doubter names $x$ first, then the Champion answers with $y=x+1$. The Champion always wins, so it's <strong>true</strong>.</li>
+  <li>$\exists y\in\mathbb N\ \forall x\in\mathbb N:\ x&lt;y$. Now the Champion must commit to $y$ <em>first</em>, and the Doubter replies with $x=y$. The Champion loses, so it's <strong>false</strong>.</li>
+</ul>
+<p>Same symbols, swapped order, opposite truth. The script calls the first <strong>pointwise existence</strong> ($y$ may depend on $x$) and the second <strong>uniform existence</strong> (one $y$ for everyone). Remember the word <em>uniform</em>: it comes back as “uniform continuity” (<a class="xl" href="lesson-08.html#s5-promise-three-uniform-continuity-one">lesson 8</a>) and “uniform convergence”, and it means exactly this.</p>
+
+<h2 id="s3-negation-switching-sides">3. Negation = switching sides</h2>
+<p>To say an oath is <em>false</em> is to say the Doubter has a winning strategy. So in the negation the roles swap: every $\forall$ becomes $\exists$, every $\exists$ becomes $\forall$, and the final condition gets negated. The script says the negation moves inward “like a minus sign in front of a bracket” (formula (1.7), <a class="pl" href="script.html#p14">p. 14</a>):</p>
+<div class="box">
+<span class="math-display" style="display:block">$$\neg\big(\forall x:\ A(x)\big)\iff\exists x:\ \neg A(x)$$</span>
+<span class="math-display" style="display:block">$$\neg\big(\exists x:\ A(x)\big)\iff\forall x:\ \neg A(x)$$</span>
+</div>
+<p>Two things stay the same when you negate: the <strong>order</strong> of the quantifiers, and the <strong>ranges</strong> ($\forall\varepsilon&gt;0$ becomes $\exists\varepsilon&gt;0$; you don't flip it to $\varepsilon\le0$). Only the type of each quantifier and the final condition change.</p>
+<p><strong>A strange but important case.</strong> “$\forall x\in\emptyset:\ A(x)$” is always true, whatever $A$ says: the Doubter has nothing to pick (<a class="pl" href="script.html#p14">p. 14</a>). And “$\exists x\in\emptyset:\ A(x)$” is always false. Such statements are called <em>vacuously true</em>; they will come back in <a class="xl" href="lesson-03.html">lesson 3</a>.</p>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-neg">the negation recipe</a></p>
+
+<h2 id="s4-worked-example">4. Worked example</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: the first item of Wichtige Übung 1.10 (<a class="pl" href="script.html#p14">p. 14</a>)</h3>
+<p>Let $X\subseteq\mathbb R$ and consider <span class="math-display" style="display:block">$$\forall y\in\mathbb R\ \forall\varepsilon&gt;0\ \exists x\in X:\ |x-y|&lt;\varepsilon.$$</span></p>
+<ol class="gq">
+  <li><p>Read it as a duel. Who picks what, in which order, and what does the statement say in words?</p>
+  <details><summary>Answer</summary><div><p>The Doubter picks any real number $y$ and any distance $\varepsilon&gt;0$. Then the Champion must find a point $x$ of $X$ within $\varepsilon$ of $y$. In words: <em>$X$ gets arbitrarily close to every real number</em>, i.e. $X$ is <strong>dense</strong> in $\mathbb R$ (like $\mathbb Q$).</p></div></details></li>
+  <li><p>Push the $\neg$ inward one quantifier at a time. What are the intermediate steps?</p>
+  <details><summary>Answer</summary><div>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\neg\big(\forall y\in\mathbb R\ \forall\varepsilon&gt;0\ \exists x\in X:\ |x-y|&lt;\varepsilon\big)\\
+  \iff\ &amp;\exists y\in\mathbb R\ \neg\big(\forall\varepsilon&gt;0\ \exists x\in X:\ |x-y|&lt;\varepsilon\big)\\
+  \iff\ &amp;\exists y\in\mathbb R\ \exists\varepsilon&gt;0\ \neg\big(\exists x\in X:\ |x-y|&lt;\varepsilon\big)\\
+  \iff\ &amp;\exists y\in\mathbb R\ \exists\varepsilon&gt;0\ \forall x\in X:\ \neg\big(|x-y|&lt;\varepsilon\big)\\
+  \iff\ &amp;\exists y\in\mathbb R\ \exists\varepsilon&gt;0\ \forall x\in X:\ |x-y|\ge\varepsilon.\end{aligned}$$</span></div></details></li>
+  <li><p>Translate the negation back into words. Does it say what “$X$ is not dense” should mean?</p>
+  <details><summary>Answer</summary><div><p><em>There is a real number $y$ and an $\varepsilon&gt;0$ such that the interval $(y-\varepsilon,y+\varepsilon)$ contains no point of $X$</em> (a little bubble around $y$ that $X$ never enters). Yes, that is exactly “not dense”. This translation-back check is what earns points on an exam, because it catches order and sign mistakes.</p></div></details></li>
+  <li><p>Test it on $X=\mathbb Z$. Is the original statement true? If not, what is the Doubter's winning move?</p>
+  <details><summary>Answer</summary><div><p>False. Take $y=0.5$ and $\varepsilon=0.25$: every integer $x$ has $|x-0.5|\ge0.5\ge0.25$. That is exactly the negation, with these values of $y$ and $\varepsilon$.</p></div></details></li>
+</ol>
+</div>
+
+<p><strong>Why it's cool.</strong> Every definition in this course (limit, continuity, uniform continuity, convergence) is a sentence of “for all” and “there is”. Swapping one “for all” with one “there is” turns continuity into uniform continuity (<a class="xl" href="lesson-08.html#proof-d">lesson 8</a>): the order of the quantifiers is the entire difference between two theorems. Once you can negate such sentences mechanically, every proof by contradiction starts itself.</p>
+
+<h2 id="s5-exercises">5. Exercises</h2>
+<p>Try each one before opening its solution. If you get stuck, say the duel out loud: “Doubter picks…, then Champion picks…”.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (negation, the most common exam move)</h3>
+<p>A sequence $(a_n)$ converges to $a$ when <span class="math-display" style="display:block">$$\forall\varepsilon&gt;0\ \exists N\in\mathbb N\ \forall n\ge N:\ |a_n-a|&lt;\varepsilon.$$</span></p>
+<p>(a) Write the negation, with $\neg$ pushed all the way to the right. (b) Say the negation in one plain sentence. (c) Use it to show that $a_n=(-1)^n$ does <strong>not</strong> converge to $a=1$. <em>(Hint: you're now the Doubter. Which $\varepsilon$ do you pick?)</em></p><details class="sol"><summary>Solution</summary><div>
+<p><strong>(a)</strong> <span class="math-display" style="display:block">$$\exists\varepsilon&gt;0\ \forall N\in\mathbb N\ \exists n\ge N:\ |a_n-a|\ge\varepsilon.$$</span></p>
+<p><strong>(b)</strong> There is a fixed distance $\varepsilon$ such that, however far along the sequence you go, you still find a term at least $\varepsilon$ away from $a$.</p>
+<p><strong>(c)</strong> <em>Frame:</em> the negation from (a) says what to write. First line: “Let $\varepsilon=1$. Let $N\in\mathbb N$.” Last line: “so $|a_n-1|\ge\varepsilon$.” The gap: name one $n\ge N$ that works. <em>Moves:</em> <a class="mvl" href="moves.html#m-neg">the negation recipe</a>.</p>
+<p>Let $\varepsilon=1$. Let $N\in\mathbb N$, and choose an odd $n\ge N$ (for example $n=2N+1$). Then $a_n=-1$, so $|a_n-1|=2\ge1$. Hence $(-1)^n$ does not converge to $1$. <span class="qed">∎</span></p>
+<p>A full-marks exam answer looks almost exactly like these three sentences.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (true or false, with a one-line reason)</h3>
+<p>This is the format of the exam's multiple-choice and true/false part.</p>
+<p>(a) $\forall x\in\mathbb R\ \exists y\in\mathbb R:\ y&gt;x^2$. (b) $\exists y\in\mathbb R\ \forall x\in\mathbb R:\ y&gt;x^2$. (c) $\exists y\in\mathbb R\ \forall x\in\mathbb R:\ y\le x^2$. (d) $\forall x\in\emptyset:\ x\neq x$.</p><details class="sol"><summary>Solution</summary><div>
+<ul>
+  <li><strong>(a) True.</strong> Given $x$, take $y=x^2+1$.</li>
+  <li><strong>(b) False.</strong> Given any $y$, take $x=|y|+1$. Then $x\ge1$, so $x^2\ge x&gt;y$. (The Champion committed too early.)</li>
+  <li><strong>(c) True.</strong> $y=0$ works, because $x^2\ge0$ for every $x$.</li>
+  <li><strong>(d) True.</strong> A “for all” over the empty set is always true (<a class="pl" href="script.html#p14">p. 14</a>). A classic trick question.</li>
+</ul>
+</div></details>
+</div>
+<div class="check"><p><strong>Scoring yourself:</strong> Exercise 1 (3 parts) and Exercise 2 (4 parts) make 7. If you have 5 of 7, you're done. Otherwise redo Exercise 1 tomorrow from a blank page (5 minutes) before the next lesson.</p></div>
+
+<h2 id="s6-for-wonder-optional-5-min">6. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>The duel is a real theory.</strong> Reading quantifiers as a game between two players is not just a teaching trick. Logicians call it <em>game semantics</em> (Hintikka, 1960s): a statement is true exactly when the “verifier” has a winning strategy against the “falsifier”. It is also how computer scientists think about chess engines and verification: “for every move of the opponent there is a reply of mine such that…” is a quantifier chain.</p>
+<p><strong>Why order is subtle even for experts.</strong> Uniform convergence (“one $N$ for all $x$”) versus pointwise convergence (“$N$ may depend on $x$”) was confused by Cauchy himself: in 1821 he “proved” that a convergent series of continuous functions is continuous, which is false. The fix, found decades later, was exactly one swap of $\forall x$ and $\exists N$.</p>
+
+<h2 id="s7-what-we-skipped">7. What we skipped</h2>
+<ul>
+  <li><strong>The logical operations in detail (<a class="pl" href="script.html#p9">p. 9–11</a>):</strong> truth tables for $\wedge$, $\vee$, $\Rightarrow$, $\iff$. Implication gets its own section in <a class="xl" href="lesson-04.html#s2-implication">lesson 4</a>. Low priority otherwise.</li>
+  <li><strong>The other two items of Wichtige Übung 1.10 and Übung 1.11 (<a class="pl" href="script.html#p14">p. 14–15</a>):</strong> more negation practice and quantifiers with $\wedge$, $\vee$. Good extra practice if you want it.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-02.html">lesson 2</a>, functions as messengers between sets: injective, surjective, bijective, image and preimage (Section 1.4).</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-02.html">Lesson 2: The Messenger Guild →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

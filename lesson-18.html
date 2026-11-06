@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ropes over the Valley</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-17.html">← Lesson 17</a>
+<a href="lesson-19.html">Lesson 19 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 18 of 26</span>
+  <h1>Ropes over the Valley</h1>
+  <p class="lead">What the mean value theorem buys you: tests that decide whether a critical point is a maximum or a minimum, <strong>convex functions</strong> (the graph lies under every chord, and $f'$ is increasing), Jensen's inequality, Cauchy's mean value theorem, and <strong>l'Hôpital's rule</strong> for limits of the form $\frac00$ and $\frac\infty\infty$. Script sections 8.2.2–8.2.5, with a short tour of 8.3–8.4.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-17-5">Recap of lesson 17 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-ropes-over-the">1. The story: ropes over the valley</a>
+</li>
+<li><a href="#s2-deciding-the-candidates-tests-for">2. Deciding the candidates: tests for extrema</a>
+<ol>
+<li><a href="#proof-a">Proof A: the sign-change test and the second derivative test (Korollar 8.37, p. 374–375)</a></li>
+<li><a href="#the-recipe-for-find-all">The recipe for “find all local and global extrema”</a></li>
+<li><a href="#we-1">Worked example 1: $x^3-x$ and $|x^3-x|$ (Übung 8.19, p. 366)</a></li>
+<li><a href="#we-2">Worked example 2: the minimum of $x^x$ on $(0,\infty)$</a></li>
+</ol></li>
+<li><a href="#s3-convex-functions">3. Convex functions</a>
+<ol>
+<li><a href="#proof-b">Proof B: convex means increasing secant slopes (Lemma 8.39, p. 376)</a></li>
+<li><a href="#proof-c">Proof C: convex if and only if $f&#x27;$ is increasing (Proposition 8.40, p. 377)</a></li>
+<li><a href="#we-3">Worked example 3: which of these are convex?</a></li>
+</ol></li>
+<li><a href="#s4-jensen-s-inequality">4. Jensen&#x27;s inequality</a>
+<ol>
+<li><a href="#proof-d">Proof D: Jensen&#x27;s inequality (Lemma 8.44, p. 378–379)</a></li>
+</ol></li>
+<li><a href="#s5-cauchy-s-mean-value-theorem">5. Cauchy&#x27;s mean value theorem</a>
+<ol>
+<li><a href="#proof-e">Proof E: Cauchy&#x27;s mean value theorem (Satz 8.48, p. 379–380)</a></li>
+</ol></li>
+<li><a href="#s6-l-h-pital-s-rule">6. L&#x27;Hôpital&#x27;s rule</a>
+<ol>
+<li><a href="#proof-f">Proof F: l&#x27;Hôpital for “$\frac00$” (p. 381)</a></li>
+<li><a href="#the-recipe-for-the-other">The recipe for the other indeterminate forms</a></li>
+<li><a href="#we-4">Worked example 4: limits</a></li>
+</ol></li>
+<li><a href="#s7-a-short-tour-the-inverse">7. A short tour: the inverse trigonometric and hyperbolic functions</a>
+</li>
+<li><a href="#s8-exercises">8. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Einsiedler FS22, question 4, 4 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (Figalli FS24, MC1, 2 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (PVK mock HS25, MC4, 2 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (Figalli FS26, MC8, 2 points)</a></li>
+<li><a href="#ex-5">Exercise 5 (Figalli HS23, question A1, 7 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (Felder FS23, question 4.A1, 7 points)</a></li>
+<li><a href="#ex-7">Exercise 7 (Kobel-Keller HS24, question 9, 2 points)</a></li>
+<li><a href="#ex-8">Exercise 8 (four minimum questions: Felder FS23 1.A1, PVK MC1, Figalli HS23 MC4 and FS26 MC4)</a></li>
+<li><a href="#ex-9">Exercise 9 (limits from the older Einsiedler exams and Kobel-Keller HS24)</a></li>
+<li><a href="#ex-10">Exercise 10 (2011 summer exam, question 4(b))</a></li>
+<li><a href="#bonus">Bonus: a limit of derivatives is a derivative (Übung 8.52)</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. For wonder</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>find and classify extrema</strong> (sign change of $f'$, sign of $f''$, endpoints, behaviour at the ends of an open interval), (2) state the definition of <strong>convex</strong> and the three-slopes characterisation, (3) <strong>prove that a differentiable $f$ is convex if and only if $f'$ is increasing</strong> (an exam proof in Figalli FS24), (4) use convexity for inequalities (tangent below the graph, Jensen, AM–GM), (5) <strong>compute limits with l'Hôpital</strong>, including the forms $0\cdot\infty$, $1^\infty$, $0^0$, $\infty-\infty$, and know when the rule does <em>not</em> apply.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p374">p. 374–375</a>, end of Section 8.2.2:</strong> sufficient conditions for local extrema.</li>
+      <li><strong><a class="pl" href="script.html#p375">p. 375–379</a>, Section 8.2.3:</strong> convexity, slopes of secants, $f'$ increasing, $f''\ge0$, Jensen's inequality.</li>
+      <li><strong><a class="pl" href="script.html#p379">p. 379–380</a>, Section 8.2.4:</strong> Cauchy's (extended) mean value theorem.</li>
+      <li><strong><a class="pl" href="script.html#p380">p. 380–383</a>, Section 8.2.5:</strong> l'Hôpital's rule.</li>
+      <li><strong><a class="pl" href="script.html#p384">p. 384–392</a>, Sections 8.3–8.4:</strong> the trigonometric and hyperbolic functions and their inverses.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+“Find the minimum” is a 2-point multiple-choice question in almost every Figalli exam (HS23 MC4, FS24 MC1, FS26 MC4) and in the PVK mock (MC1), and Felder FS23 1.A1 asks for $\min x\log x$. Einsiedler FS22 question 4 (4 points) asks for all local and global extrema on an interval. Limits that need l'Hôpital or the series are in every exam: PVK MC4, Figalli FS24 MC4 and FS26 MC8, Kobel-Keller HS24 question 12, and the older Einsiedler exams (2012 winter, 2017 summer, 2018 summer). Convexity gives 7-point proofs: “convex ⇔ $f'$ increasing” is Figalli FS24 B2, Figalli HS23 A1 builds on it, and Felder FS23 4.A1 asks you to show that a bounded convex function on $\mathbb R$ is constant.</div>
+
+<div class="box"><h3 id="recap-of-lesson-17-5">Recap of <a class="xl" href="lesson-17.html">lesson 17</a> (5 min)</h3>
+<ul>
+  <li><strong>Derivative:</strong> $f'(a)=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}$. Differentiable ⇒ continuous. Product, quotient and chain rule; $(f^{-1})'(y_0)=\frac1{f'(x_0)}$.</li>
+  <li><strong>Interior extremum</strong> + differentiable ⇒ $f'=0$. Candidates for extrema: endpoints, non-differentiable points, critical points.</li>
+  <li><strong>Rolle:</strong> $f(a)=f(b)$ ⇒ $f'(\xi)=0$. <strong>Mean value theorem:</strong> $f(b)-f(a)=f'(\xi)(b-a)$, for $f$ continuous on $[a,b]$, differentiable on $(a,b)$.</li>
+  <li><strong>On an interval:</strong> $f'=0$ ⇒ constant; $f'\ge0$ ⇒ increasing; $f'&gt;0$ ⇒ strictly increasing.</li>
+</ul>
+<ol class="gq">
+  <li><p>What is $\arctan'(x)$, and $(x^x)'$?</p>
+  <details><summary>Answer</summary><div><p>$\frac1{1+x^2}$, and $x^x(\log x+1)$ (write $x^x=e^{x\log x}$).</p></div></details></li>
+  <li><p>$f(x)=x^3$ has $f'(0)=0$. Is $0$ a local extremum?</p>
+  <details><summary>Answer</summary><div><p>No: $f(x)&lt;0$ for $x&lt;0$ and $f(x)&gt;0$ for $x&gt;0$. Critical points are only candidates. Today: tests that decide.</p></div></details></li>
+  <li><p>Write the helper function of the mean value theorem's proof.</p>
+  <details><summary>Answer</summary><div><p>$F(x)=f(x)-\frac{f(b)-f(a)}{b-a}(x-a)$, with $F(a)=F(b)=f(a)$. Today's Cauchy mean value theorem uses a two-function version of it.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>critical point</td><td>kritischer Punkt</td></tr>
+    <tr><td>sufficient / necessary condition</td><td>hinreichende / notwendige Bedingung</td></tr>
+    <tr><td>curve sketching</td><td>Kurvendiskussion</td></tr>
+    <tr><td>convex / concave (strictly)</td><td>konvex / konkav (streng)</td></tr>
+    <tr><td>chord, secant</td><td>Sehne, Sekante</td></tr>
+    <tr><td>inflection point</td><td>Wendepunkt</td></tr>
+    <tr><td>Jensen's inequality</td><td>Jensensche Ungleichung</td></tr>
+    <tr><td>arithmetic / geometric / harmonic mean</td><td>arithmetisches / geometrisches / harmonisches Mittel</td></tr>
+    <tr><td>Cauchy's mean value theorem</td><td>Mittelwertsatz nach Cauchy (erweiterter Mittelwertsatz)</td></tr>
+    <tr><td>l'Hôpital's rule</td><td>Regel von de l'Hôpital</td></tr>
+    <tr><td>indeterminate form</td><td>unbestimmte Form</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-ropes-over-the">1. The story: ropes over the valley</h2>
+<div class="story">
+<p>Below the glassmaker's mountain lies a long valley, and the valley people are rope-makers. They have a test for a good valley: pick any two points on the ground, stretch a rope between them, and look. In a <em>bowl-shaped</em> valley the rope never touches the ground between its ends; the ground always sags below it. Valleys like that are easy to live in. Water runs to one lowest place, and from any point the ground ahead climbs at least as steeply as the ground behind.</p>
+<p>The rope-makers also settle arguments between runners. Two runners start from the same finish line and run backwards in time towards a common starting moment, both arriving at height zero. Who was ahead, and by how much, just before the start? Looking at their positions tells nothing: both are near zero. But comparing their <em>speeds</em> tells everything. That trick has a name in the valley: the rule of the marquis.</p>
+</div>
+<p>In maths: a bowl-shaped valley is a <strong>convex function</strong>: its graph lies below every chord, and its slope $f'$ is increasing. The runners are two functions $f,g$ with $f(x),g(x)\to0$, and the rule of the marquis (Guillaume de l'Hôpital) says $\lim\frac fg=\lim\frac{f'}{g'}$. Both rest on the mean value theorem.</p>
+
+<h2 id="s2-deciding-the-candidates-tests-for">2. Deciding the candidates: tests for extrema</h2>
+<p><a class="xl" href="lesson-17.html#s6-where-maxima-and-minima-can">Lesson 17</a> gave the candidates: endpoints, non-differentiable points, and critical points ($f'=0$). On a compact interval, comparing the values at the candidates finds the global extrema. To decide whether a single candidate is a <em>local</em> maximum or minimum, or to work on open or unbounded intervals, we need tests.</p>
+
+<h3 id="proof-a">Proof A: the sign-change test and the second derivative test (Korollar 8.37, <a class="pl" href="script.html#p374">p. 374–375</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $I$ be an interval, $x_0$ an interior point of $I$, and $f:I\to\mathbb R$ continuous and differentiable on $I\setminus\{x_0\}$.</p>
+<ol>
+  <li><strong>Sign change.</strong> If for some $\delta&gt;0$: $f'&gt;0$ on $(x_0-\delta,x_0)$ and $f'&lt;0$ on $(x_0,x_0+\delta)$, then $f$ has an isolated local maximum at $x_0$. (Signs reversed: isolated local minimum. Same sign on both sides: no extremum.)</li>
+  <li><strong>Second derivative.</strong> If $f$ is twice continuously differentiable on $I$, $f'(x_0)=0$ and $f''(x_0)&lt;0$, then $f$ has an isolated local maximum at $x_0$. ($f''(x_0)&gt;0$: isolated local minimum.)</li>
+</ol>
+</div>
+<p><strong>The idea.</strong> Uphill on the left, downhill on the right: you're at a peak. The mean value theorem turns “$f'&gt;0$ on the left” into “$f$ rises towards $x_0$”. For the second test, $f''&lt;0$ near $x_0$ means $f'$ is decreasing there; since $f'(x_0)=0$, $f'$ is positive just before and negative just after, so test 1 applies.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal of 1:</strong> “$f(x)&lt;f(x_0)$ for all $x\in(x_0-\delta,x_0+\delta)$, $x\neq x_0$.” Two cases: $x&lt;x_0$ and $x&gt;x_0$.</li>
+  <li><strong>Goal of 2:</strong> reduce to 1: find $\delta$ with $f'&gt;0$ on the left and $f'&lt;0$ on the right.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Walk up to the point from the left: the ground rises all the way.</p></div><div class="sp-formal"><p><strong>1.</strong> Let $x\in(x_0-\delta,x_0)$. $f$ is continuous on $[x,x_0]$ and differentiable on $(x,x_0)$, so by the mean value theorem $f(x_0)-f(x)=f'(\xi)(x_0-x)$ for some $\xi\in(x,x_0)$. Both factors are $&gt;0$, so $f(x)&lt;f(x_0)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk away to the right: the ground falls all the way. So the point is the top.</p></div><div class="sp-formal"><p>Let $x\in(x_0,x_0+\delta)$. Likewise $f(x)-f(x_0)=f'(\eta)(x-x_0)$ with $\eta\in(x_0,x)$, which is $&lt;0$. So $f(x)&lt;f(x_0)$ for all $x\neq x_0$ in $(x_0-\delta,x_0+\delta)$: an isolated local maximum. (Differentiability at $x_0$ itself was never used.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A road that bends downwards at a level point: just before, it still climbs; just after, it already falls.</p></div><div class="sp-formal"><p><strong>2.</strong> $f''$ is continuous and $f''(x_0)&lt;0$, so $f''&lt;0$ on some $(x_0-\delta,x_0+\delta)\subseteq I$. There $f'$ is strictly decreasing (<a class="xl" href="lesson-17.html#proof-h">lesson 17</a>, Proof H). With $f'(x_0)=0$: $f'(x)&gt;0$ for $x_0-\delta&lt;x&lt;x_0$ and $f'(x)&lt;0$ for $x_0&lt;x&lt;x_0+\delta$. By 1, $x_0$ is an isolated local maximum. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p><strong>1.</strong> For $x\in(x_0-\delta,x_0)$, the mean value theorem on $[x,x_0]$ gives $f(x_0)-f(x)=f'(\xi)(x_0-x)&gt;0$ with $\xi\in(x,x_0)$. For $x\in(x_0,x_0+\delta)$, it gives $f(x)-f(x_0)=f'(\eta)(x-x_0)&lt;0$ with $\eta\in(x_0,x)$. So $f(x)&lt;f(x_0)$ for $0&lt;|x-x_0|&lt;\delta$.</p>
+<p><strong>2.</strong> By continuity, $f''&lt;0$ on some $(x_0-\delta,x_0+\delta)$, so $f'$ is strictly decreasing there; as $f'(x_0)=0$, $f'&gt;0$ to the left of $x_0$ and $f'&lt;0$ to the right. Apply 1. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> What does test 2 say for $x^4$, $-x^4$ and $x^3$ at $0$? What is actually true?</p>
+  <details><summary>Answer</summary><div><p>All three have $f'(0)=f''(0)=0$, so test 2 says nothing. Truth: minimum, maximum, neither. Test 1 decides all three ($4x^3$ changes sign from $-$ to $+$; $-4x^3$ from $+$ to $-$; $3x^2$ doesn't change sign).</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> $f(x)=|x|$ is not differentiable at $0$. Does test 1 still apply?</p>
+  <details><summary>Answer</summary><div><p>Yes: $f$ is continuous, $f'=-1$ on the left and $+1$ on the right, so $0$ is an isolated local minimum. Test 1 never needs $f'(x_0)$.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-recipe-for-find-all">The recipe for “find all local and global extrema”</h3>
+<ol>
+  <li><strong>Candidates:</strong> endpoints in $I$, points where $f$ is not differentiable, zeros of $f'$.</li>
+  <li><strong>Sign table of $f'$</strong> between consecutive candidates (factor $f'$!). A sign change $+\,|\,-$ is a local maximum, $-\,|\,+$ a local minimum, no change is no extremum. At a left endpoint, $f'&gt;0$ just after it means a local minimum; at a right endpoint, $f'&gt;0$ just before it means a local maximum (the script's endpoint rules).</li>
+  <li><strong>Global:</strong> on $[a,b]$, compare all candidate values. On an open or unbounded interval, also compute the limits at the ends: a global maximum exists only if some candidate value beats them.</li>
+  <li><strong>Answer in words:</strong> “local maximum at $x=\dots$ with value $\dots$; global minimum …”.</li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="we-1">Worked example 1: $x^3-x$ and $|x^3-x|$ (Übung 8.19, <a class="pl" href="script.html#p366">p. 366</a>)</h3>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<ol class="gq">
+  <li><p>Find the local extrema of $f(x)=x^3-x$ on $\mathbb R$.</p>
+  <details><summary>Answer</summary><div><p>$f'(x)=3x^2-1=0$ at $x=\pm\frac1{\sqrt3}$. Signs of $f'$: $+$ on $\left(-\infty,-\frac1{\sqrt3}\right)$, $-$ in between, $+$ after. So a local maximum at $-\frac1{\sqrt3}$ with value $\frac2{3\sqrt3}$, and a local minimum at $\frac1{\sqrt3}$ with value $-\frac2{3\sqrt3}$. (Or test 2: $f''(x)=6x$ is $&lt;0$ at $-\frac1{\sqrt3}$ and $&gt;0$ at $\frac1{\sqrt3}$.) No global extrema, since $f\to\pm\infty$ at $\pm\infty$.</p></div></details></li>
+  <li><p>Now $g=|f|$ on $[-3,3]$. Where is $g$ not differentiable, and what are all local and global extrema?</p>
+  <details><summary>Answer</summary><div><p>$f(x)=x(x-1)(x+1)$ has zeros $0,\pm1$, where $f'\neq0$, so $g$ has corners there (non-differentiable); they are local minima with value $0$, and also global minima. The critical points $\pm\frac1{\sqrt3}$ of $f$ give local maxima of $g$ with value $\frac2{3\sqrt3}\approx0.38$. The endpoints: $g(\pm3)=24$, and $g$ increases towards them, so they are local maxima, and global maxima with value $24$.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-2">Worked example 2: the minimum of $x^x$ on $(0,\infty)$</h3>
+<ol class="gq">
+  <li><p>Differentiate $x^x$ and find the critical point.</p>
+  <details><summary>Answer</summary><div><p>$(x^x)'=x^x(\log x+1)$. Since $x^x&gt;0$, it is $0$ exactly when $\log x=-1$, i.e. $x=\frac1e$.</p></div></details></li>
+  <li><p>Sign of the derivative on each side? What kind of extremum, and is it global?</p>
+  <details><summary>Answer</summary><div><p>$\log x+1&lt;0$ for $x&lt;\frac1e$ and $&gt;0$ for $x&gt;\frac1e$. So $x^x$ is strictly decreasing on $\left(0,\frac1e\right]$ and strictly increasing on $\left[\frac1e,\infty\right)$ (<a class="xl" href="lesson-17.html#proof-h">lesson 17</a>, Proof H). That makes $\frac1e$ a <strong>global</strong> minimum, with value $\left(\frac1e\right)^{1/e}=e^{-1/e}\approx0.69$. (Monotonicity on each side gives “global” for free, without computing limits at the ends.)</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s3-convex-functions">3. Convex functions</h2>
+<div class="box">
+<p><strong>Definition 8.38 (<a class="pl" href="script.html#p375">p. 375</a>).</strong> Let $I$ be an interval. $f:I\to\mathbb R$ is <strong>convex</strong> if</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;f\bigl((1-t)x_0+tx_1\bigr)\le (1-t)f(x_0)+tf(x_1)\\&amp;\text{for all }x_0,x_1\in I,\ t\in[0,1]\end{aligned}.$$</span>
+<p><strong>Strictly convex:</strong> “$&lt;$” whenever $x_0\neq x_1$ and $t\in(0,1)$. $g$ is <strong>(strictly) concave</strong> if $-g$ is (strictly) convex.</p>
+</div>
+<p>As $t$ runs from $0$ to $1$, the point $(1-t)x_0+tx_1$ runs from $x_0$ to $x_1$, and the right side runs along the chord (the rope) from $(x_0,f(x_0))$ to $(x_1,f(x_1))$. So: <strong>the graph lies below every chord.</strong> Examples: $x^2$, $e^x$, $|x|$ are convex; $\log$ and $\sqrt x$ are concave; $x^3$ is neither on $\mathbb R$.</p>
+
+<figure style="margin:.4rem 0" aria-label="A convex curve shaped like a bowl. Three points x0 &lt; x &lt; x1 are marked on it. A dashed chord joins the outer two points and lies above the curve. Two solid secants, from x0 to x and from x to x1, are drawn; the right one is steeper.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="270.0" x2="610.0" y2="270.0" style="stroke:var(--muted)" stroke-width="1.2"/><path d="M50.0 155.5 L51.7 156.4 L53.4 157.4 L55.1 158.3 L56.8 159.2 L58.5 160.2 L60.2 161.1 L61.9 162.0 L63.6 162.9 L65.3 163.8 L67.0 164.7 L68.7 165.6 L70.4 166.5 L72.1 167.3 L73.8 168.2 L75.5 169.1 L77.2 169.9 L78.9 170.8 L80.6 171.6 L82.3 172.4 L84.0 173.3 L85.7 174.1 L87.4 174.9 L89.1 175.7 L90.8 176.5 L92.5 177.3 L94.2 178.1 L95.9 178.8 L97.6 179.6 L99.3 180.4 L101.0 181.1 L102.7 181.9 L104.4 182.6 L106.1 183.3 L107.8 184.1 L109.5 184.8 L111.2 185.5 L112.9 186.2 L114.6 186.9 L116.3 187.6 L118.0 188.3 L119.7 189.0 L121.4 189.7 L123.1 190.3 L124.8 191.0 L126.5 191.6 L128.2 192.3 L129.9 192.9 L131.6 193.6 L133.3 194.2 L135.0 194.8 L136.7 195.4 L138.4 196.0 L140.1 196.6 L141.8 197.2 L143.5 197.8 L145.2 198.4 L146.9 198.9 L148.6 199.5 L150.3 200.1 L152.0 200.6 L153.7 201.2 L155.4 201.7 L157.1 202.2 L158.8 202.7 L160.5 203.3 L162.2 203.8 L163.9 204.3 L165.6 204.8 L167.3 205.3 L169.0 205.7 L170.7 206.2 L172.4 206.7 L174.1 207.1 L175.8 207.6 L177.5 208.1 L179.2 208.5 L180.9 208.9 L182.6 209.4 L184.3 209.8 L186.0 210.2 L187.7 210.6 L189.4 211.0 L191.1 211.4 L192.8 211.8 L194.5 212.2 L196.2 212.5 L197.9 212.9 L199.6 213.3 L201.3 213.6 L203.0 213.9 L204.7 214.3 L206.4 214.6 L208.1 214.9 L209.8 215.3 L211.5 215.6 L213.2 215.9 L214.9 216.2 L216.6 216.5 L218.3 216.8 L220.0 217.0 L221.7 217.3 L223.4 217.6 L225.1 217.8 L226.8 218.1 L228.5 218.3 L230.2 218.5 L231.9 218.8 L233.6 219.0 L235.3 219.2 L237.0 219.4 L238.7 219.6 L240.4 219.8 L242.1 220.0 L243.8 220.2 L245.5 220.4 L247.2 220.5 L248.9 220.7 L250.6 220.8 L252.3 221.0 L254.0 221.1 L255.7 221.3 L257.4 221.4 L259.1 221.5 L260.8 221.6 L262.5 221.7 L264.2 221.8 L265.9 221.9 L267.6 222.0 L269.3 222.1 L271.0 222.2 L272.7 222.2 L274.4 222.3 L276.1 222.3 L277.8 222.4 L279.5 222.4 L281.2 222.4 L282.9 222.5 L284.6 222.5 L286.3 222.5 L288.0 222.5 L289.7 222.5 L291.4 222.5 L293.1 222.5 L294.8 222.4 L296.5 222.4 L298.2 222.4 L299.9 222.3 L301.6 222.3 L303.3 222.2 L305.0 222.2 L306.7 222.1 L308.4 222.0 L310.1 221.9 L311.8 221.8 L313.5 221.7 L315.2 221.6 L316.9 221.5 L318.6 221.4 L320.3 221.3 L322.0 221.1 L323.7 221.0 L325.4 220.8 L327.1 220.7 L328.8 220.5 L330.5 220.4 L332.2 220.2 L333.9 220.0 L335.6 219.8 L337.3 219.6 L339.0 219.4 L340.7 219.2 L342.4 219.0 L344.1 218.8 L345.8 218.5 L347.5 218.3 L349.2 218.1 L350.9 217.8 L352.6 217.6 L354.3 217.3 L356.0 217.0 L357.7 216.8 L359.4 216.5 L361.1 216.2 L362.8 215.9 L364.5 215.6 L366.2 215.3 L367.9 214.9 L369.6 214.6 L371.3 214.3 L373.0 213.9 L374.7 213.6 L376.4 213.3 L378.1 212.9 L379.8 212.5 L381.5 212.2 L383.2 211.8 L384.9 211.4 L386.6 211.0 L388.3 210.6 L390.0 210.2 L391.7 209.8 L393.4 209.4 L395.1 208.9 L396.8 208.5 L398.5 208.1 L400.2 207.6 L401.9 207.1 L403.6 206.7 L405.3 206.2 L407.0 205.7 L408.7 205.3 L410.4 204.8 L412.1 204.3 L413.8 203.8 L415.5 203.3 L417.2 202.7 L418.9 202.2 L420.6 201.7 L422.3 201.2 L424.0 200.6 L425.7 200.1 L427.4 199.5 L429.1 198.9 L430.8 198.4 L432.5 197.8 L434.2 197.2 L435.9 196.6 L437.6 196.0 L439.3 195.4 L441.0 194.8 L442.7 194.2 L444.4 193.6 L446.1 192.9 L447.8 192.3 L449.5 191.6 L451.2 191.0 L452.9 190.3 L454.6 189.7 L456.3 189.0 L458.0 188.3 L459.7 187.6 L461.4 186.9 L463.1 186.2 L464.8 185.5 L466.5 184.8 L468.2 184.1 L469.9 183.3 L471.6 182.6 L473.3 181.9 L475.0 181.1 L476.7 180.4 L478.4 179.6 L480.1 178.8 L481.8 178.1 L483.5 177.3 L485.2 176.5 L486.9 175.7 L488.6 174.9 L490.3 174.1 L492.0 173.3 L493.7 172.4 L495.4 171.6 L497.1 170.8 L498.8 169.9 L500.5 169.1 L502.2 168.2 L503.9 167.3 L505.6 166.5 L507.3 165.6 L509.0 164.7 L510.7 163.8 L512.4 162.9 L514.1 162.0 L515.8 161.1 L517.5 160.2 L519.2 159.2 L520.9 158.3 L522.6 157.4 L524.3 156.4 L526.0 155.5 L527.7 154.5 L529.4 153.5 L531.1 152.6 L532.8 151.6 L534.5 150.6 L536.2 149.6 L537.9 148.6 L539.6 147.6 L541.3 146.6 L543.0 145.6 L544.7 144.5 L546.4 143.5 L548.1 142.4 L549.8 141.4 L551.5 140.3 L553.2 139.3 L554.9 138.2 L556.6 137.1 L558.3 136.0 L560.0 134.9 L561.7 133.9 L563.4 132.7 L565.1 131.6 L566.8 130.5 L568.5 129.4 L570.2 128.3 L571.9 127.1 L573.6 126.0 L575.3 124.8 L577.0 123.7 L578.7 122.5 L580.4 121.3 L582.1 120.1 L583.8 119.0 L585.5 117.8 L587.2 116.6 L588.9 115.4 L590.6 114.1 L592.3 112.9 L594.0 111.7 L595.7 110.5 L597.4 109.2 L599.1 108.0 L600.8 106.7 L602.5 105.5 L604.2 104.2 L605.9 102.9 L607.6 101.6 L609.3 100.3 L611.0 99.0" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><line x1="109.5" y1="184.8" x2="568.5" y2="129.4" style="stroke:var(--k-eps);stroke-dasharray:8 6" stroke-width="2"/><line x1="109.5" y1="184.8" x2="347.5" y2="218.3" style="stroke:var(--accent)" stroke-width="2.4"/><line x1="347.5" y1="218.3" x2="568.5" y2="129.4" style="stroke:var(--k-c)" stroke-width="2.4"/><line x1="109.5" y1="184.8" x2="109.5" y2="270.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="109.5" cy="184.8" r="5" style="fill:var(--k-x0)"/><text x="109.5" y="292.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">x₀</text><line x1="347.5" y1="218.3" x2="347.5" y2="270.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="347.5" cy="218.3" r="5" style="fill:var(--k-x0)"/><text x="347.5" y="292.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">x</text><line x1="568.5" y1="129.4" x2="568.5" y2="270.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="568.5" cy="129.4" r="5" style="fill:var(--k-x0)"/><text x="568.5" y="292.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">x₁</text><text x="203.0" y="251.9" style="fill:var(--accent);font-size:15px" text-anchor="middle">left slope</text><text x="483.5" y="207.3" style="fill:var(--k-c);font-size:15px" text-anchor="start">right slope</text><text x="339.0" y="121.8" style="fill:var(--k-eps);font-size:15px" text-anchor="middle">chord above the graph</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">A convex function: the chord (dashed) from $x_0$ to $x_1$ lies above the graph. Equivalently (Proof B): for $x_0&lt;x&lt;x_1$, the left secant (from $x_0$ to $x$) is less steep than the right secant (from $x$ to $x_1$). The ground ahead always climbs at least as steeply as the ground behind.</figcaption>
+</figure>
+
+<h3 id="proof-b">Proof B: convex means increasing secant slopes (Lemma 8.39, <a class="pl" href="script.html#p376">p. 376</a>)</h3>
+<div class="box">
+<p><strong>Lemma.</strong> $f:I\to\mathbb R$ is convex if and only if for all $x_0&lt;x&lt;x_1$ in $I$:</p>
+<span class="math-display" style="display:block">$$\frac{f(x)-f(x_0)}{x-x_0}\le\frac{f(x_1)-f(x)}{x_1-x}.$$</span>
+<p>(Strictly convex if and only if this holds with “$&lt;$”.)</p>
+</div>
+<p><strong>The idea.</strong> Write the middle point as $x=(1-t)x_0+tx_1$; then $t=\frac{x-x_0}{x_1-x_0}$ and $1-t=\frac{x_1-x}{x_1-x_0}$. Plug these weights into the convexity inequality, clear denominators, and rearrange. Every step is reversible, which gives both directions at once.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Start:</strong> fix $x_0&lt;x_1$; the cases $t=0$, $t=1$ of the definition say nothing, so only $t\in(0,1)$, i.e. $x\in(x_0,x_1)$, matters.</li>
+  <li><strong>End:</strong> a chain of equivalences from the definition at $t=\frac{x-x_0}{x_1-x_0}$ to the slope inequality.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Every point between the rope's ends corresponds to exactly one share $t$ of the way along.</p></div><div class="sp-formal"><p>Fix $x_0&lt;x_1$ in $I$. The map $t\mapsto(1-t)x_0+tx_1$ is a bijection $(0,1)\to(x_0,x_1)$ with inverse $x\mapsto t=\frac{x-x_0}{x_1-x_0}$, and then $1-t=\frac{x_1-x}{x_1-x_0}$. (For $t\in\{0,1\}$ the inequality is an equality.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>“The ground is below the rope” becomes a statement about three heights.</p></div><div class="sp-formal"><p>So the convexity inequality for $x_0,x_1$ holds for all $t$ if and only if for all $x\in(x_0,x_1)$:</p><span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;\le \frac{x_1-x}{x_1-x_0}f(x_0)+\frac{x-x_0}{x_1-x_0}f(x_1)\iff(x_1-x_0)f(x)\\&amp;\le (x_1-x)f(x_0)+(x-x_0)f(x_1)\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Split the middle height into the part looking back and the part looking ahead, and compare the two climbs.</p></div><div class="sp-formal"><p>Write</p><span class="math-display" style="display:block">$$(x_1-x_0)f(x)=(x_1-x)f(x)+(x-x_0)f(x).$$</span><p>The last inequality becomes</p><span class="math-display" style="display:block">$$\begin{aligned}(x_1-x)\bigl(f(x)-f(x_0)\bigr)&amp;\le (x-x_0)\bigl(f(x_1)-f(x)\bigr)\end{aligned},$$</span><p>and dividing by $(x-x_0)(x_1-x)&gt;0$ gives exactly the slope inequality. All steps are equivalences, and strict versions work the same way. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-slopes">compare three slopes</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $x_0&lt;x_1$ in $I$. As $t$ runs through $(0,1)$, $x=(1-t)x_0+tx_1$ runs through $(x_0,x_1)$, with $t=\frac{x-x_0}{x_1-x_0}$, $1-t=\frac{x_1-x}{x_1-x_0}$; for $t\in\{0,1\}$ there is nothing to show. Hence convexity is equivalent to: for all $x_0&lt;x&lt;x_1$ in $I$,</p><span class="math-display" style="display:block">$$\begin{aligned}(x_1-x_0)f(x)&amp;\le (x_1-x)f(x_0)+(x-x_0)f(x_1)\iff(x_1-x)\bigl(f(x)-f(x_0)\bigr)\\&amp;\le (x-x_0)\bigl(f(x_1)-f(x)\bigr)\end{aligned},$$</span><p>and dividing by $(x-x_0)(x_1-x)&gt;0$ gives the claim. Strict convexity: replace every $\le$ by $&lt;$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (2 min).</strong> Show that the slope of the whole chord, $\frac{f(x_1)-f(x_0)}{x_1-x_0}$, lies between the two slopes of the lemma.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}f(x_1)-f(x_0)&amp;=(f(x)-f(x_0))+(f(x_1)-f(x))\end{aligned},$$</span>so the chord's slope is the weighted average $\frac{x-x_0}{x_1-x_0}\cdot s_{\text{left}}+\frac{x_1-x}{x_1-x_0}\cdot s_{\text{right}}$ of the two slopes, with weights adding to $1$. An average lies between the two. So $s_{\text{left}}\le s_{\text{chord}}\le s_{\text{right}}$: the “three slopes” in order. Felder FS23 uses exactly this.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Check the lemma for $|x|$ with $x_0=-1$, $x=0$, $x_1=2$.</p>
+  <details><summary>Answer</summary><div><p>Left slope $\frac{0-1}{1}=-1$, right slope $\frac{2-0}2=1$, and $-1\le1$. ✓</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="proof-c">Proof C: convex if and only if $f'$ is increasing (Proposition 8.40, <a class="pl" href="script.html#p377">p. 377</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $I$ be an interval and $f:I\to\mathbb R$ differentiable. Then $f$ is convex if and only if $f'$ is increasing. (Strictly convex if and only if $f'$ is strictly increasing.)</p>
+<p><strong>Corollary 8.42.</strong> If $f$ is twice differentiable and $f''\ge0$ on $I$, then $f$ is convex; if $f''&gt;0$, strictly convex. (Because $f''\ge0$ makes $f'$ increasing, <a class="xl" href="lesson-17.html#proof-h">lesson 17</a>'s Proof H.)</p>
+</div>
+<p><strong>The idea.</strong> Proof B says convex means “left secant slope ≤ right secant slope”. The mean value theorem turns each secant slope into a value of $f'$, at a point on the left and a point on the right. ⇐: if $f'$ is increasing, the left value is smaller. ⇒: shrink the secants at both ends of $[a,b]$ until they become tangents.</p>
+<div class="need"><span class="label">You'll need these (from <a class="xl" href="lesson-17.html#proof-g">lesson 17</a> and <a class="xl" href="#s3-convex-functions">section 3</a>)</span>
+<ul>
+  <li><strong>Mean value theorem</strong> (<a class="xl" href="lesson-17.html#proof-g">lesson 17</a>).</li>
+  <li><strong>Proof B</strong> and its three slopes.</li>
+</ul></div>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>⇐:</strong> “Let $x_0&lt;x&lt;x_1$ in $I$.” … “so $\frac{f(x)-f(x_0)}{x-x_0}\le\frac{f(x_1)-f(x)}{x_1-x}$, hence convex by Proof B.”</li>
+  <li><strong>⇒:</strong> “Let $a&lt;b$ in $I$.” … “$f'(a)\le f'(b)$.”</li>
+  <li><strong>The gaps:</strong> ⇐ needs two mean value theorems; ⇒ needs secant slopes at $a$ and at $b$ that tend to $f'(a)$ and $f'(b)$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>⇐ The climb behind you equals the steepness at some earlier moment, the climb ahead equals the steepness at some later moment.</p></div><div class="sp-formal"><p><strong>⇐.</strong> Suppose $f'$ is increasing, and let $x_0&lt;x&lt;x_1$ in $I$. By the mean value theorem on $[x_0,x]$ and on $[x,x_1]$ there are $\xi_1\in(x_0,x)$, $\xi_2\in(x,x_1)$ with</p><span class="math-display" style="display:block">$$\begin{aligned}&amp;f'(\xi_1)=\frac{f(x)-f(x_0)}{x-x_0}\\&amp;f'(\xi_2)=\frac{f(x_1)-f(x)}{x_1-x}\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Steepness only grows, so behind is at most ahead: the ropes hang above.</p></div><div class="sp-formal"><p>Since $\xi_1&lt;x&lt;\xi_2$ and $f'$ is increasing, $f'(\xi_1)\le f'(\xi_2)$. This is the slope inequality, so $f$ is convex by Proof B.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>⇒ In a bowl, take a short rope at the left end, a long rope in the middle, and a short rope at the right end: their steepnesses are in order.</p></div><div class="sp-formal"><p><strong>⇒.</strong> Suppose $f$ is convex, and let $a&lt;b$ in $I$. For $0&lt;h&lt;\frac{b-a}2$ we have $a&lt;a+h&lt;b-h&lt;b$. Proof B for the triples $(a,a+h,b-h)$ and $(a+h,b-h,b)$ gives</p><span class="math-display" style="display:block">$$\begin{aligned}\frac{f(a+h)-f(a)}h&amp;\le \frac{f(b-h)-f(a+h)}{(b-h)-(a+h)}\\&amp;\le \frac{f(b)-f(b-h)}h\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Shorten the end ropes to nothing: they become the tangents.</p></div><div class="sp-formal"><p>Let $h\searrow0$. The left side tends to $f'(a)$ and the right side to $f'(b)$ ($f$ is differentiable), and limits keep $\le$. So $f'(a)\le f'(b)$: $f'$ is increasing. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> <a class="mvl" href="moves.html#m-slopes">compare three slopes</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Recall (Proof B): $f$ is convex if and only if $\frac{f(x)-f(x_0)}{x-x_0}\le\frac{f(x_1)-f(x)}{x_1-x}$ for all $x_0&lt;x&lt;x_1$ in $I$.</p>
+<p><strong>⇐.</strong> Let $f'$ be increasing and $x_0&lt;x&lt;x_1$ in $I$. By the mean value theorem there are $\xi_1\in(x_0,x)$ and $\xi_2\in(x,x_1)$ with $f'(\xi_1)=\frac{f(x)-f(x_0)}{x-x_0}$ and $f'(\xi_2)=\frac{f(x_1)-f(x)}{x_1-x}$. As $\xi_1&lt;\xi_2$, $f'(\xi_1)\le f'(\xi_2)$, so $f$ is convex.</p>
+<p><strong>⇒.</strong> Let $f$ be convex and $a&lt;b$ in $I$. For $0&lt;h&lt;\frac{b-a}2$, applying the slope inequality to $a&lt;a+h&lt;b-h$ and to $a+h&lt;b-h&lt;b$:</p><span class="math-display" style="display:block">$$\begin{aligned}\frac{f(a+h)-f(a)}h&amp;\le \frac{f(b-h)-f(a+h)}{b-a-2h}\\&amp;\le \frac{f(b)-f(b-h)}h\end{aligned}.$$</span><p>Letting $h\searrow0$ gives $f'(a)\le f'(b)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Recall the slope form</strong> of convexity (Proof B). Figalli's solution simply wrote “Remember that $f$ is convex if …”. If the exam gives the $t$-definition, derive it in three lines.</li>
+  <li><strong>⇐:</strong> two mean value theorems, $\xi_1&lt;x&lt;\xi_2$, $f'(\xi_1)\le f'(\xi_2)$.</li>
+  <li><strong>⇒:</strong> $a&lt;a+h&lt;b-h&lt;b$, two slope inequalities chained, $h\searrow0$.</li>
+</ol>
+<p>In short: “slopes; two MVTs; squeeze the end ropes”. This was Figalli FS24 B2, word for word. Figalli HS23 A1 (a) and (b) is the same statement in the form $(f'(y)-f'(x))(y-x)\ge0$ (Exercise 5).</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Use Corollary 8.42 to show that $x\log x$ is strictly convex on $(0,\infty)$, and $\log$ is strictly concave.</p>
+  <details><summary>Answer</summary><div><p>$(x\log x)'=\log x+1$, $(x\log x)''=\frac1x&gt;0$. And $\log''=-\frac1{x^2}&lt;0$, so $-\log$ is strictly convex.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Show: a convex differentiable $f$ lies above each of its tangents, $f(y)\ge f(x)+f'(x)(y-x)$. (This is Figalli HS23 A1 (c).)</p>
+  <details><summary>Answer</summary><div><p>For $y&gt;x$: the mean value theorem gives $\xi\in(x,y)$ with</p><span class="math-display" style="display:block">$$\begin{aligned}f(y)-f(x)&amp;=f'(\xi)(y-x)\\&amp;\ge  f'(x)(y-x)\end{aligned},$$</span><p>since $f'$ is increasing and $y-x&gt;0$. For $y&lt;x$:</p><span class="math-display" style="display:block">$$\begin{aligned}f(x)-f(y)&amp;=f'(\xi)(x-y)\\&amp;\le  f'(x)(x-y)\end{aligned}$$</span><p>with $\xi\in(y,x)$; rearrange. For $y=x$ it's an equality.</p></div></details></li>
+  <li><p><strong>Rung 3 (8 min).</strong> Write both directions from the exam box alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: which of these are convex?</h3>
+<ol class="gq">
+  <li><p>$e^{x}$, $x^4$, $\frac1x$ on $(0,\infty)$, $\sqrt x$ on $[0,\infty)$, $\sin$ on $[0,\pi]$.</p>
+  <details><summary>Answer</summary><div><p>$e^x$: $f''=e^x&gt;0$, strictly convex. $x^4$: $f''=12x^2\ge0$, convex; even strictly convex, since $f'=4x^3$ is strictly increasing, although $f''(0)=0$ (so “$f''&gt;0$” is sufficient, not necessary). $\frac1x$: $f''=\frac2{x^3}&gt;0$ on $(0,\infty)$, strictly convex. $\sqrt x$: $f''=-\frac14x^{-3/2}&lt;0$, strictly concave. $\sin$ on $[0,\pi]$: $f''=-\sin\le0$, concave.</p></div></details></li>
+  <li><p>Where does $x^3$ switch from concave to convex?</p>
+  <details><summary>Answer</summary><div><p>$f''(x)=6x$: concave on $(-\infty,0]$, convex on $[0,\infty)$. A point where convexity switches is an <strong>inflection point</strong> (Wendepunkt): here $0$.</p></div></details></li>
+  <li><p>Show that every local minimum of a convex function on an interval is a global minimum (Übung 8.47).</p>
+  <details><summary>Answer</summary><div><p>Let $x_0$ be a local minimum and suppose $f(x_1)&lt;f(x_0)$ for some $x_1$. For small $t&gt;0$, the point $x_t=(1-t)x_0+tx_1$ is close to $x_0$, and <span class="math-display" style="display:block">$$\begin{aligned}f(x_t)&amp;\le (1-t)f(x_0)+tf(x_1)\\&amp;&lt;f(x_0)\end{aligned},$$</span>contradicting the local minimum. So $f(x_0)$ is the global minimum.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s4-jensen-s-inequality">4. Jensen's inequality</h2>
+<p>Convexity with two points extends to any number of points: “$f$ of an average is at most the average of $f$”.</p>
+<h3 id="proof-d">Proof D: Jensen's inequality (Lemma 8.44, <a class="pl" href="script.html#p378">p. 378–379</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f:I\to\mathbb R$ be convex, $x_1,\dots,x_n\in I$, and $t_1,\dots,t_n\in[0,1]$ with $\sum_{k=1}^nt_k=1$. Then</p>
+<span class="math-display" style="display:block">$$f\Bigl(\sum_{k=1}^nt_kx_k\Bigr)\le\sum_{k=1}^nt_kf(x_k).$$</span>
+</div>
+<p><strong>The idea.</strong> Induction on $n$. To go from $n$ to $n+1$ points, merge the last two points into one: their weighted average, carrying their combined weight $t_n+t_{n+1}$. That leaves $n$ points (induction hypothesis), and the merged point splits again by two-point convexity.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Base:</strong> $n=1$ is trivial, $n=2$ is the definition.</li>
+  <li><strong>Step:</strong> assume it for $n$; given $n+1$ points and weights, show it. If $t_n+t_{n+1}=0$ it's the case $n$; otherwise merge.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Tie the last two posts together into one, standing between them, carrying both their loads.</p></div><div class="sp-formal"><p>Assume the claim for $n\ge2$, and let $x_1,\dots,x_{n+1}$, $t_1,\dots,t_{n+1}$ be given. If $s=t_n+t_{n+1}=0$, then $t_n=t_{n+1}=0$ and this is the case $n$. Otherwise put $y=\frac{t_n}sx_n+\frac{t_{n+1}}sx_{n+1}\in I$ (it lies between $x_n$ and $x_{n+1}$). Then</p><span class="math-display" style="display:block">$$\sum_{k=1}^{n+1}t_kx_k=\sum_{k=1}^{n-1}t_kx_k+s\,y.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Now there are only $n$ posts, which we already know how to handle.</p></div><div class="sp-formal"><p>The weights $t_1,\dots,t_{n-1},s$ sum to $1$, so by the induction hypothesis</p><span class="math-display" style="display:block">$$f\Bigl(\sum_{k=1}^{n+1}t_kx_k\Bigr)\le\sum_{k=1}^{n-1}t_kf(x_k)+s\,f(y).$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Untie the merged post: two-point convexity splits its load back.</p></div><div class="sp-formal"><p>By convexity with the weights $\frac{t_n}s+\frac{t_{n+1}}s=1$: $s\,f(y)\le t_nf(x_n)+t_{n+1}f(x_{n+1})$. Together: $f\left(\sum_{k=1}^{n+1}t_kx_k\right)\le\sum_{k=1}^{n+1}t_kf(x_k)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-induct">induction with labelled parts</a> <a class="mvl" href="moves.html#m-regroup">merge two weights into one</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Induction on $n$; $n=1$ is trivial and $n=2$ is the definition. Assume the claim for some $n\ge2$ and let $x_1,\dots,x_{n+1}\in I$, $t_k\ge0$, $\sum t_k=1$. Put $s=t_n+t_{n+1}$. If $s=0$ we are in case $n$. Otherwise $y=\frac{t_n}sx_n+\frac{t_{n+1}}sx_{n+1}\in I$, and by the induction hypothesis (weights $t_1,\dots,t_{n-1},s$) and then convexity,</p><span class="math-display" style="display:block">$$\begin{aligned}f\Bigl(\sum_{k=1}^{n+1}t_kx_k\Bigr)&amp;=f\Bigl(\sum_{k=1}^{n-1}t_kx_k+sy\Bigr)\\&amp;\le \sum_{k=1}^{n-1}t_kf(x_k)+sf(y)\\&amp;\le \sum_{k=1}^{n+1}t_kf(x_k)\end{aligned}.$$</span><p><span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $y\in I$?</p>
+  <details><summary>Answer</summary><div><p>$y$ is a weighted average of $x_n$ and $x_{n+1}$ (weights $\ge0$, sum $1$), so it lies between them, and $I$ is an interval.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Prove the AM–GM inequality $\sqrt[n]{x_1\cdots x_n}\le\frac{x_1+\dots+x_n}n$ for $x_k&gt;0$, using Jensen for the concave $\log$.</p>
+  <details><summary>Answer</summary><div><p>$-\log$ is convex, so with $t_k=\frac1n$: $-\log\left(\frac1n\sum x_k\right)\le-\frac1n\sum\log x_k$, i.e. $\log\left(\frac{\sum x_k}n\right)\ge\log\sqrt[n]{x_1\cdots x_n}$. Since $\exp$ is increasing, AM–GM follows. (Applied to $\frac1{x_k}$ it gives the harmonic mean ≤ geometric mean: Übung 8.45.)</p></div></details></li>
+  <li><p><strong>Rung 3 (6 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<p><strong>Why it's cool.</strong> Convexity is a picture (the rope lies above the valley floor), and Jensen turns that one picture into a machine for inequalities. Pick a convex function, pick weights, and out comes a theorem: $-\log$ gives AM–GM, $x^2$ gives “the square of the average is at most the average of the squares”, and $x^p$ gives the power-mean inequalities. Inequalities that look unrelated are all the same rope, seen through different valleys.</p>
+
+<h2 id="s5-cauchy-s-mean-value-theorem">5. Cauchy's mean value theorem</h2>
+<h3 id="proof-e">Proof E: Cauchy's mean value theorem (Satz 8.48, <a class="pl" href="script.html#p379">p. 379–380</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f,g:[a,b]\to\mathbb R$ be continuous, differentiable on $(a,b)$. Then there is a $\xi\in(a,b)$ with</p>
+<span class="math-display" style="display:block">$$g'(\xi)\bigl(f(b)-f(a)\bigr)=f'(\xi)\bigl(g(b)-g(a)\bigr).$$</span>
+<p>If moreover $g'(x)\neq0$ for all $x\in(a,b)$, then $g(a)\neq g(b)$ and $\displaystyle\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi)}{g'(\xi)}$.</p>
+</div>
+<p><strong>The idea.</strong> The ordinary mean value theorem is the case $g(x)=x$. The same trick works: build a helper that combines $f$ and $g$ so that its values at $a$ and $b$ agree, and apply Rolle. The helper that works is the “cross product” $F=g\cdot(f(b)-f(a))-f\cdot(g(b)-g(a))$. Why one $\xi$ for both functions matters: two separate mean value theorems would give two different points.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> define <span class="math-display" style="display:block">$$\begin{aligned}F(x)&amp;=g(x)\bigl(f(b)-f(a)\bigr)-f(x)\bigl(g(b)-g(a)\bigr)\end{aligned}.$$</span></li>
+  <li><strong>Last line:</strong> “<span class="math-display" style="display:block">$$\begin{aligned}0&amp;=F'(\xi)\\&amp;=g'(\xi)(f(b)-f(a))-f'(\xi)(g(b)-g(a))\end{aligned}.$$</span>”</li>
+  <li><strong>The gap:</strong> $F(a)=F(b)$, and the extra claim $g(a)\neq g(b)$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two runners. Build one combined runner who starts and ends at the same height.</p></div><div class="sp-formal"><p>Let <span class="math-display" style="display:block">$$F(x)=g(x)\bigl(f(b)-f(a)\bigr)-f(x)\bigl(g(b)-g(a)\bigr)$$</span>on $[a,b]$: continuous, and differentiable on $(a,b)$. Expanding,</p><span class="math-display" style="display:block">$$F(a)=g(a)f(b)-f(a)g(b)=F(b).$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>The combined runner stood still at some moment. At that moment the two speeds were in the ratio of the total distances.</p></div><div class="sp-formal"><p>By Rolle's theorem, <span class="math-display" style="display:block">$$\begin{aligned}0&amp;=F'(\xi)\\&amp;=g'(\xi)(f(b)-f(a))-f'(\xi)(g(b)-g(a))\end{aligned}$$</span>for some $\xi\in(a,b)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If the second runner never stands still, they can't end where they started, so we may divide.</p></div><div class="sp-formal"><p>If $g'\neq0$ on $(a,b)$: $g(a)=g(b)$ would give, by Rolle, a point with $g'=0$; so $g(a)\neq g(b)$. Divide the equation by $g'(\xi)\bigl(g(b)-g(a)\bigr)\neq0$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-helper">a helper function</a> <a class="mvl" href="moves.html#m-contra">assume the opposite</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>The function</p><span class="math-display" style="display:block">$$F(x)=g(x)\bigl(f(b)-f(a)\bigr)-f(x)\bigl(g(b)-g(a)\bigr)$$</span><p>is continuous on $[a,b]$, differentiable on $(a,b)$, and $F(a)=g(a)f(b)-f(a)g(b)=F(b)$. By Rolle, $F'(\xi)=0$ for some $\xi\in(a,b)$, which is the first claim. If $g'\neq0$ on $(a,b)$, then $g(a)\neq g(b)$ (else Rolle gives a zero of $g'$), and dividing by $g'(\xi)(g(b)-g(a))$ gives the second. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Check $F(b)=g(a)f(b)-f(a)g(b)$ by expanding.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}F(b)&amp;=g(b)f(b)-g(b)f(a)-f(b)g(b)+f(b)g(a)\\&amp;=g(a)f(b)-f(a)g(b)\end{aligned}.$$</span>✓</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Which $g$ turns this into the ordinary mean value theorem?</p>
+  <details><summary>Answer</summary><div><p>$g(x)=x$: then $g'=1$ and the claim reads $f(b)-f(a)=f'(\xi)(b-a)$.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h2 id="s6-l-h-pital-s-rule">6. L'Hôpital's rule</h2>
+<div class="box">
+<p><strong>Theorem (l'Hôpital, Satz 8.49, <a class="pl" href="script.html#p380">p. 380–381</a>).</strong> Let $f,g:(a,b)\to\mathbb R$ be differentiable with $g(x)\neq0$ and $g'(x)\neq0$ on $(a,b)$. Suppose</p>
+<ul>
+  <li>either $\lim_{x\searrow a}f(x)=\lim_{x\searrow a}g(x)=0$ (the form “$\frac00$”), or $\lim_{x\searrow a}g(x)=\pm\infty$ (the form “$\frac\infty\infty$”),</li>
+  <li>and $L=\lim_{x\searrow a}\frac{f'(x)}{g'(x)}$ exists in $\mathbb R\cup\{\pm\infty\}$.</li>
+</ul>
+<p>Then $\displaystyle\lim_{x\searrow a}\frac{f(x)}{g(x)}=L$ too. The same holds for $x\nearrow b$, for $x\to x_0\in(a,b)$ (where $g(x_0)$, $g'(x_0)$ may be $0$), and for $a=-\infty$ or $b=+\infty$.</p>
+</div>
+<h3 id="proof-f">Proof F: l'Hôpital for “$\frac00$” (<a class="pl" href="script.html#p381">p. 381</a>)</h3>
+<p><strong>The idea.</strong> Set $f(a)=g(a)=0$. Then $\frac{f(x)}{g(x)}=\frac{f(x)-f(a)}{g(x)-g(a)}$, which by Cauchy's mean value theorem equals $\frac{f'(\xi)}{g'(\xi)}$ for some $\xi$ between $a$ and $x$. As $x\searrow a$, $\xi$ is squeezed to $a$ too, so the ratio tends to $L$. The two runners: their positions are both near $0$, but the ratio of positions equals the ratio of speeds at some earlier moment.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $\varepsilon&gt;0$. Choose $\delta&gt;0$ with $\left|\frac{f'(\xi)}{g'(\xi)}-L\right|&lt;\varepsilon$ for all $\xi\in(a,a+\delta)$.” (Here $L\in\mathbb R$; for $L=\pm\infty$ replace “$\varepsilon$-close” by “beyond $M$”.)</li>
+  <li><strong>Last line:</strong> “so $\left|\frac{f(x)}{g(x)}-L\right|&lt;\varepsilon$ for all $x\in(a,a+\delta)$.”</li>
+  <li><strong>The gap:</strong> connect $\frac{f(x)}{g(x)}$ to $\frac{f'(\xi)}{g'(\xi)}$ with $\xi\in(a,x)$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Give both runners a common start, at height zero.</p></div><div class="sp-formal"><p>Extend $f,g$ to $[a,b)$ by $f(a)=g(a)=0$. By the “$\frac00$” assumption they are continuous on $[a,b)$. Let $\varepsilon&gt;0$ and choose $\delta\in(0,b-a)$ with $\left|\frac{f'(\xi)}{g'(\xi)}-L\right|&lt;\varepsilon$ for all $\xi\in(a,a+\delta)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The ratio of their positions equals the ratio of their speeds at some moment since the start.</p></div><div class="sp-formal"><p>Let $x\in(a,a+\delta)$. On $[a,x]$, $f$ and $g$ are continuous, differentiable on $(a,x)$, and $g'\neq0$. By Cauchy's mean value theorem there is $\xi_x\in(a,x)$ with</p><span class="math-display" style="display:block">$$\frac{f(x)}{g(x)}=\frac{f(x)-f(a)}{g(x)-g(a)}=\frac{f'(\xi_x)}{g'(\xi_x)}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>That moment lies in the window where speeds are already close to $L$.</p></div><div class="sp-formal"><p>Since $\xi_x\in(a,x)\subseteq(a,a+\delta)$: $\left|\frac{f(x)}{g(x)}-L\right|&lt;\varepsilon$. As $\varepsilon$ was arbitrary, $\lim_{x\searrow a}\frac{f(x)}{g(x)}=L$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-helper">a helper function</a> (through Cauchy's mean value theorem)</p>
+<details><summary>The proof in one piece</summary><div>
+<p>Set $f(a)=g(a)=0$; then $f,g$ are continuous on $[a,b)$. Given $\varepsilon&gt;0$, pick $\delta&gt;0$ with $\left|\frac{f'(\xi)}{g'(\xi)}-L\right|&lt;\varepsilon$ for $\xi\in(a,a+\delta)$. For $x\in(a,a+\delta)$, Cauchy's mean value theorem on $[a,x]$ gives $\xi_x\in(a,x)$ with $\frac{f(x)}{g(x)}=\frac{f'(\xi_x)}{g'(\xi_x)}$, hence $\left|\frac{f(x)}{g(x)}-L\right|&lt;\varepsilon$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where is $g'\neq0$ used, and where $g(x)\neq0$?</p>
+  <details><summary>Answer</summary><div><p>$g'\neq0$: in the second part of Cauchy's mean value theorem, to divide (and to know $g(x)\neq g(a)$). $g(x)\neq0$: so that $\frac{f(x)}{g(x)}$ is defined at all (it also follows from Cauchy's theorem here).</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Reduce $x\to+\infty$ to the proven case: with $F(t)=f\left(\frac1t\right)$, $G(t)=g\left(\frac1t\right)$, what is $\frac{F'(t)}{G'(t)}$?</p>
+  <details><summary>Answer</summary><div><p>By the chain rule, $F'(t)=-\frac1{t^2}f'\left(\frac1t\right)$ and likewise for $G$, so $\frac{F'(t)}{G'(t)}=\frac{f'(1/t)}{g'(1/t)}\to L$ as $t\searrow0$. Hence $\frac{f(x)}{g(x)}=\frac{F(1/x)}{G(1/x)}\to L$ as $x\to\infty$.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<p><strong>Three warnings.</strong></p>
+<ol>
+  <li><strong>Check the form first.</strong> $\lim_{x\to0}\frac{x+1}{x+2}=\frac12$, but “l'Hôpital” would give $\frac11=1$. The rule is only for $\frac00$ and $\frac\infty\infty$.</li>
+  <li><strong>The rule is one-way.</strong> If $\frac{f'}{g'}$ has no limit, $\frac fg$ may still have one: $\frac{x+\sin x}x\to1$ as $x\to\infty$, while $\frac{1+\cos x}1$ oscillates.</li>
+  <li><strong>Differentiate top and bottom separately</strong>, not the quotient with the quotient rule. The HS21 grading scheme took off a point for a wrong derivative “even if the result stays good by chance”.</li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="the-recipe-for-the-other">The recipe for the other indeterminate forms</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Form</th><th>Rewrite</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td>$0\cdot\infty$</td><td>$fg=\frac f{1/g}$ (choose which one goes down)</td><td>$x\log x=\frac{\log x}{1/x}$</td></tr>
+    <tr><td>$\infty-\infty$</td><td>common denominator</td><td>$\frac1x-\frac1{\sin x}=\frac{\sin x-x}{x\sin x}$</td></tr>
+    <tr><td>$1^\infty$, $0^0$, $\infty^0$</td><td>$f^g=e^{g\log f}$; find the limit of the exponent, then use continuity of $\exp$</td><td>$x^x=e^{x\log x}$</td></tr>
+  </tbody>
+</table></div>
+<p>And often <strong>the series is faster</strong> than repeated l'Hôpital: $\sin x=x-\frac{x^3}6+\dots$, $\cos x=1-\frac{x^2}2+\dots$, $e^x=1+x+\frac{x^2}2+\dots$, $\log(1+x)=x-\frac{x^2}2+\dots$ (<a class="xl" href="lesson-16.html#s5-the-exponential-series">lesson 16</a>; <a class="xl" href="lesson-21.html#proof-a">lesson 21</a> makes this precise as Taylor's theorem).</p>
+</div>
+
+<div class="box">
+<h3 id="we-4">Worked example 4: limits</h3>
+<ol class="gq">
+  <li><p>$\displaystyle\lim_{x\searrow0}x\log x$.</p>
+  <details><summary>Answer</summary><div><p>$\frac{\log x}{1/x}$ is “$\frac{-\infty}\infty$”. Derivatives: $\frac{1/x}{-1/x^2}=-x\to0$. So the limit is $0$.</p></div></details></li>
+  <li><p>$\displaystyle\lim_{x\searrow0}x^x$.</p>
+  <details><summary>Answer</summary><div><p>$x^x=e^{x\log x}\to e^0=1$ by question 1 and continuity of $\exp$.</p></div></details></li>
+  <li><p>$\displaystyle\lim_{x\to\infty}\frac{x^n}{e^x}$ for $n\in\mathbb N$, and $\displaystyle\lim_{x\to\infty}\frac{\log x}{x^\alpha}$ for $\alpha&gt;0$.</p>
+  <details><summary>Answer</summary><div><p>Both $0$. $\frac{x^n}{e^x}$: $n$ times l'Hôpital gives $\frac{n!}{e^x}\to0$ (each step is “$\frac\infty\infty$”). $\frac{\log x}{x^\alpha}$: $\frac{1/x}{\alpha x^{\alpha-1}}=\frac1{\alpha x^\alpha}\to0$. Exponentials beat powers beat logarithms.</p></div></details></li>
+  <li><p>$\displaystyle\lim_{x\to0}\frac{1-\cos x}{x^2}$, by l'Hôpital and by the series.</p>
+  <details><summary>Answer</summary><div><p>l'Hôpital twice: $\frac{\sin x}{2x}\to\frac12$ (the last step is $\frac{\cos x}2$). Series: <span class="math-display" style="display:block">$$\begin{aligned}\frac{x^2/2-x^4/24+\dots}{x^2}&amp;=\frac12-\frac{x^2}{24}+\dots\to\frac12\end{aligned}.$$</span></p></div></details></li>
+  <li><p>$\displaystyle\lim_{x\to\infty}\left(1+\frac ax\right)^x$.</p>
+  <details><summary>Answer</summary><div><p>“$1^\infty$”. Exponent: $x\log\left(1+\frac ax\right)=\frac{\log(1+a/x)}{1/x}$, “$\frac00$”. Derivatives: $\frac{\frac1{1+a/x}\cdot\left(-\frac a{x^2}\right)}{-\frac1{x^2}}=\frac a{1+a/x}\to a$. So the limit is $e^a$, matching <a class="xl" href="lesson-16.html#s2-the-exponential-function-and-the">lesson 16</a>.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s7-a-short-tour-the-inverse">7. A short tour: the inverse trigonometric and hyperbolic functions</h2>
+<div class="box">
+<p><strong>Sections 8.3–8.4 (<a class="pl" href="script.html#p384">p. 384–392</a>).</strong> Each is the inverse of a strictly monotone restriction (<a class="xl" href="lesson-08.html#proof-a">lesson 8</a>), with its derivative from <a class="xl" href="lesson-17.html#proof-d">lesson 17</a>'s Proof D:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Function</th><th>Inverse of</th><th>Domain → range</th><th>Derivative</th></tr></thead>
+  <tbody>
+    <tr><td>$\arcsin$</td><td>$\sin$ on $\left[-\frac\pi2,\frac\pi2\right]$</td><td>$[-1,1]\to\left[-\frac\pi2,\frac\pi2\right]$</td><td>$\frac1{\sqrt{1-x^2}}$</td></tr>
+    <tr><td>$\arccos$</td><td>$\cos$ on $[0,\pi]$</td><td>$[-1,1]\to[0,\pi]$</td><td>$-\frac1{\sqrt{1-x^2}}$</td></tr>
+    <tr><td>$\arctan$</td><td>$\tan$ on $\left(-\frac\pi2,\frac\pi2\right)$</td><td>$\mathbb R\to\left(-\frac\pi2,\frac\pi2\right)$</td><td>$\frac1{1+x^2}$</td></tr>
+    <tr><td>$\operatorname{arsinh}$</td><td>$\sinh$ on $\mathbb R$</td><td>$\mathbb R\to\mathbb R$, $=\log\left(x+\sqrt{x^2+1}\right)$</td><td>$\frac1{\sqrt{x^2+1}}$</td></tr>
+    <tr><td>$\operatorname{arcosh}$</td><td>$\cosh$ on $[0,\infty)$</td><td>$[1,\infty)\to[0,\infty)$, $=\log\left(x+\sqrt{x^2-1}\right)$</td><td>$\frac1{\sqrt{x^2-1}}$</td></tr>
+    <tr><td>$\operatorname{artanh}$</td><td>$\tanh$ on $\mathbb R$</td><td>$(-1,1)\to\mathbb R$, $=\frac12\log\frac{1+x}{1-x}$</td><td>$\frac1{1-x^2}$</td></tr>
+  </tbody>
+</table></div>
+<p>Useful identities: $\cosh^2-\sinh^2=1$ (so $\cosh(\operatorname{arsinh}x)=\sqrt{1+x^2}$), $\arcsin x+\arccos x=\frac\pi2$, and $\arctan x+\arctan\frac1x=\frac\pi2$ for $x&gt;0$ (<a class="xl" href="lesson-17.html#ex-7">lesson 17</a>, Exercise 7). The log formulas come from solving $y=\frac{e^t-e^{-t}}2$ for $t$: a quadratic equation in $e^t$.</p>
+</div>
+
+<h2 id="s8-exercises">8. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1–4 count for scoring. Exercises 5–10 are proof and computation practice from the exams, and the Bonus closes a gap from <a class="xl" href="lesson-17.html#we-5">lesson 17</a>.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Einsiedler FS22, question 4, 4 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-08-einsiedler-fs22-repeat-exam.pdf&amp;t=2022-08%20Einsiedler%20-%20FS22%20repeat%20exam">FS22 exam</a></p>
+  <p>Determine the local and global extrema of $f(x)=x^3(x-1)^2$ on the interval $[-1,1]$, and decide whether they are local or global maxima or minima.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> the recipe: candidates, sign table, compare values. <em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> (through Proof A and <a class="xl" href="lesson-17.html#proof-h">lesson 17</a>'s Proof H).</p>
+  <p><strong>Derivative, factored.</strong></p>
+  <span class="math-display" style="display:block">$$\begin{aligned}f'(x)&amp;=3x^2(x-1)^2+2x^3(x-1)\\&amp;=x^2(x-1)\bigl(3(x-1)+2x\bigr)\\&amp;=x^2(x-1)(5x-3)\end{aligned}.$$</span>
+  <p><strong>Candidates:</strong> the endpoints $-1,1$ and the critical points $0$ and $\frac35$ ($f$ is a polynomial, so differentiable everywhere).</p>
+  <p><strong>Sign table on $[-1,1]$:</strong> $x^2\ge0$ (zero only at $0$), $x-1&lt;0$ for $x&lt;1$, and $5x-3$ is negative before $\frac35$, positive after. So $f'&gt;0$ on $[-1,0)$ and on $\left(0,\frac35\right)$, and $f'&lt;0$ on $\left(\frac35,1\right)$. Hence $f$ is strictly increasing on $\left[-1,\frac35\right]$ and strictly decreasing on $\left[\frac35,1\right]$.</p>
+  <p><strong>Values:</strong> $f(-1)=-1\cdot4=-4$, $f(0)=0$, $f\left(\frac35\right)=\frac{27}{125}\cdot\frac4{25}=\frac{108}{3125}$, $f(1)=0$.</p>
+  <p><strong>Answer.</strong> $x=\frac35$: global (and local) maximum, value $\frac{108}{3125}$. $x=-1$: global (and local) minimum, value $-4$. $x=1$: local minimum (f decreases towards it), value $0$, not global. $x=0$: critical point but <strong>no</strong> extremum ($f'$ doesn't change sign).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Figalli FS24, MC1, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">FS24 exam with solutions</a></p>
+  <p>Find the minimum on $(0,\infty)$ of $f(x)=4x^2+\frac1x-1$. (A) $3$ (B) $1$ (C) $\frac32$ (D) $2$</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(D).</strong> <span class="math-display" style="display:block">$$\begin{aligned}f'(x)&amp;=8x-\frac1{x^2}\\&amp;=0\iff x^3\\&amp;=\frac18\iff x\\&amp;=\frac12\end{aligned}.$$</span>$f'&lt;0$ on $\left(0,\frac12\right)$ and $&gt;0$ after, so $\frac12$ is the global minimum (decreasing, then increasing): $f\left(\frac12\right)=1+2-1=2$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (PVK mock HS25, MC4, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK mock exam</a> · <a href="pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">solutions</a></p>
+  <p>Compute $\displaystyle\lim_{x\to0}\frac{e^{2x}-1-2x}{x^2}$. (A) $0$ (B) $1$ (C) $2$ (D) $4$</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(C).</strong> “$\frac00$”. l'Hôpital: $\frac{2e^{2x}-2}{2x}$, still “$\frac00$”; again: $\frac{4e^{2x}}2\to2$. Or with the series: $e^{2x}=1+2x+2x^2+\dots$, so the quotient is $2+O(x)\to2$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Figalli FS26, MC8, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Compute $\displaystyle\lim_{x\to0}\frac{x+\cos(x)\sin(2x)}{\sin^3(x)+2\sin(x)-x}$. (A) $1$ (B) $2$ (C) $3$ (D) $0$</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(C).</strong> “$\frac00$”. One l'Hôpital step: the numerator's derivative is</p><span class="math-display" style="display:block">$$\begin{aligned}1-\sin x\sin2x+2\cos x\cos2x\to1+2&amp;=3\end{aligned},$$</span><p>the denominator's is <span class="math-display" style="display:block">$$3\sin^2x\cos x+2\cos x-1\to2-1=1.$$</span>So the limit is $3$. (Quicker, as in Figalli's solution: numerator $\approx x+2x=3x$, denominator $\approx2x-x=x$.)</p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (4 points) and Exercises 2–4 (2 each) make 10. If you have 7 of 10, you're done. Exercises 5–10 and the Bonus are extra practice and don't count against you. Exercises 5 and 6 are 7-point proofs: do them if Proof C felt good.</p>
+</div>
+
+<div class="box"><h3 id="ex-5">Exercise 5 (Figalli HS23, question A1, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">HS23 exam with solutions</a></p>
+  <p>Let $f:\mathbb R\to\mathbb R$ be differentiable. (a) [2 points] If $f$ is convex, show $\bigl(f'(y)-f'(x)\bigr)(y-x)\ge0$ for all $x,y$. (b) [2 points] Conversely, if $\bigl(f'(y)-f'(x)\bigr)(y-x)\ge0$ for all $x,y$, show that $f$ is convex. (c) [3 points] If $f$ is convex, show $f(x+h)\ge f(x)+f'(x)h$ for all $x,h\in\mathbb R$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a>, and Proof C.</p>
+  <p><strong>(a)</strong> By Proof C, $f'$ is increasing. If $x&lt;y$: $f'(y)-f'(x)\ge0$ and $y-x&gt;0$. If $x&gt;y$: both factors are $\le0$. If $x=y$: $0$. In all cases the product is $\ge0$.</p>
+  <p><strong>(b)</strong> For $x&lt;y$, divide by $y-x&gt;0$: $f'(y)\ge f'(x)$. So $f'$ is increasing, and $f$ is convex by Proof C.</p>
+  <p><strong>(c)</strong> $h=0$: equality. $h&gt;0$: by the mean value theorem, $f(x+h)-f(x)=f'(\xi)h$ with $\xi\in(x,x+h)$; $f'$ is increasing, so $f'(\xi)\ge f'(x)$, and multiplying by $h&gt;0$ gives $f(x+h)-f(x)\ge f'(x)h$. $h&lt;0$: $f(x)-f(x+h)=f'(\xi)(-h)$ with $\xi\in(x+h,x)$, and $f'(\xi)\le f'(x)$, so $f(x)-f(x+h)\le-f'(x)h$, which rearranges to the claim. In words: a convex function lies above its tangents.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Exercise 6 (Felder FS23, question 4.A1, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a></p>
+  <p>Prove: if $f:\mathbb R\to\mathbb R$ is convex and $f(x)\le2023$ for all $x\in\mathbb R$, then $f$ is constant.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> assume the opposite; find a point where $f&gt;2023$. <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a> <a class="mvl" href="moves.html#m-slopes">compare three slopes</a> <a class="mvl" href="moves.html#m-cases">split into cases</a>.</p>
+  <p>Note that $f$ need not be differentiable, so we use Proof B (three slopes), not derivatives. Suppose $f$ is not constant: there are $x&lt;y$ with $f(x)\neq f(y)$.</p>
+  <p><strong>Case $f(x)&lt;f(y)$.</strong> Let $s=\frac{f(y)-f(x)}{y-x}&gt;0$. For $c&gt;y$, Proof B for $x&lt;y&lt;c$ gives $\frac{f(c)-f(y)}{c-y}\ge s$, so</p>
+  <span class="math-display" style="display:block">$$f(c)\ge f(y)+s\,(c-y)\to\infty\quad(c\to\infty).$$</span>
+  <p>So $f(c)&gt;2023$ for large $c$: contradiction.</p>
+  <p><strong>Case $f(x)&gt;f(y)$.</strong> Let $s=\frac{f(x)-f(y)}{y-x}&gt;0$. For $a&lt;x$, Proof B for $a&lt;x&lt;y$ gives $\frac{f(x)-f(a)}{x-a}\le\frac{f(y)-f(x)}{y-x}=-s$, so</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;f(a)\ge  f(x)+s\,(x-a)\to\infty\\&amp;(a\to-\infty)\end{aligned}.$$</span>
+  <p>Contradiction again. So $f$ is constant. (The number $2023$ plays no role: any upper bound works. On a half-line it fails: $e^{-x}$ is convex and bounded on $[0,\infty)$.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-7">Exercise 7 (Kobel-Keller HS24, question 9, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Let $f$ be convex and differentiable on the whole compact interval $[a,b]$. Which statement is correct? (a) The global minimum can only be attained at the boundary. (b) $f$ can have several isolated critical points in $(a,b)$. (c) If $f$ has a critical point in $(a,b)$, the global minimum is attained there. (d) It may happen that $f$ attains only its global maximum.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(c).</strong> If $f'(c)=0$, then by the tangent inequality (Exercise 5 (c)) $f(x)\ge f(c)+f'(c)(x-c)=f(c)$ for all $x$: a global minimum. (a) is false: $x^2$ on $[-1,1]$. (b) is false: $f'$ is increasing, so if $f'(c_1)=f'(c_2)=0$ with $c_1&lt;c_2$, then $f'=0$ on all of $[c_1,c_2]$, and the critical points are not isolated. (d) is false: $f$ is continuous on a compact interval, so it attains both its maximum and its minimum (<a class="xl" href="lesson-08.html#proof-c">lesson 8</a>).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-8">Exercise 8 (four minimum questions: Felder FS23 1.A1, PVK MC1, Figalli HS23 MC4 and FS26 MC4)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a> · <a href="pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">HS23 exam with solutions</a> · <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Find: (a) $\min\{x\log x\mid x&gt;0\}$; (b) the minimum of $x+\frac4x$ on $(0,\infty)$; (c) the minimum of $x^4-2x^2+5$ on $\mathbb R$; (d) the minimum of $2x^2+\frac1{8x^2}-2$ on $(0,\infty)$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) $(x\log x)'=\log x+1=0$ at $x=\frac1e$; negative before, positive after. Minimum $\frac1e\log\frac1e=-\frac1e$.</p>
+  <p>(b) $1-\frac4{x^2}=0$ at $x=2$; negative before, positive after. Minimum $2+2=4$. (Or AM–GM: $x+\frac4x\ge2\sqrt{x\cdot\frac4x}=4$.)</p>
+  <p>(c) $4x^3-4x=4x(x-1)(x+1)=0$ at $0,\pm1$. The function tends to $\infty$ at $\pm\infty$; values $f(0)=5$, $f(\pm1)=4$. Minimum $4$, at $\pm1$.</p>
+  <p>(d) <span class="math-display" style="display:block">$$\begin{aligned}4x-\frac1{4x^3}&amp;=0\iff x^4\\&amp;=\frac1{16}\iff x\\&amp;=\frac12;\end{aligned}$$</span>negative before, positive after. Minimum $2\cdot\frac14+\frac1{8\cdot\frac14}-2=\frac12+\frac12-2=-1$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-9">Exercise 9 (limits from the older Einsiedler exams and Kobel-Keller HS24)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Compute: (a) $\lim_{x\to0}x\tan\left(x+\frac\pi2\right)$ (2017 summer, 1c); (b) $\lim_{x\to\infty}\frac{\operatorname{arcosh}(x)}{\log(x-1)}$ (2018 summer, 1c); (c) $\lim_{x\searrow0}x^{\sqrt{4+x}-2}$ (2012 winter, 2a); (d) $\lim_{x\to0}\frac{\sin x-x+x^3/6}{x^5}$ (Kobel-Keller HS24, question 12, 3 points); (e) $\lim_{x\to0}\frac{2\sin x-\sin(2x)}{x-\sin x}$ (Übung 8.51).</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) $\tan\left(x+\frac\pi2\right)=\frac{\cos x}{-\sin x}$ (addition formulas), so <span class="math-display" style="display:block">$$x\tan\left(x+\frac\pi2\right)=-\cos x\cdot\frac x{\sin x}\to-1.$$</span></p>
+  <p>(b) “$\frac\infty\infty$”. l'Hôpital with the table in <a class="xl" href="#s7-a-short-tour-the-inverse">section 7</a>:</p>
+  <span class="math-display" style="display:block">$$\frac{1/\sqrt{x^2-1}}{1/(x-1)}=\frac{x-1}{\sqrt{x^2-1}}=\sqrt{\frac{x-1}{x+1}}\to1.$$</span>
+  <p>(c) “$0^0$”. The exponent: <span class="math-display" style="display:block">$$\begin{aligned}\left(\sqrt{4+x}-2\right)\log x&amp;=\frac{x}{\sqrt{4+x}+2}\log x\\&amp;=\frac{x\log x}{\sqrt{4+x}+2}\to\frac04\\&amp;=0\end{aligned},$$</span>using $x\log x\to0$ (Worked example 4). So the limit is $e^0=1$.</p>
+  <p>(d) Series: $\sin x=x-\frac{x^3}6+\frac{x^5}{120}-\dots$, so the numerator is $\frac{x^5}{120}+O(x^7)$, and the limit is $\frac1{120}$. (l'Hôpital works too, but needs five steps.)</p>
+  <p>(e) Series: numerator <span class="math-display" style="display:block">$$\begin{aligned}2\left(x-\frac{x^3}6\right)-\left(2x-\frac{8x^3}6\right)+O(x^5)&amp;=x^3+O(x^5);\end{aligned}$$</span>denominator $\frac{x^3}6+O(x^5)$. Limit $6$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-10">Exercise 10 (2011 summer exam, question 4(b))</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2011-summer-einsiedler.pdf&amp;t=2011%20summer%20Einsiedler">2011 summer exam</a></p>
+  <p>Let $f:[1,\infty)\to\mathbb R$ satisfy $f(1)=1$ and $f'(x)=\frac1{x^2+f(x)^2}$ for $x\ge1$. Show that $\lim_{x\to\infty}f(x)$ exists and is at most $1+\frac\pi4$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> increasing and bounded above ⇒ limit. <em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> (through <a class="xl" href="lesson-17.html#proof-h">lesson 17</a>'s Proof H) <a class="mvl" href="moves.html#m-helper">a helper function</a> <a class="mvl" href="moves.html#m-approx">approach a supremum</a>.</p>
+  <p><strong>Increasing.</strong> $f'&gt;0$, so $f$ is strictly increasing on the interval $[1,\infty)$, and $f(x)\ge f(1)=1$.</p>
+  <p><strong>Bounded.</strong> Hence $f'(x)\le\frac1{x^2+1}$. The helper $h(x)=f(x)-\arctan x$ has $h'(x)=f'(x)-\frac1{1+x^2}\le0$, so $h$ is decreasing: $h(x)\le h(1)=1-\frac\pi4$. So <span class="math-display" style="display:block">$$\begin{aligned}f(x)&amp;\le 1-\frac\pi4+\arctan x\\&amp;&lt;1-\frac\pi4+\frac\pi2\\&amp;=1+\frac\pi4\end{aligned}.$$</span></p>
+  <p><strong>Limit.</strong> Let $S=\sup_{x\ge1}f(x)\le1+\frac\pi4$. Given $\varepsilon&gt;0$, there is $x_\varepsilon$ with $f(x_\varepsilon)&gt;S-\varepsilon$, and since $f$ is increasing, $S-\varepsilon&lt;f(x)\le S$ for all $x\ge x_\varepsilon$. So $\lim_{x\to\infty}f(x)=S\le1+\frac\pi4$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus: a limit of derivatives is a derivative (Übung 8.52)</h3>
+  <p>Let $f:[a,b]\to\mathbb R$ be continuous, differentiable on $[a,b]\setminus\{x_0\}$, and suppose $A=\lim_{x\to x_0}f'(x)$ exists. Show that $f$ is differentiable at $x_0$ with $f'(x_0)=A$ (so $f'$ is continuous at $x_0$).</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a>.</p>
+  <p>Let $\varepsilon&gt;0$ and choose $\delta&gt;0$ with $|f'(\xi)-A|&lt;\varepsilon$ for $0&lt;|\xi-x_0|&lt;\delta$. For $x\in[a,b]$ with $0&lt;|x-x_0|&lt;\delta$, $f$ is continuous between $x$ and $x_0$ and differentiable strictly between them, so the mean value theorem gives $\xi_x$ strictly between $x$ and $x_0$ with</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\frac{f(x)-f(x_0)}{x-x_0}=f'(\xi_x)\\&amp;0&lt;|\xi_x-x_0|&lt;\delta\end{aligned}.$$</span>
+  <p>So the difference quotient is within $\varepsilon$ of $A$: $f'(x_0)=A$. This is the tool for “glued” functions: for $g(x)=x|x|$ (<a class="xl" href="lesson-17.html#we-5">lesson 17</a>, Worked example 5), $g'(x)=2|x|\to0$, so $g'(0)=0$ without computing a limit by hand. It also shows again why $x^2\sin\frac1x$ needed a hand computation: there $\lim f'$ doesn't exist.</p>
+</div></details>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>A rule bought for money.</strong> In 1694 the Marquis de l'Hôpital, a French nobleman, signed an agreement with the young Johann Bernoulli: a regular payment in exchange for Bernoulli's mathematical discoveries, to use as he pleased. In 1696 l'Hôpital published the first calculus textbook, <em>Analyse des infiniment petits</em>, and the rule appeared in it. He thanked Bernoulli in the preface, but the rule carries his name. Bernoulli's later complaints were dismissed for a long time, until their letters were published in the 20th century and proved him right.</p>
+<p><strong>Light solves a minimum problem.</strong> Fermat's principle says that light travels along the path that takes the least time. Light going from air into water changes speed, so the fastest path is bent. Setting the derivative of the travel time to zero gives exactly Snell's law of refraction, $\frac{\sin\alpha_1}{v_1}=\frac{\sin\alpha_2}{v_2}$ (Beispiel 8.54 in the script). A lifeguard running along the beach and then swimming to someone in the water solves the same problem.</p>
+<p><strong>Convexity everywhere.</strong> Jensen's inequality for the concave function $-x\log x$ says that among all probability distributions on $n$ outcomes, the uniform one has the largest <em>entropy</em> $-\sum p_k\log p_k$. That's the starting point of information theory (Shannon, 1948), which is behind data compression, and of the statistical physics in Physics courses. Convex optimisation, minimising convex functions, is what most machine learning does: there, every local minimum is global (Worked example 3).</p>
+
+<h2 id="s10-what-we-skipped">10. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Übung 8.41 (<a class="pl" href="script.html#p378">p. 378</a>):</strong> strictly convex ⇒ $f'$ strictly increasing. Low.</li>
+  <li><strong>Übung 8.45 (<a class="pl" href="script.html#p379">p. 379</a>):</strong> harmonic ≤ geometric ≤ arithmetic mean. Low; Proof D's Rung 2 does it.</li>
+  <li><strong>Übung 8.46 (<a class="pl" href="script.html#p379">p. 379</a>):</strong> Jensen's inequality for integrals. Low.</li>
+  <li><strong>The geometric meaning of Cauchy's mean value theorem (Bemerkung, <a class="pl" href="script.html#p380">p. 380</a>).</strong> Low.</li>
+  <li><strong>Proof of l'Hôpital for “$\frac\infty\infty$” and for $L=\pm\infty$ (<a class="pl" href="script.html#p381">p. 381–382</a>)</strong> and Übung 8.50 (the reductions to the other cases, <a class="pl" href="script.html#p383">p. 383</a>). Low; the statement is in <a class="xl" href="#s6-l-h-pital-s-rule">section 6</a>, and Proof F's Rung 2 does $x\to\infty$.</li>
+  <li><strong>Übung 8.53 (<a class="pl" href="script.html#p383">p. 383</a>):</strong> $f''(x)=\lim_h\frac{f(x+h)-2f(x)+f(x-h)}{h^2}$. Low.</li>
+  <li><strong>Sections 8.3.3, 8.3.5–8.3.7 (<a class="pl" href="script.html#p386">p. 386–390</a>):</strong> angles via the inner product, cotangent, a physical example, uses of the trigonometric functions, and Beispiel 8.54–Übung 8.55 (Snell's law). Low; For wonder.</li>
+  <li><strong>Section 8.4 in detail (<a class="pl" href="script.html#p391">p. 391–392</a>)</strong> and Übung 8.56: the area functions. Low; the table in <a class="xl" href="#s7-a-short-tour-the-inverse">section 7</a> has what you need.</li>
+  <li><strong>Section 8.5 (<a class="pl" href="script.html#p393">p. 393–409</a>):</strong> first differential equations. <a class="xl" href="lesson-22.html">Lesson 22</a>.</li>
+  <li><strong>Section 8.6 (<a class="pl" href="script.html#p410">p. 410–416</a>):</strong> further exercises for chapter 8. For the refresher phase.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-19.html">lesson 19</a>, the fundamental theorem of calculus and integration techniques (Sections 9.1–9.2): why integrating and differentiating undo each other, then substitution and integration by parts, drilled on exam integrals.</p>
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-17.html">← Lesson 17: The Cart's Climb Gauge</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-19.html">Lesson 19: The Ledger and the Hourglass →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

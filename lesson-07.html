@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Unbroken Road</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-06.html">← Lesson 6</a>
+<a href="lesson-08.html">Lesson 8 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 7 of 26</span>
+  <h1>The Unbroken Road</h1>
+  <p class="lead">Continuity with ε and δ, the rules that save you from ε-δ work, and the intermediate value theorem with its proof.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-6-5">Recap of lesson 6 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-road-with">1. The story: the road with no gaps</a>
+</li>
+<li><a href="#s2-the-definition">2. The definition</a>
+<ol>
+<li><a href="#the-negation-which-you-need">The negation, which you need for “not continuous”</a></li>
+</ol></li>
+<li><a href="#s3-worked-proofs-beispiel-3-47">3. Worked ε-δ proofs (Beispiel 3.47, p. 154)</a>
+<ol>
+<li><a href="#a-constants-are-continuous">(a) Constants are continuous</a></li>
+<li><a href="#b-is-continuous">(b) $f(x)=ax$ is continuous</a></li>
+<li><a href="#c-is-continuous">(c) $f(x)=|x|$ is continuous</a></li>
+<li><a href="#d-is-continuous-bung-3">(d) $f(x)=x^2$ is continuous (Übung 3.48, p. 155)</a></li>
+<li><a href="#e-the-floor-function-is">(e) The floor function is not continuous at any $n\in\mathbb{Z}$</a></li>
+</ol></li>
+<li><a href="#s4-the-rules-that-save-you">4. The rules that save you from ε-δ</a>
+</li>
+<li><a href="#s5-the-intermediate-value-theorem">5. The intermediate value theorem</a>
+</li>
+<li><a href="#s6-the-proof-worth-7-9">6. The proof (worth 7–9 exam points)</a>
+<ol>
+<li><a href="#proof-a">Proof A: the intermediate value theorem</a></li>
+</ol></li>
+<li><a href="#s7-using-the-theorem-worked-examples">7. Using the theorem: worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: a root of $x^5-3x+1$</a></li>
+<li><a href="#we-2">Worked example 2: sums of continuous functions (Proposition 3.50, p. 155)</a></li>
+<li><a href="#we-3">Worked example 3: a seam (Übung 3.54, p. 157)</a></li>
+</ol></li>
+<li><a href="#s8-your-turn">8. Your turn</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (ε-δ by hand)</a></li>
+<li><a href="#ex-2">Exercise 2 (the checklist, no ε-δ)</a></li>
+<li><a href="#ex-3">Exercise 3 (IVT, exam-style)</a></li>
+<li><a href="#ex-4">Exercise 4 (Figalli FS26, MC3)</a></li>
+<li><a href="#ex-5">Exercise 5 (Felder FS23, fixed point)</a></li>
+<li><a href="#bonus">Bonus (Übung 3.59, p. 160, and Übung 3.61)</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. For wonder</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) write down the ε-δ definition of continuity and its negation from memory, (2) prove a simple function continuous and a jump discontinuous, (3) decide continuity of a built-up function using the rules instead of ε-δ, and (4) <strong>state and prove the intermediate value theorem</strong>. Point (4) is worth 7–9 points in the exam on its own.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p149">p. 149–151</a>, Definitions 3.37 and 3.39:</strong> bounded functions, and monotone / strictly monotone (<em>monoton wachsend/fallend</em>).</li>
+      <li><strong><a class="pl" href="script.html#p153">p. 153</a>, Definition 3.45:</strong> the ε-δ definition of continuity (<em>Stetigkeit</em>).</li>
+      <li><strong><a class="pl" href="script.html#p154">p. 154</a>, Beispiel 3.47:</strong> worked ε-δ proofs for constants, $ax$, $|x|$, and the failure at the floor function.</li>
+      <li><strong><a class="pl" href="script.html#p155">p. 155–156</a>, Proposition 3.50 and Korollar 3.51:</strong> sums and products of continuous functions are continuous, so every polynomial is continuous.</li>
+      <li><strong><a class="pl" href="script.html#p156">p. 156</a>, Proposition 3.52:</strong> a composition of continuous functions is continuous. <em><a class="pl" href="script.html#p157">p. 157</a>, Übung 3.53:</em> quotients too, where the denominator has no zero.</li>
+      <li><strong><a class="pl" href="script.html#p159">p. 159</a>, Satz 3.58:</strong> the intermediate value theorem (<em>Zwischenwertsatz</em>), with the proof we do in <a class="xl" href="#s6-the-proof-worth-7-9">section 6</a>.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+“State and prove the intermediate value theorem” is literally an exam question: Einsiedler's mock exam HS21 #5 (7 points) and Kobel-Keller HS24 #15 (9 points, with a published marking scheme worth studying). It's also the standard tool for “show this equation has a solution” (Felder FS23, Kobel-Keller HS24 MC) and for the fixed-point exercise in your Exercise 5. Continuity itself appears in nearly every multiple-choice block, for example FS26 MC3, which is your Exercise 4.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-6-5">Recap of <a class="xl" href="lesson-06.html">lesson 6</a> (5 min)</h3>
+<ul>
+  <li><strong>$\sup X$</strong> (for $X\neq\emptyset$ bounded above) exists by completeness: (1) an upper bound, (2′) for every $\varepsilon&gt;0$ some $x\in X$ has $x&gt;\sup X-\varepsilon$.</li>
+  <li><strong>Max</strong> exists exactly when $\sup X\in X$.</li>
+  <li><strong>Archimedes:</strong> for every $\varepsilon&gt;0$ there is $n$ with $\frac1n&lt;\varepsilon$. <strong>$\mathbb Q$ is dense:</strong> a fraction in every gap. <strong>Nested closed intervals</strong> have a common point, so $\mathbb R$ is uncountable.</li>
+</ul>
+<ol class="gq">
+  <li><p>$\sup\{x: x^2&lt;3\}$? Is it a maximum?</p>
+  <details><summary>Answer</summary><div><p>$\sqrt3$, not attained (the set is $(-\sqrt3,\sqrt3)$), so no maximum.</p></div></details></li>
+  <li><p>Which of the two sup properties does “no number $t&lt;s$ is an upper bound” express?</p>
+  <details><summary>Answer</summary><div><p>(2), “least”, in its negated-bound form; (2′) is the ε-version of the same thing. Today's main proof uses (1) in one case and (2) in the other.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>continuous (at a point / everywhere)</td><td>stetig (in einem Punkt / auf ganz $D$)</td></tr>
+    <tr><td>discontinuous, point of discontinuity</td><td>unstetig, Unstetigkeitsstelle</td></tr>
+    <tr><td>jump</td><td>Sprung</td></tr>
+    <tr><td>domain (of definition)</td><td>Definitionsbereich $D$</td></tr>
+    <tr><td>zero (of a function), set of zeros</td><td>Nullstelle, Nullstellenmenge</td></tr>
+    <tr><td>bounded function</td><td>beschränkte Funktion</td></tr>
+    <tr><td>monotonically increasing / decreasing</td><td>monoton wachsend / fallend</td></tr>
+    <tr><td>strictly monotone</td><td>streng monoton</td></tr>
+    <tr><td>composition $g\circ f$</td><td>Verknüpfung, Komposition</td></tr>
+    <tr><td>restriction $f|_{D'}$</td><td>Einschränkung</td></tr>
+    <tr><td>intermediate value theorem</td><td>Zwischenwertsatz</td></tr>
+    <tr><td>fixed point</td><td>Fixpunkt</td></tr>
+    <tr><td>without loss of generality</td><td>ohne Beschränkung der Allgemeinheit (oBdA)</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-road-with">1. The story: the road with no gaps</h2>
+<div class="story">
+<p>A messenger rides the road from the village at $a$ to the fortress at $b$. The road's <em>height above sea level</em> at position $x$ is $f(x)$.</p>
+<p>The village lies at $100$ metres, the fortress at $800$. Somewhere along the way, did the messenger pass through exactly $450$ metres?</p>
+<p>If the road is <strong>unbroken</strong>, obviously yes. You cannot get from $100$ to $800$ without passing every height in between. But if the road has a <strong>cliff</strong>, where it jumps from $300$ straight to $600$, then the messenger might never stand at $450$.</p>
+<p>So the whole question is: what exactly does “unbroken” mean? Not “you can draw it without lifting the pen”, which is a statement about hands and paper, not about numbers. The formal answer is <em>continuity</em>, and it is a duel, like the ones in <a class="xl" href="lesson-01.html#s1-the-story-the-duel">lesson 1</a>.</p>
+<p><strong>The Doubter speaks first:</strong> “I want the height to stay within $\varepsilon$ of $f(x_0)$. Here is my $\varepsilon$, as small as I like.”</p>
+<p><strong>You answer:</strong> “Then stay within $\delta$ of the position $x_0$, and I guarantee it.”</p>
+<p>The road is unbroken at $x_0$ if you can always answer, however mean the Doubter's $\varepsilon$ is. At a cliff you cannot: once the Doubter's tolerance is small compared with the height of the cliff, every window around $x_0$, however narrow, still reaches over the edge.</p>
+</div>
+
+<h2 id="s2-the-definition">2. The definition</h2>
+<p>Let $D\subseteq\mathbb{R}$ be non-empty and $f:D\to\mathbb{R}$.</p>
+<div class="box">
+<p><strong>Continuity at a point (Definition 3.45, <a class="pl" href="script.html#p153">p. 153</a>).</strong> $f$ is continuous at $x_0\in D$ if</p>
+<div class="math-display">$$\forall\,\varepsilon>0\ \ \exists\,\delta>0\ \ \forall x\in D:\ \ |x-x_0|&lt;\delta\ \Longrightarrow\ |f(x)-f(x_0)|&lt;\varepsilon.$$</div>
+<p>$f$ is <strong>continuous</strong> (<em>stetig</em>) if it is continuous at every point of $D$:</p>
+<div class="math-display">$$\forall x_0\in D\ \forall\,\varepsilon>0\ \exists\,\delta>0\ \forall x\in D:\ |x-x_0|&lt;\delta\Rightarrow|f(x)-f(x_0)|&lt;\varepsilon.$$</div>
+</div>
+<p>Read the two absolute values as distances, the way you did in <a class="xl" href="lesson-05.html#s2-absolute-value-and-the-triangle">lesson 5</a>: $|x-x_0|$ is the distance along the road, and $|f(x)-f(x_0)|$ is the difference in height.</p>
+<figure style="margin:0" aria-label="Graph of a continuous function. A horizontal band of height two epsilon around f of x zero, and a vertical window of width two delta around x zero. Inside the window the curve stays inside the band.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)">
+<line x1="70" y1="250" x2="600" y2="250" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="90" y1="20" x2="90" y2="270" style="stroke:var(--muted)" stroke-width="1.5"/>
+<path d="M 110 230 C 200 215, 230 120, 310 110 S 430 60, 560 40" style="fill:none;stroke:var(--accent)" stroke-width="3"/>
+<rect x="90" y="68" width="510" height="84" style="fill:var(--accent-soft);opacity:.75"/>
+<rect x="262" y="20" width="96" height="230" style="fill:var(--story);opacity:.75"/>
+<path d="M 110 230 C 200 215, 230 120, 310 110 S 430 60, 560 40" style="fill:none;stroke:var(--accent)" stroke-width="3"/>
+<line x1="90" y1="68" x2="600" y2="68" style="stroke:var(--exam-edge)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<line x1="90" y1="152" x2="600" y2="152" style="stroke:var(--exam-edge)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<line x1="262" y1="20" x2="262" y2="250" style="stroke:var(--story-edge)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<line x1="358" y1="20" x2="358" y2="250" style="stroke:var(--story-edge)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="310" cy="110" r="5.5" style="fill:var(--accent)"/>
+<line x1="310" y1="250" x2="310" y2="110" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="90" y1="110" x2="310" y2="110" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="310" y="272" text-anchor="middle" style="fill:var(--ink);font-size:17px">x₀</text>
+<text x="262" y="286" text-anchor="middle" style="fill:var(--story-edge);font-size:15px">x₀−δ</text>
+<text x="358" y="286" text-anchor="middle" style="fill:var(--story-edge);font-size:15px">x₀+δ</text>
+<text x="80" y="115" text-anchor="end" style="fill:var(--ink);font-size:17px">f(x₀)</text>
+<text x="80" y="73" text-anchor="end" style="fill:var(--exam-edge);font-size:15px">+ε</text>
+<text x="80" y="157" text-anchor="end" style="fill:var(--exam-edge);font-size:15px">−ε</text>
+<text x="596" y="86" text-anchor="end" style="fill:var(--exam-edge);font-size:15px">the ε-band</text>
+<text x="372" y="36" text-anchor="start" style="fill:var(--story-edge);font-size:15px">the δ-window</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The $\varepsilon$-$\delta$ game at $x_0$. The Doubter picks the horizontal band (height $\pm\varepsilon$). You must answer with a vertical window (width $\pm\delta$) narrow enough that the whole piece of curve above it stays inside the band. The Doubter picks the band height first; you choose the window width knowing it.</figcaption>
+</figure>
+<p><strong>The order of the quantifiers is everything.</strong> Read it as a game played in this order:</p>
+<ol>
+  <li>A point $x_0$ is fixed.</li>
+  <li>The Doubter picks $\varepsilon&gt;0$ (how close the heights must be).</li>
+  <li><em>Knowing $\varepsilon$</em>, you pick $\delta&gt;0$ (how close the positions must be).</li>
+  <li>The Doubter tests any $x\in D$ within $\delta$ of $x_0$. You win if $f(x)$ is always within $\varepsilon$ of $f(x_0)$.</li>
+</ol>
+<p>So <strong>$\delta$ is allowed to depend on $\varepsilon$ and on $x_0$.</strong> That's why $\delta$ is written after $\varepsilon$. In practice you always do the algebra first and read off which $\delta$ works. (If a single $\delta$ works for all $x_0$ at once, the function is called <em>uniformly</em> continuous, <em>gleichmässig stetig</em>. That's <a class="xl" href="lesson-08.html">lesson 8</a>.)</p>
+
+<h3 id="the-negation-which-you-need">The negation, which you need for “not continuous”</h3>
+<p>Negate it with the <a class="xl" href="lesson-01.html#s3-negation-switching-sides">lesson 1</a> rules: swap $\forall$ and $\exists$, and negate the inside. The negation of “$P\Rightarrow Q$” is “$P$ and not $Q$”.</p>
+<div class="box">
+<p><strong>$f$ is <em>not</em> continuous at $x_0$</strong> if</p>
+<div class="math-display">$$\exists\,\varepsilon>0\ \ \forall\,\delta>0\ \ \exists x\in D:\ \ |x-x_0|&lt;\delta\ \ \text{and}\ \ |f(x)-f(x_0)|\ge\varepsilon.$$</div>
+<p><em>Read aloud:</em> “there is one bad tolerance $\varepsilon$ such that, however small the window $\delta$, some point inside the window has a height that misses by at least $\varepsilon$.”</p>
+</div>
+<p><strong>Recipe for a discontinuity proof:</strong> name <em>one</em> $\varepsilon$ (usually half the jump), let $\delta&gt;0$ be arbitrary, and construct an explicit $x$ inside the window with $|f(x)-f(x_0)|\ge\varepsilon$. It's the same shape as the “not open” proofs in <a class="xl" href="lesson-05.html#3-8-worked-examples-with">lesson 5</a>.</p>
+<figure style="margin:0" aria-label="The floor function drawn as steps. Around the point x equals 1 a narrow vertical window is drawn, but points just left of 1 have value 0, which lies outside the epsilon band around 1.">
+<svg viewBox="0 0 640 225" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)">
+<line x1="60" y1="190" x2="600" y2="190" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="120" y1="20" x2="120" y2="215" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="10" y1="195" x2="116" y2="195" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="10" cy="195" r="5" style="fill:var(--accent)"/>
+<circle cx="120" cy="195" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="120" y1="150" x2="226" y2="150" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="120" cy="150" r="5" style="fill:var(--accent)"/>
+<circle cx="230" cy="150" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="230" y1="105" x2="336" y2="105" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="230" cy="105" r="5" style="fill:var(--accent)"/>
+<circle cx="340" cy="105" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="340" y1="60" x2="446" y2="60" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="340" cy="60" r="5" style="fill:var(--accent)"/>
+<circle cx="450" cy="60" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<rect x="120" y="87" width="480" height="36" style="fill:var(--accent-soft);opacity:.8"/>
+<line x1="10" y1="195" x2="116" y2="195" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="10" cy="195" r="5" style="fill:var(--accent)"/>
+<circle cx="120" cy="195" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="120" y1="150" x2="226" y2="150" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="120" cy="150" r="5" style="fill:var(--accent)"/>
+<circle cx="230" cy="150" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="230" y1="105" x2="336" y2="105" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="230" cy="105" r="5" style="fill:var(--accent)"/>
+<circle cx="340" cy="105" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<line x1="340" y1="60" x2="446" y2="60" style="stroke:var(--accent)" stroke-width="3"/>
+<circle cx="340" cy="60" r="5" style="fill:var(--accent)"/>
+<circle cx="450" cy="60" r="5" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+<rect x="196" y="20" width="68" height="170" style="fill:var(--story);opacity:.6"/>
+<line x1="196" y1="20" x2="196" y2="190" style="stroke:var(--story-edge)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<line x1="264" y1="20" x2="264" y2="190" style="stroke:var(--story-edge)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="212" cy="150" r="6" style="fill:var(--story-edge);stroke:var(--bg)" stroke-width="1.5"/>
+<text x="230" y="212" text-anchor="middle" style="fill:var(--ink);font-size:17px">1</text>
+<text x="212" y="142" text-anchor="middle" style="fill:var(--story-edge);font-size:15px">escapes</text>
+<text x="590" y="76" text-anchor="end" style="fill:var(--exam-edge);font-size:15px">ε-band, ε = ½</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Why $\lfloor\cdot\rfloor$ is not continuous at $x_0=1$: take $\varepsilon=\tfrac12$. However small $\delta$ is, the window contains points just left of $1$, where the value drops to $0$ and leaves the band (the marked point).</figcaption>
+</figure>
+
+<h2 id="s3-worked-proofs-beispiel-3-47">3. Worked ε-δ proofs (Beispiel 3.47, <a class="pl" href="script.html#p154">p. 154</a>)</h2>
+<p>Do these by hand a few times, then never again: <a class="xl" href="#s4-the-rules-that-save-you">section 4</a> gives you the rules that make ε-δ work unnecessary for anything built from the standard pieces. The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the proof.</p>
+<div class="box">
+<h3 id="a-constants-are-continuous">(a) Constants are continuous</h3>
+<p>Let $f(x)=c$ for all $x$.</p>
+<ol class="gq">
+  <li><p>Let $x_0\in\mathbb{R}$ and $\varepsilon&gt;0$. Compute $|f(x)-f(x_0)|$. Which $\delta$ works?</p>
+  <details><summary>Answer</summary><div><p>$|f(x)-f(x_0)|=|c-c|=0&lt;\varepsilon$ for every $x$, so any $\delta&gt;0$ works, for example $\delta=1$. Here $\delta$ depends on nothing at all. <span class="qed">∎</span></p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="b-is-continuous">(b) $f(x)=ax$ is continuous</h3>
+<ol class="gq">
+  <li><p>What if $a=0$?</p>
+  <details><summary>Answer</summary><div><p>Then $f$ is a constant, so (a) applies.</p></div></details></li>
+  <li><p>Let $a\neq0$, $x_0\in\mathbb{R}$ and $\varepsilon&gt;0$. Work backwards: write $|f(x)-f(x_0)|$ in terms of $|x-x_0|$.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;=|ax-ax_0|\\&amp;=|a|\,|x-x_0|\end{aligned}.$$</span></p></div></details></li>
+  <li><p>Which $\delta$ makes this smaller than $\varepsilon$? Check it.</p>
+  <details><summary>Answer</summary><div><p>We want $|x-x_0|&lt;\tfrac{\varepsilon}{|a|}$, so choose $\delta=\tfrac{\varepsilon}{|a|}&gt;0$. Then $|x-x_0|&lt;\delta$ gives <span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;=|a|\,|x-x_0|\\&amp;&lt;|a|\cdot\tfrac{\varepsilon}{|a|}\\&amp;=\varepsilon\end{aligned}.$$</span><span class="qed">∎</span></p></div></details></li>
+</ol>
+<p>This is the standard move: <em>compute $|f(x)-f(x_0)|$, bound it by something times $|x-x_0|$, then divide $\varepsilon$ by that something.</em> Here $\delta$ depends on $\varepsilon$ but not on $x_0$.</p>
+</div>
+<div class="box">
+<h3 id="c-is-continuous">(c) $f(x)=|x|$ is continuous</h3>
+<ol class="gq">
+  <li><p>Let $x_0\in\mathbb{R}$ and $\varepsilon&gt;0$. Which inequality from <a class="xl" href="lesson-05.html#s2-absolute-value-and-the-triangle">lesson 5</a> compares $\big||x|-|x_0|\big|$ with $|x-x_0|$, and which $\delta$ does it give?</p>
+  <details><summary>Answer</summary><div><p>The reverse triangle inequality, $\big||u|-|v|\big|\le|u-v|$. Choose $\delta=\varepsilon$. For $|x-x_0|&lt;\delta$: <span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;=\big||x|-|x_0|\big|\\&amp;\le |x-x_0|\\&amp;&lt;\delta\\&amp;=\varepsilon\end{aligned}.$$</span><span class="qed">∎</span></p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="d-is-continuous-bung-3">(d) $f(x)=x^2$ is continuous (Übung 3.48, <a class="pl" href="script.html#p155">p. 155</a>)</h3>
+<p>This one is instructive, because $\delta$ must depend on $x_0$ as well. <strong>First with numbers, at $x_0=3$.</strong></p>
+<ol class="gq">
+  <li><p>Factor $|x^2-9|$. Which factor does $\delta$ control, and what is the problem with the other one?</p>
+  <details><summary>Answer</summary><div><p>$|x^2-9|=|x-3|\cdot|x+3|$. The first factor is what $\delta$ controls. The second depends on $x$ and could be huge if $x$ were far away.</p></div></details></li>
+  <li><p>How do you bound $|x+3|$ by a constant?</p>
+  <details><summary>Answer</summary><div><p>First promise $|x-3|&lt;1$. Then $2&lt;x&lt;4$, hence $|x+3|&lt;7$, and so $|x^2-9|&lt;7\,|x-3|$.</p></div></details></li>
+  <li><p>Which $\delta$ guarantees both $|x-3|&lt;1$ and $7|x-3|&lt;\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>$\delta=\min\left(1,\tfrac{\varepsilon}{7}\right)$: a number below the smaller bound is below both. (Two guards at a gate: you must satisfy the stricter one.)</p></div></details></li>
+  <li><p>Why is the $1$ in the minimum necessary?</p>
+  <details><summary>Answer</summary><div><p>For $\varepsilon=100$, $\tfrac\varepsilon7\approx14.3$ alone would allow $x=17$. Then $|x+3|=20$, not $&lt;7$, and $|x^2-9|=280&gt;100$: the proof breaks. The $\min$ caps $\delta$ at $1$ and prevents that.</p></div></details></li>
+  <li><p><strong>Now a general $x_0$.</strong> Let $\varepsilon&gt;0$. If $|x-x_0|&lt;1$, bound $|x+x_0|$.</p>
+  <details><summary>Answer</summary><div><p>$|x|&lt;|x_0|+1$, so $|x+x_0|\le|x|+|x_0|&lt;2|x_0|+1$ (triangle inequality).</p></div></details></li>
+  <li><p>Choose $\delta$ and finish.</p>
+  <details><summary>Answer</summary><div><p>$\delta=\min\left(1,\ \frac{\varepsilon}{2|x_0|+1}\right)&gt;0$. Then $|x-x_0|&lt;\delta$ gives $|x-x_0|&lt;1$, so the bound holds, and <span class="math-display" style="display:block">$$\begin{aligned}|x^2-x_0^2|&amp;=|x-x_0|\,|x+x_0|\\&amp;&lt;\frac{\varepsilon}{2|x_0|+1}\cdot(2|x_0|+1)=\varepsilon.\end{aligned}$$</span> <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p>The $\min(1,\dots)$ trick is the same one from <a class="xl" href="lesson-05.html#example-c-is-neither">lesson 5</a>. Use it whenever a factor needs bounding before you can divide by it. Note that $\delta$ shrinks as $|x_0|$ grows: far out, the parabola is steep.</p>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-min">minimum of two δs</a></p>
+</div>
+<div class="box">
+<h3 id="e-the-floor-function-is">(e) The floor function is <em>not</em> continuous at any $n\in\mathbb{Z}$</h3>
+<p>Let $n\in\mathbb{Z}$, so $f(n)=\lfloor n\rfloor=n$.</p>
+<ol class="gq">
+  <li><p>What does the negation from <a class="xl" href="#s2-the-definition">section 2</a> ask you to produce, and which $\varepsilon$ do you name?</p>
+  <details><summary>Answer</summary><div><p>One $\varepsilon&gt;0$ such that for every $\delta&gt;0$ there is an $x$ with $|x-n|&lt;\delta$ and $|f(x)-f(n)|\ge\varepsilon$. The jump has height $1$, so name half of it: $\varepsilon=\tfrac12$.</p></div></details></li>
+  <li><p>Let $\delta&gt;0$ be arbitrary. Which $x$ do you take, and why the $\min$?</p>
+  <details><summary>Answer</summary><div><p>$x=n-\tfrac12\min(\delta,1)$. Then $|x-n|=\tfrac12\min(\delta,1)&lt;\delta$, so $x$ is in the window. And $n-1&lt;x&lt;n$, because $0&lt;\tfrac12\min(\delta,1)\le\tfrac12&lt;1$, so $\lfloor x\rfloor=n-1$. The $\min$ is needed because $\delta$ might be huge, and $x$ must still land in $(n-1,n)$.</p></div></details></li>
+  <li><p>Finish.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(n)|&amp;=|(n-1)-n|\\&amp;=1\\&amp;\ge \tfrac12\\&amp;=\varepsilon\end{aligned}.$$</span>So the negation holds, and $f$ is not continuous at $n$. <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-neg">the negation recipe</a></p>
+</div>
+
+<h2 id="s4-the-rules-that-save-you">4. The rules that save you from ε-δ</h2>
+<p>Nobody proves continuity of $\dfrac{x^3-2x}{x^2+1}$ with ε and δ. You build it from pieces instead. All four statements below are proved in the script; the sum proof is Worked example 2 in <a class="xl" href="#s7-using-the-theorem-worked-examples">section 7</a>.</p>
+<div class="box">
+<p><strong>Proposition 3.50 (<a class="pl" href="script.html#p155">p. 155</a>).</strong> If $f_1,f_2:D\to\mathbb{R}$ are continuous at $x_0$, then so are $f_1+f_2$, $f_1\cdot f_2$ and $af_1$ for $a\in\mathbb{R}$. So the continuous functions $C(D)$ form a vector subspace of all functions.</p>
+<p><strong>Korollar 3.51 (<a class="pl" href="script.html#p156">p. 156</a>).</strong> Every polynomial is continuous on $\mathbb{R}$. <em>Why:</em> $x\mapsto x$ and the constants are continuous by <a class="xl" href="#s3-worked-proofs-beispiel-3-47">section 3</a>, and induction with Proposition 3.50 builds every $\sum_{k=0}^n a_kx^k$.</p>
+<p><strong>Proposition 3.52 (<a class="pl" href="script.html#p156">p. 156</a>).</strong> If $f$ is continuous at $x_0$ and $g$ is continuous at $f(x_0)$, then $g\circ f$ is continuous at $x_0$. <em>Why:</em> chain the two games. Given $\varepsilon$, continuity of $g$ gives an $\eta&gt;0$; feed that $\eta$ as the “$\varepsilon$” into continuity of $f$ to get $\delta$.</p>
+<p><strong>Übung 3.53 (<a class="pl" href="script.html#p157">p. 157</a>).</strong> $x\mapsto\tfrac1x$ is continuous on $\mathbb{R}^\times=\mathbb{R}\setminus\{0\}$, hence $\tfrac{f}{g}$ is continuous wherever $f,g$ are continuous <strong>and $g$ has no zero</strong>.</p>
+</div>
+<div class="exam"><span class="label">Exam technique: the continuity checklist</span>
+<p>Asked whether a function is continuous? Work down this list:</p>
+<ol>
+  <li><strong>Is it built from polynomials, $|\cdot|$, $\sqrt{\ }$, $\sin$, $\cos$, $\exp$ by $+$, $\cdot$, $\div$ and $\circ$?</strong> Then it's continuous everywhere it's defined, by the rules above. Say which rule, and you're done. (For $\sqrt{\ }$ see Übung 3.48, <a class="pl" href="script.html#p155">p. 155</a>. The script defines $\exp$, $\sin$ and $\cos$ only later in the course and proves their continuity there; until then, only use polynomials, $|\cdot|$ and $\sqrt{\ }$ as building blocks.)</li>
+  <li><strong>Is there a division?</strong> Check the zeros of the denominator. Those points are the only candidates for trouble.</li>
+  <li><strong>Is it defined by cases (<em>Fallunterscheidung</em>)?</strong> Inside each piece use step 1. At the seam $b$, continuity holds exactly when the two formulas agree there: $f_1(b)=f_2(b)$ (Übung 3.54, <a class="pl" href="script.html#p157">p. 157</a>). That's where the exam puts its points.</li>
+  <li><strong>Is it a jump or something exotic</strong> (floor, the Dirichlet function)? Then prove discontinuity with the negation recipe: name $\varepsilon$, take arbitrary $\delta$, build $x$.</li>
+</ol></div>
+
+<h2 id="s5-the-intermediate-value-theorem">5. The intermediate value theorem</h2>
+<p>We say $c$ lies <strong>between</strong> $x_1$ and $x_2$ if $x_1\le c\le x_2$ or $x_2\le c\le x_1$ (so the order of the two endpoints doesn't matter).</p>
+<div class="box">
+<p><strong>Satz 3.58, Zwischenwertsatz (<a class="pl" href="script.html#p159">p. 159</a>).</strong> Let $I\subseteq\mathbb{R}$ be an interval, $f:I\to\mathbb{R}$ continuous, and $a,b\in I$. Then for every $c$ between $f(a)$ and $f(b)$ there is an $x$ between $a$ and $b$ with</p>
+<div class="math-display">$$f(x)=c.$$</div>
+</div>
+<figure style="margin:0" aria-label="A continuous curve from the point a, f of a up to b, f of b. A horizontal line at height c between f of a and f of b crosses the curve three times.">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)">
+<line x1="60" y1="240" x2="600" y2="240" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="100" y1="20" x2="100" y2="265" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="100" y1="140" x2="600" y2="140" style="stroke:var(--story-edge)" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M 150 210 C 220 230, 250 90, 320 150 S 430 170, 540 50" style="fill:none;stroke:var(--accent)" stroke-width="3"/>
+<circle cx="150" cy="210" r="5.5" style="fill:var(--accent)"/>
+<line x1="150" y1="240" x2="150" y2="210" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="540" cy="50" r="5.5" style="fill:var(--accent)"/>
+<line x1="540" y1="240" x2="540" y2="50" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="258" cy="140" r="5" style="fill:var(--story-edge)"/>
+<line x1="258" y1="140" x2="258" y2="240" style="stroke:var(--story-edge)" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="345" cy="140" r="5" style="fill:var(--story-edge)"/>
+<line x1="345" y1="140" x2="345" y2="240" style="stroke:var(--story-edge)" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="470" cy="140" r="5" style="fill:var(--story-edge)"/>
+<line x1="470" y1="140" x2="470" y2="240" style="stroke:var(--story-edge)" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="150" y="262" text-anchor="middle" style="fill:var(--ink);font-size:17px">a</text>
+<text x="540" y="262" text-anchor="middle" style="fill:var(--ink);font-size:17px">b</text>
+<text x="90" y="216" text-anchor="end" style="fill:var(--ink);font-size:17px">f(a)</text>
+<text x="90" y="56" text-anchor="end" style="fill:var(--ink);font-size:17px">f(b)</text>
+<text x="90" y="146" text-anchor="end" style="fill:var(--story-edge);font-size:17px">c</text>
+<text x="258" y="262" text-anchor="middle" style="fill:var(--story-edge);font-size:15px">x</text>
+<text x="596" y="30" text-anchor="end" style="fill:var(--story-edge);font-size:15px">level c, reached three times here</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The intermediate value theorem: a continuous curve from $f(a)$ to $f(b)$ cannot skip the level $c$ in between. It may cross several times; the theorem only promises at least one $x$.</figcaption>
+</figure>
+<p>Three warnings, all of which the exam likes:</p>
+<ul>
+  <li><strong>It gives existence, not uniqueness.</strong> There may be many such $x$, as in the picture.</li>
+  <li><strong>It needs an interval.</strong> On $D=[0,1]\cup[2,3]$ the statement fails: a function can be $0$ on the left piece and $1$ on the right one, continuously, and never take the value $\tfrac12$.</li>
+  <li><strong>It needs continuity on the whole stretch,</strong> not just at $a$ and $b$.</li>
+</ul>
+
+<h2 id="s6-the-proof-worth-7-9">6. The proof (worth 7–9 exam points)</h2>
+<p>This is the proof you must be able to reproduce. It is a direct payoff from <a class="xl" href="lesson-06.html#s4-the-supremum">lesson 6</a>: the supremum does all the work, so the theorem is really a consequence of completeness.</p>
+<div class="need"><span class="label">You'll need these (all from <a class="xl" href="lesson-06.html">lessons 6</a> and 7)</span>
+<ul>
+  <li><strong>Supremum, two properties</strong> (<a class="xl" href="lesson-06.html#s4-the-supremum">lesson 6</a>; Satz 2.59, <a class="pl" href="script.html#p105">p. 105–106</a>, says a non-empty set that is bounded above has one). $s=\sup X$ means (1) <em>upper bound</em>: $x\le s$ for every $x\in X$, and (2) <em>least</em>: no number $t&lt;s$ is an upper bound.</li>
+  <li><strong>Continuity at $x_0$</strong> (Definition 3.45, <a class="pl" href="script.html#p153">p. 153</a>): for every $\varepsilon&gt;0$ there is a $\delta&gt;0$ such that $|x-x_0|&lt;\delta$ implies $|f(x)-f(x_0)|&lt;\varepsilon$. As a picture: inside the $\delta$-window around $x_0$, the graph stays inside the $\varepsilon$-band around $f(x_0)$.</li>
+  <li><strong>Trichotomy</strong> (from the order axioms): for two real numbers exactly one of $&lt;$, $=$, $&gt;$ holds. So to prove $f(x_0)=c$ it is enough to rule out $f(x_0)&lt;c$ and $f(x_0)&gt;c$.</li>
+</ul></div>
+
+<h3 id="proof-a">Proof A: the intermediate value theorem</h3>
+<p><strong>The idea.</strong> Walk along the graph from the left and collect every spot where you are at or below the level $c$. The right-hand edge of that collection, $x_0=\sup X$, is where the curve must cross the line: if $f(x_0)$ were below $c$, the collection would reach further right (breaking “upper bound”); if above, it would end earlier (breaking “least”).</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>An existence claim with no formula:</strong> the tool is the supremum. So define a set, check it is non-empty and bounded, and take its sup.</li>
+  <li><strong>To show $f(x_0)=c$:</strong> rule out $f(x_0)&lt;c$ and $f(x_0)&gt;c$ (trichotomy). Each case is a contradiction with one sup property.</li>
+  <li><strong>Continuity is used with a chosen $\varepsilon$</strong>: the room available is the gap $|f(x_0)-c|$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Arrange the road so it starts below the level and ends above it.</p></div><div class="sp-formal"><p>Without loss of generality $a&lt;b$ and $f(a)\le f(b)$ (else use $-f$, $-c$, or swap $a,b$). If $c=f(a)$ or $c=f(b)$ we are done, so assume $f(a)&lt;c&lt;f(b)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Collect every spot at or below the level.</p></div><div class="sp-formal"><p>Let $X=\{x\in[a,b]: f(x)\le c\}$. Then $a\in X$, and $X$ is bounded above by $b$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Its right-hand edge is the candidate.</p></div><div class="sp-formal"><p>So $x_0=\sup X$ exists (completeness: a non-empty set that is bounded above has a supremum) and $a\le x_0\le b$. We show $f(x_0)=c$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If the road were still below the level there, it would stay below a little further right…</p></div><div class="sp-formal"><p><em>Case $f(x_0)&lt;c$.</em> Then $x_0&lt;b$. Continuity at $x_0$ with $\varepsilon=c-f(x_0)$ gives $\delta&gt;0$ with $|f(x)-f(x_0)|&lt;\varepsilon$ for $x\in[a,b]$, $|x-x_0|&lt;\delta$. Take $x=\min\left(b,x_0+\frac\delta2\right)&gt;x_0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>…so the collection reaches past its edge.</p></div><div class="sp-formal"><p>Then $f(x)&lt;f(x_0)+\varepsilon=c$, so $x\in X$ with $x&gt;x_0$, contradicting that $x_0$ is an upper bound of $X$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If the road were above the level there, it would be above it a little to the left too…</p></div><div class="sp-formal"><p><em>Case $f(x_0)&gt;c$.</em> Then $x_0&gt;a$. Continuity with $\varepsilon=f(x_0)-c$ gives $\delta&gt;0$; for $x\in(x_0-\delta,x_0]\cap[a,b]$ we get $f(x)&gt;f(x_0)-\varepsilon=c$, so $x\notin X$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>…so the collection already ended earlier.</p></div><div class="sp-formal"><p>Since $X\subseteq[a,x_0]$, every element of $X$ is $\le x_0-\delta$. So $x_0-\delta$ is an upper bound smaller than $x_0$, contradicting that $x_0$ is the least upper bound.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Only “exactly at the level” is left.</p></div><div class="sp-formal"><p>By trichotomy $f(x_0)=c$, with $x_0\in[a,b]$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-obda">reduce to one case (oBdA)</a> <a class="mvl" href="moves.html#m-sup">the supremum trick</a> <a class="mvl" href="moves.html#m-eps">continuity with ε = the gap</a> <a class="mvl" href="moves.html#m-least">contradict “least”</a></p>
+<p><strong>A run on real numbers.</strong> For $f(x)=x^2$ on $[0,2]$ with $c=2$: $X=[0,\sqrt2]$, $x_0=\sqrt2$. Pretend $x_0=1.2$: the gap is $2-1.44=0.56$, and $x=1.3$ has $1.69\le2$, so $1.3\in X$ beats the “upper bound” $1.2$. Pretend $x_0=1.6$: the gap is $0.56$, every $x\in(1.45,1.6]$ has $x^2&gt;2$, so $1.45$ is a smaller upper bound. Notice that this proof shows that $\sqrt2$ <em>exists</em>, using only completeness.</p>
+<figure style="margin:0" aria-label="The same curve with the set X of points where f is at most c marked on the horizontal axis as a thick segment from a. Its supremum x zero is marked with a vertical line, and the curve meets the level c exactly there.">
+<svg viewBox="0 0 640 290" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)">
+<line x1="60" y1="235" x2="600" y2="235" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="60" y1="130" x2="600" y2="130" style="stroke:var(--story-edge)" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M 140 205 C 230 215, 260 120, 350 130 S 470 60, 560 45" style="fill:none;stroke:var(--accent)" stroke-width="3"/>
+<line x1="140" y1="235" x2="338" y2="235" style="stroke:var(--exam-edge)" stroke-width="7"/>
+<line x1="338" y1="18" x2="338" y2="250" style="stroke:var(--story-edge)" stroke-width="2"/>
+<circle cx="338" cy="130" r="5.5" style="fill:var(--story-edge)"/>
+<text x="140" y="258" text-anchor="middle" style="fill:var(--ink);font-size:17px">a</text>
+<text x="560" y="258" text-anchor="middle" style="fill:var(--ink);font-size:17px">b</text>
+<text x="338" y="276" text-anchor="middle" style="fill:var(--story-edge);font-size:17px">x₀ = sup X</text>
+<text x="250" y="226" text-anchor="middle" style="fill:var(--exam-edge);font-size:15px">X = { x : f(x) ≤ c }</text>
+<text x="62" y="122" text-anchor="start" style="fill:var(--story-edge);font-size:15px">c</text>
+<text x="596" y="40" text-anchor="end" style="fill:var(--muted);font-size:15px">right of x₀: f &gt; c</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The set $X$ of $x\in[a,b]$ with $f(x)\le c$ (thick segment) and its supremum $x_0$. A value below $c$ at $x_0$ would let $X$ reach further right; a value above $c$ would let a smaller bound work.</figcaption>
+</figure>
+<details><summary>The proof in one piece, with every detail</summary><div>
+<div class="box">
+<p><strong>Setup (oBdA).</strong> We may assume $a&lt;b$ and $f(a)\le f(b)$. <em>Why we may:</em> if $f(a)&gt;f(b)$, apply the result to $-f$ and the value $-c$; a solution of $-f(x)=-c$ is a solution of $f(x)=c$. Similarly, if $a&gt;b$ we swap the names of $a$ and $b$, and if $a=b$ then $c=f(a)$ and $x=a$ works. This "oBdA" sentence earns a mark in the Kobel-Keller scheme, so write it.</p>
+<p>So let $c\in[f(a),f(b)]$. If $c=f(a)$ take $x=a$; if $c=f(b)$ take $x=b$. So assume $f(a)&lt;c&lt;f(b)$.</p>
+<p><strong>The set.</strong> Define</p>
+<div class="math-display">$$X=\{\,x\in[a,b]\ :\ f(x)\le c\,\}.$$</div>
+<ul>
+  <li>$X\neq\emptyset$, because $f(a)&lt;c$, so $a\in X$.</li>
+  <li>$X\subseteq[a,b]$, so $X$ is bounded above by $b$.</li>
+</ul>
+<p>By completeness (<a class="xl" href="lesson-06.html#proof-a">lesson 6</a>: a non-empty set that is bounded above has a supremum) the supremum $x_0=\sup X$ exists, and $a\le x_0\le b$. <strong>Claim: $f(x_0)=c$.</strong> We rule out the two other cases.</p>
+<p><strong>Case 1: $f(x_0)&lt;c$ is impossible.</strong></p>
+<ul>
+  <li>Since $f(b)&gt;c&gt;f(x_0)$, we have $x_0\neq b$, so $x_0&lt;b$.</li>
+  <li>Apply continuity at $x_0$ with $\varepsilon=c-f(x_0)&gt;0$: there is $\delta&gt;0$ such that $|x-x_0|&lt;\delta$ implies $|f(x)-f(x_0)|&lt;\varepsilon$ for all $x\in[a,b]$.</li>
+  <li>Because $x_0&lt;b$, we can pick an $x\in(x_0,\,x_0+\delta)\cap[a,b]$ (for instance $x=\min\left(b,\ x_0+\tfrac{\delta}{2}\right)$).</li>
+  <li>For this $x$: <div class="math-display">$$\begin{aligned}f(x)&amp;=f(x_0)+\big(f(x)-f(x_0)\big)\\&amp;&lt;f(x_0)+\varepsilon\\&amp;=c\end{aligned},$$</div>since $\varepsilon=c-f(x_0)$.</li>
+  <li>So $f(x)\le c$, which means $x\in X$. But $x&gt;x_0=\sup X$, contradicting that $x_0$ is an upper bound of $X$.</li>
+</ul>
+<p><strong>Case 2: $f(x_0)&gt;c$ is impossible.</strong></p>
+<ul>
+  <li>Since $f(a)&lt;c&lt;f(x_0)$, we have $x_0\neq a$, so $x_0&gt;a$.</li>
+  <li>Apply continuity at $x_0$ with $\varepsilon=f(x_0)-c&gt;0$, giving some $\delta&gt;0$ as above.</li>
+  <li>For every $x\in(x_0-\delta,\,x_0)\cap[a,b]$: <div class="math-display">$$\begin{aligned}f(x)&amp;=f(x_0)+\big(f(x)-f(x_0)\big)\\&amp;&gt;f(x_0)-\varepsilon\\&amp;=c\end{aligned}.$$</div></li>
+  <li>So no such $x$ lies in $X$, that is, $(x_0-\delta,x_0)\cap[a,b]\cap X=\emptyset$. Also $x_0\notin X$, because $f(x_0)&gt;c$. Together with $X\subseteq[a,x_0]$ (as $x_0$ is an upper bound), every element of $X$ is $\le x_0-\delta$.</li>
+  <li>So $x_0-\delta$ is an upper bound of $X$ smaller than $x_0$, contradicting $x_0=\sup X$ being the <em>least</em> upper bound.</li>
+</ul>
+<p>By trichotomy, $f(x_0)=c$, and $x_0\in[a,b]$. <span class="qed">∎</span></p>
+</div>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<p>Six beats. If you can say these in order, you can rebuild the proof:</p>
+<ol>
+  <li><strong>oBdA</strong> $a&lt;b$, $f(a)\le f(b)$; handle $c=f(a)$ and $c=f(b)$ separately.</li>
+  <li><strong>Define</strong> $X=\{x\in[a,b]: f(x)\le c\}$.</li>
+  <li><strong>Non-empty and bounded</strong> ⇒ $x_0=\sup X$ exists (completeness).</li>
+  <li><strong>If $f(x_0)&lt;c$:</strong> continuity with $\varepsilon=c-f(x_0)$ pushes a point of $X$ to the right of $x_0$. Contradiction with "upper bound".</li>
+  <li><strong>If $f(x_0)&gt;c$:</strong> continuity with $\varepsilon=f(x_0)-c$ makes $x_0-\delta$ an upper bound. Contradiction with "least".</li>
+  <li><strong>Hence</strong> $f(x_0)=c$.</li>
+</ol>
+<p>The two cases are mirror images: in both you choose $\varepsilon$ as the <em>gap</em> $|f(x_0)-c|$, which is exactly the amount of room you have. Remember that one idea and the rest follows.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why do we need $x_0&lt;b$ in the first case?</p>
+  <details><summary>Answer</summary><div><p>To find a point of $[a,b]$ to the right of $x_0$. It holds because $f(b)&gt;c&gt;f(x_0)$, so $x_0\neq b$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Which sup property does each case contradict?</p>
+  <details><summary>Answer</summary><div><p>$f(x_0)&lt;c$: a point of $X$ right of $x_0$ breaks (1), “upper bound”. $f(x_0)&gt;c$: the smaller upper bound $x_0-\delta$ breaks (2), “least”.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Where is it used that the domain is an interval?</p>
+  <details><summary>Answer</summary><div><p>$X\subseteq[a,b]\subseteq I$, and $f$ is defined and continuous on all of $[a,b]$, so the points $x$ near $x_0$ that we pick are in the domain. On $[0,1]\cup[2,3]$ the point $\min(b,x_0+\frac\delta2)$ could fall in the gap.</p></div></details></li>
+  <li><p><strong>Rung 4 (8 min).</strong> Write the whole proof from the six beats alone.</p></li>
+</ol></div>
+
+<h2 id="s7-using-the-theorem-worked-examples">7. Using the theorem: worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: a root of $x^5-3x+1$</h3>
+<ol class="gq">
+  <li><p>Why is $f(x)=x^5-3x+1$ continuous?</p>
+  <details><summary>Answer</summary><div><p>It's a polynomial, and polynomials are continuous (<a class="xl" href="#s4-the-rules-that-save-you">section 4</a>).</p></div></details></li>
+  <li><p>Find two points with opposite signs.</p>
+  <details><summary>Answer</summary><div><p>$f(0)=1&gt;0$ and $f(1)=1-3+1=-1&lt;0$.</p></div></details></li>
+  <li><p>Conclude, and state the general pattern.</p>
+  <details><summary>Answer</summary><div><p>$0$ lies between $f(1)$ and $f(0)$, so by the IVT some $x\in(0,1)$ has $f(x)=0$. <span class="qed">∎</span> Pattern: for “$g(x)=h(x)$ has a solution”, set $f=g-h$, check continuity, find opposite signs.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-2">Worked example 2: sums of continuous functions (Proposition 3.50, <a class="pl" href="script.html#p155">p. 155</a>)</h3>
+<p>If $f_1,f_2$ are continuous at $x_0$, so is $f_1+f_2$.</p>
+<ol class="gq">
+  <li><p>Let $\varepsilon&gt;0$. How much room do you give each function, and what do you get?</p>
+  <details><summary>Answer</summary><div><p>$\frac\varepsilon2$ each: $\delta_1&gt;0$ with $|f_1(x)-f_1(x_0)|&lt;\frac\varepsilon2$ for $|x-x_0|&lt;\delta_1$, and $\delta_2$ likewise for $f_2$. Allowed, because the definition holds for every positive number.</p></div></details></li>
+  <li><p>Which single $\delta$ makes both hold?</p>
+  <details><summary>Answer</summary><div><p>$\delta=\min(\delta_1,\delta_2)&gt;0$.</p></div></details></li>
+  <li><p>Finish with the triangle inequality.</p>
+  <details><summary>Answer</summary><div><p>For $|x-x_0|&lt;\delta$: <span class="math-display" style="display:block">$$\begin{aligned}&amp;|(f_1+f_2)(x)-(f_1+f_2)(x_0)|\\&amp;\le|f_1(x)-f_1(x_0)|+|f_2(x)-f_2(x_0)|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2=\varepsilon.\end{aligned}$$</span> <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-min">minimum of two δs</a></p>
+</div>
+<div class="box">
+<h3 id="we-3">Worked example 3: a seam (Übung 3.54, <a class="pl" href="script.html#p157">p. 157</a>)</h3>
+<p>For which $\alpha\in\mathbb{R}$ is $f(x)=x^2+1$ for $x&lt;2$, $f(x)=\alpha x$ for $x\ge2$, continuous on $\mathbb{R}$?</p>
+<ol class="gq">
+  <li><p>Where is continuity automatic?</p>
+  <details><summary>Answer</summary><div><p>On $(-\infty,2)$ and $(2,\infty)$: there $f$ agrees locally with a polynomial (checklist step 1).</p></div></details></li>
+  <li><p>What must happen at the seam $x_0=2$?</p>
+  <details><summary>Answer</summary><div><p>The formulas must agree: $2^2+1=5$ and $2\alpha$. So $\alpha=\frac52$.</p></div></details></li>
+  <li><p>Check $\alpha=\frac52$ with ε-δ.</p>
+  <details><summary>Answer</summary><div><p>Left: $|x^2+1-5|=|x-2||x+2|$, which is $&lt;5|x-2|$ when $|x-2|&lt;1$, so $\delta_1=\min(1,\frac\varepsilon5)$. Right: $|\frac52x-5|=\frac52|x-2|$, so $\delta_2=\frac{2\varepsilon}5$. Take $\delta=\min(\delta_1,\delta_2)$.</p></div></details></li>
+  <li><p>What if $\alpha\neq\frac52$?</p>
+  <details><summary>Answer</summary><div><p>A jump at $2$: the negation recipe with $\varepsilon=\frac12|5-2\alpha|$ proves discontinuity.</p></div></details></li>
+</ol>
+</div>
+
+<p><strong>Why it's cool.</strong> The intermediate value theorem is an existence machine: it proves that $x^5-3x+1$ has a root between $0$ and $1$ without ever computing it. Its proof is the first place where completeness does real work: on $\mathbb Q$ the theorem is false ($x^2-2$ changes sign but has no rational root).</p>
+
+<h2 id="s8-your-turn">8. Your turn</h2>
+<div class="box">
+  <h3 id="ex-1">Exercise 1 (ε-δ by hand)</h3>
+  <p>(a) Prove that $f(x)=3x-4$ is continuous at every $x_0\in\mathbb{R}$.<br>
+  (b) Prove that $f(x)=x^2+x$ is continuous at $x_0=1$. <em>Hint:</em> factor $f(x)-f(1)$ and use $\min(1,\dots)$.<br>
+  (c) Prove that $f:\mathbb{R}\to\mathbb{R}$ with $f(x)=1$ for $x\ge0$ and $f(x)=0$ for $x&lt;0$ is not continuous at $0$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> <em>Frame:</em> first line “Let $x_0\in\mathbb{R}$ and $\varepsilon&gt;0$”, then “Choose $\delta=\dots$”, last line “so $|f(x)-f(x_0)|&lt;\varepsilon$”. The gap: find $\delta$ by computing $|f(x)-f(x_0)|$ first. <em>Moves:</em> <a class="mvl" href="moves.html#m-eps">continuity with a chosen ε</a>.</p>
+  <p>Let $x_0\in\mathbb{R}$ and $\varepsilon&gt;0$. Then <span class="math-display" style="display:block">$$|f(x)-f(x_0)|=|3x-3x_0|=3|x-x_0|.$$</span>Choose $\delta=\tfrac\varepsilon3&gt;0$. If $|x-x_0|&lt;\delta$, then <span class="math-display" style="display:block">$$|f(x)-f(x_0)|=3|x-x_0|&lt;3\cdot\tfrac\varepsilon3=\varepsilon.$$</span><span class="qed">∎</span></p>
+  <p><strong>(b)</strong> <em>Frame:</em> as in (a), at $x_0=1$; the gap is a factor that must be bounded before you divide by it. <em>Moves:</em> <a class="mvl" href="moves.html#m-min">minimum of two δs</a>.</p>
+  <p>$f(1)=2$. Factor:</p>
+  <div class="math-display">$$\begin{aligned}|f(x)-f(1)|&amp;=|x^2+x-2|\\&amp;=|x-1|\,|x+2|\end{aligned}.$$</div>
+  <ul>
+    <li>Tame $|x+2|$: if $|x-1|&lt;1$, then $0&lt;x&lt;2$, so $|x+2|&lt;4$.</li>
+    <li>Choose $\delta=\min\left(1,\ \tfrac\varepsilon4\right)&gt;0$.</li>
+    <li>Then $|x-1|&lt;\delta$ gives $|f(x)-f(1)|=|x-1||x+2|$, and this is $&lt;\tfrac\varepsilon4\cdot4=\varepsilon$. <span class="qed">∎</span></li>
+  </ul>
+  <p><strong>(c)</strong> <em>Frame:</em> the negation: “Let $\varepsilon=\dots$. Let $\delta&gt;0$ be arbitrary. Take $x=\dots$”, ending with “$|x-0|&lt;\delta$ and $|f(x)-f(0)|\ge\varepsilon$”. <em>Moves:</em> <a class="mvl" href="moves.html#m-neg">the negation recipe</a>.</p>
+  <p>$f(0)=1$. <strong>Choose $\varepsilon=\tfrac12$.</strong> Let $\delta&gt;0$ be arbitrary and set $x=-\tfrac\delta2$. Then $|x-0|=\tfrac\delta2&lt;\delta$, and $x&lt;0$, so $f(x)=0$ and</p>
+  <div class="math-display">$$|f(x)-f(0)|=|0-1|=1\ge\tfrac12=\varepsilon.$$</div>
+  <p>So the negation holds and $f$ is not continuous at $0$. <span class="qed">∎</span> (Any $\varepsilon\le1$ works.)</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-2">Exercise 2 (the checklist, no ε-δ)</h3>
+  <p>Where is each function continuous? Name the rule you use.</p>
+  <p>(a) $\dfrac{x^3-2x}{x^2+1}$ &nbsp; (b) $\dfrac{1}{x^2-4}$ &nbsp; (c) $\big|x^2-3\big|$ &nbsp; (d) $f(x)=\begin{cases}\frac{x^2-1}{x-1},&x\neq1\\ 2,&x=1\end{cases}$</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(a) Continuous on all of $\mathbb{R}$.</strong> Numerator and denominator are polynomials, hence continuous. The denominator $x^2+1\ge1$ is never $0$, so the quotient rule (a quotient of continuous functions is continuous where the denominator is not $0$) applies everywhere.</li>
+    <li><strong>(b) Continuous on $\mathbb{R}\setminus\{-2,2\}$.</strong> Same reasoning, but $x^2-4=0$ exactly at $x=\pm2$. At those points the function isn't defined at all, so the question of continuity doesn't arise there; on its domain it is continuous.</li>
+    <li><strong>(c) Continuous on $\mathbb{R}$.</strong> It's the composition $g\circ h$ with $h(x)=x^2-3$ (a polynomial) and $g(y)=|y|$ (continuous by <a class="xl" href="#s3-worked-proofs-beispiel-3-47">section 3</a>(c)). A composition of continuous functions is continuous (<a class="xl" href="#s4-the-rules-that-save-you">section 4</a>).</li>
+    <li><strong>(d) Continuous on $\mathbb{R}$.</strong> For $x\neq1$, $\tfrac{x^2-1}{x-1}=\tfrac{(x-1)(x+1)}{x-1}=x+1$, and the cancellation is legitimate because $x-1\neq0$. So $f$ agrees with the polynomial $x+1$ away from $1$, and at $x=1$ the defined value is $2=1+1$, which matches. Hence $f(x)=x+1$ for all $x$, a polynomial. <em>If the value at $1$ had been anything other than $2$, there would be a jump there.</em></li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-3">Exercise 3 (IVT, exam-style)</h3>
+  <p>(a) Show that $x^3+x=10$ has a real solution.<br>
+  (b) <em>Übung 3.60, <a class="pl" href="script.html#p160">p. 160</a>.</em> Show that every real polynomial of <strong>odd</strong> degree has a real zero. <em>Hint:</em> for $f(x)=a_nx^n+\dots$ with $a_n&gt;0$ and $n$ odd, argue that $f$ is positive for large $x$ and negative for large negative $x$; write $f(x)=x^n\left(a_n+\tfrac{a_{n-1}}{x}+\dots+\tfrac{a_0}{x^n}\right)$.<br>
+  (c) Give a continuous $f:(0,1)\to\mathbb{R}$ that takes the values $-1$ and $1$ but never $0$ — or explain why none exists.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> <em>Frame:</em> for “an equation has a solution”: move everything to one side, check continuity, find two points with opposite signs, apply the intermediate value theorem.</p>
+  <p>Let $f(x)=x^3+x-10$, continuous as a polynomial. $f(0)=-10&lt;0$ and $f(3)=27+3-10=20&gt;0$. Since $0$ lies between $f(0)$ and $f(3)$, the IVT gives an $x\in(0,3)$ with $f(x)=0$, that is, $x^3+x=10$. <span class="qed">∎</span></p>
+  <p><strong>(b)</strong> <em>Frame:</em> same pattern as (a), but the two points must be found for a general polynomial: show $f(R)&gt;0$ and $f(-R)&lt;0$ for one large $R$. <em>Moves:</em> <a class="mvl" href="moves.html#m-obda">reduce to one case (oBdA)</a>.</p>
+  <p>Let $f(x)=\sum_{j=0}^n a_jx^j$ with $n$ odd and $a_n\neq0$. We may assume $a_n&gt;0$ (otherwise use $-f$, which has the same zeros). For $x\neq0$ write</p>
+  <div class="math-display">$$\begin{aligned}f(x)&amp;=x^n\left(a_n+\frac{a_{n-1}}{x}+\dots+\frac{a_0}{x^n}\right)\\&amp;=x^n\big(a_n+r(x)\big)\end{aligned}.$$</div>
+  <ul>
+    <li>Each term of $r(x)$ tends to $0$ in size as $|x|$ grows. Concretely, for $|x|\ge R:=1+\tfrac{2}{a_n}\sum_{j&lt;n}|a_j|$ we get $|r(x)|\le\tfrac{1}{|x|}\sum_{j&lt;n}|a_j|\le\tfrac{a_n}{2}$, using $|x|\ge1$ so that $|x|^{n-j}\ge|x|$.</li>
+    <li>Hence $a_n+r(x)\ge\tfrac{a_n}2&gt;0$ for $|x|\ge R$.</li>
+    <li>Since $n$ is odd, $x^n&gt;0$ for $x=R$ and $x^n&lt;0$ for $x=-R$. So $f(R)&gt;0$ and $f(-R)&lt;0$.</li>
+    <li>$f$ is continuous, and $0$ lies between $f(-R)$ and $f(R)$, so the IVT gives a zero in $(-R,R)$. <span class="qed">∎</span></li>
+  </ul>
+  <p><em>Why “odd” is essential:</em> $x^2+1$ has even degree and no real zero.</p>
+  <p><strong>(c)</strong> No such $f$ exists. $(0,1)$ is an interval, so if $f(p)=-1$ and $f(q)=1$ for some $p,q\in(0,1)$, the IVT applies with $a=p$, $b=q$ and $c=0$ (which lies between $-1$ and $1$) and produces an $x$ between $p$ and $q$ — hence in $(0,1)$ — with $f(x)=0$. The theorem doesn't need a <em>closed</em> interval, only an interval.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-4">Exercise 4 (Figalli FS26, MC3)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Let $f:(0,1)\to\mathbb{R}$ be continuous. Which statement is <strong>always</strong> true?</p>
+  <p>(A) $f$ is bounded. &nbsp; (B) $f$ attains a maximum on $(0,1)$. &nbsp; (C) $f((0,1))$ is an interval. &nbsp; (D) $f$ is uniformly continuous on $(0,1)$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer C.</strong></p>
+  <ul>
+    <li><strong>(A) False.</strong> $f(x)=\tfrac1x$ is continuous on $(0,1)$ (quotient rule, denominator never $0$ there) but unbounded.</li>
+    <li><strong>(B) False.</strong> $f(x)=x$ on $(0,1)$ attains no maximum: its supremum is $1$, which is not in the set, exactly as in <a class="xl" href="lesson-06.html#we-1">lesson 6</a>. Maxima are guaranteed on <em>closed, bounded</em> intervals, which is <a class="xl" href="lesson-08.html#s4-promise-two-maximum-and-minimum">lesson 8</a>.</li>
+    <li><strong>(C) True.</strong> This is the IVT in disguise: if $u&lt;w$ are both in the image, say $u=f(p)$ and $w=f(q)$, then every $c$ between them is $f(x)$ for some $x$ between $p$ and $q$, so $c$ is in the image too. A subset of $\mathbb{R}$ containing everything between any two of its points is an interval (a script exercise, <a class="pl" href="script.html#p115">p. 115</a>).</li>
+    <li><strong>(D) False.</strong> $f(x)=\tfrac1x$ again: near $0$ the function changes arbitrarily fast, so no single $\delta$ works for all points at once. Uniform continuity <em>is</em> guaranteed on closed bounded intervals (<a class="xl" href="lesson-08.html#s6-heine-s-theorem-and-its">lesson 8</a>).</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-5">Exercise 5 (Felder FS23, fixed point)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a></p>
+  <p>Let $I=[a,b]$ and let $f:I\to I$ be continuous (so $f$ maps $I$ into itself). Show that $f$ has a <strong>fixed point</strong>: some $x\in I$ with $f(x)=x$. <em>Hint:</em> apply the IVT to $g(x)=f(x)-x$.</p>
+  <p>Then show by example that this fails for $I=\mathbb{R}$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> a fixed point is a zero of $g(x)=f(x)-x$, so the pattern of Exercise 3(a) applies: continuity of $g$, opposite signs at $a$ and $b$, then the intermediate value theorem. <em>Moves:</em> <a class="mvl" href="moves.html#m-helper">a helper function</a>.</p>
+  <p>Define $g:[a,b]\to\mathbb{R}$ by $g(x)=f(x)-x$. It is continuous, as a difference of continuous functions ($f$ and $x\mapsto x$; sums and multiples of continuous functions are continuous).</p>
+  <ul>
+    <li>If $f(a)=a$ or $f(b)=b$ we are done, so assume neither.</li>
+    <li>Since $f$ maps into $I=[a,b]$, we have $a\le f(a)\le b$. Combined with $f(a)\neq a$: $f(a)&gt;a$, so $g(a)=f(a)-a&gt;0$.</li>
+    <li>Likewise $f(b)\le b$ and $f(b)\neq b$ give $f(b)&lt;b$, so $g(b)=f(b)-b&lt;0$.</li>
+    <li>$0$ lies between $g(b)&lt;0$ and $g(a)&gt;0$, so by the IVT there is an $x\in[a,b]$ with $g(x)=0$, that is, $f(x)=x$. <span class="qed">∎</span></li>
+  </ul>
+  <p><strong>Failure on $\mathbb{R}$:</strong> $f(x)=x+1$ is continuous and maps $\mathbb{R}$ into $\mathbb{R}$, but $f(x)-x=1\neq0$ for every $x$. The proof used the two endpoints, which $\mathbb{R}$ doesn't have.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="bonus">Bonus (Übung 3.59, <a class="pl" href="script.html#p160">p. 160</a>, and Übung 3.61)</h3>
+  <p>(a) You fly from Zürich to Lima. Show that you must cross the equator.<br>
+  (b) Let $I$ be a non-empty interval and $f:I\to\mathbb{R}$ continuous and injective. Show that $f$ is strictly monotone. <em>Hint:</em> suppose not, find $x&lt;y&lt;z$ with $f(y)$ not between $f(x)$ and $f(z)$, and apply the IVT twice to produce two points with the same value.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> Let $\varphi(t)$ be your latitude at time $t$, for $t$ from departure $t_0$ to arrival $t_1$. Flight is continuous in time, so $\varphi$ is continuous. Zürich has $\varphi(t_0)\approx+47^\circ&gt;0$ and Lima has $\varphi(t_1)\approx-12^\circ&lt;0$. The value $0$ lies between them, so by the IVT there is a time $t$ with $\varphi(t)=0$: you are on the equator. <span class="qed">∎</span></p>
+  <p><strong>(b)</strong> <em>Frame:</em> contradiction: “Suppose $f$ is not strictly monotone”, and the last line is “so $f(u)=f(v)$ with $u\neq v$, contradicting injectivity”. <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>.</p>
+  <p>Suppose $f$ is continuous and injective on the interval $I$ but not strictly monotone. Then there are $x&lt;y&lt;z$ in $I$ with $f(y)$ <em>not</em> strictly between $f(x)$ and $f(z)$. (If for all such triples $f(y)$ were strictly between, $f$ would be strictly monotone. That step is a script exercise, <a class="pl" href="script.html#p151">p. 151</a>; take it as given here.) Injectivity makes all three values distinct, so one of these holds:</p>
+  <ul>
+    <li><strong>$f(y)&gt;f(x)$ and $f(y)&gt;f(z)$.</strong> Pick $c$ with $\max(f(x),f(z))&lt;c&lt;f(y)$. The IVT on $[x,y]$ gives $u\in(x,y)$ with $f(u)=c$, and on $[y,z]$ gives $v\in(y,z)$ with $f(v)=c$. But $u&lt;y&lt;v$, so $u\neq v$ while $f(u)=f(v)$, contradicting injectivity.</li>
+    <li><strong>$f(y)&lt;f(x)$ and $f(y)&lt;f(z)$.</strong> The same argument with $f(y)&lt;c&lt;\min(f(x),f(z))$.</li>
+  </ul>
+  <p>So $f$ is strictly monotone. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> the core is Exercise 1 (3), Exercise 2 (4), Exercise 3(a) (1), Exercise 4 (1) and Exercise 5 (1), which makes 10. If you have 8 of 10, you're done. Exercises 3(b), 3(c) and the Bonus are proof practice and don't count against you.</p>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>The theorem that waited 2000 years.</strong> “A continuous curve from below a line to above it must cross the line” was used as obvious for centuries; even Euclid's very first construction quietly assumes that two circles meet. Bolzano wrote the first real proof in 1817, with the explicit aim of removing geometric intuition from analysis. He could not make it fully rigorous, because nobody had yet defined the real numbers; the missing ingredient was completeness, your axiom 16. Dedekind and Cantor finally constructed $\mathbb{R}$ in 1872. So the gap between “obvious” and “proved” was filled by exactly the thing you learned last lesson.</p>
+<p><strong>A trick for parties.</strong> At any moment there are two points <em>exactly opposite each other</em> on the equator with the same temperature. Let $T(\theta)$ be the temperature at angle $\theta$ and set $g(\theta)=T(\theta)-T(\theta+180^\circ)$. Then $g(0)=-g(180^\circ)$, so $g$ takes a value and its negative; by the IVT it is $0$ somewhere. That point and its antipode match. A similar IVT argument shows that a four-legged table on an uneven (but continuous) floor can always be made to stand steady by rotating it.</p>
+<p><strong>Where your intuition is wrong.</strong> Continuity is <em>much</em> weaker than “drawable”. There is a function continuous at every irrational number and discontinuous at every rational one (Thomae's function). Weierstrass shocked his contemporaries in 1872 with a function that is continuous everywhere and differentiable nowhere: an unbroken road that is jagged at every single point. You can't draw it, but it exists, and it's built as a sum of infinitely many ever smaller, ever faster waves (<a class="xl" href="lesson-15.html#the-recipe-for-does-converge">lesson 15</a>, uniform convergence).</p>
+
+<h2 id="s10-what-we-skipped">10. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>$F(D)$ as a vector space and ring, Übungen 3.35–3.36, 3.38 (<a class="pl" href="script.html#p149">p. 149</a>).</strong> Low priority, more LinAlg than Analysis.</li>
+  <li><strong>Monotonicity in detail: Beispiel 3.40, Übungen 3.41–3.43 (<a class="pl" href="script.html#p150">p. 150–151</a>).</strong> Low priority, but know the definitions; they return in <a class="xl" href="lesson-08.html#s2-inverse-functions-and-roots">lesson 8</a> (inverse functions) and <a class="xl" href="lesson-11.html#s3-monotone-sequences">lesson 11</a> (monotone sequences).</li>
+  <li><strong>The full ε-δ proof for products in Proposition 3.50 (<a class="pl" href="script.html#p155">p. 155–156</a>).</strong> Medium priority: the statement is what you use. The proof's trick is adding and subtracting $f_1(x_0)f_2(x)$.</li>
+  <li><strong>Übung 3.55, the Dirichlet function (<a class="pl" href="script.html#p157">p. 157</a>):</strong> $1_{\mathbb{Q}}$ is continuous at <em>no</em> point. Medium priority, a favourite counterexample; it returns in <a class="xl" href="lesson-09.html#s5-the-glittering-field-a-function">lesson 9</a> as a non-integrable function.</li>
+  <li><strong>Übung 3.56 (<a class="pl" href="script.html#p157">p. 157</a>):</strong> $f$ is continuous ⟺ preimages of open sets are open. Medium priority, the topological definition; it returns in <a class="xl" href="lesson-10.html#s3-metrics-distance-between-anything">lesson 10</a> with metric spaces.</li>
+  <li><strong>Übung 3.57 (<a class="pl" href="script.html#p158">p. 158</a>):</strong> continuous functions are locally bounded and locally keep their sign. Medium priority, occasionally handy in proofs.</li>
+  <li><strong>Complex-valued functions, §3.5.1 (<a class="pl" href="script.html#p158">p. 158</a>).</strong> Low priority: everything works the same with $|\cdot|$ on $\mathbb{C}$, except monotonicity, which needs an order.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-08.html">lesson 8</a>, continuous functions on compact intervals. That's where $[a,b]$ starts doing magic: bounded, maximum attained, uniformly continuous. It also answers the three “False” options in Exercise 4.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-06.html">← Lesson 6: The Lowest Ceiling</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-08.html">Lesson 8: The Walled Garden →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

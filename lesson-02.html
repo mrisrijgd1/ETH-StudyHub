@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Messenger Guild</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-01.html">← Lesson 1</a>
+<a href="lesson-03.html">Lesson 3 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 2 of 26</span>
+  <h1>The Messenger Guild</h1>
+  <p class="lead">Functions between sets: injective, surjective, bijective, composition, image and preimage. Plus the two proof templates you'll use for the rest of the course.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-1-5">Recap of lesson 1 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-messenger-guild">1. The story: the Messenger Guild</a>
+</li>
+<li><a href="#s2-injective-surjective-bijective">2. Injective, surjective, bijective</a>
+<ol>
+<li><a href="#the-two-proof-templates-learn">The two proof templates (learn these like choreography)</a></li>
+<li><a href="#proof-a">Proof A: if $g\circ f$ is injective, then $f$ is injective (a relay that never merges letters; Figalli FS26, A1(a), 2 points)</a></li>
+</ol></li>
+<li><a href="#s3-composition-what-a-relay-tells">3. Composition: what a relay tells you</a>
+</li>
+<li><a href="#s4-image-and-preimage">4. Image and preimage</a>
+</li>
+<li><a href="#s5-worked-examples">5. Worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: a relay can hide a collision (FS26 A1(c) style)</a></li>
+<li><a href="#we-2">Worked example 2: image versus intersection, on two points</a></li>
+</ol></li>
+<li><a href="#s6-exercises">6. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Einsiedler HS21, #9, true/false block, 3 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (Figalli FS26, A1(b) and (d))</a></li>
+<li><a href="#bonus">Bonus (Einsiedler HS21 mock exam, #7)</a></li>
+</ol></li>
+<li><a href="#s7-for-wonder-optional-5-min">7. For wonder</a>
+</li>
+<li><a href="#s8-what-we-skipped">8. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>write the injective and surjective templates from memory</strong>, (2) prove “$g\circ f$ injective ⇒ $f$ injective”, (3) kill a false claim with a small counterexample, and (4) say which of $\cup$, $\cap$ the image and the preimage respect.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p22">p. 22–28</a>, Section 1.4.2 (maps):</strong> the image (Definition 1.31, <a class="pl" href="script.html#p23">p. 23</a>), injective, surjective, bijective (Definition 1.33, <a class="pl" href="script.html#p25">p. 25</a>), squaring (Beispiel 1.35, <a class="pl" href="script.html#p26">p. 26</a>), the inverse map (Definition 1.36, <a class="pl" href="script.html#p26">p. 26</a>), composition (Lemma 1.40, <a class="pl" href="script.html#p27">p. 27</a>, Wichtige Übung 1.41, <a class="pl" href="script.html#p28">p. 28</a>).</li>
+      <li><strong><a class="pl" href="script.html#p33">p. 33</a>, Section 1.4.4, Definition 1.48 and Wichtige Übung 1.49:</strong> image and preimage of sets, and which set operations they respect.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+This topic appeared in 5 of the 9 old exams. That includes a full true/false block in Einsiedler's HS21 exam (#9) and in his HS21 mock exam (#7), and a 7-point question in Figalli's FS26 exam (A1). Proof A and Exercises 1 and 2 are those exam questions.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-1-5">Recap of <a class="xl" href="lesson-01.html">lesson 1</a> (5 min)</h3>
+<ul>
+  <li><strong>$\forall$:</strong> the Doubter chooses. <strong>$\exists$:</strong> the Champion chooses. Read left to right; later players react to earlier moves.</li>
+  <li><strong>Order matters:</strong> $\forall x\,\exists y$ (pointwise, $y$ may depend on $x$) is weaker than $\exists y\,\forall x$ (uniform, one $y$ for all).</li>
+  <li><strong>Negation:</strong> swap every $\forall$ and $\exists$, keep order and ranges, negate the final condition.</li>
+  <li><strong>Empty set:</strong> “$\forall x\in\emptyset$” is always true.</li>
+</ul>
+<ol class="gq">
+  <li><p>Negate $\forall y\in Y\ \exists x\in X:\ f(x)=y$.</p>
+  <details><summary>Answer</summary><div><p>$\exists y\in Y\ \forall x\in X:\ f(x)\neq y$. (You'll see in a minute that this says “$f$ is not surjective”.)</p></div></details></li>
+  <li><p>True or false: $\exists y\in\mathbb N\ \forall x\in\mathbb N:\ y\le x$.</p>
+  <details><summary>Answer</summary><div><p>True: $y=1$ (with $\mathbb N=\{1,2,3,\dots\}$). The Champion commits first, but $1$ survives every $x$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>function, map</td><td>Funktion, Abbildung</td></tr>
+    <tr><td>domain / codomain</td><td>Definitionsbereich / Zielbereich, Wertebereich</td></tr>
+    <tr><td>injective / injection</td><td>injektiv / Injektion</td></tr>
+    <tr><td>surjective / surjection</td><td>surjektiv / Surjektion</td></tr>
+    <tr><td>bijective / bijection</td><td>bijektiv / Bijektion</td></tr>
+    <tr><td>inverse map</td><td>Umkehrabbildung</td></tr>
+    <tr><td>composition $g\circ f$</td><td>Verknüpfung, Komposition</td></tr>
+    <tr><td>image $f(A)$</td><td>Bild $f(A)$</td></tr>
+    <tr><td>preimage $f^{-1}(B)$</td><td>Urbild $f^{-1}(B)$</td></tr>
+    <tr><td>power set</td><td>Potenzmenge</td></tr>
+    <tr><td>counterexample</td><td>Gegenbeispiel</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-messenger-guild">1. The story: the Messenger Guild</h2>
+<div class="story">
+<p>In the kingdom there is a <strong>Messenger Guild</strong>. It connects a village of senders, $X$, to a city of houses, $Y$. The guild's one law: <em>every sender sends exactly one letter, to exactly one house.</em> That law is what makes it a function $f:X\to Y$. Some houses may get many letters, some none. That's allowed.</p>
+<p>The guild masters care about two kinds of quality. <strong>No collisions:</strong> no house ever receives letters from two different senders. <strong>No forgotten houses:</strong> every house receives at least one letter. A guild with both is a perfect pairing, and only then can a <strong>return guild</strong> send every letter back to its unique sender.</p>
+<p>Two guilds can also work as a <strong>relay</strong>: the first carries the letter from the village $X$ to the city $Y$, the second carries it on from $Y$ to a far city $Z$.</p>
+</div>
+<p>In maths: no collisions is <strong>injective</strong>, no forgotten houses is <strong>surjective</strong>, both is <strong>bijective</strong>, the return guild is the <strong>inverse map</strong> $f^{-1}:Y\to X$ (Definition 1.36), and the relay is the <strong>composition</strong> $g\circ f$, $(g\circ f)(x)=g(f(x))$.</p>
+
+<h2 id="s2-injective-surjective-bijective">2. Injective, surjective, bijective</h2>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="script.html#p25">p. 25</a>).</strong> Let $f:X\to Y$.</p>
+<ul>
+  <li>$f$ is <strong>injective</strong> if <span class="math-display" style="display:block">$$\forall x_1,x_2\in X:\ f(x_1)=f(x_2)\Rightarrow x_1=x_2.$$</span><em>(If two letters arrive at the same house, they came from the same sender.)</em></li>
+  <li>$f$ is <strong>surjective</strong> if $\forall y\in Y\ \exists x\in X:\ f(x)=y$. <em>(A duel from <a class="xl" href="lesson-01.html#s1-the-story-the-duel">lesson 1</a>: the Doubter picks a house, the guild must name a sender who reaches it.)</em></li>
+  <li>$f$ is <strong>bijective</strong> if it is injective and surjective.</li>
+</ul>
+</div>
+<p>Squaring shows that these properties depend on the <em>sets</em>, not just the formula (Beispiel 1.35, <a class="pl" href="script.html#p26">p. 26</a>):</p>
+<ul>
+  <li>$x\mapsto x^2$ from $\mathbb R_{\ge0}$ to $\mathbb R$ is injective, but not surjective ($-1$ gets no letter).</li>
+  <li>$x\mapsto x^2$ from $\mathbb R$ to $\mathbb R_{\ge0}$ is surjective, but not injective ($1$ and $-1$ both write to house $1$).</li>
+  <li>$x\mapsto x^2$ from $\mathbb R$ to $\mathbb R$ is neither. From $\mathbb R_{\ge0}$ to $\mathbb R_{\ge0}$ it is bijective, with inverse $\sqrt{\phantom{x}}$.</li>
+</ul>
+
+<h3 id="the-two-proof-templates-learn">The two proof templates (learn these like choreography)</h3>
+<p>Almost every proof about injective or surjective uses one of these two shapes. On the exam, the first and the last line already earn points.</p>
+<div class="frame"><span class="label">What the definitions force</span>
+<ul>
+  <li><strong>To show $f$ is injective:</strong> “Let $x_1,x_2\in X$ with $f(x_1)=f(x_2)$.” … (use what you know) … “Hence $x_1=x_2$, so $f$ is injective.”</li>
+  <li><strong>To show $f$ is surjective:</strong> “Let $y\in Y$.” … “Set $x:=\dots$” (or: “by assumption there is $x$ with …”) … “Then $f(x)=y$, so $f$ is surjective.”</li>
+  <li><strong>To show a claim is false:</strong> one concrete counterexample, checked in one line. Small sets like $X=\{1,2\}$ or simple functions like constants, $x^2$ and $e^x$ are usually enough.</li>
+</ul></div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-inj">the injectivity template</a> <a class="mvl" href="moves.html#m-surj">the surjectivity template</a> <a class="mvl" href="moves.html#m-counter">a small counterexample</a></p>
+
+<h3 id="proof-a">Proof A: if $g\circ f$ is injective, then $f$ is injective (a relay that never merges letters; Figalli FS26, A1(a), 2 points)</h3>
+<div class="box">
+<p><strong>Claim.</strong> Let $f:X\to Y$ and $g:Y\to Z$. If $g\circ f$ is injective, then $f$ is injective.</p>
+</div>
+<p><strong>The idea.</strong> If the first guild $f$ had merged two letters at one house, the second guild would carry both on to the same far house, so the relay would merge them too. So assume two letters meet under $f$ and push them through $g$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>We want “$f$ injective”</strong>, so the first line is the injectivity template: “Let $x_1,x_2\in X$ with $f(x_1)=f(x_2)$”, and the last is “hence $x_1=x_2$”.</li>
+  <li><strong>We know “$g\circ f$ injective”</strong>: it turns $g(f(x_1))=g(f(x_2))$ into $x_1=x_2$. So we need to get to that equation.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two letters land at the same house in $Y$.</p></div><div class="sp-formal"><p>Let $x_1,x_2\in X$ with $f(x_1)=f(x_2)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The second guild carries both on, to the same far house.</p></div><div class="sp-formal"><p>Applying $g$ to both sides gives $g(f(x_1))=g(f(x_2))$, that is $(g\circ f)(x_1)=(g\circ f)(x_2)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The relay never merges letters, so they came from one sender.</p></div><div class="sp-formal"><p>Since $g\circ f$ is injective, $x_1=x_2$. Hence $f$ is injective. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-inj">the injectivity template</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $x_1,x_2\in X$ with $f(x_1)=f(x_2)$. Then $(g\circ f)(x_1)=g(f(x_1))$ and this equals $g(f(x_2))=(g\circ f)(x_2)$. Since $g\circ f$ is injective, $x_1=x_2$. Hence $f$ is injective. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Template line 1</strong> for the function you want injective ($f$).</li>
+  <li><strong>Apply $g$</strong> to both sides.</li>
+  <li><strong>Use the assumption</strong> ($g\circ f$ injective) and write template line 3.</li>
+</ol>
+<p>In short: “template, apply $g$, template”. We never needed $g$ to be injective, and Worked example 1 shows that it doesn't have to be.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why may we apply $g$ to both sides of $f(x_1)=f(x_2)$?</p>
+  <details><summary>Answer</summary><div><p>$g$ is a function: equal inputs give equal outputs (each sender sends exactly one letter). No property of $g$ beyond being a function is needed.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Which function's template do you start with: $f$'s, $g$'s or $g\circ f$'s? Why?</p>
+  <details><summary>Answer</summary><div><p>$f$'s, because the claim is “$f$ is injective”. The first line is always the template of what you want to <em>show</em>; what you <em>know</em> is used in the middle.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<h2 id="s3-composition-what-a-relay-tells">3. Composition: what a relay tells you</h2>
+<div class="box">
+<p><strong>Lemma 1.40 (<a class="pl" href="script.html#p27">p. 27</a>).</strong> Let $f:X\to Y$ and $g:Y\to Z$. If $f$ and $g$ are injective (surjective, bijective), so is $g\circ f$.</p>
+<p><strong>Backwards (Wichtige Übung 1.41, <a class="pl" href="script.html#p28">p. 28</a>):</strong> if $g\circ f$ is <strong>injective</strong>, the <em>first</em> guild $f$ is injective (Proof A). If $g\circ f$ is <strong>surjective</strong>, the <em>last</em> guild $g$ is surjective (Exercise 2): every far house gets a letter, and it was $g$ that delivered it.</p>
+</div>
+
+<h2 id="s4-image-and-preimage">4. Image and preimage</h2>
+<div class="box">
+<p><strong>Definitions (<a class="pl" href="script.html#p23">p. 23</a> and <a class="pl" href="script.html#p33">p. 33</a>).</strong> For $A\subseteq X$ and $B\subseteq Y$:</p>
+<ul>
+  <li><strong>Image:</strong> $f(A)=\{f(x)\mid x\in A\}$. <em>(Senders in $A$ sent letters. Which houses got one?)</em></li>
+  <li><strong>Preimage:</strong> $f^{-1}(B)=\{x\in X\mid f(x)\in B\}$. <em>(Here is a street $B$ of houses. Which senders wrote to it?)</em></li>
+</ul>
+</div>
+<p><strong>A classic trap:</strong> the preimage makes sense for <em>every</em> function. The symbol $f^{-1}(B)$ does not mean that $f$ is invertible.</p>
+<p><strong>The one rule worth remembering (Wichtige Übung 1.49, <a class="pl" href="script.html#p33">p. 33</a>):</strong></p>
+<ul>
+  <li><strong>The preimage respects everything:</strong> $f^{-1}(B_1\cup B_2)=f^{-1}(B_1)\cup f^{-1}(B_2)$, the same with $\cap$, and $f^{-1}(Y\setminus B)=X\setminus f^{-1}(B)$. The reason: each sender sends just one letter, so “did you write to $B_1$ or to $B_2$?” is a clean yes or no for each sender.</li>
+  <li><strong>The image respects only $\cup$:</strong> $f(A_1\cup A_2)=f(A_1)\cup f(A_2)$, but only $f(A_1\cap A_2)\subseteq f(A_1)\cap f(A_2)$. Two <em>different</em> senders, one in $A_1$ and one in $A_2$, can collide at the same house. That house is in $f(A_1)\cap f(A_2)$ but maybe not in $f(A_1\cap A_2)$. <strong>Injectivity removes collisions, so then $\cap$ works too.</strong></li>
+</ul>
+
+<h2 id="s5-worked-examples">5. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: a relay can hide a collision (FS26 A1(c) style)</h3>
+<p>Show that “$g\circ f$ injective” does <em>not</em> force $g$ to be injective.</p>
+<ol class="gq">
+  <li><p>What do you need to produce?</p>
+  <details><summary>Answer</summary><div><p>A counterexample: concrete $f,g$ with $g\circ f$ injective but $g$ not injective.</p></div></details></li>
+  <li><p>Take $g(x)=x^2$, which has a collision at $1$ and $-1$. How can $f$ make sure that collision is never used?</p>
+  <details><summary>Answer</summary><div><p>Let $f$ deliver only to positive houses, for example $f(x)=e^x$.</p></div></details></li>
+  <li><p>Check both properties in one line each.</p>
+  <details><summary>Answer</summary><div><p>$(g\circ f)(x)=e^{2x}$ is strictly increasing, so injective. But $g(1)=g(-1)=1$, so $g$ is not injective.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-2">Worked example 2: image versus intersection, on two points</h3>
+<p>Let $X=\{1,2\}$, $Y=\{0\}$, $f$ constant $0$, $A_1=\{1\}$, $A_2=\{2\}$.</p>
+<ol class="gq">
+  <li><p>Compute $f(A_1\cap A_2)$ and $f(A_1)\cap f(A_2)$.</p>
+  <details><summary>Answer</summary><div><p>$A_1\cap A_2=\emptyset$, so $f(A_1\cap A_2)=\emptyset$. But $f(A_1)=f(A_2)=\{0\}$, so $f(A_1)\cap f(A_2)=\{0\}$.</p></div></details></li>
+  <li><p>Is $f$ surjective? Is it injective? What does this example teach?</p>
+  <details><summary>Answer</summary><div><p>Surjective yes ($0$ is reached), injective no ($f(1)=f(2)$). So surjectivity does not save $f(A_1\cap A_2)=f(A_1)\cap f(A_2)$; only injectivity does. Keep this two-point example for true/false questions (you'll need it in Exercise 1).</p></div></details></li>
+</ol>
+</div>
+
+<p><strong>Why it's cool.</strong> Bijections are how mathematicians compare the sizes of infinite sets: <a class="xl" href="lesson-03.html#s4-finite-and-countable-sets">lesson 3</a> uses them to show there are exactly as many even numbers as natural numbers, and <a class="xl" href="lesson-06.html#proof-g">lesson 6</a> that $\mathbb R$ is strictly bigger than $\mathbb N$. And the relay facts, like “$g\circ f$ injective ⇒ $f$ injective”, are exactly what makes inverse functions work (<a class="xl" href="lesson-08.html#proof-a">lesson 8</a>).</p>
+
+<h2 id="s6-exercises">6. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1 and 2 are real exam questions and count for scoring.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Einsiedler HS21, #9, true/false block, 3 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+<p>Let $f:X\to Y$, $A_1,A_2\subseteq X$ and $B_1,B_2\subseteq Y$. Which are always true? (0–4 can be true.)</p>
+<ul>
+  <li>(a) If $f$ is surjective, then $f^{-1}(B_1\cap B_2)=f^{-1}(B_1)\cap f^{-1}(B_2)$.</li>
+  <li>(b) If $f$ is surjective, then $f(A_1\cap A_2)=f(A_1)\cap f(A_2)$.</li>
+  <li>(c) If $f$ is injective, then $f^{-1}(B_1\cup B_2)=f^{-1}(B_1)\cup f^{-1}(B_2)$.</li>
+  <li>(d) If $f$ is injective, then $f(A_1\cup A_2)=f(A_1)\cup f(A_2)$.</li>
+</ul>
+<p><em>Hint: the “if” parts are partly decoys. Ask first: is this true even without the assumption?</em></p><details class="sol"><summary>Solution</summary><div>
+<ul>
+  <li><strong>(a) True.</strong> The preimage always respects $\cap$, so surjectivity is irrelevant: $x\in f^{-1}(B_1\cap B_2)$ means $f(x)\in B_1$ and $f(x)\in B_2$, which means $x\in f^{-1}(B_1)$ and $x\in f^{-1}(B_2)$.</li>
+  <li><strong>(b) False.</strong> Worked example 2: $f$ is surjective, but <span class="math-display" style="display:block">$$\begin{aligned}f(A_1\cap A_2)&amp;=\emptyset\neq\{0\}\\&amp;=f(A_1)\cap f(A_2)\end{aligned}.$$</span>The points $1\neq2$ have the same image (two senders collide), and surjectivity does not rule that out.</li>
+  <li><strong>(c) True</strong>, always: $f(x)\in B_1\cup B_2$ means $f(x)\in B_1$ or $f(x)\in B_2$, so the preimage respects $\cup$. Injectivity is not needed.</li>
+  <li><strong>(d) True</strong>, always: $y\in f(A_1\cup A_2)$ means $y=f(x)$ for some $x$ in $A_1$ or in $A_2$, which means $y\in f(A_1)$ or $y\in f(A_2)$. Injectivity is not needed.</li>
+</ul>
+<p>So the answer is T, F, T, T.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Figalli FS26, A1(b) and (d))</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+<p>Let $f,g:\mathbb R\to\mathbb R$. (b) Show: if $g\circ f$ is surjective, then $g$ is surjective. (Use the surjectivity template.) (d) Find $f,g$ such that $g\circ f$ is surjective but $f$ is not surjective.</p><details class="sol"><summary>Solution</summary><div>
+<p><strong>(b)</strong> <em>Frame:</em> we want “$g$ surjective”, so the first line is “Let $z\in\mathbb R$” and the last is “so $g(y)=z$ for some $y$”. The gap: find $y$, using that $g\circ f$ is surjective. <em>Moves:</em> <a class="mvl" href="moves.html#m-surj">the surjectivity template</a>.</p>
+<p>Let $z\in\mathbb R$. Since $g\circ f$ is surjective, there is $x\in\mathbb R$ with $g(f(x))=z$. Set $y:=f(x)$. Then $g(y)=z$. Hence $g$ is surjective. <span class="qed">∎</span></p>
+<p><strong>(d)</strong> $f(x)=e^x$ (not surjective: it never reaches $0$ or negative numbers), and $g(x)=\log|x|$ for $x\neq0$, $g(0)=0$. Then $(g\circ f)(x)=\log(e^x)=x$, which is surjective. Many other answers work: $f$ only has to be non-surjective, while $g$, using only the values in $f(\mathbb R)$, still reaches every real number (in the story: $f$ forgets some houses, and $g$ manages with the rest).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (Einsiedler HS21 mock exam, #7)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2021-12-einsiedler-mock-exam-hs21.pdf&amp;t=2021-12%20Einsiedler%20-%20mock%20exam%20HS21">mock exam HS21</a></p>
+<p>Let $f:X\to Y$ and $g:Y\to Z$. True or false in general? (a) If $g\circ f$ is injective, then $g$ is injective. (b) If $f^{-1}(f(A))=A$ for every $A\subseteq X$, then $f$ is injective. (c) If $f(f^{-1}(B))=B$ for every $B\subseteq Y$, then $f$ is surjective. (d) If $f$ and $g$ are injective, then $g\circ f$ is injective.</p><details class="sol"><summary>Solution</summary><div>
+<ul>
+  <li><strong>(a) False:</strong> Worked example 1.</li>
+  <li><strong>(b) True:</strong> use the injectivity template. Let $f(x_1)=f(x_2)$ and take $A=\{x_1\}$. Then $f(x_2)=f(x_1)\in f(A)$, so $x_2\in f^{-1}(f(A))$, and this set equals $A=\{x_1\}$ by assumption. So $x_2=x_1$.</li>
+  <li><strong>(c) True:</strong> take $B=Y$. Every $x$ has $f(x)\in Y$, so $f^{-1}(Y)=X$. Then $f(X)=f(f^{-1}(Y))=Y$ by assumption, which says that every $y\in Y$ is a value of $f$.</li>
+  <li><strong>(d) True:</strong> a composition of injective maps is injective (<a class="xl" href="#s3-composition-what-a-relay-tells">Section 3</a>). Proof with the template: let $g(f(x_1))=g(f(x_2))$. Since $g$ is injective, $f(x_1)=f(x_2)$; since $f$ is injective, $x_1=x_2$.</li>
+</ul>
+<p>So F, T, T, T.</p>
+</div></details>
+</div>
+<div class="check"><p><strong>Scoring yourself:</strong> Exercise 1 (4 answers) plus Exercise 2 (2 parts, each worth 2 if the proof has the template shape) make 8. If you have 6 of 8, you're done. Otherwise rewrite Proof A from a blank page tomorrow (5 minutes), then continue.</p></div>
+
+<h2 id="s7-for-wonder-optional-5-min">7. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Counting without counting.</strong> Bijections are how mathematicians compare sizes without numbers. If you can pair every seat in a theatre with exactly one person, there are as many people as seats, and you never had to count either. Next lesson, this idea makes sense of <em>infinite</em> sizes, with a surprising result: there are exactly as many fractions as natural numbers, but more real numbers than either.</p>
+<p><strong>Hash functions are deliberately non-injective.</strong> Every password check on the internet uses a hash function from a huge set (all possible texts) to a small one (strings of 256 bits). Collisions must exist by counting, but a good hash makes them practically impossible to <em>find</em>. Security lives in the gap between “exists” and “can be found”.</p>
+
+<h2 id="s8-what-we-skipped">8. What we skipped</h2>
+<p>So you don't have to wonder whether you missed something: the exams never tested these directly.</p>
+<ul>
+  <li><strong>Section 1.4.1, naive set theory (<a class="pl" href="script.html#p17">p. 17–21</a>):</strong> just know $\cup$, $\cap$, $\setminus$, complement, $\subseteq$, the power set and the product $X\times Y$. The De Morgan rules (Übung 1.20, <a class="pl" href="script.html#p20">p. 20</a>) are worth one look.</li>
+  <li><strong>Section 1.4.3, the graph of a map (<a class="pl" href="script.html#p29">p. 29–32</a>):</strong> just the picture. A horizontal line hitting the graph at most once means injective, at least once means surjective.</li>
+  <li><strong>Sections 1.4.5–1.4.7 (<a class="pl" href="script.html#p34">p. 34–36</a>), partitions, iterations, Hilbert's hotel:</strong> read for fun or skip. Partitions come back in <a class="xl" href="lesson-03.html#s2-equivalence-relations">lesson 3</a> with equivalence relations.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-03.html">lesson 3</a>, equivalence relations and countable sets (Sections 1.6–1.7).</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-01.html">← Lesson 1: The Oath and the Challenge</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-03.html">Lesson 3: Great Houses and the Endless Roll Call →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

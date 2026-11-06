@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Ledger and the Hourglass</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-18.html">← Lesson 18</a>
+<a href="lesson-20.html">Lesson 20 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 19 of 26</span>
+  <h1>The Ledger and the Hourglass</h1>
+  <p class="lead">The <strong>fundamental theorem of calculus</strong>: integrating and differentiating undo each other, so $\int_a^bf=F(b)-F(a)$ for any antiderivative $F$. Then the toolbox that turns this into points: <strong>integration by parts</strong>, <strong>substitution</strong>, <strong>partial fractions</strong>, and the trigonometric and half-angle substitutions, drilled on real exam integrals. Script sections 9.1–9.2.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-18-5">Recap of lesson 18 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-ledger-and">1. The story: the ledger and the hourglass</a>
+</li>
+<li><a href="#s2-the-fundamental-theorem">2. The fundamental theorem</a>
+<ol>
+<li><a href="#proof-a">Proof A: the integral with variable upper limit is an antiderivative (Theorem 9.2, p. 417–418)</a></li>
+<li><a href="#we-1">Worked example 1: derivatives of integrals</a></li>
+</ol></li>
+<li><a href="#s3-computing-integrals-with-antiderivatives">3. Computing integrals with antiderivatives</a>
+<ol>
+<li><a href="#proof-b">Proof B: all antiderivatives, and $\int_a^bf=F(b)-F(a)$ (Korollar 9.3–9.5, p. 418–419)</a></li>
+<li><a href="#the-table-of-antiderivatives-it">The table of antiderivatives (it&#x27;s on the official formula sheet)</a></li>
+<li><a href="#we-2">Worked example 2: first definite integrals</a></li>
+</ol></li>
+<li><a href="#s4-differentiating-power-series">4. Differentiating power series</a>
+<ol>
+<li><a href="#proof-c">Proof C: power series can be differentiated term by term (Korollar 9.11, p. 420–421)</a></li>
+<li><a href="#we-3">Worked example 3: values of famous series</a></li>
+</ol></li>
+<li><a href="#s5-integration-by-parts">5. Integration by parts</a>
+<ol>
+<li><a href="#proof-d">Proof D: integration by parts (Section 9.2.1 and 9.2.6, p. 425 and 434)</a></li>
+<li><a href="#how-to-choose-and">How to choose $u$ and $v&#x27;$</a></li>
+<li><a href="#we-4">Worked example 4: integration by parts</a></li>
+</ol></li>
+<li><a href="#s6-substitution">6. Substitution</a>
+<ol>
+<li><a href="#proof-e">Proof E: the substitution rule (Section 9.2.2 and 9.2.6, p. 426 and 435)</a></li>
+<li><a href="#how-to-spot-a-substitution">How to spot a substitution</a></li>
+<li><a href="#we-5">Worked example 5: substitution</a></li>
+</ol></li>
+<li><a href="#s7-rational-functions-and-partial-fractions">7. Rational functions and partial fractions</a>
+<ol>
+<li><a href="#the-recipe-for">The recipe for $\int\frac{p(x)}{q(x)}dx$</a></li>
+<li><a href="#we-6">Worked example 6: partial fractions</a></li>
+</ol></li>
+<li><a href="#s8-trigonometric-hyperbolic-and-half-angle">8. Trigonometric, hyperbolic and half-angle substitutions</a>
+<ol>
+<li><a href="#which-substitution-on-the-formula">Which substitution? (on the formula sheet)</a></li>
+<li><a href="#we-7">Worked example 7: the area of a circle, and friends</a></li>
+</ol></li>
+<li><a href="#s9-worked-examples-choosing-the-method">9. Worked examples: choosing the method</a>
+<ol>
+<li><a href="#the-decision-list-in-this">The decision list (in this order)</a></li>
+<li><a href="#we-8">Worked example 8: which method?</a></li>
+</ol></li>
+<li><a href="#s10-exercises">10. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Einsiedler HS21, question 1a, 2 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (PVK mock HS25, K1, 2 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (PVK mock HS25, K2, 2 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (Einsiedler HS21, question 1b, 2 points)</a></li>
+<li><a href="#ex-5">Exercise 5 (Figalli FS24 K1 and Felder FS23 1.A3, 2 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (Einsiedler HS21, question 1c, 3 points)</a></li>
+<li><a href="#ex-7">Exercise 7 (Einsiedler mock exam HS21, question 1, 2 points each)</a></li>
+<li><a href="#ex-8">Exercise 8 (Einsiedler FS22, question 1a and 1c)</a></li>
+<li><a href="#ex-9">Exercise 9 (Felder HS22, 1.A1 and 1.A2, 2 points each)</a></li>
+<li><a href="#ex-10">Exercise 10 (2018 winter exam, question 12, 5 points)</a></li>
+<li><a href="#ex-11">Exercise 11 (Einsiedler HS21, question 10 (c) and (d), true or false)</a></li>
+<li><a href="#bonus">Bonus: two one-point integrals with a twist (2017 summer exam, 1a and 1b)</a></li>
+</ol></li>
+<li><a href="#s11-for-wonder-optional-5-min">11. For wonder</a>
+</li>
+<li><a href="#s12-what-we-skipped">12. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>prove that $F(x)=\int_a^xf(t)\,dt$ is differentiable at every point where $f$ is continuous, with $F'=f$</strong> (a 5-point exam proof), (2) compute definite integrals with an antiderivative, (3) differentiate a power series term by term, (4) <strong>compute the 2-point exam integrals</strong>: choose between parts, substitution, partial fractions and the trigonometric or half-angle substitution, and finish without sign errors.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p417">p. 417–420</a>, Section 9.1:</strong> the integral with variable upper limit, the fundamental theorem and its corollaries.</li>
+      <li><strong><a class="pl" href="script.html#p420">p. 420–423</a>, Sections 9.1.1–9.1.3:</strong> differentiating power series; the values $\log2$ and $\frac\pi4$ of two famous series.</li>
+      <li><strong><a class="pl" href="script.html#p424">p. 424–427</a>, Sections 9.2.1–9.2.2:</strong> integration by parts and substitution.</li>
+      <li><strong><a class="pl" href="script.html#p427">p. 427–431</a>, Section 9.2.3:</strong> rational functions and partial fractions.</li>
+      <li><strong><a class="pl" href="script.html#p431">p. 431–434</a>, Sections 9.2.4–9.2.5:</strong> trigonometric and hyperbolic substitution, the half-angle method.</li>
+      <li><strong><a class="pl" href="script.html#p434">p. 434–437</a>, Sections 9.2.6–9.2.8:</strong> definite integrals, Leibniz notation, functions without an elementary antiderivative.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+Integrals are the most reliable points on the whole exam. <strong>Every one of the nine exams</strong> in the folder has two or three of them, at 2 points each: Einsiedler HS21 question 1 (7 points for three integrals), the Einsiedler mock and FS22 question 1, Felder HS22 1.A1–A2 and FS23 1.A3, Figalli HS23, FS24 and FS26 (K1 and K2 every time, plus a multiple-choice integral), Kobel-Keller HS24 question 14, and the PVK mock (K1, K2, MC5). The fundamental theorem itself is a 5-point proof in the 2018 winter exam (question 12). And the official formula sheet lists the table of antiderivatives, integration by parts, substitution and the half-angle method, so you don't memorise formulas: you practise <em>choosing</em> the method.</div>
+
+<div class="box"><h3 id="recap-of-lesson-18-5">Recap of <a class="xl" href="lesson-18.html">lesson 18</a> (5 min)</h3>
+<ul>
+  <li><strong>Extremum tests:</strong> $f'$ changes sign from $+$ to $-$: local maximum. $f'(x_0)=0$, $f''(x_0)&lt;0$: local maximum.</li>
+  <li><strong>Convex</strong> ⇔ the slope of secants grows ⇔ (if differentiable) $f'$ increasing ⇐ $f''\ge0$.</li>
+  <li><strong>l'Hôpital:</strong> for “$\frac00$” or “$\frac\infty\infty$”, $\lim\frac fg=\lim\frac{f'}{g'}$ if the right side exists.</li>
+</ul>
+<ol class="gq">
+  <li><p>What is $\arcsin'(x)$, and $\operatorname{arsinh}'(x)$?</p>
+  <details><summary>Answer</summary><div><p>$\frac1{\sqrt{1-x^2}}$ and $\frac1{\sqrt{1+x^2}}$. Read backwards, today they become integrals: $\int\frac{dx}{\sqrt{1-x^2}}=\arcsin x+C$.</p></div></details></li>
+  <li><p>Two functions on an interval have the same derivative everywhere. What can you say?</p>
+  <details><summary>Answer</summary><div><p>They differ by a constant: their difference has derivative $0$, so it is constant (<a class="xl" href="lesson-17.html#proof-h">lesson 17</a>, Proof H). Today this is why every antiderivative works in $\int_a^bf=F(b)-F(a)$.</p></div></details></li>
+  <li><p><a class="xl" href="lesson-09.html#s3-lower-and-upper-integrals-tiles">Lesson 9</a>: what does $\int_a^bf$ mean, and which functions are integrable?</p>
+  <details><summary>Answer</summary><div><p>The common value of the supremum of lower sums and the infimum of upper sums (squeeze $f$ between step functions). Continuous and monotone functions on $[a,b]$ are integrable. Today we finally <em>compute</em> such integrals without sums.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>antiderivative, primitive</td><td>Stammfunktion</td></tr>
+    <tr><td>indefinite / definite integral</td><td>unbestimmtes / bestimmtes Integral</td></tr>
+    <tr><td>integral with variable upper limit</td><td>Integral mit veränderlicher oberer Grenze, partikuläres Integral</td></tr>
+    <tr><td>fundamental theorem of calculus</td><td>Fundamentalsatz der Integral- und Differentialrechnung</td></tr>
+    <tr><td>integration by parts</td><td>partielle Integration</td></tr>
+    <tr><td>substitution (change of variables)</td><td>Substitution</td></tr>
+    <tr><td>partial fraction decomposition</td><td>Partialbruchzerlegung</td></tr>
+    <tr><td>polynomial division</td><td>Polynomdivision, Division mit Rest</td></tr>
+    <tr><td>completing the square</td><td>quadratische Ergänzung</td></tr>
+    <tr><td>trigonometric / hyperbolic substitution</td><td>trigonometrische / hyperbolische Substitution</td></tr>
+    <tr><td>half-angle method (Weierstrass substitution)</td><td>Halbwinkelmethode</td></tr>
+    <tr><td>integration constant</td><td>Integrationskonstante</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-ledger-and">1. The story: the ledger and the hourglass</h2>
+<div class="story">
+<p>In the river town below the rope-makers' valley, two guilds have quarrelled for a hundred years. The <em>Ledger-keepers</em> stand at the toll bridge and add up: every hour they write down how much has crossed so far. The <em>Hourglass-readers</em> watch the bridge for a single moment and say how fast things are crossing right now. Each guild thinks its craft is the hard one.</p>
+<p>A young apprentice settles it. Take the Ledger's running total, she says, and ask how fast <em>that</em> grows. In one short moment, the total grows by exactly what crosses in that moment: the rate times the moment. So the speed of the Ledger is the Hourglass. And the other way round: to know the total between morning and evening, you don't need to watch all day. Find any ledger whose speed is the Hourglass, and subtract its morning entry from its evening entry.</p>
+</div>
+<p>In maths: the Ledger is $F(x)=\int_a^xf(t)\,dt$, the area accumulated up to $x$, and the Hourglass is the rate $f$. The apprentice's two sentences are the <strong>fundamental theorem of calculus</strong>: $F'=f$, and $\int_a^bf=F(b)-F(a)$ for every antiderivative $F$. Areas, which needed sums of rectangles in <a class="xl" href="lesson-09.html#s3-lower-and-upper-integrals-tiles">lesson 9</a>, become a matter of reading derivative tables backwards.</p>
+
+<h2 id="s2-the-fundamental-theorem">2. The fundamental theorem</h2>
+<p>For $f$ integrable on $[a,b]$, every $\int_a^xf(t)\,dt$ with $x\in[a,b]$ exists (an integral over a sub-interval, <a class="xl" href="lesson-09.html#s6-the-rules-of-the-integral">lesson 9</a>). So we get a new function, the <strong>integral with variable upper limit</strong> $F(x)=\int_a^xf(t)\,dt$. The variable of integration is now called $t$, because $x$ is taken.</p>
+
+<figure style="margin:.4rem 0" aria-label="The graph of a positive function f above an axis. The area from a to x0 is shaded and labelled F of x0. A thin extra strip from x0 to x is shaded in a different colour. A dashed rectangle of height f(x0) over the strip nearly matches it.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><path d="M75.9 260 L75.9 173.1 L76.7 172.7 L78.5 171.7 L80.3 170.7 L82.2 169.7 L84.0 168.7 L85.8 167.7 L87.7 166.7 L89.5 165.8 L91.3 164.8 L93.2 163.8 L95.0 162.9 L96.8 162.0 L98.7 161.1 L100.5 160.1 L102.3 159.2 L104.2 158.4 L106.0 157.5 L107.8 156.6 L109.7 155.8 L111.5 154.9 L113.3 154.1 L115.2 153.3 L117.0 152.5 L118.8 151.7 L120.7 150.9 L122.5 150.1 L124.3 149.4 L126.2 148.6 L128.0 147.9 L129.8 147.2 L131.7 146.5 L133.5 145.8 L135.3 145.2 L137.2 144.5 L139.0 143.9 L140.8 143.3 L142.7 142.7 L144.5 142.1 L146.3 141.5 L148.2 140.9 L150.0 140.4 L151.8 139.9 L153.7 139.4 L155.5 138.9 L157.3 138.4 L159.2 138.0 L161.0 137.5 L162.8 137.1 L164.7 136.7 L166.5 136.3 L168.3 135.9 L170.2 135.6 L172.0 135.2 L173.8 134.9 L175.7 134.6 L177.5 134.3 L179.3 134.0 L181.2 133.8 L183.0 133.6 L184.8 133.3 L186.7 133.1 L188.5 133.0 L190.3 132.8 L192.2 132.7 L194.0 132.5 L195.8 132.4 L197.7 132.3 L199.5 132.2 L201.3 132.2 L203.2 132.1 L205.0 132.1 L206.8 132.1 L208.7 132.1 L210.5 132.1 L212.3 132.2 L214.2 132.2 L216.0 132.3 L217.8 132.4 L219.7 132.5 L221.5 132.6 L223.3 132.8 L225.2 132.9 L227.0 133.1 L228.8 133.3 L230.7 133.5 L232.5 133.7 L234.3 134.0 L236.2 134.2 L238.0 134.5 L239.8 134.8 L241.7 135.0 L243.5 135.4 L245.3 135.7 L247.2 136.0 L249.0 136.4 L250.8 136.7 L252.7 137.1 L254.5 137.5 L256.3 137.9 L258.2 138.3 L260.0 138.7 L261.8 139.2 L263.7 139.6 L265.5 140.1 L267.3 140.5 L269.2 141.0 L271.0 141.5 L272.8 142.0 L274.7 142.5 L276.5 143.1 L278.3 143.6 L280.2 144.1 L282.0 144.7 L283.8 145.2 L285.7 145.8 L287.5 146.4 L289.3 147.0 L291.2 147.5 L293.0 148.1 L294.8 148.7 L296.7 149.4 L298.5 150.0 L300.3 150.6 L302.2 151.2 L304.0 151.9 L305.8 152.5 L307.7 153.1 L309.5 153.8 L311.3 154.4 L313.2 155.1 L315.0 155.7 L315.0 155.7 L315.0 260 Z" style="fill:var(--accent-soft)"/><path d="M315.0 260 L315.0 155.7 L315.0 155.7 L316.8 156.4 L318.7 157.0 L320.5 157.7 L322.3 158.4 L324.2 159.0 L326.0 159.7 L327.8 160.4 L329.7 161.0 L331.5 161.7 L333.3 162.4 L335.2 163.0 L337.0 163.7 L338.8 164.4 L340.7 165.0 L342.5 165.7 L344.3 166.3 L346.2 167.0 L348.0 167.6 L349.8 168.3 L351.7 168.9 L353.5 169.6 L355.3 170.2 L357.2 170.8 L359.0 171.4 L360.8 172.1 L362.7 172.7 L364.5 173.3 L366.3 173.9 L368.2 174.5 L370.0 175.0 L371.8 175.6 L373.7 176.2 L375.5 176.8 L377.3 177.3 L379.2 177.8 L380.8 178.3 L380.8 260 Z" style="fill:var(--story-edge);opacity:.35"/><rect x="315.0" y="155.7" width="65.8" height="104.3" style="fill:none;stroke:var(--ink)" stroke-dasharray="5 4" stroke-width="1.4"/><line x1="30" y1="260" x2="610" y2="260" style="stroke:var(--muted)" stroke-width="1.2"/><path d="M40.0 194.0 L41.8 192.9 L43.7 191.8 L45.5 190.7 L47.3 189.7 L49.2 188.6 L51.0 187.5 L52.8 186.4 L54.7 185.3 L56.5 184.3 L58.3 183.2 L60.2 182.1 L62.0 181.0 L63.8 180.0 L65.7 178.9 L67.5 177.9 L69.3 176.8 L71.2 175.8 L73.0 174.8 L74.8 173.7 L76.7 172.7 L78.5 171.7 L80.3 170.7 L82.2 169.7 L84.0 168.7 L85.8 167.7 L87.7 166.7 L89.5 165.8 L91.3 164.8 L93.2 163.8 L95.0 162.9 L96.8 162.0 L98.7 161.1 L100.5 160.1 L102.3 159.2 L104.2 158.4 L106.0 157.5 L107.8 156.6 L109.7 155.8 L111.5 154.9 L113.3 154.1 L115.2 153.3 L117.0 152.5 L118.8 151.7 L120.7 150.9 L122.5 150.1 L124.3 149.4 L126.2 148.6 L128.0 147.9 L129.8 147.2 L131.7 146.5 L133.5 145.8 L135.3 145.2 L137.2 144.5 L139.0 143.9 L140.8 143.3 L142.7 142.7 L144.5 142.1 L146.3 141.5 L148.2 140.9 L150.0 140.4 L151.8 139.9 L153.7 139.4 L155.5 138.9 L157.3 138.4 L159.2 138.0 L161.0 137.5 L162.8 137.1 L164.7 136.7 L166.5 136.3 L168.3 135.9 L170.2 135.6 L172.0 135.2 L173.8 134.9 L175.7 134.6 L177.5 134.3 L179.3 134.0 L181.2 133.8 L183.0 133.6 L184.8 133.3 L186.7 133.1 L188.5 133.0 L190.3 132.8 L192.2 132.7 L194.0 132.5 L195.8 132.4 L197.7 132.3 L199.5 132.2 L201.3 132.2 L203.2 132.1 L205.0 132.1 L206.8 132.1 L208.7 132.1 L210.5 132.1 L212.3 132.2 L214.2 132.2 L216.0 132.3 L217.8 132.4 L219.7 132.5 L221.5 132.6 L223.3 132.8 L225.2 132.9 L227.0 133.1 L228.8 133.3 L230.7 133.5 L232.5 133.7 L234.3 134.0 L236.2 134.2 L238.0 134.5 L239.8 134.8 L241.7 135.0 L243.5 135.4 L245.3 135.7 L247.2 136.0 L249.0 136.4 L250.8 136.7 L252.7 137.1 L254.5 137.5 L256.3 137.9 L258.2 138.3 L260.0 138.7 L261.8 139.2 L263.7 139.6 L265.5 140.1 L267.3 140.5 L269.2 141.0 L271.0 141.5 L272.8 142.0 L274.7 142.5 L276.5 143.1 L278.3 143.6 L280.2 144.1 L282.0 144.7 L283.8 145.2 L285.7 145.8 L287.5 146.4 L289.3 147.0 L291.2 147.5 L293.0 148.1 L294.8 148.7 L296.7 149.4 L298.5 150.0 L300.3 150.6 L302.2 151.2 L304.0 151.9 L305.8 152.5 L307.7 153.1 L309.5 153.8 L311.3 154.4 L313.2 155.1 L315.0 155.7 L316.8 156.4 L318.7 157.0 L320.5 157.7 L322.3 158.4 L324.2 159.0 L326.0 159.7 L327.8 160.4 L329.7 161.0 L331.5 161.7 L333.3 162.4 L335.2 163.0 L337.0 163.7 L338.8 164.4 L340.7 165.0 L342.5 165.7 L344.3 166.3 L346.2 167.0 L348.0 167.6 L349.8 168.3 L351.7 168.9 L353.5 169.6 L355.3 170.2 L357.2 170.8 L359.0 171.4 L360.8 172.1 L362.7 172.7 L364.5 173.3 L366.3 173.9 L368.2 174.5 L370.0 175.0 L371.8 175.6 L373.7 176.2 L375.5 176.8 L377.3 177.3 L379.2 177.8 L381.0 178.4 L382.8 178.9 L384.7 179.4 L386.5 179.9 L388.3 180.4 L390.2 180.9 L392.0 181.4 L393.8 181.8 L395.7 182.3 L397.5 182.7 L399.3 183.2 L401.2 183.6 L403.0 184.0 L404.8 184.4 L406.7 184.7 L408.5 185.1 L410.3 185.5 L412.2 185.8 L414.0 186.1 L415.8 186.4 L417.7 186.7 L419.5 187.0 L421.3 187.3 L423.2 187.5 L425.0 187.8 L426.8 188.0 L428.7 188.2 L430.5 188.4 L432.3 188.6 L434.2 188.7 L436.0 188.9 L437.8 189.0 L439.7 189.1 L441.5 189.2 L443.3 189.3 L445.2 189.3 L447.0 189.4 L448.8 189.4 L450.7 189.4 L452.5 189.4 L454.3 189.4 L456.2 189.4 L458.0 189.3 L459.8 189.2 L461.7 189.1 L463.5 189.0 L465.3 188.9 L467.2 188.8 L469.0 188.6 L470.8 188.4 L472.7 188.2 L474.5 188.0 L476.3 187.8 L478.2 187.6 L480.0 187.3 L481.8 187.0 L483.7 186.7 L485.5 186.4 L487.3 186.1 L489.2 185.7 L491.0 185.3 L492.8 184.9 L494.7 184.5 L496.5 184.1 L498.3 183.7 L500.2 183.2 L502.0 182.8 L503.8 182.3 L505.7 181.8 L507.5 181.3 L509.3 180.7 L511.2 180.2 L513.0 179.6 L514.8 179.0 L516.7 178.4 L518.5 177.8 L520.3 177.2 L522.2 176.5 L524.0 175.9 L525.8 175.2 L527.7 174.5 L529.5 173.8 L531.3 173.1 L533.2 172.3 L535.0 171.6 L536.8 170.8 L538.7 170.0 L540.5 169.2 L542.3 168.4 L544.2 167.6 L546.0 166.8 L547.8 166.0 L549.7 165.1 L551.5 164.2 L553.3 163.4 L555.2 162.5 L557.0 161.6 L558.8 160.7 L560.7 159.8 L562.5 158.8 L564.3 157.9 L566.2 156.9 L568.0 156.0 L569.8 155.0 L571.7 154.1 L573.5 153.1 L575.3 152.1 L577.2 151.1 L579.0 150.1 L580.8 149.1 L582.7 148.0 L584.5 147.0 L586.3 146.0 L588.2 144.9 L590.0 143.9" style="fill:none;stroke:var(--accent)" stroke-width="2.6"/><line x1="75.9" y1="260" x2="75.9" y2="173.1" style="stroke:var(--muted)" stroke-width="1"/><text x="75.9" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">a</text><line x1="315.0" y1="260" x2="315.0" y2="155.7" style="stroke:var(--muted)" stroke-width="1"/><text x="315.0" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">x₀</text><line x1="380.8" y1="260" x2="380.8" y2="178.3" style="stroke:var(--muted)" stroke-width="1"/><text x="380.8" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">x</text><text x="195" y="230" text-anchor="middle" font-size="17" style="fill:var(--accent)">F(x₀)</text><text x="506" y="168" text-anchor="middle" font-size="17" style="fill:var(--accent)">f</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$F(x_0)$ is the area from $a$ to $x_0$. Moving to $x$ adds the thin strip from $x_0$ to $x$. For $x$ close to $x_0$ the strip is nearly the dashed rectangle of height $f(x_0)$ and width $x-x_0$, so $\frac{F(x)-F(x_0)}{x-x_0}\approx f(x_0)$. Proof A makes “nearly” precise.</figcaption>
+</figure>
+
+<h3 id="proof-a">Proof A: the integral with variable upper limit is an antiderivative (Theorem 9.2, <a class="pl" href="script.html#p417">p. 417–418</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $a&lt;b$ and $f:[a,b]\to\mathbb R$ Riemann integrable. If $f$ is continuous at $x_0\in[a,b]$, then $F(x)=\int_a^xf(t)\,dt$ is differentiable at $x_0$ with $F'(x_0)=f(x_0)$.</p>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-09.html#s6-the-rules-of-the-integral">lesson 9</a>)</span>
+<ul>
+  <li><strong>Interval additivity:</strong> $\int_a^xf-\int_a^{x_0}f=\int_{x_0}^xf$ for $x_0&lt;x$.</li>
+  <li><strong>Integral of a constant:</strong> $\int_{x_0}^xc\,dt=c\,(x-x_0)$.</li>
+  <li><strong>Triangle inequality and monotonicity:</strong> $\left|\int g\right|\le\int|g|$, and $|g|\le\varepsilon$ gives $\int_{x_0}^x|g|\le\varepsilon(x-x_0)$.</li>
+</ul></div>
+<p><strong>The idea.</strong> The difference quotient $\frac{F(x)-F(x_0)}{x-x_0}$ is the <em>average</em> of $f$ over the strip between $x_0$ and $x$. Continuity at $x_0$ says that, on a short enough strip, every value of $f$ is within $\varepsilon$ of $f(x_0)$. An average of numbers that are all within $\varepsilon$ of $f(x_0)$ is itself within $\varepsilon$ of $f(x_0)$. The one trick: write $f(x_0)$ itself as an average, $f(x_0)=\frac1{x-x_0}\int_{x_0}^xf(x_0)\,dt$, so the two can be subtracted under one integral.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal:</strong> “for every $\varepsilon&gt;0$ there is $\delta&gt;0$ with $\left|\frac{F(x)-F(x_0)}{x-x_0}-f(x_0)\right|\le\varepsilon$ for all $x\in[a,b]$ with $0&lt;|x-x_0|&lt;\delta$.”</li>
+  <li><strong>The only information:</strong> continuity at $x_0$ gives $\delta$ with $|f(t)-f(x_0)|&lt;\varepsilon$ for $|t-x_0|&lt;\delta$.</li>
+  <li><strong>The gap:</strong> turn the difference quotient into one integral of $f(t)-f(x_0)$. Two cases, $x&gt;x_0$ and $x&lt;x_0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Choose a moment so short that the Hourglass barely changes during it.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$. Since $f$ is continuous at $x_0$, there is $\delta&gt;0$ with $|f(t)-f(x_0)|&lt;\varepsilon$ for all $t\in[a,b]$ with $|t-x_0|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The Ledger's growth in that moment is just what crossed in it.</p></div><div class="sp-formal"><p><strong>Case $x&gt;x_0$</strong>, with $x\in[a,b]$ and $x-x_0&lt;\delta$. By interval additivity, $F(x)-F(x_0)=\int_{x_0}^xf(t)\,dt$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Pretend the rate had stayed frozen: that would have given exactly the frozen rate times the moment.</p></div><div class="sp-formal"><p>Since $f(x_0)=\frac1{x-x_0}\int_{x_0}^xf(x_0)\,dt$,</p><span class="math-display" style="display:block">$$\begin{aligned}&amp;\frac{F(x)-F(x_0)}{x-x_0}-f(x_0)\\&amp;\quad=\frac1{x-x_0}\int_{x_0}^x\bigl(f(t)-f(x_0)\bigr)\,dt.\end{aligned}$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>The true crossing never differed from the frozen one by more than a hair per hour.</p></div><div class="sp-formal"><p>For $t\in[x_0,x]$ we have $|t-x_0|&lt;\delta$, so $|f(t)-f(x_0)|&lt;\varepsilon$. By the triangle inequality for integrals,</p><span class="math-display" style="display:block">$$\begin{aligned}&amp;\left|\frac{F(x)-F(x_0)}{x-x_0}-f(x_0)\right|\\&amp;\quad\le \frac1{x-x_0}\int_{x_0}^x|f(t)-f(x_0)|\,dt\\&amp;\quad\le \frac{\varepsilon\,(x-x_0)}{x-x_0}\\&amp;\quad=\varepsilon.\end{aligned}$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Looking back into the past works the same way.</p></div><div class="sp-formal"><p><strong>Case $x&lt;x_0$</strong>, with $x_0-x&lt;\delta$. Now $F(x_0)-F(x)=\int_x^{x_0}f(t)\,dt$, and $\frac{F(x)-F(x_0)}{x-x_0}=\frac{F(x_0)-F(x)}{x_0-x}$, so the same computation on $[x,x_0]$ gives the bound $\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the Ledger's speed at that moment is the Hourglass.</p></div><div class="sp-formal"><p>Since $\varepsilon&gt;0$ was arbitrary, $\lim_{x\to x_0}\frac{F(x)-F(x_0)}{x-x_0}=f(x_0)$: $F$ is differentiable at $x_0$ with $F'(x_0)=f(x_0)$. (At an endpoint $x_0=a$ or $b$, only one case occurs.) <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">continuity with a chosen ε</a> <a class="mvl" href="moves.html#m-avg">write a number as an average</a> <a class="mvl" href="moves.html#m-cases">split into cases</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\varepsilon&gt;0$ and choose $\delta&gt;0$ with $|f(t)-f(x_0)|&lt;\varepsilon$ for $t\in[a,b]$, $|t-x_0|&lt;\delta$. Let $x\in[a,b]$ with $0&lt;x-x_0&lt;\delta$. By interval additivity and $f(x_0)=\frac1{x-x_0}\int_{x_0}^xf(x_0)\,dt$,</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\left|\frac{F(x)-F(x_0)}{x-x_0}-f(x_0)\right|\\&amp;\quad=\left|\frac1{x-x_0}\int_{x_0}^x\bigl(f(t)-f(x_0)\bigr)dt\right|\\&amp;\quad\le \frac1{x-x_0}\int_{x_0}^x|f(t)-f(x_0)|\,dt\\&amp;\quad\le \varepsilon.\end{aligned}$$</span>
+<p>For $0&lt;x_0-x&lt;\delta$, the same estimate on $[x,x_0]$ holds, since $\frac{F(x)-F(x_0)}{x-x_0}=\frac1{x_0-x}\int_x^{x_0}f(t)\,dt$. Hence $\frac{F(x)-F(x_0)}{x-x_0}\to f(x_0)$, i.e. $F'(x_0)=f(x_0)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>ε, δ from continuity</strong> at $x_0$.</li>
+  <li><strong>Additivity:</strong> $F(x)-F(x_0)=\int_{x_0}^xf$.</li>
+  <li><strong>Average trick:</strong> subtract $f(x_0)=\frac1{x-x_0}\int_{x_0}^xf(x_0)\,dt$ under the same integral.</li>
+  <li><strong>Estimate:</strong> triangle inequality, each value $&lt;\varepsilon$, so the average is $\le\varepsilon$.</li>
+  <li><strong>Other side:</strong> “analogously for $x&lt;x_0$”, with the one-line reason.</li>
+</ol>
+<p><em>In short:</em> “the quotient is an average; continuity makes every value close; so the average is close.” This is the 2018 winter exam's question 12 (5 points), word for word.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which step uses that $f$ is integrable, and which uses that $f$ is continuous at $x_0$?</p>
+  <details><summary>Answer</summary><div><p>Integrable: $F$ exists at all, and interval additivity holds. Continuous at $x_0$: the bound $|f(t)-f(x_0)|&lt;\varepsilon$ near $x_0$. Away from $x_0$, $f$ may be as wild as integrability allows.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Let $f=0$ on $[-1,0]$ and $f=1$ on $(0,1]$. Compute $F(x)=\int_{-1}^xf$. Is $F$ differentiable at $0$? What does that show?</p>
+  <details><summary>Answer</summary><div><p>$F(x)=0$ for $x\le0$ and $F(x)=x$ for $x&gt;0$, i.e. $F(x)=\max(x,0)$. Left derivative $0$, right derivative $1$: not differentiable at $0$. So continuity at $x_0$ can't be dropped. ($F$ is still continuous: integrals with variable limit always are, <a class="xl" href="lesson-09.html#s6-the-rules-of-the-integral">lesson 9</a>.)</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the exam box alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-1">Worked example 1: derivatives of integrals</h3>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<ol class="gq">
+  <li><p>$G(x)=\int_0^x e^{-t^2}\,dt$. What is $G'(x)$? Is $G$ increasing?</p>
+  <details><summary>Answer</summary><div><p>$e^{-t^2}$ is continuous everywhere, so by Proof A, $G'(x)=e^{-x^2}&gt;0$, and $G$ is strictly increasing. (No formula for $G$ exists in terms of known functions, yet we know its derivative exactly.)</p></div></details></li>
+  <li><p>$H(x)=\int_0^{x^2}\sin(t^2)\,dt$. Compute $H'(x)$.</p>
+  <details><summary>Answer</summary><div><p>$H=G\circ q$ with $G(u)=\int_0^u\sin(t^2)\,dt$ and $q(x)=x^2$. Chain rule: <span class="math-display" style="display:block">$$H'(x)=G'(x^2)\cdot2x=\sin(x^4)\cdot2x.$$</span></p></div></details></li>
+  <li><p>$K(x)=\int_x^{2x}\frac{dt}t$ for $x&gt;0$. Compute $K'(x)$ without integrating. Then check by integrating.</p>
+  <details><summary>Answer</summary><div><p>$K(x)=\int_1^{2x}\frac{dt}t-\int_1^x\frac{dt}t$, so $K'(x)=\frac1{2x}\cdot2-\frac1x=0$. Indeed $K(x)=\log(2x)-\log x=\log2$ is constant.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s3-computing-integrals-with-antiderivatives">3. Computing integrals with antiderivatives</h2>
+<p>An <strong>antiderivative</strong> (Stammfunktion) of $f$ on an interval is a differentiable $F$ with $F'=f$. The <strong>indefinite integral</strong> $\int f(x)\,dx=F(x)+C$ is shorthand for “all antiderivatives”.</p>
+
+<h3 id="proof-b">Proof B: all antiderivatives, and $\int_a^bf=F(b)-F(a)$ (Korollar 9.3–9.5, <a class="pl" href="script.html#p418">p. 418–419</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f:[a,b]\to\mathbb R$ be continuous.</p>
+<ol>
+  <li>$x\mapsto\int_a^xf(t)\,dt$ is an antiderivative of $f$, and every antiderivative has the form $F(x)=\int_a^xf(t)\,dt+C$ for a constant $C$.</li>
+  <li>For every antiderivative $F$ of $f$: $\displaystyle\int_a^bf(t)\,dt=F(b)-F(a)=:\bigl[F(x)\bigr]_a^b$.</li>
+  <li>For $F$ continuously differentiable on $[a,b]$: $F(x)=F(a)+\int_a^xF'(t)\,dt$.</li>
+</ol>
+</div>
+<p><strong>The idea.</strong> Proof A says the Ledger is an antiderivative. Any other antiderivative has the same derivative, so it differs by a constant. Find the constant by plugging in $x=a$, where the Ledger is $0$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal of 1:</strong> “$F_0'=f$” and “$F-F_0$ is constant.”</li>
+  <li><strong>Goal of 2 and 3:</strong> an equation between numbers, so: name the constant $C$, then evaluate at $x=a$ and $x=b$.</li>
+  <li><strong>The gap:</strong> none beyond Proof A and “derivative zero on an interval ⇒ constant”.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The town's Ledger runs at the Hourglass's speed everywhere, since the rate never jumps.</p></div><div class="sp-formal"><p><strong>1.</strong> $f$ is continuous, hence integrable (<a class="xl" href="lesson-09.html#we-2">lesson 9</a>), and continuous at every point. By Proof A, $F_0(x)=\int_a^xf(t)\,dt$ satisfies $F_0'=f$ on $[a,b]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Any other ledger with the same speed only started from a different entry.</p></div><div class="sp-formal"><p>If $F'=f$ too, then $(F-F_0)'=0$ on the interval $[a,b]$, so $F-F_0=C$ is constant (<a class="xl" href="lesson-17.html#proof-h">lesson 17</a>, Proof H).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Read the difference of evening and morning entries: the starting entry cancels.</p></div><div class="sp-formal"><p><strong>2.</strong> At $x=a$: $F(a)=F_0(a)+C=0+C$, so $C=F(a)$. At $x=b$: $\int_a^bf=F_0(b)=F(b)-C=F(b)-F(a)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A ledger is its morning entry plus everything that crossed since.</p></div><div class="sp-formal"><p><strong>3.</strong> $F'$ is continuous and $F$ is an antiderivative of it, so by 2 on $[a,x]$: $\int_a^xF'(t)\,dt=F(x)-F(a)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-const">name the constant, then plug in a point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>As $f$ is continuous, it is integrable and, by Proof A, $F_0(x)=\int_a^xf$ satisfies $F_0'=f$. If also $F'=f$, then $(F-F_0)'=0$ on $[a,b]$, so $F=F_0+C$. Evaluating at $a$ gives $C=F(a)$, and at $b$ gives $\int_a^bf=F(b)-F(a)$. Applying this to $F'$ on $[a,x]$ gives $F(x)=F(a)+\int_a^xF'$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does it matter that $[a,b]$ is an interval? Find two functions on $(-1,0)\cup(0,1)$ with the same derivative that don't differ by a constant.</p>
+  <details><summary>Answer</summary><div><p>“$F'=0$ ⇒ constant” needs an interval (mean value theorem). On $(-1,0)\cup(0,1)$, $\log|x|$ and $\log|x|+\operatorname{sign}(x)$ both have derivative $\frac1x$, but differ by $-1$ on the left and $+1$ on the right. That's why $\int\frac{dx}x=\log|x|+C$ means “on each interval not containing $0$”.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Prove the mean value theorem for integrals: for $f$ continuous on $[a,b]$ there is $\xi\in(a,b)$ with $\int_a^bf=f(\xi)(b-a)$.</p>
+  <details><summary>Answer</summary><div><p>Apply the mean value theorem of <a class="xl" href="lesson-17.html#proof-g">lesson 17</a> to the antiderivative $F_0(x)=\int_a^xf$: $F_0(b)-F_0(a)=F_0'(\xi)(b-a)$ for some $\xi\in(a,b)$, i.e. $\int_a^bf=f(\xi)(b-a)$. (A second proof: $\min f\le\frac1{b-a}\int_a^bf\le\max f$, then the intermediate value theorem.)</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write parts 1 and 2 from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-table-of-antiderivatives-it">The table of antiderivatives (it's on the official formula sheet)</h3>
+<p>Each line is a derivative from <a class="xl" href="lesson-17.html#s3-the-rules">lesson 17</a> or <a class="xl" href="lesson-18.html#s7-a-short-tour-the-inverse">18</a> read backwards. $C$ is an arbitrary constant, and each formula holds on every interval where the right side is defined.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>$f(x)$</th><th>$\int f(x)\,dx$</th><th>$f(x)$</th><th>$\int f(x)\,dx$</th></tr></thead>
+<tbody>
+<tr><td>$x^s$, $s\neq-1$</td><td>$\frac{x^{s+1}}{s+1}$</td><td>$\frac1x$</td><td>$\log|x|$</td></tr>
+<tr><td>$e^x$</td><td>$e^x$</td><td>$\cos x$, $\sin x$</td><td>$\sin x$, $-\cos x$</td></tr>
+<tr><td>$\cosh x$, $\sinh x$</td><td>$\sinh x$, $\cosh x$</td><td>$\frac1{\cos^2x}$</td><td>$\tan x$</td></tr>
+<tr><td>$\frac1{a^2+x^2}$</td><td>$\frac1a\arctan\frac xa$</td><td>$\frac1{\sqrt{a^2-x^2}}$</td><td>$\arcsin\frac xa$</td></tr>
+<tr><td>$\frac1{\sqrt{a^2+x^2}}$</td><td>$\operatorname{arsinh}\frac xa$</td><td>$\frac1{\sqrt{x^2-a^2}}$</td><td>$\operatorname{arcosh}\frac xa$</td></tr>
+</tbody></table></div>
+<p>Plus <strong>linearity</strong>: $\int(\alpha f+\beta g)=\alpha\int f+\beta\int g$. And the most useful habit of the lesson: <strong>check every antiderivative by differentiating it</strong>. It takes 20 seconds and catches almost every sign error.</p>
+</div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: first definite integrals</h3>
+<ol class="gq">
+  <li><p>$\int_0^\pi\sin x\,dx$ and $\int_1^e\frac{dx}x$.</p>
+  <details><summary>Answer</summary><div><p>$\bigl[-\cos x\bigr]_0^\pi=-(-1)-(-1)=2$. $\bigl[\log x\bigr]_1^e=1-0=1$.</p></div></details></li>
+  <li><p>$\int_0^1\frac{dx}{1+x^2}$, and $\int_0^{1/2}\frac{dx}{\sqrt{1-x^2}}$.</p>
+  <details><summary>Answer</summary><div><p>$\arctan1-\arctan0=\frac\pi4$. $\arcsin\frac12-\arcsin0=\frac\pi6$.</p></div></details></li>
+  <li><p>What goes wrong with “$\int_{-1}^1\frac{dx}{x^2}=\left[-\frac1x\right]_{-1}^1=-2$”?</p>
+  <details><summary>Answer</summary><div><p>A positive function can't have a negative integral. $\frac1{x^2}$ is not continuous (not even bounded) on $[-1,1]$, so Proof B doesn't apply: there is no antiderivative on the whole interval. This integral is “improper”, <a class="xl" href="lesson-20.html#proof-a">lesson 20</a>, and it is $+\infty$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s4-differentiating-power-series">4. Differentiating power series</h2>
+<p><a class="xl" href="lesson-16.html#s7-integrating-power-series-term-by">Lesson 16</a> integrated power series term by term (with the same radius). The fundamental theorem turns this into differentiation.</p>
+
+<h3 id="proof-c">Proof C: power series can be differentiated term by term (Korollar 9.11, <a class="pl" href="script.html#p420">p. 420–421</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f(x)=\sum_{n=0}^\infty c_nx^n$ have radius of convergence $R&gt;0$. Then $f$ is differentiable on $(-R,R)$ and</p>
+<span class="math-display" style="display:block">$$f'(x)=\sum_{n=1}^\infty nc_nx^{n-1},$$</span>
+<p>and this series also has radius $R$. Repeating it: $f$ is infinitely often differentiable on $(-R,R)$.</p>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-16.html#s7-integrating-power-series-term-by">lesson 16</a>)</span>
+<ul>
+  <li><strong>Term-by-term integration:</strong> a power series $g(x)=\sum b_kx^k$ with radius $S$ is continuous on $(-S,S)$, and $\int_0^xg=\sum\frac{b_k}{k+1}x^{k+1}$, again with radius $S$.</li>
+</ul></div>
+<p><strong>The idea.</strong> Don't differentiate $f$ directly. Take the series you <em>want</em> as the derivative, $g(x)=\sum nc_nx^{n-1}$, and integrate it term by term: you get back $f$ minus its constant term. So $f$ is an integral of the continuous $g$, and Proof A says its derivative is $g$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal:</strong> “$f$ is differentiable at each $x\in(-R,R)$ with $f'(x)=g(x)$”, and “the radius $S$ of $g$ equals $R$”.</li>
+  <li><strong>The gap:</strong> write $f$ as $c_0+\int_0^xg$. That needs $g$'s radius first.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Guess the spell's speed, word by word.</p></div><div class="sp-formal"><p>Let <span class="math-display" style="display:block">$$g(x)=\sum_{n=1}^\infty nc_nx^{n-1}=\sum_{k=0}^\infty(k+1)c_{k+1}x^k,$$</span>with radius $S$. On $(-S,S)$, $g$ is continuous (<a class="xl" href="lesson-16.html#s7-integrating-power-series-term-by">lesson 16</a>).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Add up the guessed speed: the spell itself comes back, minus its first word.</p></div><div class="sp-formal"><p>Term-by-term integration gives, for $|x|&lt;S$,</p><span class="math-display" style="display:block">$$\begin{aligned}G(x):=\int_0^xg(t)\,dt&amp;=\sum_{k=0}^\infty\frac{(k+1)c_{k+1}}{k+1}x^{k+1}\\&amp;=\sum_{n=1}^\infty c_nx^n,\end{aligned}$$</span><p>and this series has radius $S$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the two spells reach equally far.</p></div><div class="sp-formal"><p>But $\sum_{n\ge1}c_nx^n$ is $f$ without its constant term, which has radius $R$. Hence $S=R$, and $f(x)=c_0+G(x)$ on $(-R,R)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>And the Ledger's speed is the Hourglass.</p></div><div class="sp-formal"><p>$g$ is continuous on $(-R,R)$, so by Proof A, $G'=g$ there. Therefore $f'(x)=G'(x)=g(x)=\sum_{n\ge1}nc_nx^{n-1}$. Applying this to $f'$ again and again gives all higher derivatives. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-partial">go to partial sums</a> (through term-by-term integration) <a class="mvl" href="moves.html#m-const">name the constant, then plug in a point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $g(x)=\sum_{k\ge0}(k+1)c_{k+1}x^k$ with radius $S$; $g$ is continuous on $(-S,S)$. By term-by-term integration, $G(x)=\int_0^xg=\sum_{n\ge1}c_nx^n$ with radius $S$; since this is $f-c_0$, $S=R$. By Proof A, $G'=g$ on $(-R,R)$, so $f'=(c_0+G)'=g=\sum_{n\ge1}nc_nx^{n-1}$. Iterating gives smoothness. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Differentiate $\exp(x)=\sum\frac{x^n}{n!}$ term by term. What do you get?</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\sum_{n\ge1}\frac{nx^{n-1}}{n!}=\sum_{n\ge1}\frac{x^{n-1}}{(n-1)!}=\exp(x).$$</span><a class="xl" href="lesson-17.html#s3-the-rules">Lesson 17</a> needed the addition formula for $\exp'=\exp$; here it's one line.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Show $\sum_{n\ge1}nx^n=\frac x{(1-x)^2}$ for $|x|&lt;1$.</p>
+  <details><summary>Answer</summary><div><p>Differentiate $\sum_{n\ge0}x^n=\frac1{1-x}$ (radius $1$): $\sum_{n\ge1}nx^{n-1}=\frac1{(1-x)^2}$. Multiply by $x$.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: values of famous series</h3>
+<ol class="gq">
+  <li><p>Show $\log(1+x)=\sum_{k\ge1}\frac{(-1)^{k+1}}kx^k$ for $|x|&lt;1$.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\log(1+x)'=\frac1{1+x}=\sum_{n\ge0}(-1)^nx^n$$</span>for $|x|&lt;1$. By Proof B part 3 and term-by-term integration: <span class="math-display" style="display:block">$$\begin{aligned}\log(1+x)&amp;=\log1+\int_0^x\sum(-1)^nt^n\,dt\\&amp;=\sum_{n\ge0}\frac{(-1)^n}{n+1}x^{n+1}.\end{aligned}$$</span>(This is on the formula sheet.)</p></div></details></li>
+  <li><p>Felder HS22 1.A6 (2 points): compute $\sum_{n=1}^\infty\frac1{n\,2^n}$.</p>
+  <details><summary>Answer</summary><div><p>Put $x=-\frac12$ in the series for $-\log(1+x)$: $-\log(1+x)=\sum_{k\ge1}\frac{(-1)^k}kx^k$, and with $x=-\frac12$, $(-1)^kx^k=\frac1{2^k}$. So the sum is $-\log\frac12=\log2$. (Equivalently: $-\log(1-y)=\sum\frac{y^n}n$ at $y=\frac12$.)</p></div></details></li>
+  <li><p>Why does $1-\frac12+\frac13-\frac14+\dots=\log2$ need one more step than item 1?</p>
+  <details><summary>Answer</summary><div><p>Item 1 holds only for $|x|&lt;1$, and $x=1$ is on the boundary. The series converges at $x=1$ (Leibniz), so by Abel's theorem (<a class="xl" href="lesson-16.html#we-4">lesson 16</a>) the power series is continuous up to $x=1$, and $\log(1+x)$ is too. Letting $x\nearrow1$ gives $\log2$. The same with <span class="math-display" style="display:block">$$\arctan'(x)=\frac1{1+x^2}=\sum(-1)^nx^{2n}$$</span>gives $1-\frac13+\frac15-\dots=\arctan1=\frac\pi4$.</p></div></details></li>
+</ol>
+</div>
+<p><strong>Why it's cool.</strong> Three numbers that seem to come from different worlds meet here: $\frac\pi4$ (a circle), $\log2$ (exponential growth), and the plain fractions $1,\frac13,\frac15,\dots$. The fundamental theorem is the bridge: a fact about derivatives ($\arctan'=\frac1{1+x^2}$) becomes a fact about areas, and then about an infinite sum. Newton and Leibniz each found this bridge in the 1660s–1670s, and with it, problems that had taken Archimedes a whole book became exercises.</p>
+
+<h2 id="s5-integration-by-parts">5. Integration by parts</h2>
+<p>Each rule of differentiation, read backwards, is a rule of integration. The product rule gives integration by parts.</p>
+
+<h3 id="proof-d">Proof D: integration by parts (Section 9.2.1 and 9.2.6, <a class="pl" href="script.html#p425">p. 425</a> and 434)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $u,v$ be continuously differentiable on an interval. Then</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\int u\,v'\,dx=u\,v-\int u'\,v\,dx\\&amp;\int_a^bu\,v'\,dx=\bigl[u\,v\bigr]_a^b-\int_a^bu'\,v\,dx.\end{aligned}$$</span>
+</div>
+<p><strong>The idea.</strong> The product rule $(uv)'=u'v+uv'$ says $uv$ is an antiderivative of $u'v+uv'$. Move one of the two terms to the other side. The point of the rule: you trade the integral of $uv'$ for the integral of $u'v$, which is easier when differentiating $u$ makes it simpler (like $x\mapsto1$) and integrating $v'$ doesn't make it worse (like $e^x$).</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal (indefinite):</strong> “$uv-W$ is an antiderivative of $uv'$, where $W$ is an antiderivative of $u'v$.” So: differentiate $uv-W$.</li>
+  <li><strong>Goal (definite):</strong> an equation of numbers: use Proof B on both sides.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The hard ledger is not written directly; it's a known ledger minus an easier one.</p></div><div class="sp-formal"><p>$u'v$ is continuous, so it has an antiderivative $W$ (Proof B). By the product rule, $(uv-W)'=u'v+uv'-u'v=uv'$. So $uv-W$ is an antiderivative of $uv'$, which is the indefinite formula.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Between morning and evening, read off each ledger.</p></div><div class="sp-formal"><p>By Proof B, <span class="math-display" style="display:block">$$\begin{aligned}\int_a^buv'&amp;=\bigl[uv-W\bigr]_a^b\\&amp;=\bigl[uv\bigr]_a^b-\bigl[W\bigr]_a^b\\&amp;=\bigl[uv\bigr]_a^b-\int_a^bu'v.\end{aligned}$$</span><span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-check">check by differentiating</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $W$ be an antiderivative of the continuous $u'v$. Then $(uv-W)'=u'v+uv'-u'v=uv'$, so $\int uv'=uv-\int u'v$. Evaluating with Proof B: $\int_a^buv'=[uv]_a^b-[W]_a^b=[uv]_a^b-\int_a^bu'v$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why do we need $u,v$ <em>continuously</em> differentiable, not just differentiable?</p>
+  <details><summary>Answer</summary><div><p>So that $u'v$ and $uv'$ are continuous, hence integrable with an antiderivative (Proof B). With merely differentiable $u,v$, the integrals might not exist.</p></div></details></li>
+  <li><p><strong>Rung 2 (1 min).</strong> Write the rule in the short form with $dv$ and $du$.</p>
+  <details><summary>Answer</summary><div><p>$\int u\,dv=uv-\int v\,du$, where $dv=v'dx$ and $du=u'dx$. It is only shorthand for the formula above.</p></div></details></li>
+  <li><p><strong>Rung 3 (2 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="how-to-choose-and">How to choose $u$ and $v'$</h3>
+<ul>
+  <li><strong>$u$:</strong> the factor that gets simpler when differentiated: a polynomial $x^n$ (after $n$ steps it's a constant), $\log x$ (becomes $\frac1x$), $\arctan x$, $\arcsin x$.</li>
+  <li><strong>$v'$:</strong> the factor you can integrate without it getting worse: $e^{x}$, $\sin x$, $\cos x$, $x^s$.</li>
+  <li><strong>A single $\log x$ or $\arctan x$:</strong> take $v'=1$.</li>
+  <li><strong>$e^{ax}\sin(bx)$:</strong> integrate by parts twice; the original integral comes back, and you solve for it.</li>
+</ul>
+</div>
+
+<div class="box">
+<h3 id="we-4">Worked example 4: integration by parts</h3>
+<ol class="gq">
+  <li><p>$\int xe^x\,dx$.</p>
+  <details><summary>Answer</summary><div><p>$u=x$, $v'=e^x$, so $u'=1$, $v=e^x$: <span class="math-display" style="display:block">$$\begin{aligned}\int xe^x\,dx&amp;=xe^x-\int e^x\,dx\\&amp;=(x-1)e^x+C.\end{aligned}$$</span>Check: <span class="math-display" style="display:block">$$\bigl((x-1)e^x\bigr)'=e^x+(x-1)e^x=xe^x.$$</span>✓</p></div></details></li>
+  <li><p>$\int\log x\,dx$ for $x&gt;0$.</p>
+  <details><summary>Answer</summary><div><p>$u=\log x$, $v'=1$: <span class="math-display" style="display:block">$$\begin{aligned}\int\log x\,dx&amp;=x\log x-\int x\cdot\frac1x\,dx\\&amp;=x\log x-x+C.\end{aligned}$$</span></p></div></details></li>
+  <li><p>$\int_0^\pi x\cos x\,dx$ (2019 winter exam, question 1a).</p>
+  <details><summary>Answer</summary><div><p>$u=x$, $v'=\cos x$: <span class="math-display" style="display:block">$$\begin{aligned}&amp;\bigl[x\sin x\bigr]_0^\pi-\int_0^\pi\sin x\,dx\\&amp;\quad=0-\bigl[-\cos x\bigr]_0^\pi\\&amp;\quad=0-2\\&amp;\quad=-2.\end{aligned}$$</span></p></div></details></li>
+  <li><p>$\int e^x\sin x\,dx$.</p>
+  <details><summary>Answer</summary><div><p>Call it $I$. With $u=\sin x$, $v'=e^x$: $I=e^x\sin x-\int e^x\cos x\,dx$. Again with $u=\cos x$: <span class="math-display" style="display:block">$$\begin{aligned}\int e^x\cos x\,dx&amp;=e^x\cos x+\int e^x\sin x\,dx\\&amp;=e^x\cos x+I.\end{aligned}$$</span>So $I=e^x\sin x-e^x\cos x-I$, and $I=\frac12e^x(\sin x-\cos x)+C$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s6-substitution">6. Substitution</h2>
+<p>The chain rule, read backwards, is the substitution rule.</p>
+
+<h3 id="proof-e">Proof E: the substitution rule (Section 9.2.2 and 9.2.6, <a class="pl" href="script.html#p426">p. 426</a> and 435)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $\varphi:[a,b]\to I$ be continuously differentiable and $g:I\to\mathbb R$ continuous on an interval $I$. Then</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\int g\bigl(\varphi(x)\bigr)\varphi'(x)\,dx=G\bigl(\varphi(x)\bigr)+C\\&amp;\int_a^bg\bigl(\varphi(x)\bigr)\varphi'(x)\,dx=\int_{\varphi(a)}^{\varphi(b)}g(u)\,du,\end{aligned}$$</span>
+<p>where $G$ is any antiderivative of $g$.</p>
+</div>
+<p><strong>The idea.</strong> By the chain rule, $(G\circ\varphi)'=g(\varphi)\cdot\varphi'$. So if the integrand has the form “$g$ of an inner function, times the inner function's derivative”, the antiderivative is $G$ of the inner function. In practice: name the inner function $u=\varphi(x)$, replace $\varphi'(x)\,dx$ by $du$, and in a definite integral also replace the limits by $\varphi(a)$ and $\varphi(b)$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal (indefinite):</strong> “$(G\circ\varphi)'=(g\circ\varphi)\cdot\varphi'$.”</li>
+  <li><strong>Goal (definite):</strong> both sides equal $G(\varphi(b))-G(\varphi(a))$, by Proof B twice.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Measure the crossing in a different clock: the inner clock's speed comes out as a factor.</p></div><div class="sp-formal"><p>$g$ is continuous, so it has an antiderivative $G$ on $I$ (Proof B). By the chain rule, <span class="math-display" style="display:block">$$(G\circ\varphi)'(x)=G'(\varphi(x))\varphi'(x)=g(\varphi(x))\varphi'(x):$$</span>the indefinite formula.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Both ledgers show the same difference between morning and evening.</p></div><div class="sp-formal"><p>The integrand $(g\circ\varphi)\varphi'$ is continuous, so by Proof B, <span class="math-display" style="display:block">$$\begin{aligned}\int_a^bg(\varphi(x))\varphi'(x)\,dx&amp;=G(\varphi(b))-G(\varphi(a))\\&amp;=\int_{\varphi(a)}^{\varphi(b)}g(u)\,du.\end{aligned}$$</span><span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-check">check by differentiating</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $G'=g$ on $I$. By the chain rule $(G\circ\varphi)'=(g\circ\varphi)\varphi'$, which is continuous; so by Proof B, <span class="math-display" style="display:block">$$\int_a^b(g\circ\varphi)\varphi'=G(\varphi(b))-G(\varphi(a))=\int_{\varphi(a)}^{\varphi(b)}g.$$</span><span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> In $\int_0^2xe^{x^2}dx$, what are $\varphi$, $g$ and the new limits? Compute it.</p>
+  <details><summary>Answer</summary><div><p>$\varphi(x)=x^2$, $\varphi'(x)=2x$, $g(u)=\frac12e^u$. New limits $0$ and $4$: $\int_0^4\frac12e^u\,du=\frac12(e^4-1)$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Substitution “the other way round”: in $\int\sqrt{1-x^2}\,dx$ we put $x=\sin\theta$, i.e. we express the <em>old</em> variable by the new one. What extra condition does $x=\psi(\theta)$ need, compared with $u=\varphi(x)$?</p>
+  <details><summary>Answer</summary><div><p>$\psi$ must be invertible (here $\sin:\left(-\frac\pi2,\frac\pi2\right)\to(-1,1)$ is bijective), so that at the end we can write $\theta=\arcsin x$ and go back to $x$. Then apply Proof E with $\varphi=\psi^{-1}$.</p></div></details></li>
+  <li><p><strong>Rung 3 (2 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="how-to-spot-a-substitution">How to spot a substitution</h3>
+<ul>
+  <li><strong>An inner function whose derivative is (up to a constant) also a factor:</strong> $xe^{x^2}$, $\frac{x}{1+x^2}$, $x^{2017}\sin(x^{2018})$, $\frac{\cos x}{1+\sin x}$, $\frac{\log x}x$.</li>
+  <li><strong>$\frac{\varphi'}{\varphi}$:</strong> $\int\frac{\varphi'(x)}{\varphi(x)}dx=\log|\varphi(x)|+C$. Very common: $\tan x=\frac{\sin x}{\cos x}=-\frac{(\cos x)'}{\cos x}$.</li>
+  <li><strong>A root or a strange inner function you want to get rid of:</strong> $u=\sqrt x$ (so $x=u^2$, $dx=2u\,du$), $u=\sqrt t+1$, $u=e^x$, $u=t^{1/6}$. Express everything in $u$ and hope for a rational function.</li>
+  <li><strong>Linear inner functions</strong> are free: $\int f(ax+b)\,dx=\frac1aF(ax+b)+C$.</li>
+</ul>
+</div>
+
+<div class="box">
+<h3 id="we-5">Worked example 5: substitution</h3>
+<ol class="gq">
+  <li><p>$\int\frac x{1+x^2}dx$ and $\int\tan x\,dx$.</p>
+  <details><summary>Answer</summary><div><p>$u=1+x^2$, $du=2x\,dx$: $\int\frac{du}{2u}=\frac12\log(1+x^2)+C$. And $u=\cos x$, $du=-\sin x\,dx$: <span class="math-display" style="display:block">$$\begin{aligned}\int\tan x\,dx&amp;=-\int\frac{du}u\\&amp;=-\log|\cos x|+C\end{aligned}$$</span>on each interval where $\cos x\neq0$.</p></div></details></li>
+  <li><p>$\int x^{2017}\sin\left(x^{2018}\right)dx$ (2018 summer exam, question 1a).</p>
+  <details><summary>Answer</summary><div><p>$u=x^{2018}$, $du=2018x^{2017}dx$: <span class="math-display" style="display:block">$$\begin{aligned}\frac1{2018}\int\sin u\,du&amp;=-\frac1{2018}\cos\left(x^{2018}\right)+C\end{aligned}.$$</span></p></div></details></li>
+  <li><p>$\int\sin\sqrt x\,dx$ for $x&gt;0$.</p>
+  <details><summary>Answer</summary><div><p>$x=u^2$ with $u=\sqrt x&gt;0$, $dx=2u\,du$: $\int2u\sin u\,du$. By parts ($u$ differentiated, $\sin u$ integrated): $2(-u\cos u+\sin u)$. So <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int\sin\sqrt x\,dx\\&amp;\quad=2\sin\sqrt x-2\sqrt x\cos\sqrt x+C.\end{aligned}$$</span></p></div></details></li>
+  <li><p>$\int_0^{\pi^2}\cos\sqrt x\,dx$ (Figalli HS23, MC6). (A) $0$ (B) $2$ (C) $-4$ (D) $-1$</p>
+  <details><summary>Answer</summary><div><p>$x=s^2$, $dx=2s\,ds$, limits $0$ and $\pi$: $2\int_0^\pi s\cos s\,ds=2\cdot(-2)=-4$, using Worked example 4, item 3. <strong>(C).</strong></p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s7-rational-functions-and-partial-fractions">7. Rational functions and partial fractions</h2>
+<p>A rational function $\frac{p(x)}{q(x)}$ always has an elementary antiderivative, and there is a fixed recipe. It is the method behind most of the K1 questions.</p>
+<div class="box">
+<h3 id="the-recipe-for">The recipe for $\int\frac{p(x)}{q(x)}dx$</h3>
+<ol>
+  <li><strong>Divide</strong> if $\deg p\ge\deg q$: $\frac pq=s+\frac{r}q$ with a polynomial $s$ and $\deg r&lt;\deg q$ (polynomial division).</li>
+  <li><strong>Factor</strong> $q$ into linear factors $(x-a)$ and quadratic factors $x^2+bx+c$ without real zeros.</li>
+  <li><strong>Ansatz:</strong> one term $\frac{A}{x-a}$ per simple zero; $\frac{A_1}{x-a}+\frac{A_2}{(x-a)^2}+\dots+\frac{A_k}{(x-a)^k}$ for a $k$-fold zero; $\frac{Bx+C}{x^2+bx+c}$ per quadratic factor.</li>
+  <li><strong>Find the constants:</strong> multiply by $q$, then plug in the zeros of $q$ (the fastest way), and compare coefficients or plug in other values for the rest.</li>
+  <li><strong>Integrate each piece:</strong></li>
+</ol>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\int\frac{dx}{x-a}=\log|x-a|\\&amp;\int\frac{dx}{(x-a)^k}=\frac{(x-a)^{1-k}}{1-k}\ (k\ge2)\\&amp;\int\frac{dx}{(x+\beta)^2+\gamma^2}=\frac1\gamma\arctan\frac{x+\beta}\gamma\\&amp;\int\frac{2x+b}{x^2+bx+c}dx=\log(x^2+bx+c).\end{aligned}$$</span>
+<p>For $\frac{Bx+C}{x^2+bx+c}$: split off a multiple of $2x+b$ (the derivative of the denominator), and complete the square in the rest: $x^2+bx+c=\left(x+\frac b2\right)^2+\left(c-\frac{b^2}4\right)$.</p>
+</div>
+
+<div class="box">
+<h3 id="we-6">Worked example 6: partial fractions</h3>
+<ol class="gq">
+  <li><p>$\int\frac{dx}{x^2-x-2}$ (Einsiedler mock HS21, 1c).</p>
+  <details><summary>Answer</summary><div><p>$x^2-x-2=(x-2)(x+1)$. Ansatz $\frac1{(x-2)(x+1)}=\frac A{x-2}+\frac B{x+1}$, so $1=A(x+1)+B(x-2)$. $x=2$: $A=\frac13$. $x=-1$: $B=-\frac13$. Hence <span class="math-display" style="display:block">$$\begin{aligned}\int&amp;=\frac13\log|x-2|-\frac13\log|x+1|+C\\&amp;=\frac13\log\left|\frac{x-2}{x+1}\right|+C.\end{aligned}$$</span></p></div></details></li>
+  <li><p>$\int\frac{2x+1}{x^2(x+1)}dx$ (Figalli FS26, K1).</p>
+  <details><summary>Answer</summary><div><p>Double zero at $0$: $\frac{2x+1}{x^2(x+1)}=\frac A{x^2}+\frac Bx+\frac C{x+1}$, so <span class="math-display" style="display:block">$$\begin{aligned}2x+1&amp;=A(x+1)+Bx(x+1)+Cx^2\end{aligned}.$$</span>$x=0$: $A=1$. $x=-1$: $C=-1$. Coefficient of $x^2$: $0=B+C$, so $B=1$. Hence <span class="math-display" style="display:block">$$\int=-\frac1x+\log|x|-\log|x+1|+C.$$</span></p></div></details></li>
+  <li><p>$\int\frac{dx}{x(x^2+2x+2)}$ .</p>
+  <details><summary>Answer</summary><div><p>$x^2+2x+2=(x+1)^2+1$ has no real zeros. Ansatz $\frac Ax+\frac{Bx+C}{x^2+2x+2}$: <span class="math-display" style="display:block">$$1=A(x^2+2x+2)+(Bx+C)x.$$</span>$x=0$: $A=\frac12$. Coefficients of $x^2$: $0=\frac12+B$, so $B=-\frac12$; of $x$: $0=1+C$, so $C=-1$. The second piece is <span class="math-display" style="display:block">$$\begin{aligned}&amp;-\frac12\cdot\frac{x+2}{x^2+2x+2}\\&amp;\quad=-\frac14\cdot\frac{2x+2}{x^2+2x+2}\\&amp;\qquad-\frac12\cdot\frac1{(x+1)^2+1}.\end{aligned}$$</span>So</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\int={}&amp;\tfrac12\log|x|-\tfrac14\log\left(x^2+2x+2\right)\\&amp;-\tfrac12\arctan(x+1)+C.\end{aligned}$$</span></div></details></li>
+  <li><p>$\int\frac{3}{(1+x^2)(4+x^2)}dx$ (Figalli HS23, K1).</p>
+  <details><summary>Answer</summary><div><p>Treat $x^2$ as one variable $y$: $\frac3{(1+y)(4+y)}=\frac1{1+y}-\frac1{4+y}$ (check: $\frac{(4+y)-(1+y)}{(1+y)(4+y)}$). So $\int=\arctan x-\frac12\arctan\frac x2+C$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s8-trigonometric-hyperbolic-and-half-angle">8. Trigonometric, hyperbolic and half-angle substitutions</h2>
+<p>Roots of quadratic expressions disappear with the right substitution, because of $1-\sin^2=\cos^2$, $1+\tan^2=\frac1{\cos^2}$ and $\cosh^2-1=\sinh^2$. These are all substitutions of the “other way round” kind (Proof E, Rung 2).</p>
+<div class="box">
+<h3 id="which-substitution-on-the-formula">Which substitution? (on the formula sheet)</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>The integrand contains</th><th>Substitute</th><th>Then</th></tr></thead>
+<tbody>
+<tr><td>$\sqrt{a^2-x^2}$</td><td>$x=a\sin\theta$, $\theta\in\left(-\frac\pi2,\frac\pi2\right)$</td><td>$dx=a\cos\theta\,d\theta$, $\sqrt{a^2-x^2}=a\cos\theta$</td></tr>
+<tr><td>$\sqrt{a^2+x^2}$</td><td>$x=a\tan\theta$, $\theta\in\left(-\frac\pi2,\frac\pi2\right)$</td><td>$dx=\frac{a\,d\theta}{\cos^2\theta}$, $\sqrt{a^2+x^2}=\frac a{\cos\theta}$</td></tr>
+<tr><td>$\sqrt{x^2-a^2}$</td><td>$x=a\cosh u$, $u&gt;0$</td><td>$dx=a\sinh u\,du$, $\sqrt{x^2-a^2}=a\sinh u$</td></tr>
+<tr><td>a rational function of $\sin x,\cos x$</td><td>$u=\tan\frac x2$ (half-angle)</td><td>$dx=\frac{2\,du}{1+u^2}$, $\sin x=\frac{2u}{1+u^2}$, $\cos x=\frac{1-u^2}{1+u^2}$</td></tr>
+<tr><td>a single $x$ in front: $x\sqrt{a^2-x^2}$</td><td>$u=a^2-x^2$ (plain substitution)</td><td>$du=-2x\,dx$</td></tr>
+</tbody></table></div>
+<p>At the end, go back to $x$: draw a right triangle with angle $\theta$ and label its sides with Pythagoras. For $x=a\sin\theta$: opposite side $x$, hypotenuse $a$, adjacent side $\sqrt{a^2-x^2}$.</p>
+</div>
+
+<div class="box">
+<h3 id="we-7">Worked example 7: the area of a circle, and friends</h3>
+<ol class="gq">
+  <li><p>$\int\sqrt{1-x^2}\,dx$ on $(-1,1)$.</p>
+  <details><summary>Answer</summary><div><p>$x=\sin\theta$, $dx=\cos\theta\,d\theta$, $\sqrt{1-x^2}=\cos\theta$ (positive on $\left(-\frac\pi2,\frac\pi2\right)$). So <span class="math-display" style="display:block">$$\begin{aligned}\int\cos^2\theta\,d\theta&amp;=\int\frac{1+\cos2\theta}2d\theta\\&amp;=\frac\theta2+\frac{\sin2\theta}4\\&amp;=\frac\theta2+\frac{\sin\theta\cos\theta}2.\end{aligned}$$</span>Back to $x$: <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int\sqrt{1-x^2}\,dx\\&amp;\quad=\frac12\arcsin x+\frac12x\sqrt{1-x^2}+C.\end{aligned}$$</span></p></div></details></li>
+  <li><p>$\int_0^1\sqrt{1-x^2}\,dx$ (PVK mock MC5). (A) $\frac\pi2$ (B) $\frac\pi4$ (C) $1$ (D) $2$</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\left[\frac12\arcsin x+\frac12x\sqrt{1-x^2}\right]_0^1&amp;=\frac12\cdot\frac\pi2\\&amp;=\frac\pi4.\end{aligned}$$</span><strong>(B)</strong>: the area of a quarter of the unit disc, as it must be. (The antiderivative is continuous on $[-1,1]$, so evaluating at $1$ is fine.)</p></div></details></li>
+  <li><p>$\int\frac{dx}{(1+x^2)^{3/2}}$.</p>
+  <details><summary>Answer</summary><div><p>$x=\tan\theta$, $dx=\frac{d\theta}{\cos^2\theta}$, $(1+x^2)^{3/2}=\frac1{\cos^3\theta}$: $\int\cos\theta\,d\theta=\sin\theta$. Triangle: opposite $x$, adjacent $1$, hypotenuse $\sqrt{1+x^2}$, so $\sin\theta=\frac x{\sqrt{1+x^2}}$. Answer: $\frac x{\sqrt{1+x^2}}+C$. Check by differentiating!</p></div></details></li>
+  <li><p>$\int\frac{dx}{1+\cos x}$ on $(-\pi,\pi)$ (Figalli HS23 K2, Kobel-Keller HS24 question 14).</p>
+  <details><summary>Answer</summary><div><p>Half-angle: $1+\cos x=1+\frac{1-u^2}{1+u^2}=\frac2{1+u^2}$, and $dx=\frac{2\,du}{1+u^2}$. So <span class="math-display" style="display:block">$$\begin{aligned}\int\frac{1+u^2}2\cdot\frac2{1+u^2}du&amp;=\int du\\&amp;=u\\&amp;=\tan\frac x2+C.\end{aligned}$$</span>(Shortcut: $1+\cos x=2\cos^2\frac x2$, and $\int\frac{dx}{2\cos^2(x/2)}=\tan\frac x2$.)</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s9-worked-examples-choosing-the-method">9. Worked examples: choosing the method</h2>
+<p>A mixed set to revise the whole lesson before the exercises. In the exam the hard part is not the computation, but seeing which method fits. For each integral, first say <em>which method</em> and why, then open the answer.</p>
+<div class="box">
+<h3 id="the-decision-list-in-this">The decision list (in this order)</h3>
+<ol>
+  <li>Is it in the <strong>table</strong>, maybe after simplifying or splitting the fraction?</li>
+  <li>Is there an <strong>inner function whose derivative is also a factor</strong>? Then substitution. (Includes $\frac{\varphi'}\varphi$.)</li>
+  <li>Is it a <strong>product of two different kinds</strong> (polynomial × exp/trig, or a single log/arctan)? Then by parts.</li>
+  <li>Is it a <strong>rational function</strong>? Then partial fractions.</li>
+  <li>Is there $\sqrt{a^2\pm x^2}$ or $\sqrt{x^2-a^2}$? Trigonometric or hyperbolic substitution. Only $\sin$ and $\cos$ in a fraction? Half-angle.</li>
+  <li>A root or exponential you'd like to get rid of? Substitute it, $u=\sqrt x$, $u=e^x$, and see.</li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-8">Worked example 8: which method?</h3>
+<ol class="gq">
+  <li><p>$\int\frac{\log x}x\,dx$.</p>
+  <details><summary>Answer</summary><div><p>Substitution: $u=\log x$, $du=\frac{dx}x$. $\int u\,du=\frac12(\log x)^2+C$. (By parts would also work, but takes longer.)</p></div></details></li>
+  <li><p>$\int x^2e^{-x}\,dx$ (Einsiedler FS22, 1b).</p>
+  <details><summary>Answer</summary><div><p>By parts, twice ($u=x^2$, then $u=x$, with $v'=e^{-x}$, $v=-e^{-x}$): <span class="math-display" style="display:block">$$\begin{aligned}&amp;-x^2e^{-x}+\int2xe^{-x}dx\\&amp;\quad=-x^2e^{-x}-2xe^{-x}+\int2e^{-x}dx\\&amp;\quad=-(x^2+2x+2)e^{-x}+C.\end{aligned}$$</span></p></div></details></li>
+  <li><p>$\int\frac{dx}{x(x+3)}$ (2018 summer, 1d).</p>
+  <details><summary>Answer</summary><div><p>Partial fractions: $\frac1{x(x+3)}=\frac13\left(\frac1x-\frac1{x+3}\right)$. $\int=\frac13\log\left|\frac x{x+3}\right|+C$.</p></div></details></li>
+  <li><p>$\int\frac{\sin x}{1+\cos x}dx$ (Figalli FS24, K2).</p>
+  <details><summary>Answer</summary><div><p>$\frac{\varphi'}\varphi$ with $\varphi=1+\cos x$, $\varphi'=-\sin x$: $\int=-\log(1+\cos x)+C$. No half-angle needed: the numerator is (minus) the derivative of the denominator.</p></div></details></li>
+  <li><p>$\int\frac{dx}{1+e^x}$.</p>
+  <details><summary>Answer</summary><div><p>Get rid of $e^x$: $u=e^x$, $du=u\,dx$: <span class="math-display" style="display:block">$$\begin{aligned}\int\frac{du}{u(1+u)}&amp;=\int\left(\frac1u-\frac1{1+u}\right)du\\&amp;=\log u-\log(1+u).\end{aligned}$$</span>So $x-\log(1+e^x)+C$.</p></div></details></li>
+  <li><p>$\int_1^e x\left(\log x+\frac12\right)dx$ (2018 summer, 1b).</p>
+  <details><summary>Answer</summary><div><p>By parts on $x\log x$ ($u=\log x$, $v=\frac{x^2}2$): $\int x\log x=\frac{x^2}2\log x-\frac{x^2}4$. Adding $\int\frac x2=\frac{x^2}4$ gives the antiderivative $\frac{x^2}2\log x$. So the integral is $\frac{e^2}2-0=\frac{e^2}2$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s10-exercises">10. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1–5 count for scoring. Exercises 6–11 are more exam integrals and theory, sorted by exam, and the Bonus is a classic.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Einsiedler HS21, question 1a, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Compute the indefinite integral $\int x^2\cos x\,dx$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> polynomial × trig: by parts twice, the polynomial is differentiated. <em>Moves:</em> <a class="mvl" href="moves.html#m-check">check by differentiating</a>.</p>
+  <p>$u=x^2$, $v'=\cos x$, so $u'=2x$, $v=\sin x$: <span class="math-display" style="display:block">$$\int x^2\cos x\,dx=x^2\sin x-\int2x\sin x\,dx.$$</span></p>
+  <p>Again, $u=2x$, $v'=\sin x$, so $v=-\cos x$: <span class="math-display" style="display:block">$$\begin{aligned}\int2x\sin x\,dx&amp;=-2x\cos x+\int2\cos x\,dx\\&amp;=-2x\cos x+2\sin x.\end{aligned}$$</span></p>
+  <p>Together: <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int x^2\cos x\,dx\\&amp;\quad=x^2\sin x+2x\cos x-2\sin x+C\\&amp;\quad=(x^2-2)\sin x+2x\cos x+C.\end{aligned}$$</span></p>
+  <p>Check: <span class="math-display" style="display:block">$$\begin{aligned}&amp;\bigl((x^2-2)\sin x+2x\cos x\bigr)'\\&amp;\quad=2x\sin x+(x^2-2)\cos x\\&amp;\qquad+2\cos x-2x\sin x\\&amp;\quad=x^2\cos x.\end{aligned}$$</span>✓ (The official grading: a missing factor 2 or one wrong sign after a correct first step gives 1 of 2 points.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (PVK mock HS25, K1, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK mock exam</a> · <a href="pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">solutions</a></p>
+  <p>Compute $\int\frac{3x-2}{x(x+1)}dx$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> rational function, numerator degree smaller: partial fractions.</p>
+  <p>$\frac{3x-2}{x(x+1)}=\frac Ax+\frac B{x+1}$ gives $3x-2=A(x+1)+Bx$. $x=0$: $A=-2$. $x=-1$: $-5=-B$, so $B=5$.</p>
+  <p><span class="math-display" style="display:block">$$\begin{aligned}\int\frac{3x-2}{x(x+1)}dx&amp;=-2\log|x|+5\log|x+1|+C\end{aligned}.$$</span></p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (PVK mock HS25, K2, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK mock exam</a> · <a href="pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">solutions</a></p>
+  <p>Compute $\int\frac{\cos x}{1+\sin x}dx$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> the numerator is the derivative of the denominator: $\frac{\varphi'}\varphi$.</p>
+  <p>$u=1+\sin x$, $du=\cos x\,dx$: <span class="math-display" style="display:block">$$\begin{aligned}\int\frac{du}u&amp;=\log|1+\sin x|+C\\&amp;=\log(1+\sin x)+C\end{aligned}$$</span>(as $1+\sin x\ge0$, on each interval where it's $&gt;0$). Figalli FS26 K2, $\int\frac{\cos x}{2+\sin x}dx=\log(2+\sin x)+C$, is the same question.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Einsiedler HS21, question 1b, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Compute $\int_1^4\frac{\exp\left(\sqrt t+1\right)}{\sqrt t}dt$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> an inner function $\sqrt t+1$ whose derivative $\frac1{2\sqrt t}$ is also a factor: substitution, with new limits.</p>
+  <p>$u=\sqrt t+1$, $\frac{du}{dt}=\frac1{2\sqrt t}$, so $\frac{dt}{\sqrt t}=2\,du$. Limits: $t=1\mapsto u=2$, $t=4\mapsto u=3$.</p>
+  <span class="math-display" style="display:block">$$\int_1^4\frac{e^{\sqrt t+1}}{\sqrt t}dt=2\int_2^3e^u\,du=2\left(e^3-e^2\right).$$</span>
+  <p>(Official grading: 1 point if the correct value appears but a “$+C$” is left in a definite integral.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (Figalli FS24 K1 and Felder FS23 1.A3, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a> · <a href="pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">FS24 exam with solutions</a></p>
+  <p>(a) $\int\frac{2x+1}{x(x-1)}dx$. (b) $\int\frac{dx}{x(x^2+1)}$ for $x&gt;0$. (Count it as 2 points if both are right, 1 if one is.)</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) $2x+1=A(x-1)+Bx$. $x=0$: $A=-1$. $x=1$: $B=3$. So $\int=-\log|x|+3\log|x-1|+C$.</p>
+  <p>(b) $\frac1{x(x^2+1)}=\frac Ax+\frac{Bx+C}{x^2+1}$: $1=A(x^2+1)+(Bx+C)x$. $x=0$: $A=1$. $x^2$: $0=A+B$, so $B=-1$; $x$: $C=0$. So <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int\left(\frac1x-\frac x{x^2+1}\right)dx\\&amp;\quad=\log x-\frac12\log(1+x^2)+C.\end{aligned}$$</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercises 1–5 are 2 points each and make 10. If you have 7 of 10, you're done. Exercises 6–11 and the Bonus are extra practice and don't count against you. Exercise 10 is Proof A as an exam question: do it if Proof A felt good.</p>
+</div>
+
+<div class="box"><h3 id="ex-6">Exercise 6 (Einsiedler HS21, question 1c, 3 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Compute $\int\frac{dt}{t^{2/3}+t^{1/2}}$ on $(0,\infty)$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> roots $t^{1/3}$ and $t^{1/2}$: substitute the smallest common root, $u=t^{1/6}$, to get a rational function.</p>
+  <p>$t=u^6$, $dt=6u^5\,du$, $t^{2/3}=u^4$, $t^{1/2}=u^3$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int\frac{6u^5}{u^4+u^3}du\\&amp;\quad=6\int\frac{u^2}{u+1}du\\&amp;\quad=6\int\left(u-1+\frac1{u+1}\right)du\\&amp;\quad=3u^2-6u+6\log(u+1)+C.\end{aligned}$$</span>
+  <p>(Polynomial division: $u^2=(u+1)(u-1)+1$.) Back: $3t^{1/3}-6t^{1/6}+6\log\left(t^{1/6}+1\right)+C$. The official grading splits the 3 points into steps, starting with a correct substitution.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-7">Exercise 7 (Einsiedler mock exam HS21, question 1, 2 points each)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2021-12-einsiedler-mock-exam-hs21.pdf&amp;t=2021-12%20Einsiedler%20-%20mock%20exam%20HS21">mock exam HS21</a></p>
+  <p>(a) $\int\frac1{x^2}e^{-1/x}dx$. (b) $\int_0^{2\pi}x\sin(2021x)\,dx$. (c) is Worked example 6, item 1.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) Substitution $u=-\frac1x$, $du=\frac1{x^2}dx$: $\int e^u\,du=e^{-1/x}+C$.</p>
+  <p>(b) By parts, $u=x$, $v'=\sin(2021x)$, $v=-\frac{\cos(2021x)}{2021}$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left[-\frac{x\cos(2021x)}{2021}\right]_0^{2\pi}\\&amp;\quad+\frac1{2021}\int_0^{2\pi}\cos(2021x)\,dx\\&amp;\quad=-\frac{2\pi}{2021}+\frac1{2021^2}\bigl[\sin(2021x)\bigr]_0^{2\pi}\\&amp;\quad=-\frac{2\pi}{2021}.\end{aligned}$$</span>
+  <p>(Using $\cos(2021\cdot2\pi)=1$ and $\sin(2021\cdot2\pi)=0$.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-8">Exercise 8 (Einsiedler FS22, question 1a and 1c)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-08-einsiedler-fs22-repeat-exam.pdf&amp;t=2022-08%20Einsiedler%20-%20FS22%20repeat%20exam">FS22 exam</a></p>
+  <p>(a) $\int_0^1\frac t{t^2-9}dt$ (2 points). (c) $\int\left(4-x^2\right)^{-3/2}dx$ on $(-2,2)$ (2 points). (Part (b) is Worked example 8, item 2.)</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) $\frac{\varphi'}\varphi$ up to the factor $\frac12$: <span class="math-display" style="display:block">$$\begin{aligned}\int_0^1\frac t{t^2-9}dt&amp;=\left[\frac12\log|t^2-9|\right]_0^1\\&amp;=\frac12(\log8-\log9)\\&amp;=\frac12\log\frac89.\end{aligned}$$</span>(Fine on $[0,1]$: $t^2-9\neq0$ there.)</p>
+  <p>(c) $x=2\sin\theta$, $\theta\in\left(-\frac\pi2,\frac\pi2\right)$: $dx=2\cos\theta\,d\theta$, $4-x^2=4\cos^2\theta$, so $(4-x^2)^{-3/2}=\frac1{8\cos^3\theta}$.</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\int\frac{2\cos\theta}{8\cos^3\theta}d\theta&amp;=\frac14\int\frac{d\theta}{\cos^2\theta}\\&amp;=\frac14\tan\theta+C\end{aligned}.$$</span>
+  <p>Triangle: opposite $x$, hypotenuse $2$, adjacent $\sqrt{4-x^2}$, so $\tan\theta=\frac x{\sqrt{4-x^2}}$. Answer: $\frac x{4\sqrt{4-x^2}}+C$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-9">Exercise 9 (Felder HS22, 1.A1 and 1.A2, 2 points each)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">HS22 exam</a></p>
+  <p>(a) $\int_0^{\pi/4}\sqrt{\sin x}\,\cos x\,dx$. (b) $\int\log^2(x)\,dx$ for $x&gt;0$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) $u=\sin x$, $du=\cos x\,dx$, limits $0$ and $\frac1{\sqrt2}$: <span class="math-display" style="display:block">$$\begin{aligned}\int_0^{2^{-1/2}}\sqrt u\,du&amp;=\frac23\left(2^{-1/2}\right)^{3/2}\\&amp;=\frac23\cdot2^{-3/4}\\&amp;=\frac{2^{1/4}}3.\end{aligned}$$</span></p>
+  <p>(b) By parts with $u=\log^2x$, $v'=1$: <span class="math-display" style="display:block">$$\begin{aligned}&amp;x\log^2x-\int x\cdot\frac{2\log x}x\,dx\\&amp;\quad=x\log^2x-2\int\log x\,dx\\&amp;\quad=x\log^2x-2x\log x+2x+C\end{aligned}$$</span>(Worked example 4, item 2).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-10">Exercise 10 (2018 winter exam, question 12, 5 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2018-winter-rechnungen-format.pdf&amp;t=2018%20winter%20%28Rechnungen%20format%29">2018 winter exam</a></p>
+  <p>Let $[a,b]\subset\mathbb R$ with $a&lt;b$, and let $f:[a,b]\to\mathbb R$ be Riemann integrable and continuous at $x_0\in(a,b)$. Show that $F(x)=\int_a^xf(t)\,dt$ is differentiable at $x_0$ with $F'(x_0)=f(x_0)$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> Proof A. <em>Moves:</em> <a class="mvl" href="moves.html#m-eps">continuity with a chosen ε</a> <a class="mvl" href="moves.html#m-avg">write a number as an average</a> <a class="mvl" href="moves.html#m-cases">split into cases</a>.</p>
+  <p>Let $\varepsilon&gt;0$. By continuity at $x_0$ there is $\delta&gt;0$ with $|f(t)-f(x_0)|&lt;\varepsilon$ for all $t\in[a,b]$ with $|t-x_0|&lt;\delta$. For $x\in[a,b]$ with $0&lt;x-x_0&lt;\delta$, interval additivity gives $F(x)-F(x_0)=\int_{x_0}^xf(t)\,dt$, and $f(x_0)(x-x_0)=\int_{x_0}^xf(x_0)\,dt$. Hence</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left|\frac{F(x)-F(x_0)}{x-x_0}-f(x_0)\right|\\&amp;\quad\le \frac1{x-x_0}\int_{x_0}^x|f(t)-f(x_0)|\,dt\\&amp;\quad\le \varepsilon.\end{aligned}$$</span>
+  <p>For $0&lt;x_0-x&lt;\delta$, $\frac{F(x)-F(x_0)}{x-x_0}=\frac1{x_0-x}\int_x^{x_0}f(t)\,dt$, and the same estimate on $[x,x_0]$ gives $\le\varepsilon$. As $\varepsilon$ was arbitrary, $\frac{F(x)-F(x_0)}{x-x_0}\to f(x_0)$ for $x\to x_0$. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-11">Exercise 11 (Einsiedler HS21, question 10 (c) and (d), true or false)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Let $I\subseteq\mathbb R$ be a bounded interval and $f:I\to\mathbb R$. (c) If $f$ is continuous, then $f$ has an antiderivative. (d) If $f$ is monotone, then $f$ has an antiderivative.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(c) <strong>True.</strong> Fix $a\in I$. On every compact $[a,x]\subseteq I$ (or $[x,a]$), $f$ is continuous, hence integrable, and $F(x)=\int_a^xf(t)\,dt$ is an antiderivative by Proof A, at every point.</p>
+  <p>(d) <strong>False.</strong> Take $f=0$ on $[-1,0]$ and $f=1$ on $(0,1]$, which is monotone. Suppose $F'=f$ on $[-1,1]$. Derivatives have the intermediate value property (Darboux's theorem, <a class="xl" href="lesson-17.html#bonus">lesson 17</a> Bonus): $F'$ takes the values $0$ and $1$, so it would also take the value $\frac12$. But $f$ never equals $\frac12$. So $f$ has no antiderivative. (Ladder rung 2 of Proof A shows the same thing concretely: $\int_{-1}^xf=\max(x,0)$ is not differentiable at $0$.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus: two one-point integrals with a twist (2017 summer exam, 1a and 1b)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2017-summer-rechnungen-format.pdf&amp;t=2017%20summer%20%28Rechnungen%20format%29">2017 summer exam</a></p>
+  <p>(a) $\int_{-1}^1\frac{x-1}{\sqrt{x^2+1}}dx$. (b) $\int\frac{\log x}{x^{2017}}dx$ for $x&gt;0$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) Split: $\int_{-1}^1\frac x{\sqrt{x^2+1}}dx=0$, because the integrand is odd (substitute $x\mapsto-x$). The rest: <span class="math-display" style="display:block">$$\begin{aligned}-\int_{-1}^1\frac{dx}{\sqrt{x^2+1}}&amp;=-\bigl[\operatorname{arsinh}x\bigr]_{-1}^1\\&amp;=-2\operatorname{arsinh}1\\&amp;=-2\log\left(1+\sqrt2\right),\end{aligned}$$</span>using $\operatorname{arsinh}y=\log\left(y+\sqrt{y^2+1}\right)$.</p>
+  <p>(b) By parts with $u=\log x$, $v'=x^{-2017}$, $v=\frac{x^{-2016}}{-2016}$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\int\frac{\log x}{x^{2017}}dx\\&amp;\quad=-\frac{\log x}{2016\,x^{2016}}+\frac1{2016}\int x^{-2017}dx\\&amp;\quad=-\frac{\log x}{2016\,x^{2016}}-\frac1{2016^2x^{2016}}+C.\end{aligned}$$</span>
+</div></details>
+</div>
+
+<h2 id="s11-for-wonder-optional-5-min">11. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>A priority war.</strong> Newton found the fundamental theorem around 1666 but published little. Leibniz found it independently around 1675 and published in 1684, with the notation we still use: $\int$ is a stretched S for <em>summa</em>, and $dx$ the infinitely thin width. In 1712 a committee of the Royal Society, secretly led by Newton himself, declared Leibniz a plagiarist. The quarrel split British and continental mathematics for a century, and the British, loyal to Newton's clumsier dots, fell behind.</p>
+<p><strong>Integrals you can't write down.</strong> $\int e^{-x^2}dx$, $\int\frac{\sin x}x dx$ and $\int\frac{dx}{\log x}$ exist (the integrands are continuous), but Liouville proved in the 1830s that no combination of polynomials, roots, exp, log and trig functions is their antiderivative. They become new functions: the error function behind the bell curve of statistics, the sine integral of signal processing, and the logarithmic integral that counts prime numbers. Worked example 1 already differentiated one of them.</p>
+<p><strong>Archimedes' parabola.</strong> Around 250 BC Archimedes computed the area under a parabola with an ingenious exhaustion by triangles, a whole treatise of work. Today it is $\int_0^1x^2dx=\frac13$, one line.</p>
+
+<h2 id="s12-what-we-skipped">12. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Übung 9.6 (<a class="pl" href="script.html#p420">p. 420</a>):</strong> the fundamental theorem when $f$ has finitely many discontinuities. Low.</li>
+  <li><strong>Übung 9.7 (<a class="pl" href="script.html#p420">p. 420</a>):</strong> the fundamental theorem for complex-valued functions (apply it to real and imaginary parts). Low.</li>
+  <li><strong>Übung 9.9 (<a class="pl" href="script.html#p420">p. 420</a>):</strong> $F(x)=F(a)+\int_a^xF'$ when $F'$ is only integrable. Low.</li>
+  <li><strong>Übung 9.12–9.14 (<a class="pl" href="script.html#p421">p. 421–422</a>):</strong> all derivatives of a power series, comparing coefficients, the binomial series $(1+x)^\alpha=\sum\binom\alpha nx^n$. Low; Taylor (<a class="xl" href="lesson-21.html#we-1">lesson 21</a>) revisits the idea.</li>
+  <li><strong>Übung 9.16 (iii)–(iv), 9.20 (<a class="pl" href="script.html#p426">p. 426</a>, 430):</strong> $\int x^s\log x$, $\int e^{ax}\sin(bx)$ in general, and the algorithm for $\int\frac{q(x)}{(x^2+1)^k}$ with $k\ge2$. Low; Worked examples 4 and 6 cover the exam cases.</li>
+  <li><strong>The hyperbolic substitution in detail, Beispiel 9.23 (<a class="pl" href="script.html#p433">p. 433</a>):</strong> $\int\sqrt{x^2-1}\,dx=\frac12\left(x\sqrt{x^2-1}-\operatorname{arcosh}x\right)$. Low; the method is in the table of <a class="xl" href="#s8-trigonometric-hyperbolic-and-half-angle">section 8</a>.</li>
+  <li><strong>Übung 9.24 (<a class="pl" href="script.html#p434">p. 434</a>):</strong> proving the half-angle identities. Low; they are on the formula sheet.</li>
+  <li><strong>Übung 9.25 (<a class="pl" href="script.html#p436">p. 436</a>):</strong> substitution for merely integrable $g$. Low.</li>
+  <li><strong>Section 9.2.8 (<a class="pl" href="script.html#p436">p. 436–437</a>):</strong> the sine and cosine integrals as new functions. Low; For wonder.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-20.html">lesson 20</a>, improper integrals (Section 9.3): integrals over $[1,\infty)$ or of functions that blow up at an endpoint, the comparison test, and the integral test that connects them with series.</p>
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-18.html">← Lesson 18: Ropes over the Valley</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-20.html">Lesson 20: Roads Without End →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

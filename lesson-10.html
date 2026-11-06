@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Measure of Distance</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-09.html">← Lesson 9</a>
+<a href="lesson-11.html">Lesson 11 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 10 of 26</span>
+  <h1>The Measure of Distance</h1>
+  <p class="lead">Chapter 5: what “distance” means in general (norms and metrics), what it means for a sequence to converge, and how continuity can be tested with sequences. This is where class is right now.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-9-5">Recap of lesson 9 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-measure-of">1. The story: the measure of distance</a>
+</li>
+<li><a href="#s2-norms-length-in-a-vector">2. Norms: length in a vector space</a>
+</li>
+<li><a href="#s3-metrics-distance-between-anything">3. Metrics: distance between anything</a>
+<ol>
+<li><a href="#open-balls-and-open-sets">Open balls and open sets</a></li>
+<li><a href="#proof-a">Proof A: two open balls intersect in an open set (Lemma 5.17, p. 234)</a></li>
+</ol></li>
+<li><a href="#s4-sequences-and-convergence">4. Sequences and convergence</a>
+<ol>
+<li><a href="#proof-b">Proof B: a limit is unique (Lemma 5.22, p. 237)</a></li>
+<li><a href="#proof-c">Proof C: a convergent sequence is bounded (Lemma 5.27, p. 238)</a></li>
+</ol></li>
+<li><a href="#s5-the-limit-rules">5. The limit rules</a>
+<ol>
+<li><a href="#proof-d">Proof D: the sum rule</a></li>
+</ol></li>
+<li><a href="#s6-subsequences-accumulation-points-and-coordinates">6. Subsequences, accumulation points, and coordinates</a>
+</li>
+<li><a href="#s7-continuity-now-with-sequences">7. Continuity, now with sequences</a>
+<ol>
+<li><a href="#proof-e">Proof E: ε-δ continuity ⇔ sequential continuity</a></li>
+<li><a href="#proof-f">Proof F: closed sets contain their limits</a></li>
+</ol></li>
+<li><a href="#s8-using-the-theorems">8. Using the theorems</a>
+<ol>
+<li><a href="#we-1">Worked example 1: $\frac1n\to0$, and $(-1)^n$ diverges (Beispiel 5.28, p. 239)</a></li>
+<li><a href="#we-2">Worked example 2: geometric sequences (Beispiel 5.34, p. 241–242)</a></li>
+<li><a href="#we-3">Worked example 3: compute a limit with the rules</a></li>
+</ol></li>
+<li><a href="#s9-your-turn">9. Your turn</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Übung 5.32 (i), p. 241)</a></li>
+<li><a href="#ex-2">Exercise 2 (multiple choice: Figalli HS23 MC1 and FS26 MC1)</a></li>
+<li><a href="#ex-3">Exercise 3 (discrete metric)</a></li>
+<li><a href="#ex-4">Exercise 4 (proof, Übung 5.46, p. 246)</a></li>
+<li><a href="#ex-5">Exercise 5 (the sequence test)</a></li>
+<li><a href="#ex-6">Exercise 6 (true or false, from the script, p. 251)</a></li>
+<li><a href="#bonus">Bonus</a></li>
+</ol></li>
+<li><a href="#s10-for-wonder-optional-5-min">10. For wonder</a>
+</li>
+<li><a href="#s11-what-we-skipped">11. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) state the definitions of a norm and of a metric and check them on an example, (2) define open balls and open sets in a metric space, (3) <strong>state the definition of convergence</strong> and prove that a limit is unique and that a convergent sequence is bounded, (4) prove the sum rule for limits and use all the limit rules, (5) say what a subsequence and an accumulation point of a sequence are, and (6) <strong>prove that ε-δ continuity and sequential continuity are the same</strong>, and use sequences to show a function is not continuous.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p225">p. 225–226</a>, Definition 5.1 and Beispiel 5.2:</strong> norms; the maximum norm and the 1-norm on $\mathbb{R}^d$.</li>
+      <li><strong><a class="pl" href="script.html#p226">p. 226–228</a>, Section 5.1.1:</strong> the Euclidean norm, the Cauchy–Schwarz inequality (Proposition 5.3, <a class="pl" href="script.html#p227">p. 227</a>).</li>
+      <li><strong><a class="pl" href="script.html#p229">p. 229</a>, Beispiel 5.7:</strong> the supremum norm on continuous functions.</li>
+      <li><strong><a class="pl" href="script.html#p230">p. 230–233</a>, Definition 5.10, Lemma 5.11, Beispiel 5.12:</strong> metrics, the metric of a norm, the discrete, Manhattan and French railway metrics.</li>
+      <li><strong><a class="pl" href="script.html#p234">p. 234–235</a>, Definition 5.16, Lemma 5.17:</strong> open balls, open sets, and why two balls intersect in an open set.</li>
+      <li><strong><a class="pl" href="script.html#p236">p. 236–238</a>, Definitions 5.20–5.24, Lemmas 5.22, 5.27:</strong> sequences, convergence, uniqueness of the limit, neighbourhoods, boundedness.</li>
+      <li><strong><a class="pl" href="script.html#p239">p. 239–242</a>, Proposition 5.30, Beispiel 5.34:</strong> the limit rules and geometric sequences.</li>
+      <li><strong><a class="pl" href="script.html#p242">p. 242–244</a>, Definition 5.38, Lemma 5.39, Proposition 5.42:</strong> subsequences and accumulation points of a sequence.</li>
+      <li><strong><a class="pl" href="script.html#p244">p. 244–246</a>, Proposition 5.44, Korollar 5.45:</strong> convergence in $\mathbb{R}^d$ and $\mathbb{C}$ is convergence in each coordinate.</li>
+      <li><strong><a class="pl" href="script.html#p247">p. 247–250</a>, Lemma 5.49, Propositions 5.50 and 5.53:</strong> continuity in metric spaces, ε-δ versus sequences, rules for continuous functions.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+Convergence of sequences is used in almost every later exam question: series, power series, uniform convergence and limits of functions are all built on it. The proofs here (uniqueness of limits, convergent ⇒ bounded, sum rule, sequences and continuity) are the standard moves inside bigger exam proofs. Directly tested: open and closed sets in Figalli HS23 MC1 and FS26 MC1 (your Exercise 2), limits of sequences in nearly every “compute” part, and the sequence test for discontinuity in many multiple-choice blocks.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-9-5">Recap of <a class="xl" href="lesson-09.html">lesson 9</a> (5 min)</h3>
+<ul>
+  <li><strong>Step function:</strong> constant on the open pieces of a partition. Its integral is $\sum c_k\Delta x_k$.</li>
+  <li><strong>Lower and upper integral:</strong> $\underline I(f)=\sup$ of all $\int u$ with step functions $u\le f$, $\overline I(f)=\inf$ of all $\int o$ with step functions $o\ge f$. Always $\underline I(f)\le\overline I(f)$. Riemann integrable means they are equal.</li>
+  <li><strong>The ε-criterion:</strong> $f$ is integrable ⇔ for every $\varepsilon&gt;0$ there are step functions $u\le f\le o$ with $\int_a^b(o-u)\,dx&lt;\varepsilon$.</li>
+  <li><strong>Monotone ⇒ integrable</strong> (7 points): oBdA increasing, equal pieces, $u$ at left ends and $o$ at right ends, telescope to $\frac{(b-a)(f(b)-f(a))}n$, Archimedes, ε-criterion.</li>
+  <li><strong>Continuous ⇒ integrable:</strong> the same frame, with Heine making $M_k-m_k&lt;\frac\varepsilon{b-a}$ on every piece.</li>
+  <li><strong>Not integrable:</strong> the Dirichlet function, because every interval contains rationals and irrationals.</li>
+</ul>
+<ol class="gq">
+  <li><p>Why does every lower sum lie below every upper sum?</p>
+  <details><summary>Answer</summary><div><p>If $u\le f\le o$, then $u\le o$, and the integral of step functions is monotone, so $\int u\le\int o$.</p></div></details></li>
+  <li><p>Is a bounded function with finitely many values always integrable?</p>
+  <details><summary>Answer</summary><div><p>No. The Dirichlet function takes only the values $0$ and $1$ and is not integrable.</p></div></details></li>
+  <li><p>In the monotone proof, where does the Archimedean principle come in?</p>
+  <details><summary>Answer</summary><div><p>To choose $n&gt;\frac{(b-a)(f(b)-f(a))}{\varepsilon}$, so that $\int(o-u)=\frac{(b-a)(f(b)-f(a))}{n}&lt;\varepsilon$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>norm, normed vector space</td><td>Norm, normierter Vektorraum</td></tr>
+    <tr><td>maximum norm, 1-norm, Euclidean norm</td><td>Maximumsnorm (Unendlichnorm), Einsnorm, Euklidische Norm</td></tr>
+    <tr><td>inner product (dot product)</td><td>inneres Produkt, Skalarprodukt</td></tr>
+    <tr><td>Cauchy–Schwarz inequality</td><td>Cauchy-Schwarz-Ungleichung</td></tr>
+    <tr><td>metric, metric space</td><td>Metrik, metrischer Raum</td></tr>
+    <tr><td>discrete metric</td><td>diskrete Metrik</td></tr>
+    <tr><td>(reverse) triangle inequality</td><td>(umgekehrte) Dreiecksungleichung</td></tr>
+    <tr><td>open ball, neighbourhood</td><td>offener Ball, Umgebung</td></tr>
+    <tr><td>sequence, term of a sequence</td><td>Folge, Folgenglied</td></tr>
+    <tr><td>to converge, limit</td><td>konvergieren, Grenzwert (Limes)</td></tr>
+    <tr><td>divergent, null sequence</td><td>divergent, Nullfolge</td></tr>
+    <tr><td>(eventually) constant</td><td>(schliesslich) konstant</td></tr>
+    <tr><td>bounded</td><td>beschränkt</td></tr>
+    <tr><td>subsequence</td><td>Teilfolge</td></tr>
+    <tr><td>accumulation point of a sequence</td><td>Häufungspunkt einer Folge</td></tr>
+    <tr><td>sequentially continuous</td><td>folgenstetig</td></tr>
+    <tr><td>geometric sequence</td><td>geometrische Folge</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-measure-of">1. The story: the measure of distance</h2>
+<div class="story">
+<p>In the kingdom, three guilds argue about how far apart two towns are. The <strong>Ravens</strong> fly in a straight line. The <strong>Couriers</strong> of the grid city can only walk along streets running north–south or east–west, so they add up the two distances. And the <strong>Royal Railway</strong> runs every line through the capital: unless two towns lie on the same line out of the capital, the journey is “to the capital, then out again”.</p>
+<p>The queen's mathematician says all three are right. A way of measuring distance is acceptable if it obeys three laws. <strong>A town is at distance $0$ only from itself.</strong> <strong>The way there is as long as the way back.</strong> <strong>A detour is never shorter</strong> than going directly. Any rule that obeys the three laws is a <em>metric</em>, and the land together with it is a <em>metric space</em>. There is even a lazy wizard's metric: every other town is at distance $1$, and your own town is at distance $0$.</p>
+<p>Once you can measure distance, you can talk about <strong>aiming</strong>. An archer shoots arrow after arrow at a target. We say the arrows <strong>converge</strong> to the target if, however small a ring you paint around the target, from some arrow onwards <em>every</em> arrow lands inside the ring. Early wild shots don't matter. Only “eventually, all of them” counts.</p>
+<p>And a <strong>continuous</strong> road map is one that respects aiming: if arrows home in on a town, then their images on the map home in on the image of the town. This is the second way to describe continuity, and often the easier one to use.</p>
+<p>In maths: towns are points, the guilds are the Euclidean, Manhattan and French railway metrics, the wizard's rule is the discrete metric, rings are open balls, and the arrows are a <strong>sequence</strong>.</p>
+</div>
+
+<h2 id="s2-norms-length-in-a-vector">2. Norms: length in a vector space</h2>
+<div class="box">
+<p><strong>Definition 5.1 (<a class="pl" href="script.html#p225">p. 225</a>).</strong> A <strong>norm</strong> on a real (or complex) vector space $V$ is a map $\|\cdot\|:V\to\mathbb{R}_{\ge0}$ such that for all $v,w\in V$ and scalars $\alpha$:</p>
+<ul>
+  <li><strong>(definite)</strong> $\|v\|=0\iff v=0$,</li>
+  <li><strong>(homogeneous)</strong> $\|\alpha v\|=|\alpha|\,\|v\|$,</li>
+  <li><strong>(triangle inequality)</strong> $\|v+w\|\le\|v\|+\|w\|$.</li>
+</ul>
+</div>
+<p><strong>The standard examples on $\mathbb{R}^d$ (Beispiel 5.2 and Section 5.1.1).</strong> For $v=(v_1,\dots,v_d)$:</p>
+<div class="math-display">$$\begin{aligned}&amp;\|v\|_\infty=\max_{j}|v_j|\\&amp;\|v\|_1=\sum_{j=1}^d|v_j|\\&amp;\|v\|_2=\sqrt{\sum_{j=1}^d|v_j|^2}\end{aligned}.$$</div>
+<p>For example, $v=(3,-4)$ has $\|v\|_\infty=4$, $\|v\|_1=7$ and $\|v\|_2=5$. The Euclidean norm $\|\cdot\|_2$ is the ordinary length. On $\mathbb{R}$ (with $d=1$) all three are just $|v|$.</p>
+<p><strong>Cauchy–Schwarz (Proposition 5.3, <a class="pl" href="script.html#p227">p. 227</a>).</strong> For the inner product $\langle v,w\rangle=\sum_k v_kw_k$ on $\mathbb{R}^d$: $|\langle v,w\rangle|\le\|v\|_2\,\|w\|_2$, with equality exactly when $v,w$ are linearly dependent. It's what proves the triangle inequality for $\|\cdot\|_2$ (Korollar 5.5). You'll prove it in Linear Algebra, so here we only use it.</p>
+<p><strong>A norm on functions (Beispiel 5.7, <a class="pl" href="script.html#p229">p. 229</a>).</strong> On the space of continuous functions on $[a,b]$, $\|f\|_\infty=\max_{x\in[a,b]}|f(x)|$ is a norm. The maximum exists by the extreme value theorem. This norm will be the key to uniform convergence (<a class="xl" href="lesson-15.html#the-recipe-for-does-converge">lesson 15</a>).</p>
+
+<h2 id="s3-metrics-distance-between-anything">3. Metrics: distance between anything</h2>
+<div class="box">
+<p><strong>Definition 5.10 (<a class="pl" href="script.html#p230">p. 230</a>).</strong> A <strong>metric</strong> on a set $X$ is a map $d:X\times X\to\mathbb{R}_{\ge0}$ such that for all $x_1,x_2,x_3\in X$:</p>
+<ul>
+  <li><strong>(definite)</strong> $d(x_1,x_2)=0\iff x_1=x_2$,</li>
+  <li><strong>(symmetric)</strong> $d(x_1,x_2)=d(x_2,x_1)$,</li>
+  <li><strong>(triangle inequality)</strong> $d(x_1,x_3)\le d(x_1,x_2)+d(x_2,x_3)$.</li>
+</ul>
+<p>$(X,d)$ is then a <strong>metric space</strong>.</p>
+</div>
+<ul>
+  <li><strong>Every norm gives a metric (Lemma 5.11, <a class="pl" href="script.html#p231">p. 231</a>):</strong> $d(v,w)=\|v-w\|$. Each axiom of the metric comes from the matching axiom of the norm; for symmetry use homogeneity with $\alpha=-1$. On $\mathbb{R}$ this is the familiar $d(x,y)=|x-y|$.</li>
+  <li><strong>The discrete metric (Beispiel 5.12 (i)):</strong> $d(x,y)=1$ if $x\neq y$ and $0$ if $x=y$, on any set. It satisfies the triangle inequality because if $d(x_1,x_3)=1$, then $x_2$ differs from at least one of $x_1,x_3$, so the right side is at least $1$.</li>
+  <li><strong>Manhattan and the French railway (Beispiel 5.12 (ii), (iii)):</strong> $d_1((x_1,y_1),(x_2,y_2))=|x_1-x_2|+|y_1-y_2|$, and on $\mathbb{C}$: $d(z_1,z_2)=|z_1-z_2|$ if $z_1,z_2$ lie on one line through $0$, and $|z_1|+|z_2|$ otherwise.</li>
+  <li><strong>Subsets:</strong> any subset $Y\subseteq X$ is a metric space with the same $d$ (the induced metric). So $[0,1]$, $\mathbb{Q}$ and $(0,1)$ are all metric spaces.</li>
+</ul>
+<p><strong>Reverse triangle inequality (Wichtige Übung 5.14, <a class="pl" href="script.html#p233">p. 233</a>).</strong> $|d(x_1,y)-d(x_2,y)|\le d(x_1,x_2)$. <em>Why:</em> the triangle inequality gives $d(x_1,y)\le d(x_1,x_2)+d(x_2,y)$, so $d(x_1,y)-d(x_2,y)\le d(x_1,x_2)$, and swapping $x_1,x_2$ gives the same for the negative. On $\mathbb{R}$ with $y=0$: $\big||a|-|b|\big|\le|a-b|$.</p>
+
+<h3 id="open-balls-and-open-sets">Open balls and open sets</h3>
+<div class="box">
+<p><strong>Definition 5.16 (<a class="pl" href="script.html#p234">p. 234</a>).</strong> The <strong>open ball</strong> of radius $r&gt;0$ around $x_0$ is $B_r(x_0)=\{x\in X: d(x,x_0)&lt;r\}$. A set $O\subseteq X$ is <strong>open</strong> if for every $x_0\in O$ there is $r&gt;0$ with $B_r(x_0)\subseteq O$. A <strong>neighbourhood</strong> of $x_0$ (Definition 5.24, <a class="pl" href="script.html#p238">p. 238</a>) is any set containing some $B_\varepsilon(x_0)$.</p>
+</div>
+<p>In $\mathbb{R}$, $B_r(x_0)=(x_0-r,x_0+r)$, so this is exactly <a class="xl" href="lesson-05.html#3-3-the-three-formal">lesson 5</a>'s definition of open sets. In $\mathbb{R}^2$ the ball depends on the metric: a round disc for $d_2$, a square for $d_\infty$, a diamond for $d_1$.</p>
+<figure style="margin:0" aria-label="Three unit balls around the origin in the plane: a diamond for the 1-metric, a circle for the Euclidean metric, and a square for the maximum metric. The diamond is inside the circle, which is inside the square.">
+<svg viewBox="0 0 640 340" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="160.0" y1="170.0" x2="480.0" y2="170.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="320.0" y1="10.0" x2="320.0" y2="330.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="200" y="50" width="240" height="240" style="fill:var(--k-c);fill-opacity:.10;stroke:var(--k-c)" stroke-width="3"/><circle cx="320" cy="170" r="120" style="fill:var(--accent);fill-opacity:.14;stroke:var(--accent)" stroke-width="3"/><path d="M 440 170 L 320 50 L 200 170 L 320 290 Z" style="fill:var(--k-del);fill-opacity:.22;stroke:var(--k-del)" stroke-width="3"/><text x="448.0" y="188.0" text-anchor="start" style="fill:var(--muted);font-size:14px">1</text><text x="192.0" y="188.0" text-anchor="end" style="fill:var(--muted);font-size:14px">−1</text><text x="328.0" y="44.0" text-anchor="start" style="fill:var(--muted);font-size:14px">1</text><text x="450.0" y="56.0" text-anchor="start" style="fill:var(--k-c);font-size:15px">d∞ (square)</text><line x1="235.2" y1="85.2" x2="170.0" y2="60.0" style="stroke:var(--accent)" stroke-width="1.2"/><text x="166.0" y="58.0" text-anchor="end" style="fill:var(--accent);font-size:15px">d₂ (disc)</text><line x1="380.0" y1="230.0" x2="470.0" y2="280.0" style="stroke:var(--k-del)" stroke-width="1.2"/><text x="474.0" y="284.0" text-anchor="start" style="fill:var(--k-del);font-size:15px">d₁ (diamond)</text><circle cx="320.0" cy="170.0" r="3.5" style="fill:var(--ink)"/></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The unit ball $B_1(0)$ in $\mathbb{R}^2$ for three metrics: $d_1$ (diamond), $d_2$ (disc), $d_\infty$ (square). The inequalities $\|w\|_\infty\le\|w\|_2\le\|w\|_1$ say exactly that the diamond is inside the disc and the disc inside the square.</figcaption>
+</figure>
+<h3 id="proof-a">Proof A: two open balls intersect in an open set (Lemma 5.17, <a class="pl" href="script.html#p234">p. 234</a>)</h3>
+<p><strong>Claim.</strong> In any metric space, $B_{r_1}(x_1)\cap B_{r_2}(x_2)$ is open.</p>
+<p><strong>The idea.</strong> Stand at a point $x$ in both balls. You are $d(x,x_1)$ away from the first centre, so you still have room $r_1-d(x,x_1)$ before the first ball's edge. Likewise for the second. A small ball around $x$ with the smaller of the two rooms stays inside both. The triangle inequality makes “room” precise.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>“Open”</strong> forces the <strong>first line</strong> “Let $x\in B_{r_1}(x_1)\cap B_{r_2}(x_2)$.” and the <strong>last line</strong> “…so $B_r(x)\subseteq B_{r_1}(x_1)\cap B_{r_2}(x_2)$.”</li>
+  <li>Showing a set inclusion forces “Let $y\in B_r(x)$. … so $y\in B_{r_1}(x_1)$ and $y\in B_{r_2}(x_2)$.”</li>
+  <li><strong>The gap to fill:</strong> choose $r$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Stand somewhere inside both rings.</p></div><div class="sp-formal"><p>Let $x\in B_{r_1}(x_1)\cap B_{r_2}(x_2)$, so $d(x,x_1)&lt;r_1$ and $d(x,x_2)&lt;r_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Measure how much room you have before each edge, and keep the smaller room.</p></div><div class="sp-formal"><p>Let $r=\min\{r_1-d(x,x_1),\ r_2-d(x,x_2)\}$. Both numbers are positive, so $r&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Any point within that room of you is still inside the first ring: walking to it and then to the centre is at most the room plus your distance.</p></div><div class="sp-formal"><p>Let $y\in B_r(x)$. By the triangle inequality, <span class="math-display" style="display:block">$$d(y,x_1)\le d(y,x)+d(x,x_1)&lt;r+d(x,x_1)\le r_1.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The same for the second ring.</p></div><div class="sp-formal"><p>Likewise $d(y,x_2)&lt;r_2$. So $y\in B_{r_1}(x_1)\cap B_{r_2}(x_2)$, hence $B_r(x)\subseteq B_{r_1}(x_1)\cap B_{r_2}(x_2)$. As $x$ was arbitrary, the intersection is open. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-min">minimum of two δs</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $x\in B_{r_1}(x_1)\cap B_{r_2}(x_2)$ and <span class="math-display" style="display:block">$$r=\min\{r_1-d(x,x_1),r_2-d(x,x_2)\}&gt;0.$$</span>For $y\in B_r(x)$, the triangle inequality gives <span class="math-display" style="display:block">$$\begin{aligned}d(y,x_1)&amp;\le  d(y,x)+d(x,x_1)\\&amp;&lt;r+d(x,x_1)\\&amp;\le  r_1\end{aligned}$$</span>, and likewise $d(y,x_2)&lt;r_2$. So $B_r(x)\subseteq B_{r_1}(x_1)\cap B_{r_2}(x_2)$, and the intersection is open. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $r&gt;0$? One sentence.</p>
+  <details><summary>Answer</summary><div><p>“Since $d(x,x_1)&lt;r_1$ and $d(x,x_2)&lt;r_2$, both $r_1-d(x,x_1)$ and $r_2-d(x,x_2)$ are positive, so their minimum is positive.”</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the chain of inequalities that shows $d(y,x_1)&lt;r_1$, with the reason for each step.</p>
+  <details><summary>Answer</summary><div><p>$d(y,x_1)\le d(y,x)+d(x,x_1)$ (triangle inequality) $&lt;r+d(x,x_1)$ (as $y\in B_r(x)$) $\le r_1$ (as $r\le r_1-d(x,x_1)$).</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone, then compare.</p></li>
+</ol></div>
+
+<h2 id="s4-sequences-and-convergence">4. Sequences and convergence</h2>
+<div class="box">
+<p><strong>Definition 5.20 (<a class="pl" href="script.html#p236">p. 236</a>).</strong> A <strong>sequence</strong> in a set $X$ is a map $\mathbb{N}\to X$, $n\mapsto a_n$. We write $(a_n)_n$ or $(a_1,a_2,\dots)$.</p>
+<p><strong>Definition 5.21 (<a class="pl" href="script.html#p236">p. 236</a>).</strong> A sequence $(a_n)_n$ in a metric space $(X,d)$ <strong>converges</strong> to $A\in X$ if</p>
+<div class="math-display">$$\forall\varepsilon&gt;0\ \exists N\in\mathbb{N}\ \forall n\ge N:\ d(a_n,A)&lt;\varepsilon.$$</div>
+<p>Then $A$ is a <strong>limit</strong> of the sequence, and we write $\lim_{n\to\infty}a_n=A$ or $a_n\to A$. A sequence with a limit is <strong>convergent</strong>, otherwise <strong>divergent</strong>. In $\mathbb{R}$ or $\mathbb{C}$ the condition reads $|a_n-A|&lt;\varepsilon$.</p>
+</div>
+<p>Read it like the duel from <a class="xl" href="lesson-01.html#s1-the-story-the-duel">lesson 1</a>: the Doubter names a tolerance $\varepsilon$, the Champion answers with a starting index $N$, and from $N$ on, every term must lie within $\varepsilon$ of $A$. The $N$ may depend on $\varepsilon$. In the language of balls: every ball $B_\varepsilon(A)$ contains all terms from some point on. Changing finitely many terms, or shifting the index (Lemma 5.25), changes nothing.</p>
+<figure style="margin:0" aria-label="Terms of the sequence one plus minus one over n, plotted against n. A horizontal band of width epsilon around the limit 1 is shaded. From the index N on, all points lie inside the band.">
+<svg viewBox="0 0 640 306" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="40.0" y1="280.0" x2="620.0" y2="280.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="40" y="89.5" width="580" height="45.0" style="fill:var(--k-eps);fill-opacity:.16"/><line x1="40.0" y1="89.5" x2="620.0" y2="89.5" style="stroke:var(--k-eps)" stroke-width="1.2" stroke-dasharray="5 4"/><line x1="40.0" y1="134.5" x2="620.0" y2="134.5" style="stroke:var(--k-eps)" stroke-width="1.2" stroke-dasharray="5 4"/><line x1="40.0" y1="112.0" x2="620.0" y2="112.0" style="stroke:var(--ink)" stroke-width="1.5"/><text x="44.0" y="106.0" text-anchor="start" style="fill:var(--ink);font-size:14px">A = 1</text><text x="44.0" y="83.5" text-anchor="start" style="fill:var(--k-eps);font-size:14px">1 + ε</text><text x="44.0" y="151.5" text-anchor="start" style="fill:var(--k-eps);font-size:14px">1 − ε</text><line x1="316.0" y1="20.0" x2="316.0" y2="280.0" style="stroke:var(--k-c)" stroke-width="2" stroke-dasharray="3 3"/><text x="316.0" y="296.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">N = 7</text><circle cx="88.0" cy="262.0" r="5" style="fill:var(--story-edge)"/><circle cx="126.0" cy="37.0" r="5" style="fill:var(--story-edge)"/><text x="126.0" y="296.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">2</text><circle cx="164.0" cy="162.0" r="5" style="fill:var(--story-edge)"/><text x="164.0" y="296.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">3</text><circle cx="202.0" cy="74.5" r="5" style="fill:var(--story-edge)"/><text x="202.0" y="296.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">4</text><circle cx="240.0" cy="142.0" r="5" style="fill:var(--story-edge)"/><text x="240.0" y="296.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">5</text><circle cx="278.0" cy="87.0" r="5" style="fill:var(--story-edge)"/><text x="278.0" y="296.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">6</text><circle cx="316.0" cy="133.4" r="5" style="fill:var(--k-eps)"/><circle cx="354.0" cy="93.2" r="5" style="fill:var(--k-eps)"/><circle cx="392.0" cy="128.7" r="5" style="fill:var(--k-eps)"/><circle cx="430.0" cy="97.0" r="5" style="fill:var(--k-eps)"/><circle cx="468.0" cy="125.6" r="5" style="fill:var(--k-eps)"/><circle cx="506.0" cy="99.5" r="5" style="fill:var(--k-eps)"/><circle cx="544.0" cy="123.5" r="5" style="fill:var(--k-eps)"/><circle cx="582.0" cy="101.3" r="5" style="fill:var(--k-eps)"/><text x="98.0" y="266.0" text-anchor="start" style="fill:var(--muted);font-size:13px">a₁ = 0</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The sequence $a_n=1+\frac{(-1)^n}{n}$ and the band $(1-\varepsilon,1+\varepsilon)$ for $\varepsilon=0.15$. The first few terms are outside, but from $N=7$ on, every term is inside. A smaller $\varepsilon$ needs a larger $N$.</figcaption>
+</figure>
+
+<h3 id="proof-b">Proof B: a limit is unique (Lemma 5.22, <a class="pl" href="script.html#p237">p. 237</a>)</h3>
+<p><strong>The idea.</strong> If the arrows eventually land within $\varepsilon$ of two different targets $A_1$ and $A_2$, then by the triangle inequality the targets are within $2\varepsilon$ of each other. Choose $\varepsilon$ as half their distance and you get a contradiction.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li>“Unique” is easiest by contradiction: <strong>first line</strong> “Suppose $a_n\to A_1$ and $a_n\to A_2$ with $A_1\neq A_2$.”, <strong>last line</strong> “…contradiction.”</li>
+  <li>Using convergence twice gives two indices $N_1,N_2$, and you need one $n$ that is past both.</li>
+  <li><strong>The gap to fill:</strong> choose $\varepsilon$ so that the triangle inequality contradicts itself.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Suppose the arrows home in on two different targets at once.</p></div><div class="sp-formal"><p>Suppose $a_n\to A_1$ and $a_n\to A_2$ with $A_1\neq A_2$. Let $\varepsilon=\frac{d(A_1,A_2)}2&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eventually all arrows are near the first target, and eventually all are near the second. Wait until both have kicked in.</p></div><div class="sp-formal"><p>There are $N_1,N_2$ with $d(a_n,A_1)&lt;\varepsilon$ for $n\ge N_1$ and $d(a_n,A_2)&lt;\varepsilon$ for $n\ge N_2$. Let $N=\max\{N_1,N_2\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Arrow number $N$ is close to both targets, so the targets are close to each other, closer than they actually are.</p></div><div class="sp-formal"><p>By the triangle inequality, <span class="math-display" style="display:block">$$\begin{aligned}d(A_1,A_2)&amp;\le  d(A_1,a_N)+d(a_N,A_2)\\&amp;&lt;2\varepsilon\\&amp;=d(A_1,A_2)\end{aligned},$$</span> a contradiction. So the limit is unique. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-maxN">take the larger N</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a> <a class="mvl" href="moves.html#m-half">ε/2 twice</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Suppose $a_n\to A_1$ and $a_n\to A_2$ with $A_1\neq A_2$, and let $\varepsilon=\frac12d(A_1,A_2)&gt;0$. Choose $N_1,N_2$ with $d(a_n,A_1)&lt;\varepsilon$ for $n\ge N_1$ and $d(a_n,A_2)&lt;\varepsilon$ for $n\ge N_2$, and let $N=\max\{N_1,N_2\}$. Then <span class="math-display" style="display:block">$$\begin{aligned}d(A_1,A_2)&amp;\le  d(A_1,a_N)+d(a_N,A_2)\\&amp;&lt;2\varepsilon\\&amp;=d(A_1,A_2)\end{aligned}$$</span>, a contradiction. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Assume two limits</strong> $A_1\neq A_2$; set $\varepsilon=\frac12d(A_1,A_2)$.</li>
+  <li><strong>Two indices</strong> $N_1,N_2$; take $N=\max\{N_1,N_2\}$.</li>
+  <li><strong>Triangle inequality through $a_N$:</strong> $d(A_1,A_2)&lt;2\varepsilon=d(A_1,A_2)$. Contradiction.</li>
+</ol>
+<p>In short: “half the distance, max of the Ns, triangle through $a_N$”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why do we take $N=\max\{N_1,N_2\}$ rather than just $N_1$?</p>
+  <details><summary>Answer</summary><div><p>We need one index $n$ for which <em>both</em> $d(a_n,A_1)&lt;\varepsilon$ and $d(a_n,A_2)&lt;\varepsilon$ hold. That's guaranteed for $n\ge N_1$ and for $n\ge N_2$, so for $n\ge\max\{N_1,N_2\}$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the last two sentences (from “Let $N=\dots$”).</p>
+  <details><summary>Answer</summary><div><p>See the one-piece proof, from “and let $N=\max\{N_1,N_2\}$”.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="proof-c">Proof C: a convergent sequence is bounded (Lemma 5.27, <a class="pl" href="script.html#p238">p. 238</a>)</h3>
+<p>A sequence in $\mathbb{R}$, $\mathbb{C}$ or a normed space is <strong>bounded</strong> if there is $M$ with $\|a_n\|\le M$ (in $\mathbb{R}$: $|a_n|\le M$) for all $n$.</p>
+<p><strong>The idea.</strong> From some point on, all terms are within $1$ of the limit $A$, so their size is at most $1+|A|$. Before that point there are only finitely many terms, and finitely many numbers always have a maximum.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Last line:</strong> “…so $|a_n|\le M$ for all $n\in\mathbb N$.” We must name $M$.</li>
+  <li><strong>The given:</strong> convergence holds for <em>every</em> $\varepsilon$, so we may use one $\varepsilon$ of our choice: $\varepsilon=1$.</li>
+  <li><strong>The gap to fill:</strong> handle the tail ($n\ge N$) and the finitely many first terms separately.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Paint a ring of radius $1$ around the target. Eventually every arrow lands in it.</p></div><div class="sp-formal"><p>Let $A=\lim a_n$. With $\varepsilon=1$ there is $N$ with $|a_n-A|&lt;1$ for all $n\ge N$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Those arrows are never further from the centre than the target plus one.</p></div><div class="sp-formal"><p>For $n\ge N$: <span class="math-display" style="display:block">$$|a_n|=|a_n-A+A|\le|a_n-A|+|A|&lt;1+|A|$$</span>.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The early wild arrows are only finitely many, so one of them is the furthest out.</p></div><div class="sp-formal"><p>Let $M=\max\{|a_1|,\dots,|a_{N-1}|,\ 1+|A|\}$. Then $|a_n|\le M$ for all $n\in\mathbb N$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">use convergence with a chosen ε</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $A=\lim a_n$. There is $N$ with $|a_n-A|&lt;1$ for $n\ge N$, so $|a_n|\le|a_n-A|+|A|&lt;1+|A|$ for $n\ge N$. Hence <span class="math-display" style="display:block">$$|a_n|\le M=\max\{|a_1|,\dots,|a_{N-1}|,1+|A|\}$$</span>for all $n$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Convergence with $\varepsilon=1$</strong> gives $N$.</li>
+  <li><strong>Tail:</strong> $|a_n|\le|a_n-A|+|A|&lt;1+|A|$ for $n\ge N$.</li>
+  <li><strong>Head:</strong> $M=\max\{|a_1|,\dots,|a_{N-1}|,1+|A|\}$.</li>
+</ol>
+<p>In short: “ε = 1, tail by the triangle inequality, head by a finite max”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why can't we take $M=1+|A|$ alone?</p>
+  <details><summary>Answer</summary><div><p>The terms $a_1,\dots,a_{N-1}$ before $N$ can be far from $A$, for example $a_1=1000$. Only the tail is controlled by convergence.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the line for the tail, with the triangle inequality.</p>
+  <details><summary>Answer</summary><div><p>“For $n\ge N$: <span class="math-display" style="display:block">$$\begin{aligned}|a_n|&amp;=|(a_n-A)+A|\\&amp;\le |a_n-A|+|A|\\&amp;&lt;1+|A|\end{aligned}$$</span>.”</p></div></details></li>
+  <li><p><strong>Rung 3 (2 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p class="legend">Contrapositive, very useful in multiple choice: <strong>an unbounded sequence diverges.</strong> For example $a_n=n$ and $a_n=(-2)^n$ diverge. The converse is false: $(-1)^n$ is bounded but divergent (Worked example 1).</p>
+
+<h2 id="s5-the-limit-rules">5. The limit rules</h2>
+<div class="box">
+<p><strong>Proposition 5.30 (<a class="pl" href="script.html#p239">p. 239–241</a>).</strong> Let $a_n\to A$ and $b_n\to B$ in $\mathbb{R}$ or $\mathbb{C}$. Then</p>
+<ul>
+  <li>$a_n+b_n\to A+B$ and $\alpha a_n\to\alpha A$ for every constant $\alpha$,</li>
+  <li>$a_nb_n\to AB$,</li>
+  <li>if $a_n\neq0$ for all $n$ and $A\neq0$, then $\frac1{a_n}\to\frac1A$ (so also $\frac{b_n}{a_n}\to\frac BA$).</li>
+</ul>
+</div>
+<h3 id="proof-d">Proof D: the sum rule</h3>
+<p><strong>The idea.</strong> To get $a_n+b_n$ within $\varepsilon$ of $A+B$, get each of $a_n$, $b_n$ within $\frac\varepsilon2$ of its limit, and wait until both have happened. The triangle inequality adds the two errors.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $\varepsilon&gt;0$.” <strong>Last line:</strong> “…so $|(a_n+b_n)-(A+B)|&lt;\varepsilon$ for all $n\ge N$.”</li>
+  <li><strong>The gap to fill:</strong> choose $N$ from the two given convergences.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The Doubter names a tolerance. Split it in half, one half for each sequence.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$. There are $N_1,N_2$ with $|a_n-A|&lt;\frac\varepsilon2$ for $n\ge N_1$ and $|b_n-B|&lt;\frac\varepsilon2$ for $n\ge N_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wait until both have kicked in, then add the two errors.</p></div><div class="sp-formal"><p>Let $N=\max\{N_1,N_2\}$. For $n\ge N$: <span class="math-display" style="display:block">$$\begin{aligned}|(a_n+b_n)-(A+B)|&amp;\le |a_n-A|+|b_n-B|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2\\&amp;=\varepsilon\end{aligned}.$$</span> So $a_n+b_n\to A+B$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-maxN">take the larger N</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\varepsilon&gt;0$. Choose $N_1,N_2$ with $|a_n-A|&lt;\frac\varepsilon2$ for $n\ge N_1$ and $|b_n-B|&lt;\frac\varepsilon2$ for $n\ge N_2$, and let $N=\max\{N_1,N_2\}$. For $n\ge N$, <span class="math-display" style="display:block">$$\begin{aligned}|(a_n+b_n)-(A+B)|&amp;\le |a_n-A|+|b_n-B|\\&amp;&lt;\varepsilon\end{aligned}$$</span>. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Fill the blank: “$|(a_n+b_n)-(A+B)|=$ ______ $\le|a_n-A|+|b_n-B|$.”</p>
+  <details><summary>Answer</summary><div><p>$|(a_n-A)+(b_n-B)|$: regroup, then use the triangle inequality.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the proof for $\alpha a_n\to\alpha A$ with $\alpha\neq0$.</p>
+  <details><summary>Answer</summary><div><p>Let $\varepsilon&gt;0$ and choose $N$ with $|a_n-A|&lt;\frac{\varepsilon}{|\alpha|}$ for $n\ge N$. Then $|\alpha a_n-\alpha A|=|\alpha||a_n-A|&lt;\varepsilon$ for $n\ge N$. (For $\alpha=0$ the sequence is constant $0$.)</p></div></details></li>
+  <li><p><strong>Rung 3 (2 min).</strong> Write the sum rule from the frame alone.</p></li>
+</ol></div>
+<p><strong>The product rule, in one idea</strong> (proof on the skip list). Add and subtract a middle term: $|a_nb_n-AB|\le|a_n-A|\,|b_n|+|A|\,|b_n-B|$. The first part is small because $|b_n|$ is bounded (Proof C), the second because $|A|$ is a fixed number.</p>
+<p><strong>Two facts you'll use constantly</strong> (exercise in the script, <a class="pl" href="script.html#p251">p. 251</a>): if $a_n\le b_n$ for all large $n$ and both converge, then $\lim a_n\le\lim b_n$. But strict inequalities are <em>not</em> kept: $0&lt;\frac1n$ for all $n$, yet both limits are $0$.</p>
+<h2 id="s6-subsequences-accumulation-points-and-coordinates">6. Subsequences, accumulation points, and coordinates</h2>
+<div class="box">
+<p><strong>Definition 5.38 (<a class="pl" href="script.html#p242">p. 242</a>).</strong> If $n_1&lt;n_2&lt;n_3&lt;\dots$ is a strictly increasing sequence of indices, then $(a_{n_k})_k$ is a <strong>subsequence</strong> of $(a_n)_n$. You keep infinitely many terms, in order, and drop the rest.</p>
+<p><strong>Lemma 5.39 (<a class="pl" href="script.html#p243">p. 243</a>).</strong> Every subsequence of a convergent sequence converges, to the same limit.</p>
+<p><strong>Proposition 5.42 (<a class="pl" href="script.html#p243">p. 243</a>).</strong> $A$ is an <strong>accumulation point</strong> of $(a_n)_n$ if some subsequence converges to $A$. Equivalently: for every $\varepsilon&gt;0$ and every $N$ there is an $n\ge N$ with $d(a_n,A)&lt;\varepsilon$, so the sequence comes within $\varepsilon$ of $A$ again and again.</p>
+</div>
+<p>Lemma 5.39 is a quick way to prove <strong>divergence</strong>: find two subsequences with different limits. For $a_n=(-1)^n$, the even terms are constantly $1$ and the odd terms constantly $-1$, so $(a_n)_n$ can't converge. Its accumulation points are $1$ and $-1$. (Why Lemma 5.39 holds: since $n_k\ge k$, once $k\ge N$ we also have $n_k\ge N$, so $d(a_{n_k},A)&lt;\varepsilon$.)</p>
+<p><strong>Coordinates (Proposition 5.44 and Korollar 5.45, <a class="pl" href="script.html#p244">p. 244–246</a>).</strong> A sequence in $\mathbb{R}^d$ converges if and only if each coordinate converges, and it doesn't matter whether you use $\|\cdot\|_1$, $\|\cdot\|_2$ or $\|\cdot\|_\infty$. In particular, $z_n\to z$ in $\mathbb{C}$ if and only if $\operatorname{Re}z_n\to\operatorname{Re}z$ and $\operatorname{Im}z_n\to\operatorname{Im}z$. The reason is the inequalities $\|w\|_\infty\le\|w\|_2\le\|w\|_1\le d\,\|w\|_\infty$ from the figure: if one norm of $v_n-v$ is small, all are.</p>
+
+<h2 id="s7-continuity-now-with-sequences">7. Continuity, now with sequences</h2>
+<div class="box">
+<p><strong>Definition 5.48 (<a class="pl" href="script.html#p247">p. 247</a>).</strong> Let $X,Y$ be metric spaces and $f:X\to Y$. Then $f$ is <strong>ε-δ continuous</strong> at $x_0$ if for every $\varepsilon&gt;0$ there is $\delta&gt;0$ with $f(B_\delta(x_0))\subseteq B_\varepsilon(f(x_0))$. And $f$ is <strong>sequentially continuous</strong> at $x_0$ if for every sequence $x_n\to x_0$ in $X$ we have $f(x_n)\to f(x_0)$.</p>
+<p><strong>Lemma 5.49 (<a class="pl" href="script.html#p247">p. 247</a>).</strong> The two are equivalent.</p>
+</div>
+<p>On $\mathbb{R}$, ε-δ continuity is exactly <a class="xl" href="lesson-07.html#s2-the-definition">lesson 7</a>'s definition, with balls in place of $|x-x_0|&lt;\delta$. The new thing is the sequence version, and the theorem that it's the same.</p>
+
+<h3 id="proof-e">Proof E: ε-δ continuity ⇔ sequential continuity</h3>
+<div class="need"><span class="label">You'll need these</span>
+<ul>
+  <li><strong>ε-δ continuity at $x_0$:</strong> <span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists\delta\\&amp;&gt;0\ \forall x:\ d(x,x_0)\\&amp;&lt;\delta\Rightarrow d(f(x),f(x_0))\\&amp;&lt;\varepsilon\end{aligned}$$</span>.</li>
+  <li><strong>Its negation</strong> (the negation recipe): $\exists\varepsilon&gt;0\ \forall\delta&gt;0\ \exists x:\ d(x,x_0)&lt;\delta$ and $d(f(x),f(x_0))\ge\varepsilon$.</li>
+  <li><strong>$\frac1n\to0$</strong> (Worked example 1, by Archimedes).</li>
+</ul></div>
+<p><strong>The idea.</strong> (⇒) If $f$ keeps a whole ball around $x_0$ close to $f(x_0)$, then any sequence that eventually enters that ball has images that eventually stay close. (⇐) Go by contrapositive. If $f$ is not ε-δ continuous, then for one bad $\varepsilon$, <em>every</em> ball around $x_0$, however small, contains a bad point. Pick one bad point in the ball of radius $1$, one in radius $\frac12$, one in radius $\frac13$, and so on. These bad points converge to $x_0$, but their images stay $\varepsilon$ away from $f(x_0)$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(⇒)</strong> First lines: “Let $x_n\to x_0$ and $\varepsilon&gt;0$.” Last line: “…so $d(f(x_n),f(x_0))&lt;\varepsilon$ for all $n\ge N$.” The gap: find $N$.</li>
+  <li><strong>(⇐)</strong> by contrapositive. First line: “Suppose $f$ is not ε-δ continuous at $x_0$. Then there is $\varepsilon&gt;0$ such that for every $\delta&gt;0$ …” Last line: “…so $f(x_n)\not\to f(x_0)$, and $f$ is not sequentially continuous.” The gap: build the sequence $x_n$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p><strong>(⇒)</strong> Arrows are homing in on $x_0$, and someone names a tolerance around $f(x_0)$ on the map.</p></div><div class="sp-formal"><p>Assume $f$ is ε-δ continuous at $x_0$. Let $x_n\to x_0$ and $\varepsilon&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Continuity gives a ring around $x_0$ that the map sends inside the tolerance.</p></div><div class="sp-formal"><p>Choose $\delta&gt;0$ with $d(x,x_0)&lt;\delta\Rightarrow d(f(x),f(x_0))&lt;\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The arrows eventually all land in that ring, so their images all land in the tolerance.</p></div><div class="sp-formal"><p>Since $x_n\to x_0$, there is $N$ with $d(x_n,x_0)&lt;\delta$ for $n\ge N$. Then $d(f(x_n),f(x_0))&lt;\varepsilon$ for $n\ge N$. So $f(x_n)\to f(x_0)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p><strong>(⇐)</strong> Now suppose the map is not continuous at $x_0$: some tolerance can't be met by any ring.</p></div><div class="sp-formal"><p>Suppose $f$ is not ε-δ continuous at $x_0$. Then there is $\varepsilon&gt;0$ such that for every $\delta&gt;0$ some $x$ has $d(x,x_0)&lt;\delta$ but $d(f(x),f(x_0))\ge\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>In the ring of radius $\frac1n$ there is a bad point. Collect one for every $n$.</p></div><div class="sp-formal"><p>For each $n\in\mathbb N$ apply this with $\delta=\frac1n$: choose $x_n$ with $d(x_n,x_0)&lt;\frac1n$ and $d(f(x_n),f(x_0))\ge\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The bad points close in on $x_0$, but their images never come within $\varepsilon$ of $f(x_0)$. So sequences don't work either.</p></div><div class="sp-formal"><p>Then $x_n\to x_0$ (since $d(x_n,x_0)&lt;\frac1n\to0$), but $d(f(x_n),f(x_0))\ge\varepsilon$ for all $n$, so $f(x_n)\not\to f(x_0)$. Hence $f$ is not sequentially continuous at $x_0$. By contraposition, sequential continuity implies ε-δ continuity. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">use continuity with a chosen ε</a> <a class="mvl" href="moves.html#m-neg">the negation recipe</a> <a class="mvl" href="moves.html#m-seq">δ = 1/n builds a sequence</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(⇒) Let $x_n\to x_0$ and $\varepsilon&gt;0$. Choose $\delta&gt;0$ with $d(f(x),f(x_0))&lt;\varepsilon$ whenever $d(x,x_0)&lt;\delta$, and $N$ with $d(x_n,x_0)&lt;\delta$ for $n\ge N$. Then $d(f(x_n),f(x_0))&lt;\varepsilon$ for $n\ge N$, so $f(x_n)\to f(x_0)$.</p>
+<p>(⇐) Suppose $f$ is not ε-δ continuous at $x_0$. Then there is $\varepsilon&gt;0$ such that for every $n\in\mathbb N$ there is $x_n$ with $d(x_n,x_0)&lt;\frac1n$ and $d(f(x_n),f(x_0))\ge\varepsilon$. Then $x_n\to x_0$ but $f(x_n)\not\to f(x_0)$, so $f$ is not sequentially continuous at $x_0$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<p><strong>(⇒)</strong></p><ol>
+  <li><strong>Let $x_n\to x_0$, $\varepsilon&gt;0$.</strong> Continuity gives $\delta$.</li>
+  <li><strong>Convergence of $x_n$ with tolerance $\delta$</strong> gives $N$.</li>
+  <li><strong>Chain:</strong> <span class="math-display" style="display:block">$$\begin{aligned}n&amp;\ge  N\Rightarrow d(x_n,x_0)\\&amp;&lt;\delta\Rightarrow d(f(x_n),f(x_0))\\&amp;&lt;\varepsilon\end{aligned}$$</span>.</li>
+</ol>
+<p><strong>(⇐) by contrapositive</strong></p><ol>
+  <li><strong>Negate ε-δ:</strong> one bad $\varepsilon$; for every $\delta$ a bad $x$.</li>
+  <li><strong>$\delta=\frac1n$</strong> gives bad points $x_n$ with $d(x_n,x_0)&lt;\frac1n$.</li>
+  <li><strong>Conclude:</strong> $x_n\to x_0$ but $d(f(x_n),f(x_0))\ge\varepsilon$ for all $n$.</li>
+</ol>
+<p>In short: “δ from continuity, N from convergence” and “negate, take δ = 1/n”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> In (⇒), the convergence $x_n\to x_0$ is used with which tolerance?</p>
+  <details><summary>Answer</summary><div><p>With $\delta$: “Since $x_n\to x_0$, there is $N$ with $d(x_n,x_0)&lt;\delta$ for all $n\ge N$.” The $\delta$ from continuity plays the role of the “$\varepsilon$” in the definition of convergence.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write the (⇐) direction.</p>
+  <details><summary>Answer</summary><div><p>See the second paragraph of the one-piece proof. Check that you wrote the negation with “there is $\varepsilon$, for every $\delta$” in that order, and why $x_n\to x_0$.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write both directions from the frame alone.</p></li>
+</ol></div>
+<p><strong>Why this is useful: the sequence test for discontinuity.</strong> To show $f$ is <em>not</em> continuous at $x_0$, you only need <em>one</em> sequence $x_n\to x_0$ with $f(x_n)\not\to f(x_0)$. For example, the sign function with $\operatorname{sgn}(0)=0$ and $\operatorname{sgn}(x)=1$ for $x&gt;0$: $x_n=\frac1n\to0$ but $\operatorname{sgn}(x_n)=1\to1\neq0$. That's often faster than the negation recipe with $\varepsilon$ and $\delta$.</p>
+<p><strong>Building continuous functions (Proposition 5.53, <a class="pl" href="script.html#p249">p. 249</a>).</strong> Compositions of continuous functions are continuous. A function into $\mathbb{R}^d$ is continuous exactly when each coordinate is. Addition, multiplication and $z\mapsto\frac1z$ (on $z\neq0$) are continuous. With sequences, compositions take one line: if $x_n\to x_0$, then $f(x_n)\to f(x_0)$, so $g(f(x_n))\to g(f(x_0))$.</p>
+<p><strong>Uniformly continuous and Lipschitz (Definition 5.52, <a class="pl" href="script.html#p248">p. 248</a>)</strong> mean the same as in <a class="xl" href="lesson-08.html">lesson 8</a>, with $d$ in place of $|\cdot|$.</p>
+
+<h3 id="proof-f">Proof F: closed sets contain their limits</h3>
+<p>Recall from <a class="xl" href="lesson-05.html#3-5-open-and-closed">lesson 5</a>: $A\subseteq\mathbb{R}$ is <strong>closed</strong> if $\mathbb{R}\setminus A$ is open. This test turns “closed” into a statement about sequences, which is how multiple-choice questions like Figalli FS26 MC1 are solved. (It holds the same way in every metric space.)</p>
+<div class="box"><p><strong>Claim.</strong> $A\subseteq\mathbb{R}$ is closed if and only if for every sequence $(a_n)_n$ in $A$ that converges in $\mathbb{R}$, the limit lies in $A$.</p></div>
+<p><strong>The idea.</strong> (⇒) A limit outside $A$ would have a whole ball outside $A$ around it, since $\mathbb{R}\setminus A$ is open. But the sequence eventually enters every ball around its limit, and its terms are in $A$. (⇐) If the complement were not open, some point $x\notin A$ would have points of $A$ in every ball around it. Pick one in each ball of radius $\frac1n$: a sequence in $A$ converging to $x\notin A$. This is the same $\delta=\frac1n$ trick as in Proof E.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(⇒)</strong> First lines: “Let $a_n\in A$ with $a_n\to x$. Suppose $x\notin A$.” Last line: “contradiction, so $x\in A$.”</li>
+  <li><strong>(⇐)</strong> Contrapositive. First line: “Suppose $\mathbb{R}\setminus A$ is not open.” Last line: “…so $(a_n)_n$ is a sequence in $A$ whose limit is not in $A$.”</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p><strong>(⇒)</strong> Arrows all landing inside the walled land home in on a target outside it. Around that target there's a whole ring outside the walls.</p></div><div class="sp-formal"><p>Let $A$ be closed, $a_n\in A$ for all $n$ and $a_n\to x$. Suppose $x\notin A$. Since $\mathbb{R}\setminus A$ is open, there is $r&gt;0$ with $(x-r,x+r)\subseteq\mathbb{R}\setminus A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>But eventually the arrows land in that ring, outside the walls. Impossible.</p></div><div class="sp-formal"><p>By convergence there is $N$ with $|a_N-x|&lt;r$, so $a_N\in(x-r,x+r)\subseteq\mathbb{R}\setminus A$, contradicting $a_N\in A$. So $x\in A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p><strong>(⇐)</strong> If the outside isn't open, there's a point outside with land of $A$ in every ring around it.</p></div><div class="sp-formal"><p>Suppose $\mathbb{R}\setminus A$ is not open. Then there is $x\notin A$ such that for every $r&gt;0$, $(x-r,x+r)\not\subseteq\mathbb{R}\setminus A$, that is, $(x-r,x+r)$ contains a point of $A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Take one such point in the ring of radius $\frac1n$, for every $n$. They close in on a point outside $A$.</p></div><div class="sp-formal"><p>For each $n$ choose $a_n\in A$ with $|a_n-x|&lt;\frac1n$. Then $a_n\to x$ and $x\notin A$. By contraposition, if all limits of convergent sequences in $A$ lie in $A$, then $\mathbb{R}\setminus A$ is open, so $A$ is closed. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-seq">δ = 1/n builds a sequence</a> <a class="mvl" href="moves.html#m-neg">the negation recipe</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(⇒) Let $A$ be closed, $a_n\in A$, $a_n\to x$, and suppose $x\notin A$. As $\mathbb{R}\setminus A$ is open, $(x-r,x+r)\subseteq\mathbb{R}\setminus A$ for some $r&gt;0$. Some $a_N$ satisfies $|a_N-x|&lt;r$, so $a_N\notin A$, a contradiction.</p>
+<p>(⇐) If $\mathbb{R}\setminus A$ is not open, there is $x\notin A$ such that every $(x-\frac1n,x+\frac1n)$ contains some $a_n\in A$. Then $a_n\to x\notin A$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the negation of “$\mathbb{R}\setminus A$ is open”.</p>
+  <details><summary>Answer</summary><div><p>“There is $x\in\mathbb{R}\setminus A$ such that for every $r&gt;0$, the interval $(x-r,x+r)$ contains a point of $A$.”</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write (⇒).</p>
+  <details><summary>Answer</summary><div><p>See the first paragraph of the one-piece proof.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write both directions from the frame alone.</p></li>
+</ol></div>
+<p><strong>Using it:</strong> $(0,1]$ is not closed, because $\frac1n\in(0,1]$ converges to $0\notin(0,1]$. $[0,1]$ is closed, because limits of sequences in $[0,1]$ stay in $[0,1]$ (limits keep $\le$).</p>
+<h2 id="s8-using-the-theorems">8. Using the theorems</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: $\frac1n\to0$, and $(-1)^n$ diverges (Beispiel 5.28, <a class="pl" href="script.html#p239">p. 239</a>)</h3>
+<ol class="gq">
+  <li><p>Write what “$\frac1n\to0$” means, with quantifiers.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists N\in\mathbb N\ \forall n\\&amp;\ge  N:\ \left|\frac1n-0\right|\\&amp;&lt;\varepsilon\end{aligned}$$</span>.</p></div></details></li>
+  <li><p>Given $\varepsilon&gt;0$, which theorem gives you $N$, and how?</p>
+  <details><summary>Answer</summary><div><p>The Archimedean principle gives $N\in\mathbb N$ with $N&gt;\frac1\varepsilon$, that is, $\frac1N&lt;\varepsilon$.</p></div></details></li>
+  <li><p>Finish the proof.</p>
+  <details><summary>Answer</summary><div><p>For $n\ge N$: $\left|\frac1n-0\right|=\frac1n\le\frac1N&lt;\varepsilon$. So $\frac1n\to0$.</p></div></details></li>
+  <li><p>Now $a_n=(-1)^n$. Which two subsequences show it diverges, and which lemma do you cite?</p>
+  <details><summary>Answer</summary><div><p>$a_{2k}=1\to1$ and $a_{2k+1}=-1\to-1$. If $(a_n)_n$ converged to some $A$, both subsequences would converge to $A$ by Lemma 5.39 (subsequences of a convergent sequence have the same limit), so $1=A=-1$, a contradiction.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-2">Worked example 2: geometric sequences (Beispiel 5.34, <a class="pl" href="script.html#p241">p. 241–242</a>)</h3>
+<p><em>Show that $q^n\to0$ if $|q|&lt;1$, and that $(q^n)_n$ diverges if $|q|&gt;1$.</em></p>
+<ol class="gq">
+  <li><p>Start with $|q|&gt;1$. Write $|q|=1+x$ with $x&gt;0$. Which inequality from <a class="xl" href="lesson-04.html#proof-c">lesson 4</a> bounds $(1+x)^n$ from below?</p>
+  <details><summary>Answer</summary><div><p>Bernoulli's inequality: $(1+x)^n\ge1+nx$ for $x\ge-1$.</p></div></details></li>
+  <li><p>Why does that make $(q^n)_n$ unbounded, and why does unbounded give divergence?</p>
+  <details><summary>Answer</summary><div><p>Given $M&gt;0$, Archimedes gives $n$ with $1+nx&gt;M$, so $|q^n|=|q|^n\ge1+nx&gt;M$. No $M$ bounds the sequence. A convergent sequence is bounded (Proof C), so $(q^n)_n$ diverges.</p></div></details></li>
+  <li><p>Now $0&lt;|q|&lt;1$ and $\varepsilon&gt;0$. Apply the first part to $\frac1{|q|}&gt;1$. What do you get?</p>
+  <details><summary>Answer</summary><div><p>$\left(\frac1{|q|}\right)^n$ is unbounded, so there is $N$ with $\frac1{|q|^N}&gt;\frac1\varepsilon$, that is, $|q|^N&lt;\varepsilon$.</p></div></details></li>
+  <li><p>Finish: why does this hold for all $n\ge N$, not just $n=N$?</p>
+  <details><summary>Answer</summary><div><p>Since $|q|&lt;1$, the powers decrease: $|q^n-0|=|q|^n\le|q|^N&lt;\varepsilon$ for $n\ge N$. So $q^n\to0$. (For $q=0$ the sequence is constant $0$.)</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-3">Worked example 3: compute a limit with the rules</h3>
+<p><em>Compute $\displaystyle\lim_{n\to\infty}\frac{3n^2+n}{n^2-5}$.</em></p>
+<ol class="gq">
+  <li><p>The rules need convergent pieces, but $3n^2+n$ and $n^2-5$ are unbounded. What do you do first?</p>
+  <details><summary>Answer</summary><div><p>Divide numerator and denominator by the highest power, $n^2$: $\dfrac{3n^2+n}{n^2-5}=\dfrac{3+\frac1n}{1-\frac5{n^2}}$ for $n\ge3$ (where $n^2-5\neq0$).</p></div></details></li>
+  <li><p>What are the limits of the numerator and denominator, and which rules did you use?</p>
+  <details><summary>Answer</summary><div><p>$\frac1n\to0$ (Worked example 1), so $\frac1{n^2}=\frac1n\cdot\frac1n\to0$ (product rule) and $\frac5{n^2}\to0$ (constant multiple). By the sum rule, $3+\frac1n\to3$ and $1-\frac5{n^2}\to1$.</p></div></details></li>
+  <li><p>Conclude.</p>
+  <details><summary>Answer</summary><div><p>The denominator tends to $1\neq0$ and is nonzero for $n\ge3$, so by the quotient rule the limit is $\frac31=3$. (Starting at $n=3$ is allowed, because shifting the index doesn't change convergence.)</p></div></details></li>
+</ol>
+</div>
+
+<p><strong>Why it's cool.</strong> One definition of distance, three axioms, covers points on a line, vectors in $\mathbb R^n$ and even whole functions. So one proof of “limits are unique” or “convergent ⇒ bounded” works in all of them at once: that is the payoff of abstraction.</p>
+
+<h2 id="s9-your-turn">9. Your turn</h2>
+<div class="box">
+  <h3 id="ex-1">Exercise 1 (Übung 5.32 (i), <a class="pl" href="script.html#p241">p. 241</a>)</h3>
+  <p>Compute, or show the limit doesn't exist: (a) $\displaystyle\lim_{n\to\infty}\frac{7n^4+15}{3n^4+n^3+n-1}$, (b) $\displaystyle\lim_{n\to\infty}\frac{n^2+5}{n^3+n+1}$, (c) $\displaystyle\lim_{n\to\infty}\frac{n^5-10}{n^2+1}$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> Divide by $n^4$: $\dfrac{7+\frac{15}{n^4}}{3+\frac1n+\frac1{n^3}-\frac1{n^4}}$. Each $\frac1{n^k}\to0$ (product rule from $\frac1n\to0$), so the numerator tends to $7$ and the denominator to $3\neq0$. The limit is $\frac73$.</p>
+  <p><strong>(b)</strong> Divide by $n^3$: $\dfrac{\frac1n+\frac5{n^3}}{1+\frac1{n^2}+\frac1{n^3}}\to\frac{0}{1}=0$.</p>
+  <p><strong>(c)</strong> Diverges. For $n\ge2$: $n^5-10\ge\frac{n^5}2$ (since $\frac{n^5}2\ge16&gt;10$) and $n^2+1\le2n^2$, so $\dfrac{n^5-10}{n^2+1}\ge\dfrac{n^5/2}{2n^2}=\dfrac{n^3}4$. That's unbounded, and an unbounded sequence diverges (Proof C).</p>
+  <p class="legend">General rule (Übung 5.32 (ii)): for polynomials $p,q$ of degrees $k,\ell$, $\frac{p(n)}{q(n)}$ tends to the ratio of leading coefficients if $k=\ell$, to $0$ if $k&lt;\ell$, and diverges if $k&gt;\ell$.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-2">Exercise 2 (multiple choice: Figalli HS23 MC1 and FS26 MC1)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">HS23 exam with solutions</a> · <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>(a) Which of these subsets of $\mathbb{R}$ is <em>not</em> open? (A) $(0,1)\cup(2,\infty)$ (B) $(0,1)\cup[1,2)$ (C) $[0,1)\cup(1,2)$ (D) $[1,2)\cup(0,3)$.</p>
+  <p>(b) Which of these subsets of $\mathbb{R}$ is closed? (A) $\bigcup_{n\ge1}\left[\frac1n,1\right]$ (B) $\left\{\frac1n+\frac1m: n,m\ge1\right\}$ (C) $\{0\}\cup\left\{\frac1n:n\ge1\right\}$ (D) $(-1,1)\cap\mathbb{Q}$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a) Answer (C).</strong> (A) is a union of open intervals, so open. (B) equals $(0,2)$, open. (D) equals $(0,3)$, open. (C) $=[0,1)\cup(1,2)$ contains $0$, but no interval $(-r,r)$ around $0$ is contained in it (it contains negative numbers), so it's not open.</p>
+  <p><strong>(b) Answer (C).</strong> Use Proof F.</p>
+  <ul>
+    <li>(A) equals $(0,1]$: the sequence $\frac1n$ lies in it and converges to $0\notin(0,1]$. Not closed.</li>
+    <li>(B) contains $\frac1n+\frac1n=\frac2n\to0$, but $0$ is not in the set (all elements are positive). Not closed.</li>
+    <li>(C) is closed: its complement is a union of open intervals, namely $(-\infty,0)$, $(1,\infty)$ and all $\left(\frac1{n+1},\frac1n\right)$, so it is open.</li>
+    <li>(D) By density of $\mathbb Q$ choose rationals $q_n\in\left(\frac1{\sqrt2}-\frac1n,\frac1{\sqrt2}\right)$. They lie in $(-1,1)\cap\mathbb Q$ and converge to $\frac1{\sqrt2}\notin\mathbb Q$, so the set does not contain all limits of its convergent sequences. Not closed.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-3">Exercise 3 (discrete metric)</h3>
+  <p>Let $X$ be any set with the discrete metric. (a) Describe $B_r(x)$ for $r\le1$ and for $r&gt;1$. (b) Which sequences converge in $X$?</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> $d(y,x)&lt;r$ with $r\le1$ means $d(y,x)=0$, so $B_r(x)=\{x\}$. For $r&gt;1$, every point has distance $0$ or $1&lt;r$, so $B_r(x)=X$. In particular, every subset of $X$ is open (each point has the ball $\{x\}=B_{1/2}(x)$ inside the set).</p>
+  <p><strong>(b)</strong> Exactly the eventually constant sequences. If $a_n\to A$, take $\varepsilon=\frac12$: there is $N$ with $d(a_n,A)&lt;\frac12$, so $a_n=A$, for all $n\ge N$. Conversely, an eventually constant sequence converges to the value it eventually takes.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-4">Exercise 4 (proof, Übung 5.46, <a class="pl" href="script.html#p246">p. 246</a>)</h3>
+  <p>Show: if $a_n\to A$ in $\mathbb{C}$, then $|a_n|\to|A|$. Does $|a_n|\to|A|$ imply $a_n\to A$?</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Frame:</strong> “Let $\varepsilon&gt;0$. … so $\big||a_n|-|A|\big|&lt;\varepsilon$ for $n\ge N$.” The gap: compare with $|a_n-A|$.</p>
+  <p><strong>Proof.</strong> Let $\varepsilon&gt;0$ and choose $N$ with $|a_n-A|&lt;\varepsilon$ for $n\ge N$. By the reverse triangle inequality, $\big||a_n|-|A|\big|\le|a_n-A|&lt;\varepsilon$ for $n\ge N$. So $|a_n|\to|A|$. <span class="qed">∎</span></p>
+  <p><strong>Converse: false.</strong> $a_n=(-1)^n$ has $|a_n|=1\to1=|1|$, but $a_n\not\to1$ (it diverges). (It is true for $A=0$: $|a_n|\to0$ gives $|a_n-0|\to0$.)</p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-tri">insert a middle point</a> (reverse triangle inequality)</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-5">Exercise 5 (the sequence test)</h3>
+  <p>Use a sequence to show that $f:\mathbb{R}\to\mathbb{R}$, $f(x)=1$ for $x\ge0$ and $f(x)=0$ for $x&lt;0$, is not continuous at $0$. Then show the Dirichlet function $\mathbb 1_{\mathbb Q}$ is not continuous at any point.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> to show “not continuous at $x_0$” with sequences, name one sequence $x_n\to x_0$ with $f(x_n)\not\to f(x_0)$. The gap: pick the $x_n$ on the side where $f$ jumps.</p>
+  <p><strong>Step function at $0$:</strong> $x_n=-\frac1n\to0$, but $f(x_n)=0\to0\neq1=f(0)$. By the sequence criterion (continuous at $x_0$ exactly when $x_n\to x_0$ always gives $f(x_n)\to f(x_0)$), $f$ is not continuous at $0$.</p>
+  <p><strong>Dirichlet function at any $x_0$.</strong> If $x_0\in\mathbb{Q}$: by density of the irrationals choose irrational $x_n\in\left(x_0-\frac1n,x_0\right)$. Then $x_n\to x_0$ but $f(x_n)=0\to0\neq1=f(x_0)$. If $x_0\notin\mathbb{Q}$: choose rational $x_n\in\left(x_0-\frac1n,x_0\right)$. Then $x_n\to x_0$ but $f(x_n)=1\to1\neq0=f(x_0)$. Either way $f$ is not continuous at $x_0$. <span class="qed">∎</span></p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-seq">δ = 1/n builds a sequence</a> <a class="mvl" href="moves.html#m-dense">density in every piece</a></p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-6">Exercise 6 (true or false, from the script, <a class="pl" href="script.html#p251">p. 251</a>)</h3>
+  <p>Let $a_n\to a$ and $b_n\to b$ in $\mathbb{R}$. (i) If $a_n\le b_n$ for all but finitely many $n$, then $a\le b$. (ii) If $a_n\le b_n$ for infinitely many $n$, then $a\le b$. (iii) If $a_n&lt;b_n$ for all but finitely many $n$, then $a&lt;b$. (iv) If $a_n&lt;b_n$ for infinitely many $n$, then $a&lt;b$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(i) True.</strong> <em>Frame:</em> contradiction, “Suppose $a&gt;b$”, then continuity of the limit with $\varepsilon$ = half the gap. <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>. Suppose $a&gt;b$ and let $\varepsilon=\frac{a-b}2$. For large $n$, $a_n&gt;a-\varepsilon=\frac{a+b}2$ and $b_n&lt;b+\varepsilon=\frac{a+b}2$, so $a_n&gt;b_n$ for all large $n$, contradicting $a_n\le b_n$ for all but finitely many $n$.</li>
+    <li><strong>(ii) True.</strong> The indices $n$ with $a_n\le b_n$ are infinitely many, so they form subsequences $a_{n_k}\le b_{n_k}$ for all $k$. Subsequences of convergent sequences have the same limits, so $a_{n_k}\to a$ and $b_{n_k}\to b$, and by (i) $a\le b$.</li>
+    <li><strong>(iii) False.</strong> $a_n=0&lt;\frac1n=b_n$ for all $n$, but $a=b=0$.</li>
+    <li><strong>(iv) False,</strong> by the same example.</li>
+  </ul>
+  <p>So (i) and (ii) are true, (iii) and (iv) false. Strict inequalities can become equalities in the limit.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="bonus">Bonus</h3>
+  <p>Prove $\|w\|_\infty\le\|w\|_1\le d\,\|w\|_\infty$ for $w\in\mathbb{R}^d$, and deduce: if $\|v_n-v\|_\infty\to0$ then $\|v_n-v\|_1\to0$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> two inequalities between finite sums, each one line; then the usual “Let $\varepsilon&gt;0$ … for $n\ge N$” for the limit, with $\frac\varepsilon d$ as the tolerance.</p>
+  <p>Let $w=(w_1,\dots,w_d)$ and $|w_m|=\max_j|w_j|=\|w\|_\infty$. Then $\|w\|_\infty=|w_m|\le\sum_j|w_j|=\|w\|_1$, and <span class="math-display" style="display:block">$$\|w\|_1=\sum_j|w_j|\le\sum_j|w_m|=d\,\|w\|_\infty.$$</span></p>
+  <p>If $\|v_n-v\|_\infty\to0$, let $\varepsilon&gt;0$ and $N$ with $\|v_n-v\|_\infty&lt;\frac\varepsilon d$ for $n\ge N$. Then $\|v_n-v\|_1\le d\,\|v_n-v\|_\infty&lt;\varepsilon$ for $n\ge N$. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (2), Exercise 2 (2), Exercise 3 (1) and Exercise 6 (2) make 7. If you have 5 of 7, you're done. Exercises 4 and 5 and the Bonus are proof practice and don't count against you.</p>
+</div>
+
+<h2 id="s10-for-wonder-optional-5-min">10. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>The same sequence, different verdicts.</strong> Whether a sequence converges depends on the metric, not only on the points. Take $a_n=\left(\frac1n,0\right)$ in $\mathbb{R}^2$. With the Euclidean or Manhattan metric, $a_n\to(0,0)$. With the discrete metric, $d(a_n,(0,0))=1$ for every $n$, so it does not converge at all: in the discrete metric only sequences that are eventually constant converge. In the French railway metric (on $\mathbb{C}=\mathbb{R}^2$), $a_n$ lies on a single ray through the origin, so it converges to the origin there too. Now try $b_n=\left(1,\frac1n\right)$: in the Euclidean metric $b_n\to(1,0)$, but in the French railway metric $b_n$ and $(1,0)$ never lie on a common ray through the origin, so $d(b_n,(1,0))=\|b_n\|+1\ge1$ for all $n$, and $b_n$ does not converge to $(1,0)$.</p>
+<p><strong>A world where every triangle is isosceles.</strong> Fix a prime, say $p=3$. For rationals $x\neq y$, write $x-y=3^k\cdot\frac ab$ with $a,b$ not divisible by $3$, and set $d_3(x,y)=3^{-k}$ (and $d_3(x,x)=0$). This is a metric, the <em>3-adic metric</em>, and it satisfies a much stronger triangle inequality: $d_3(x,z)\le\max\{d_3(x,y),d_3(y,z)\}$. In this world $1,3,9,27,\dots$ get <em>closer</em> to $0$, so $3^n\to0$, and every point of a ball is its centre. Completing $\mathbb{Q}$ in this metric gives the $p$-adic numbers, a central tool of number theory (Andrew Wiles's proof of Fermat's Last Theorem uses them).</p>
+<p><strong>Averages are calmer than sequences.</strong> The sequence $(-1)^n$ diverges, but its running averages $\frac{a_1+\dots+a_n}{n}$ are $-1,0,-\frac13,0,\dots$, which tend to $0$. Cesàro proved that if $a_n\to A$, then the averages also tend to $A$ (Übung 5.36), and the example shows the converse fails. Averaging is how physicists and engineers tame oscillating signals.</p>
+
+<h2 id="s11-what-we-skipped">11. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>The proof of the Cauchy–Schwarz inequality</strong> (and hence the triangle inequality for the Euclidean norm). Low priority here; Linear Algebra proves it properly.</li>
+  <li><strong>Proofs of the product and quotient rules for limits</strong> (Proposition 5.30). Medium priority; <a class="xl" href="#s5-the-limit-rules">section 5</a> gave the idea, and the sum rule is the model proof.</li>
+  <li><strong>The neighbourhood characterisation of continuity</strong> (Proposition 5.50 (iv): preimages of neighbourhoods are neighbourhoods). Low priority.</li>
+  <li><strong>The remark on the axiom of choice</strong> in the proof that sequential continuity implies ε-δ continuity. Not needed for the exam.</li>
+  <li><strong>Übungen on norms and metrics</strong> (5.4, 5.6, 5.9, 5.13, 5.15) and <strong>on balls</strong> (5.18). Low priority; Exercise 3 and the Bonus cover the typical moves.</li>
+  <li><strong>Übungen on sequences</strong> (5.23, 5.26, 5.29, 5.33, 5.35), <strong>Cesàro</strong> (5.36, see For wonder), and <strong>on subsequences and accumulation points</strong> (5.40, 5.41, 5.43, 5.47). Medium priority for 5.36 and 5.40 (good proof practice), low for the rest.</li>
+  <li><strong>Übungen on continuity</strong> (5.51, 5.54) and the further exercises at the end of chapter 5. Low priority.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-11.html">lesson 11</a>, the sandwich lemma, monotone sequences and limsup and liminf (the start of chapter 6). The Cauchy criterion, with its full exam proof, follows in <a class="xl" href="lesson-12.html#proof-e">lesson 12</a>.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-09.html">← Lesson 9: Tiles and Canopies</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-11.html">Lesson 11: The Climber and the Tide →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

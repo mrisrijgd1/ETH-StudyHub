@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Wanderer's Return</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-11.html">← Lesson 11</a>
+<a href="lesson-13.html">Lesson 13 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 12 of 26</span>
+  <h1>The Wanderer's Return</h1>
+  <p class="lead">The second half of the sequence theory in chapter 6: every bounded sequence has a convergent subsequence (Bolzano–Weierstrass), sequences that run off to $\pm\infty$, and Cauchy sequences, which let you prove convergence without knowing the limit. The Cauchy criterion proof is a full exam question.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-11-5">Recap of lesson 11 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-wanderer-s">1. The story: the wanderer&#x27;s return</a>
+</li>
+<li><a href="#s2-subsequences-and-bolzano-weierstrass">2. Subsequences and Bolzano–Weierstrass</a>
+<ol>
+<li><a href="#proof-a">Proof A: the limsup is an accumulation point (Satz 6.15 (ii))</a></li>
+</ol></li>
+<li><a href="#s3-improper-limits-going-to-infinity">3. Improper limits: going to infinity</a>
+</li>
+<li><a href="#s4-cauchy-sequences">4. Cauchy sequences</a>
+<ol>
+<li><a href="#proof-b">Proof B: convergent sequences are Cauchy (Wichtige Übung 6.23)</a></li>
+<li><a href="#proof-c">Proof C: Cauchy sequences are bounded</a></li>
+<li><a href="#proof-d">Proof D: a Cauchy sequence with a convergent subsequence converges (Wichtige Übung 6.24)</a></li>
+<li><a href="#proof-e">Proof E: the Cauchy criterion (Satz 6.26, p. 263)</a></li>
+<li><a href="#the-big-picture">The big picture</a></li>
+</ol></li>
+<li><a href="#s5-worked-examples">5. Worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: $a_n=\sum_{k=1}^n\frac1{k^2}$ converges, without knowing the limit</a></li>
+<li><a href="#we-2">Worked example 2: the harmonic numbers $H_n=\sum_{k=1}^n\frac1k$ are not Cauchy</a></li>
+</ol></li>
+<li><a href="#s6-exercises">6. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Figalli HS23, MC2)</a></li>
+<li><a href="#ex-2">Exercise 2 (Figalli FS24, MC8)</a></li>
+<li><a href="#ex-3">Exercise 3 (Felder FS23, MC2)</a></li>
+<li><a href="#ex-4">Exercise 4 (Felder HS22, MC2)</a></li>
+<li><a href="#ex-5">Exercise 5 (Kobel-Keller HS24, question 16, 6 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (improper limits)</a></li>
+<li><a href="#bonus">Bonus (Übung 6.25)</a></li>
+</ol></li>
+<li><a href="#s7-for-wonder-optional-5-min">7. For wonder</a>
+</li>
+<li><a href="#s8-what-we-skipped">8. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>state Bolzano–Weierstrass</strong> and prove it (via $\limsup$, or by halving intervals), (2) define $a_n\to\infty$ and work with it, (3) <strong>define a Cauchy sequence</strong> and prove that convergent sequences are Cauchy and that Cauchy sequences are bounded, (4) prove that a Cauchy sequence with a convergent subsequence converges, (5) <strong>state and prove the Cauchy criterion</strong> (a real sequence converges ⇔ it is Cauchy), and (6) answer the standard multiple-choice questions about bounded, monotone, Cauchy and convergent sequences.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p259">p. 259–260</a>, Section 6.1.3, Satz 6.15:</strong> limits of subsequences lie between $\liminf$ and $\limsup$, and both are limits of subsequences; the second proof by halving intervals.</li>
+      <li><strong><a class="pl" href="script.html#p260">p. 260–261</a>, Übungen 6.16–6.18:</strong> accumulation points; sequentially compact sets.</li>
+      <li><strong><a class="pl" href="script.html#p262">p. 262</a>, Section 6.1.4, Definition 6.19, Übungen 6.20–6.21:</strong> improper limits.</li>
+      <li><strong><a class="pl" href="script.html#p263">p. 263–264</a>, Section 6.2, Definition 6.22, Wichtige Übungen 6.23–6.24, Satz 6.26, Beispiel 6.27:</strong> Cauchy sequences and the Cauchy criterion.</li>
+      <li><strong><a class="pl" href="script.html#p265">p. 265</a>, Figur 6.2:</strong> a diagram of how the properties of sequences are related.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+“State and prove the Cauchy criterion for real sequences” was Einsiedler's HS21 exam question 6 (7 points), and “show that a real Cauchy sequence converges” was Kobel-Keller's HS24 question 16 (6 points, your Exercise 5). The relations between bounded, monotone, Cauchy and convergent sequences appear in a multiple-choice question in almost every exam: Figalli HS23 MC2, Figalli FS24 MC8, Felder FS23 MC2 and Felder HS22 MC2 are your Exercises 1–4. And Cauchy sequences are how chapter 7 proves that series converge.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-11-5">Recap of <a class="xl" href="lesson-11.html">lesson 11</a> (5 min)</h3>
+<ul>
+  <li><strong>Sandwich lemma:</strong> $a_n\le b_n\le c_n$ and $a_n,c_n\to A$ ⇒ $b_n\to A$.</li>
+  <li><strong>Monotone convergence:</strong> a monotone sequence converges ⇔ it is bounded; an increasing one tends to $\sup\{a_n\}$. Proof: $S-\varepsilon$ is not an upper bound, so $S-\varepsilon&lt;a_N\le a_n\le S$ for $n\ge N$.</li>
+  <li><strong>Tail suprema</strong> $S_n=\sup_{k\ge n}a_k$ decrease, <strong>tail infima</strong> $I_n=\inf_{k\ge n}a_k$ increase; $\limsup a_n=\lim S_n$, $\liminf a_n=\lim I_n$.</li>
+  <li><strong>Two properties</strong> of $S=\limsup a_n$: (P1) eventually $a_n\le S+\varepsilon$; (P2) infinitely often $a_n&gt;S-\varepsilon$.</li>
+  <li><strong>Convergent ⇔ $\liminf=\limsup$</strong> (for bounded sequences).</li>
+</ul>
+<ol class="gq">
+  <li><p>Why is $(S_n)_n$ decreasing?</p>
+  <details><summary>Answer</summary><div><p>$\{a_k:k\ge n+1\}\subseteq\{a_k:k\ge n\}$, and a smaller set has a smaller (or equal) supremum: $S_n$ is an upper bound of the smaller set, so $S_{n+1}\le S_n$.</p></div></details></li>
+  <li><p>What are the five steps for a recursive sequence $a_{n+1}=f(a_n)$?</p>
+  <details><summary>Answer</summary><div><p>Guess from the first terms; find the candidate limit from $A=f(A)$; prove monotone and bounded by induction; apply monotone convergence; pass to the limit in the recursion.</p></div></details></li>
+  <li><p>Compute $\limsup$ and $\liminf$ of $(-1)^n\left(1+\frac1n\right)$.</p>
+  <details><summary>Answer</summary><div><p>Even terms $1+\frac1n\to1$, odd terms $-1-\frac1n\to-1$. So $\limsup=1$ and $\liminf=-1$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>subsequence, accumulation point</td><td>Teilfolge, Häufungspunkt</td></tr>
+    <tr><td>Bolzano–Weierstrass theorem</td><td>Satz von Bolzano–Weierstrass</td></tr>
+    <tr><td>nested intervals</td><td>Intervallschachtelung</td></tr>
+    <tr><td>sequentially compact</td><td>folgenkompakt</td></tr>
+    <tr><td>improper limit, diverges to $\infty$</td><td>uneigentlicher Grenzwert, divergiert gegen $\infty$</td></tr>
+    <tr><td>Cauchy sequence</td><td>Cauchy-Folge</td></tr>
+    <tr><td>Cauchy criterion</td><td>Cauchy-Kriterium</td></tr>
+    <tr><td>completeness (of $\mathbb R$)</td><td>Vollständigkeit</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-wanderer-s">1. The story: the wanderer's return</h2>
+<div class="story">
+<p>A wanderer is bound by a curse to walk forever inside a walled valley, one camp each night, never leaving the walls. He may wander anywhere, back and forth, without any pattern. The valley's cartographer claims: <em>there is a spot he will come back near again and again, forever.</em> Her proof: split the valley map in two halves. He spends infinitely many nights in the valley, so at least one half holds infinitely many of his camps. Split that half again, and again. The halves shrink to a single point, and every one of the shrinking pieces holds infinitely many camps. That point is where he keeps returning. That's <strong>Bolzano–Weierstrass</strong>: a bounded sequence has a convergent subsequence.</p>
+<p>Without the walls the curse is different. A wanderer who walks steadily away and eventually stays beyond every milestone, however far, is said to <em>go to infinity</em>. Not every wanderer without walls does that: one can stroll back home every other night.</p>
+<p>Finally, a caravan of pilgrims. After a while, any two of their later camps are close to each other, closer and closer as time goes on. Nobody has told them where the pilgrimage ends. Yet in the land of the real numbers, the elders say, such a caravan <em>always</em> arrives somewhere: there are no holes in the ground for it to fall into. That's the <strong>Cauchy criterion</strong>, and it's what “the real numbers are complete” really means.</p>
+</div>
+<p>In maths: the camps are the terms $a_n$, the walls are a bound $|a_n|\le M$, the spot he keeps returning to is an accumulation point, going to infinity is $a_n\to\infty$, and the caravan is a Cauchy sequence: $|a_m-a_n|$ small for all large $m,n$.</p>
+
+<h2 id="s2-subsequences-and-bolzano-weierstrass">2. Subsequences and Bolzano–Weierstrass</h2>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-10.html#s6-subsequences-accumulation-points-and-coordinates">lesson 10</a>)</span>
+<ul>
+  <li><strong>Subsequence:</strong> $(a_{n_k})_k$ with $n_1&lt;n_2&lt;\dots$, so $n_k\ge k$. A subsequence of a convergent sequence has the same limit.</li>
+  <li><strong>Accumulation point</strong> of $(a_n)_n$: the limit of some subsequence. <strong>Criterion (Proposition 5.42):</strong> $A$ is an accumulation point ⇔ for every $\varepsilon&gt;0$ and every $N$ there is $n\ge N$ with $|a_n-A|&lt;\varepsilon$.</li>
+</ul></div>
+<div class="box">
+<p><strong>Satz 6.15 (<a class="pl" href="script.html#p259">p. 259</a>).</strong> Let $(a_n)_n$ be a bounded real sequence. (i) The limit of every convergent subsequence lies in $[\liminf a_n,\limsup a_n]$. (ii) There is a subsequence converging to $\limsup a_n$, and one converging to $\liminf a_n$.</p>
+<p><strong>Bolzano–Weierstrass</strong> (the consequence everyone uses). <strong>Every bounded real sequence has a convergent subsequence.</strong></p>
+</div>
+<p>So $\limsup$ is the <em>largest</em> accumulation point and $\liminf$ the <em>smallest</em>. For example $(-1)^n+\frac1n$ has accumulation points $1$ and $-1$, exactly its $\limsup$ and $\liminf$. Part (i) follows from the two properties: eventually $I-\varepsilon\le a_n\le S+\varepsilon$, so the limit of a convergent subsequence lies in $[I-\varepsilon,S+\varepsilon]$ for every $\varepsilon&gt;0$.</p>
+<p><strong>Without “bounded”, it fails:</strong> $a_n=n$ has no convergent subsequence, because every subsequence is unbounded. <strong>Sequentially compact (<a class="pl" href="script.html#p261">p. 261</a>):</strong> a set $K$ is sequentially compact if every sequence in $K$ has a subsequence converging to a point <em>of $K$</em>. By Bolzano–Weierstrass and Proposition 6.1, every closed interval $[a,b]$ is sequentially compact. $(0,1]$ is not: $\frac1n$ has only the limit $0\notin(0,1]$.</p>
+
+<h3 id="proof-a">Proof A: the limsup is an accumulation point (Satz 6.15 (ii))</h3>
+<p><strong>The idea.</strong> We check the criterion: after any day $N$, the sequence must come within $\varepsilon$ of $S=\limsup a_n$. Pick a later high-water mark $S_M$ that's already within $\varepsilon$ of $S$ (they settle at $S$). The water comes within $\varepsilon$ of that mark after day $M$, and that brings it within $\varepsilon$ of $S$ from below, while the mark keeps it below $S+\varepsilon$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Goal (by the criterion):</strong> for every $\varepsilon&gt;0$ and $N$, find $n\ge N$ with $S-\varepsilon&lt;a_n&lt;S+\varepsilon$.</li>
+  <li><strong>Given:</strong> $S_n=\sup_{k\ge n}a_k$ decreases to $S=\inf_nS_n$.</li>
+  <li><strong>The gap to fill:</strong> one index $M\ge N$ whose mark is close to $S$, then one term close to that mark.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Fix a tolerance and a day.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$ and $N\in\mathbb N$. Let $S=\limsup a_n$ and $S_m=\sup_{k\ge m}a_k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The marks settle at $S$, so some mark after day $N$ is already close to $S$.</p></div><div class="sp-formal"><p>Since $S_m\to S$ and $S_m\ge S$ for all $m$, there is $M\ge N$ with $S\le S_M&lt;S+\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The water really comes close to that mark after day $M$.</p></div><div class="sp-formal"><p>Since $S_M-\varepsilon$ is not an upper bound of $\{a_k:k\ge M\}$, there is $n\ge M\ge N$ with <span class="math-display" style="display:block">$$S-\varepsilon\le S_M-\varepsilon&lt;a_n\le S_M&lt;S+\varepsilon.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So it comes back near $S$ after every day.</p></div><div class="sp-formal"><p>So $|a_n-S|&lt;\varepsilon$ with $n\ge N$. By the accumulation-point criterion (every $\varepsilon$-window catches terms with arbitrarily large index), $S$ is an accumulation point, i.e. the limit of a subsequence. The same argument from below works for $\liminf$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">use convergence with a chosen ε</a> <a class="mvl" href="moves.html#m-approx">approach a supremum</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $S=\limsup a_n$, $S_m=\sup_{k\ge m}a_k$, $\varepsilon&gt;0$ and $N\in\mathbb N$. Since $S_m$ decreases to $S$, there is $M\ge N$ with $S\le S_M&lt;S+\varepsilon$. As $S_M-\varepsilon$ is not an upper bound of $\{a_k:k\ge M\}$, there is $n\ge M$ with $S_M-\varepsilon&lt;a_n\le S_M$, hence $S-\varepsilon&lt;a_n&lt;S+\varepsilon$. So for every $\varepsilon&gt;0$ and $N$ there is $n\ge N$ with $|a_n-S|&lt;\varepsilon$, and $S$ is an accumulation point by the accumulation-point criterion. In particular, every bounded sequence has a convergent subsequence. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Goal by the criterion:</strong> for all $\varepsilon,N$ some $n\ge N$ with $|a_n-S|&lt;\varepsilon$.</li>
+  <li><strong>$S_M$ close to $S$</strong> for some $M\ge N$ (the $S_m$ decrease to $S$).</li>
+  <li><strong>Approach the supremum $S_M$:</strong> $n\ge M$ with $S_M-\varepsilon&lt;a_n\le S_M$.</li>
+  <li><strong>Chain:</strong> $S-\varepsilon&lt;a_n&lt;S+\varepsilon$.</li>
+</ol>
+<p>In short: “a tail supremum $S_M$ close to $S$, a term close to $S_M$”. If an exam only needs Bolzano–Weierstrass as a step (as in the Cauchy criterion), you just cite it.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why do we need $M\ge N$ and not just any $M$ with $S_M&lt;S+\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>The criterion needs an index $n\ge N$. We find $n\ge M$, so $M\ge N$ guarantees $n\ge N$. (Since the $S_m$ decrease, any $M$ that works can be replaced by $\max\{M,N\}$.)</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the chain $S-\varepsilon&lt;a_n&lt;S+\varepsilon$ and justify each inequality.</p>
+  <details><summary>Answer</summary><div><p>$S-\varepsilon\le S_M-\varepsilon$ since $S\le S_M$; $S_M-\varepsilon&lt;a_n$ by the choice of $n$; $a_n\le S_M$ since $n\ge M$; $S_M&lt;S+\varepsilon$ by the choice of $M$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<details><summary>Second proof of Bolzano–Weierstrass: halving intervals (p. 260)</summary><div>
+<p><strong>The idea</strong> is the cartographer's. Let $c_1\le a_n\le d_1$ for all $n$, and $n_1=1$.</p>
+<ol>
+  <li>Split $[c_1,d_1]$ into two halves. At least one half contains $a_n$ for infinitely many $n$; call it $[c_2,d_2]$, and choose $n_2&gt;n_1$ with $a_{n_2}\in[c_2,d_2]$.</li>
+  <li>Repeat: $[c_{k+1},d_{k+1}]\subseteq[c_k,d_k]$ is a half containing infinitely many terms, and $n_{k+1}&gt;n_k$ with $a_{n_{k+1}}\in[c_{k+1},d_{k+1}]$. (Infinitely many terms means we can always find a later index.)</li>
+  <li>The lengths are $d_k-c_k=\frac{d_1-c_1}{2^{k-1}}$. By nested intervals (<a class="xl" href="lesson-06.html#6-3-nested-intervals-intervallschachtelungsprinzip">lesson 6</a>) there is $A\in\bigcap_k[c_k,d_k]$.</li>
+  <li>Both $A$ and $a_{n_k}$ lie in $[c_k,d_k]$, so $|a_{n_k}-A|\le\frac{d_1-c_1}{2^{k-1}}\to0$. So $a_{n_k}\to A$.</li>
+</ol>
+<p>This proof doesn't tell you <em>which</em> accumulation point you get, but it generalises well (to $\mathbb R^d$ by halving in every coordinate).</p>
+</div></details>
+<h2 id="s3-improper-limits-going-to-infinity">3. Improper limits: going to infinity</h2>
+<div class="box">
+<p><strong>Definition 6.19 (<a class="pl" href="script.html#p262">p. 262</a>).</strong> A real sequence $(a_n)_n$ <strong>diverges to $\infty$</strong>, written $\lim_{n\to\infty}a_n=\infty$ or $a_n\to\infty$, if for every $\varepsilon&gt;0$ there is $N$ with $a_n\ge\frac1\varepsilon$ for all $n\ge N$. It <strong>diverges to $-\infty$</strong> if for every $\varepsilon&gt;0$ there is $N$ with $a_n\le-\frac1\varepsilon$ for all $n\ge N$. These are called <strong>improper limits</strong>.</p>
+</div>
+<p>Writing $K=\frac1\varepsilon$, this says: <strong>for every bound $K&gt;0$ there is $N$ with $a_n\ge K$ for all $n\ge N$</strong>; the sequence eventually stays above every milestone. Such a sequence is still <em>divergent</em> (it has no limit in $\mathbb R$); “$\lim a_n=\infty$” is a precise way of saying how it diverges.</p>
+<ul>
+  <li><strong>Example.</strong> $a_n=\frac{n^2}{n+1}\to\infty$: since $n+1\le2n$, we get $a_n\ge\frac{n^2}{2n}=\frac n2$. Given $K&gt;0$, choose $N&gt;2K$ (Archimedes); then $a_n\ge\frac n2&gt;K$ for $n\ge N$.</li>
+  <li><strong>Increasing and unbounded ⇒ $a_n\to\infty$.</strong> Given $K$, since $K$ is not an upper bound, some $a_N&gt;K$, and then $a_n\ge a_N&gt;K$ for all $n\ge N$. Together with <a class="xl" href="lesson-11.html#proof-b">lesson 11</a>: <em>every monotone sequence has a limit in $\mathbb R\cup\{\pm\infty\}$.</em></li>
+  <li><strong>Reciprocals.</strong> If $a_n&gt;0$ for all $n$, then $a_n\to\infty\iff\frac1{a_n}\to0$, because $a_n\ge\frac1\varepsilon\iff0&lt;\frac1{a_n}\le\varepsilon$. (That's why the script writes the bound as $\frac1\varepsilon$.)</li>
+  <li><strong>Improper sandwich (Übung 6.21).</strong> If $a_n\le b_n$ for all $n$ and $a_n\to\infty$, then $b_n\to\infty$: from $a_n\ge K$ follows $b_n\ge K$. Likewise $b_n\to-\infty$ implies $a_n\to-\infty$.</li>
+  <li><strong>Unbounded is not the same as $\to\infty$.</strong> $a_n=1$ for even $n$ and $a_n=n$ for odd $n$ is unbounded, but doesn't diverge to $\infty$, since it returns to $1$ forever. Still, every unbounded sequence has a subsequence tending to $\infty$ or $-\infty$ (Übung 6.20, your Exercise 6).</li>
+</ul>
+
+<h2 id="s4-cauchy-sequences">4. Cauchy sequences</h2>
+<div class="box">
+<p><strong>Definition 6.22 (<a class="pl" href="script.html#p263">p. 263</a>).</strong> A sequence $(a_n)_n$ in a metric space $(X,d)$ is a <strong>Cauchy sequence</strong> if</p>
+<span class="math-display" style="display:block">$$\forall\varepsilon&gt;0\ \exists N\in\mathbb N\ \forall m,n\ge N:\ d(a_m,a_n)&lt;\varepsilon.$$</span>
+<p>In $\mathbb R$ or $\mathbb C$: $|a_m-a_n|&lt;\varepsilon$ for all $m,n\ge N$.</p>
+</div>
+<p>Compare with convergence, $|a_n-A|&lt;\varepsilon$ for $n\ge N$. The Cauchy condition doesn't mention any limit $A$: it only compares terms of the sequence with each other. That's its power. To prove convergence from the definition you have to know the limit already; to prove the Cauchy property you don't. Note: <em>both</em> $m$ and $n$ are free, not just neighbours $m=n+1$ (see the warning at the end of the section).</p>
+
+<h3 id="proof-b">Proof B: convergent sequences are Cauchy (Wichtige Übung 6.23)</h3>
+<p><strong>The idea.</strong> If all late terms are within $\frac\varepsilon2$ of the limit $A$, then any two late terms are within $\varepsilon$ of each other, by going through $A$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $\varepsilon&gt;0$.” <strong>Last line:</strong> “so $|a_m-a_n|&lt;\varepsilon$ for all $m,n\ge N$.”</li>
+  <li><strong>The given:</strong> $a_n\to A$, used with a tolerance of our choice.</li>
+  <li><strong>The gap:</strong> compare $a_m$ and $a_n$ through the middle point $A$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Late camps are all near the destination, within half the tolerance.</p></div><div class="sp-formal"><p>Let $a_n\to A$ and $\varepsilon&gt;0$. There is $N$ with $|a_n-A|&lt;\frac\varepsilon2$ for all $n\ge N$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So two late camps are near each other, via the destination.</p></div><div class="sp-formal"><p>For $m,n\ge N$: <span class="math-display" style="display:block">$$|a_m-a_n|\le|a_m-A|+|A-a_n|&lt;\tfrac\varepsilon2+\tfrac\varepsilon2=\varepsilon.$$</span> So $(a_n)_n$ is a Cauchy sequence. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $a_n\to A$ and $\varepsilon&gt;0$. Choose $N$ with $|a_n-A|&lt;\frac\varepsilon2$ for $n\ge N$. For $m,n\ge N$: $|a_m-a_n|\le|a_m-A|+|A-a_n|&lt;\varepsilon$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why $\frac\varepsilon2$ and not $\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>The triangle inequality adds two distances. With $\varepsilon$ we'd only get $|a_m-a_n|&lt;2\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the proof from the frame alone. (It's three lines; this one appears inside the exam proof of the Cauchy criterion.)</p></li>
+</ol></div>
+
+<h3 id="proof-c">Proof C: Cauchy sequences are bounded</h3>
+<p><strong>The idea.</strong> Exactly <a class="xl" href="lesson-10.html#proof-c">lesson 10</a>'s “convergent ⇒ bounded”, with the term $a_N$ playing the role of the limit: from $N$ on, all terms are within $1$ of $a_N$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Last line:</strong> “so $|a_n|\le M$ for all $n$.” We must name $M$.</li>
+  <li><strong>The given:</strong> the Cauchy condition with $\varepsilon=1$, and with $m=N$ fixed.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>From some night on, every camp is within $1$ of camp $N$.</p></div><div class="sp-formal"><p>With $\varepsilon=1$ there is $N$ with $|a_m-a_n|&lt;1$ for $m,n\ge N$. With $m=N$: for $n\ge N$, <span class="math-display" style="display:block">$$|a_n|\le|a_n-a_N|+|a_N|&lt;1+|a_N|.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The finitely many earlier camps have a farthest one.</p></div><div class="sp-formal"><p>Let $M=\max\{|a_1|,\dots,|a_{N-1}|,\ 1+|a_N|\}$. Then $|a_n|\le M$ for all $n$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">use the condition with a chosen ε</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>By the Cauchy condition with $\varepsilon=1$ there is $N$ with $|a_m-a_n|&lt;1$ for $m,n\ge N$. For $n\ge N$, $|a_n|\le|a_n-a_N|+|a_N|&lt;1+|a_N|$. So <span class="math-display" style="display:block">$$|a_n|\le M=\max\{|a_1|,\dots,|a_{N-1}|,1+|a_N|\}$$</span>for all $n$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (2 min).</strong> Write this proof from the frame alone, and compare it with <a class="xl" href="lesson-10.html#proof-c">lesson 10</a>'s Proof C.</p>
+  <details><summary>Answer</summary><div><p>Same structure: $\varepsilon=1$, tail by the triangle inequality, head by a finite maximum. The only change: $a_N$ instead of the limit $A$.</p></div></details></li>
+</ol></div>
+
+<h3 id="proof-d">Proof D: a Cauchy sequence with a convergent subsequence converges (Wichtige Übung 6.24)</h3>
+<p><strong>The idea.</strong> Some subsequence arrives at $L$. Every late term of the whole sequence is close to the late terms of the subsequence (Cauchy), and those are close to $L$. So, going through one well-chosen subsequence term, every late term is close to $L$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> (1) Cauchy: $N$ with $|a_n-a_m|&lt;\cdot$ for $m,n\ge N$; (2) $a_{n_k}\to L$: $K$ with $|a_{n_k}-L|&lt;\cdot$ for $k\ge K$. Two ε-statements, so use $\frac\varepsilon2$ in each.</li>
+  <li><strong>Last line:</strong> “so $|a_n-L|&lt;\varepsilon$ for all $n\ge N$.”</li>
+  <li><strong>The gap:</strong> one subsequence term $a_{n_k}$ that is both “late” for the Cauchy condition ($n_k\ge N$) and “late” for the subsequence ($k\ge K$). Use $n_k\ge k$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Late camps are close to each other.</p></div><div class="sp-formal"><p>Let $(a_n)_n$ be Cauchy with $a_{n_k}\to L$, and let $\varepsilon&gt;0$. There is $N$ with $|a_n-a_m|&lt;\frac\varepsilon2$ for all $m,n\ge N$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Late camps of the chosen group are close to $L$.</p></div><div class="sp-formal"><p>There is $K$ with $|a_{n_k}-L|&lt;\frac\varepsilon2$ for all $k\ge K$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Pick one camp of the group that is late in both senses.</p></div><div class="sp-formal"><p>Let $k=\max\{N,K\}$. Then $k\ge K$, and $n_k\ge k\ge N$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Every late camp is near that one, and that one is near $L$.</p></div><div class="sp-formal"><p>For every $n\ge N$: <span class="math-display" style="display:block">$$\begin{aligned}|a_n-L|&amp;\le |a_n-a_{n_k}|+|a_{n_k}-L|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2\\&amp;=\varepsilon\end{aligned}.$$</span> So $a_n\to L$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-maxN">take the larger N</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\varepsilon&gt;0$. Choose $N$ with $|a_n-a_m|&lt;\frac\varepsilon2$ for $m,n\ge N$, and $K$ with $|a_{n_k}-L|&lt;\frac\varepsilon2$ for $k\ge K$. Fix $k=\max\{N,K\}$; then $n_k\ge k\ge N$. For all $n\ge N$: $|a_n-L|\le|a_n-a_{n_k}|+|a_{n_k}-L|&lt;\varepsilon$. Hence $a_n\to L$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does $n_k\ge N$ hold for $k=\max\{N,K\}$?</p>
+  <details><summary>Answer</summary><div><p>Indices of a subsequence satisfy $n_k\ge k$ (they're strictly increasing natural numbers starting at $n_1\ge1$), and $k\ge N$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the last line, with the triangle inequality, and say which given each half uses.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}|a_n-L|&amp;\le |a_n-a_{n_k}|+|a_{n_k}-L|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2\end{aligned}.$$</span> The first term is small by the Cauchy condition ($n\ge N$ and $n_k\ge N$); the second by the subsequence's convergence ($k\ge K$).</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="proof-e">Proof E: the Cauchy criterion (Satz 6.26, <a class="pl" href="script.html#p263">p. 263</a>)</h3>
+<div class="box">
+<p><strong>Cauchy criterion (Satz 6.26).</strong> A real sequence converges if and only if it is a Cauchy sequence.</p>
+</div>
+<p><strong>The idea.</strong> “⇒” is Proof B. For “⇐”, chain what we have: a Cauchy sequence is bounded (Proof C), so it has a convergent subsequence (Bolzano–Weierstrass), so it converges (Proof D). In an exam, you write Proof D out in full inside this proof.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Statement first:</strong> “A sequence $(a_n)_n$ in $\mathbb R$ converges ⇔ it is a Cauchy sequence”, with the definition of Cauchy written out.</li>
+  <li><strong>Two directions.</strong> “⇒”: ε/2 through the limit. “⇐”: we have no candidate limit, so we must produce one, and the only tool that produces limits from boundedness alone is Bolzano–Weierstrass.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>“⇒” A caravan that arrives somewhere ends up camping close together.</p></div><div class="sp-formal"><p>“⇒”: Let $a_n\to A$ and $\varepsilon&gt;0$. Choose $N$ with $|a_n-A|&lt;\frac\varepsilon2$ for $n\ge N$. For $m,n\ge N$: $|a_m-a_n|\le|a_m-A|+|A-a_n|&lt;\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>“⇐” A caravan whose camps draw together stays inside some walls.</p></div><div class="sp-formal"><p>“⇐”: Let $(a_n)_n$ be Cauchy. With $\varepsilon=1$ there is $N_0$ with $|a_n-a_{N_0}|&lt;1$ for $n\ge N_0$, so $|a_n|\le\max\{|a_1|,\dots,|a_{N_0-1}|,1+|a_{N_0}|\}$ for all $n$: the sequence is bounded.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inside walls, the cartographer finds a spot it keeps returning to.</p></div><div class="sp-formal"><p>By Bolzano–Weierstrass there is a convergent subsequence $a_{n_k}\to L$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Since the camps draw together, the whole caravan follows that group.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$. Choose $N$ with $|a_n-a_m|&lt;\frac\varepsilon2$ for $m,n\ge N$ and $K$ with $|a_{n_k}-L|&lt;\frac\varepsilon2$ for $k\ge K$. Let $k=\max\{N,K\}$, so $n_k\ge k\ge N$. For $n\ge N$: <span class="math-display" style="display:block">$$|a_n-L|\le|a_n-a_{n_k}|+|a_{n_k}-L|&lt;\varepsilon.$$</span> Hence $a_n\to L$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a> <a class="mvl" href="moves.html#m-maxN">take the larger N</a></p>
+<details><summary>The proof in one piece (exam version)</summary><div>
+<p><strong>Claim.</strong> A sequence $(a_n)_n$ in $\mathbb R$ converges if and only if it is a Cauchy sequence, i.e. $\forall\varepsilon&gt;0\ \exists N\ \forall m,n\ge N:\ |a_m-a_n|&lt;\varepsilon$.</p>
+<p>“⇒”: Let $a_n\to A$ and $\varepsilon&gt;0$. Choose $N$ with $|a_n-A|&lt;\frac\varepsilon2$ for $n\ge N$. Then $|a_m-a_n|\le|a_m-A|+|A-a_n|&lt;\varepsilon$ for $m,n\ge N$.</p>
+<p>“⇐”: Let $(a_n)_n$ be Cauchy. For $\varepsilon=1$ choose $N_0$ with $|a_m-a_n|&lt;1$ for $m,n\ge N_0$. Then $|a_n|&lt;1+|a_{N_0}|$ for $n\ge N_0$, so $|a_n|\le\max\{|a_1|,\dots,|a_{N_0-1}|,1+|a_{N_0}|\}$ for all $n$, and $(a_n)_n$ is bounded. By Bolzano–Weierstrass it has a convergent subsequence $a_{n_k}\to L$. Let $\varepsilon&gt;0$; choose $N$ with $|a_n-a_m|&lt;\frac\varepsilon2$ for $m,n\ge N$ and $K$ with $|a_{n_k}-L|&lt;\frac\varepsilon2$ for $k\ge K$. With $k=\max\{N,K\}$ we have $n_k\ge N$, so for all $n\ge N$: $|a_n-L|\le|a_n-a_{n_k}|+|a_{n_k}-L|&lt;\varepsilon$. Hence $a_n\to L$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>State it</strong>, with the Cauchy definition in quantifiers.</li>
+  <li><strong>“⇒”:</strong> $\frac\varepsilon2$ through the limit $A$.</li>
+  <li><strong>“⇐” bounded:</strong> $\varepsilon=1$, tail within $1$ of $a_{N_0}$, head by a finite max.</li>
+  <li><strong>Bolzano–Weierstrass:</strong> a subsequence $a_{n_k}\to L$.</li>
+  <li><strong>Two ε/2's:</strong> $N$ from Cauchy, $K$ from the subsequence; $k=\max\{N,K\}$, $n_k\ge N$.</li>
+  <li><strong>Triangle through $a_{n_k}$:</strong> $|a_n-L|&lt;\varepsilon$ for $n\ge N$.</li>
+</ol>
+<p>In short: “bounded, Bolzano–Weierstrass, then the whole sequence follows its subsequence”. Kobel-Keller's HS24 grading gave one point each for: bounded, convergent subsequence, the Cauchy ε/2, the subsequence ε/2, the max of the indices, and the final triangle inequality.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Name the three facts that make up “⇐”, in order.</p>
+  <details><summary>Answer</summary><div><p>Cauchy ⇒ bounded; bounded ⇒ convergent subsequence (Bolzano–Weierstrass); Cauchy with a convergent subsequence ⇒ convergent.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write the “⇐” direction, citing Bolzano–Weierstrass.</p>
+  <details><summary>Answer</summary><div><p>See the second paragraph of the exam version.</p></div></details></li>
+  <li><p><strong>Rung 3 (6 min).</strong> Write the whole proof, both directions, from the frame alone. This is Exercise 5.</p></li>
+</ol></div>
+<details><summary>Einsiedler's route for “⇐”, via limsup and liminf (p. 264)</summary><div>
+<p>The script proves “⇐” with <a class="xl" href="lesson-11.html#s4-limit-superior-and-limit-inferior">lesson 11</a>'s tools. (Both versions are safe: the official HS21 grading gives the point for “using Bolzano–Weierstrass or limsup/liminf”.) A Cauchy sequence is bounded. Given $\varepsilon&gt;0$, choose $N$ with $|a_m-a_n|&lt;\varepsilon$ for $m,n\ge N$, and fix $m=N$: then $a_N-\varepsilon&lt;a_n&lt;a_N+\varepsilon$ for all $n\ge N$. So every tail supremum and infimum from $N$ on lies in $[a_N-\varepsilon,a_N+\varepsilon]$, and in the limit <span class="math-display" style="display:block">$$a_N-\varepsilon\le\liminf a_n\le\limsup a_n\le a_N+\varepsilon.$$</span>Hence $\limsup a_n-\liminf a_n\le2\varepsilon$ for every $\varepsilon&gt;0$, so they are equal, and the sequence converges by “convergent ⇔ $\liminf=\limsup$”. Both routes earn full marks; use the one you remember better.</p>
+</div></details>
+
+<h3 id="the-big-picture">The big picture</h3>
+<figure style="margin:0" aria-label="Diagram of implications between properties of real sequences. Convergent and Cauchy are equivalent. Convergent implies bounded. Bounded and monotone implies convergent. Bounded implies has a convergent subsequence, by Bolzano–Weierstrass.">
+<svg viewBox="0 0 640 330" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker><marker id="ah2" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0 L0 5 L10 10 z" style="fill:var(--muted)"/></marker></defs><rect x="30" y="20" width="200" height="54" rx="10" style="fill:var(--accent);fill-opacity:.12;stroke:var(--accent)" stroke-width="2"/><text x="130.0" y="53.0" text-anchor="middle" style="fill:var(--ink);font-size:18px">convergent</text><rect x="410" y="20" width="200" height="54" rx="10" style="fill:var(--accent);fill-opacity:.12;stroke:var(--accent)" stroke-width="2"/><text x="510.0" y="53.0" text-anchor="middle" style="fill:var(--ink);font-size:18px">Cauchy</text><rect x="220" y="140" width="200" height="54" rx="10" style="fill:var(--k-eps);fill-opacity:.12;stroke:var(--k-eps)" stroke-width="2"/><text x="320.0" y="173.0" text-anchor="middle" style="fill:var(--ink);font-size:18px">bounded</text><rect x="10" y="262" width="250" height="54" rx="10" style="fill:var(--k-del);fill-opacity:.12;stroke:var(--k-del)" stroke-width="2"/><text x="135.0" y="295.0" text-anchor="middle" style="fill:var(--ink);font-size:18px">monotone + bounded</text><rect x="380" y="262" width="250" height="54" rx="10" style="fill:var(--k-c);fill-opacity:.12;stroke:var(--k-c)" stroke-width="2"/><text x="505.0" y="295.0" text-anchor="middle" style="fill:var(--ink);font-size:18px">convergent subsequence</text><line x1="234.0" y1="47.0" x2="406.0" y2="47.0" style="stroke:var(--muted)" stroke-width="2.2" marker-end="url(#ah)" marker-start="url(#ah2)"/><text x="320.0" y="38.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">Cauchy criterion</text><line x1="150.0" y1="78.0" x2="262.0" y2="136.0" style="stroke:var(--muted)" stroke-width="2.2" marker-end="url(#ah)"/><text x="178.0" y="118.0" text-anchor="end" style="fill:var(--muted);font-size:14px">L10</text><line x1="490.0" y1="78.0" x2="378.0" y2="136.0" style="stroke:var(--muted)" stroke-width="2.2" marker-end="url(#ah)"/><text x="462.0" y="118.0" text-anchor="start" style="fill:var(--muted);font-size:14px">Proof C</text><line x1="100.0" y1="258.0" x2="100.0" y2="80.0" style="stroke:var(--muted)" stroke-width="2.2" marker-end="url(#ah)"/><text x="108.0" y="175.0" text-anchor="start" style="fill:var(--muted);font-size:14px">L11</text><line x1="370.0" y1="198.0" x2="470.0" y2="258.0" style="stroke:var(--muted)" stroke-width="2.2" marker-end="url(#ah)"/><text x="440.0" y="222.0" text-anchor="start" style="fill:var(--muted);font-size:14px">Bolzano–</text><text x="440.0" y="238.0" text-anchor="start" style="fill:var(--muted);font-size:14px">Weierstrass</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">How the properties of real sequences are related (compare Figur 6.2, <a class="pl" href="script.html#p265">p. 265</a>). Every arrow is a theorem from <a class="xl" href="lesson-10.html">lessons 10</a>–12. No arrow is missing by accident: bounded does not imply convergent ($(-1)^n$), monotone does not imply bounded ($n$), and Cauchy does not imply monotone ($\frac{(-1)^n}n$).</figcaption>
+</figure>
+<p><strong>Warning: the “wrong Cauchy criterion” (Beispiel 6.27, <a class="pl" href="script.html#p264">p. 264</a>).</strong> It is <em>not</em> enough that neighbouring terms get close, $|a_{n+1}-a_n|\to0$. Example: $a_n=\sqrt n$. Then <span class="math-display" style="display:block">$$\begin{aligned}a_{n+1}-a_n&amp;=\frac{(\sqrt{n+1}-\sqrt n)(\sqrt{n+1}+\sqrt n)}{\sqrt{n+1}+\sqrt n}\\&amp;=\frac1{\sqrt{n+1}+\sqrt n}\to0\end{aligned},$$</span> but $\sqrt n\to\infty$. Small steps can still add up to an infinite journey. The Cauchy condition controls <em>all</em> pairs $m,n\ge N$, however far apart.</p>
+<h2 id="s5-worked-examples">5. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: $a_n=\sum_{k=1}^n\frac1{k^2}$ converges, without knowing the limit</h3>
+<ol class="gq">
+  <li><p>The sequence is increasing. To use the Cauchy criterion instead, what is $a_m-a_n$ for $m&gt;n$?</p>
+  <details><summary>Answer</summary><div><p>$a_m-a_n=\sum_{k=n+1}^m\frac1{k^2}$, the terms from $n+1$ to $m$.</p></div></details></li>
+  <li><p>For $k\ge2$, compare $\frac1{k^2}$ with $\frac1{k(k-1)}$, and write $\frac1{k(k-1)}$ as a difference.</p>
+  <details><summary>Answer</summary><div><p>$\frac1{k^2}\le\frac1{k(k-1)}=\frac1{k-1}-\frac1k$ (check: $\frac{k-(k-1)}{k(k-1)}$).</p></div></details></li>
+  <li><p>Bound $|a_m-a_n|$ for $m&gt;n\ge1$.</p>
+  <details><summary>Answer</summary><div><p>Telescoping: <span class="math-display" style="display:block">$$\begin{aligned}0&amp;\le  a_m-a_n\\&amp;\le \sum_{k=n+1}^m\left(\frac1{k-1}-\frac1k\right)\\&amp;=\frac1n-\frac1m\\&amp;&lt;\frac1n\end{aligned}.$$</span></p></div></details></li>
+  <li><p>Finish: given $\varepsilon&gt;0$, which $N$ works?</p>
+  <details><summary>Answer</summary><div><p>By Archimedes choose $N&gt;\frac1\varepsilon$. For $m&gt;n\ge N$: $|a_m-a_n|&lt;\frac1n\le\frac1N&lt;\varepsilon$ (and for $m=n$ it's $0$; for $m&lt;n$ swap the roles). So $(a_n)_n$ is Cauchy and converges by the Cauchy criterion.</p></div></details></li>
+</ol>
+<p class="legend">We never found the limit. (It is $\frac{\pi^2}6$; see For wonder.) This is exactly how chapter 7 will handle series.</p>
+</div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: the harmonic numbers $H_n=\sum_{k=1}^n\frac1k$ are not Cauchy</h3>
+<ol class="gq">
+  <li><p>Write the negation of “Cauchy”.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\exists\varepsilon&amp;&gt;0\ \forall N\ \exists m,n\\&amp;\ge  N:\ |a_m-a_n|\\&amp;\ge \varepsilon\end{aligned}.$$</span></p></div></details></li>
+  <li><p>Estimate $H_{2n}-H_n$ from below.</p>
+  <details><summary>Answer</summary><div><p>$H_{2n}-H_n=\sum_{k=n+1}^{2n}\frac1k$ has $n$ terms, each $\ge\frac1{2n}$, so $H_{2n}-H_n\ge n\cdot\frac1{2n}=\frac12$.</p></div></details></li>
+  <li><p>Conclude, and say what happens to $H_n$.</p>
+  <details><summary>Answer</summary><div><p>With $\varepsilon=\frac12$: for every $N$ take $n=N$ and $m=2N$; then $|H_m-H_n|\ge\frac12$. So $(H_n)_n$ is not Cauchy, hence divergent. Since it is increasing, it must be unbounded (bounded and monotone would converge), so $H_n\to\infty$.</p></div></details></li>
+</ol>
+<p class="legend">Yet $H_{n+1}-H_n=\frac1{n+1}\to0$: another example of the wrong Cauchy criterion.</p>
+</div>
+
+<p><strong>Why it's cool.</strong> The Cauchy criterion decides convergence from the terms alone, without knowing the limit. That is how $\mathbb R$ guarantees that limits exist (“no holes”), and it is why you can prove that $\sum\frac1{k^2}$ converges long before you learn that its value is $\frac{\pi^2}6$.</p>
+
+<h2 id="s6-exercises">6. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1–4 are exam multiple choice and count for scoring. Exercise 5 is the full exam proof.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Figalli HS23, MC2)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">HS23 exam with solutions</a></p>
+  <p>Which statement is correct? (A) Every Cauchy sequence is monotone. (B) Every monotone sequence is bounded. (C) Every bounded and monotone sequence is a Cauchy sequence. (D) Every bounded sequence is convergent.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (C).</strong> A bounded monotone sequence converges (monotone convergence theorem), and a convergent sequence is Cauchy (Proof B).</p>
+  <ul>
+    <li>(A) False: $\frac{(-1)^n}n\to0$ is Cauchy but alternates in sign, so it is not monotone.</li>
+    <li>(B) False: $a_n=n$.</li>
+    <li>(D) False: $(-1)^n$.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Figalli FS24, MC8)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">FS24 exam with solutions</a></p>
+  <p>Let $(x_n)_n$ be a real sequence. Which statement is <strong>wrong</strong>? (A) If $(x_n)_n$ is bounded, then the $\limsup$ is an accumulation point. (B) If $(x_n)_n$ is bounded, then there is a convergent subsequence. (C) If $(x_n)_n$ has no accumulation points, then it is unbounded. (D) If $(x_n)_n$ is a Cauchy sequence, then it is monotone.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (D)</strong> is wrong: $\frac{(-1)^n}n$ is Cauchy but not monotone.</p>
+  <ul>
+    <li>(A) True: the limsup of a bounded sequence is an accumulation point (Proof A).</li>
+    <li>(B) True: Bolzano–Weierstrass.</li>
+    <li>(C) True: it's the contrapositive of Bolzano–Weierstrass. If the sequence were bounded, it would have a convergent subsequence, whose limit is an accumulation point.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Felder FS23, MC2)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a></p>
+  <p>Which statement about the real numbers is true? (A) $\mathbb R$ has no countably infinite subsets. (B) Every countably infinite subset of $\mathbb R$ is unbounded. (C) Every sequence in $\mathbb R$ has a convergent subsequence. (D) Every Cauchy sequence in $\mathbb R$ is bounded.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (D).</strong> Proof C.</p>
+  <ul>
+    <li>(A) False: $\mathbb N\subseteq\mathbb R$ is countably infinite.</li>
+    <li>(B) False: $\mathbb Q\cap[0,1]$ is countably infinite and bounded.</li>
+    <li>(C) False: $a_n=n$ has no convergent subsequence. Bolzano–Weierstrass needs “bounded”.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Felder HS22, MC2)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">HS22 exam</a></p>
+  <p>A sequence $(a_n)_n$ in $\mathbb C$ is called a Cauchy sequence if</p>
+  <ul>
+    <li>(A) $\forall\varepsilon&gt;0\ \exists N\in\mathbb N\ \forall n,m\in\mathbb N:$ $n,m\ge N\Rightarrow|a_n-a_m|&lt;\varepsilon$;</li>
+    <li>(B) $\forall\varepsilon&gt;0\ \exists N\in\mathbb N\ \forall n\in\mathbb N:$ $n\ge N\Rightarrow|a_n|&lt;\varepsilon$;</li>
+    <li>(C) the series $\sum_{n=1}^\infty|a_n|$ converges;</li>
+    <li>(D) the limit $\lim_{n\to\infty}\sqrt[n]{|a_n|}$ exists.</li>
+  </ul><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (A)</strong>, the definition. (B) says $a_n\to0$, which is stronger than Cauchy ($a_n=1$ is Cauchy). (C) is the absolute convergence of a series (chapter 7) and fails for $a_n=1$. (D) is not the definition either: for $a_n=n$ the limit $\lim\sqrt[n]{n}=1$ exists (<a class="xl" href="lesson-11.html">lesson 11</a>), but $(n)_n$ is not Cauchy (it is unbounded).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (Kobel-Keller HS24, question 16, 6 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Let $(a_n)_n$ be a Cauchy sequence of real numbers. Show that this sequence converges. (You may use Bolzano–Weierstrass.)</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> “converges” without a given limit, so first produce a candidate: bounded (Proof C), then Bolzano–Weierstrass gives a subsequence with limit $L$. Last line: “Hence $a_n\to L$.” The gap: from the subsequence to the whole sequence with $\frac\varepsilon2$ twice (Proof D).</p>
+  <p>Let $(a_n)_n$ be Cauchy.</p>
+  <p><strong>Bounded.</strong> For $\varepsilon=1$ there is $N_0$ with $|a_m-a_n|&lt;1$ for $m,n\ge N_0$. For $n\ge N_0$: <span class="math-display" style="display:block">$$|a_n|\le|a_n-a_{N_0}|+|a_{N_0}|&lt;1+|a_{N_0}|.$$</span>Hence for all $n$: <span class="math-display" style="display:block">$$\begin{aligned}|a_n|&amp;\le  M\\&amp;=\max\{|a_1|,\dots,|a_{N_0-1}|,1+|a_{N_0}|\}\end{aligned}.$$</span></p>
+  <p><strong>Convergent subsequence.</strong> By Bolzano–Weierstrass there is a subsequence $(a_{n_k})_k$ with $a_{n_k}\to L\in\mathbb R$.</p>
+  <p><strong>The whole sequence converges to $L$.</strong> Let $\varepsilon&gt;0$. Since $(a_n)_n$ is Cauchy, there is $N$ with $|a_n-a_m|&lt;\frac\varepsilon2$ for all $m,n\ge N$. Since $a_{n_k}\to L$, there is $K$ with $|a_{n_k}-L|&lt;\frac\varepsilon2$ for all $k\ge K$. Let $k=\max\{N,K\}$; then $k\ge K$ and $n_k\ge k\ge N$. For all $n\ge N$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|a_n-L|&amp;\le |a_n-a_{n_k}|+|a_{n_k}-L|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2\\&amp;=\varepsilon\end{aligned}.$$</span>
+  <p>Hence $a_n\to L$, and the sequence converges. <span class="qed">∎</span></p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-bw">Bolzano–Weierstrass for a candidate</a> <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-maxN">take the larger N</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Exercise 6 (improper limits)</h3>
+  <p>(a) Show from the definition that $n-\sqrt n\to\infty$. (b) (Übung 6.20) Let $(a_n)_n$ be an unbounded real sequence. Show that it has a subsequence tending to $\infty$ or to $-\infty$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> <em>Frame:</em> “$\to\infty$” means “Let $K&gt;0$ … so $n-\sqrt n&gt;K$ for $n\ge N$”. The gap: a simpler lower bound for $n-\sqrt n$, then choose $N$ by Archimedes. <em>Moves:</em> <a class="mvl" href="moves.html#m-arch">choose n by Archimedes</a>.</p>
+  <p>For $n\ge4$ we have $\sqrt n\ge2$, so $n-\sqrt n=\sqrt n\left(\sqrt n-1\right)\ge\sqrt n$. Let $K&gt;0$. By Archimedes choose $N\ge4$ with $N&gt;K^2$. For $n\ge N$: $n-\sqrt n\ge\sqrt n\ge\sqrt N&gt;K$. So $n-\sqrt n\to\infty$.</p>
+  <p><strong>(b)</strong> <em>Frame:</em> a subsequence is built by choosing indices one at a time, $n_1&lt;n_2&lt;\dots$; the last line is “so $a_{n_k}\to\infty$” (or $-\infty$). The gap: show that each choice is always possible.</p>
+  <p>First, for every $K&gt;0$ there are <em>infinitely many</em> $n$ with $|a_n|&gt;K$: otherwise all $|a_n|$ with $n$ beyond the last such index are $\le K$, and the sequence would be bounded by the maximum of $K$ and finitely many values. So we can choose indices recursively: $n_1$ with $|a_{n_1}|&gt;1$, and $n_{k+1}&gt;n_k$ with $|a_{n_{k+1}}|&gt;k+1$. Then $|a_{n_k}|&gt;k$ for all $k$. Infinitely many of these $a_{n_k}$ are positive, or infinitely many are negative. In the first case, the positive ones form a subsequence with $a_{n_{k_j}}&gt;k_j\ge j$, which tends to $\infty$ (improper sandwich). In the second case, the negative ones tend to $-\infty$ in the same way. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (Übung 6.25)</h3>
+  <p>Show that a sequence $(z_n)_n$ in $\mathbb C$ is Cauchy if and only if $(\operatorname{Re}z_n)_n$ and $(\operatorname{Im}z_n)_n$ are Cauchy. Conclude that the Cauchy criterion also holds in $\mathbb C$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> an “if and only if” is two directions; each one is “Let $\varepsilon&gt;0$ … for $m,n\ge N$”. The gap: compare $|w|$ with its real and imaginary parts. <em>Moves:</em> <a class="mvl" href="moves.html#m-tri">insert a middle point</a> <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-maxN">take the larger N</a>.</p>
+  <p><strong>The tool: three inequalities.</strong> Write $w=a+ib$ with $a=\operatorname{Re}w$ and $b=\operatorname{Im}w$. Then:</p>
+  <ul>
+    <li>$|a|=\sqrt{a^2}\le\sqrt{a^2+b^2}=|w|$, because $b^2\ge0$ and the square root is increasing. In the same way, $|b|\le|w|$.</li>
+    <li><span class="math-display" style="display:block">$$|w|=|a+ib|\le|a|+|ib|=|a|+|b|,$$</span>by the triangle inequality in $\mathbb C$ and $|i|=1$.</li>
+  </ul>
+  <p>We apply them to $w=z_m-z_n$. Then $\operatorname{Re}w=\operatorname{Re}z_m-\operatorname{Re}z_n$ and $\operatorname{Im}w=\operatorname{Im}z_m-\operatorname{Im}z_n$, because $\operatorname{Re}$ and $\operatorname{Im}$ are additive.</p>
+  <p><strong>Part 1, “⇒”.</strong> Let $(z_n)_n$ be Cauchy, and let $\varepsilon&gt;0$. There is $N$ with $|z_m-z_n|&lt;\varepsilon$ for all $m,n\ge N$. For these $m,n$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;|\operatorname{Re}z_m-\operatorname{Re}z_n|\le |z_m-z_n|&lt;\varepsilon\\&amp;\text{and}\\&amp;|\operatorname{Im}z_m-\operatorname{Im}z_n|\le |z_m-z_n|&lt;\varepsilon\end{aligned}.$$</span>
+  <p>The same $N$ works for both, so $(\operatorname{Re}z_n)_n$ and $(\operatorname{Im}z_n)_n$ are Cauchy.</p>
+  <p><strong>Part 1, “⇐”.</strong> Let $(\operatorname{Re}z_n)_n$ and $(\operatorname{Im}z_n)_n$ be Cauchy, and let $\varepsilon&gt;0$. Apply the definition with $\frac\varepsilon2$ to each: there is $N_1$ with $|\operatorname{Re}z_m-\operatorname{Re}z_n|&lt;\frac\varepsilon2$ for all $m,n\ge N_1$, and there is $N_2$ with $|\operatorname{Im}z_m-\operatorname{Im}z_n|&lt;\frac\varepsilon2$ for all $m,n\ge N_2$. Let $N=\max\{N_1,N_2\}$, so that both statements hold for $m,n\ge N$. For these $m,n$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|z_m-z_n|&amp;\le |\operatorname{Re}z_m-\operatorname{Re}z_n|+|\operatorname{Im}z_m-\operatorname{Im}z_n|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2\\&amp;=\varepsilon\end{aligned}.$$</span>
+  <p>So $(z_n)_n$ is Cauchy.</p>
+  <p><strong>Part 2: the Cauchy criterion in $\mathbb C$.</strong> The claim is: a sequence $(z_n)_n$ in $\mathbb C$ converges if and only if it is a Cauchy sequence. <em>Frame:</em> again two directions. For “⇐” the first line is “Let $(z_n)_n$ be Cauchy”, and the last line is “so $|z_n-z|&lt;\varepsilon$ for all $n\ge N$”, for a limit $z$ that we still have to find. The gap: get $z$ from the real criterion, applied to the real and imaginary parts.</p>
+  <p><strong>“⇒” (convergent ⇒ Cauchy).</strong> Proof B works word for word in $\mathbb C$, because it only uses the triangle inequality for $|\cdot|$. In detail: let $z_n\to z$ and $\varepsilon&gt;0$. There is $N$ with $|z_n-z|&lt;\frac\varepsilon2$ for all $n\ge N$. For $m,n\ge N$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|z_m-z_n|&amp;\le |z_m-z|+|z-z_n|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2\\&amp;=\varepsilon\end{aligned}.$$</span>
+  <p><strong>“⇐” (Cauchy ⇒ convergent).</strong> Let $(z_n)_n$ be Cauchy.</p>
+  <ol>
+    <li><strong>The parts are Cauchy.</strong> By Part 1 “⇒”, $(\operatorname{Re}z_n)_n$ and $(\operatorname{Im}z_n)_n$ are Cauchy sequences of <em>real</em> numbers.</li>
+    <li><strong>The parts converge.</strong> By the Cauchy criterion in $\mathbb R$ (Proof E), there are $x,y\in\mathbb R$ with $\operatorname{Re}z_n\to x$ and $\operatorname{Im}z_n\to y$. This is the only place where completeness of $\mathbb R$ enters.</li>
+    <li><strong>The candidate.</strong> Let $z=x+iy$. Then $\operatorname{Re}(z_n-z)=\operatorname{Re}z_n-x$ and $\operatorname{Im}(z_n-z)=\operatorname{Im}z_n-y$.</li>
+    <li><strong>$z_n\to z$.</strong> Let $\varepsilon&gt;0$. There is $N_1$ with $|\operatorname{Re}z_n-x|&lt;\frac\varepsilon2$ for all $n\ge N_1$, and there is $N_2$ with $|\operatorname{Im}z_n-y|&lt;\frac\varepsilon2$ for all $n\ge N_2$. Let $N=\max\{N_1,N_2\}$. For $n\ge N$, the third inequality applied to $w=z_n-z$ gives
+    <span class="math-display" style="display:block">$$\begin{aligned}|z_n-z|&amp;\le |\operatorname{Re}z_n-x|+|\operatorname{Im}z_n-y|\\&amp;&lt;\tfrac\varepsilon2+\tfrac\varepsilon2\\&amp;=\varepsilon\end{aligned}.$$</span></li>
+  </ol>
+  <p>Hence $z_n\to z$, and $(z_n)_n$ converges. Step 4 is exactly the statement from <a class="xl" href="lesson-10.html#s6-subsequences-accumulation-points-and-coordinates">lesson 10</a> that convergence in $\mathbb C$ is convergence of the real and imaginary parts. In an exam, you may cite it instead of writing step 4. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercises 1–4 make 8 points. If you have 6 of 8, you're done. Exercises 5 and 6 and the Bonus are proof practice and don't count against you.</p>
+</div>
+
+<h2 id="s7-for-wonder-optional-5-min">7. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>The Basel problem.</strong> Worked example 1 proves that $\sum\frac1{k^2}$ converges, but what is the limit? Mathematicians (the Bernoullis among them) tried for decades. In 1734 the 28-year-old Euler found it: <span class="math-display" style="display:block">$$1+\frac14+\frac19+\frac1{16}+\dots=\frac{\pi^2}6.$$</span> Why $\pi$, the number of circles, appears in a sum of squares of whole numbers is still one of the most surprising facts in mathematics.</p>
+<p><strong>Where the holes are.</strong> In $\mathbb Q$, the Cauchy criterion fails. The decimal truncations $1,\ 1.4,\ 1.41,\ 1.414,\dots$ of $\sqrt2$ are rationals and form a Cauchy sequence ($|a_m-a_n|&lt;10^{-(N-1)}$ for $m,n\ge N$), but there is no rational limit. In 1872 Cantor turned this around and <em>constructed</em> $\mathbb R$ as Cauchy sequences of rationals, with two sequences identified when their difference tends to $0$. And Übung 6.28 shows that for an ordered field containing $\mathbb Q$ densely, “every Cauchy sequence converges” is <em>equivalent</em> to the completeness axiom you met in <a class="xl" href="lesson-04.html#deep-dive-reading-the-completeness">lesson 4</a>. Completeness is one idea with three faces: suprema, nested intervals and Cauchy sequences.</p>
+<p><strong>The harmonic numbers grow, but barely.</strong> $H_n\to\infty$ (Worked example 2), yet so slowly that $H_{10^{6}}\approx14.39$. In fact $H_n-\ln n$ converges, to the Euler–Mascheroni constant $\gamma\approx0.5772$. Nobody knows whether $\gamma$ is rational.</p>
+
+<h2 id="s8-what-we-skipped">8. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Übungen 6.16–6.18 (<a class="pl" href="script.html#p260">p. 260–261</a>):</strong> accumulation points of sequences versus of sets, mixing three sequences, sequences whose accumulation points fill an interval. Low priority; sketched in <a class="xl" href="lesson-11.html#s7-for-wonder-optional-5-min">lesson 11</a>'s For wonder.</li>
+  <li><strong>Sequential compactness beyond $[a,b]$</strong> and Cauchy sequences in general metric spaces. Second semester.</li>
+  <li><strong>Übung 6.28 (<a class="pl" href="script.html#p265">p. 265</a>):</strong> Cauchy criterion plus Archimedes implies the completeness axiom. Optional.</li>
+  <li><strong>Section 6.3, the exponential function (<a class="pl" href="script.html#p266">p. 266–273</a>).</strong> Class skips it for now (the lectures go from 6.2 to 6.4); we'll meet $\exp$ with series in <a class="xl" href="lesson-16.html#we-6">lesson 16</a>.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-13.html">lesson 13</a>, limits of functions ($\lim_{x\to x_0}f(x)$, one-sided limits, jumps), Riemann sums, and Landau notation ($O$ and $o$). That's where class will be after Monday 2 November.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-11.html">← Lesson 11: The Climber and the Tide</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-13.html">Lesson 13: Approaching the Gate →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>
