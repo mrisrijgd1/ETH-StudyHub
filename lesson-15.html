@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Mapmaker's Apprentices</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-14.html">← Lesson 14</a>
+<a href="lesson-16.html">Lesson 16 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 15 of 26</span>
+  <h1>The Mapmaker's Apprentices</h1>
+  <p class="lead">Section 7.3: sequences of <em>functions</em>. What it means for functions $f_n$ to converge to a function $f$, why the obvious meaning (“pointwise”) breaks continuity and integrals, and why the stronger meaning (“uniform”) keeps both. Two of its theorems are exam proofs. It also sets up <a class="xl" href="lesson-16.html#s3-power-series-and-the-radius">lesson 16</a>, because a power series is a limit of polynomials.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-14-5">Recap of lesson 14 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-mapmaker-s">1. The story: the mapmaker&#x27;s apprentices</a>
+</li>
+<li><a href="#s2-pointwise-convergence-and-what-goes">2. Pointwise convergence, and what goes wrong</a>
+<ol>
+<li><a href="#we-1">Worked example 1: $f_n(x)=x^n$ on $[0,1]$ (Beispiel 7.42, p. 313)</a></li>
+<li><a href="#we-2">Worked example 2: the tents (Beispiel 7.43, p. 314)</a></li>
+</ol></li>
+<li><a href="#s3-uniform-convergence">3. Uniform convergence</a>
+<ol>
+<li><a href="#proof-a">Proof A: the sup test (Übung 7.46 (i), p. 315)</a></li>
+<li><a href="#the-recipe-for-does-converge">The recipe for “does $f_n$ converge uniformly?”</a></li>
+<li><a href="#we-3">Worked example 3: $x^n$ on $[0,a]$ for a fixed $a&lt;1$</a></li>
+</ol></li>
+<li><a href="#s4-uniform-limits-of-continuous-functions">4. Uniform limits of continuous functions are continuous</a>
+<ol>
+<li><a href="#proof-b">Proof B: the uniform limit of continuous functions is continuous (Satz 7.48, p. 316)</a></li>
+</ol></li>
+<li><a href="#s5-uniform-limits-of-integrable-functions">5. Uniform limits of integrable functions are integrable</a>
+<ol>
+<li><a href="#proof-c">Proof C: integral and uniform limit can be swapped (Satz 7.49, p. 317)</a></li>
+</ol></li>
+<li><a href="#s6-series-of-functions-and-the">6. Series of functions and the Weierstrass M-test</a>
+<ol>
+<li><a href="#proof-d">Proof D: the Weierstrass M-test</a></li>
+</ol></li>
+<li><a href="#s7-five-useful-facts">7. Five useful facts</a>
+</li>
+<li><a href="#s8-worked-examples">8. Worked examples</a>
+<ol>
+<li><a href="#we-4">Worked example 4: $f_n(x)=\dfrac{nx}{1+n^2x^2}$ on $[0,1]$</a></li>
+<li><a href="#we-5">Worked example 5: $f_n(x)=\sqrt{x^2+\frac1{n^2}}$ on $\mathbb R$</a></li>
+<li><a href="#we-6">Worked example 6: the travelling bump $f_n(x)=\dfrac1{1+(x-n)^2}$ on $\mathbb R$</a></li>
+</ol></li>
+<li><a href="#s9-exercises">9. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Kobel-Keller HS24, question 7, 2 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (Kobel-Keller HS24, question 18 (b) and (c), 5 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (Einsiedler-style exam, winter 2012, question 5, 3 points here)</a></li>
+<li><a href="#ex-4">Exercise 4 (Felder HS22, question 2.A1, 7 points)</a></li>
+<li><a href="#ex-5">Exercise 5 (Einsiedler HS21, question 12, 7 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (short theory questions, older Einsiedler exams)</a></li>
+<li><a href="#bonus">Bonus (Figalli FS26, question A2, 7 points)</a></li>
+</ol></li>
+<li><a href="#s10-for-wonder-optional-5-min">10. For wonder</a>
+</li>
+<li><a href="#s11-what-we-skipped">11. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>define pointwise and uniform convergence</strong> and say where the difference lies (does $N$ depend on $x$?), (2) <strong>test uniform convergence</strong> by bounding $\sup_x|f_n(x)-f(x)|$, (3) <strong>disprove</strong> it with a bad point $x_n$ or with a discontinuous limit, (4) <strong>state and prove</strong> that a uniform limit of continuous functions is continuous (an exam proof), (5) <strong>state and prove</strong> that a uniform limit of integrable functions is integrable, with $\int f_n\to\int f$ (an exam proof), and (6) use the <strong>Weierstrass M-test</strong> for series of functions.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p313">p. 313–315</a>, Section 7.3.1, Definition 7.40 to Beispiel 7.44:</strong> sequences of functions, pointwise convergence, and three examples where it goes wrong.</li>
+      <li><strong><a class="pl" href="script.html#p315">p. 315–318</a>, Section 7.3.2, Definition 7.45 to Übung 7.53:</strong> uniform convergence, the sup criterion, the $\varepsilon$-tube, continuity (Satz 7.48), integrals (Satz 7.49), and five short exercises.</li>
+      <li><strong><a class="pl" href="script.html#p319">p. 319–320</a>, inside the proof of Satz 7.56:</strong> the M-test argument for power series (<a class="xl" href="lesson-16.html#proof-a">lesson 16</a>).</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+Uniform convergence is in 6 of the 9 recent exams, and in most of the older ones. As a <strong>theorem to prove</strong>: “a uniform limit of integrable functions is integrable, and the integrals converge” (Einsiedler mock HS21, 7 points; PVK mock HS25 B1; 2018 winter) and “a uniform limit of continuous functions is continuous” (Felder HS22, 5 points plus a 2-point example; 2018 summer). As a <strong>part-4 proof</strong>: Einsiedler HS21 question 12 (7 points, your Exercise 5) and Figalli FS26 A2 (7 points, your Bonus). In <strong>multiple choice</strong> and <strong>computations</strong>: “does $f_n$ converge uniformly?” (Kobel-Keller HS24, the 2012 winter exam, Felder FS23).</div>
+
+<div class="box"><h3 id="recap-of-lesson-14-5">Recap of <a class="xl" href="lesson-14.html">lesson 14</a> (5 min)</h3>
+<ul>
+  <li><strong>A series is its partial sums:</strong> $\sum a_k$ converges means $s_n=\sum_{k=1}^na_k$ converges.</li>
+  <li><strong>Term test:</strong> if $a_n\not\to0$, the series diverges. The converse is false (harmonic series).</li>
+  <li><strong>Comparison and $p$-test:</strong> $0\le a_n\le b_n$ and $\sum b_n$ converges ⇒ $\sum a_n$ converges. $\sum\frac1{n^p}$ converges ⇔ $p&gt;1$.</li>
+  <li><strong>Absolute convergence</strong> implies convergence. <strong>Leibniz:</strong> positive, decreasing, $\to0$ ⇒ the alternating series converges.</li>
+  <li><strong>The tail tends to $0$:</strong> if $\sum M_k$ converges, then <span class="math-display" style="display:block">$$\sum_{k&gt;n}M_k=\sum_{k=1}^\infty M_k-\sum_{k=1}^nM_k\to0.$$</span>You'll need this today.</li>
+</ul>
+<ol class="gq">
+  <li><p>Does $\sum_{k=1}^\infty\frac1{k^2+k}$ converge?</p>
+  <details><summary>Answer</summary><div><p>Yes: $0&lt;\frac1{k^2+k}\le\frac1{k^2}$ and $\sum\frac1{k^2}$ converges (comparison). Its value is $1$, by telescoping (<a class="xl" href="lesson-14.html#worked-example-a-telescoping-series">lesson 14</a>).</p></div></details></li>
+  <li><p>Converge or diverge: $\sum\frac{(-1)^k}{k}$, $\sum\frac{(-1)^k k}{k+1}$?</p>
+  <details><summary>Answer</summary><div><p>The first converges (Leibniz). The second diverges: its terms don't tend to $0$.</p></div></details></li>
+  <li><p>Why is $\sum_{k&gt;n}\frac1{k^2}\to0$ as $n\to\infty$?</p>
+  <details><summary>Answer</summary><div><p>It equals $S-s_n$, where $S=\sum_{k=1}^\infty\frac1{k^2}$ and $s_n\to S$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>sequence of functions</td><td>Funktionenfolge</td></tr>
+    <tr><td>pointwise convergence</td><td>punktweise Konvergenz</td></tr>
+    <tr><td>uniform convergence</td><td>gleichmässige Konvergenz</td></tr>
+    <tr><td>limit function</td><td>Grenzfunktion, Limesfunktion</td></tr>
+    <tr><td>supremum norm</td><td>Supremumsnorm</td></tr>
+    <tr><td>ε-tube</td><td>ε-Schlauch</td></tr>
+    <tr><td>series of functions</td><td>Funktionenreihe</td></tr>
+    <tr><td>Weierstrass M-test</td><td>Majorantenkriterium von Weierstrass</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-mapmaker-s">1. The story: the mapmaker's apprentices</h2>
+<div class="story">
+<p>The queen wants a perfect map of her coastline. Every night, the mapmaker's apprentices draw a new version, and every version is a little better than the last. Map number $n$ shows the coast as a curve $f_n$; the true coast is $f$.</p>
+<p>After a month the apprentices report: “At every village, our maps are eventually right. Name any village, and from some night on, our maps place it within a hair of the truth.” The queen is not satisfied. “Village by village is not good enough. Near the northern cliffs you needed a thousand nights, near the next cliff a million, and on some cliffs you may never finish. I want a night after which <em>the whole map</em> is within a hair of the truth, everywhere at once.”</p>
+<p>The first promise is <strong>pointwise convergence</strong>: for each place $x$ there is a night $N$, and $N$ may depend on $x$. The queen's demand is <strong>uniform convergence</strong>: one night $N$ that works for all places. Draw a thin ribbon of width one hair around the true coast. Uniform means: from night $N$ on, every map lies entirely inside the ribbon.</p>
+<p>Why does the queen care? A sailor following the map along the coast needs the <em>whole</em> map to be right. Good apprentices' maps have no gaps (continuous), and the queen wants the true coast to have no gaps either. With village-by-village maps, a gap can appear in the limit. With ribbon-tight maps, it can't. That is today's first exam theorem.</p>
+</div>
+
+<h2 id="s2-pointwise-convergence-and-what-goes">2. Pointwise convergence, and what goes wrong</h2>
+<div class="box">
+<p><strong>Definition 7.40 (<a class="pl" href="script.html#p313">p. 313</a>).</strong> A <strong>sequence of functions</strong> on a set $X$ is a sequence $(f_n)_n$ of functions $f_n:X\to\mathbb R$ (or $\mathbb C$). It <strong>converges pointwise</strong> to $f:X\to\mathbb R$ if $f_n(x)\to f(x)$ for every $x\in X$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall x\in X\ \ \forall\varepsilon&amp;&gt;0\ \ \exists N\in\mathbb N\ \ \forall n\\&amp;\ge  N:\ |f_n(x)-f(x)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+<p>The function $f$ is the <strong>pointwise limit</strong>. It is unique, because each limit $\lim_nf_n(x)$ of a number sequence is unique.</p>
+</div>
+<p><strong>The idea in one sentence:</strong> freeze $x$, and you have an ordinary sequence of numbers $f_1(x),f_2(x),\dots$. Pointwise convergence asks nothing more than that each of these number sequences converges. Everything from <a class="xl" href="lesson-10.html">lessons 10</a>–<a class="xl" href="lesson-12.html">12</a> applies, one $x$ at a time.</p>
+
+<div class="box">
+<h3 id="we-1">Worked example 1: $f_n(x)=x^n$ on $[0,1]$ (Beispiel 7.42, <a class="pl" href="script.html#p313">p. 313</a>)</h3>
+<p>Try each step in your head, then open the answer.</p>
+<ol class="gq">
+  <li><p>Fix $x\in[0,1)$. What is $\lim_nx^n$?</p>
+  <details><summary>Answer</summary><div><p>$0$, since $0\le x&lt;1$ (<a class="xl" href="lesson-10.html">lesson 10</a>).</p></div></details></li>
+  <li><p>And at $x=1$?</p>
+  <details><summary>Answer</summary><div><p>$1^n=1$ for all $n$, so the limit is $1$.</p></div></details></li>
+  <li><p>Write down the pointwise limit $f$. Is it continuous?</p>
+  <details><summary>Answer</summary><div><p>$f(x)=0$ for $x&lt;1$ and $f(1)=1$. It jumps at $x=1$, so it is not continuous, although every $f_n$ is continuous (even a polynomial).</p></div></details></li>
+  <li><p>For $\varepsilon=\frac12$ and $x=0.99$: from which $n$ on is $x^n&lt;\frac12$? What happens as $x$ gets closer to $1$?</p>
+  <details><summary>Answer</summary><div><p>$0.99^{69}\approx0.4998$, so from $n=69$ on. For $x=0.999$ you need $n\ge693$, for $x=0.9999$ about $6932$. The $N$ grows without bound as $x\to1$: no single $N$ works for all $x$. That's the apprentices near the cliff.</p></div></details></li>
+</ol>
+<figure style="margin:.6rem 0 0" aria-label="Graphs of x to the n on the interval from 0 to 1 for n equal to 1, 2, 4, 10 and 30. As n grows, the curves hug the x-axis for longer and then shoot up steeply to the point (1,1). The limit function is drawn as a thick segment along the x-axis from 0 to just before 1, with an open dot at (1,0) and a filled dot at (1,1).">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30" y1="240" x2="620" y2="240" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50" y1="20" x2="50" y2="250" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 50.0 240.0 L 52.8 238.9 L 55.6 237.9 L 58.4 236.8 L 61.2 235.8 L 64.0 234.8 L 66.8 233.7 L 69.6 232.7 L 72.4 231.6 L 75.2 230.6 L 78.0 229.5 L 80.8 228.4 L 83.6 227.4 L 86.4 226.3 L 89.2 225.3 L 92.0 224.2 L 94.8 223.2 L 97.6 222.2 L 100.4 221.1 L 103.2 220.1 L 106.0 219.0 L 108.8 217.9 L 111.6 216.9 L 114.4 215.8 L 117.2 214.8 L 120.0 213.8 L 122.8 212.7 L 125.6 211.7 L 128.4 210.6 L 131.2 209.6 L 134.0 208.5 L 136.8 207.4 L 139.6 206.4 L 142.4 205.3 L 145.2 204.3 L 148.0 203.2 L 150.8 202.2 L 153.6 201.2 L 156.4 200.1 L 159.2 199.1 L 162.0 198.0 L 164.8 196.9 L 167.6 195.9 L 170.4 194.8 L 173.2 193.8 L 176.0 192.8 L 178.8 191.7 L 181.6 190.7 L 184.4 189.6 L 187.2 188.6 L 190.0 187.5 L 192.8 186.4 L 195.6 185.4 L 198.4 184.3 L 201.2 183.3 L 204.0 182.2 L 206.8 181.2 L 209.6 180.2 L 212.4 179.1 L 215.2 178.1 L 218.0 177.0 L 220.8 175.9 L 223.6 174.9 L 226.4 173.8 L 229.2 172.8 L 232.0 171.8 L 234.8 170.7 L 237.6 169.6 L 240.4 168.6 L 243.2 167.6 L 246.0 166.5 L 248.8 165.4 L 251.6 164.4 L 254.4 163.4 L 257.2 162.3 L 260.0 161.2 L 262.8 160.2 L 265.6 159.1 L 268.4 158.1 L 271.2 157.1 L 274.0 156.0 L 276.8 154.9 L 279.6 153.9 L 282.4 152.9 L 285.2 151.8 L 288.0 150.8 L 290.8 149.7 L 293.6 148.7 L 296.4 147.6 L 299.2 146.6 L 302.0 145.5 L 304.8 144.4 L 307.6 143.4 L 310.4 142.3 L 313.2 141.3 L 316.0 140.2 L 318.8 139.2 L 321.6 138.2 L 324.4 137.1 L 327.2 136.1 L 330.0 135.0 L 332.8 133.9 L 335.6 132.9 L 338.4 131.8 L 341.2 130.8 L 344.0 129.8 L 346.8 128.7 L 349.6 127.6 L 352.4 126.6 L 355.2 125.5 L 358.0 124.5 L 360.8 123.4 L 363.6 122.4 L 366.4 121.4 L 369.2 120.3 L 372.0 119.3 L 374.8 118.2 L 377.6 117.2 L 380.4 116.1 L 383.2 115.1 L 386.0 114.0 L 388.8 113.0 L 391.6 111.9 L 394.4 110.8 L 397.2 109.8 L 400.0 108.8 L 402.8 107.7 L 405.6 106.7 L 408.4 105.6 L 411.2 104.5 L 414.0 103.5 L 416.8 102.4 L 419.6 101.4 L 422.4 100.3 L 425.2 99.3 L 428.0 98.2 L 430.8 97.2 L 433.6 96.1 L 436.4 95.1 L 439.2 94.1 L 442.0 93.0 L 444.8 92.0 L 447.6 90.9 L 450.4 89.8 L 453.2 88.8 L 456.0 87.8 L 458.8 86.7 L 461.6 85.7 L 464.4 84.6 L 467.2 83.6 L 470.0 82.5 L 472.8 81.4 L 475.6 80.4 L 478.4 79.3 L 481.2 78.3 L 484.0 77.2 L 486.8 76.2 L 489.6 75.2 L 492.4 74.1 L 495.2 73.0 L 498.0 72.0 L 500.8 70.9 L 503.6 69.9 L 506.4 68.9 L 509.2 67.8 L 512.0 66.8 L 514.8 65.7 L 517.6 64.7 L 520.4 63.6 L 523.2 62.6 L 526.0 61.5 L 528.8 60.5 L 531.6 59.4 L 534.4 58.3 L 537.2 57.3 L 540.0 56.2 L 542.8 55.2 L 545.6 54.2 L 548.4 53.1 L 551.2 52.0 L 554.0 51.0 L 556.8 49.9 L 559.6 48.9 L 562.4 47.8 L 565.2 46.8 L 568.0 45.8 L 570.8 44.7 L 573.6 43.6 L 576.4 42.6 L 579.2 41.6 L 582.0 40.5 L 584.8 39.5 L 587.6 38.4 L 590.4 37.3 L 593.2 36.3 L 596.0 35.2 L 598.8 34.2 L 601.6 33.2 L 604.4 32.1 L 607.2 31.1 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.35" stroke-width="2.2"/><text x="372.0" y="108.0" text-anchor="end" style="fill:var(--accent);font-size:13px">n=1</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 239.9 L 64.0 239.9 L 66.8 239.8 L 69.6 239.7 L 72.4 239.7 L 75.2 239.6 L 78.0 239.5 L 80.8 239.4 L 83.6 239.2 L 86.4 239.1 L 89.2 239.0 L 92.0 238.8 L 94.8 238.7 L 97.6 238.5 L 100.4 238.3 L 103.2 238.1 L 106.0 237.9 L 108.8 237.7 L 111.6 237.5 L 114.4 237.2 L 117.2 237.0 L 120.0 236.7 L 122.8 236.5 L 125.6 236.2 L 128.4 235.9 L 131.2 235.6 L 134.0 235.3 L 136.8 235.0 L 139.6 234.6 L 142.4 234.3 L 145.2 233.9 L 148.0 233.6 L 150.8 233.2 L 153.6 232.8 L 156.4 232.4 L 159.2 232.0 L 162.0 231.6 L 164.8 231.2 L 167.6 230.7 L 170.4 230.3 L 173.2 229.8 L 176.0 229.4 L 178.8 228.9 L 181.6 228.4 L 184.4 227.9 L 187.2 227.4 L 190.0 226.9 L 192.8 226.3 L 195.6 225.8 L 198.4 225.3 L 201.2 224.7 L 204.0 224.1 L 206.8 223.5 L 209.6 222.9 L 212.4 222.3 L 215.2 221.7 L 218.0 221.1 L 220.8 220.5 L 223.6 219.8 L 226.4 219.2 L 229.2 218.5 L 232.0 217.8 L 234.8 217.1 L 237.6 216.4 L 240.4 215.7 L 243.2 215.0 L 246.0 214.3 L 248.8 213.5 L 251.6 212.8 L 254.4 212.0 L 257.2 211.3 L 260.0 210.5 L 262.8 209.7 L 265.6 208.9 L 268.4 208.1 L 271.2 207.2 L 274.0 206.4 L 276.8 205.6 L 279.6 204.7 L 282.4 203.8 L 285.2 203.0 L 288.0 202.1 L 290.8 201.2 L 293.6 200.3 L 296.4 199.3 L 299.2 198.4 L 302.0 197.5 L 304.8 196.5 L 307.6 195.6 L 310.4 194.6 L 313.2 193.6 L 316.0 192.6 L 318.8 191.6 L 321.6 190.6 L 324.4 189.6 L 327.2 188.5 L 330.0 187.5 L 332.8 186.4 L 335.6 185.4 L 338.4 184.3 L 341.2 183.2 L 344.0 182.1 L 346.8 181.0 L 349.6 179.9 L 352.4 178.8 L 355.2 177.6 L 358.0 176.5 L 360.8 175.3 L 363.6 174.1 L 366.4 173.0 L 369.2 171.8 L 372.0 170.6 L 374.8 169.4 L 377.6 168.1 L 380.4 166.9 L 383.2 165.7 L 386.0 164.4 L 388.8 163.1 L 391.6 161.9 L 394.4 160.6 L 397.2 159.3 L 400.0 158.0 L 402.8 156.7 L 405.6 155.3 L 408.4 154.0 L 411.2 152.6 L 414.0 151.3 L 416.8 149.9 L 419.6 148.5 L 422.4 147.1 L 425.2 145.7 L 428.0 144.3 L 430.8 142.9 L 433.6 141.5 L 436.4 140.0 L 439.2 138.6 L 442.0 137.1 L 444.8 135.6 L 447.6 134.1 L 450.4 132.6 L 453.2 131.1 L 456.0 129.6 L 458.8 128.1 L 461.6 126.6 L 464.4 125.0 L 467.2 123.4 L 470.0 121.9 L 472.8 120.3 L 475.6 118.7 L 478.4 117.1 L 481.2 115.5 L 484.0 113.9 L 486.8 112.2 L 489.6 110.6 L 492.4 108.9 L 495.2 107.3 L 498.0 105.6 L 500.8 103.9 L 503.6 102.2 L 506.4 100.5 L 509.2 98.8 L 512.0 97.1 L 514.8 95.3 L 517.6 93.6 L 520.4 91.8 L 523.2 90.1 L 526.0 88.3 L 528.8 86.5 L 531.6 84.7 L 534.4 82.9 L 537.2 81.1 L 540.0 79.2 L 542.8 77.4 L 545.6 75.5 L 548.4 73.7 L 551.2 71.8 L 554.0 69.9 L 556.8 68.0 L 559.6 66.1 L 562.4 64.2 L 565.2 62.3 L 568.0 60.3 L 570.8 58.4 L 573.6 56.4 L 576.4 54.4 L 579.2 52.5 L 582.0 50.5 L 584.8 48.5 L 587.6 46.5 L 590.4 44.4 L 593.2 42.4 L 596.0 40.4 L 598.8 38.3 L 601.6 36.3 L 604.4 34.2 L 607.2 32.1 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.5" stroke-width="2.2"/><text x="439.2" y="125.1" text-anchor="end" style="fill:var(--accent);font-size:13px">n=2</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 240.0 L 64.0 240.0 L 66.8 240.0 L 69.6 240.0 L 72.4 240.0 L 75.2 240.0 L 78.0 240.0 L 80.8 240.0 L 83.6 240.0 L 86.4 240.0 L 89.2 240.0 L 92.0 240.0 L 94.8 240.0 L 97.6 240.0 L 100.4 240.0 L 103.2 240.0 L 106.0 240.0 L 108.8 240.0 L 111.6 240.0 L 114.4 240.0 L 117.2 240.0 L 120.0 239.9 L 122.8 239.9 L 125.6 239.9 L 128.4 239.9 L 131.2 239.9 L 134.0 239.9 L 136.8 239.9 L 139.6 239.9 L 142.4 239.8 L 145.2 239.8 L 148.0 239.8 L 150.8 239.8 L 153.6 239.8 L 156.4 239.7 L 159.2 239.7 L 162.0 239.7 L 164.8 239.6 L 167.6 239.6 L 170.4 239.6 L 173.2 239.5 L 176.0 239.5 L 178.8 239.4 L 181.6 239.4 L 184.4 239.3 L 187.2 239.2 L 190.0 239.2 L 192.8 239.1 L 195.6 239.0 L 198.4 239.0 L 201.2 238.9 L 204.0 238.8 L 206.8 238.7 L 209.6 238.6 L 212.4 238.5 L 215.2 238.4 L 218.0 238.3 L 220.8 238.2 L 223.6 238.1 L 226.4 237.9 L 229.2 237.8 L 232.0 237.7 L 234.8 237.5 L 237.6 237.4 L 240.4 237.2 L 243.2 237.0 L 246.0 236.8 L 248.8 236.7 L 251.6 236.5 L 254.4 236.3 L 257.2 236.1 L 260.0 235.8 L 262.8 235.6 L 265.6 235.4 L 268.4 235.1 L 271.2 234.9 L 274.0 234.6 L 276.8 234.4 L 279.6 234.1 L 282.4 233.8 L 285.2 233.5 L 288.0 233.1 L 290.8 232.8 L 293.6 232.5 L 296.4 232.1 L 299.2 231.8 L 302.0 231.4 L 304.8 231.0 L 307.6 230.6 L 310.4 230.2 L 313.2 229.8 L 316.0 229.3 L 318.8 228.9 L 321.6 228.4 L 324.4 227.9 L 327.2 227.4 L 330.0 226.9 L 332.8 226.3 L 335.6 225.8 L 338.4 225.2 L 341.2 224.6 L 344.0 224.0 L 346.8 223.4 L 349.6 222.8 L 352.4 222.1 L 355.2 221.5 L 358.0 220.8 L 360.8 220.1 L 363.6 219.3 L 366.4 218.6 L 369.2 217.8 L 372.0 217.0 L 374.8 216.2 L 377.6 215.4 L 380.4 214.6 L 383.2 213.7 L 386.0 212.8 L 388.8 211.9 L 391.6 210.9 L 394.4 210.0 L 397.2 209.0 L 400.0 208.0 L 402.8 206.9 L 405.6 205.9 L 408.4 204.8 L 411.2 203.7 L 414.0 202.5 L 416.8 201.3 L 419.6 200.2 L 422.4 198.9 L 425.2 197.7 L 428.0 196.4 L 430.8 195.1 L 433.6 193.8 L 436.4 192.4 L 439.2 191.0 L 442.0 189.6 L 444.8 188.1 L 447.6 186.6 L 450.4 185.1 L 453.2 183.6 L 456.0 182.0 L 458.8 180.4 L 461.6 178.7 L 464.4 177.0 L 467.2 175.3 L 470.0 173.6 L 472.8 171.8 L 475.6 169.9 L 478.4 168.1 L 481.2 166.2 L 484.0 164.2 L 486.8 162.3 L 489.6 160.3 L 492.4 158.2 L 495.2 156.1 L 498.0 154.0 L 500.8 151.8 L 503.6 149.6 L 506.4 147.3 L 509.2 145.1 L 512.0 142.7 L 514.8 140.3 L 517.6 137.9 L 520.4 135.4 L 523.2 132.9 L 526.0 130.4 L 528.8 127.8 L 531.6 125.1 L 534.4 122.4 L 537.2 119.7 L 540.0 116.9 L 542.8 114.1 L 545.6 111.2 L 548.4 108.2 L 551.2 105.3 L 554.0 102.2 L 556.8 99.1 L 559.6 96.0 L 562.4 92.8 L 565.2 89.6 L 568.0 86.3 L 570.8 82.9 L 573.6 79.5 L 576.4 76.0 L 579.2 72.5 L 582.0 69.0 L 584.8 65.3 L 587.6 61.6 L 590.4 57.9 L 593.2 54.1 L 596.0 50.2 L 598.8 46.3 L 601.6 42.3 L 604.4 38.3 L 607.2 34.2 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.65" stroke-width="2.2"/><text x="495.2" y="139.1" text-anchor="end" style="fill:var(--accent);font-size:13px">n=4</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 240.0 L 64.0 240.0 L 66.8 240.0 L 69.6 240.0 L 72.4 240.0 L 75.2 240.0 L 78.0 240.0 L 80.8 240.0 L 83.6 240.0 L 86.4 240.0 L 89.2 240.0 L 92.0 240.0 L 94.8 240.0 L 97.6 240.0 L 100.4 240.0 L 103.2 240.0 L 106.0 240.0 L 108.8 240.0 L 111.6 240.0 L 114.4 240.0 L 117.2 240.0 L 120.0 240.0 L 122.8 240.0 L 125.6 240.0 L 128.4 240.0 L 131.2 240.0 L 134.0 240.0 L 136.8 240.0 L 139.6 240.0 L 142.4 240.0 L 145.2 240.0 L 148.0 240.0 L 150.8 240.0 L 153.6 240.0 L 156.4 240.0 L 159.2 240.0 L 162.0 240.0 L 164.8 240.0 L 167.6 240.0 L 170.4 240.0 L 173.2 240.0 L 176.0 240.0 L 178.8 240.0 L 181.6 240.0 L 184.4 240.0 L 187.2 240.0 L 190.0 240.0 L 192.8 240.0 L 195.6 240.0 L 198.4 240.0 L 201.2 240.0 L 204.0 240.0 L 206.8 240.0 L 209.6 240.0 L 212.4 240.0 L 215.2 240.0 L 218.0 240.0 L 220.8 240.0 L 223.6 240.0 L 226.4 240.0 L 229.2 240.0 L 232.0 240.0 L 234.8 240.0 L 237.6 240.0 L 240.4 240.0 L 243.2 240.0 L 246.0 240.0 L 248.8 240.0 L 251.6 240.0 L 254.4 240.0 L 257.2 240.0 L 260.0 240.0 L 262.8 240.0 L 265.6 240.0 L 268.4 240.0 L 271.2 240.0 L 274.0 240.0 L 276.8 240.0 L 279.6 240.0 L 282.4 240.0 L 285.2 240.0 L 288.0 240.0 L 290.8 240.0 L 293.6 239.9 L 296.4 239.9 L 299.2 239.9 L 302.0 239.9 L 304.8 239.9 L 307.6 239.9 L 310.4 239.9 L 313.2 239.9 L 316.0 239.9 L 318.8 239.9 L 321.6 239.8 L 324.4 239.8 L 327.2 239.8 L 330.0 239.8 L 332.8 239.8 L 335.6 239.8 L 338.4 239.7 L 341.2 239.7 L 344.0 239.7 L 346.8 239.6 L 349.6 239.6 L 352.4 239.6 L 355.2 239.5 L 358.0 239.5 L 360.8 239.4 L 363.6 239.4 L 366.4 239.3 L 369.2 239.2 L 372.0 239.2 L 374.8 239.1 L 377.6 239.0 L 380.4 238.9 L 383.2 238.8 L 386.0 238.7 L 388.8 238.6 L 391.6 238.5 L 394.4 238.4 L 397.2 238.2 L 400.0 238.1 L 402.8 237.9 L 405.6 237.8 L 408.4 237.6 L 411.2 237.4 L 414.0 237.2 L 416.8 236.9 L 419.6 236.7 L 422.4 236.4 L 425.2 236.2 L 428.0 235.9 L 430.8 235.6 L 433.6 235.2 L 436.4 234.9 L 439.2 234.5 L 442.0 234.1 L 444.8 233.6 L 447.6 233.2 L 450.4 232.7 L 453.2 232.1 L 456.0 231.6 L 458.8 231.0 L 461.6 230.3 L 464.4 229.7 L 467.2 228.9 L 470.0 228.2 L 472.8 227.4 L 475.6 226.5 L 478.4 225.6 L 481.2 224.6 L 484.0 223.6 L 486.8 222.5 L 489.6 221.3 L 492.4 220.1 L 495.2 218.8 L 498.0 217.5 L 500.8 216.0 L 503.6 214.5 L 506.4 212.8 L 509.2 211.1 L 512.0 209.3 L 514.8 207.4 L 517.6 205.4 L 520.4 203.3 L 523.2 201.0 L 526.0 198.7 L 528.8 196.2 L 531.6 193.5 L 534.4 190.8 L 537.2 187.8 L 540.0 184.8 L 542.8 181.5 L 545.6 178.1 L 548.4 174.5 L 551.2 170.7 L 554.0 166.8 L 556.8 162.6 L 559.6 158.2 L 562.4 153.6 L 565.2 148.8 L 568.0 143.7 L 570.8 138.4 L 573.6 132.8 L 576.4 126.9 L 579.2 120.7 L 582.0 114.3 L 584.8 107.5 L 587.6 100.4 L 590.4 92.9 L 593.2 85.1 L 596.0 77.0 L 598.8 68.4 L 601.6 59.5 L 604.4 50.1 L 607.2 40.3 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.8" stroke-width="2.2"/><text x="540.0" y="160.8" text-anchor="end" style="fill:var(--accent);font-size:13px">n=10</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 240.0 L 64.0 240.0 L 66.8 240.0 L 69.6 240.0 L 72.4 240.0 L 75.2 240.0 L 78.0 240.0 L 80.8 240.0 L 83.6 240.0 L 86.4 240.0 L 89.2 240.0 L 92.0 240.0 L 94.8 240.0 L 97.6 240.0 L 100.4 240.0 L 103.2 240.0 L 106.0 240.0 L 108.8 240.0 L 111.6 240.0 L 114.4 240.0 L 117.2 240.0 L 120.0 240.0 L 122.8 240.0 L 125.6 240.0 L 128.4 240.0 L 131.2 240.0 L 134.0 240.0 L 136.8 240.0 L 139.6 240.0 L 142.4 240.0 L 145.2 240.0 L 148.0 240.0 L 150.8 240.0 L 153.6 240.0 L 156.4 240.0 L 159.2 240.0 L 162.0 240.0 L 164.8 240.0 L 167.6 240.0 L 170.4 240.0 L 173.2 240.0 L 176.0 240.0 L 178.8 240.0 L 181.6 240.0 L 184.4 240.0 L 187.2 240.0 L 190.0 240.0 L 192.8 240.0 L 195.6 240.0 L 198.4 240.0 L 201.2 240.0 L 204.0 240.0 L 206.8 240.0 L 209.6 240.0 L 212.4 240.0 L 215.2 240.0 L 218.0 240.0 L 220.8 240.0 L 223.6 240.0 L 226.4 240.0 L 229.2 240.0 L 232.0 240.0 L 234.8 240.0 L 237.6 240.0 L 240.4 240.0 L 243.2 240.0 L 246.0 240.0 L 248.8 240.0 L 251.6 240.0 L 254.4 240.0 L 257.2 240.0 L 260.0 240.0 L 262.8 240.0 L 265.6 240.0 L 268.4 240.0 L 271.2 240.0 L 274.0 240.0 L 276.8 240.0 L 279.6 240.0 L 282.4 240.0 L 285.2 240.0 L 288.0 240.0 L 290.8 240.0 L 293.6 240.0 L 296.4 240.0 L 299.2 240.0 L 302.0 240.0 L 304.8 240.0 L 307.6 240.0 L 310.4 240.0 L 313.2 240.0 L 316.0 240.0 L 318.8 240.0 L 321.6 240.0 L 324.4 240.0 L 327.2 240.0 L 330.0 240.0 L 332.8 240.0 L 335.6 240.0 L 338.4 240.0 L 341.2 240.0 L 344.0 240.0 L 346.8 240.0 L 349.6 240.0 L 352.4 240.0 L 355.2 240.0 L 358.0 240.0 L 360.8 240.0 L 363.6 240.0 L 366.4 240.0 L 369.2 240.0 L 372.0 240.0 L 374.8 240.0 L 377.6 240.0 L 380.4 240.0 L 383.2 240.0 L 386.0 240.0 L 388.8 240.0 L 391.6 240.0 L 394.4 240.0 L 397.2 240.0 L 400.0 240.0 L 402.8 240.0 L 405.6 240.0 L 408.4 240.0 L 411.2 240.0 L 414.0 240.0 L 416.8 240.0 L 419.6 240.0 L 422.4 240.0 L 425.2 240.0 L 428.0 240.0 L 430.8 240.0 L 433.6 240.0 L 436.4 240.0 L 439.2 240.0 L 442.0 240.0 L 444.8 240.0 L 447.6 240.0 L 450.4 240.0 L 453.2 240.0 L 456.0 240.0 L 458.8 240.0 L 461.6 240.0 L 464.4 240.0 L 467.2 240.0 L 470.0 240.0 L 472.8 240.0 L 475.6 239.9 L 478.4 239.9 L 481.2 239.9 L 484.0 239.9 L 486.8 239.9 L 489.6 239.9 L 492.4 239.8 L 495.2 239.8 L 498.0 239.7 L 500.8 239.7 L 503.6 239.6 L 506.4 239.5 L 509.2 239.5 L 512.0 239.3 L 514.8 239.2 L 517.6 239.1 L 520.4 238.9 L 523.2 238.7 L 526.0 238.4 L 528.8 238.1 L 531.6 237.7 L 534.4 237.3 L 537.2 236.8 L 540.0 236.2 L 542.8 235.5 L 545.6 234.6 L 548.4 233.6 L 551.2 232.5 L 554.0 231.1 L 556.8 229.5 L 559.6 227.6 L 562.4 225.4 L 565.2 222.8 L 568.0 219.7 L 570.8 216.2 L 573.6 212.0 L 576.4 207.2 L 579.2 201.5 L 582.0 194.9 L 584.8 187.2 L 587.6 178.3 L 590.4 167.9 L 593.2 155.8 L 596.0 141.7 L 598.8 125.4 L 601.6 106.6 L 604.4 84.7 L 607.2 59.3 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:1" stroke-width="2.2"/><path d="M 50.0 240.0 L 604.0 240.0" style="fill:none;stroke:var(--k-c)" stroke-width="4"/><circle cx="610.0" cy="240.0" r="5.5" style="fill:var(--surface);stroke:var(--k-c);stroke-width:2.2"/><circle cx="610.0" cy="30.0" r="5.5" style="fill:var(--k-c)"/><text x="610.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">1</text><text x="50.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">0</text><text x="38.0" y="35.0" text-anchor="end" style="fill:var(--muted);font-size:14px">1</text><text x="302.0" y="264.0" text-anchor="middle" style="fill:var(--k-c);font-size:15px">limit f = 0 on [0,1), f(1) = 1</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$x^n$ for $n=1,2,4,10,30$. Every curve is continuous, but the limit (thick) is $0$ on $[0,1)$ and jumps to $1$ at $x=1$.</figcaption>
+</figure>
+</div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: the tents (Beispiel 7.43, <a class="pl" href="script.html#p314">p. 314</a>)</h3>
+<p>On $[0,1]$ let $f_n$ be the tent with peak $\frac n2$ at $\frac1{2n}$ and base $\left[0,\frac1n\right]$, and $f_n=0$ on $\left[\frac1n,1\right]$. As a formula: $f_n(x)=n^2x$ on $\left[0,\frac1{2n}\right]$, $f_n(x)=n^2\left(\frac1n-x\right)$ on $\left[\frac1{2n},\frac1n\right]$, and $0$ after that.</p>
+<ol class="gq">
+  <li><p>What is $\int_0^1f_n\,dx$?</p>
+  <details><summary>Answer</summary><div><p>The area of a triangle with base $\frac1n$ and height $\frac n2$: $\frac12\cdot\frac1n\cdot\frac n2=\frac14$, for every $n$.</p></div></details></li>
+  <li><p>Fix $x&gt;0$. What is $f_n(x)$ once $\frac1n&lt;x$? And $f_n(0)$?</p>
+  <details><summary>Answer</summary><div><p>$0$, since $x$ lies to the right of the tent. And $f_n(0)=0$ for all $n$. So $f_n\to0$ pointwise on $[0,1]$.</p></div></details></li>
+  <li><p>Compare $\lim_n\int_0^1f_n$ with $\int_0^1\lim_nf_n$.</p>
+  <details><summary>Answer</summary><div><p>$\lim_n\int_0^1f_n=\frac14$, but $\int_0^1 0\,dx=0$. Limit and integral cannot be swapped, although all functions involved are continuous.</p></div></details></li>
+</ol>
+<figure style="margin:.6rem 0 0" aria-label="Three tent-shaped graphs on the interval from 0 to 1, for n equal to 2, 4 and 8. Each tent starts at 0, rises to a peak of height n over 2 at x equal to 1 over 2n, and falls back to 0 at x equal to 1 over n. The tents get taller and narrower and squeeze towards the left edge.">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30" y1="240" x2="620" y2="240" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50" y1="20" x2="50" y2="250" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 50.0 240.0 L 190.0 192.3 L 330.0 240.0 L 610.0 240.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.45" stroke-width="2.2"/><text x="198.0" y="188.3" text-anchor="start" style="fill:var(--accent);font-size:13px">n=2</text><path d="M 50.0 240.0 L 120.0 144.5 L 190.0 240.0 L 610.0 240.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.7" stroke-width="2.2"/><text x="128.0" y="140.5" text-anchor="start" style="fill:var(--accent);font-size:13px">n=4</text><path d="M 50.0 240.0 L 85.0 49.1 L 120.0 240.0 L 610.0 240.0" style="fill:none;stroke:var(--accent);stroke-opacity:1" stroke-width="2.2"/><text x="93.0" y="45.1" text-anchor="start" style="fill:var(--accent);font-size:13px">n=8</text><text x="610.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">1</text><text x="50.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">0</text><text x="397.2" y="135.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">peak n/2 at 1/(2n), area always 1/4</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The tents for $n=2,4,8$: taller and thinner, squeezed against $x=0$. Every point is eventually outside the tent, but the area stays $\frac14$.</figcaption>
+</figure>
+</div>
+<p><strong>A third warning</strong> (Beispiel 7.44, <a class="pl" href="script.html#p314">p. 314–315</a>). List the rationals in $[0,1]$ as $q_1,q_2,\dots$ (they are countable, <a class="xl" href="lesson-03.html#s4-finite-and-countable-sets">lesson 3</a>), and let $f_n=1$ at $q_1,\dots,q_n$ and $0$ elsewhere. Each $f_n$ is integrable with integral $0$ (finitely many jumps). But the pointwise limit is the Dirichlet function $1_{\mathbb Q\cap[0,1]}$, which is not integrable (<a class="xl" href="lesson-09.html#proof-c">lesson 9</a>).</p>
+<p><strong>Summary:</strong> pointwise limits can destroy continuity (Worked example 1), can change the integral (Worked example 2), and can destroy integrability altogether (the third warning). We need a stronger notion.</p>
+
+<h2 id="s3-uniform-convergence">3. Uniform convergence</h2>
+<div class="box">
+<p><strong>Definition 7.45 (<a class="pl" href="script.html#p315">p. 315</a>).</strong> $(f_n)_n$ <strong>converges uniformly</strong> to $f$ on $X$ if for every $\varepsilon&gt;0$ there is $N\in\mathbb N$ such that $|f_n(x)-f(x)|&lt;\varepsilon$ for <em>all</em> $n\ge N$ and <em>all</em> $x\in X$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \ \exists N\in\mathbb N\ \ \forall n\\&amp;\ge  N\ \ \forall x\in X:\ |f_n(x)-f(x)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+</div>
+<p><strong>The idea.</strong> Compare the two lines of quantifiers. The only change is <em>where</em> “$\forall x$” stands:</p>
+<div class="table-wrap"><table>
+<tr><th></th><th>Order</th><th>What $N$ may depend on</th></tr>
+<tr><td>pointwise</td><td>$\forall x\ \forall\varepsilon\ \exists N\ \forall n\ge N$</td><td>$\varepsilon$ <strong>and</strong> $x$</td></tr>
+<tr><td>uniform</td><td>$\forall\varepsilon\ \exists N\ \forall n\ge N\ \forall x$</td><td>only $\varepsilon$</td></tr>
+</table></div>
+<p>It's the same pattern as continuity versus uniform continuity in <a class="xl" href="lesson-08.html#s6-heine-s-theorem-and-its">lesson 8</a>, where $\delta$ was allowed to depend on the point or not. “Uniform” always means: one number for all points. In Worked example 1, the $N$ for $\varepsilon=\frac12$ grew without bound as $x\to1$, so $x^n$ does not converge uniformly on $[0,1]$.</p>
+<p><strong>The picture: the $\varepsilon$-tube.</strong> For real functions, $|f_n(x)-f(x)|&lt;\varepsilon$ means $f(x)-\varepsilon&lt;f_n(x)&lt;f(x)+\varepsilon$. So uniform convergence says: for every $\varepsilon&gt;0$, from some $N$ on, the <em>whole graph</em> of $f_n$ lies in the band between $f-\varepsilon$ and $f+\varepsilon$.</p>
+<figure style="margin:0" aria-label="A smooth curve f with a shaded band around it, bounded by two dashed curves labelled f plus epsilon and f minus epsilon. A wavy curve f n runs entirely inside the band.">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30" y1="240" x2="620" y2="240" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50" y1="20" x2="50" y2="250" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 50.0 129.8 L 55.6 126.4 L 61.2 123.2 L 66.8 119.9 L 72.4 116.7 L 78.0 113.5 L 83.6 110.4 L 89.2 107.3 L 94.8 104.3 L 100.4 101.5 L 106.0 98.7 L 111.6 96.1 L 117.2 93.6 L 122.8 91.2 L 128.4 89.0 L 134.0 86.9 L 139.6 85.0 L 145.2 83.2 L 150.8 81.6 L 156.4 80.2 L 162.0 79.0 L 167.6 77.9 L 173.2 77.1 L 178.8 76.4 L 184.4 75.9 L 190.0 75.6 L 195.6 75.5 L 201.2 75.6 L 206.8 75.9 L 212.4 76.4 L 218.0 77.0 L 223.6 77.8 L 229.2 78.8 L 234.8 80.0 L 240.4 81.3 L 246.0 82.7 L 251.6 84.3 L 257.2 86.0 L 262.8 87.9 L 268.4 89.8 L 274.0 91.9 L 279.6 94.1 L 285.2 96.3 L 290.8 98.6 L 296.4 101.0 L 302.0 103.4 L 307.6 105.8 L 313.2 108.3 L 318.8 110.7 L 324.4 113.2 L 330.0 115.7 L 335.6 118.1 L 341.2 120.4 L 346.8 122.8 L 352.4 125.0 L 358.0 127.2 L 363.6 129.3 L 369.2 131.2 L 374.8 133.1 L 380.4 134.9 L 386.0 136.5 L 391.6 138.0 L 397.2 139.3 L 402.8 140.5 L 408.4 141.5 L 414.0 142.4 L 419.6 143.0 L 425.2 143.5 L 430.8 143.8 L 436.4 144.0 L 442.0 143.9 L 447.6 143.7 L 453.2 143.2 L 458.8 142.6 L 464.4 141.8 L 470.0 140.8 L 475.6 139.6 L 481.2 138.2 L 486.8 136.7 L 492.4 134.9 L 498.0 133.0 L 503.6 131.0 L 509.2 128.8 L 514.8 126.4 L 520.4 123.9 L 526.0 121.3 L 531.6 118.6 L 537.2 115.7 L 542.8 112.8 L 548.4 109.8 L 554.0 106.7 L 559.6 103.5 L 565.2 100.3 L 570.8 97.0 L 576.4 93.7 L 582.0 90.4 L 587.6 87.1 L 593.2 83.8 L 598.8 80.6 L 604.4 77.3 L 610.0 74.1 L 610.0 119.6 L 604.4 122.8 L 598.8 126.1 L 593.2 129.3 L 587.6 132.6 L 582.0 135.9 L 576.4 139.2 L 570.8 142.5 L 565.2 145.8 L 559.6 149.0 L 554.0 152.2 L 548.4 155.3 L 542.8 158.3 L 537.2 161.2 L 531.6 164.1 L 526.0 166.8 L 520.4 169.4 L 514.8 171.9 L 509.2 174.3 L 503.6 176.5 L 498.0 178.5 L 492.4 180.4 L 486.8 182.2 L 481.2 183.7 L 475.6 185.1 L 470.0 186.3 L 464.4 187.3 L 458.8 188.1 L 453.2 188.7 L 447.6 189.2 L 442.0 189.4 L 436.4 189.5 L 430.8 189.3 L 425.2 189.0 L 419.6 188.5 L 414.0 187.9 L 408.4 187.0 L 402.8 186.0 L 397.2 184.8 L 391.6 183.5 L 386.0 182.0 L 380.4 180.4 L 374.8 178.6 L 369.2 176.7 L 363.6 174.8 L 358.0 172.7 L 352.4 170.5 L 346.8 168.3 L 341.2 165.9 L 335.6 163.6 L 330.0 161.2 L 324.4 158.7 L 318.8 156.2 L 313.2 153.8 L 307.6 151.3 L 302.0 148.9 L 296.4 146.5 L 290.8 144.1 L 285.2 141.8 L 279.6 139.6 L 274.0 137.4 L 268.4 135.3 L 262.8 133.4 L 257.2 131.5 L 251.6 129.8 L 246.0 128.2 L 240.4 126.8 L 234.8 125.5 L 229.2 124.3 L 223.6 123.3 L 218.0 122.5 L 212.4 121.9 L 206.8 121.4 L 201.2 121.1 L 195.6 121.0 L 190.0 121.1 L 184.4 121.4 L 178.8 121.9 L 173.2 122.6 L 167.6 123.4 L 162.0 124.5 L 156.4 125.7 L 150.8 127.1 L 145.2 128.7 L 139.6 130.5 L 134.0 132.4 L 128.4 134.5 L 122.8 136.7 L 117.2 139.1 L 111.6 141.6 L 106.0 144.2 L 100.4 147.0 L 94.8 149.8 L 89.2 152.8 L 83.6 155.9 L 78.0 159.0 L 72.4 162.2 L 66.8 165.4 L 61.2 168.7 L 55.6 171.9 L 50.0 175.2 Z" style="fill:var(--k-eps);fill-opacity:0.22;stroke:none"/><path d="M 50.0 129.8 L 55.6 126.4 L 61.2 123.2 L 66.8 119.9 L 72.4 116.7 L 78.0 113.5 L 83.6 110.4 L 89.2 107.3 L 94.8 104.3 L 100.4 101.5 L 106.0 98.7 L 111.6 96.1 L 117.2 93.6 L 122.8 91.2 L 128.4 89.0 L 134.0 86.9 L 139.6 85.0 L 145.2 83.2 L 150.8 81.6 L 156.4 80.2 L 162.0 79.0 L 167.6 77.9 L 173.2 77.1 L 178.8 76.4 L 184.4 75.9 L 190.0 75.6 L 195.6 75.5 L 201.2 75.6 L 206.8 75.9 L 212.4 76.4 L 218.0 77.0 L 223.6 77.8 L 229.2 78.8 L 234.8 80.0 L 240.4 81.3 L 246.0 82.7 L 251.6 84.3 L 257.2 86.0 L 262.8 87.9 L 268.4 89.8 L 274.0 91.9 L 279.6 94.1 L 285.2 96.3 L 290.8 98.6 L 296.4 101.0 L 302.0 103.4 L 307.6 105.8 L 313.2 108.3 L 318.8 110.7 L 324.4 113.2 L 330.0 115.7 L 335.6 118.1 L 341.2 120.4 L 346.8 122.8 L 352.4 125.0 L 358.0 127.2 L 363.6 129.3 L 369.2 131.2 L 374.8 133.1 L 380.4 134.9 L 386.0 136.5 L 391.6 138.0 L 397.2 139.3 L 402.8 140.5 L 408.4 141.5 L 414.0 142.4 L 419.6 143.0 L 425.2 143.5 L 430.8 143.8 L 436.4 144.0 L 442.0 143.9 L 447.6 143.7 L 453.2 143.2 L 458.8 142.6 L 464.4 141.8 L 470.0 140.8 L 475.6 139.6 L 481.2 138.2 L 486.8 136.7 L 492.4 134.9 L 498.0 133.0 L 503.6 131.0 L 509.2 128.8 L 514.8 126.4 L 520.4 123.9 L 526.0 121.3 L 531.6 118.6 L 537.2 115.7 L 542.8 112.8 L 548.4 109.8 L 554.0 106.7 L 559.6 103.5 L 565.2 100.3 L 570.8 97.0 L 576.4 93.7 L 582.0 90.4 L 587.6 87.1 L 593.2 83.8 L 598.8 80.6 L 604.4 77.3 L 610.0 74.1" style="fill:none;stroke:var(--k-eps);stroke-dasharray:5 4" stroke-width="1.3"/><path d="M 50.0 175.2 L 55.6 171.9 L 61.2 168.7 L 66.8 165.4 L 72.4 162.2 L 78.0 159.0 L 83.6 155.9 L 89.2 152.8 L 94.8 149.8 L 100.4 147.0 L 106.0 144.2 L 111.6 141.6 L 117.2 139.1 L 122.8 136.7 L 128.4 134.5 L 134.0 132.4 L 139.6 130.5 L 145.2 128.7 L 150.8 127.1 L 156.4 125.7 L 162.0 124.5 L 167.6 123.4 L 173.2 122.6 L 178.8 121.9 L 184.4 121.4 L 190.0 121.1 L 195.6 121.0 L 201.2 121.1 L 206.8 121.4 L 212.4 121.9 L 218.0 122.5 L 223.6 123.3 L 229.2 124.3 L 234.8 125.5 L 240.4 126.8 L 246.0 128.2 L 251.6 129.8 L 257.2 131.5 L 262.8 133.4 L 268.4 135.3 L 274.0 137.4 L 279.6 139.6 L 285.2 141.8 L 290.8 144.1 L 296.4 146.5 L 302.0 148.9 L 307.6 151.3 L 313.2 153.8 L 318.8 156.2 L 324.4 158.7 L 330.0 161.2 L 335.6 163.6 L 341.2 165.9 L 346.8 168.3 L 352.4 170.5 L 358.0 172.7 L 363.6 174.8 L 369.2 176.7 L 374.8 178.6 L 380.4 180.4 L 386.0 182.0 L 391.6 183.5 L 397.2 184.8 L 402.8 186.0 L 408.4 187.0 L 414.0 187.9 L 419.6 188.5 L 425.2 189.0 L 430.8 189.3 L 436.4 189.5 L 442.0 189.4 L 447.6 189.2 L 453.2 188.7 L 458.8 188.1 L 464.4 187.3 L 470.0 186.3 L 475.6 185.1 L 481.2 183.7 L 486.8 182.2 L 492.4 180.4 L 498.0 178.5 L 503.6 176.5 L 509.2 174.3 L 514.8 171.9 L 520.4 169.4 L 526.0 166.8 L 531.6 164.1 L 537.2 161.2 L 542.8 158.3 L 548.4 155.3 L 554.0 152.2 L 559.6 149.0 L 565.2 145.8 L 570.8 142.5 L 576.4 139.2 L 582.0 135.9 L 587.6 132.6 L 593.2 129.3 L 598.8 126.1 L 604.4 122.8 L 610.0 119.6" style="fill:none;stroke:var(--k-eps);stroke-dasharray:5 4" stroke-width="1.3"/><path d="M 50.0 152.5 L 55.6 149.2 L 61.2 145.9 L 66.8 142.6 L 72.4 139.4 L 78.0 136.2 L 83.6 133.1 L 89.2 130.1 L 94.8 127.1 L 100.4 124.2 L 106.0 121.5 L 111.6 118.8 L 117.2 116.3 L 122.8 113.9 L 128.4 111.7 L 134.0 109.6 L 139.6 107.7 L 145.2 105.9 L 150.8 104.4 L 156.4 102.9 L 162.0 101.7 L 167.6 100.7 L 173.2 99.8 L 178.8 99.2 L 184.4 98.7 L 190.0 98.4 L 195.6 98.3 L 201.2 98.4 L 206.8 98.7 L 212.4 99.1 L 218.0 99.8 L 223.6 100.6 L 229.2 101.6 L 234.8 102.7 L 240.4 104.0 L 246.0 105.5 L 251.6 107.1 L 257.2 108.8 L 262.8 110.6 L 268.4 112.6 L 274.0 114.7 L 279.6 116.8 L 285.2 119.1 L 290.8 121.4 L 296.4 123.7 L 302.0 126.1 L 307.6 128.6 L 313.2 131.0 L 318.8 133.5 L 324.4 136.0 L 330.0 138.4 L 335.6 140.8 L 341.2 143.2 L 346.8 145.5 L 352.4 147.8 L 358.0 149.9 L 363.6 152.0 L 369.2 154.0 L 374.8 155.9 L 380.4 157.6 L 386.0 159.2 L 391.6 160.7 L 397.2 162.1 L 402.8 163.2 L 408.4 164.3 L 414.0 165.1 L 419.6 165.8 L 425.2 166.3 L 430.8 166.6 L 436.4 166.7 L 442.0 166.7 L 447.6 166.4 L 453.2 166.0 L 458.8 165.3 L 464.4 164.5 L 470.0 163.5 L 475.6 162.3 L 481.2 161.0 L 486.8 159.4 L 492.4 157.7 L 498.0 155.8 L 503.6 153.7 L 509.2 151.5 L 514.8 149.2 L 520.4 146.7 L 526.0 144.1 L 531.6 141.3 L 537.2 138.5 L 542.8 135.6 L 548.4 132.5 L 554.0 129.4 L 559.6 126.3 L 565.2 123.0 L 570.8 119.8 L 576.4 116.5 L 582.0 113.2 L 587.6 109.9 L 593.2 106.6 L 598.8 103.3 L 604.4 100.1 L 610.0 96.9" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><path d="M 50.0 145.9 L 52.8 142.7 L 55.6 139.6 L 58.4 136.7 L 61.2 133.8 L 64.0 131.0 L 66.8 128.4 L 69.6 125.9 L 72.4 123.6 L 75.2 121.5 L 78.0 119.5 L 80.8 117.7 L 83.6 116.0 L 86.4 114.6 L 89.2 113.3 L 92.0 112.2 L 94.8 111.3 L 97.6 110.6 L 100.4 110.0 L 103.2 109.6 L 106.0 109.3 L 108.8 109.2 L 111.6 109.2 L 114.4 109.4 L 117.2 109.7 L 120.0 110.0 L 122.8 110.4 L 125.6 110.9 L 128.4 111.5 L 131.2 112.1 L 134.0 112.7 L 136.8 113.4 L 139.6 114.0 L 142.4 114.6 L 145.2 115.2 L 148.0 115.7 L 150.8 116.2 L 153.6 116.6 L 156.4 117.0 L 159.2 117.2 L 162.0 117.4 L 164.8 117.4 L 167.6 117.3 L 170.4 117.2 L 173.2 116.9 L 176.0 116.5 L 178.8 116.0 L 181.6 115.3 L 184.4 114.6 L 187.2 113.8 L 190.0 112.8 L 192.8 111.8 L 195.6 110.7 L 198.4 109.5 L 201.2 108.3 L 204.0 107.0 L 206.8 105.7 L 209.6 104.3 L 212.4 103.0 L 215.2 101.6 L 218.0 100.3 L 220.8 99.1 L 223.6 97.8 L 226.4 96.7 L 229.2 95.6 L 232.0 94.6 L 234.8 93.8 L 237.6 93.0 L 240.4 92.4 L 243.2 92.0 L 246.0 91.7 L 248.8 91.5 L 251.6 91.6 L 254.4 91.8 L 257.2 92.2 L 260.0 92.8 L 262.8 93.6 L 265.6 94.6 L 268.4 95.7 L 271.2 97.1 L 274.0 98.6 L 276.8 100.3 L 279.6 102.2 L 282.4 104.2 L 285.2 106.4 L 288.0 108.7 L 290.8 111.2 L 293.6 113.7 L 296.4 116.4 L 299.2 119.1 L 302.0 121.9 L 304.8 124.8 L 307.6 127.6 L 310.4 130.5 L 313.2 133.4 L 316.0 136.3 L 318.8 139.1 L 321.6 141.9 L 324.4 144.6 L 327.2 147.2 L 330.0 149.7 L 332.8 152.1 L 335.6 154.4 L 338.4 156.5 L 341.2 158.5 L 344.0 160.3 L 346.8 162.0 L 349.6 163.5 L 352.4 164.8 L 355.2 165.9 L 358.0 166.8 L 360.8 167.6 L 363.6 168.2 L 366.4 168.6 L 369.2 168.8 L 372.0 168.9 L 374.8 168.8 L 377.6 168.5 L 380.4 168.1 L 383.2 167.6 L 386.0 166.9 L 388.8 166.2 L 391.6 165.3 L 394.4 164.4 L 397.2 163.4 L 400.0 162.3 L 402.8 161.2 L 405.6 160.1 L 408.4 159.0 L 411.2 157.9 L 414.0 156.8 L 416.8 155.7 L 419.6 154.7 L 422.4 153.8 L 425.2 152.9 L 428.0 152.1 L 430.8 151.4 L 433.6 150.8 L 436.4 150.3 L 439.2 149.9 L 442.0 149.7 L 444.8 149.5 L 447.6 149.5 L 450.4 149.5 L 453.2 149.7 L 456.0 150.0 L 458.8 150.4 L 461.6 150.8 L 464.4 151.4 L 467.2 152.0 L 470.0 152.8 L 472.8 153.5 L 475.6 154.3 L 478.4 155.2 L 481.2 156.0 L 484.0 156.9 L 486.8 157.7 L 489.6 158.6 L 492.4 159.3 L 495.2 160.1 L 498.0 160.7 L 500.8 161.3 L 503.6 161.7 L 506.4 162.1 L 509.2 162.3 L 512.0 162.4 L 514.8 162.3 L 517.6 162.1 L 520.4 161.7 L 523.2 161.1 L 526.0 160.4 L 528.8 159.4 L 531.6 158.3 L 534.4 157.0 L 537.2 155.5 L 540.0 153.8 L 542.8 151.9 L 545.6 149.9 L 548.4 147.7 L 551.2 145.3 L 554.0 142.8 L 556.8 140.1 L 559.6 137.3 L 562.4 134.4 L 565.2 131.4 L 568.0 128.2 L 570.8 125.0 L 573.6 121.8 L 576.4 118.5 L 579.2 115.2 L 582.0 111.9 L 584.8 108.6 L 587.6 105.3 L 590.4 102.1 L 593.2 98.9 L 596.0 95.8 L 598.8 92.8 L 601.6 89.9 L 604.4 87.2 L 607.2 84.6 L 610.0 82.1" style="fill:none;stroke:var(--accent)" stroke-width="2.2"/><text x="614.0" y="101.9" text-anchor="start" style="fill:var(--ink);font-size:15px">f</text><text x="423.3" y="133.4" text-anchor="middle" style="fill:var(--k-eps);font-size:15px">f + ε</text><text x="423.3" y="210.9" text-anchor="middle" style="fill:var(--k-eps);font-size:15px">f − ε</text><text x="339.3" y="143.2" text-anchor="middle" style="fill:var(--accent);font-size:15px">fₙ</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Compare Figur 7.3 (<a class="pl" href="script.html#p316">p. 316</a>). The $\varepsilon$-tube around $f$ (shaded). Uniform convergence: for each $\varepsilon$, from some $N$ on, every $f_n$ stays entirely inside. Pointwise convergence lets $f_n$ poke out of the tube somewhere, as long as each single point is eventually inside.</figcaption>
+</figure>
+<p><strong>Uniform implies pointwise</strong> (Übung 7.46 (ii)): if one $N$ works for all $x$, it works for each $x$. So a uniform limit is always the pointwise limit, and in exams you always <em>start</em> by computing the pointwise limit $f$. It is the only candidate.</p>
+
+<h3 id="proof-a">Proof A: the sup test (Übung 7.46 (i), <a class="pl" href="script.html#p315">p. 315</a>)</h3>
+<div class="box">
+<p><strong>The sup test.</strong> Let $d_n=\sup_{x\in X}|f_n(x)-f(x)|$ (a number $\ge0$, or $+\infty$). Then</p>
+<span class="math-display" style="display:block">$$f_n\to f\ \text{uniformly on }X\quad\Longleftrightarrow\quad d_n\to0.$$</span>
+<p>In words: the largest distance between the graphs of $f_n$ and $f$ tends to $0$. (The script also writes $d_n=\|f_n-f\|_\infty$, the <strong>supremum norm</strong>.)</p>
+</div>
+<p><strong>The idea.</strong> “$|f_n(x)-f(x)|&lt;\varepsilon$ for all $x$” says that $\varepsilon$ is an upper bound of all the distances, so the supremum is at most $\varepsilon$. Conversely, each single distance is at most the supremum. The only care: “$\sup\le\varepsilon$” is not “$\sup&lt;\varepsilon$”, so aim for $\frac\varepsilon2$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>“⇒”</strong> starts with “Let $\varepsilon&gt;0$.” and must end with “$d_n&lt;\varepsilon$ for all $n\ge N$.”</li>
+  <li><strong>“⇐”</strong> starts with “Let $\varepsilon&gt;0$.” and must end with “$|f_n(x)-f(x)|&lt;\varepsilon$ for all $n\ge N$ and all $x\in X$.”</li>
+  <li><strong>The gap:</strong> translate between “for all $x$” and “the supremum”.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>If every map from night $N$ on lies inside a ribbon of half a hair, then its worst error is at most half a hair.</p></div><div class="sp-formal"><p>“⇒”: Let $\varepsilon&gt;0$. By uniform convergence (with $\frac\varepsilon2$) there is $N$ with $|f_n(x)-f(x)|&lt;\frac\varepsilon2$ for all $n\ge N$ and $x\in X$. So $\frac\varepsilon2$ is an upper bound of $\{|f_n(x)-f(x)|:x\in X\}$, and $d_n\le\frac\varepsilon2&lt;\varepsilon$ for $n\ge N$. Since $d_n\ge0$, this means $d_n\to0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If the worst error is below a hair, every single error is below a hair.</p></div><div class="sp-formal"><p>“⇐”: Let $\varepsilon&gt;0$. Since $d_n\to0$, there is $N$ with $d_n&lt;\varepsilon$ for $n\ge N$. Then for all $n\ge N$ and all $x\in X$: $|f_n(x)-f(x)|\le d_n&lt;\varepsilon$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-ub">sup ≤ an upper bound</a> <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-supx">bound independently of x</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>“⇒”: Given $\varepsilon&gt;0$, choose $N$ with $|f_n(x)-f(x)|&lt;\frac\varepsilon2$ for all $n\ge N$, $x\in X$. Then $0\le d_n\le\frac\varepsilon2&lt;\varepsilon$ for $n\ge N$, so $d_n\to0$. “⇐”: Given $\varepsilon&gt;0$, choose $N$ with $d_n&lt;\varepsilon$ for $n\ge N$. Then $|f_n(x)-f(x)|\le d_n&lt;\varepsilon$ for all $n\ge N$, $x\in X$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does the proof use $\frac\varepsilon2$ in “⇒” and not $\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>From “$&lt;\varepsilon$ for all $x$” we only get $\sup\le\varepsilon$. Example: $|f_n(x)-f(x)|=\varepsilon(1-x)$ on $(0,1)$ is $&lt;\varepsilon$ everywhere, with supremum exactly $\varepsilon$. With $\frac\varepsilon2$ we get $\sup\le\frac\varepsilon2&lt;\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 2 (1 min).</strong> Compute $d_n$ for $x^n$ on $[0,1]$ with $f$ from Worked example 1. What does the sup test say?</p>
+  <details><summary>Answer</summary><div><p>$|x^n-f(x)|=x^n$ for $x&lt;1$ and $0$ at $x=1$, so $d_n=\sup_{x&lt;1}x^n=1$ (take $x$ close to $1$). $d_n=1\not\to0$, so the convergence is not uniform.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write both directions from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-recipe-for-does-converge">The recipe for “does $f_n$ converge uniformly?”</h3>
+<ol>
+  <li><strong>Pointwise limit first.</strong> Fix $x$ and compute $f(x)=\lim_nf_n(x)$. If it fails to exist somewhere, there is no uniform convergence either.</li>
+  <li><strong>Yes:</strong> find a bound $|f_n(x)-f(x)|\le r_n$ <em>that does not contain $x$</em>, with $r_n\to0$. Then $d_n\le r_n\to0$, so the convergence is uniform. (You don't need the exact supremum.)</li>
+  <li><strong>No:</strong> find points $x_n$ with $|f_n(x_n)-f(x_n)|\ge c$ for a fixed $c&gt;0$. Then $d_n\ge c$, so $d_n\not\to0$. The bad point $x_n$ usually moves with $n$. Or: if all $f_n$ are continuous and $f$ is not, use Proof B below.</li>
+</ol>
+<p class="legend">Typical bounds for step 2: drop terms from a denominator ($\frac1{x^2+n}\le\frac1n$), or use $a^2+b^2\ge2ab$ ($1+nx^2\ge2\sqrt n\,|x|$).</p>
+</div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: $x^n$ on $[0,a]$ for a fixed $a&lt;1$</h3>
+<ol class="gq">
+  <li><p>What is the pointwise limit on $[0,a]$?</p>
+  <details><summary>Answer</summary><div><p>$f=0$, since every $x\in[0,a]$ is $&lt;1$.</p></div></details></li>
+  <li><p>Find a bound for $|x^n-0|$ that doesn't contain $x$.</p>
+  <details><summary>Answer</summary><div><p>For $0\le x\le a$: $x^n\le a^n$. And $a^n\to0$.</p></div></details></li>
+  <li><p>Conclude. Why is there no contradiction with Rung 2 above?</p>
+  <details><summary>Answer</summary><div><p>$d_n\le a^n\to0$, so $x^n\to0$ uniformly on $[0,a]$. On $[0,1]$ (and even on $[0,1)$) the trouble sits arbitrarily close to $1$. Cutting off a piece $(a,1]$ removes all the bad points. Whether convergence is uniform depends on the set $X$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s4-uniform-limits-of-continuous-functions">4. Uniform limits of continuous functions are continuous</h2>
+<h3 id="proof-b">Proof B: the uniform limit of continuous functions is continuous (Satz 7.48, <a class="pl" href="script.html#p316">p. 316</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $D\subseteq\mathbb R$ (or $\mathbb C$) and let $f_n:D\to\mathbb R$ (or $\mathbb C$) be continuous. If $f_n\to f$ uniformly on $D$, then $f$ is continuous.</p>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-07.html#s2-the-definition">lessons 7</a> and <a class="xl" href="lesson-10.html">10</a>)</span>
+<ul>
+  <li><strong>Continuity at $x_0$:</strong> for every $\eta&gt;0$ there is $\delta&gt;0$ with $|g(x)-g(x_0)|&lt;\eta$ for all $x\in D$ with $|x-x_0|&lt;\delta$.</li>
+  <li><strong>Triangle inequality</strong> with two middle points: $|a-d|\le|a-b|+|b-c|+|c-d|$.</li>
+</ul></div>
+<p><strong>The idea.</strong> We want $f(x)$ close to $f(x_0)$. We know nothing about $f$ directly, but we know a continuous $f_N$ that is uniformly close to $f$. So walk in three hops: from $f(x)$ to $f_N(x)$ (small, by uniform convergence), from $f_N(x)$ to $f_N(x_0)$ (small, by continuity of $f_N$), from $f_N(x_0)$ back to $f(x_0)$ (small, by uniform convergence again). Give each hop $\frac\varepsilon3$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First lines:</strong> “Let $x_0\in D$ and $\varepsilon&gt;0$.” <strong>Last line:</strong> “so $|f(x)-f(x_0)|&lt;\varepsilon$ for all $x\in D$ with $|x-x_0|&lt;\delta$. Hence $f$ is continuous at $x_0$, and $x_0$ was arbitrary.”</li>
+  <li><strong>The gap:</strong> find $\delta$. It can only come from the continuity of some $f_n$, so first fix one good $n$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Pick a place $x_0$ on the coast and a hair's width $\varepsilon$.</p></div><div class="sp-formal"><p>Let $x_0\in D$ and $\varepsilon&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Choose one night's map that lies, all along the coast, within a third of a hair of the truth.</p></div><div class="sp-formal"><p>By uniform convergence there is $N$ with $|f_N(x)-f(x)|&lt;\frac\varepsilon3$ for <em>all</em> $x\in D$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>That map has no gaps: near $x_0$ it barely changes.</p></div><div class="sp-formal"><p>$f_N$ is continuous at $x_0$, so there is $\delta&gt;0$ with $|f_N(x)-f_N(x_0)|&lt;\frac\varepsilon3$ for all $x\in D$ with $|x-x_0|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Three hops: true coast at $x$ to the map at $x$, along the map to $x_0$, back to the true coast at $x_0$. Each hop is less than a third of a hair.</p></div><div class="sp-formal"><p>For $x\in D$ with $|x-x_0|&lt;\delta$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;\le |f(x)-f_N(x)|+|f_N(x)-f_N(x_0)|+|f_N(x_0)-f(x_0)|\\&amp;&lt;\tfrac\varepsilon3+\tfrac\varepsilon3+\tfrac\varepsilon3\\&amp;=\varepsilon\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the true coast has no gap at $x_0$ either, and $x_0$ was any place.</p></div><div class="sp-formal"><p>So $f$ is continuous at $x_0$. Since $x_0\in D$ was arbitrary, $f$ is continuous. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps3">ε/3 three times</a> <a class="mvl" href="moves.html#m-tri">insert a middle point</a> <a class="mvl" href="moves.html#m-eps">continuity with a chosen ε</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $x_0\in D$ and $\varepsilon&gt;0$. By uniform convergence there is $N$ with $|f_N(x)-f(x)|&lt;\frac\varepsilon3$ for all $x\in D$. Since $f_N$ is continuous at $x_0$, there is $\delta&gt;0$ with $|f_N(x)-f_N(x_0)|&lt;\frac\varepsilon3$ for all $x\in D$ with $|x-x_0|&lt;\delta$. For such $x$,</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;\le |f(x)-f_N(x)|+|f_N(x)-f_N(x_0)|+|f_N(x_0)-f(x_0)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+<p>So $f$ is continuous at $x_0$, and since $x_0$ was arbitrary, $f$ is continuous. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Fix</strong> $x_0$ and $\varepsilon$.</li>
+  <li><strong>One $N$</strong> with $|f_N-f|&lt;\frac\varepsilon3$ <em>everywhere</em> (uniform convergence).</li>
+  <li><strong>One $\delta$</strong> from the continuity of that $f_N$ at $x_0$.</li>
+  <li><strong>Three hops</strong> with the triangle inequality: $f(x)\to f_N(x)\to f_N(x_0)\to f(x_0)$.</li>
+</ol>
+<p>In short: “fix $N$, then $\delta$, then three thirds”. Say clearly in step 2 that the estimate holds for all $x$: that is exactly where “uniform” is used.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> The first and third hops are estimated at two <em>different</em> points, $x$ and $x_0$. Why does pointwise convergence not suffice for that?</p>
+  <details><summary>Answer</summary><div><p>With pointwise convergence, $N$ depends on the point. We need $|f(x)-f_N(x)|&lt;\frac\varepsilon3$ for every $x$ near $x_0$, but $\delta$ (and so the set of these $x$) comes from $f_N$, which needs $N$ first. Pointwise, $N$ would depend on $x$, and $x$ on $\delta$, and $\delta$ on $N$: a circle. Uniform convergence gives one $N$ for all $x$ before $\delta$ is chosen.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Use Proof B to show in one line that $x^n$ does not converge uniformly on $[0,1]$.</p>
+  <details><summary>Answer</summary><div><p>If it did, the limit would be continuous by Proof B, since all $x^n$ are continuous. But the limit is $1_{\{1\}}$, which jumps at $1$. So the convergence is not uniform.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the exam box alone. Then do Exercise 4, which is the exam version.</p></li>
+</ol></div>
+<p><strong>Why it's cool.</strong> Proof B is a free test for non-uniform convergence: continuous functions with a discontinuous limit can never converge uniformly. But the converse fails. On $[0,1)$, $x^n\to0$, a continuous limit, and the convergence is still not uniform (Rung 2 of Proof A: the supremum is still $1$). A continuous limit doesn't prove anything; you still need the sup.</p>
+
+<h2 id="s5-uniform-limits-of-integrable-functions">5. Uniform limits of integrable functions are integrable</h2>
+<h3 id="proof-c">Proof C: integral and uniform limit can be swapped (Satz 7.49, <a class="pl" href="script.html#p317">p. 317</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f_n:[a,b]\to\mathbb R$ be Riemann integrable, and $f_n\to f$ uniformly on $[a,b]$. Then $f$ is Riemann integrable, and</p>
+<span class="math-display" style="display:block">$$\lim_{n\to\infty}\int_a^bf_n\,dx=\int_a^b\lim_{n\to\infty}f_n\,dx=\int_a^bf\,dx.$$</span>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-09.html#proof-a">lesson 9</a>)</span>
+<ul>
+  <li><strong>The $\varepsilon$-criterion:</strong> $f$ is integrable ⇔ for every $\varepsilon&gt;0$ there are step functions $u\le f\le o$ with $\int_a^b(o-u)\,dx&lt;\varepsilon$.</li>
+  <li><strong>Monotonicity:</strong> $g\le h$ ⇒ $\int_a^bg\le\int_a^bh$. <strong>Constants:</strong> $\int_a^bc\,dx=c\,(b-a)$. A step function plus a constant is a step function.</li>
+</ul></div>
+<p><strong>The idea.</strong> Integrability: $f_N$ is integrable, so it is squeezed between step functions $u$ and $o$ that are close together. And $f$ lies in the $\varepsilon$-tube around $f_N$. So move the lower step function down by $\varepsilon$ and the upper one up by $\varepsilon$: they now squeeze $f$, and their gap grew only by $2\varepsilon(b-a)$. The integrals: $f-\varepsilon\le f_n\le f+\varepsilon$, so the integrals differ by at most $\varepsilon(b-a)$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Part 1</strong> must end with “so by the $\varepsilon$-criterion, $f$ is integrable.” So: for every $\varepsilon&gt;0$, produce step functions $u'\le f\le o'$ with $\int(o'-u')$ small.</li>
+  <li><strong>Part 2</strong> must end with “$\left|\int_a^bf_n-\int_a^bf\right|\le\dots$ for all $n\ge N$, so $\int f_n\to\int f$.”</li>
+  <li><strong>The gap:</strong> the step functions for $f$ must come from those of one $f_N$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Choose one night's map that is within a hair of the true coast everywhere.</p></div><div class="sp-formal"><p><strong>Part 1.</strong> Let $\varepsilon&gt;0$. By uniform convergence there is $N$ with $|f_N(x)-f(x)|&lt;\varepsilon$ for all $x\in[a,b]$, so $f_N-\varepsilon\le f\le f_N+\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>That map is squeezed between two staircase outlines that are close together.</p></div><div class="sp-formal"><p>Since $f_N$ is integrable, there are step functions $u\le f_N\le o$ with $\int_a^b(o-u)\,dx&lt;\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Lower one staircase by a hair and raise the other by a hair: now they squeeze the true coast.</p></div><div class="sp-formal"><p>Let $u'=u-\varepsilon$ and $o'=o+\varepsilon$. These are step functions, and</p>
+<span class="math-display" style="display:block">$$u'=u-\varepsilon\le f_N-\varepsilon\le f\le f_N+\varepsilon\le o+\varepsilon=o'.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>The gap between them grew by only two hairs times the length of the coast.</p></div><div class="sp-formal"><span class="math-display" style="display:block">$$\begin{aligned}\int_a^b(o'-u')\,dx&amp;=\int_a^b(o-u)\,dx+2\varepsilon(b-a)\\&amp;&lt;\varepsilon\,(1+2(b-a))\end{aligned}.$$</span><p>Since $\varepsilon&gt;0$ was arbitrary, $\varepsilon(1+2(b-a))$ can be made as small as we like, so $f$ is integrable by the $\varepsilon$-criterion.</p><p>(Why “$&lt;\varepsilon$ times a constant” is enough: the criterion asks for a gap below some given $\delta&gt;0$. Run the argument with $\varepsilon=\frac{\delta}{1+2(b-a)}$; then the gap is $&lt;\varepsilon(1+2(b-a))=\delta$. The constant $1+2(b-a)$ doesn't depend on $\varepsilon$, so it can always be divided out like this. If you prefer, start with $\varepsilon$ and use the tube $\frac{\varepsilon}{1+2(b-a)}$ from the beginning; the gap then comes out $&lt;\varepsilon$ exactly.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The true coast's area and the map's area differ by at most a hair times the coast's length.</p></div><div class="sp-formal"><p><strong>Part 2.</strong> Let $\varepsilon&gt;0$ and $N$ with $f-\varepsilon\le f_n\le f+\varepsilon$ on $[a,b]$ for all $n\ge N$. By monotonicity, for $n\ge N$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\int_a^bf\,dx-\varepsilon(b-a)&amp;\le \int_a^bf_n\,dx\\&amp;\le \int_a^bf\,dx+\varepsilon(b-a)\end{aligned},$$</span>
+<p>that is, $\left|\int_a^bf_n\,dx-\int_a^bf\,dx\right|\le\varepsilon(b-a)$. Since $\varepsilon&gt;0$ was arbitrary, $\int_a^bf_n\,dx\to\int_a^bf\,dx$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-squeeze">the ε-criterion (squeeze)</a> <a class="mvl" href="moves.html#m-supx">bound independently of x</a> <a class="mvl" href="moves.html#m-alleps">smaller than every ε</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p><strong>Integrability.</strong> Let $\varepsilon&gt;0$. Choose $N$ with $|f_N(x)-f(x)|&lt;\varepsilon$ for all $x\in[a,b]$, and step functions $u\le f_N\le o$ with $\int_a^b(o-u)\,dx&lt;\varepsilon$. Then $u-\varepsilon$ and $o+\varepsilon$ are step functions with $u-\varepsilon\le f\le o+\varepsilon$ and <span class="math-display" style="display:block">$$\int_a^b\big((o+\varepsilon)-(u-\varepsilon)\big)dx&lt;\varepsilon(1+2(b-a)).$$</span>As $\varepsilon$ is arbitrary, $f$ is integrable by the $\varepsilon$-criterion.</p>
+<p><strong>Integrals.</strong> Given $\varepsilon&gt;0$, choose $N$ with $f-\varepsilon\le f_n\le f+\varepsilon$ for $n\ge N$. Monotonicity of the integral gives $\left|\int_a^bf_n-\int_a^bf\right|\le\varepsilon(b-a)$ for $n\ge N$. Hence $\int_a^bf_n\to\int_a^bf$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Tube:</strong> one $N$ with $f_N-\varepsilon\le f\le f_N+\varepsilon$ on all of $[a,b]$.</li>
+  <li><strong>Squeeze $f_N$:</strong> step functions $u\le f_N\le o$ with $\int(o-u)&lt;\varepsilon$.</li>
+  <li><strong>Shift:</strong> $u-\varepsilon\le f\le o+\varepsilon$, gap $&lt;\varepsilon(1+2(b-a))$. The $\varepsilon$-criterion gives integrability.</li>
+  <li><strong>Integrals:</strong> monotonicity of the integral turns $f-\varepsilon\le f_n\le f+\varepsilon$ into $\left|\int f_n-\int f\right|\le\varepsilon(b-a)$.</li>
+</ol>
+<p>In short: “tube, squeeze $f_N$, shift by $\varepsilon$, then integrate the tube”. If you forget step 3, write at least step 4: it alone is often worth half the points.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $u-\varepsilon$ a step function?</p>
+  <details><summary>Answer</summary><div><p>$u$ is constant on each piece of some partition, so $u-\varepsilon$ is constant on the same pieces.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Why can't you skip Part 1 and only do Part 2?</p>
+  <details><summary>Answer</summary><div><p>Part 2 uses $\int_a^bf\,dx$ and its monotonicity. That only makes sense once we know $f$ is integrable. The third warning in <a class="xl" href="#s2-pointwise-convergence-and-what-goes">section 2</a> shows a pointwise limit of integrable functions can fail to be integrable.</p></div></details></li>
+  <li><p><strong>Rung 3 (6 min).</strong> Write the whole proof from the exam box alone. This is the 7-point question of the Einsiedler mock HS21.</p></li>
+</ol></div>
+<p>The tents of Worked example 2 show why “uniform” can't be dropped: there $f_n\to0$ pointwise, but $\int f_n=\frac14$. And the convergence isn't uniform, since the peak $\frac n2\to\infty$ gives $d_n=\frac n2$.</p>
+
+<h2 id="s6-series-of-functions-and-the">6. Series of functions and the Weierstrass M-test</h2>
+<p>A <strong>series of functions</strong> $\sum_{k=1}^\infty g_k$ is, as in <a class="xl" href="lesson-14.html#s2-series-and-partial-sums">lesson 14</a>, the sequence of its partial sums $s_n(x)=\sum_{k=1}^ng_k(x)$. “Converges uniformly” means: $s_n\to s$ uniformly. Next lesson's power series $\sum a_kx^k$ are exactly such series, and this test is how the script proves they are continuous (<a class="pl" href="script.html#p319">p. 319–320</a>).</p>
+<h3 id="proof-d">Proof D: the Weierstrass M-test</h3>
+<div class="box">
+<p><strong>M-test.</strong> Let $g_k:X\to\mathbb R$ (or $\mathbb C$), and suppose there are numbers $M_k$ with $|g_k(x)|\le M_k$ for all $x\in X$ and $\sum_{k=1}^\infty M_k&lt;\infty$. Then for every $x$, $\sum_kg_k(x)$ converges absolutely, and the partial sums converge <strong>uniformly</strong> on $X$ to $s(x)=\sum_{k=1}^\infty g_k(x)$.</p>
+</div>
+<p><strong>The idea.</strong> <a class="xl" href="lesson-14.html#s5-the-cauchy-criterion-and-absolute">Lesson 14</a>'s majorant test gives convergence at each $x$. For uniformity, look at the error after $n$ terms: it is the tail $\sum_{k&gt;n}g_k(x)$, and it is at most $\sum_{k&gt;n}M_k$, the tail of a convergent number series. That bound doesn't contain $x$ and tends to $0$. The sup test finishes.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “For each $x$, $\sum|g_k(x)|\le\sum M_k$ converges, so $s(x)$ exists.” <strong>Last line:</strong> “so $\sup_x|s(x)-s_n(x)|\to0$, and by the sup test the convergence is uniform.”</li>
+  <li><strong>The gap:</strong> bound $|s(x)-s_n(x)|$ by something without $x$ that tends to $0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Each night's correction to the map is at most $M_k$, anywhere on the coast, and these maximal corrections add up to a finite total.</p></div><div class="sp-formal"><p>Fix $x\in X$. Since $|g_k(x)|\le M_k$ and $\sum M_k$ converges, the majorant test gives absolute convergence of $\sum_kg_k(x)$. Let $s(x)$ be its value.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>What's still missing after night $n$ is all the later corrections, and these are at most the rest of the total.</p></div><div class="sp-formal"><p>For every $n$ and $x$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|s(x)-s_n(x)|&amp;=\Bigl|\sum_{k=n+1}^\infty g_k(x)\Bigr|\\&amp;\le \sum_{k=n+1}^\infty|g_k(x)|\\&amp;\le \sum_{k=n+1}^\infty M_k\\&amp;=:r_n\end{aligned}.$$</span>
+<p>(The middle step is the triangle inequality for finite sums, then the limit.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The rest of a finite total shrinks to nothing, and this bound is the same all along the coast.</p></div><div class="sp-formal"><p>$r_n=\sum_{k=1}^\infty M_k-\sum_{k=1}^nM_k\to0$. So $\sup_{x\in X}|s(x)-s_n(x)|\le r_n\to0$, and by the sup test (Proof A), $s_n\to s$ uniformly on $X$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-major">find a majorant</a> <a class="mvl" href="moves.html#m-supx">bound independently of x</a> <a class="mvl" href="moves.html#m-partial">go to partial sums</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>For each $x$, $\sum|g_k(x)|\le\sum M_k&lt;\infty$, so $s(x)=\sum_kg_k(x)$ exists. For all $n$ and $x$, $|s(x)-s_n(x)|=\left|\sum_{k&gt;n}g_k(x)\right|$, which is $\le\sum_{k&gt;n}M_k=r_n$, and $r_n\to0$ as the tail of a convergent series. So $\sup_x|s(x)-s_n(x)|\le r_n\to0$, and the convergence is uniform by the sup test. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Show that $\sum_{k=1}^\infty\frac{\sin(kx)}{k^2}$ converges uniformly on $\mathbb R$, and that its sum is continuous.</p>
+  <details><summary>Answer</summary><div><p>$\left|\frac{\sin(kx)}{k^2}\right|\le\frac1{k^2}=M_k$ for all $x$, and $\sum\frac1{k^2}$ converges. By the M-test the series converges uniformly. Its partial sums are continuous (finite sums of continuous functions), so by Proof B the sum is continuous.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Does the M-test apply to $\sum_{k=0}^\infty x^k$ on $[-a,a]$ for $0&lt;a&lt;1$? On $(-1,1)$?</p>
+  <details><summary>Answer</summary><div><p>On $[-a,a]$: $|x^k|\le a^k=M_k$, and $\sum a^k$ converges, so yes: uniform convergence. On $(-1,1)$ the best bound is $\sup_{|x|&lt;1}|x^k|=1$, and $\sum1$ diverges, so the test doesn't apply. (In fact the convergence is not uniform there; <a class="xl" href="lesson-16.html">lesson 16</a> shows why.)</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<h2 id="s7-five-useful-facts">7. Five useful facts</h2>
+<p>These are short exercises in the script (<a class="pl" href="script.html#p318">p. 318</a>). Each one has a two-line reason, and two of them have been asked in exams.</p>
+<ul>
+  <li><strong>Finite unions (Übung 7.50).</strong> If $f_n\to f$ uniformly on $X_1$ and on $X_2$, then also on $X_1\cup X_2$: take the larger of the two $N$s. It fails for infinitely many pieces: $x^n$ converges uniformly on each $[0,1-\frac1m]$, but not on their union $[0,1)$.</li>
+  <li><strong>Boundedness (Übung 7.51).</strong> A uniform limit of bounded functions is bounded: if $|f_N-f|&lt;1$ everywhere and $|f_N|\le B$, then $|f|\le B+1$. For pointwise limits this fails (Exercise 6).</li>
+  <li><strong>Moving points (Übung 7.52).</strong> If continuous $f_n\to f$ uniformly and $z_n\to z_0$, then $f_n(z_n)\to f(z_0)$. Insert a middle point:<span class="math-display" style="display:block">$$\begin{aligned}|f_n(z_n)-f(z_0)|&amp;\le |f_n(z_n)-f(z_n)|+|f(z_n)-f(z_0)|\end{aligned}.$$</span>The first term is at most $d_n$, and the second tends to $0$ because $f$ is continuous (Proof B). Pointwise, this fails: $x^n$ at $z_n=1-\frac1n$ gives $\left(1-\frac1n\right)^n\to\frac1e\neq0$.</li>
+  <li><strong>Uniform continuity (Übung 7.53).</strong> A uniform limit of <em>uniformly</em> continuous functions is uniformly continuous. Same proof as Proof B, with $\delta$ independent of $x_0$. On $[a,b]$ you get it for free: the limit is continuous (Proof B), so uniformly continuous (Heine, <a class="xl" href="lesson-08.html#proof-e">lesson 8</a>). That was the 2018 summer exam's 1-point follow-up question.</li>
+  <li><strong>Derivatives are not safe.</strong> $f_n(x)=\frac{\sin(nx)}n$ converges uniformly to $0$ on $\mathbb R$ (since $|f_n|\le\frac1n$), but $f_n'(x)=\cos(nx)$ doesn't converge at all (try $x=\pi$: $(-1)^n$). Uniform convergence protects continuity and integrals, not derivatives. Worked example 5 below goes further: a uniform limit of smooth functions can have a corner. Derivatives come back in <a class="xl" href="lesson-17.html#s2-the-derivative">lesson 17</a>.</li>
+</ul>
+
+<h2 id="s8-worked-examples">8. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-4">Worked example 4: $f_n(x)=\dfrac{nx}{1+n^2x^2}$ on $[0,1]$</h3>
+<ol class="gq">
+  <li><p>Pointwise limit? Treat $x=0$ and $x&gt;0$ separately.</p>
+  <details><summary>Answer</summary><div><p>$f_n(0)=0$. For $x&gt;0$: $0\le f_n(x)\le\frac{nx}{n^2x^2}=\frac1{nx}\to0$. So $f=0$.</p></div></details></li>
+  <li><p>Is there a bad point? Try $x_n=\frac1n$.</p>
+  <details><summary>Answer</summary><div><p>$f_n\left(\frac1n\right)=\frac{1}{1+1}=\frac12$. So $d_n\ge\frac12$ for all $n$, and the convergence is not uniform on $[0,1]$. (The bump of height $\frac12$ slides towards $0$.)</p></div></details></li>
+  <li><p>Is it uniform on $[a,1]$ for a fixed $a&gt;0$?</p>
+  <details><summary>Answer</summary><div><p>Yes: for $x\ge a$, $0\le f_n(x)\le\frac1{nx}\le\frac1{na}\to0$, a bound without $x$. The bad points $\frac1n$ eventually leave $[a,1]$.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-5">Worked example 5: $f_n(x)=\sqrt{x^2+\frac1{n^2}}$ on $\mathbb R$</h3>
+<ol class="gq">
+  <li><p>Pointwise limit?</p>
+  <details><summary>Answer</summary><div><p>$\sqrt{x^2+\frac1{n^2}}\to\sqrt{x^2}=|x|$, by continuity of the square root.</p></div></details></li>
+  <li><p>Bound $f_n(x)-|x|$ without $x$. (Multiply by $\sqrt{x^2+\frac1{n^2}}+|x|$ on top and bottom.)</p>
+  <details><summary>Answer</summary><div><p>$$0\le\sqrt{x^2+\tfrac1{n^2}}-|x|=\frac{\frac1{n^2}}{\sqrt{x^2+\frac1{n^2}}+|x|}\le\frac{\frac1{n^2}}{\frac1n}=\frac1n,$$ since the denominator is at least $\sqrt{\frac1{n^2}}=\frac1n$.</p></div></details></li>
+  <li><p>Conclude. What's surprising?</p>
+  <details><summary>Answer</summary><div><p>$d_n\le\frac1n\to0$: uniform convergence to $|x|$. Every $f_n$ is differentiable everywhere (a smooth curve), but the limit $|x|$ has a corner at $0$. Uniform convergence keeps continuity, but not differentiability.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-6">Worked example 6: the travelling bump $f_n(x)=\dfrac1{1+(x-n)^2}$ on $\mathbb R$</h3>
+<ol class="gq">
+  <li><p>Pointwise limit?</p>
+  <details><summary>Answer</summary><div><p>For fixed $x$, $(x-n)^2\to\infty$, so $f_n(x)\to0$.</p></div></details></li>
+  <li><p>Uniform on $\mathbb R$?</p>
+  <details><summary>Answer</summary><div><p>No: the bad point is $x_n=n$, where $f_n(n)=1$. So $d_n=1$. The bump never shrinks; it just walks away to the right.</p></div></details></li>
+  <li><p>Uniform on $(-\infty,R]$ for fixed $R$?</p>
+  <details><summary>Answer</summary><div><p>Yes. For $n&gt;R$ and $x\le R$: $n-x\ge n-R&gt;0$, so $f_n(x)\le\frac1{1+(n-R)^2}\to0$, a bound without $x$.</p></div></details></li>
+</ol>
+<p class="legend">The three ways convergence fails to be uniform, all with a moving bad point: the bump gets taller (the tents), it slides into a corner (Worked example 4), or it walks off to infinity (this one).</p>
+</div>
+
+<h2 id="s9-exercises">9. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1–3 are exam questions and count for scoring.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Kobel-Keller HS24, question 7, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Let $f_n:[a,b]\to\mathbb R$ ($n\ge1$) be continuous functions on a compact interval. Which statement is correct? (A) If $\sup_{x\in[a,b]}|f_n(x)|\ge\frac1{2n}$, the sequence cannot converge uniformly to $0$. (B) If the maximum of each $f_n$ is attained at a different point $x_n$, the sequence cannot converge uniformly to $0$. (C) If $f_n\to f$ pointwise, then $f$ is continuous. (D) If $f_n\to f$ uniformly, then $f$ is Riemann integrable.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (D).</strong> Each $f_n$ is continuous on $[a,b]$, so integrable (<a class="xl" href="lesson-09.html#we-2">lesson 9</a>). By Proof C, the uniform limit $f$ is integrable. (Or: $f$ is continuous by Proof B, hence integrable.)</p>
+  <ul>
+    <li>(A) False. The constants $f_n=\frac1{2n}$ have $\sup|f_n|=\frac1{2n}$ and converge uniformly to $0$, since $d_n=\frac1{2n}\to0$. A lower bound only rules out uniform convergence if it doesn't tend to $0$.</li>
+    <li>(B) False. Take $[a,b]=[0,1]$, $x_n=\frac1{n+1}$ (all different) and $f_n(x)=\frac1n\bigl(1-|x-x_n|\bigr)$. Its maximum $\frac1n$ is attained only at $x_n$, and $|f_n|\le\frac1n\to0$ uniformly.</li>
+    <li>(C) False. $x^n$ on $[0,1]$ (Worked example 1).</li>
+  </ul>
+  <p><em>Moves:</em> <a class="mvl" href="moves.html#m-counter">a small counterexample</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Kobel-Keller HS24, question 18 (b) and (c), 5 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Let $f_n(x)=\dfrac x{1+nx^2}$ on $\mathbb R$, $n\ge1$. (b) Determine the pointwise limit. (c) Does $(f_n)_n$ converge uniformly? Justify your answer.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> the recipe: pointwise limit first, then a bound without $x$. <em>Moves:</em> <a class="mvl" href="moves.html#m-supx">bound independently of x</a>.</p>
+  <p><strong>(b) (2 points).</strong> $f_n(0)=0$ for all $n$. For $x\neq0$: $|f_n(x)|=\frac{|x|}{1+nx^2}\le\frac{|x|}{nx^2}=\frac1{n|x|}\to0$. So the pointwise limit is $f=0$.</p>
+  <p><strong>(c) (3 points). Yes.</strong> For all $x\in\mathbb R$: $(1-\sqrt n\,|x|)^2\ge0$ gives $1+nx^2\ge2\sqrt n\,|x|$. So for $x\neq0$,</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f_n(x)-0|&amp;=\frac{|x|}{1+nx^2}\\&amp;\le \frac{|x|}{2\sqrt n\,|x|}\\&amp;=\frac1{2\sqrt n}\end{aligned},$$</span>
+  <p>and at $x=0$ this holds too. The bound doesn't contain $x$, so $\sup_{x\in\mathbb R}|f_n(x)|\le\frac1{2\sqrt n}\to0$, and $f_n\to0$ uniformly by the sup test. (The bound is attained at $x=\frac1{\sqrt n}$: $f_n\left(\frac1{\sqrt n}\right)=\frac{1/\sqrt n}{2}$.) <span class="qed">∎</span></p>
+  <p class="legend">Part (a) of the exam question asks whether each $f_n$ is uniformly continuous. The answer is yes, via the derivative: $|f_n'|\le1$ makes $f_n$ Lipschitz. That needs <a class="xl" href="lesson-17.html#ex-2">lesson 17</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Einsiedler-style exam, winter 2012, question 5, 3 points here)</h3>
+  <p>Let $f_n:(0,\infty)\to\mathbb R$, $f_n(x)=\dfrac{x^k}{x^2+n}$. For which $k\in\{0,1,2\}$ does $(f_n)_n$ converge uniformly on $(0,\infty)$?</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer: for $k=0$ and $k=1$.</strong> In all three cases the pointwise limit is $0$: for fixed $x$, the numerator is fixed and the denominator tends to $\infty$.</p>
+  <ul>
+    <li><strong>$k=0$ (1 point).</strong> $0&lt;\frac1{x^2+n}&lt;\frac1n$ for all $x$. So $d_n\le\frac1n\to0$: uniform.</li>
+    <li><strong>$k=1$ (1 point).</strong> $x^2+n\ge2\sqrt n\,x$ (from $(x-\sqrt n)^2\ge0$), so $0&lt;\frac x{x^2+n}\le\frac1{2\sqrt n}$. So $d_n\le\frac1{2\sqrt n}\to0$: uniform.</li>
+    <li><strong>$k=2$ (1 point).</strong> The bad point is $x_n=\sqrt n$: $f_n(\sqrt n)=\frac n{n+n}=\frac12$. So $d_n\ge\frac12$ for all $n$: not uniform.</li>
+  </ul>
+  <p><em>Moves:</em> <a class="mvl" href="moves.html#m-supx">bound independently of x</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Felder HS22, question 2.A1, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">HS22 exam</a></p>
+  <p>(a) Prove: let $(f_n)_n$ be a sequence of continuous complex-valued functions on $D\subseteq\mathbb R$ that converges uniformly to a function $f$. Then $f$ is continuous. <span class="muted">(As in the original exam: the inputs are real, $D\subseteq\mathbb R$, and only the values are complex, $f_n:D\to\mathbb C$. The proof is word for word the same for $D\subseteq\mathbb C$.)</span> (b) Give an example of a sequence of continuous functions that converges pointwise to a function that is not continuous.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a) (5 points)</strong> <em>Frame:</em> Proof B. The absolute value of complex numbers satisfies the same triangle inequality, so nothing changes. Let $x_0\in D$ and $\varepsilon&gt;0$. Choose $N$ with $|f_N(x)-f(x)|&lt;\frac\varepsilon3$ for all $x\in D$. Since $f_N$ is continuous at $x_0$, choose $\delta&gt;0$ with $|f_N(x)-f_N(x_0)|&lt;\frac\varepsilon3$ for $x\in D$, $|x-x_0|&lt;\delta$. For these $x$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;\le |f(x)-f_N(x)|+|f_N(x)-f_N(x_0)|+|f_N(x_0)-f(x_0)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+  <p>So $f$ is continuous at $x_0$. Since $x_0$ was arbitrary, $f$ is continuous. <span class="qed">∎</span></p>
+  <p><strong>(b) (2 points)</strong> $f_n(x)=x^n$ on $[0,1]$. Each $f_n$ is continuous, and $f_n\to f$ pointwise with $f(x)=0$ for $x&lt;1$ and $f(1)=1$, which is not continuous at $1$. (Write out both limits: $x^n\to0$ for $0\le x&lt;1$, and $1^n=1$.) <em>Moves:</em> <a class="mvl" href="moves.html#m-eps3">ε/3 three times</a> <a class="mvl" href="moves.html#m-counter">a small counterexample</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (Einsiedler HS21, question 12, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Let $I=[a,b]$ with $a&lt;b$, and let $f_n:I\to\mathbb R$ be continuous functions that converge pointwise to $f=0$. Suppose that for all $x\in I$: $n\ge m\Rightarrow f_n(x)\le f_m(x)$. Show that $f_n\to0$ uniformly. <em>Hint: argue indirectly.</em></p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> assume not uniform. Negate the definition to get bad points $x_k$, use Bolzano–Weierstrass on them (<a class="xl" href="lesson-12.html#s2-subsequences-and-bolzano-weierstrass">lesson 12</a>), and get a contradiction at the limit point. <em>Moves:</em> <a class="mvl" href="moves.html#m-neg">the negation recipe</a> <a class="mvl" href="moves.html#m-contra">assume the opposite</a> <a class="mvl" href="moves.html#m-bw">Bolzano–Weierstrass for a candidate</a>.</p>
+  <p><strong>Step 0: $f_n\ge0$.</strong> For fixed $x$, $(f_n(x))_n$ is decreasing with limit $0$, so $f_n(x)\ge0$ for all $n$ (a decreasing sequence stays above its limit). So $|f_n(x)-0|=f_n(x)$.</p>
+  <p><strong>Step 1: negation (1 point).</strong> Suppose the convergence is not uniform. Then there is $\varepsilon&gt;0$ such that for every $N$ there are $n\ge N$ and $x\in I$ with $f_n(x)\ge\varepsilon$. Applying this with $N=1$, then $N=n_1+1$, and so on, we get indices $n_1&lt;n_2&lt;\dots$ and points $x_k\in I$ with $f_{n_k}(x_k)\ge\varepsilon$.</p>
+  <p><strong>Step 2: a limit point (2 points).</strong> $(x_k)_k$ is bounded (it lies in $[a,b]$), so by Bolzano–Weierstrass it has a convergent subsequence $x_{k_j}\to x^*$. Since $a\le x_{k_j}\le b$, also $x^*\in[a,b]$.</p>
+  <p><strong>Step 3: monotonicity (2 points).</strong> Fix $m\in\mathbb N$. For all $j$ with $n_{k_j}\ge m$ (all but finitely many $j$), monotonicity gives</p>
+  <span class="math-display" style="display:block">$$f_m(x_{k_j})\ge f_{n_{k_j}}(x_{k_j})\ge\varepsilon.$$</span>
+  <p><strong>Step 4: continuity and contradiction (2 points).</strong> $f_m$ is continuous at $x^*$ and $x_{k_j}\to x^*$, so $f_m(x^*)=\lim_jf_m(x_{k_j})\ge\varepsilon$ (limits keep $\ge$). This holds for every $m$, so $f_m(x^*)\not\to0$, contradicting the pointwise convergence at $x^*$. Hence the convergence is uniform. <span class="qed">∎</span></p>
+  <p class="legend">This is Dini's theorem. Each hypothesis is needed: without compactness, $x^n$ on $[0,1)$ is a counterexample. Without monotonicity, the tents of Worked example 2 are one. Without continuity of the limit, $x^n$ on $[0,1]$ is one (there $f\neq0$).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Exercise 6 (short theory questions, older Einsiedler exams)</h3>
+  <p>(a) Give a sequence of continuous functions that converges pointwise but not uniformly (2017 summer, 1 point). (b) Let continuous $f_n:[a,b]\to\mathbb R$ converge uniformly to $f$. Is $f$ uniformly continuous? Answer yes or no, with a short reason (2018 summer, 1 point). (c) Show that a uniform limit of bounded functions is bounded, and find bounded functions with an unbounded pointwise limit (Übung 7.51).</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> $x^n$ on $[0,1]$: the limit $1_{\{1\}}$ is not continuous, so by Proof B the convergence can't be uniform. (Or $x^n$ on $[0,1)$, where $d_n=1$.)</p>
+  <p><strong>(b) Yes.</strong> $f$ is continuous by Proof B, and a continuous function on a compact interval is uniformly continuous (Heine).</p>
+  <p><strong>(c)</strong> Choose $N$ with $|f_N(x)-f(x)|&lt;1$ for all $x$, and $B$ with $|f_N|\le B$. Then <span class="math-display" style="display:block">$$\begin{aligned}|f(x)|&amp;\le |f(x)-f_N(x)|+|f_N(x)|\\&amp;&lt;1+B\end{aligned}$$</span>for all $x$. Counterexample: on $(0,1]$, $f_n(x)=\min\left\{n,\frac1x\right\}$. Each $f_n$ is bounded by $n$, and $f_n(x)=\frac1x$ as soon as $n\ge\frac1x$, so the pointwise limit is $\frac1x$, which is unbounded. <em>Moves:</em> <a class="mvl" href="moves.html#m-tri">insert a middle point</a> <a class="mvl" href="moves.html#m-counter">a small counterexample</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (Figalli FS26, question A2, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Let $f_n:[0,1]\to\mathbb R$ be $1$-Lipschitz, that is $|f_n(x)-f_n(y)|\le|x-y|$ for all $x,y$, and let $f_n\to f$ pointwise on $[0,1]$. (a) Show that $f$ is $1$-Lipschitz. (b) Show that $f_n\to f$ uniformly.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> pointwise convergence controls finitely many points at once (take the largest $N$). The Lipschitz condition controls everything in between. <em>Moves:</em> <a class="mvl" href="moves.html#m-grid">finitely many points, then fill the gaps</a> <a class="mvl" href="moves.html#m-maxN">take the larger N</a> <a class="mvl" href="moves.html#m-eps3">ε/3 three times</a>.</p>
+  <p><strong>(a) (2 points).</strong> For fixed $x,y$: $|f_n(x)-f_n(y)|\le|x-y|$ for all $n$, and $f_n(x)-f_n(y)\to f(x)-f(y)$. Limits keep $\le$, and $|\cdot|$ is continuous, so $|f(x)-f(y)|\le|x-y|$.</p>
+  <p><strong>(b) (5 points).</strong> Let $\varepsilon&gt;0$. Choose $M\in\mathbb N$ with $\frac1M&lt;\frac\varepsilon3$, and the grid points $x_i=\frac iM$, $i=0,1,\dots,M$. For each of these finitely many points there is $N_i$ with $|f_n(x_i)-f(x_i)|&lt;\frac\varepsilon3$ for $n\ge N_i$. Let $N=\max\{N_0,\dots,N_M\}$. Now let $x\in[0,1]$ and $n\ge N$. Pick a grid point with $|x-x_i|\le\frac1{2M}&lt;\frac\varepsilon3$. Then</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f_n(x)-f(x)|&amp;\le \underbrace{|f_n(x)-f_n(x_i)|}_{\le|x-x_i|}+\underbrace{|f_n(x_i)-f(x_i)|}_{&lt;\varepsilon/3}+\underbrace{|f(x_i)-f(x)|}_{\le|x-x_i|\text{ by (a)}}\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+  <p>$N$ doesn't depend on $x$, so $f_n\to f$ uniformly. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (2 points), Exercise 2 (5) and Exercise 3 (3) make 10. If you have 7 of 10, you're done. Exercises 4–6 and the Bonus are proof practice and don't count against you. Exercise 4 (a) is Proof B, so it's a good check of the exam box.</p>
+</div>
+
+<h2 id="s10-for-wonder-optional-5-min">10. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>A monster built with the M-test.</strong> In 1872 Weierstrass shocked Berlin with the function $W(x)=\sum_{k=0}^\infty\frac{\cos(13^k\pi x)}{2^k}$. The M-test (with $M_k=\frac1{2^k}$) makes it a uniform limit of continuous functions, so it is continuous by Proof B. But it has a corner at <em>every</em> point: it is differentiable nowhere. Its graph is a coastline that looks equally jagged under any magnifying glass. Mathematicians of the time called such functions “monsters”. Today they are the start of fractal geometry.</p>
+<p><strong>And in the other direction.</strong> Weierstrass also proved (1885) that every continuous function on $[a,b]$ is a uniform limit of <em>polynomials</em>. However wild a continuous coast is, a polynomial map fits it inside any $\varepsilon$-tube you like. So even the monster is a uniform limit of the simplest functions there are.</p>
+
+<h2 id="s11-what-we-skipped">11. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Übung 7.41 (<a class="pl" href="script.html#p313">p. 313</a>):</strong> uniqueness of the pointwise limit. Low; one line in <a class="xl" href="#s2-pointwise-convergence-and-what-goes">section 2</a>.</li>
+  <li><strong>Übung 7.46 (iii) (<a class="pl" href="script.html#p315">p. 315</a>):</strong> Beispiele 7.43 and 7.44 don't converge uniformly. Low; we showed it for the tents (end of <a class="xl" href="#s5-uniform-limits-of-integrable-functions">section 5</a>). For 7.44 use Proof C: the limit isn't integrable.</li>
+  <li><strong>The remark on the supremum norm (<a class="pl" href="script.html#p316">p. 316</a>):</strong> $\|\cdot\|_\infty$ is a norm on bounded functions, and no norm gives pointwise convergence. Optional.</li>
+  <li><strong>Applet 7.47 (<a class="pl" href="script.html#p316">p. 316</a>):</strong> $x^n$ on smaller intervals. Covered by Worked example 3.</li>
+  <li><strong>Proofs of Übungen 7.50 (ii), 7.52 (ii) and 7.53 (<a class="pl" href="script.html#p318">p. 318</a>).</strong> Low; statements and reasons are in <a class="xl" href="#s7-five-useful-facts">section 7</a>.</li>
+  <li><strong>Complex-valued functions.</strong> The script allows $f_n:D\to\mathbb C$ throughout. Low; every proof is word for word the same with the complex absolute value.</li>
+  <li><strong>Einsiedler FS22, question 12</strong> (uniform convergence from $|f_n'|\le1$). Later: it needs the mean value theorem, <a class="xl" href="lesson-17.html#ex-4">lesson 17</a>.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-16.html">lesson 16</a>, power series (Section 7.4): the radius of convergence, in every exam, and the exponential function.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-14.html">← Lesson 14: The Tower over the Lake</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-16.html">Lesson 16: The Spell with Endless Words →</a>
+</nav>
+</main>
+
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

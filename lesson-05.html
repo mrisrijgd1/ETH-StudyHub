@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Quarter-Turn Spell</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-04.html">← Lesson 4</a>
+<a href="lesson-06.html">Lesson 6 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 5 of 26</span>
+  <h1>The Quarter-Turn Spell</h1>
+  <p class="lead">Complex numbers, the absolute value and the triangle inequality, and open and closed sets.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-4-5">Recap of lesson 4 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-a-realm-with-a-second">1. A realm with a second direction</a>
+<ol>
+<li><a href="#the-mirror-conjugation-p-96">The mirror (conjugation, p. 96)</a></li>
+<li><a href="#distance-from-the-capital">Distance from the capital</a></li>
+<li><a href="#the-price-of-the-second">The price of the second direction: no more order</a></li>
+</ol></li>
+<li><a href="#s2-absolute-value-and-the-triangle">2. Absolute value and the triangle inequality</a>
+<ol>
+<li><a href="#proof-a">Proof A: the triangle inequality (rule (g), p. 99–100)</a></li>
+</ol></li>
+<li><a href="#s3-open-and-closed-sets-slowly">3. Open and closed sets, slowly</a>
+<ol>
+<li><a href="#3-1-the-picture-first">3.1 The picture first</a></li>
+<li><a href="#3-2-the-neighbourhood-the">3.2 The ε-neighbourhood (the lantern) in symbols</a></li>
+<li><a href="#3-3-the-three-formal">3.3 The three formal definitions</a></li>
+<li><a href="#3-4-why-every-point">3.4 Why every point is exactly one of the three</a></li>
+<li><a href="#3-5-open-and-closed">3.5 Open and closed, read with the new words</a></li>
+<li><a href="#3-6-the-theorem-behind">3.6 The theorem behind the border-point test</a></li>
+<li><a href="#proof-b">Proof B: the border-point test</a></li>
+<li><a href="#3-7-finding-the-border">3.7 Finding the border points in practice</a></li>
+<li><a href="#3-8-worked-examples-with">3.8 Worked examples, with the formal proofs</a></li>
+<li><a href="#example-a-is-neither-open">Example A: $[0,1)$ is neither open nor closed</a></li>
+<li><a href="#example-b-is-closed-and">Example B: $[0,1]$ is closed, and not open</a></li>
+<li><a href="#example-c-is-neither">Example C: $A=\left\{\tfrac1n : n\in\mathbb{N}\right\}=\left\{1,\tfrac12,\tfrac13,\dots\right\}$ is neither</a></li>
+<li><a href="#example-d-extra">Example D (extra): $(0,1)\cup\{2\}$</a></li>
+</ol></li>
+<li><a href="#s4-worked-examples">4. Worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: multiply</a></li>
+<li><a href="#we-2">Worked example 2: divide</a></li>
+<li><a href="#we-3">Worked example 3: $(0,1)$ is open</a></li>
+</ol></li>
+<li><a href="#s5-your-turn">5. Your turn</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (computation)</a></li>
+<li><a href="#ex-2">Exercise 2 (real exam questions)</a></li>
+<li><a href="#ex-3">Exercise 3 (proof, uses the mirror)</a></li>
+<li><a href="#ex-4">Exercise 4 (Einsiedler-style true/false block)</a></li>
+<li><a href="#ex-5">Exercise 5 (open, closed or neither?)</a></li>
+<li><a href="#ex-6">Exercise 6 (formal proofs, exam style)</a></li>
+<li><a href="#bonus">Bonus (only if you have energy)</a></li>
+</ol></li>
+<li><a href="#s6-for-wonder-optional-5-min">6. For wonder</a>
+</li>
+<li><a href="#s7-what-we-skipped">7. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) multiply and divide complex numbers in the form $x+yi$, (2) say why $i^2=-1$ geometrically, (3) prove the triangle inequality with reasons, and (4) state the formal definitions of inside, outside and border point, and decide whether a set is open, closed or neither, with a border-point test and, when asked, a formal proof.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p92">p. 92–95</a>, §2.3:</strong> $\mathbb{C}$ defined as pairs $(x,y)=x+yi$ with a special multiplication. <em>Proposition 2.33</em> (<a class="pl" href="script.html#p93">p. 93</a>): this makes $\mathbb{C}$ a field (axioms 1–9 from <a class="xl" href="lesson-04.html#s4-the-sixteen-laws-of-the">lesson 4</a> hold).</li>
+      <li><strong><a class="pl" href="script.html#p95">p. 95</a>:</strong> $\mathbb{C}$ cannot be ordered.</li>
+      <li><strong><a class="pl" href="script.html#p96">p. 96</a>, Definition 2.36 and Lemma 2.37:</strong> the conjugate $\bar z$ and its rules.</li>
+      <li><strong><a class="pl" href="script.html#p99">p. 99–100</a>, Definition 2.45:</strong> the absolute value on $\mathbb{R}$ and its rules (a)–(h), including the triangle inequality.</li>
+      <li><strong><a class="pl" href="script.html#p101">p. 101</a>, Definition 2.48:</strong> open and closed subsets of $\mathbb{R}$. <em>Übung 2.50</em>: decide open/closed/neither for a few sets (now Exercise 5).</li>
+      <li><strong><a class="pl" href="script.html#p483">p. 483</a>, Definition 10.14:</strong> inside point, border point (Randpunkt) and Rand, stated for metric spaces. Borrowed early in <a class="xl" href="#s3-open-and-closed-sets-slowly">section 3</a>.</li>
+      <li><strong><a class="pl" href="script.html#p101">p. 101–103</a>, Definitions 2.51–2.54:</strong> $|z|$ on $\mathbb{C}$, open balls, open sets in $\mathbb{C}$.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+Complex numbers appear in nearly every exam through “radius of convergence <em>with respect to $z\in\mathbb{C}$</em>” (<a class="xl" href="lesson-16.html#proof-a">lesson 16</a>), and in true/false blocks like Einsiedler HS21 #8 (complex sequences in polar form, which needs $e^{i\theta}$ from <a class="xl" href="lesson-16.html#proof-a">lesson 16</a>). The triangle inequality is the most used tool in all $\varepsilon$-proofs from <a class="xl" href="lesson-07.html">lesson 7</a> on. Open and closed sets were 2-point multiple-choice questions in HS23, FS24 and FS26. Two of them are in your exercises.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-4-5">Recap of <a class="xl" href="lesson-04.html">lesson 4</a> (5 min)</h3>
+<ul>
+  <li><strong>$A\Rightarrow B$</strong> is false only when $A$ is true and $B$ false. Negation: $A\wedge\neg B$. Contrapositive $\neg B\Rightarrow\neg A$ is the same statement; the converse $B\Rightarrow A$ is not.</li>
+  <li><strong>Three weapons:</strong> direct, contrapositive, contradiction. <strong>Induction:</strong> base case, then step $A(n)\Rightarrow A(n+1)$, both labelled.</li>
+  <li><strong>Axioms of $\mathbb R$:</strong> (1)–(9) field, (10)–(15) order, (16) completeness: between two non-empty sets $X\le Y$ there is a $c$ with $X\le c\le Y$. $\mathbb Q$ fails (16) because $\sqrt2\notin\mathbb Q$.</li>
+</ul>
+<ol class="gq">
+  <li><p>Why are squares $\ge0$ in any ordered field? (You'll need it in <a class="xl" href="#s1-a-realm-with-a-second">section 1</a>.)</p>
+  <details><summary>Answer</summary><div><p>If $x\ge0$, then $x\cdot x\ge0$ by axiom (15). If $x\le0$, then $-x\ge0$ and $x^2=(-x)(-x)\ge0$.</p></div></details></li>
+  <li><p>Which weapon proves “there is no order on $\mathbb C$”?</p>
+  <details><summary>Answer</summary><div><p>Contradiction: assume an order exists and derive $-1\ge0$ and $-1&lt;0$ (<a class="xl" href="#s1-a-realm-with-a-second">section 1</a>).</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>complex numbers</td><td>komplexe Zahlen</td></tr>
+    <tr><td>imaginary unit $i$</td><td>imaginäre Einheit $i$</td></tr>
+    <tr><td>real part / imaginary part</td><td>Realteil $\operatorname{Re}(z)$ / Imaginärteil $\operatorname{Im}(z)$</td></tr>
+    <tr><td>purely imaginary</td><td>rein imaginär</td></tr>
+    <tr><td>complex plane</td><td>komplexe Ebene, Gausssche Zahlenebene</td></tr>
+    <tr><td>complex conjugate</td><td>komplex Konjugierte, $\bar z$</td></tr>
+    <tr><td>absolute value, modulus</td><td>Absolutbetrag, Betrag</td></tr>
+    <tr><td>triangle inequality</td><td>Dreiecksungleichung</td></tr>
+    <tr><td>reverse triangle inequality</td><td>umgekehrte Dreiecksungleichung</td></tr>
+    <tr><td>interval (open / closed / half-open)</td><td>Intervall (offen / abgeschlossen / halboffen)</td></tr>
+    <tr><td>neighbourhood</td><td>Umgebung</td></tr>
+    <tr><td>open set / closed set</td><td>offene Menge / abgeschlossene Menge</td></tr>
+    <tr><td>complement</td><td>Komplement</td></tr>
+    <tr><td>$\varepsilon$-neighbourhood (“bubble”, “lantern”)</td><td>$\varepsilon$-Umgebung</td></tr>
+    <tr><td>inside point, interior point</td><td>innerer Punkt</td></tr>
+    <tr><td>interior (all inside points)</td><td>das Innere, $A^\circ$</td></tr>
+    <tr><td>outside point, exterior point</td><td>äusserer Punkt</td></tr>
+    <tr><td>border point, boundary point</td><td>Randpunkt</td></tr>
+    <tr><td>boundary (all border points)</td><td>der Rand, $\partial A$</td></tr>
+    <tr><td>neither open nor closed</td><td>weder offen noch abgeschlossen</td></tr>
+    <tr><td>open ball</td><td>offener Ball</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-a-realm-with-a-second">1. A realm with a second direction</h2>
+<div class="story">
+  <p>For four lessons the realm was a single road, the number line. You could walk east (positive) or west (negative), and nothing else. Some equations had no answer on that road: $x^2=-1$ has no solution, because squares are never negative (<a class="xl" href="lesson-04.html#s4-the-sixteen-laws-of-the">lesson 4</a>, a consequence of axiom 15).</p>
+  <p>The court mathematicians found a way out. <strong>Add a second direction.</strong> The realm becomes a plane: east–west is the old real road, and north–south is new. A point is $z=x+yi$: walk $x$ east, then $y$ north.</p>
+</div>
+<p>$x=\operatorname{Re}(z)$ is the <em>Realteil</em> and $y=\operatorname{Im}(z)$ the <em>Imaginärteil</em>. Formally, the script simply defines $\mathbb{C}$ as pairs $(x,y)$ of real numbers (<a class="pl" href="script.html#p92">p. 92</a>). Writing $x+yi$ is a convenient name for the pair.</p>
+<p><strong>Adding</strong> is walking. You add the east parts and the north parts separately:</p>
+<div class="math-display">$$(x_1+y_1 i)+(x_2+y_2 i)=(x_1+x_2)+(y_1+y_2)\,i.$$</div>
+<p><strong>Multiplying</strong> is where the magic is. The rule (<a class="pl" href="script.html#p92">p. 92</a>) is</p>
+<div class="math-display">$$\begin{aligned}(x_1+y_1 i)\cdot(x_2+y_2 i)&amp;=(x_1x_2-y_1y_2)+(x_1y_2+y_1x_2)\,i\end{aligned}.$$</div>
+<p>You don't need to memorise it. Multiply out the brackets as in school and replace $i^2$ by $-1$. But what does it <em>mean</em>?</p>
+
+<div class="story">
+  <p><strong>The quarter-turn spell.</strong> Multiplying by $i$ rotates every point of the plane by $90^\circ$ counter-clockwise around the origin. Check: $1\cdot i=i$, so east becomes north. And $i\cdot i=i^2$, so north becomes west, which is $-1$.</p>
+  <p>So $i^2=-1$ just says that <strong>two quarter-turns make a half-turn</strong>, and a half-turn sends $1$ to $-1$. Nothing mysterious: $-1$ has a square root once you're allowed to turn, not just walk back and forth.</p>
+</div>
+<p>More generally (properly in <a class="xl" href="lesson-16.html#s4-adding-and-multiplying-series">lesson 16</a>, with $e^{i\theta}$): multiplying by a complex number $w$ <em>rotates</em> by $w$'s angle and <em>stretches</em> by $w$'s length. That's why $\mathbb{C}$ is perfect for anything that rotates or oscillates: waves, alternating current, quantum mechanics.</p>
+
+<h3 id="the-mirror-conjugation-p-96">The mirror (conjugation, <a class="pl" href="script.html#p96">p. 96</a>)</h3>
+<p>$\bar z=x-yi$ reflects $z$ across the real road. Two facts carry almost every computation:</p>
+<ul>
+  <li>$z\bar z=(x+yi)(x-yi)=x^2+y^2$. That's a <em>real</em> number, and it's $\ge 0$.</li>
+  <li>The mirror respects $+$ and $\cdot$: $\;\overline{z+w}=\bar z+\bar w\;$ and $\;\overline{zw}=\bar z\,\bar w\;$ (Lemma 2.37).</li>
+</ul>
+<p><strong>Dividing</strong> uses the mirror. Multiply top and bottom by $\bar z$, so that the bottom becomes real:</p>
+<div class="math-display">$$\frac{1}{x+yi}=\frac{x-yi}{(x+yi)(x-yi)}=\frac{x-yi}{x^2+y^2}.$$</div>
+
+<h3 id="distance-from-the-capital">Distance from the capital</h3>
+<p>$|z|=\sqrt{x^2+y^2}$ is the length of $z$, its distance from $0$ (Pythagoras). Note that $|z|^2=z\bar z$, and that $|z-w|$ is the distance between $z$ and $w$.</p>
+
+<h3 id="the-price-of-the-second">The price of the second direction: no more order</h3>
+<p>On $\mathbb{C}$ there is <em>no</em> $\le$ obeying the order axioms (<a class="pl" href="script.html#p95">p. 95</a>). In any ordered field squares are $\ge 0$. So $1=1^2>0$, hence $-1&lt;0$. But also $-1=i^2\ge 0$, a contradiction. So never write $z&lt;w$ for complex numbers. Only their sizes can be compared: $|z|&lt;|w|$.</p>
+
+<h2 id="s2-absolute-value-and-the-triangle">2. Absolute value and the triangle inequality</h2>
+<p>Back on the real road: $|x|=x$ if $x\ge0$ and $|x|=-x$ if $x&lt;0$ (<a class="pl" href="script.html#p99">p. 99</a>). Read $|x|$ as the distance from $0$, and $|x-y|$ as the distance between $x$ and $y$. The rules you'll use all semester (<a class="pl" href="script.html#p99">p. 99–100</a>):</p>
+<div class="box">
+  <p><strong>Rule (e):</strong> “$x$ is within distance $y$ of $0$.” It turns one absolute value into two plain inequalities, and it's the workhorse for solving inequalities.</p>
+  <div class="math-display">$$|x|\le y \iff -y\le x\le y$$</div>
+  <p><strong>Triangle inequality, rule (g):</strong> the direct road is never longer than a detour. In $\mathbb{C}$ it is literally a triangle: going from $0$ to $z+w$ directly is at most going $0\to z$, then $z\to z+w$.</p>
+  <div class="math-display">$$|x+y|\le|x|+|y|$$</div>
+  <p><strong>Reverse triangle inequality, rule (h):</strong> if two points are close, their distances from $0$ are close too.</p>
+  <div class="math-display">$$\big|\,|x|-|y|\,\big|\le|x-y|$$</div>
+</div>
+<h3 id="proof-a">Proof A: the triangle inequality (rule (g), <a class="pl" href="script.html#p99">p. 99–100</a>)</h3>
+<div class="box">
+<p><strong>Claim.</strong> For all $x,y\in\mathbb{R}$: $|x+y|\le|x|+|y|$.</p>
+</div>
+<p><strong>The idea.</strong> Each number lies between minus its size and its size. Add the two sandwiches, and read the result with rule (e).</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>The only tool for $|\cdot|$ is rule (e):</strong> $|a|\le b\iff-b\le a\le b$. So the goal $|x+y|\le|x|+|y|$ is the same as $-(|x|+|y|)\le x+y\le|x|+|y|$.</li>
+  <li><strong>Two separate pieces of information</strong> ($x$ and $y$) must be combined into one about $x+y$: add inequalities (axiom (14)).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Every number lies within its own distance of $0$.</p></div><div class="sp-formal"><p>Since $|x|\le|x|$, rule (e) ($|a|\le b\iff-b\le a\le b$) with $a=x$, $b=|x|$ gives $-|x|\le x\le|x|$. In the same way, $-|y|\le y\le|y|$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk both distances: the total stays within the sum.</p></div><div class="sp-formal"><p>Adding the two chains (inequalities may be added, axiom (14)): $-(|x|+|y|)\le x+y\le|x|+|y|$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Read the sandwich back as a distance.</p></div><div class="sp-formal"><p>This is $-b\le a\le b$ with $a=x+y$ and $b=|x|+|y|$, so rule (e), $-b\le a\le b\Rightarrow|a|\le b$, gives $|x+y|\le|x|+|y|$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-abs">unfold an absolute value</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>By rule (e) ($|a|\le b\iff-b\le a\le b$), $-|x|\le x\le|x|$ and $-|y|\le y\le|y|$. Adding gives $-(|x|+|y|)\le x+y\le|x|+|y|$, and rule (e) again gives $|x+y|\le|x|+|y|$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Sandwich each number:</strong> $-|x|\le x\le|x|$, $-|y|\le y\le|y|$ (rule (e)).</li>
+  <li><strong>Add</strong> the sandwiches (axiom (14)).</li>
+  <li><strong>Unsandwich</strong> with rule (e).</li>
+</ol>
+<p>In short: “sandwich, add, unsandwich”. The reverse triangle inequality (the Bonus) follows from this one with $x=(x-y)+y$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $-|x|\le x\le|x|$ true? Give the reason, not just “obviously”.</p>
+  <details><summary>Answer</summary><div><p>Rule (e), $|a|\le b\iff-b\le a\le b$, with $a=x$ and $b=|x|$: the left side $|x|\le|x|$ is trivially true, so the right side holds.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Where would the proof break for $|x+y|\le|x|-|y|$? Find a counterexample.</p>
+  <details><summary>Answer</summary><div><p>Adding $-|y|\le y$ only bounds things by $+|y|$. Counterexample: $x=0$, $y=1$ gives $1\le-1$, false.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof from the exam box alone.</p></li>
+</ol></div>
+
+<p><strong>Why you'll love it later:</strong> in every $\varepsilon$-proof you'll want something like $|a_n-a|&lt;\varepsilon$. The standard trick is to insert a clever middle point $b$ and split. Then you make each piece smaller than $\tfrac{\varepsilon}{2}$:</p>
+<div class="math-display">$$|a_n-a|\le|a_n-b|+|b-a|.$$</div>
+<p class="moves">Moves used later: <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+
+<h2 id="s3-open-and-closed-sets-slowly">3. Open and closed sets, slowly</h2>
+<p class="lead">Rebuilt from scratch. Read it in order, because each step uses the one before. About 15 minutes.</p>
+
+<h3 id="3-1-the-picture-first">3.1 The picture first</h3>
+<div class="story">
+<p><strong>The scouts and their lanterns.</strong> The kingdom $A$ is a piece of the number line. Scouts stand at points of the line, and each carries a lantern. A lantern of radius $\varepsilon$ lights up everything at distance less than $\varepsilon$ from the scout. The lantern can be turned down as small as you like, but never to zero. It always lights <em>something</em> on both sides.</p>
+<p>Wherever a scout stands, exactly one of three things is true.</p>
+<ul>
+<li><strong>Deep inside.</strong> The scout can turn the lantern down far enough that everything lit is kingdom land.</li>
+<li><strong>Far outside.</strong> The scout can turn it down far enough that everything lit is foreign land.</li>
+<li><strong>On the border.</strong> However small the lantern, it always lights some kingdom land <em>and</em> some foreign land.</li>
+</ul>
+<p>A kingdom is <strong>open</strong> if none of its own citizens stands on the border. Every citizen has breathing space. A kingdom is <strong>closed</strong> if it owns its whole border.</p>
+</div>
+
+<figure style="margin:0" aria-label="The set [0,1) on the number line, with an inside point at 0.5, a border point at 0, a border point at 1, and an outside point at 1.5">
+<svg viewBox="0 0 640 150" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util);font-size:17px">
+  <line x1="20" y1="80" x2="620" y2="80" style="stroke:var(--muted)" stroke-width="1.5"/>
+  <line x1="120" y1="80" x2="420" y2="80" style="stroke:var(--accent)" stroke-width="6"/>
+  <circle cx="120" cy="80" r="7" style="fill:var(--accent)"/>
+  <circle cx="420" cy="80" r="7" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+  <text x="120" y="112" text-anchor="middle" style="fill:var(--ink)">0</text>
+  <text x="420" y="112" text-anchor="middle" style="fill:var(--ink)">1</text>
+  <text x="270" y="40" text-anchor="middle" style="fill:var(--accent)">A = [0,1)</text>
+  <rect x="245" y="68" width="50" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2"/>
+  <text x="270" y="132" text-anchor="middle" style="fill:var(--muted)">inside</text>
+  <rect x="98" y="68" width="44" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="120" y="132" text-anchor="middle" style="fill:var(--muted)">border, in A</text>
+  <rect x="398" y="68" width="44" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="420" y="132" text-anchor="middle" style="fill:var(--muted)">border, not in A</text>
+  <rect x="545" y="68" width="50" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2"/>
+  <text x="570" y="132" text-anchor="middle" style="fill:var(--muted)">outside</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Filled dot: the point belongs to $A$. Hollow dot: it doesn't. The rounded shapes are lanterns. A dashed lantern is on the border: it lights land on both sides, however small you make it.</figcaption>
+</figure>
+
+<h3 id="3-2-the-neighbourhood-the">3.2 The ε-neighbourhood (the lantern) in symbols</h3>
+<p>“Everything at distance less than $\varepsilon$ from $p$” uses the absolute value from <a class="xl" href="#s2-absolute-value-and-the-triangle">section 2</a>. The distance between $y$ and $p$ is $|y-p|$, so</p>
+<div class="math-display">$$\{\,y\in\mathbb{R} : |y-p|&lt;\varepsilon\,\}=(p-\varepsilon,\;p+\varepsilon).$$</div>
+<p>This is an <strong>open interval centred at $p$</strong>. The script calls it an $\varepsilon$-<em>Umgebung</em> of $p$ (<a class="pl" href="script.html#p100">p. 100</a>). I'll keep calling it a lantern or a bubble. Two details matter:</p>
+<ul>
+<li>$\varepsilon&gt;0$ strictly. A lantern of radius $0$ would light nothing.</li>
+<li>$p$ itself is always in its own bubble, since $|p-p|=0&lt;\varepsilon$.</li>
+</ul>
+
+<h3 id="3-3-the-three-formal">3.3 The three formal definitions</h3>
+<p>Let $A\subseteq\mathbb{R}$ and let $p\in\mathbb{R}$ be any point of the line, in $A$ or not.</p>
+<div class="box">
+<p><strong>$p$ is an inside point</strong> (<em>innerer Punkt</em>) of $A$ if</p>
+<div class="math-display">$$\exists\,\varepsilon>0:\;(p-\varepsilon,\,p+\varepsilon)\subseteq A.$$</div>
+<p><em>Read aloud:</em> “there is some radius such that the whole bubble lies in $A$.” Then $p\in A$ automatically, because $p$ is in its own bubble.</p>
+</div>
+<div class="box">
+<p><strong>$p$ is an outside point</strong> (<em>äusserer Punkt</em>) of $A$ if</p>
+<div class="math-display">$$\exists\,\varepsilon>0:\;(p-\varepsilon,\,p+\varepsilon)\subseteq \mathbb{R}\setminus A.$$</div>
+<p><em>Read aloud:</em> “some bubble misses $A$ completely.” Then $p\notin A$ automatically. In other words, $p$ is an inside point of the complement.</p>
+</div>
+<div class="box">
+<p><strong>$p$ is a border point</strong> (<em>Randpunkt</em>) of $A$ if</p>
+<div class="math-display">$$\forall\,\varepsilon>0:\;\;(p-\varepsilon,\,p+\varepsilon)\cap A\neq\emptyset\;\;\text{ and }\;\;(p-\varepsilon,\,p+\varepsilon)\cap(\mathbb{R}\setminus A)\neq\emptyset.$$</div>
+<p><em>Read aloud:</em> “every bubble, however small, contains at least one point of $A$ and at least one point not in $A$.” Nothing is said about whether $p$ itself is in $A$. Both can happen, as $0$ and $1$ in the picture show.</p>
+<p>The set of all border points is called the <em>Rand</em> of $A$, written $\partial A$.</p>
+</div>
+<p><strong>Where this is in the script:</strong> the official definitions of <em>innerer Punkt</em>, <em>Randpunkt</em> and <em>Rand</em> are Definition 10.14 (<a class="pl" href="script.html#p483">p. 483</a>). They're stated for metric spaces, with a ball $B_\varepsilon(x)$ in place of our interval, which is the same thing on $\mathbb{R}$. You will officially meet them in <a class="xl" href="lesson-10.html">lesson 10</a>. They're the cleanest way to understand open and closed sets now, so we borrow them early. “Äusserer Punkt” isn't used in the script, but it's the standard German term.</p>
+
+<h3 id="3-4-why-every-point">3.4 Why every point is exactly one of the three</h3>
+<p>This is the negation skill from <a class="xl" href="lesson-01.html#s3-negation-switching-sides">lesson 1</a>, and it's the heart of the matter. Two small facts first.</p>
+<ul>
+<li><strong>Negating “⊆”.</strong> $X\subseteq A$ means $\forall y\in X:\ y\in A$. Its negation is $\exists y\in X:\ y\notin A$. In words: <em>$X$ is not contained in $A$ exactly when $X$ has a point outside $A$</em>, that is, $X\cap(\mathbb{R}\setminus A)\neq\emptyset$.</li>
+<li>Likewise, $X\not\subseteq\mathbb{R}\setminus A$ exactly when $X$ has a point in $A$, that is, $X\cap A\neq\emptyset$.</li>
+</ul>
+<p>Now negate “$p$ is an inside point”: $\exists$ becomes $\forall$, and $\subseteq$ becomes $\not\subseteq$.</p>
+<div class="math-display">$$\text{not inside:}\quad\forall\,\varepsilon>0:\;(p-\varepsilon,p+\varepsilon)\cap(\mathbb{R}\setminus A)\neq\emptyset.$$</div>
+<p>Negate “$p$ is an outside point” the same way:</p>
+<div class="math-display">$$\text{not outside:}\quad\forall\,\varepsilon>0:\;(p-\varepsilon,p+\varepsilon)\cap A\neq\emptyset.$$</div>
+<p>Put both together (“for all $\varepsilon$, this” and “for all $\varepsilon$, that” is the same as “for all $\varepsilon$, this and that”). You get <em>exactly</em> the definition of a border point. So:</p>
+<div class="exam"><span class="label">The key fact</span>
+<p>$p$ is a border point $\iff$ $p$ is neither an inside point nor an outside point.</p>
+<p>So every point of $\mathbb{R}$ is exactly one of the three. It can't be inside and outside at once, because inside forces $p\in A$ and outside forces $p\notin A$.</p></div>
+<p>This means the border isn't a fourth mysterious idea. It's simply “whatever is left over” once you remove the inside and the outside.</p>
+
+<h3 id="3-5-open-and-closed">3.5 Open and closed, read with the new words</h3>
+<p><strong>Open (Definition 2.48, <a class="pl" href="script.html#p101">p. 101</a>).</strong> $U\subseteq\mathbb{R}$ is <em>offen</em> if</p>
+<div class="math-display">$$\forall x\in U\;\;\exists\,\varepsilon>0:\;(x-\varepsilon,\,x+\varepsilon)\subseteq U.$$</div>
+<p>Compare with 3.3: the part after “$\forall x\in U$” says “$x$ is an inside point of $U$”. So <strong>open means: every point of $U$ is an inside point.</strong></p>
+<p><strong>Closed (also Definition 2.48).</strong> $A$ is <em>abgeschlossen</em> if the complement $\mathbb{R}\setminus A$ is open.</p>
+<p>The negations, which are what you write when proving “not open” or “not closed”:</p>
+<div class="math-display">$$\begin{aligned}
+U\text{ not open:}&\quad \exists\, x\in U\;\;\forall\,\varepsilon>0:\;(x-\varepsilon,x+\varepsilon)\not\subseteq U,\\
+A\text{ not closed:}&\quad \exists\, x\notin A\;\;\forall\,\varepsilon>0:\;(x-\varepsilon,x+\varepsilon)\cap A\neq\emptyset.
+\end{aligned}$$</div>
+<p>In words: to show <em>not open</em>, name one point of the set where every bubble leaks out. To show <em>not closed</em>, name one point outside the set where every bubble leaks in. In both cases the point you name is a border point.</p>
+
+<h3 id="3-6-the-theorem-behind">3.6 The theorem behind the border-point test</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $A\subseteq\mathbb{R}$.</p>
+<ol type="i">
+<li>$A$ is open $\iff$ $A$ contains <em>none</em> of its border points.</li>
+<li>$A$ is closed $\iff$ $A$ contains <em>all</em> of its border points.</li>
+</ol>
+<p><strong>A small lemma it uses.</strong> $A$ and $\mathbb{R}\setminus A$ have the <em>same</em> border points.</p>
+</div>
+<h3 id="proof-b">Proof B: the border-point test</h3>
+<p><strong>The idea.</strong> A point of $A$ can never be an outside point of $A$, so it is either inside or on the border. “All of them inside” is then the same as “none of them on the border”, which is (i). For (ii), closed is defined through the complement, and the complement has the same border, so (ii) is (i) applied to $\mathbb{R}\setminus A$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(i):</strong> “open” means “every point of $A$ is an inside point” (3.5). So the first line is “Let $p\in A$”, and the gap is to show that for such $p$, “inside” and “not a border point” are the same.</li>
+  <li><strong>(ii):</strong> the only definition of “closed” is “$\mathbb{R}\setminus A$ is open”. So the first line is “$A$ closed $\iff\mathbb{R}\setminus A$ open” and the last is “every border point of $A$ lies in $A$”. The gap: translate from the complement back to $A$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A citizen can't be far outside: any lantern lights the citizen's own spot, which is kingdom land.</p></div><div class="sp-formal"><p>Let $p\in A$. By 3.4, $p$ is exactly one of: an inside point, an outside point, a border point of $A$. It is not an outside point, because every interval $(p-\varepsilon,p+\varepsilon)$ contains $p\in A$, so it is never contained in $\mathbb{R}\setminus A$. Hence $p$ is an inside point or a border point of $A$, and not both.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So “everyone has breathing space” is the same as “no one stands on the border”.</p></div><div class="sp-formal"><p>Therefore: every point of $A$ is an inside point $\iff$ no point of $A$ is a border point of $A$. The left side is the definition of “$A$ is open” (3.5). This proves (i).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A border is shared by the kingdoms on both sides of it.</p></div><div class="sp-formal"><p><em>Lemma.</em> $p$ is a border point of $A$ $\iff$ for every $\varepsilon&gt;0$, $(p-\varepsilon,p+\varepsilon)$ meets $A$ and meets $\mathbb{R}\setminus A$. Since $\mathbb{R}\setminus(\mathbb{R}\setminus A)=A$, this condition is symmetric in $A$ and $\mathbb{R}\setminus A$, so it says exactly that $p$ is a border point of $\mathbb{R}\setminus A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Closed means the foreign land is open. Apply (i) there and translate back.</p></div><div class="sp-formal"><div class="math-display">$$\begin{aligned}
+A\text{ closed}&\iff \mathbb{R}\setminus A\text{ open} &&\text{(definition)}\\
+&\iff \mathbb{R}\setminus A\text{ contains none of its border points} &&\text{((i) for }\mathbb{R}\setminus A)\\
+&\iff \mathbb{R}\setminus A\text{ contains none of the border points of }A &&\text{(lemma)}\\
+&\iff \text{every border point of }A\text{ lies in }A &&\text{(each point is in }A\text{ or in }\mathbb{R}\setminus A).
+\end{aligned}$$</div><p>This proves (ii). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-neg">the negation recipe</a> (in 3.4, which this proof rests on)</p>
+<details><summary>The proof in one piece</summary><div>
+<p><strong>(i)</strong> Let $p\in A$. By 3.4, $p$ is exactly one of inside, outside or border point of $A$. It is not outside, since every interval around $p$ contains $p\in A$. So $p$ is inside or a border point, not both. Hence every point of $A$ is an inside point (that is, $A$ is open) if and only if no point of $A$ is a border point of $A$.</p>
+<p><strong>Lemma.</strong> The border-point condition “every $(p-\varepsilon,p+\varepsilon)$ meets $A$ and meets $\mathbb{R}\setminus A$” does not change if $A$ is replaced by $\mathbb{R}\setminus A$, because $\mathbb{R}\setminus(\mathbb{R}\setminus A)=A$. So $A$ and $\mathbb{R}\setminus A$ have the same border points.</p>
+<p><strong>(ii)</strong> $A$ is closed $\iff\mathbb{R}\setminus A$ is open $\iff$ (by (i)) $\mathbb{R}\setminus A$ contains none of its border points $\iff$ (by the lemma) $\mathbb{R}\setminus A$ contains none of the border points of $A$ $\iff$ every border point of $A$ lies in $A$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why can a point $p\in A$ never be an outside point of $A$? Give the reason in one line.</p>
+  <details><summary>Answer</summary><div><p>Being an outside point needs some interval $(p-\varepsilon,p+\varepsilon)\subseteq\mathbb{R}\setminus A$. But that interval contains $p$, and $p\in A$, so it is never contained in $\mathbb{R}\setminus A$.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write the chain of equivalences for (ii), with a reason on each line, starting from “$A$ closed $\iff\mathbb{R}\setminus A$ open”.</p>
+  <details><summary>Answer</summary><div><p>The four lines of the last row above: definition, then (i) for $\mathbb{R}\setminus A$, then the lemma, then “each point is in $A$ or in $\mathbb{R}\setminus A$”.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p><strong>What follows from it:</strong></p>
+<ul>
+<li><strong>Neither</strong> open nor closed: $A$ contains <em>some</em> of its border points but not all.</li>
+<li><strong>Both</strong> open and closed: $A$ has no border points at all. In $\mathbb{R}$ this happens only for $\mathbb{R}$ and $\emptyset$. (Proving that there are no others needs completeness. It's on the skip list.)</li>
+<li>So “open” and “closed” are <strong>not opposites</strong>, unlike doors. “Not open” does <em>not</em> imply “closed”. This is the classic exam trap.</li>
+</ul>
+
+<h3 id="3-7-finding-the-border">3.7 Finding the border points in practice</h3>
+<ul>
+<li><strong>An interval</strong> with ends $a&lt;b$ (any brackets) has exactly the two border points $a$ and $b$. Points strictly between them are inside (choose $\varepsilon$ as the smaller distance to the ends, as in Worked example 3). Points beyond the ends are outside.</li>
+<li><strong>“$\infty$” is not a point.</strong> $(a,\infty)$ and $[a,\infty)$ have only one border point, $a$. So $(a,\infty)$ is open and $[a,\infty)$ is closed.</li>
+<li><strong>A union of intervals:</strong> simplify first! In $(0,1)\cup[1,2)=(0,2)$, the point $1$ looks like an end but is an inside point. After simplifying, the border points are the remaining ends.</li>
+<li><strong>A single point</strong> $\{a\}$ added to a set is a border point: every bubble contains $a$ itself (in the set) and $a+\tfrac{\varepsilon}{2}$ (usually not).</li>
+<li><strong>Pile-up points:</strong> if points of $A$ crowd ever closer to some $p$, like $\tfrac1n$ towards $0$, then $p$ is a border point.</li>
+</ul>
+
+<h3 id="3-8-worked-examples-with">3.8 Worked examples, with the formal proofs</h3>
+<p>Each example does two things: first the quick border-point test (what you do in a multiple-choice question), then the formal proof (what you write when the exam says “beweisen Sie”). Try each step in your head, then open the answer. Your answers, in order, are the solution.</p>
+
+<div class="box">
+<h3 id="example-a-is-neither-open">Example A: $[0,1)$ is neither open nor closed</h3>
+<ol class="gq">
+  <li><p><strong>Quick test.</strong> What are the border points of $A=[0,1)$, and which of them lie in $A$?</p>
+  <details><summary>Answer</summary><div><p>The border points are $0$ and $1$. $0\in A$ and $1\notin A$: some in, some out. Neither.</p></div></details></li>
+  <li><p><strong>Not open.</strong> What exactly must you produce, and which point do you pick?</p>
+  <details><summary>Answer</summary><div><p>A point $x\in A$ such that for every $\varepsilon&gt;0$ the interval $(x-\varepsilon,x+\varepsilon)$ is not contained in $A$. Pick the border point that lies in $A$: $x=0$.</p></div></details></li>
+  <li><p>Let $\varepsilon&gt;0$ be arbitrary. Name a point of $(-\varepsilon,\varepsilon)$ that is not in $A$, and check both facts.</p>
+  <details><summary>Answer</summary><div><p>$-\tfrac{\varepsilon}{2}$. It lies in $(-\varepsilon,\varepsilon)$, since $|-\tfrac{\varepsilon}{2}-0|=\tfrac{\varepsilon}{2}&lt;\varepsilon$. And $-\tfrac{\varepsilon}{2}&lt;0$, so it's not in $A$. Hence $(-\varepsilon,\varepsilon)\not\subseteq A$ for every $\varepsilon&gt;0$, and $A$ is not open.</p></div></details></li>
+  <li><p><strong>Not closed.</strong> Which point do you pick now, and what must you show about it?</p>
+  <details><summary>Answer</summary><div><p>The border point that is missing: $x=1\notin A$. You must show that for every $\varepsilon&gt;0$ the interval $(1-\varepsilon,1+\varepsilon)$ contains a point of $A$.</p></div></details></li>
+  <li><p>Let $\varepsilon&gt;0$. Why does the point $1-\tfrac{\varepsilon}{2}$ not always work, and what do you take instead?</p>
+  <details><summary>Answer</summary><div><p>$\varepsilon$ is arbitrary (the Doubter chooses it), so it may be large, for example $\varepsilon=10$. Then $1-\tfrac{\varepsilon}{2}=-4\notin A$. Instead set $\delta=\tfrac12\min(\varepsilon,1)$, so $0&lt;\delta\le\tfrac12$ and $\delta&lt;\varepsilon$. Then $1-\delta\in(1-\varepsilon,1+\varepsilon)$, since $|(1-\delta)-1|=\delta&lt;\varepsilon$, and $\tfrac12\le 1-\delta&lt;1$, so $1-\delta\in[0,1)=A$. So $A$ is not closed. <span class="qed">∎</span> This $\min$ trick is worth memorising.</p></div></details></li>
+</ol>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-neg">the negation recipe</a>, <a class="mvl" href="moves.html#m-min">the minimum trick</a></p>
+</div>
+
+<div class="box">
+<h3 id="example-b-is-closed-and">Example B: $[0,1]$ is closed, and not open</h3>
+<ol class="gq">
+  <li><p><strong>Quick test.</strong> Border points, and which are in $A=[0,1]$?</p>
+  <details><summary>Answer</summary><div><p>$0$ and $1$, and both are in $A$. So it's closed. It isn't open, because those border points belong to $A$.</p></div></details></li>
+  <li><p><strong>Closed.</strong> The definition of closed is about which set? Write it down.</p>
+  <details><summary>Answer</summary><div><p>About the complement: show $\mathbb{R}\setminus A=(-\infty,0)\cup(1,\infty)$ is open. First line: “Let $x\in(-\infty,0)\cup(1,\infty)$.”</p></div></details></li>
+  <li><p>Choose $\varepsilon$ in the two cases $x&lt;0$ and $x&gt;1$, and check that the interval stays in the complement.</p>
+  <details><summary>Answer</summary><div><p>If $x&lt;0$: $\varepsilon=-x&gt;0$, the distance to $0$. Then <span class="math-display" style="display:block">$$(x-\varepsilon,x+\varepsilon)=(2x,0)\subseteq(-\infty,0).$$</span>If $x&gt;1$: $\varepsilon=x-1&gt;0$, the distance to $1$. Then <span class="math-display" style="display:block">$$(x-\varepsilon,x+\varepsilon)=(1,2x-1)\subseteq(1,\infty).$$</span>So every point of the complement is an inside point of it, the complement is open, and $A$ is closed. <span class="qed">∎</span></p></div></details></li>
+  <li><p><strong>Not open.</strong> Which earlier argument can you reuse?</p>
+  <details><summary>Answer</summary><div><p>Example A at $x=0$, word for word: for every $\varepsilon&gt;0$, $-\tfrac{\varepsilon}{2}\in(-\varepsilon,\varepsilon)$ but $-\tfrac{\varepsilon}{2}\notin[0,1]$.</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="example-c-is-neither">Example C: $A=\left\{\tfrac1n : n\in\mathbb{N}\right\}=\left\{1,\tfrac12,\tfrac13,\dots\right\}$ is neither</h3>
+<ol class="gq">
+  <li><p><strong>Quick test.</strong> Which points are border points, and which of them are in $A$?</p>
+  <details><summary>Answer</summary><div><p>Every element $\tfrac1n$ is a border point (it's an isolated point), and so is the pile-up point $0$. The elements are in $A$, and $0$ isn't. Neither.</p></div></details></li>
+  <li><p><strong>Not open.</strong> Take $x=1\in A$ and $\varepsilon&gt;0$. Which point of $(1-\varepsilon,1+\varepsilon)$ is not in $A$?</p>
+  <details><summary>Answer</summary><div><p>$1+\tfrac{\varepsilon}{2}$. It lies in the interval, but it's bigger than $1$, and every element of $A$ is $\le 1$. So $(1-\varepsilon,1+\varepsilon)\not\subseteq A$.</p></div></details></li>
+  <li><p><strong>Not closed.</strong> Take $x=0\notin A$ and $\varepsilon&gt;0$. How do you find an element of $A$ in $(-\varepsilon,\varepsilon)$?</p>
+  <details><summary>Answer</summary><div><p>By the Archimedean principle (script §2.6.1, <a class="pl" href="script.html#p111">p. 111</a>, coming in <a class="xl" href="lesson-06.html#6-1-the-archimedean-principle">lesson 6</a>: for every real number there is a bigger natural number) there is an $n\in\mathbb{N}$ with $n&gt;\tfrac1\varepsilon$, that is, $0&lt;\tfrac1n&lt;\varepsilon$. So $\tfrac1n\in(-\varepsilon,\varepsilon)\cap A$, and this intersection is non-empty for every $\varepsilon&gt;0$. <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-arch">choose $n$ by Archimedes</a></p>
+<p><em>Bonus fact:</em> $A\cup\{0\}$ is closed. Adding the one missing border point fixes it.</p>
+</div>
+
+<div class="box">
+<h3 id="example-d-extra">Example D (extra): $(0,1)\cup\{2\}$</h3>
+<ol class="gq">
+  <li><p><strong>Quick test.</strong> Border points, and which are in the set?</p>
+  <details><summary>Answer</summary><div><p>$0$, $1$ and $2$. The point $2$ is in the set, while $0$ and $1$ aren't. Some in, some out: neither.</p></div></details></li>
+  <li><p><strong>Not open.</strong> Which point of the set has no interval around it inside the set? Prove it.</p>
+  <details><summary>Answer</summary><div><p>$x=2$. For any $\varepsilon&gt;0$, the point $2+\tfrac{\varepsilon}{2}$ lies in $(2-\varepsilon,2+\varepsilon)$. It's bigger than $2$, so it's not in $(0,1)$ and it isn't $2$. So $(2-\varepsilon,2+\varepsilon)$ is not contained in the set.</p></div></details></li>
+  <li><p><strong>Not closed.</strong> Take $x=0$, which is not in the set. For $\varepsilon&gt;0$, which point of the set lies in $(-\varepsilon,\varepsilon)$?</p>
+  <details><summary>Answer</summary><div><p>$\delta=\tfrac12\min(\varepsilon,1)$. Then $0&lt;\delta\le\tfrac12$, so $\delta\in(0,1)$, and $|\delta-0|&lt;\varepsilon$. So $\delta\in(-\varepsilon,\varepsilon)\cap(0,1)$, which is therefore non-empty. <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p><em>Lesson:</em> adding a single point to an open set destroys openness, because the added point is never an inside point (no lone point has breathing space).</p>
+</div>
+<div class="exam"><span class="label">Exam technique, in one place</span>
+<p><strong>Multiple choice:</strong> (1) simplify the set, (2) list the border points, (3) check which ones belong to the set. None in: open. All in: closed. Mixed: neither. No border points: both ($\mathbb{R}$ and $\emptyset$ only).</p>
+<p><strong>Proof questions:</strong></p>
+<ul>
+<li><em>Open:</em> “Let $x\in U$. Choose $\varepsilon=$ (smallest distance to the ends).” Then show $(x-\varepsilon,x+\varepsilon)\subseteq U$.</li>
+<li><em>Not open:</em> name one point of $U$, let $\varepsilon&gt;0$ be arbitrary, and name an explicit point of $(x-\varepsilon,x+\varepsilon)$ that's not in $U$.</li>
+<li><em>Closed:</em> show the complement is open.</li>
+<li><em>Not closed:</em> name one point outside $A$, let $\varepsilon&gt;0$ be arbitrary, and name an explicit point of $(x-\varepsilon,x+\varepsilon)$ that is in $A$. Use $\min(\varepsilon,\dots)$ so your point really lands in $A$.</li>
+</ul></div>
+
+<p>Exercises 5 and 6 below are new practice for exactly this section.</p>
+<p>In $\mathbb{C}$ it all works the same with discs instead of intervals: the <em>offene Bälle</em> $B_r(z)=\{w\in\mathbb{C}:|z-w|&lt;r\}$ (<a class="pl" href="script.html#p103">p. 103</a>). They return in <a class="xl" href="lesson-10.html">lesson 10</a>.</p>
+
+<h2 id="s4-worked-examples">4. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+  <h3 id="we-1">Worked example 1: multiply</h3>
+  <p>Write $(2+3i)(1-i)$ in the form $x+yi$.</p>
+  <ol class="gq">
+    <li><p>Multiply out the brackets as in school. What do you get?</p>
+    <details><summary>Answer</summary><div><p>$2-2i+3i-3i^2$.</p></div></details></li>
+    <li><p>Replace $i^2$ and collect real and imaginary parts.</p>
+    <details><summary>Answer</summary><div><p>$i^2=-1$, so $2+i+3=5+i$.</p></div></details></li>
+  </ol>
+</div>
+<div class="box">
+  <h3 id="we-2">Worked example 2: divide</h3>
+  <p>Write $\dfrac{1+2i}{3-4i}$ in the form $x+yi$.</p>
+  <ol class="gq">
+    <li><p>What do you multiply top and bottom by, and why is that allowed?</p>
+    <details><summary>Answer</summary><div><p>By the conjugate of the bottom, $3+4i$. It's multiplying by $\frac{3+4i}{3+4i}=1$, so the value doesn't change.</p></div></details></li>
+    <li><p>Compute the new bottom. Why was this the whole point?</p>
+    <details><summary>Answer</summary><div><p>$(3-4i)(3+4i)=3^2+4^2=25$. It's real, so dividing by it is easy.</p></div></details></li>
+    <li><p>Compute the new top and finish.</p>
+    <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}(1+2i)(3+4i)&amp;=3+4i+6i+8i^2\\&amp;=-5+10i,\end{aligned}$$</span> so $\frac{1+2i}{3-4i}=\frac{-5+10i}{25}=-\frac15+\frac25\,i$.</p></div></details></li>
+    <li><p>How do you check the answer in one line?</p>
+    <details><summary>Answer</summary><div><p>Multiply back: <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left(-\tfrac15+\tfrac25 i\right)(3-4i)\\&amp;=-\tfrac35+\tfrac45 i+\tfrac65 i+\tfrac85=1+2i.\ ✓\end{aligned}$$</span></p></div></details></li>
+  </ol>
+</div>
+<div class="box">
+  <h3 id="we-3">Worked example 3: $(0,1)$ is open</h3>
+  <ol class="gq">
+    <li><p>Write down what you must show, using the definition of open.</p>
+    <details><summary>Answer</summary><div><p>For every $x\in(0,1)$ there is $\varepsilon&gt;0$ with $(x-\varepsilon,x+\varepsilon)\subseteq(0,1)$. So: “Let $x\in(0,1)$. Choose $\varepsilon=\dots$”</p></div></details></li>
+    <li><p>Which $\varepsilon$? Think of the nearest dangers.</p>
+    <details><summary>Answer</summary><div><p>The endpoints $0$ and $1$ are at distances $x$ and $1-x$. Choose $\varepsilon=\min(x,1-x)$, which is $&gt;0$ because $0&lt;x&lt;1$.</p></div></details></li>
+    <li><p>Let $|y-x|&lt;\varepsilon$. Show $y\in(0,1)$.</p>
+    <details><summary>Answer</summary><div><p>$y&gt;x-\varepsilon\ge x-x=0$ and $y&lt;x+\varepsilon\le x+(1-x)=1$. So $(x-\varepsilon,x+\varepsilon)\subseteq(0,1)$, and $(0,1)$ is open. <span class="qed">∎</span></p></div></details></li>
+  </ol>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-min">the minimum of the distances</a></p>
+</div>
+
+<p><strong>Why it's cool.</strong> Multiplying complex numbers multiplies lengths and adds angles, so $i\cdot i=-1$ is just two quarter-turns. And “open” captures “every point has breathing room”: that one idea later defines limits and continuity, and a whole branch of mathematics (topology) is built on it.</p>
+
+<h2 id="s5-your-turn">5. Your turn</h2>
+<div class="box">
+  <h3 id="ex-1">Exercise 1 (computation)</h3>
+  <p>Write in the form $x+yi$: &nbsp;(a) $(3-2i)^2$ &nbsp;(b) $i^{2026}$ &nbsp;(c) $\dfrac{1}{1+i}$ &nbsp;(d) Also compute $|3+4i|$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> Binomial formula, with $(2i)^2=4i^2=-4$:</p>
+  <div class="math-display">$$\begin{aligned}(3-2i)^2&amp;=9-12i+4i^2\\&amp;=9-12i-4\\&amp;=5-12i\end{aligned}.$$</div>
+  <p><strong>(b)</strong> The powers of $i$ cycle with period 4: $i^1=i,\ i^2=-1,\ i^3=-i,\ i^4=1$, and then it repeats (four quarter-turns make a full turn). Since $2026=4\cdot506+2$:</p>
+  <div class="math-display">$$i^{2026}=\left(i^4\right)^{506}\cdot i^2=1\cdot(-1)=-1.$$</div>
+  <p><strong>(c)</strong> Multiply by the conjugate $1-i$:</p>
+  <div class="math-display">$$\begin{aligned}\frac{1}{1+i}&amp;=\frac{1-i}{(1+i)(1-i)}\\&amp;=\frac{1-i}{2}\\&amp;=\frac12-\frac12\,i\end{aligned}.$$</div>
+  <p><em>Check:</em> <span class="math-display" style="display:block">$$\begin{aligned}(1+i)\left(\tfrac12-\tfrac12 i\right)&amp;=\tfrac12-\tfrac12 i+\tfrac12 i+\tfrac12\\&amp;=1\end{aligned}.$$</span>✓</p>
+  <p><strong>(d)</strong> $|3+4i|=\sqrt{9+16}=\sqrt{25}=5$, the 3–4–5 triangle.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-2">Exercise 2 (real exam questions)</h3>
+  <p>(a) <em>Figalli HS23, MC1.</em> Which set is <strong>not</strong> open?<br>
+  (A) $(0,1)\cup(2,\infty)$ &nbsp; (B) $(0,1)\cup[1,2)$ &nbsp; (C) $[0,1)\cup(1,2)$ &nbsp; (D) $[1,2)\cup(0,3)$</p>
+  <p>(b) <em>Figalli FS24, MC12.</em> Which set <strong>is</strong> closed?<br>
+  (A) $\{0\}\cup(1,\infty)$ &nbsp; (B) $\left\{\tfrac1n : n\in\mathbb{N}\right\}$ &nbsp; (C) $[0,1)\cup(1,2]$ &nbsp; (D) $\{2\}\cup(2,3]$</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a) Answer C.</strong> Simplify each set first.</p>
+  <ul>
+    <li>(A) A union of two open intervals, so open.</li>
+    <li>(B) $(0,1)\cup[1,2)=(0,2)$. The point $1$ is included via $[1,2)$, so there's no gap. Open.</li>
+    <li>(C) $[0,1)\cup(1,2)$ contains $0$, and every interval $(-\varepsilon,\varepsilon)$ contains negative numbers, which are not in the set. <strong>Not open.</strong></li>
+    <li>(D) $[1,2)\cup(0,3)=(0,3)$, because $[1,2)$ already lies inside $(0,3)$. Open.</li>
+  </ul>
+  <p><strong>(b) Answer D.</strong> Check the border points.</p>
+  <ul>
+    <li>(A) $\{0\}\cup(1,\infty)$: the border point $1$ is missing. Not closed.</li>
+    <li>(B) $\{1,\tfrac12,\tfrac13,\dots\}$: the points pile up at $0$, so $0$ is a border point (every interval $(-\varepsilon,\varepsilon)$ contains some $\tfrac1n$), but $0$ is not in the set. Not closed.</li>
+    <li>(C) $[0,1)\cup(1,2]$: the border point $1$ is missing. Not closed.</li>
+    <li>(D) $\{2\}\cup(2,3]=[2,3]$, a closed interval. Its complement $(-\infty,2)\cup(3,\infty)$ is open. <strong>Closed.</strong></li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-3">Exercise 3 (proof, uses the mirror)</h3>
+  <p>Show that $|zw|=|z|\,|w|$ for all $z,w\in\mathbb{C}$. <em>Hint:</em> compute $|zw|^2$ using $|u|^2=u\bar u$ and the rule $\overline{zw}=\bar z\,\bar w$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> lengths are hard to handle directly, but squared lengths are products $u\bar u$. So compute $|zw|^2$, turn it into $|z|^2|w|^2$, and take square roots at the end.</p>
+  <div class="math-display">$$\begin{aligned}|zw|^2&=(zw)\,\overline{zw} &&\text{(}|u|^2=u\bar u\text{ with }u=zw)\\&=(zw)(\bar z\,\bar w) &&\text{(the conjugate of a product is the product of the conjugates)}\\&=(z\bar z)(w\bar w) &&\text{(commutativity and associativity in the field }\mathbb{C})\\&=|z|^2\,|w|^2.\end{aligned}$$</div>
+  <p>Both $|zw|$ and $|z|\,|w|$ are $\ge 0$, and their squares are equal. Taking the non-negative square root gives $|zw|=|z|\,|w|$. <span class="qed">∎</span></p>
+  <p>The last step matters: from $a^2=b^2$ you only get $a=\pm b$, so you need $a,b\ge0$.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-4">Exercise 4 (Einsiedler-style true/false block)</h3>
+  <p>Always true? &nbsp;(a) $|x+y|=|x|+|y|$ for all $x,y\in\mathbb{R}$. &nbsp;(b) $\mathbb{Z}$ is closed in $\mathbb{R}$. &nbsp;(c) $\mathbb{Q}$ is open in $\mathbb{R}$. &nbsp;(d) $z+\bar z$ is real for every $z\in\mathbb{C}$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(a) False.</strong> Take $x=1,\ y=-1$: $|0|=0$, but $|1|+|-1|=2$. Equality holds only when $x,y$ have the same sign (or one is $0$).</li>
+    <li><strong>(b) True.</strong> The complement $\mathbb{R}\setminus\mathbb{Z}$ is the union of the open intervals $(n,n+1)$, $n\in\mathbb{Z}$. For $x\in(n,n+1)$ take $\varepsilon=\min(x-n,\ n+1-x)$, as in Worked example 3. So the complement is open, and $\mathbb{Z}$ is closed.</li>
+    <li><strong>(c) False.</strong> Take any $q\in\mathbb{Q}$. Every interval $(q-\varepsilon,q+\varepsilon)$ contains an irrational number, for example $q+\tfrac{\sqrt2}{n}$ with $n$ large enough that $\tfrac{\sqrt2}{n}&lt;\varepsilon$. (If $r=q+\tfrac{\sqrt2}{n}$ were rational, then $\sqrt2=n(r-q)$ would be rational too, which is false.) So no $(q-\varepsilon,q+\varepsilon)$ is contained in $\mathbb{Q}$, and $q$ is not an inside point.</li>
+    <li><strong>(d) True.</strong> <span class="math-display" style="display:block">$$z+\bar z=(x+yi)+(x-yi)=2x\in\mathbb{R}.$$</span>In general $\operatorname{Re}(z)=\tfrac{z+\bar z}{2}$.</li>
+  </ul>
+  <p>So the answer is F, T, F, T.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-5">Exercise 5 (open, closed or neither?)</h3>
+  <p>For each set, list its border points, say which of them belong to the set, and decide: open, closed, both or neither. Parts (a) and (b) are from the script, Übung 2.50 (<a class="pl" href="script.html#p101">p. 101</a>).</p>
+  <p>(a) $(0,1]$ &nbsp; (b) $(0,1)\cup(2,3)$ &nbsp; (c) $[-1,0]\cup\{3\}$ &nbsp; (d) $(-\infty,2]$ &nbsp; (e) $(1,2)\cup(2,3)$ &nbsp; (f) $\left\{1-\tfrac1n : n\in\mathbb{N}\right\}$ &nbsp; (g) $\mathbb{N}$</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(a) $(0,1]$: neither.</strong> Border points $0$ and $1$. $1$ is in, $0$ is not. Mixed.</li>
+    <li><strong>(b) $(0,1)\cup(2,3)$: open.</strong> Border points $0,1,2,3$, none of them in the set. For $x\in(0,1)$ use $\varepsilon=\min(x,1-x)$, and for $x\in(2,3)$ use $\varepsilon=\min(x-2,3-x)$. Not closed, since the border points are missing.</li>
+    <li><strong>(c) $[-1,0]\cup\{3\}$: closed.</strong> Border points $-1$, $0$ and $3$ (the lone point). All three are in. Not open, because of exactly those points: for example every interval $(3-\varepsilon,3+\varepsilon)$ contains $3+\tfrac\varepsilon2$, which isn't in the set.</li>
+    <li><strong>(d) $(-\infty,2]$: closed.</strong> The only border point is $2$, since $-\infty$ isn't a point. It's in. The complement $(2,\infty)$ is open, which is Exercise 6(a). Not open, because of $2$.</li>
+    <li><strong>(e) $(1,2)\cup(2,3)$: open.</strong> This is the trap. Border points $1,2,3$, none of them in the set. The hole at $2$ doesn't hurt openness: openness only asks about points <em>of</em> the set, and $2$ isn't one (it isn't a citizen, so it doesn't need breathing space). Every point of the set is an inside point, for example with $\varepsilon=\min(x-1,2-x)$ for $x\in(1,2)$. Not closed, because $2$ is a border point that is missing.</li>
+    <li><strong>(f) $\left\{0,\tfrac12,\tfrac23,\tfrac34,\dots\right\}$: neither.</strong> Each element is an isolated point, so it is a border point and it's in the set. The elements pile up at $1$: for every $\varepsilon&gt;0$ there is an $n$ with $\tfrac1n&lt;\varepsilon$, so $1-\tfrac1n$ lies in $(1-\varepsilon,1+\varepsilon)$. So $1$ is a border point, and $1$ is <em>not</em> in the set, since $1-\tfrac1n&lt;1$ always. Some in ($0$), some out ($1$): neither. Compare Example C, which is the mirror image.</li>
+    <li><strong>(g) $\mathbb{N}=\{1,2,3,\dots\}$: closed.</strong> Each $n$ is a border point: every interval $(n-\varepsilon,n+\varepsilon)$ contains $n$ itself and the non-integer $n+\tfrac12\min(\varepsilon,1)$. Nothing piles up, since neighbours are $1$ apart. All border points are in, so it's closed. Formally, the complement $(-\infty,1)\cup(1,2)\cup(2,3)\cup\dots$ is a union of open intervals, so it's open. Not open, since no interval $(1-\varepsilon,1+\varepsilon)$ is contained in $\mathbb{N}$.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-6">Exercise 6 (formal proofs, exam style)</h3>
+  <p>(a) Prove that $(2,\infty)$ is open.<br>
+  (b) Prove that $[0,1)\cup(1,2)$ is not closed. Name the point $x$ and, for each $\varepsilon&gt;0$, an explicit point of $(x-\varepsilon,x+\varepsilon)$ in the set.<br>
+  (c) Prove: if $U,V\subseteq\mathbb{R}$ are open, then $U\cup V$ is open.<br>
+  (d) <em>Optional:</em> prove that if $U,V$ are open, then $U\cap V$ is open. <em>Hint:</em> you get two radii, so take the smaller one.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> <em>Frame:</em> “open” is “for all $x$ there is $\varepsilon$”, so the first line is “Let $x\in(2,\infty)$”, then “Choose $\varepsilon=\dots$”, and the last line is “so $(x-\varepsilon,x+\varepsilon)\subseteq(2,\infty)$”. The gap: the right $\varepsilon$ (the distance to the endpoint). <em>Moves:</em> <a class="mvl" href="moves.html#m-min">the minimum of the distances</a> (here only one distance).</p>
+  <p>Let $x\in(2,\infty)$, so $x&gt;2$. Choose $\varepsilon=x-2$, which is $&gt;0$. It's the distance to the only endpoint, $2$. Let $y\in(x-\varepsilon,x+\varepsilon)$. Then</p>
+  <div class="math-display">$$y>x-\varepsilon=x-(x-2)=2,$$</div>
+  <p>so $y\in(2,\infty)$. Hence $(x-\varepsilon,x+\varepsilon)\subseteq(2,\infty)$. Since $x$ was arbitrary, $(2,\infty)$ is open. <span class="qed">∎</span> There's no right end to worry about, because $\infty$ is not a point.</p>
+
+  <p><strong>(b)</strong> <em>Frame:</em> negate “closed”: name one point $x\notin A$, then “Let $\varepsilon&gt;0$ be arbitrary”, and end with an explicit point of $(x-\varepsilon,x+\varepsilon)$ that lies in $A$. <em>Moves:</em> <a class="mvl" href="moves.html#m-neg">the negation recipe</a>, <a class="mvl" href="moves.html#m-min">the minimum trick</a>.</p>
+  <p>Let $A=[0,1)\cup(1,2)$. To show $A$ is not closed, we show $\mathbb{R}\setminus A$ is not open. Take $x=1$, which is in $\mathbb{R}\setminus A$. Let $\varepsilon&gt;0$ be arbitrary and set $\delta=\tfrac12\min(\varepsilon,1)$. Then:</p>
+  <ul>
+    <li>$|(1+\delta)-1|=\delta&lt;\varepsilon$, so $1+\delta\in(1-\varepsilon,1+\varepsilon)$.</li>
+    <li>$0&lt;\delta\le\tfrac12$, so $1&lt;1+\delta\le\tfrac32&lt;2$, which means $1+\delta\in(1,2)\subseteq A$.</li>
+  </ul>
+  <p>So $(1-\varepsilon,1+\varepsilon)\not\subseteq\mathbb{R}\setminus A$ for every $\varepsilon&gt;0$. The complement isn't open, so $A$ isn't closed. <span class="qed">∎</span> (Using $1-\delta\in[0,1)$ works just as well.)</p>
+
+  <p><strong>(c)</strong> <em>Frame:</em> first line “Let $x\in U\cup V$”, last line “so $(x-\varepsilon,x+\varepsilon)\subseteq U\cup V$”. The gap: an “or” in the hypothesis means two cases. <em>Moves:</em> <a class="mvl" href="moves.html#m-obda">reduce to one case</a>.</p>
+  <p>Let $x\in U\cup V$. Then $x\in U$ or $x\in V$.</p>
+  <ul>
+    <li>If $x\in U$: since $U$ is open, there is an $\varepsilon&gt;0$ with $(x-\varepsilon,x+\varepsilon)\subseteq U\subseteq U\cup V$.</li>
+    <li>If $x\in V$: the same argument with $V$.</li>
+  </ul>
+  <p>In both cases there is an $\varepsilon&gt;0$ with $(x-\varepsilon,x+\varepsilon)\subseteq U\cup V$. So $U\cup V$ is open. <span class="qed">∎</span> The same proof works for a union of any number of open sets, even infinitely many.</p>
+
+  <p><strong>(d)</strong> <em>Frame:</em> same first and last lines as (c), with $\cap$. The gap: two radii, one for each set, must become one. <em>Moves:</em> <a class="mvl" href="moves.html#m-min">the minimum of two radii</a>.</p>
+  <p>Let $x\in U\cap V$. Then $x\in U$ and $x\in V$. Because $U$ is open there is an $\varepsilon_1&gt;0$ with $(x-\varepsilon_1,x+\varepsilon_1)\subseteq U$. Because $V$ is open there is an $\varepsilon_2&gt;0$ with $(x-\varepsilon_2,x+\varepsilon_2)\subseteq V$. Let $\varepsilon=\min(\varepsilon_1,\varepsilon_2)&gt;0$. The smaller interval lies inside both bigger ones:</p>
+  <div class="math-display">$$\begin{aligned}&amp;(x-\varepsilon,x+\varepsilon)\subseteq(x-\varepsilon_1,x+\varepsilon_1)\subseteq U\\&amp;\text{and}\\&amp;(x-\varepsilon,x+\varepsilon)\subseteq(x-\varepsilon_2,x+\varepsilon_2)\subseteq V\end{aligned}.$$</div>
+  <p>So $(x-\varepsilon,x+\varepsilon)\subseteq U\cap V$, and $U\cap V$ is open. <span class="qed">∎</span></p>
+  <p><em>For curiosity:</em> this fails for infinitely many sets. Each $\left(-\tfrac1n,\tfrac1n\right)$ is open, but their intersection over all $n\in\mathbb{N}$ is $\{0\}$, which is not open. The minimum of infinitely many radii might not exist, and their infimum can be $0$. That's <a class="xl" href="lesson-06.html">lesson 6</a> territory.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="bonus">Bonus (only if you have energy)</h3>
+  <p>Prove the reverse triangle inequality $\big||x|-|y|\big|\le|x-y|$. <em>Hint:</em> write $x=(x-y)+y$ and apply the triangle inequality. Then swap the roles of $x$ and $y$, and finish with rule (e): $|a|\le b\iff -b\le a\le b$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><em>Frame:</em> the goal $\big||x|-|y|\big|\le b$ unfolds (rule (e): $|a|\le b\iff-b\le a\le b$) into two inequalities, so prove $|x|-|y|\le|x-y|$ and $|y|-|x|\le|x-y|$ separately. <em>Moves:</em> <a class="mvl" href="moves.html#m-abs">unfold an absolute value</a>, <a class="mvl" href="moves.html#m-tri">insert a middle point</a>.</li>
+    <li>$x=(x-y)+y$, so by the triangle inequality $|x|\le|x-y|+|y|$, that is, $|x|-|y|\le|x-y|$.</li>
+    <li>Swap $x$ and $y$: $|y|-|x|\le|y-x|=|x-y|$ (rule (b): $|-a|=|a|$). So $-|x-y|\le|x|-|y|$.</li>
+    <li>Together, $-|x-y|\le|x|-|y|\le|x-y|$. Now use rule (e), $|a|\le b\iff -b\le a\le b$, from right to left, with $a=|x|-|y|$ and $b=|x-y|$. It gives $\big||x|-|y|\big|\le|x-y|$. <span class="qed">∎</span></li>
+  </ul>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> the core is Exercise 1 (4), Exercise 2 (2), Exercise 4 (4) and Exercise 5 (7), which makes 17. If you have 14 of 17, you're done. For Exercise 6, try at least (a) and (b): proofs like these are worth points in the exam. Exercise 3 and 6(c)–(d) are good proof practice and don't count against you.</p>
+</div>
+
+<h2 id="s6-for-wonder-optional-5-min">6. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Born from a duel.</strong> Complex numbers weren't invented for $x^2=-1$. Cubic equations forced them on mathematicians in 16th-century Italy, where mathematicians fought public duels, setting each other 30 problems with reputations and students at stake. Tartaglia had a secret formula for cubics. Cardano begged for it, swore never to publish it, and published it in 1545 anyway. The formula sometimes forces you through square roots of negative numbers, even when the final answer is an ordinary real number like $4$. For about 250 years people used these “impossible” numbers before anyone understood them as points in a plane.</p>
+<p><strong>They run your other courses.</strong> In physics, oscillations and waves are written as complex exponentials, because rotation (the quarter-turn spell) makes the computations easy. In quantum mechanics the wavefunction is complex-valued. In electrical engineering, AC circuits are solved with complex “impedance”.</p>
+<p><strong>$\mathbb{C}$ has no gaps either.</strong> The script (<a class="pl" href="script.html#p95">p. 95</a>) mentions the <em>Fundamentalsatz der Algebra</em>: every non-constant polynomial has a root in $\mathbb{C}$. Completeness says $\mathbb{R}$ has no gaps on the line, and this says $\mathbb{C}$ has no <em>algebraic</em> gaps. Once you add $i$, you never need to invent another kind of number to solve polynomial equations.</p>
+
+<h2 id="s7-what-we-skipped">7. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Full check that $\mathbb{C}$ is a field (<a class="pl" href="script.html#p93">p. 93–94</a>):</strong> all 9 axioms verified by computation. Low priority.</li>
+  <li><strong>$\mathbb{C}$ as $2\times2$ matrices (<a class="pl" href="script.html#p95">p. 95</a>, remark).</strong> Optional, nice after LinAlg.</li>
+  <li><strong>Rules for $\operatorname{Re}$, $\operatorname{Im}$ and conjugates (Wichtige Übungen 2.38–2.40, <a class="pl" href="script.html#p96">p. 96</a>).</strong> Low priority.</li>
+  <li><strong>Intervals and neighbourhoods (Definitions 2.41–2.43, <a class="pl" href="script.html#p98">p. 98</a>), and the sign function.</strong> Low priority. “Umgebung” returns with continuity.</li>
+  <li><strong>When equality holds in the triangle inequality, and $\sqrt{x^2}=|x|$ (<a class="pl" href="script.html#p100">p. 100</a>).</strong> Low priority.</li>
+  <li><strong>Open balls and open sets in $\mathbb{C}$ (<a class="pl" href="script.html#p103">p. 103</a>).</strong> Medium priority, returns in <a class="xl" href="lesson-10.html">lesson 10</a>.</li>
+  <li><strong>Why $\mathbb{R}$ and $\emptyset$ are the only subsets of $\mathbb{R}$ that are both open and closed</strong> (needs completeness; “$\mathbb{R}$ ist zusammenhängend”). Low priority.</li>
+  <li><strong>Interior and closure, $A^\circ$ and $\overline{A}=A\cup\partial A$ (Definition 10.14, <a class="pl" href="script.html#p483">p. 483</a>).</strong> Medium priority, returns in <a class="xl" href="lesson-10.html">lesson 10</a>.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-06.html">lesson 6</a>, maximum, supremum and infimum (§2.5–2.6).</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-04.html">← Lesson 4: The Siege Engineer's Three Weapons</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-06.html">Lesson 6: The Lowest Ceiling →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

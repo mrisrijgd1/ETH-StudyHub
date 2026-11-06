@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Cart's Climb Gauge</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-16.html">← Lesson 16</a>
+<a href="lesson-18.html">Lesson 18 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 17 of 26</span>
+  <h1>The Cart's Climb Gauge</h1>
+  <p class="lead">The derivative: what it means to zoom into a graph until it looks straight, the rules that compute it (product, quotient, chain, inverse), and the two theorems that every later chapter stands on, <strong>Rolle's theorem</strong> and the <strong>mean value theorem</strong>. Both are exam proofs. Script sections 8.1 and 8.2.1–8.2.2.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-16-5">Recap of lesson 16 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-cart-s">1. The story: the cart&#x27;s climb gauge</a>
+</li>
+<li><a href="#s2-the-derivative">2. The derivative</a>
+<ol>
+<li><a href="#we-1">Worked example 1: three derivatives from the definition</a></li>
+<li><a href="#proof-a">Proof A: differentiable implies continuous (p. 356)</a></li>
+</ol></li>
+<li><a href="#s3-the-rules">3. The rules</a>
+<ol>
+<li><a href="#we-2">Worked example 2: the basic derivatives (Beispiel 8.3 and Übung 8.4, p. 358–359)</a></li>
+<li><a href="#proof-b">Proof B: the product rule (Proposition 8.5, p. 359)</a></li>
+<li><a href="#proof-c">Proof C: the chain rule (Satz 8.8, p. 360–361)</a></li>
+<li><a href="#the-school-proof-erweiterung-des">The school proof (Erweiterung des Bruches), and where it breaks</a></li>
+<li><a href="#we-3">Worked example 3: peel the onion (Beispiel 8.12, p. 363)</a></li>
+</ol></li>
+<li><a href="#s4-the-derivative-of-the-inverse">4. The derivative of the inverse function</a>
+<ol>
+<li><a href="#proof-d">Proof D: the derivative of the inverse function (Satz 8.14, p. 363–364)</a></li>
+<li><a href="#we-4">Worked example 4: log, powers, arcsin and arctan (Beispiel 8.15, p. 364; Section 8.3, p. 384–388)</a></li>
+<li><a href="#your-table-of-derivatives">Your table of derivatives</a></li>
+</ol></li>
+<li><a href="#s5-derivatives-of-derivatives">5. Derivatives of derivatives</a>
+<ol>
+<li><a href="#we-5">Worked example 5: a derivative that exists everywhere but is not continuous (Beispiel 8.20, p. 367)</a></li>
+</ol></li>
+<li><a href="#s6-where-maxima-and-minima-can">6. Where maxima and minima can be</a>
+<ol>
+<li><a href="#proof-e">Proof E: at an interior extremum the derivative is zero (Proposition 8.17, p. 365–366)</a></li>
+<li><a href="#we-6">Worked example 6: global extrema on a compact interval</a></li>
+</ol></li>
+<li><a href="#s7-rolle-s-theorem-and-the">7. Rolle&#x27;s theorem and the mean value theorem</a>
+<ol>
+<li><a href="#proof-f">Proof F: Rolle&#x27;s theorem (Satz 8.28, p. 371)</a></li>
+<li><a href="#proof-g">Proof G: the mean value theorem (Theorem 8.29, p. 371–372)</a></li>
+</ol></li>
+<li><a href="#s8-what-the-mean-value-theorem">8. What the mean value theorem gives you</a>
+<ol>
+<li><a href="#proof-h">Proof H: constant and monotone from the sign of $f&#x27;$ (Korollare 8.33 and 8.35, p. 373–374)</a></li>
+<li><a href="#we-7">Worked example 7: inequalities from the mean value theorem</a></li>
+</ol></li>
+<li><a href="#s9-exercises">9. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Felder FS23, MC3, 2 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (Einsiedler HS21, question 11, 7 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (in the style of the older Einsiedler exams&#x27; one-point theory questions, 1 point)</a></li>
+<li><a href="#ex-4">Exercise 4 (Einsiedler FS22, question 12, 7 points)</a></li>
+<li><a href="#ex-5">Exercise 5 (2018 winter exam, question 8, 4 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (PVK mock HS25, question A2 (C) and (D))</a></li>
+<li><a href="#ex-7">Exercise 7 (a constant in disguise)</a></li>
+<li><a href="#ex-8">Exercise 8 (derivative drill)</a></li>
+<li><a href="#ex-9">Exercise 9 (Einsiedler FS22, question 5, 7 points)</a></li>
+<li><a href="#bonus">Bonus: derivatives can&#x27;t jump (Darboux&#x27;s theorem)</a></li>
+</ol></li>
+<li><a href="#s10-for-wonder-optional-5-min">10. For wonder</a>
+</li>
+<li><a href="#s11-what-we-skipped">11. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>write the definition</strong> of the derivative and use it on a small example, including a point where it fails, (2) <strong>compute derivatives</strong> with the product, quotient and chain rules, (3) <strong>state and prove the derivative of the inverse function</strong> (an exam proof in Figalli FS26), (4) explain why a local extremum inside an interval has $f'=0$, (5) <strong>state and prove Rolle's theorem and the mean value theorem</strong> (exam proofs in Einsiedler FS22, the 2017 summer exam and Kobel-Keller HS24), and (6) use the mean value theorem to prove that $f'=0$ means constant, $f'\ge0$ means increasing, and a bounded derivative means Lipschitz (Einsiedler HS21).</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p355">p. 355–357</a>, Section 8.1.1:</strong> the definition, one-sided derivatives, the tangent as linear approximation.</li>
+      <li><strong><a class="pl" href="script.html#p357">p. 357–365</a>, Section 8.1.2:</strong> first examples, sum, product, quotient and chain rule, the derivative of the inverse function, log and powers.</li>
+      <li><strong><a class="pl" href="script.html#p365">p. 365–366</a>, Section 8.1.3:</strong> local extrema and the necessary condition $f'(x_0)=0$.</li>
+      <li><strong><a class="pl" href="script.html#p366">p. 366–370</a>, Sections 8.1.4–8.1.5:</strong> continuously differentiable, higher derivatives, smooth functions.</li>
+      <li><strong><a class="pl" href="script.html#p371">p. 371–375</a>, Sections 8.2.1–8.2.2:</strong> Rolle, the mean value theorem, and its first consequences (constancy and monotonicity).</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+This lesson holds <strong>four exam proofs</strong>. “State and prove Rolle's theorem” was Einsiedler FS22 question 5 (2 + 5 points) and question 11 of the 2017 summer exam (4 points). “Prove the mean value theorem” was Kobel-Keller HS24 question 17 (3 points). “Derivative of the inverse function” was Figalli FS26 B2 (7 points). And the mean value theorem is the tool in the 7-point proofs: “bounded derivative ⇒ Lipschitz” (Einsiedler HS21 question 11, your Exercise 2), uniform convergence from a derivative bound (Einsiedler FS22 question 12, Exercise 4), and the PVK mock's question A2 (Exercise 6). Derivatives you compute are in every exam from now on, inside limits, extrema, Taylor and ODEs.</div>
+
+<div class="box"><h3 id="recap-of-lesson-16-5">Recap of <a class="xl" href="lesson-16.html">lesson 16</a> (5 min)</h3>
+<ul>
+  <li><strong>Radius of convergence:</strong> $R=\dfrac1{\limsup\sqrt[n]{|a_n|}}$, or $R=\lim\dfrac{|a_n|}{|a_{n+1}|}$ when that limit exists. Inside $|z|&lt;R$ absolutely convergent, outside divergent, on smaller closed discs uniform, on the circle anything.</li>
+  <li><strong>exp:</strong> $e^z=\sum\frac{z^n}{n!}$ for all $z\in\mathbb C$, with $e^{z+w}=e^ze^w$, $1+x\le e^x$, $\log$ its inverse on $(0,\infty)$, and $x^a=e^{a\log x}$.</li>
+  <li><strong>Euler:</strong> $e^{iz}=\cos z+i\sin z$, with $\cos z=\sum\frac{(-1)^nz^{2n}}{(2n)!}$ and $\sin z=\sum\frac{(-1)^nz^{2n+1}}{(2n+1)!}$.</li>
+  <li><strong>Term by term:</strong> a power series may be integrated term by term inside its radius.</li>
+</ul>
+<ol class="gq">
+  <li><p>Radius of convergence of $\sum_{n\ge1}n\,x^n$?</p>
+  <details><summary>Answer</summary><div><p>$\sqrt[n]n\to1$, so $R=1$.</p></div></details></li>
+  <li><p>What is $\lim_{h\to0}\frac{e^h-1}h$, using the series?</p>
+  <details><summary>Answer</summary><div><span class="math-display" style="display:block">$$\begin{aligned}\frac{e^h-1}h&amp;=1+\frac h2+\frac{h^2}6+\dots\\&amp;=\sum_{k\ge0}\frac{h^k}{(k+1)!}\end{aligned}.$$</span><p>This power series has radius $\infty$, so it is continuous in $h$, and at $h=0$ it is $1$. So the limit is $1$. That is exactly $\exp'(0)=1$, today's first derivative.</p></div></details></li>
+  <li><p>For which $x$ does $\log(1+x)\le x$ hold?</p>
+  <details><summary>Answer</summary><div><p>For all $x&gt;-1$: take $\log$ of $1+x\le e^x$. Today you'll prove inequalities like this with the mean value theorem instead.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>derivative, differentiable</td><td>Ableitung, differenzierbar</td></tr>
+    <tr><td>difference quotient</td><td>Differenzenquotient</td></tr>
+    <tr><td>tangent, secant</td><td>Tangente, Sekante</td></tr>
+    <tr><td>one-sided (left / right) derivative</td><td>einseitige (links- / rechtsseitige) Ableitung</td></tr>
+    <tr><td>product rule, quotient rule, chain rule</td><td>Produktregel, Quotientenregel, Kettenregel</td></tr>
+    <tr><td>inverse function</td><td>Umkehrfunktion, inverse Funktion</td></tr>
+    <tr><td>local maximum / minimum, extremum</td><td>lokales Maximum / Minimum, Extremum (Extremwert)</td></tr>
+    <tr><td>continuously differentiable, smooth</td><td>stetig differenzierbar, glatt</td></tr>
+    <tr><td>Rolle's theorem</td><td>Satz von Rolle</td></tr>
+    <tr><td>mean value theorem</td><td>Mittelwertsatz</td></tr>
+    <tr><td>(strictly) increasing / decreasing</td><td>(streng) monoton wachsend / fallend</td></tr>
+    <tr><td>Lipschitz continuous</td><td>Lipschitz-stetig</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-cart-s">1. The story: the cart's climb gauge</h2>
+<div class="story">
+<p>In the mountains, messengers travel in carts that roll forward at a steady pace, one league after another, while the road carries them up and down. Every cart has a brass <em>climb gauge</em> on its front board. It does not show how much the cart has climbed over the last hour; it shows how fast the cart is climbing <em>right now</em>. To get that reading, the gauge measures the climb over a short stretch ahead, divides by the length of the stretch, and keeps shrinking the stretch. On most roads the readings settle on one number. The messenger writes it on a little tag and pins it to the road: the <em>climbing speed at that point</em>.</p>
+<p>Some roads refuse. At a sharp corner the cart jolts: just before the corner the gauge reads one climbing speed, just after it another, and no single number fits. There, no tag can be pinned.</p>
+<p>The mountain messengers have two old sayings about tagged roads. First: <em>whoever leaves the valley and comes back to the same height must, at some moment, have walked level.</em> Second, the toll-keeper's rule: <em>whoever rides 60 leagues in 2 hours must, at some moment, have ridden at exactly 30 leagues an hour.</em> The sayings sound obvious. Proving them is today's work, and almost everything that follows (curve sketching, l'Hôpital, Taylor, integration) rests on them.</p>
+</div>
+<p>In maths: the stretch reading is the <strong>difference quotient</strong> $\frac{f(x)-f(a)}{x-a}$, the settled reading on the tag is its limit, the <strong>derivative</strong> $f'(a)$, the corner is a point where $f$ is <strong>not differentiable</strong> (like $|x|$ at $0$), the first saying is <strong>Rolle's theorem</strong>, and the toll-keeper's rule is the <strong>mean value theorem</strong>.</p>
+
+<h2 id="s2-the-derivative">2. The derivative</h2>
+<div class="box">
+<p><strong>Definition 8.1 (<a class="pl" href="script.html#p355">p. 355</a>).</strong> Let $D\subseteq\mathbb R$, $f:D\to\mathbb R$ and $a\in D$ an accumulation point of $D$. Then $f$ is <strong>differentiable at $a$</strong> if the limit</p>
+<span class="math-display" style="display:block">$$\begin{aligned}f'(a)&amp;=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}\\&amp;=\lim_{h\to0}\frac{f(a+h)-f(a)}h\end{aligned}$$</span>
+<p>exists (as a real number). $f'(a)$ is the <strong>derivative</strong> of $f$ at $a$. If $f$ is differentiable at every accumulation point of $D$ in $D$, then $f$ is <strong>differentiable</strong>, and $a\mapsto f'(a)$ is the derivative function. Taking only $x\searrow a$ (or $x\nearrow a$) gives the <strong>right (left) derivative</strong> $f'_+(a)$ ($f'_-(a)$).</p>
+</div>
+<p>The fraction $\frac{f(x)-f(a)}{x-a}$ is the slope of the <strong>secant</strong> through $(a,f(a))$ and $(x,f(x))$. As $x\to a$ the secant turns into the <strong>tangent</strong>, and $f'(a)$ is its slope. The accumulation point condition is only there so that $x\to a$ makes sense (<a class="xl" href="lesson-13.html#s2-limits-of-functions">lesson 13</a>). On an interval every point is an accumulation point, so you can forget it there.</p>
+
+<figure style="margin:.4rem 0" aria-label="The graph of a curved function. A point a on the x-axis with the point (a, f(a)) on the graph. Three secants through (a, f(a)) and points further right on the graph, getting closer to a, drawn more and more solid, approaching the tangent line at a, which is drawn thick.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="40.0" y1="275.0" x2="610.0" y2="275.0" style="stroke:var(--muted)" stroke-width="1.2"/><path d="M60.0 254.0 L62.6 253.6 L65.2 253.3 L67.8 252.9 L70.4 252.5 L73.0 252.2 L75.6 251.8 L78.2 251.4 L80.8 251.0 L83.4 250.6 L86.0 250.1 L88.6 249.7 L91.2 249.3 L93.8 248.8 L96.4 248.4 L99.0 247.9 L101.6 247.5 L104.2 247.0 L106.8 246.5 L109.4 246.0 L112.0 245.5 L114.6 245.0 L117.2 244.5 L119.8 244.0 L122.4 243.5 L125.0 243.0 L127.6 242.4 L130.2 241.9 L132.8 241.3 L135.4 240.8 L138.0 240.2 L140.6 239.7 L143.2 239.1 L145.8 238.5 L148.4 237.9 L151.0 237.3 L153.6 236.7 L156.2 236.1 L158.8 235.4 L161.4 234.8 L164.0 234.2 L166.6 233.5 L169.2 232.9 L171.8 232.2 L174.4 231.6 L177.0 230.9 L179.6 230.2 L182.2 229.5 L184.8 228.8 L187.4 228.1 L190.0 227.4 L192.6 226.7 L195.2 226.0 L197.8 225.2 L200.4 224.5 L203.0 223.7 L205.6 223.0 L208.2 222.2 L210.8 221.5 L213.4 220.7 L216.0 219.9 L218.6 219.1 L221.2 218.3 L223.8 217.5 L226.4 216.7 L229.0 215.9 L231.6 215.0 L234.2 214.2 L236.8 213.4 L239.4 212.5 L242.0 211.7 L244.6 210.8 L247.2 209.9 L249.8 209.1 L252.4 208.2 L255.0 207.3 L257.6 206.4 L260.2 205.5 L262.8 204.6 L265.4 203.6 L268.0 202.7 L270.6 201.8 L273.2 200.8 L275.8 199.9 L278.4 198.9 L281.0 198.0 L283.6 197.0 L286.2 196.0 L288.8 195.0 L291.4 194.0 L294.0 193.0 L296.6 192.0 L299.2 191.0 L301.8 190.0 L304.4 188.9 L307.0 187.9 L309.6 186.9 L312.2 185.8 L314.8 184.7 L317.4 183.7 L320.0 182.6 L322.6 181.5 L325.2 180.4 L327.8 179.3 L330.4 178.2 L333.0 177.1 L335.6 176.0 L338.2 174.9 L340.8 173.7 L343.4 172.6 L346.0 171.5 L348.6 170.3 L351.2 169.1 L353.8 168.0 L356.4 166.8 L359.0 165.6 L361.6 164.4 L364.2 163.2 L366.8 162.0 L369.4 160.8 L372.0 159.6 L374.6 158.4 L377.2 157.1 L379.8 155.9 L382.4 154.6 L385.0 153.4 L387.6 152.1 L390.2 150.8 L392.8 149.6 L395.4 148.3 L398.0 147.0 L400.6 145.7 L403.2 144.4 L405.8 143.1 L408.4 141.7 L411.0 140.4 L413.6 139.1 L416.2 137.7 L418.8 136.4 L421.4 135.0 L424.0 133.7 L426.6 132.3 L429.2 130.9 L431.8 129.5 L434.4 128.1 L437.0 126.7 L439.6 125.3 L442.2 123.9 L444.8 122.5 L447.4 121.0 L450.0 119.6 L452.6 118.2 L455.2 116.7 L457.8 115.2 L460.4 113.8 L463.0 112.3 L465.6 110.8 L468.2 109.3 L470.8 107.8 L473.4 106.3 L476.0 104.8 L478.6 103.3 L481.2 101.8 L483.8 100.2 L486.4 98.7 L489.0 97.2 L491.6 95.6 L494.2 94.0 L496.8 92.5 L499.4 90.9 L502.0 89.3 L504.6 87.7 L507.2 86.1 L509.8 84.5 L512.4 82.9 L515.0 81.3 L517.6 79.6 L520.2 78.0 L522.8 76.4 L525.4 74.7 L528.0 73.1 L530.6 71.4 L533.2 69.7 L535.8 68.1 L538.4 66.4 L541.0 64.7 L543.6 63.0 L546.2 61.3 L548.8 59.5 L551.4 57.8 L554.0 56.1 L556.6 54.4 L559.2 52.6 L561.8 50.9 L564.4 49.1 L567.0 47.3 L569.6 45.6 L572.2 43.8 L574.8 42.0 L577.4 40.2 L580.0 38.4 L582.6 36.6 L585.2 34.8 L587.8 32.9 L590.4 31.1 L593.0 29.3 L595.6 27.4 L598.2 25.6 L600.8 23.7 L603.4 21.9 L606.0 20.0" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><line x1="69.2" y1="290.0" x2="619.0" y2="27.4" style="stroke:var(--k-c);stroke-opacity:0.35" stroke-width="1.6"/><circle cx="541.0" cy="64.7" r="4" style="fill:var(--k-c);fill-opacity:0.35"/><line x1="46.9" y1="290.0" x2="619.0" y2="52.8" style="stroke:var(--k-c);stroke-opacity:0.6" stroke-width="1.6"/><circle cx="424.0" cy="133.7" r="4" style="fill:var(--k-c);fill-opacity:0.6"/><line x1="34.0" y1="285.2" x2="619.0" y2="75.4" style="stroke:var(--k-c);stroke-opacity:0.85" stroke-width="1.6"/><circle cx="320.0" cy="182.6" r="4" style="fill:var(--k-c);fill-opacity:0.85"/><line x1="34.0" y1="275.0" x2="619.0" y2="97.9" style="stroke:var(--accent)" stroke-width="3"/><line x1="216.0" y1="219.9" x2="216.0" y2="275.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="216.0" cy="219.9" r="5" style="fill:var(--k-x0)"/><text x="216.0" y="294.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">a</text><text x="450.0" y="177.1" style="fill:var(--accent);font-size:15px" text-anchor="start">tangent: slope f′(a)</text><text x="365.5" y="70.7" style="fill:var(--k-c);font-size:15px" text-anchor="start">secants</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Secants through $(a,f(a))$ and $(x,f(x))$, for $x$ closer and closer to $a$ (lighter to darker). Their slopes $\frac{f(x)-f(a)}{x-a}$ approach the slope of the tangent (thick), which is $f'(a)$.</figcaption>
+</figure>
+
+<div class="box">
+<p><strong>The same definition, as an approximation (<a class="pl" href="script.html#p356">p. 356</a>).</strong> $f$ is differentiable at $a$ with derivative $m$ exactly when</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;f(x)=f(a)+m\,(x-a)+\varepsilon(x)\,(x-a)\\&amp;\text{with }\varepsilon(x)\to0=\varepsilon(a)\text{ as }x\to a\end{aligned},$$</span>
+<p>that is, $f(x)=f(a)+f'(a)(x-a)+o(x-a)$ in <a class="xl" href="lesson-13.html#s6-landau-notation-and">lesson 13</a>'s Landau notation. Near $a$, $f$ is the straight line $f(a)+f'(a)(x-a)$ (the cart keeping its current climbing speed) plus an error that vanishes faster than $x-a$. (To see the equivalence: define $\varepsilon(x)=\frac{f(x)-f(a)}{x-a}-m$ for $x\neq a$ and $\varepsilon(a)=0$.) This form is what makes the chain rule work.</p>
+</div>
+
+<div class="box">
+<h3 id="we-1">Worked example 1: three derivatives from the definition</h3>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<ol class="gq">
+  <li><p>Compute $f'(a)$ for $f(x)=x^2$ from the definition.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\frac{(a+h)^2-a^2}h&amp;=\frac{2ah+h^2}h\\&amp;=2a+h\to2a\end{aligned}.$$</span>So $f'(a)=2a$.</p></div></details></li>
+  <li><p>Compute $f'(a)$ for $f(x)=\sqrt x$ at $a&gt;0$. (Hint: multiply by the “conjugate”.)</p>
+  <details><summary>Answer</summary><div><span class="math-display" style="display:block">$$\begin{aligned}\frac{\sqrt{a+h}-\sqrt a}h&amp;=\frac{(a+h)-a}{h\left(\sqrt{a+h}+\sqrt a\right)}\\&amp;=\frac1{\sqrt{a+h}+\sqrt a}\to\frac1{2\sqrt a}\end{aligned},$$</span><p>using continuity of $\sqrt{\ }$ (<a class="xl" href="lesson-08.html#the-payoff-th-roots-beispiel">lesson 8</a>).</p></div></details></li>
+  <li><p>Is $f(x)=|x|$ differentiable at $0$? Compute both one-sided derivatives.</p>
+  <details><summary>Answer</summary><div><p>For $h&gt;0$: $\frac{|h|-0}h=1$. For $h&lt;0$: $\frac{|h|}h=-1$. So $f'_+(0)=1$ and $f'_-(0)=-1$. They differ, so the limit doesn't exist: <strong>not differentiable</strong> at $0$. (The corner where the cart jolts.) At every $a\neq0$ it is differentiable, with derivative $1$ for $a&gt;0$ and $-1$ for $a&lt;0$.</p></div></details></li>
+  <li><p>Is $\sqrt x$ (on $[0,\infty)$) differentiable at $0$?</p>
+  <details><summary>Answer</summary><div><p>$\frac{\sqrt h-0}h=\frac1{\sqrt h}\to\infty$ as $h\searrow0$. The limit is not a real number, so <strong>no</strong>: the tangent at $0$ is vertical.</p></div></details></li>
+  <li><p>Two multiple-choice options from the exams: “if $f$ is continuous on $[a,b]$, then $f$ is differentiable” (Felder HS22 MC5 (A)) and “if $f$ is Lipschitz continuous, then $f$ is differentiable” (Figalli HS23 MC3 (D)). True or false?</p>
+  <details><summary>Answer</summary><div><p>Both false. For the first, $|x|$ on $[-1,1]$: continuous, not differentiable at $0$. For the second, $\min(x,1)$ on $[0,\infty)$ (it fits HS23's setting $f(0)=0$, $f\ge0$): it is Lipschitz with constant $1$, but has a corner at $x=1$, where the left derivative is $1$ and the right derivative is $0$.</p></div></details></li>
+</ol>
+</div>
+
+<h3 id="proof-a">Proof A: differentiable implies continuous (<a class="pl" href="script.html#p356">p. 356</a>)</h3>
+<div class="box">
+<p><strong>Proposition.</strong> If $f:D\to\mathbb R$ is differentiable at $a\in D$, then $f$ is continuous at $a$. (The converse is false: $|x|$ at $0$.)</p>
+</div>
+<p><strong>The idea.</strong> The numerator $f(x)-f(a)$ equals the difference quotient times $x-a$. The quotient tends to the number $f'(a)$, and $x-a$ tends to $0$, so the product tends to $0$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $x\in D\setminus\{a\}$.” Write $f(x)-f(a)$ as something involving the difference quotient.</li>
+  <li><strong>Last line:</strong> “$\lim_{x\to a}f(x)=f(a)$, so $f$ is continuous at $a$.”</li>
+  <li><strong>The gap:</strong> one product of limits.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The height difference is the steepness times the distance walked.</p></div><div class="sp-formal"><p>For $x\in D\setminus\{a\}$:</p><span class="math-display" style="display:block">$$f(x)-f(a)=\frac{f(x)-f(a)}{x-a}\cdot(x-a).$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>The steepness settles on the tag's number, the distance shrinks to nothing, so the height difference shrinks to nothing.</p></div><div class="sp-formal"><p>As $x\to a$, the first factor tends to $f'(a)\in\mathbb R$ and the second to $0$. By the product rule for limits, $f(x)-f(a)\to f'(a)\cdot0=0$. So $\lim_{x\to a}f(x)=f(a)$, and $f$ is continuous at $a$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-dq">multiply and divide by x − a</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>For $x\in D\setminus\{a\}$, $f(x)-f(a)=\frac{f(x)-f(a)}{x-a}\,(x-a)$. As $x\to a$, the quotient tends to $f'(a)\in\mathbb R$ and $x-a\to0$, so $f(x)-f(a)\to f'(a)\cdot0=0$. Hence $f$ is continuous at $a$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where exactly does the proof use that $f'(a)$ is a <em>real number</em>, not $\infty$?</p>
+  <details><summary>Answer</summary><div><p>In “$f'(a)\cdot0=0$”: the product rule for limits needs both limits to be finite. For $\sqrt x$ at $0$ the quotient tends to $\infty$ and the argument gives nothing (although $\sqrt x$ happens to be continuous there anyway).</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Give a function that is continuous at $0$ but not differentiable there, and say which step of the proof can't be reversed.</p>
+  <details><summary>Answer</summary><div><p>$|x|$. Continuity only says the numerator $f(x)-f(a)$ tends to $0$. Differentiability says it tends to $0$ <em>as fast as</em> $x-a$, with a fixed ratio. For $|x|$ the ratio is $\pm1$ depending on the side, so it has no limit.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h2 id="s3-the-rules">3. The rules</h2>
+<p>Nobody computes $(\sin(x^2)e^x)'$ from the definition. Instead, we prove a few rules once, and then every formula built from known pieces can be differentiated mechanically. First the pieces.</p>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: the basic derivatives (Beispiel 8.3 and Übung 8.4, <a class="pl" href="script.html#p358">p. 358–359</a>)</h3>
+<ol class="gq">
+  <li><p>Show $\exp'(a)=\exp(a)$. (Use $e^{a+h}=e^ae^h$ and the recap's second question.)</p>
+  <details><summary>Answer</summary><div><p>$\frac{e^{a+h}-e^a}h=e^a\cdot\frac{e^h-1}h\to e^a\cdot1=e^a$. Likewise $\left(e^{\alpha x}\right)'=\alpha e^{\alpha x}$ for any constant $\alpha\in\mathbb C$, since $\frac{e^{\alpha h}-1}h=\alpha\sum_{k\ge0}\frac{(\alpha h)^k}{(k+1)!}\to\alpha$.</p></div></details></li>
+  <li><p>From the series, what are $\lim_{h\to0}\frac{\sin h}h$ and $\lim_{h\to0}\frac{\cos h-1}h$?</p>
+  <details><summary>Answer</summary><div><p>$\frac{\sin h}h=1-\frac{h^2}{6}+\frac{h^4}{120}-\dots$, a power series with radius $\infty$, so continuous, with value $1$ at $h=0$. And $\frac{\cos h-1}h=-\frac h2+\frac{h^3}{24}-\dots\to0$.</p></div></details></li>
+  <li><p>Show $\sin'=\cos$ with the addition formula $\sin(a+h)=\sin a\cos h+\cos a\sin h$ (<a class="xl" href="lesson-16.html#proof-d">lesson 16</a>).</p>
+  <details><summary>Answer</summary><div><span class="math-display" style="display:block">$$\begin{aligned}\frac{\sin(a+h)-\sin a}h&amp;=\sin a\cdot\frac{\cos h-1}h+\cos a\cdot\frac{\sin h}h\to\sin a\cdot0+\cos a\cdot1\\&amp;=\cos a\end{aligned}.$$</span><p>In the same way $\cos'=-\sin$. (Or in one line: $\left(e^{ix}\right)'=ie^{ix}=i\cos x-\sin x$, and compare real and imaginary parts.)</p></div></details></li>
+  <li><p>What are $\sinh'$ and $\cosh'$, with $\sinh x=\frac{e^x-e^{-x}}2$ and $\cosh x=\frac{e^x+e^{-x}}2$?</p>
+  <details><summary>Answer</summary><div><p>$\sinh'=\cosh$ and $\cosh'=\sinh$ (no minus sign), from $\left(e^{-x}\right)'=-e^{-x}$.</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<p><strong>The rules (Proposition 8.5, Korollar 8.11, Satz 8.8, <a class="pl" href="script.html#p359">p. 359–362</a>).</strong> If $f,g$ are differentiable at $a$, then so are $f+g$, $\alpha f$, $fg$ and (if $g(a)\neq0$) $\frac fg$, with</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;(f+g)'=f'+g'\\&amp;(fg)'=f'g+fg'\\&amp;\left(\frac fg\right)'=\frac{f'g-fg'}{g^2}\end{aligned}.$$</span>
+<p><strong>Chain rule:</strong> if $f$ is differentiable at $x_0$ and $g$ at $f(x_0)$, then $(g\circ f)'(x_0)=g'(f(x_0))\,f'(x_0)$.</p>
+<p>Consequences: $(x^n)'=nx^{n-1}$ (induction with the product rule), every polynomial and every rational function is differentiable where defined, and $\left(\frac1x\right)'=-\frac1{x^2}$.</p>
+</div>
+<p>The sum rule is just “limit of a sum is the sum of the limits”. The product and chain rules need one idea each.</p>
+
+<h3 id="proof-b">Proof B: the product rule (Proposition 8.5, <a class="pl" href="script.html#p359">p. 359</a>)</h3>
+<p><strong>The idea.</strong> Change one factor at a time. Going from $f(a)g(a)$ to $f(x)g(x)$, first change $f$ (with $g$ fixed at $g(x)$), then change $g$ (with $f$ fixed at $f(a)$). This is the <a class="mvl" href="moves.html#m-tri">insert a middle point</a> move: add and subtract $f(a)g(x)$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> the difference quotient of $fg$: $\dfrac{f(x)g(x)-f(a)g(a)}{x-a}$.</li>
+  <li><strong>Last line:</strong> “$\to f'(a)g(a)+f(a)g'(a)$”.</li>
+  <li><strong>The gap:</strong> split the numerator into a piece with $f(x)-f(a)$ and a piece with $g(x)-g(a)$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two things change at once. Change them one after the other.</p></div><div class="sp-formal"><p>For $x\neq a$, adding and subtracting $f(a)g(x)$:</p><span class="math-display" style="display:block">$$\begin{aligned}\frac{f(x)g(x)-f(a)g(a)}{x-a}&amp;=\frac{f(x)-f(a)}{x-a}\,g(x)+f(a)\,\frac{g(x)-g(a)}{x-a}\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Each gauge reading settles; the second factor of the first piece settles too, because a tagged road has no jumps.</p></div><div class="sp-formal"><p>As $x\to a$: the quotients tend to $f'(a)$ and $g'(a)$, and $g(x)\to g(a)$ because $g$ is continuous at $a$ (Proof A). So the whole expression tends to $f'(a)g(a)+f(a)g'(a)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-tri">insert a middle point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>For $x\neq a$,</p><span class="math-display" style="display:block">$$\begin{aligned}\frac{(fg)(x)-(fg)(a)}{x-a}&amp;=\frac{f(x)-f(a)}{x-a}\,g(x)+f(a)\,\frac{g(x)-g(a)}{x-a}\end{aligned}.$$</span><p>As $x\to a$, the quotients tend to $f'(a)$ and $g'(a)$, and $g(x)\to g(a)$ since $g$ is differentiable, hence continuous, at $a$. So $(fg)'(a)=f'(a)g(a)+f(a)g'(a)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which fact from Proof A does this proof use, and where?</p>
+  <details><summary>Answer</summary><div><p>That $g$ is continuous at $a$, for $g(x)\to g(a)$ in the first term.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Prove $(x^n)'=nx^{n-1}$ for all $n\ge1$ by induction, using the product rule.</p>
+  <details><summary>Answer</summary><div><p>Base $n=1$: $\frac{x-a}{x-a}=1$. Step: if $(x^n)'=nx^{n-1}$, then</p><span class="math-display" style="display:block">$$\begin{aligned}(x^{n+1})'&amp;=(x\cdot x^n)'\\&amp;=1\cdot x^n+x\cdot nx^{n-1}\\&amp;=(n+1)x^n\end{aligned}.$$</span></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p><strong>The quotient rule</strong> follows without a new idea: $\left(\frac1x\right)'=-\frac1{x^2}$ (since $\frac{1/(x+h)-1/x}h=\frac{-1}{x(x+h)}\to-\frac1{x^2}$), so by the chain rule $\left(\frac1g\right)'=-\frac{g'}{g^2}$, and by the product rule $\left(f\cdot\frac1g\right)'=\frac{f'}g-\frac{fg'}{g^2}=\frac{f'g-fg'}{g^2}$.</p>
+
+<h3 id="proof-c">Proof C: the chain rule (Satz 8.8, <a class="pl" href="script.html#p360">p. 360–361</a>)</h3>
+<div class="need"><span class="label">You'll need this</span>
+<ul>
+  <li><strong>The approximation form</strong> from <a class="xl" href="#s2-the-derivative">section 2</a>: <span class="math-display" style="display:block">$$f(x)=f(x_0)+\bigl(f'(x_0)+\varepsilon_f(x)\bigr)(x-x_0)$$</span>with $\varepsilon_f$ continuous at $x_0$ and $\varepsilon_f(x_0)=0$.</li>
+</ul></div>
+<div class="box">
+<h3 id="the-school-proof-erweiterung-des">The school proof (Erweiterung des Bruches), and where it breaks</h3>
+<p>In school the chain rule is proved by expanding the fraction with $f(x)-f(x_0)$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\frac{g(f(x))-g(f(x_0))}{x-x_0}\\&amp;\quad=\frac{g(f(x))-g(f(x_0))}{f(x)-f(x_0)}\cdot\frac{f(x)-f(x_0)}{x-x_0}.\end{aligned}$$</span>
+<p>As $x\to x_0$, also $f(x)\to f(x_0)$ (differentiable implies continuous, Proof A), so the first factor tends to $g'(f(x_0))$ and the second to $f'(x_0)$. That is the whole school proof.</p>
+<p><strong>Where it breaks.</strong> The expansion is only allowed where $f(x)\neq f(x_0)$. If $f(x)=f(x_0)$ for $x$ arbitrarily close to $x_0$, the right side is not even defined at those $x$, and the limit argument fails. This really happens:</p>
+<ul>
+  <li>$f$ constant: then $f(x)=f(x_0)$ for every $x$.</li>
+  <li>$f(x)=x^2\sin\frac1x$ for $x\neq0$, $f(0)=0$, at $x_0=0$: $f$ is differentiable with $f'(0)=0$, but $f\left(\frac1{k\pi}\right)=0=f(0)$ for every $k\in\mathbb N$, at points as close to $0$ as you like.</li>
+</ul>
+<p><strong>When it is fine.</strong> If $f'(x_0)\neq0$, then $f(x)\neq f(x_0)$ for all $x\neq x_0$ close to $x_0$ (otherwise the difference quotient would be $0$ at points arbitrarily close to $x_0$, forcing $f'(x_0)=0$). So the school proof is a complete proof <em>in that case</em>. In the exam, write the script's proof below: it covers every case and never divides.</p>
+</div>
+<p><strong>The idea.</strong> The school proof divides by $f(x)-f(x_0)$, which can be zero arbitrarily close to $x_0$ (box above). The fix: never divide. Write both $f$ and $g$ in the approximation form, which has no fractions, and substitute one into the other.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First lines:</strong> “Write <span class="math-display" style="display:block">$$f(x)=f(x_0)+(f'(x_0)+\varepsilon_f(x))(x-x_0)$$</span>and <span class="math-display" style="display:block">$$g(y)=g(y_0)+(g'(y_0)+\varepsilon_g(y))(y-y_0),$$</span>with $y_0=f(x_0)$.”</li>
+  <li><strong>Last line:</strong> “$\frac{g(f(x))-g(f(x_0))}{x-x_0}\to g'(f(x_0))f'(x_0)$.”</li>
+  <li><strong>The gap:</strong> substitute $y=f(x)$ and show the error term tends to $0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Near the point, both carts move like carts keeping their current climbing speed, plus a vanishing error. Write them that way, without any fractions.</p></div><div class="sp-formal"><p>Let $y_0=f(x_0)$. Define $\varepsilon_f(x)=\frac{f(x)-f(x_0)}{x-x_0}-f'(x_0)$ for $x\neq x_0$, $\varepsilon_f(x_0)=0$, and $\varepsilon_g(y)=\frac{g(y)-g(y_0)}{y-y_0}-g'(y_0)$ for $y\neq y_0$, $\varepsilon_g(y_0)=0$. These are continuous at $x_0$ and $y_0$, and for <em>all</em> $x,y$:</p><span class="math-display" style="display:block">$$\begin{aligned}&amp;f(x)-f(x_0)=\bigl(f'(x_0)+\varepsilon_f(x)\bigr)(x-x_0)\\&amp;g(y)-g(y_0)=\bigl(g'(y_0)+\varepsilon_g(y)\bigr)(y-y_0)\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk the second road at the place where the first road takes you.</p></div><div class="sp-formal"><p>Put $y=f(x)$ into the second equation, then use the first:</p><span class="math-display" style="display:block">$$\begin{aligned}g(f(x))-g(f(x_0))&amp;=\bigl(g'(y_0)+\varepsilon_g(f(x))\bigr)\bigl(f'(x_0)+\varepsilon_f(x)\bigr)(x-x_0)\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>As you zoom in, both errors vanish, and the two steepnesses multiply.</p></div><div class="sp-formal"><p>Divide by $x-x_0\neq0$ and let $x\to x_0$. Since $f$ is continuous at $x_0$, $f(x)\to y_0$, so $\varepsilon_g(f(x))\to\varepsilon_g(y_0)=0$; also $\varepsilon_f(x)\to0$. Hence</p><span class="math-display" style="display:block">$$\begin{aligned}\frac{g(f(x))-g(f(x_0))}{x-x_0}\to g'(y_0)\,f'(x_0)&amp;=g'(f(x_0))\,f'(x_0)\end{aligned}.$$</span><p><span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-linapprox">write f as line plus error</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $y_0=f(x_0)$. With $\varepsilon_f(x)=\frac{f(x)-f(x_0)}{x-x_0}-f'(x_0)$ for $x\neq x_0$, $\varepsilon_f(x_0)=0$, and $\varepsilon_g$ defined likewise at $y_0$, both are continuous at their points and</p><span class="math-display" style="display:block">$$\begin{aligned}&amp;f(x)-f(x_0)=\bigl(f'(x_0)+\varepsilon_f(x)\bigr)(x-x_0)\\&amp;g(y)-g(y_0)=\bigl(g'(y_0)+\varepsilon_g(y)\bigr)(y-y_0)\end{aligned}$$</span><p>for all $x,y$. Substituting $y=f(x)$:</p><span class="math-display" style="display:block">$$\begin{aligned}&amp;\frac{g(f(x))-g(f(x_0))}{x-x_0}=\bigl(g'(y_0)+\varepsilon_g(f(x))\bigr)\bigl(f'(x_0)+\varepsilon_f(x)\bigr)\\&amp;(x\neq x_0)\end{aligned}.$$</span><p>As $x\to x_0$: $f(x)\to y_0$ (Proof A), so $\varepsilon_g(f(x))\to0$, and $\varepsilon_f(x)\to0$. The limit is $g'(f(x_0))f'(x_0)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does the equation <span class="math-display" style="display:block">$$g(y)-g(y_0)=(g'(y_0)+\varepsilon_g(y))(y-y_0)$$</span>also hold at $y=y_0$?</p>
+  <details><summary>Answer</summary><div><p>Both sides are $0$ there. That's the point: unlike the fraction, it holds for every $y$, including the values $f(x)=y_0$ that broke the tempting proof.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Where is the continuity of $\varepsilon_g$ at $y_0$ used, and why does it need $f$ continuous at $x_0$?</p>
+  <details><summary>Answer</summary><div><p>For $\varepsilon_g(f(x))\to0$: this is “continuous after continuous” (<a class="xl" href="lesson-07.html#s4-the-rules-that-save-you">lesson 7</a>). It needs $f(x)\to y_0$, which holds since $f$ is differentiable, hence continuous, at $x_0$.</p></div></details></li>
+  <li><p><strong>Rung 3 (6 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: peel the onion (Beispiel 8.12, <a class="pl" href="script.html#p363">p. 363</a>)</h3>
+<p>The chain rule works from the outside in: differentiate the outer function at the inner one, then multiply by the derivative of the inner one, and repeat.</p>
+<ol class="gq">
+  <li><p>Differentiate $f(x)=\exp\bigl(\sin(\sin(x^2))\bigr)$.</p>
+  <details><summary>Answer</summary><div><p>Outer layer $\exp$, then $\sin$, then $\sin$, then $x^2$:</p><span class="math-display" style="display:block">$$\begin{aligned}f'(x)&amp;=\exp\bigl(\sin(\sin x^2)\bigr)\cdot\cos(\sin x^2)\cdot\cos(x^2)\cdot2x\end{aligned}.$$</span></div></details></li>
+  <li><p>Differentiate $x^x$ on $(0,\infty)$. (Write it as a power of $e$ first.)</p>
+  <details><summary>Answer</summary><div><p>$x^x=e^{x\log x}$, so</p><span class="math-display" style="display:block">$$\begin{aligned}(x^x)'&amp;=e^{x\log x}\cdot(x\log x)'\\&amp;=x^x\left(\log x+1\right)\end{aligned},$$</span><p>using $\log'=\frac1x$ (Worked example 4) and the product rule. Every “variable in the exponent” works this way: $f^g=e^{g\log f}$.</p></div></details></li>
+  <li><p>Differentiate $\frac{x}{1+x^2}$ and $\sqrt{1+x^2}$.</p>
+  <details><summary>Answer</summary><div><p>Quotient rule: $\frac{1\cdot(1+x^2)-x\cdot2x}{(1+x^2)^2}=\frac{1-x^2}{(1+x^2)^2}$. Chain rule with Worked example 1: $\frac1{2\sqrt{1+x^2}}\cdot2x=\frac x{\sqrt{1+x^2}}$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s4-the-derivative-of-the-inverse">4. The derivative of the inverse function</h2>
+<p>If $f$ is a bijection, its graph and the graph of $f^{-1}$ are mirror images in the diagonal $y=x$. Mirroring a line of slope $m$ in the diagonal gives a line of slope $\frac1m$ (swap the roles of $x$ and $y$). So the tangent of $f^{-1}$ at $y_0=f(x_0)$ should have slope $\frac1{f'(x_0)}$, as long as $f'(x_0)\neq0$. A horizontal tangent of $f$ would become a vertical one for $f^{-1}$, where no derivative exists.</p>
+
+<figure style="margin:.4rem 0" aria-label="The graph of an increasing function f and its mirror image f inverse, reflected in the dashed diagonal line y equals x. At a point on the graph of f, a tangent line is drawn; the mirrored tangent at the mirrored point on the graph of f inverse is drawn too. Labels: slope m and slope 1 over m.">
+<svg viewBox="0 0 640 320" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="180.0" y1="300.0" x2="462.0" y2="300.0" style="stroke:var(--muted)" stroke-width="1.2"/><line x1="180.0" y1="300.0" x2="180.0" y2="18.0" style="stroke:var(--muted)" stroke-width="1.2"/><line x1="180.0" y1="300.0" x2="456.0" y2="24.0" style="stroke:var(--muted);stroke-dasharray:6 5" stroke-width="1.4"/><text x="324.0" y="184.0" style="fill:var(--muted);font-size:14px" text-anchor="start">y = x</text><path d="M180.0 300.0 L181.2 299.9 L182.4 299.7 L183.6 299.6 L184.8 299.5 L186.0 299.3 L187.2 299.1 L188.4 299.0 L189.6 298.8 L190.8 298.6 L192.0 298.4 L193.2 298.2 L194.4 298.0 L195.6 297.7 L196.8 297.5 L198.0 297.3 L199.2 297.0 L200.4 296.7 L201.6 296.5 L202.8 296.2 L204.0 295.9 L205.2 295.6 L206.4 295.3 L207.6 295.0 L208.8 294.7 L210.0 294.4 L211.2 294.0 L212.4 293.7 L213.6 293.3 L214.8 293.0 L216.0 292.6 L217.2 292.2 L218.4 291.9 L219.6 291.5 L220.8 291.1 L222.0 290.7 L223.2 290.2 L224.4 289.8 L225.6 289.4 L226.8 288.9 L228.0 288.5 L229.2 288.0 L230.4 287.6 L231.6 287.1 L232.8 286.6 L234.0 286.1 L235.2 285.6 L236.4 285.1 L237.6 284.6 L238.8 284.0 L240.0 283.5 L241.2 283.0 L242.4 282.4 L243.6 281.8 L244.8 281.3 L246.0 280.7 L247.2 280.1 L248.4 279.5 L249.6 278.9 L250.8 278.3 L252.0 277.7 L253.2 277.1 L254.4 276.4 L255.6 275.8 L256.8 275.1 L258.0 274.5 L259.2 273.8 L260.4 273.1 L261.6 272.4 L262.8 271.7 L264.0 271.0 L265.2 270.3 L266.4 269.6 L267.6 268.9 L268.8 268.1 L270.0 267.4 L271.2 266.6 L272.4 265.9 L273.6 265.1 L274.8 264.3 L276.0 263.5 L277.2 262.7 L278.4 261.9 L279.6 261.1 L280.8 260.3 L282.0 259.5 L283.2 258.6 L284.4 257.8 L285.6 256.9 L286.8 256.1 L288.0 255.2 L289.2 254.3 L290.4 253.4 L291.6 252.5 L292.8 251.6 L294.0 250.7 L295.2 249.8 L296.4 248.8 L297.6 247.9 L298.8 247.0 L300.0 246.0 L301.2 245.0 L302.4 244.1 L303.6 243.1 L304.8 242.1 L306.0 241.1 L307.2 240.1 L308.4 239.1 L309.6 238.1 L310.8 237.0 L312.0 236.0 L313.2 234.9 L314.4 233.9 L315.6 232.8 L316.8 231.7 L318.0 230.7 L319.2 229.6 L320.4 228.5 L321.6 227.4 L322.8 226.2 L324.0 225.1 L325.2 224.0 L326.4 222.8 L327.6 221.7 L328.8 220.5 L330.0 219.4 L331.2 218.2 L332.4 217.0 L333.6 215.8 L334.8 214.6 L336.0 213.4 L337.2 212.2 L338.4 211.0 L339.6 209.7 L340.8 208.5 L342.0 207.3 L343.2 206.0 L344.4 204.7 L345.6 203.5 L346.8 202.2 L348.0 200.9 L349.2 199.6 L350.4 198.3 L351.6 197.0 L352.8 195.6 L354.0 194.3 L355.2 193.0 L356.4 191.6 L357.6 190.2 L358.8 188.9 L360.0 187.5 L361.2 186.1 L362.4 184.7 L363.6 183.3 L364.8 181.9 L366.0 180.5 L367.2 179.1 L368.4 177.6 L369.6 176.2 L370.8 174.7 L372.0 173.3 L373.2 171.8 L374.4 170.3 L375.6 168.9 L376.8 167.4 L378.0 165.9 L379.2 164.3 L380.4 162.8 L381.6 161.3 L382.8 159.8 L384.0 158.2 L385.2 156.7 L386.4 155.1 L387.6 153.5 L388.8 152.0 L390.0 150.4 L391.2 148.8 L392.4 147.2 L393.6 145.6 L394.8 143.9 L396.0 142.3 L397.2 140.7 L398.4 139.0 L399.6 137.4 L400.8 135.7 L402.0 134.1 L403.2 132.4 L404.4 130.7 L405.6 129.0 L406.8 127.3 L408.0 125.6 L409.2 123.9 L410.4 122.1 L411.6 120.4 L412.8 118.6 L414.0 116.9 L415.2 115.1 L416.4 113.4 L417.6 111.6 L418.8 109.8 L420.0 108.0 L421.2 106.2 L422.4 104.4 L423.6 102.6 L424.8 100.7 L426.0 98.9 L427.2 97.0 L428.4 95.2 L429.6 93.3 L430.8 91.5 L432.0 89.6 L433.2 87.7 L434.4 85.8 L435.6 83.9 L436.8 82.0 L438.0 80.1 L439.2 78.1 L440.4 76.2 L441.6 74.2 L442.8 72.3 L444.0 70.3 L445.2 68.3 L446.4 66.4 L447.6 64.4 L448.8 62.4 L450.0 60.4 L451.2 58.4 L452.4 56.3 L453.6 54.3 L454.8 52.3 L456.0 50.2" style="fill:none;stroke:var(--accent)" stroke-width="2.5"/><path d="M180.0 300.0 L180.1 298.8 L180.3 297.6 L180.4 296.4 L180.5 295.2 L180.7 294.0 L180.9 292.8 L181.0 291.6 L181.2 290.4 L181.4 289.2 L181.6 288.0 L181.8 286.8 L182.0 285.6 L182.3 284.4 L182.5 283.2 L182.7 282.0 L183.0 280.8 L183.3 279.6 L183.5 278.4 L183.8 277.2 L184.1 276.0 L184.4 274.8 L184.7 273.6 L185.0 272.4 L185.3 271.2 L185.6 270.0 L186.0 268.8 L186.3 267.6 L186.7 266.4 L187.0 265.2 L187.4 264.0 L187.8 262.8 L188.1 261.6 L188.5 260.4 L188.9 259.2 L189.3 258.0 L189.8 256.8 L190.2 255.6 L190.6 254.4 L191.1 253.2 L191.5 252.0 L192.0 250.8 L192.4 249.6 L192.9 248.4 L193.4 247.2 L193.9 246.0 L194.4 244.8 L194.9 243.6 L195.4 242.4 L196.0 241.2 L196.5 240.0 L197.0 238.8 L197.6 237.6 L198.2 236.4 L198.7 235.2 L199.3 234.0 L199.9 232.8 L200.5 231.6 L201.1 230.4 L201.7 229.2 L202.3 228.0 L202.9 226.8 L203.6 225.6 L204.2 224.4 L204.9 223.2 L205.5 222.0 L206.2 220.8 L206.9 219.6 L207.6 218.4 L208.3 217.2 L209.0 216.0 L209.7 214.8 L210.4 213.6 L211.1 212.4 L211.9 211.2 L212.6 210.0 L213.4 208.8 L214.1 207.6 L214.9 206.4 L215.7 205.2 L216.5 204.0 L217.3 202.8 L218.1 201.6 L218.9 200.4 L219.7 199.2 L220.5 198.0 L221.4 196.8 L222.2 195.6 L223.1 194.4 L223.9 193.2 L224.8 192.0 L225.7 190.8 L226.6 189.6 L227.5 188.4 L228.4 187.2 L229.3 186.0 L230.2 184.8 L231.2 183.6 L232.1 182.4 L233.0 181.2 L234.0 180.0 L235.0 178.8 L235.9 177.6 L236.9 176.4 L237.9 175.2 L238.9 174.0 L239.9 172.8 L240.9 171.6 L241.9 170.4 L243.0 169.2 L244.0 168.0 L245.1 166.8 L246.1 165.6 L247.2 164.4 L248.3 163.2 L249.3 162.0 L250.4 160.8 L251.5 159.6 L252.6 158.4 L253.8 157.2 L254.9 156.0 L256.0 154.8 L257.2 153.6 L258.3 152.4 L259.5 151.2 L260.6 150.0 L261.8 148.8 L263.0 147.6 L264.2 146.4 L265.4 145.2 L266.6 144.0 L267.8 142.8 L269.0 141.6 L270.3 140.4 L271.5 139.2 L272.7 138.0 L274.0 136.8 L275.3 135.6 L276.5 134.4 L277.8 133.2 L279.1 132.0 L280.4 130.8 L281.7 129.6 L283.0 128.4 L284.4 127.2 L285.7 126.0 L287.0 124.8 L288.4 123.6 L289.8 122.4 L291.1 121.2 L292.5 120.0 L293.9 118.8 L295.3 117.6 L296.7 116.4 L298.1 115.2 L299.5 114.0 L300.9 112.8 L302.4 111.6 L303.8 110.4 L305.3 109.2 L306.7 108.0 L308.2 106.8 L309.7 105.6 L311.1 104.4 L312.6 103.2 L314.1 102.0 L315.7 100.8 L317.2 99.6 L318.7 98.4 L320.2 97.2 L321.8 96.0 L323.3 94.8 L324.9 93.6 L326.5 92.4 L328.0 91.2 L329.6 90.0 L331.2 88.8 L332.8 87.6 L334.4 86.4 L336.1 85.2 L337.7 84.0 L339.3 82.8 L341.0 81.6 L342.6 80.4 L344.3 79.2 L345.9 78.0 L347.6 76.8 L349.3 75.6 L351.0 74.4 L352.7 73.2 L354.4 72.0 L356.1 70.8 L357.9 69.6 L359.6 68.4 L361.4 67.2 L363.1 66.0 L364.9 64.8 L366.6 63.6 L368.4 62.4 L370.2 61.2 L372.0 60.0 L373.8 58.8 L375.6 57.6 L377.4 56.4 L379.3 55.2 L381.1 54.0 L383.0 52.8 L384.8 51.6 L386.7 50.4 L388.5 49.2 L390.4 48.0 L392.3 46.8 L394.2 45.6 L396.1 44.4 L398.0 43.2 L399.9 42.0 L401.9 40.8 L403.8 39.6 L405.8 38.4 L407.7 37.2 L409.7 36.0 L411.7 34.8 L413.6 33.6 L415.6 32.4 L417.6 31.2 L419.6 30.0 L421.6 28.8 L423.7 27.6 L425.7 26.4 L427.7 25.2 L429.8 24.0" style="fill:none;stroke:var(--k-c)" stroke-width="2.5"/><line x1="240.0" y1="294.0" x2="360.0" y2="198.0" style="stroke:var(--accent);stroke-dasharray:6 4" stroke-width="2"/><line x1="186.0" y1="240.0" x2="282.0" y2="120.0" style="stroke:var(--k-c);stroke-dasharray:6 4" stroke-width="2"/><circle cx="300.0" cy="246.0" r="5" style="fill:var(--k-x0)"/><circle cx="234.0" cy="180.0" r="5" style="fill:var(--k-x0)"/><text x="324.0" y="260.4" style="fill:var(--accent);font-size:15px" text-anchor="start">tangent: slope m</text><text x="219.6" y="158.4" style="fill:var(--k-c);font-size:15px" text-anchor="end">tangent: slope 1/m</text><text x="464.0" y="64.2" style="fill:var(--accent);font-size:15px" text-anchor="start">f</text><text x="415.8" y="30.0" style="fill:var(--k-c);font-size:15px" text-anchor="end">f⁻¹</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The graph of $f$ (teal) and of $f^{-1}$ (red) are mirror images in the diagonal. The tangent of slope $m=f'(x_0)$ at $(x_0,y_0)$ mirrors to a tangent of slope $\frac1m$ at $(y_0,x_0)$. That's the whole theorem; the proof checks it with limits.</figcaption>
+</figure>
+
+<h3 id="proof-d">Proof D: the derivative of the inverse function (Satz 8.14, <a class="pl" href="script.html#p363">p. 363–364</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $D,E\subseteq\mathbb R$ and $f:D\to E$ a continuous bijection whose inverse $f^{-1}:E\to D$ is also continuous. Let $x_0\in D$ be an accumulation point of $D$, and suppose $f$ is differentiable at $x_0$ with $f'(x_0)\neq0$. Then $f^{-1}$ is differentiable at $y_0=f(x_0)$ and</p>
+<span class="math-display" style="display:block">$$\left(f^{-1}\right)'(y_0)=\frac1{f'(x_0)}=\frac1{f'\left(f^{-1}(y_0)\right)}.$$</span>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-08.html#proof-a">lessons 8</a> and <a class="xl" href="lesson-13.html#proof-a">13</a>)</span>
+<ul>
+  <li><strong>Limits through sequences</strong> (<a class="xl" href="lesson-13.html#proof-a">lesson 13</a>): $\lim_{y\to y_0}g(y)=L$ if and only if $g(y_n)\to L$ for <em>every</em> sequence $(y_n)$ in $E\setminus\{y_0\}$ with $y_n\to y_0$.</li>
+  <li><strong>Inverse function theorem</strong> (<a class="xl" href="lesson-08.html#proof-a">lesson 8</a>): a continuous, strictly monotone function on an interval has a continuous inverse. That's where the hypothesis “$f^{-1}$ continuous” usually comes from.</li>
+</ul></div>
+<p><strong>The idea.</strong> The difference quotient of $f^{-1}$ is the <em>flipped</em> difference quotient of $f$: if $y=f(x)$, then $\frac{f^{-1}(y)-f^{-1}(y_0)}{y-y_0}=\frac{x-x_0}{f(x)-f(x_0)}$. As $y\to y_0$, continuity of $f^{-1}$ makes $x\to x_0$, so the flipped quotient tends to $\frac1{f'(x_0)}$. Sequences make this “so” precise.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Before anything:</strong> “$y_0$ is an accumulation point of $E$” (otherwise the derivative of $f^{-1}$ at $y_0$ is not even defined).</li>
+  <li><strong>First line:</strong> “Let $(y_n)$ be a sequence in $E\setminus\{y_0\}$ with $y_n\to y_0$.”</li>
+  <li><strong>Last line:</strong> “$\frac{f^{-1}(y_n)-f^{-1}(y_0)}{y_n-y_0}\to\frac1{f'(x_0)}$; since the sequence was arbitrary, $(f^{-1})'(y_0)=\frac1{f'(x_0)}$.”</li>
+  <li><strong>The gap:</strong> translate $y_n$ into $x_n=f^{-1}(y_n)$ and check $x_n\neq x_0$, $x_n\to x_0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The mirrored road must reach its point from nearby, or there is no stretch for the gauge to measure.</p></div><div class="sp-formal"><p><strong>$y_0$ is an accumulation point of $E$.</strong> Since $x_0$ is an accumulation point of $D$, there are $x_n\in D\setminus\{x_0\}$ with $x_n\to x_0$. By continuity, $f(x_n)\to f(x_0)=y_0$, and $f(x_n)\neq y_0$ because $f$ is injective.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk towards $y_0$ on the mirrored road. Your mirror image walks towards $x_0$ on the original road, and never stands on it.</p></div><div class="sp-formal"><p>Let $(y_n)$ be a sequence in $E\setminus\{y_0\}$ with $y_n\to y_0$, and put $x_n=f^{-1}(y_n)$. Then $x_n\neq x_0$ (as $f(x_n)=y_n\neq y_0=f(x_0)$), and $x_n\to f^{-1}(y_0)=x_0$ because $f^{-1}$ is continuous.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The mirrored steepness is the original steepness turned upside down.</p></div><div class="sp-formal"><p>Since $y_n=f(x_n)$ and $y_0=f(x_0)$,</p><span class="math-display" style="display:block">$$\begin{aligned}\frac{f^{-1}(y_n)-f^{-1}(y_0)}{y_n-y_0}&amp;=\frac{x_n-x_0}{f(x_n)-f(x_0)}\\&amp;=\left(\frac{f(x_n)-f(x_0)}{x_n-x_0}\right)^{-1}\end{aligned}.$$</span><p>(The inner quotient is $\neq0$ because $f$ is injective.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The original gauge settles at a number that isn't zero, so its upside-down reading settles too.</p></div><div class="sp-formal"><p>By differentiability of $f$ at $x_0$ and <a class="xl" href="lesson-13.html#proof-a">lesson 13</a>, the inner quotient tends to $f'(x_0)\neq0$, so its inverse tends to $\frac1{f'(x_0)}$. This holds for every sequence $(y_n)$ in $E\setminus\{y_0\}$ with $y_n\to y_0$, so by <a class="xl" href="lesson-13.html#proof-a">lesson 13</a> again, $f^{-1}$ is differentiable at $y_0$ with $(f^{-1})'(y_0)=\frac1{f'(x_0)}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-seq">δ = 1/n builds a sequence</a> <a class="mvl" href="moves.html#m-flip">flip the difference quotient</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>First, $y_0$ is an accumulation point of $E$: take $x_n\in D\setminus\{x_0\}$ with $x_n\to x_0$; then $f(x_n)\to y_0$ by continuity and $f(x_n)\neq y_0$ by injectivity.</p>
+<p>Now let $(y_n)$ be any sequence in $E\setminus\{y_0\}$ with $y_n\to y_0$, and $x_n=f^{-1}(y_n)$. Then $x_n\neq x_0$, since $f(x_n)=y_n\neq y_0$, and $x_n\to x_0$ since $f^{-1}$ is continuous. Hence</p><span class="math-display" style="display:block">$$\begin{aligned}\frac{f^{-1}(y_n)-f^{-1}(y_0)}{y_n-y_0}&amp;=\left(\frac{f(x_n)-f(x_0)}{x_n-x_0}\right)^{-1}\longrightarrow\frac1{f'(x_0)}\end{aligned},$$</span><p>because the inner quotient tends to $f'(x_0)\neq0$. As $(y_n)$ was arbitrary, $\lim_{y\to y_0}\frac{f^{-1}(y)-f^{-1}(y_0)}{y-y_0}=\frac1{f'(x_0)}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Accumulation point:</strong> $x_n\to x_0$, $x_n\neq x_0$ gives $f(x_n)\to y_0$, $f(x_n)\neq y_0$.</li>
+  <li><strong>Pull back:</strong> any $y_n\to y_0$ in $E\setminus\{y_0\}$; $x_n=f^{-1}(y_n)$ satisfies $x_n\neq x_0$ (injective) and $x_n\to x_0$ ($f^{-1}$ continuous).</li>
+  <li><strong>Flip:</strong> $\frac{f^{-1}(y_n)-f^{-1}(y_0)}{y_n-y_0}=\left(\frac{f(x_n)-f(x_0)}{x_n-x_0}\right)^{-1}$.</li>
+  <li><strong>Limit:</strong> inner quotient $\to f'(x_0)\neq0$, so the whole thing $\to\frac1{f'(x_0)}$; every sequence, so the limit exists.</li>
+</ol>
+<p>In short: “accumulate, pull back, flip, every sequence”. This was Figalli FS26 B2 (7 points), with exactly this statement. Say where you use each hypothesis: injective (step 2 and the flip), $f^{-1}$ continuous (step 2), $f'(x_0)\neq0$ (step 4).</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Fill in: “$x_n\to x_0$ because ______.”</p>
+  <details><summary>Answer</summary><div><p>“…$f^{-1}$ is continuous at $y_0$ and $y_n\to y_0$, so $x_n=f^{-1}(y_n)\to f^{-1}(y_0)=x_0$.”</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> $f(x)=x^3$ is a continuous bijection $\mathbb R\to\mathbb R$ with continuous inverse $\sqrt[3]y$. What does the theorem say at $x_0=0$, and is $\sqrt[3]y$ differentiable at $0$?</p>
+  <details><summary>Answer</summary><div><p>$f'(0)=0$, so the theorem says nothing. In fact $\frac{\sqrt[3]h}h=h^{-2/3}\to\infty$: not differentiable, the tangent is vertical. The hypothesis $f'(x_0)\neq0$ is needed.</p></div></details></li>
+  <li><p><strong>Rung 3 (8 min).</strong> Write the whole proof from the exam box alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-4">Worked example 4: log, powers, arcsin and arctan (Beispiel 8.15, <a class="pl" href="script.html#p364">p. 364</a>; Section 8.3, <a class="pl" href="script.html#p384">p. 384–388</a>)</h3>
+<ol class="gq">
+  <li><p>$\exp:\mathbb R\to(0,\infty)$ is a continuous bijection with continuous inverse $\log$. Compute $\log'(y)$.</p>
+  <details><summary>Answer</summary><div><p>With $x=\log y$: $\log'(y)=\frac1{\exp'(x)}=\frac1{e^{\log y}}=\frac1y$. And for $y&lt;0$, $\left(\log|y|\right)'=\left(\log(-y)\right)'=\frac{-1}{-y}=\frac1y$ by the chain rule.</p></div></details></li>
+  <li><p>Show $(x^s)'=sx^{s-1}$ for $x&gt;0$ and any real $s$.</p>
+  <details><summary>Answer</summary><div><p>$x^s=e^{s\log x}$, so <span class="math-display" style="display:block">$$\begin{aligned}(x^s)'&amp;=e^{s\log x}\cdot\frac sx\\&amp;=x^s\cdot sx^{-1}\\&amp;=sx^{s-1}\end{aligned}.$$</span></p></div></details></li>
+  <li><p>$\sin:\left[-\frac\pi2,\frac\pi2\right]\to[-1,1]$ is continuous and strictly increasing, so it has a continuous inverse $\arcsin$ (<a class="xl" href="lesson-08.html#proof-a">lesson 8</a>). Compute $\arcsin'(y)$ for $-1&lt;y&lt;1$.</p>
+  <details><summary>Answer</summary><div><p>With $x=\arcsin y\in\left(-\frac\pi2,\frac\pi2\right)$: $\sin'(x)=\cos x&gt;0$, so</p><span class="math-display" style="display:block">$$\begin{aligned}\arcsin'(y)&amp;=\frac1{\cos x}\\&amp;=\frac1{\sqrt{1-\sin^2x}}\\&amp;=\frac1{\sqrt{1-y^2}}\end{aligned},$$</span><p>taking the positive root because $\cos x&gt;0$ there. At $y=\pm1$, $\cos x=0$ and $\arcsin$ has vertical tangents. Similarly $\arccos'(y)=-\frac1{\sqrt{1-y^2}}$.</p></div></details></li>
+  <li><p>$\tan=\frac{\sin}{\cos}:\left(-\frac\pi2,\frac\pi2\right)\to\mathbb R$ is a strictly increasing bijection. Compute $\tan'$ and then $\arctan'(y)$.</p>
+  <details><summary>Answer</summary><div><p>Quotient rule: <span class="math-display" style="display:block">$$\begin{aligned}\tan'&amp;=\frac{\cos^2+\sin^2}{\cos^2}\\&amp;=\frac1{\cos^2}\\&amp;=1+\tan^2\end{aligned}.$$</span>So with $x=\arctan y$:</p><span class="math-display" style="display:block">$$\arctan'(y)=\frac1{1+\tan^2x}=\frac1{1+y^2}.$$</span><p>Remember this one: it comes back in integrals ($\int\frac{dx}{1+x^2}=\arctan x$) and in Exercise 7.</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="your-table-of-derivatives">Your table of derivatives</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>$f(x)$</th><th>$f'(x)$</th><th>$f(x)$</th><th>$f'(x)$</th></tr></thead>
+  <tbody>
+    <tr><td>$x^s$ ($x&gt;0$)</td><td>$sx^{s-1}$</td><td>$\log|x|$</td><td>$\frac1x$</td></tr>
+    <tr><td>$e^{\alpha x}$</td><td>$\alpha e^{\alpha x}$</td><td>$a^x=e^{x\log a}$</td><td>$a^x\log a$</td></tr>
+    <tr><td>$\sin x$</td><td>$\cos x$</td><td>$\cos x$</td><td>$-\sin x$</td></tr>
+    <tr><td>$\tan x$</td><td>$\frac1{\cos^2x}=1+\tan^2x$</td><td>$\arctan x$</td><td>$\frac1{1+x^2}$</td></tr>
+    <tr><td>$\arcsin x$</td><td>$\frac1{\sqrt{1-x^2}}$</td><td>$\arccos x$</td><td>$-\frac1{\sqrt{1-x^2}}$</td></tr>
+    <tr><td>$\sinh x$</td><td>$\cosh x$</td><td>$\cosh x$</td><td>$\sinh x$</td></tr>
+  </tbody>
+</table></div>
+</div>
+
+<h2 id="s5-derivatives-of-derivatives">5. Derivatives of derivatives</h2>
+<div class="box">
+<p><strong>Definitions (Sections 8.1.4–8.1.5, <a class="pl" href="script.html#p366">p. 366–368</a>).</strong> Let every point of $D$ be an accumulation point (for example, an interval). A differentiable $f:D\to\mathbb R$ is <strong>continuously differentiable</strong> if $f'$ is continuous. If $f'$ is differentiable, $f''=(f')'$ is the <strong>second derivative</strong>, and inductively $f^{(n+1)}=(f^{(n)})'$. $C^n(D)$ is the set of $n$ times continuously differentiable functions, and $f$ is <strong>smooth</strong> ($f\in C^\infty(D)$) if all derivatives exist.</p>
+<p>Polynomials, $\exp$, $\sin$, $\cos$, $\log$ and power series inside their radius (shown later, with the fundamental theorem of calculus) are smooth. Sums, products and compositions of $n$ times differentiable functions are $n$ times differentiable, and the <strong>Leibniz rule</strong> $(fg)^{(n)}=\sum_{k=0}^n\binom nkf^{(k)}g^{(n-k)}$ holds (Korollar 8.25; compare the binomial theorem).</p>
+</div>
+<p>“Differentiable” and “continuously differentiable” are different. The standard example is worth knowing by heart, because MC questions love it.</p>
+<div class="box">
+<h3 id="we-5">Worked example 5: a derivative that exists everywhere but is not continuous (Beispiel 8.20, <a class="pl" href="script.html#p367">p. 367</a>)</h3>
+<p>Let $f(x)=x^2\sin\frac1x$ for $x\neq0$ and $f(0)=0$.</p>
+<ol class="gq">
+  <li><p>Compute $f'(0)$ from the definition.</p>
+  <details><summary>Answer</summary><div><p>$\frac{f(h)-f(0)}h=h\sin\frac1h$, and $\left|h\sin\frac1h\right|\le|h|\to0$. By the sandwich, $f'(0)=0$.</p></div></details></li>
+  <li><p>Compute $f'(x)$ for $x\neq0$.</p>
+  <details><summary>Answer</summary><div><p>Product and chain rule:</p><span class="math-display" style="display:block">$$\begin{aligned}f'(x)&amp;=2x\sin\frac1x+x^2\cos\frac1x\cdot\left(-\frac1{x^2}\right)\\&amp;=2x\sin\frac1x-\cos\frac1x\end{aligned}.$$</span></div></details></li>
+  <li><p>Is $f'$ continuous at $0$? Try $x_n=\frac1{2\pi n}$ and $x_n=\frac1{(2n+1)\pi}$.</p>
+  <details><summary>Answer</summary><div><p>$f'\left(\frac1{2\pi n}\right)=0-\cos(2\pi n)=-1$ and <span class="math-display" style="display:block">$$\begin{aligned}f'\left(\frac1{(2n+1)\pi}\right)&amp;=0-\cos((2n+1)\pi)\\&amp;=1\end{aligned}.$$</span>Both sequences tend to $0$, but $f'$ along them tends to $-1$ and $1$. So $\lim_{x\to0}f'(x)$ doesn't exist: $f$ is <strong>differentiable but not continuously differentiable</strong>.</p></div></details></li>
+  <li><p>And $g(x)=x|x|$: how often is it (continuously) differentiable?</p>
+  <details><summary>Answer</summary><div><p>$g(x)=x^2$ for $x\ge0$ and $-x^2$ for $x&lt;0$. At $0$: $\frac{h|h|}h=|h|\to0$, so $g'(0)=0$; elsewhere $g'(x)=\pm2x$. Together $g'(x)=2|x|$: continuous, so $g\in C^1$. But $g'=2|x|$ is not differentiable at $0$, so $g$ is not twice differentiable. (Übung 8.21: $x^n|x|$ is in $C^n$ but not $n+1$ times differentiable.)</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s6-where-maxima-and-minima-can">6. Where maxima and minima can be</h2>
+<div class="box">
+<p><strong>Definition 8.16 (<a class="pl" href="script.html#p365">p. 365</a>).</strong> $f:D\to\mathbb R$ has a <strong>local maximum</strong> at $x_0\in D$ if there is a $\delta&gt;0$ with $f(x)\le f(x_0)$ for all $x\in D\cap(x_0-\delta,x_0+\delta)$. It is <strong>isolated</strong> (strict) if $f(x)&lt;f(x_0)$ there for $x\neq x_0$. Local minimum likewise; <strong>local extremum</strong> means either. A <strong>global</strong> maximum is $f(x)\le f(x_0)$ for all $x\in D$.</p>
+</div>
+
+<h3 id="proof-e">Proof E: at an interior extremum the derivative is zero (Proposition 8.17, <a class="pl" href="script.html#p365">p. 365–366</a>)</h3>
+<div class="box">
+<p><strong>Proposition.</strong> Suppose $f$ has a local extremum at $x_0\in D$, $f$ is differentiable at $x_0$, and $x_0$ is an accumulation point of $D$ from the left and from the right (for example, an interior point of an interval). Then $f'(x_0)=0$.</p>
+</div>
+<p><strong>The idea.</strong> At the top of a hill, every secant to the right goes down (slope $\le0$) and every secant to the left comes up to you (slope $\ge0$). The derivative is the limit of both, so it is $\le0$ and $\ge0$ at once.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Without loss of generality a local maximum (else replace $f$ by $-f$). Choose $\delta&gt;0$ with $f(x)\le f(x_0)$ for $x\in D$, $|x-x_0|&lt;\delta$.”</li>
+  <li><strong>Last line:</strong> “$f'(x_0)\le0$ and $f'(x_0)\ge0$, so $f'(x_0)=0$.”</li>
+  <li><strong>The gap:</strong> the sign of the difference quotient on each side, and that limits keep $\le$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Stand at the top of the hill. Nearby, nothing is higher.</p></div><div class="sp-formal"><p>Without loss of generality $f$ has a local maximum at $x_0$ (otherwise use $-f$). Choose $\delta&gt;0$ with $f(x)\le f(x_0)$ for all $x\in D\cap(x_0-\delta,x_0+\delta)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Look to the right: the road goes down or stays level.</p></div><div class="sp-formal"><p>For $x\in D$ with $x_0&lt;x&lt;x_0+\delta$: $\frac{f(x)-f(x_0)}{x-x_0}\le0$ (numerator $\le0$, denominator $&gt;0$). Since $x_0$ is approached from the right and $f$ is differentiable there, $f'(x_0)=\lim_{x\searrow x_0}\frac{f(x)-f(x_0)}{x-x_0}\le0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Look to the left: the road comes up to you. Both views must agree, so the road is level at the top.</p></div><div class="sp-formal"><p>For $x\in D$ with $x_0-\delta&lt;x&lt;x_0$: $\frac{f(x)-f(x_0)}{x-x_0}\ge0$ (both $\le0$). So $f'(x_0)=\lim_{x\nearrow x_0}\frac{f(x)-f(x_0)}{x-x_0}\ge0$. Hence $f'(x_0)=0$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-obda">reduce to one case (oBdA)</a> <a class="mvl" href="moves.html#m-sign">read a sign from each side</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Without loss of generality $x_0$ is a local maximum (else consider $-f$): $f(x)\le f(x_0)$ for $x\in D$, $|x-x_0|&lt;\delta$. For such $x&gt;x_0$ the difference quotient is $\le0$, and for such $x&lt;x_0$ it is $\ge0$. Since $f$ is differentiable at $x_0$ and $x_0$ is approached from both sides, both one-sided limits equal $f'(x_0)$, and limits preserve non-strict inequalities. So $f'(x_0)\le0$ and $f'(x_0)\ge0$, i.e. $f'(x_0)=0$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> $f(x)=x$ on $[0,1]$ has a maximum at $1$ but $f'(1)=1$. Which hypothesis fails?</p>
+  <details><summary>Answer</summary><div><p>$1$ is not approached from the right within $D=[0,1]$. Only the left quotient exists, which gives only $f'(1)\ge0$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Why does the proof end with $f'(x_0)\le0$ and not $f'(x_0)&lt;0$, even though maybe all quotients are $&lt;0$?</p>
+  <details><summary>Answer</summary><div><p>Limits keep only non-strict inequalities: $-h^2&lt;0$ for all $h\neq0$, but the limit is $0$. (<a class="xl" href="lesson-11.html#s2-inequalities-and-the-sandwich-lemma">Lesson 11</a>.)</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<p><strong>Where to look for extrema (Korollar 8.18, <a class="pl" href="script.html#p366">p. 366</a>).</strong> If $f:I\to\mathbb R$ on an interval $I$ has a local extremum at $x_0$, then $x_0$ is</p>
+<ol>
+  <li>an <strong>endpoint</strong> of $I$ that belongs to $I$, or</li>
+  <li>a point where $f$ is <strong>not differentiable</strong>, or</li>
+  <li>a <strong>critical point</strong>: $f'(x_0)=0$.</li>
+</ol>
+<p>The converse is false: $f(x)=x^3$ has $f'(0)=0$ but no extremum at $0$. So critical points are only <em>candidates</em>. On a compact interval $[a,b]$, a continuous $f$ has a global maximum and minimum (extreme value theorem, <a class="xl" href="lesson-08.html#proof-c">lesson 8</a>), so: <strong>list all candidates, compute $f$ at each, and pick the largest and smallest.</strong> <a class="xl" href="lesson-18.html#s2-deciding-the-candidates-tests-for">Lesson 18</a> adds tests that decide a candidate on its own (sign change of $f'$, the sign of $f''$).</p>
+</div>
+<div class="box">
+<h3 id="we-6">Worked example 6: global extrema on a compact interval</h3>
+<ol class="gq">
+  <li><p>Find the global maximum and minimum of $f(x)=x^3-3x$ on $[0,2]$. List the candidates first.</p>
+  <details><summary>Answer</summary><div><p>Endpoints $0,2$; $f$ is differentiable everywhere; $f'(x)=3x^2-3=0$ at $x=\pm1$, and only $1\in[0,2]$. Values: $f(0)=0$, $f(1)=-2$, $f(2)=2$. Global maximum $2$ at $x=2$ (an endpoint, with $f'(2)=9\neq0$), global minimum $-2$ at $x=1$.</p></div></details></li>
+  <li><p>Same for $g(x)=|x^2-1|$ on $[-2,2]$.</p>
+  <details><summary>Answer</summary><div><p>Endpoints $\pm2$; not differentiable at $x=\pm1$ (corners, where $x^2-1$ changes sign); on $(-1,1)$, $g(x)=1-x^2$ with $g'(x)=-2x=0$ at $0$; for $|x|&gt;1$, $g'(x)=2x\neq0$. Values: $g(\pm2)=3$, $g(\pm1)=0$, $g(0)=1$. Maximum $3$ at $\pm2$, minimum $0$ at $\pm1$. (The point $0$ is a local maximum, not a global one.)</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s7-rolle-s-theorem-and-the">7. Rolle's theorem and the mean value theorem</h2>
+<p>Now the two sayings of the messengers. Both need three hypotheses, and an exam answer that states the theorem has to name all three: $f$ is <strong>continuous on the closed interval</strong> $[a,b]$, <strong>differentiable on the open interval</strong> $(a,b)$, and $a&lt;b$. (Differentiability at the endpoints is not needed, so $\sqrt{x(1-x)}$ on $[0,1]$ is allowed.)</p>
+
+<figure style="margin:.4rem 0" aria-label="Two panels. Left, Rolle: a curve starting and ending at the same height over a and b, with a horizontal tangent at a highest point xi. Right, mean value theorem: a curve from (a, f(a)) to (b, f(b)), the dashed secant between the endpoints, and a parallel tangent at a point xi between them.">
+<svg viewBox="0 0 640 260" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="10.0" y1="225.0" x2="300.0" y2="225.0" style="stroke:var(--muted)" stroke-width="1.2"/><path d="M20.0 192.5 L20.9 190.5 L21.8 188.6 L22.7 186.6 L23.6 184.6 L24.5 182.6 L25.4 180.7 L26.3 178.7 L27.2 176.7 L28.1 174.8 L29.0 172.8 L29.9 170.9 L30.8 168.9 L31.7 167.0 L32.6 165.1 L33.5 163.1 L34.4 161.2 L35.3 159.3 L36.2 157.4 L37.1 155.5 L38.0 153.6 L38.9 151.7 L39.8 149.8 L40.7 148.0 L41.6 146.1 L42.5 144.3 L43.4 142.5 L44.3 140.6 L45.2 138.8 L46.1 137.0 L47.0 135.2 L47.9 133.5 L48.8 131.7 L49.7 129.9 L50.6 128.2 L51.5 126.5 L52.4 124.8 L53.3 123.1 L54.2 121.4 L55.1 119.8 L56.0 118.1 L56.9 116.5 L57.8 114.9 L58.7 113.3 L59.6 111.7 L60.5 110.1 L61.4 108.6 L62.3 107.1 L63.2 105.6 L64.1 104.1 L65.0 102.6 L65.9 101.2 L66.8 99.7 L67.7 98.3 L68.6 96.9 L69.5 95.5 L70.4 94.2 L71.3 92.9 L72.2 91.6 L73.1 90.3 L74.0 89.0 L74.9 87.8 L75.8 86.5 L76.7 85.3 L77.6 84.1 L78.5 83.0 L79.4 81.9 L80.3 80.7 L81.2 79.7 L82.1 78.6 L83.0 77.5 L83.9 76.5 L84.8 75.5 L85.7 74.5 L86.6 73.6 L87.5 72.7 L88.4 71.8 L89.3 70.9 L90.2 70.0 L91.1 69.2 L92.0 68.4 L92.9 67.6 L93.8 66.9 L94.7 66.1 L95.6 65.4 L96.5 64.7 L97.4 64.1 L98.3 63.4 L99.2 62.8 L100.1 62.2 L101.0 61.7 L101.9 61.1 L102.8 60.6 L103.7 60.1 L104.6 59.7 L105.5 59.2 L106.4 58.8 L107.3 58.4 L108.2 58.1 L109.1 57.7 L110.0 57.4 L110.9 57.1 L111.8 56.8 L112.7 56.6 L113.6 56.4 L114.5 56.2 L115.4 56.0 L116.3 55.8 L117.2 55.7 L118.1 55.6 L119.0 55.5 L119.9 55.5 L120.8 55.4 L121.7 55.4 L122.6 55.4 L123.5 55.5 L124.4 55.5 L125.3 55.6 L126.2 55.7 L127.1 55.8 L128.0 55.9 L128.9 56.1 L129.8 56.3 L130.7 56.5 L131.6 56.7 L132.5 57.0 L133.4 57.2 L134.3 57.5 L135.2 57.8 L136.1 58.1 L137.0 58.5 L137.9 58.8 L138.8 59.2 L139.7 59.6 L140.6 60.0 L141.5 60.5 L142.4 60.9 L143.3 61.4 L144.2 61.9 L145.1 62.4 L146.0 62.9 L146.9 63.5 L147.8 64.0 L148.7 64.6 L149.6 65.2 L150.5 65.8 L151.4 66.4 L152.3 67.0 L153.2 67.7 L154.1 68.3 L155.0 69.0 L155.9 69.7 L156.8 70.4 L157.7 71.1 L158.6 71.8 L159.5 72.6 L160.4 73.3 L161.3 74.1 L162.2 74.9 L163.1 75.6 L164.0 76.4 L164.9 77.2 L165.8 78.1 L166.7 78.9 L167.6 79.7 L168.5 80.6 L169.4 81.4 L170.3 82.3 L171.2 83.2 L172.1 84.0 L173.0 84.9 L173.9 85.8 L174.8 86.7 L175.7 87.6 L176.6 88.5 L177.5 89.5 L178.4 90.4 L179.3 91.3 L180.2 92.3 L181.1 93.2 L182.0 94.1 L182.9 95.1 L183.8 96.1 L184.7 97.0 L185.6 98.0 L186.5 98.9 L187.4 99.9 L188.3 100.9 L189.2 101.9 L190.1 102.8 L191.0 103.8 L191.9 104.8 L192.8 105.8 L193.7 106.8 L194.6 107.8 L195.5 108.8 L196.4 109.7 L197.3 110.7 L198.2 111.7 L199.1 112.7 L200.0 113.7 L200.9 114.7 L201.8 115.7 L202.7 116.6 L203.6 117.6 L204.5 118.6 L205.4 119.6 L206.3 120.6 L207.2 121.5 L208.1 122.5 L209.0 123.5 L209.9 124.5 L210.8 125.4 L211.7 126.4 L212.6 127.4 L213.5 128.3 L214.4 129.3 L215.3 130.2 L216.2 131.2 L217.1 132.1 L218.0 133.0 L218.9 134.0 L219.8 134.9 L220.7 135.8 L221.6 136.8 L222.5 137.7 L223.4 138.6 L224.3 139.5 L225.2 140.4 L226.1 141.3 L227.0 142.2 L227.9 143.1 L228.8 144.0 L229.7 144.8 L230.6 145.7 L231.5 146.6 L232.4 147.4 L233.3 148.3 L234.2 149.1 L235.1 150.0 L236.0 150.8 L236.9 151.7 L237.8 152.5 L238.7 153.3 L239.6 154.1 L240.5 154.9 L241.4 155.7 L242.3 156.5 L243.2 157.3 L244.1 158.1 L245.0 158.9 L245.9 159.7 L246.8 160.4 L247.7 161.2 L248.6 162.0 L249.5 162.7 L250.4 163.5 L251.3 164.2 L252.2 165.0 L253.1 165.7 L254.0 166.4 L254.9 167.1 L255.8 167.9 L256.7 168.6 L257.6 169.3 L258.5 170.0 L259.4 170.7 L260.3 171.4 L261.2 172.1 L262.1 172.8 L263.0 173.4 L263.9 174.1 L264.8 174.8 L265.7 175.5 L266.6 176.1 L267.5 176.8 L268.4 177.4 L269.3 178.1 L270.2 178.7 L271.1 179.4 L272.0 180.0 L272.9 180.7 L273.8 181.3 L274.7 182.0 L275.6 182.6 L276.5 183.2 L277.4 183.9 L278.3 184.5 L279.2 185.1 L280.1 185.7 L281.0 186.3 L281.9 187.0 L282.8 187.6 L283.7 188.2 L284.6 188.8 L285.5 189.4 L286.4 190.0 L287.3 190.7 L288.2 191.3 L289.1 191.9 L290.0 192.5" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><line x1="20.0" y1="192.5" x2="20.0" y2="225.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="20.0" cy="192.5" r="4" style="fill:var(--k-x0)"/><line x1="290.0" y1="192.5" x2="290.0" y2="225.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="290.0" cy="192.5" r="4" style="fill:var(--k-x0)"/><text x="20.0" y="245.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">a</text><text x="290.0" y="245.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">b</text><line x1="49.8" y1="55.4" x2="193.8" y2="55.4" style="stroke:var(--accent)" stroke-width="3"/><circle cx="121.8" cy="55.4" r="5" style="fill:var(--accent)"/><line x1="121.8" y1="55.4" x2="121.8" y2="225.0" style="stroke:var(--accent);stroke-dasharray:3 4" stroke-width="1.2"/><text x="121.8" y="245.0" style="fill:var(--accent);font-size:16px" text-anchor="middle">ξ</text><text x="155.0" y="22.0" style="fill:var(--ink);font-size:16px" text-anchor="middle">Rolle</text><line x1="340.0" y1="225.0" x2="630.0" y2="225.0" style="stroke:var(--muted)" stroke-width="1.2"/><path d="M350.0 212.0 L350.9 210.9 L351.8 209.7 L352.7 208.6 L353.6 207.4 L354.5 206.3 L355.4 205.2 L356.3 204.0 L357.2 202.9 L358.1 201.8 L359.0 200.6 L359.9 199.5 L360.8 198.4 L361.7 197.2 L362.6 196.1 L363.5 195.0 L364.4 193.8 L365.3 192.7 L366.2 191.6 L367.1 190.5 L368.0 189.3 L368.9 188.2 L369.8 187.1 L370.7 186.0 L371.6 184.9 L372.5 183.7 L373.4 182.6 L374.3 181.5 L375.2 180.4 L376.1 179.3 L377.0 178.2 L377.9 177.1 L378.8 176.0 L379.7 174.9 L380.6 173.8 L381.5 172.7 L382.4 171.6 L383.3 170.6 L384.2 169.5 L385.1 168.4 L386.0 167.3 L386.9 166.2 L387.8 165.2 L388.7 164.1 L389.6 163.0 L390.5 162.0 L391.4 160.9 L392.3 159.9 L393.2 158.8 L394.1 157.8 L395.0 156.8 L395.9 155.7 L396.8 154.7 L397.7 153.7 L398.6 152.6 L399.5 151.6 L400.4 150.6 L401.3 149.6 L402.2 148.6 L403.1 147.6 L404.0 146.6 L404.9 145.6 L405.8 144.6 L406.7 143.6 L407.6 142.6 L408.5 141.7 L409.4 140.7 L410.3 139.7 L411.2 138.8 L412.1 137.8 L413.0 136.9 L413.9 135.9 L414.8 135.0 L415.7 134.0 L416.6 133.1 L417.5 132.2 L418.4 131.3 L419.3 130.4 L420.2 129.5 L421.1 128.6 L422.0 127.7 L422.9 126.8 L423.8 125.9 L424.7 125.0 L425.6 124.1 L426.5 123.3 L427.4 122.4 L428.3 121.6 L429.2 120.7 L430.1 119.9 L431.0 119.1 L431.9 118.2 L432.8 117.4 L433.7 116.6 L434.6 115.8 L435.5 115.0 L436.4 114.2 L437.3 113.4 L438.2 112.6 L439.1 111.8 L440.0 111.1 L440.9 110.3 L441.8 109.6 L442.7 108.8 L443.6 108.1 L444.5 107.3 L445.4 106.6 L446.3 105.9 L447.2 105.2 L448.1 104.5 L449.0 103.8 L449.9 103.1 L450.8 102.4 L451.7 101.7 L452.6 101.1 L453.5 100.4 L454.4 99.7 L455.3 99.1 L456.2 98.5 L457.1 97.8 L458.0 97.2 L458.9 96.6 L459.8 96.0 L460.7 95.4 L461.6 94.8 L462.5 94.2 L463.4 93.6 L464.3 93.0 L465.2 92.5 L466.1 91.9 L467.0 91.4 L467.9 90.8 L468.8 90.3 L469.7 89.8 L470.6 89.2 L471.5 88.7 L472.4 88.2 L473.3 87.7 L474.2 87.2 L475.1 86.8 L476.0 86.3 L476.9 85.8 L477.8 85.4 L478.7 84.9 L479.6 84.5 L480.5 84.0 L481.4 83.6 L482.3 83.2 L483.2 82.8 L484.1 82.4 L485.0 82.0 L485.9 81.6 L486.8 81.2 L487.7 80.9 L488.6 80.5 L489.5 80.1 L490.4 79.8 L491.3 79.5 L492.2 79.1 L493.1 78.8 L494.0 78.5 L494.9 78.2 L495.8 77.9 L496.7 77.6 L497.6 77.3 L498.5 77.0 L499.4 76.8 L500.3 76.5 L501.2 76.2 L502.1 76.0 L503.0 75.8 L503.9 75.5 L504.8 75.3 L505.7 75.1 L506.6 74.9 L507.5 74.7 L508.4 74.5 L509.3 74.3 L510.2 74.1 L511.1 74.0 L512.0 73.8 L512.9 73.6 L513.8 73.5 L514.7 73.4 L515.6 73.2 L516.5 73.1 L517.4 73.0 L518.3 72.9 L519.2 72.8 L520.1 72.7 L521.0 72.6 L521.9 72.5 L522.8 72.4 L523.7 72.4 L524.6 72.3 L525.5 72.2 L526.4 72.2 L527.3 72.2 L528.2 72.1 L529.1 72.1 L530.0 72.1 L530.9 72.1 L531.8 72.1 L532.7 72.1 L533.6 72.1 L534.5 72.1 L535.4 72.1 L536.3 72.1 L537.2 72.2 L538.1 72.2 L539.0 72.3 L539.9 72.3 L540.8 72.4 L541.7 72.4 L542.6 72.5 L543.5 72.6 L544.4 72.7 L545.3 72.8 L546.2 72.9 L547.1 73.0 L548.0 73.1 L548.9 73.2 L549.8 73.3 L550.7 73.4 L551.6 73.6 L552.5 73.7 L553.4 73.8 L554.3 74.0 L555.2 74.1 L556.1 74.3 L557.0 74.5 L557.9 74.6 L558.8 74.8 L559.7 75.0 L560.6 75.2 L561.5 75.4 L562.4 75.5 L563.3 75.7 L564.2 76.0 L565.1 76.2 L566.0 76.4 L566.9 76.6 L567.8 76.8 L568.7 77.0 L569.6 77.3 L570.5 77.5 L571.4 77.7 L572.3 78.0 L573.2 78.2 L574.1 78.5 L575.0 78.8 L575.9 79.0 L576.8 79.3 L577.7 79.5 L578.6 79.8 L579.5 80.1 L580.4 80.4 L581.3 80.7 L582.2 80.9 L583.1 81.2 L584.0 81.5 L584.9 81.8 L585.8 82.1 L586.7 82.4 L587.6 82.7 L588.5 83.0 L589.4 83.3 L590.3 83.7 L591.2 84.0 L592.1 84.3 L593.0 84.6 L593.9 84.9 L594.8 85.3 L595.7 85.6 L596.6 85.9 L597.5 86.2 L598.4 86.6 L599.3 86.9 L600.2 87.3 L601.1 87.6 L602.0 87.9 L602.9 88.3 L603.8 88.6 L604.7 89.0 L605.6 89.3 L606.5 89.7 L607.4 90.0 L608.3 90.4 L609.2 90.7 L610.1 91.1 L611.0 91.4 L611.9 91.8 L612.8 92.1 L613.7 92.5 L614.6 92.9 L615.5 93.2 L616.4 93.6 L617.3 93.9 L618.2 94.3 L619.1 94.6 L620.0 95.0" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><line x1="350.0" y1="212.0" x2="350.0" y2="225.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="350.0" cy="212.0" r="4" style="fill:var(--k-x0)"/><line x1="620.0" y1="95.0" x2="620.0" y2="225.0" style="stroke:var(--k-x0);stroke-dasharray:4 4" stroke-width="1.2"/><circle cx="620.0" cy="95.0" r="4" style="fill:var(--k-x0)"/><text x="350.0" y="245.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">a</text><text x="620.0" y="245.0" style="fill:var(--k-x0);font-size:16px" text-anchor="middle">b</text><line x1="350.0" y1="212.0" x2="620.0" y2="95.0" style="stroke:var(--k-c);stroke-dasharray:7 5" stroke-width="1.8"/><line x1="413.0" y1="113.2" x2="557.0" y2="50.8" style="stroke:var(--accent)" stroke-width="3"/><circle cx="485.0" cy="82.0" r="5" style="fill:var(--accent)"/><line x1="485.0" y1="82.0" x2="485.0" y2="225.0" style="stroke:var(--accent);stroke-dasharray:3 4" stroke-width="1.2"/><text x="485.0" y="245.0" style="fill:var(--accent);font-size:16px" text-anchor="middle">ξ</text><text x="485.0" y="22.0" style="fill:var(--ink);font-size:16px" text-anchor="middle">mean value theorem</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Left: Rolle. Same height at both ends, so somewhere in between (here at the top) the tangent is horizontal. Right: the mean value theorem. Somewhere in between, the tangent is parallel to the secant through the endpoints. Tilt the right picture until the secant is horizontal, and you get the left picture: that is the proof.</figcaption>
+</figure>
+
+<h3 id="proof-f">Proof F: Rolle's theorem (Satz 8.28, <a class="pl" href="script.html#p371">p. 371</a>)</h3>
+<div class="box">
+<p><strong>Theorem (Rolle).</strong> Let $a&lt;b$ and $f:[a,b]\to\mathbb R$ continuous, differentiable on $(a,b)$, with $f(a)=f(b)$. Then there is a $\xi\in(a,b)$ with $f'(\xi)=0$.</p>
+</div>
+<div class="need"><span class="label">You'll need these (from <a class="xl" href="lesson-08.html#proof-c">lesson 8</a> and <a class="xl" href="#s6-where-maxima-and-minima-can">section 6</a>)</span>
+<ul>
+  <li><strong>Extreme value theorem</strong> (<a class="xl" href="lesson-08.html#proof-c">lesson 8</a>): a continuous function on a compact interval $[a,b]$ attains its maximum and its minimum.</li>
+  <li><strong>Proof E:</strong> at a local extremum in the open interval $(a,b)$ where $f$ is differentiable, $f'=0$.</li>
+</ul></div>
+<p><strong>The idea.</strong> The messenger's path has a highest and a lowest point (it is continuous on a closed interval). If either one is strictly between $a$ and $b$, the path is level there (Proof E). If both are at the ends, then highest = lowest because the ends have equal height, so the path is flat everywhere.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “By the extreme value theorem there are $x_{\min},x_{\max}\in[a,b]$ with $f(x_{\min})\le f(x)\le f(x_{\max})$ for all $x\in[a,b]$.”</li>
+  <li><strong>Last line:</strong> “So $f'(\xi)=0$ for some $\xi\in(a,b)$.”</li>
+  <li><strong>The gap:</strong> two cases: an extremum inside, or both at the endpoints.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Every unbroken path over a closed stretch has a highest and a lowest point.</p></div><div class="sp-formal"><p>$f$ is continuous on the compact interval $[a,b]$, so by the extreme value theorem there are $x_{\min},x_{\max}\in[a,b]$ with $f(x_{\min})\le f(x)\le f(x_{\max})$ for all $x\in[a,b]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If the top or the bottom is strictly between the ends, the path is level there.</p></div><div class="sp-formal"><p><strong>Case 1:</strong> $x_{\max}\in(a,b)$ or $x_{\min}\in(a,b)$. Call that point $\xi$. Then $f$ has a local extremum at $\xi$, $f$ is differentiable at $\xi$, and $\xi$ is an interior point of $[a,b]$. By Proof E, $f'(\xi)=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If both are at the ends, the top and the bottom have the same height, so the path never rises or falls.</p></div><div class="sp-formal"><p><strong>Case 2:</strong> $x_{\max},x_{\min}\in\{a,b\}$. Since $f(a)=f(b)$, $f(x_{\min})=f(x_{\max})$, so $f$ is constant on $[a,b]$ and $f'(\xi)=0$ for every $\xi\in(a,b)$, for example $\xi=\frac{a+b}2$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-cases">split into cases</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>By the extreme value theorem, $f$ attains its minimum at some $x_{\min}\in[a,b]$ and its maximum at some $x_{\max}\in[a,b]$. If one of them, call it $\xi$, lies in $(a,b)$, then $f$ has a local extremum at the interior point $\xi$ where it is differentiable, so $f'(\xi)=0$: indeed, for a maximum the difference quotients at $\xi$ are $\le0$ from the right and $\ge0$ from the left, and both one-sided limits equal $f'(\xi)$. Otherwise both lie in $\{a,b\}$, and $f(a)=f(b)$ gives $\min f=\max f$, so $f$ is constant and $f'=0$ on all of $(a,b)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>State it with all hypotheses:</strong> $a&lt;b$, continuous on $[a,b]$, differentiable on $(a,b)$, $f(a)=f(b)$ ⇒ $\exists\,\xi\in(a,b)$: $f'(\xi)=0$.</li>
+  <li><strong>Extreme value theorem:</strong> $x_{\min},x_{\max}$ exist.</li>
+  <li><strong>Case 1, one inside:</strong> $f'=0$ there. Write the two-line sign argument (quotients $\le0$ on the right, $\ge0$ on the left), don't just cite it: in FS22 it was 5 points for the proof, and that argument is half of it.</li>
+  <li><strong>Case 2, both at the ends:</strong> $\min=\max$, constant, any $\xi$.</li>
+</ol>
+<p>In short: “max and min exist; inside ⇒ level by the sign argument; both outside ⇒ constant”. This was Einsiedler FS22 question 5 (2 points for the statement, 5 for the proof) and question 11 of the 2017 summer exam, which added: “you may not use the mean value theorem”. That's fair, since the mean value theorem is proved from Rolle.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where is “continuous on the closed interval” used? Give a function on $[0,1]$, differentiable on $(0,1)$, with $f(0)=f(1)$ but no $\xi$, to show it is needed.</p>
+  <details><summary>Answer</summary><div><p>In the extreme value theorem. Example: $f(x)=x$ for $0\le x&lt;1$ and $f(1)=0$. It is differentiable on $(0,1)$ with $f'=1$, $f(0)=f(1)=0$, but never $f'=0$. It's not continuous at $1$, and has no maximum.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> And where is “differentiable on $(a,b)$” used? Give the counterexample.</p>
+  <details><summary>Answer</summary><div><p>In Case 1, to apply Proof E. Example: $f(x)=|x|$ on $[-1,1]$: continuous, $f(-1)=f(1)$, but $f'(x)=\pm1$ wherever it exists. The maximum is at the ends and the minimum at the corner $0$.</p></div></details></li>
+  <li><p><strong>Rung 3 (6 min).</strong> Write the statement and the whole proof from the exam box alone, including the sign argument.</p></li>
+</ol></div>
+
+<h3 id="proof-g">Proof G: the mean value theorem (Theorem 8.29, <a class="pl" href="script.html#p371">p. 371–372</a>)</h3>
+<div class="box">
+<p><strong>Theorem (mean value theorem).</strong> Let $a&lt;b$ and $f:[a,b]\to\mathbb R$ continuous and differentiable on $(a,b)$. Then there is a $\xi\in(a,b)$ with</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;f'(\xi)=\frac{f(b)-f(a)}{b-a}\\&amp;\text{equivalently}\\&amp;f(b)-f(a)=f'(\xi)\,(b-a)\end{aligned}.$$</span>
+</div>
+<p><strong>The idea.</strong> Tilt the picture: subtract the secant line from $f$. The new function has equal values at both ends, so Rolle gives a level point, and “level after subtracting the secant” means “parallel to the secant” before.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> define a helper $F(x)=f(x)-\frac{f(b)-f(a)}{b-a}(x-a)$.</li>
+  <li><strong>Last line:</strong> “$0=F'(\xi)=f'(\xi)-\frac{f(b)-f(a)}{b-a}$.”</li>
+  <li><strong>The gap:</strong> check that $F$ satisfies all three hypotheses of Rolle.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The rider's journey, seen from a cart that travels at the average speed: measure only how far ahead of the cart the rider is.</p></div><div class="sp-formal"><p>Define $F:[a,b]\to\mathbb R$ by</p><span class="math-display" style="display:block">$$F(x)=f(x)-\frac{f(b)-f(a)}{b-a}\,(x-a).$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>At the start and at the end, rider and cart are side by side.</p></div><div class="sp-formal"><p>$F(a)=f(a)$ and $F(b)=f(b)-(f(b)-f(a))=f(a)$, so $F(a)=F(b)$. $F$ is continuous on $[a,b]$ and differentiable on $(a,b)$, as the difference of $f$ and a polynomial, with $F'(x)=f'(x)-\frac{f(b)-f(a)}{b-a}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So by the first saying, at some moment the gap stopped changing: the rider was exactly at the cart's speed.</p></div><div class="sp-formal"><p>By Rolle's theorem there is a $\xi\in(a,b)$ with $0=F'(\xi)=f'(\xi)-\frac{f(b)-f(a)}{b-a}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-helper">a helper function</a> <a class="mvl" href="moves.html#m-tilt">subtract the secant</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $F(x)=f(x)-\frac{f(b)-f(a)}{b-a}(x-a)$ for $x\in[a,b]$. Then $F$ is continuous on $[a,b]$, differentiable on $(a,b)$ with $F'(x)=f'(x)-\frac{f(b)-f(a)}{b-a}$, and $F(a)=f(a)=F(b)$. By Rolle's theorem there is a $\xi\in(a,b)$ with $F'(\xi)=0$, that is, $f'(\xi)=\frac{f(b)-f(a)}{b-a}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Helper:</strong> $F(x)=f(x)-\frac{f(b)-f(a)}{b-a}(x-a)$.</li>
+  <li><strong>Check Rolle's three hypotheses</strong> as a list: continuous on $[a,b]$, differentiable on $(a,b)$, $F(a)=F(b)=f(a)$ (compute both).</li>
+  <li><strong>Rolle:</strong> $0=F'(\xi)=f'(\xi)-\frac{f(b)-f(a)}{b-a}$.</li>
+</ol>
+<p>In short: “subtract the secant, check three things, Rolle”. This was Kobel-Keller HS24 question 17, 3 points: exactly one point per step. In an exam, write the helper first: it's the step graders look for.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Compute $F(b)$ in one line.</p>
+  <details><summary>Answer</summary><div><span class="math-display" style="display:block">$$\begin{aligned}F(b)&amp;=f(b)-\frac{f(b)-f(a)}{b-a}(b-a)\\&amp;=f(b)-f(b)+f(a)\\&amp;=f(a)\end{aligned}.$$</span></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> The helper $G(x)=f(x)-\frac{f(b)-f(a)}{b-a}\,x$ also works. Why?</p>
+  <details><summary>Answer</summary><div><p>It differs from $F$ by the constant $\frac{f(b)-f(a)}{b-a}\,a$, so $G(a)=G(b)$ still holds and $G'=F'$. (This is the form in the Kobel-Keller solution.)</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the statement and the whole proof from the exam box alone.</p></li>
+</ol></div>
+
+<p><strong>Why it's cool.</strong> A derivative is a purely local thing: $f'(\xi)$ only knows about $f$ in a tiny neighbourhood of $\xi$. The mean value theorem turns that local knowledge into global knowledge: if you know $f'$ everywhere on an interval, you know how much $f$ can change across the whole interval. That's why section speed controls (Austria's “Section Control”, Italy's “Tutor”) can fine you for your average speed: by the mean value theorem, you really did drive at least that fast at some moment, and no lawyer can argue with Rolle.</p>
+
+<div class="box">
+<p><strong>Two warnings (Beispiel 8.32 and Übung 8.30, <a class="pl" href="script.html#p372">p. 372–373</a>).</strong></p>
+<ul>
+  <li><strong>Only for real-valued functions.</strong> $\gamma(t)=e^{it}$ on $[0,2\pi]$ has $\gamma(0)=\gamma(2\pi)=1$, but $\gamma'(t)=ie^{it}$ has $|\gamma'(t)|=1$: it is never $0$. Rolle fails for complex values. (The proof breaks at “max and min”: $\mathbb C$ is not ordered.)</li>
+  <li><strong>Only on intervals.</strong> On $D=(0,1)\cup(2,3)$, let $f=0$ on $(0,1)$ and $f=1$ on $(2,3)$. Then $f'=0$ everywhere on $D$, but $f(2.5)-f(0.5)=1\neq f'(\xi)\cdot2$ for every $\xi$. The interval $[0.5,2.5]$ is not inside $D$.</li>
+</ul>
+</div>
+
+<h2 id="s8-what-the-mean-value-theorem">8. What the mean value theorem gives you</h2>
+<h3 id="proof-h">Proof H: constant and monotone from the sign of $f'$ (Korollare 8.33 and 8.35, <a class="pl" href="script.html#p373">p. 373–374</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $I$ be an interval and $f:I\to\mathbb R$ differentiable.</p>
+<ol>
+  <li>If $f'(x)=0$ for all $x\in I$, then $f$ is <strong>constant</strong>.</li>
+  <li>If $f'(x)\ge0$ for all $x\in I$, then $f$ is <strong>increasing</strong>; if $f'(x)&gt;0$ for all $x$, then <strong>strictly increasing</strong>. (Likewise $\le0$, $&lt;0$ give decreasing, strictly decreasing.)</li>
+</ol>
+</div>
+<p><strong>The idea.</strong> To compare $f$ at two points $x_1&lt;x_2$, apply the mean value theorem on $[x_1,x_2]$: $f(x_2)-f(x_1)=f'(\xi)(x_2-x_1)$. The sign of the right side is the sign of $f'(\xi)$. That's all; the only care needed is that $[x_1,x_2]$ lies inside $I$, which is exactly what “interval” means.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $x_1&lt;x_2$ in $I$.” (Constant, increasing, strictly increasing are all statements about two arbitrary points.)</li>
+  <li><strong>Last lines:</strong> “$f(x_1)=f(x_2)$”, “$f(x_1)\le f(x_2)$”, “$f(x_1)&lt;f(x_2)$”.</li>
+  <li><strong>The gap:</strong> one mean value theorem between $x_1$ and $x_2$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Pick any two milestones on the road, and the stretch between them.</p></div><div class="sp-formal"><p>Let $x_1&lt;x_2$ in $I$. Since $I$ is an interval, $[x_1,x_2]\subseteq I$, so $f$ is differentiable, hence continuous, on $[x_1,x_2]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The toll-keeper's rule: the climb between the milestones is the steepness at one moment times the distance.</p></div><div class="sp-formal"><p>By the mean value theorem there is a $\xi\in(x_1,x_2)$ with</p><span class="math-display" style="display:block">$$\begin{aligned}&amp;f(x_2)-f(x_1)=f'(\xi)\,(x_2-x_1)\\&amp;x_2-x_1&gt;0\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Read off the sign of the climb from the sign of the steepness.</p></div><div class="sp-formal"><p>If $f'=0$ on $I$: $f(x_2)=f(x_1)$; since $x_1&lt;x_2$ were arbitrary, $f$ is constant. If $f'\ge0$: $f(x_2)-f(x_1)\ge0$, so $f$ is increasing. If $f'&gt;0$: $f(x_2)-f(x_1)&gt;0$, so $f$ is strictly increasing. The decreasing cases are the same with the signs reversed. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $x_1&lt;x_2$ in $I$. Since $I$ is an interval, $[x_1,x_2]\subseteq I$, and $f$ is continuous on $[x_1,x_2]$ and differentiable on $(x_1,x_2)$. By the mean value theorem, $f(x_2)-f(x_1)=f'(\xi)(x_2-x_1)$ for some $\xi\in(x_1,x_2)$. As $x_2-x_1&gt;0$, the sign of $f(x_2)-f(x_1)$ is the sign of $f'(\xi)$: it is $0$ if $f'\equiv0$, $\ge0$ if $f'\ge0$, and $&gt;0$ if $f'&gt;0$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Two arbitrary points</strong> $x_1&lt;x_2$ in $I$; say “$[x_1,x_2]\subseteq I$ since $I$ is an interval”.</li>
+  <li><strong>Check the hypotheses:</strong> differentiable on $I$ ⇒ continuous on $[x_1,x_2]$, differentiable on $(x_1,x_2)$.</li>
+  <li><strong>Mean value theorem:</strong> $f(x_2)-f(x_1)=f'(\xi)(x_2-x_1)$; now use what you know about $f'(\xi)$.</li>
+</ol>
+<p>In short: “two points, interval, hypotheses, mean value theorem, read off”. This template solves Exercises 2, 4, 5 and 6 below: only the last step changes (a sign, or a bound $|f'(\xi)|\le M$). The Einsiedler HS21 grading scheme gave points for checking the hypotheses and for “$[y,x]\subseteq I$” explicitly.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> $f(x)=x^3$ is strictly increasing on $\mathbb R$. Does that contradict part 2?</p>
+  <details><summary>Answer</summary><div><p>No. Part 2 says $f'&gt;0$ ⇒ strictly increasing; $x^3$ shows the converse is false ($f'(0)=0$). The correct converse is weaker: if $f$ is increasing, then $f'\ge0$, since all difference quotients are $\ge0$ and limits keep $\ge$ (Übung 8.36).</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Show: if $f,g:I\to\mathbb R$ are differentiable with $f'=g'$ on the interval $I$, then $f=g+C$ for a constant $C$.</p>
+  <details><summary>Answer</summary><div><p>$(f-g)'=0$ on $I$, so by part 1, $f-g$ is constant. (This is why antiderivatives are unique up to a constant, <a class="xl" href="lesson-19.html#proof-a">lesson 19</a>.)</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the exam box alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-7">Worked example 7: inequalities from the mean value theorem</h3>
+<ol class="gq">
+  <li><p>Show $|\sin x-\sin y|\le|x-y|$ for all $x,y\in\mathbb R$.</p>
+  <details><summary>Answer</summary><div><p>For $x\neq y$: by the mean value theorem, $\sin x-\sin y=\cos\xi\,(x-y)$ for some $\xi$ between them, and $|\cos\xi|\le1$. So $\sin$ is Lipschitz with constant $1$. (Exercise 2 is this argument in general.)</p></div></details></li>
+  <li><p>Show $\frac x{1+x}&lt;\log(1+x)&lt;x$ for $x&gt;0$. (Use the mean value theorem for $\log$ on $[1,1+x]$.)</p>
+  <details><summary>Answer</summary><div><p>$\log(1+x)-\log1=\frac1\xi\cdot x$ with $1&lt;\xi&lt;1+x$. Since $\frac1{1+x}&lt;\frac1\xi&lt;1$, multiplying by $x&gt;0$ gives the claim. (<a class="xl" href="lesson-16.html#we-2">Lesson 16</a> had the non-strict version from $1+x\le e^x$.)</p></div></details></li>
+  <li><p>Show $e^x\ge1+x$ for all $x\in\mathbb R$ with Proof H. (Consider $g(x)=e^x-1-x$.)</p>
+  <details><summary>Answer</summary><div><p>$g'(x)=e^x-1$ is $\ge0$ for $x\ge0$ and $\le0$ for $x\le0$. So $g$ is increasing on $[0,\infty)$ and decreasing on $(-\infty,0]$ (Proof H on each interval), and $g(x)\ge g(0)=0$ on both.</p></div></details></li>
+  <li><p>Show $\sqrt{1+x}\le1+\frac x2$ for $x\ge0$.</p>
+  <details><summary>Answer</summary><div><p>$h(x)=1+\frac x2-\sqrt{1+x}$ has $h(0)=0$ and $h'(x)=\frac12-\frac1{2\sqrt{1+x}}\ge0$ for $x\ge0$, so $h$ is increasing and $h(x)\ge0$. (The recipe: put everything on one side, check the start value, check the sign of the derivative.)</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s9-exercises">9. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1–3 count for scoring. Exercises 4–9 are proof and computation practice from the exams, and the Bonus is a beautiful extra.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Felder FS23, MC3, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a></p>
+  <p>The function $f:\mathbb R\to\mathbb R$, $x\mapsto\max(x,1-x)$ is</p>
+  <p>(A) not continuous. (B) continuous but not differentiable. (C) differentiable but not continuously differentiable. (D) continuously differentiable but not twice differentiable.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(B).</strong> $x\ge1-x$ exactly when $x\ge\frac12$, so $f(x)=1-x$ for $x\le\frac12$ and $f(x)=x$ for $x\ge\frac12$. Both pieces are continuous and agree at $\frac12$, so $f$ is continuous. At $\frac12$ the left derivative is $-1$ and the right derivative is $1$, so $f$ is not differentiable there: a corner, like $|x|$. (In fact $f(x)=\frac12+\left|x-\frac12\right|$.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Einsiedler HS21, question 11, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>(a) [5 points] Let $I=(a,b)$ with $a&lt;b$ and $f:I\to\mathbb R$ differentiable. Show that if $f'$ is bounded, then $f$ is Lipschitz continuous, that is, there is a constant $c&gt;0$ with $|f(x)-f(y)|\le c|x-y|$ for all $x,y\in I$.</p>
+  <p>(b) [2 points] Does this still hold if the domain of $f$ is not an interval? Prove it or give a counterexample.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> “Let $x,y\in I$” … “$|f(x)-f(y)|\le c|x-y|$”. <em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> <a class="mvl" href="moves.html#m-counter">a small counterexample</a>.</p>
+  <p><strong>(a)</strong> Let $M\ge0$ with $|f'(t)|\le M$ for all $t\in I$, and put $c=M+1&gt;0$. Let $x,y\in I$. If $x=y$ there is nothing to show. Otherwise, without loss of generality $y&lt;x$. Since $I$ is an interval, $[y,x]\subseteq I$. As $f$ is differentiable on $I$, it is continuous on $[y,x]$ and differentiable on $(y,x)$. By the mean value theorem there is a $\xi\in(y,x)$ with $f(x)-f(y)=f'(\xi)(x-y)$. Hence</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(y)|&amp;=|f'(\xi)|\,|x-y|\\&amp;\le  M|x-y|\\&amp;\le  c\,|x-y|\end{aligned}.$$</span>
+  <p>(Taking $c=M+1$ instead of $M$ only makes sure $c&gt;0$, as the question demands, even if $f'=0$.)</p>
+  <p><strong>(b)</strong> No. Let $D=(0,1)\cup(1,2)$ and $f=0$ on $(0,1)$, $f=1$ on $(1,2)$. Every point of $D$ has a neighbourhood in $D$ on which $f$ is constant, so $f$ is differentiable with $f'=0$, which is bounded. But for $x=1-t$, $y=1+t$ with small $t&gt;0$: $|f(x)-f(y)|=1$, while $c|x-y|=2ct\to0$. So no constant $c$ works, and $f$ is not Lipschitz. The proof of (a) breaks at “$[y,x]\subseteq I$”.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (in the style of the older Einsiedler exams' one-point theory questions, 1 point)</h3>
+  <p>Define: “$f:D\to\mathbb R$ is differentiable at $x_0\in D$”. Then give, without proof, a function that is continuous on $\mathbb R$ but not differentiable at $0$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>Let $x_0$ be an accumulation point of $D$. $f$ is differentiable at $x_0$ if the limit $\lim_{x\to x_0}\frac{f(x)-f(x_0)}{x-x_0}$ exists in $\mathbb R$; this limit is $f'(x_0)$. Example: $f(x)=|x|$. (For the full point, don't forget the accumulation point and that the limit is a real number.)</p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (2 points), Exercise 2 (7) and Exercise 3 (1) make 10. If you have 7 of 10, you're done. Exercise 2 (a) is the most important one: if it went well, the exam box of Proof H is in your hands. Exercises 4–9 and the Bonus are extra practice and don't count against you.</p>
+</div>
+
+<div class="box"><h3 id="ex-4">Exercise 4 (Einsiedler FS22, question 12, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-08-einsiedler-fs22-repeat-exam.pdf&amp;t=2022-08%20Einsiedler%20-%20FS22%20repeat%20exam">FS22 exam</a></p>
+  <p>(a) [5 points] Let $f_n:[0,1]\to\mathbb R$ be functions with: $f_n$ is differentiable and $|f_n'(x)|\le1$ for all $n$ and $x\in[0,1]$; $f_n(0)=0$ for all $n$; and $\lim_nf_n(1)=1$. Show that $f_n$ converges uniformly to a function $f:[0,1]\to\mathbb R$.</p>
+  <p>(b) [2 points] Does this still hold if the bound is replaced by $|f_n'(x)|\le2$? Prove it or give a counterexample.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> guess the limit, then bound $|f_n(x)-f(x)|$ by something without $x$ (<a class="xl" href="lesson-15.html#proof-a">lesson 15</a>). <em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> <a class="mvl" href="moves.html#m-supx">bound independently of x</a> <a class="mvl" href="moves.html#m-counter">a small counterexample</a>.</p>
+  <p><strong>The guess.</strong> The slope is at most $1$, the function must climb from $0$ to almost $1$ over a distance $1$: it has no room except the line $f(x)=x$.</p>
+  <p><strong>(a)</strong> Let $x\in(0,1]$. By the mean value theorem on $[0,x]$, <span class="math-display" style="display:block">$$f_n(x)=f_n(x)-f_n(0)=f_n'(\xi)\,x\le x.$$</span>For $x\in[0,1)$, by the mean value theorem on $[x,1]$, <span class="math-display" style="display:block">$$f_n(1)-f_n(x)=f_n'(\eta)(1-x)\le1-x,$$</span>so $f_n(x)\ge x-(1-f_n(1))$. Both bounds also hold at the endpoints $x=0$ and $x=1$ (check directly; at $x=1$ the first gives $f_n(1)\le1$). So for all $x\in[0,1]$:</p>
+  <span class="math-display" style="display:block">$$0\le x-f_n(x)\le1-f_n(1).$$</span>
+  <p>The right side doesn't depend on $x$ and tends to $0$. So $\sup_x|f_n(x)-x|\le1-f_n(1)\to0$: $f_n\to f$ uniformly, with $f(x)=x$.</p>
+  <p><strong>(b)</strong> No. Let $f_n(x)=x+(-1)^n\frac{\sin(\pi x)}\pi$. Then $f_n(0)=0$, $f_n(1)=1$, and $f_n'(x)=1+(-1)^n\cos(\pi x)\in[0,2]$. But $f_n\left(\frac12\right)=\frac12+\frac{(-1)^n}\pi$ alternates between two values, so $(f_n)$ doesn't even converge pointwise at $\frac12$, let alone uniformly.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (2018 winter exam, question 8, 4 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2018-winter-rechnungen-format.pdf&amp;t=2018%20winter%20%28Rechnungen%20format%29">2018 winter exam</a></p>
+  <p>Let $f:\mathbb R\to\mathbb R$ be smooth with $f'(x)\ge c$ for all $x$, for a constant $c&gt;0$.</p>
+  <p>(a) [2 points] Show that $f$ is bijective. (b) [2 points] Show that $f^{-1}$ is continuously differentiable (so $f$ is a “$C^1$-diffeomorphism”).</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> <a class="mvl" href="moves.html#m-inj">the injectivity template</a> <a class="mvl" href="moves.html#m-surj">the surjectivity template</a>.</p>
+  <p><strong>(a) Injective:</strong> $f'&gt;0$ on the interval $\mathbb R$, so $f$ is strictly increasing (Proof H), hence injective. <strong>Surjective:</strong> for $x&gt;0$, the mean value theorem on $[0,x]$ gives $f(x)-f(0)=f'(\xi)x\ge cx$; for $x&lt;0$, on $[x,0]$, $f(0)-f(x)=f'(\xi)(-x)\ge-cx$. So</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;f(x)\ge  f(0)+cx\ \ (x&gt;0)\\&amp;f(x)\le  f(0)+cx\ \ (x&lt;0)\end{aligned}.$$</span>
+  <p>Let $y\in\mathbb R$ and $R=\frac{|y-f(0)|}c+1$. Then $f(R)\ge f(0)+cR&gt;y$ and $f(-R)\le f(0)-cR&lt;y$. By the intermediate value theorem on $[-R,R]$, $f(x)=y$ for some $x$. So $f$ is bijective.</p>
+  <p><strong>(b)</strong> $f$ is continuous and strictly increasing on the interval $\mathbb R$, so $f^{-1}$ is continuous (inverse function theorem, <a class="xl" href="lesson-08.html#proof-a">lesson 8</a>). Since $f'(x)\ge c&gt;0$, Proof D applies at every point: $f^{-1}$ is differentiable with</p>
+  <span class="math-display" style="display:block">$$\left(f^{-1}\right)'(y)=\frac1{f'\left(f^{-1}(y)\right)}.$$</span>
+  <p>This is continuous in $y$: $f^{-1}$ and $f'$ are continuous, and $t\mapsto\frac1t$ is continuous on $[c,\infty)$. So $f^{-1}\in C^1$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Exercise 6 (PVK mock HS25, question A2 (C) and (D))</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK mock exam</a> · <a href="pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">solutions</a></p>
+  <p>Let $f:[0,1]\to\mathbb R$ be non-constant and twice continuously differentiable with $f(0)=f(1)=0$ and $\int_0^1f(x)\,dx=0$.</p>
+  <p>(C) Prove there are $a,b\in(0,1)$ with $f'(a)&gt;0$ and $f'(b)&lt;0$. (D) Show there is a $c\in(0,1)$ with $f''(c)&lt;0$.</p>
+  <p>(Parts (A) and (B) of this question are about integrals; they come back in <a class="xl" href="lesson-19.html">lesson 19</a>.)</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>.</p>
+  <p><strong>Step 0: $f$ takes a positive value.</strong> This is where $\int_0^1f=0$ is needed. Suppose $f\le0$ on $[0,1]$. As $f$ is non-constant, $f(x_1)&lt;0$ for some $x_1$. By continuity, $f\le\frac{f(x_1)}2$ on an interval $J\ni x_1$ of some length $\ell&gt;0$, so $\int_0^1f\le\ell\cdot\frac{f(x_1)}2&lt;0$ (<a class="xl" href="lesson-09.html#proof-d">lesson 9</a>: the integral is monotone). Contradiction. So $f(x_1)&gt;0$ for some $x_1$, and $x_1\in(0,1)$ since $f(0)=f(1)=0$.</p>
+  <p><strong>(C)</strong> Mean value theorem on $[0,x_1]$: $f'(a)=\frac{f(x_1)-0}{x_1}&gt;0$ for some $a\in(0,x_1)$. On $[x_1,1]$: $f'(b)=\frac{0-f(x_1)}{1-x_1}&lt;0$ for some $b\in(x_1,1)$.</p>
+  <p><strong>(D)</strong> From (C), $a&lt;x_1&lt;b$. $f'$ is differentiable, so the mean value theorem for $f'$ on $[a,b]$ gives $c\in(a,b)$ with</p>
+  <span class="math-display" style="display:block">$$f''(c)=\frac{f'(b)-f'(a)}{b-a}&lt;0.$$</span>
+  <p><strong>A remark on the official solution.</strong> It says “without loss of generality $f$ has a positive maximum”. For (C) that's fine, but for (D) it is not: $f(x)=x^2-x$ is non-constant with $f(0)=f(1)=0$ and $f''=2&gt;0$ everywhere. What saves (D) is Step 0, which needs $\int f=0$. In an exam, a “without loss of generality” must really cost nothing.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-7">Exercise 7 (a constant in disguise)</h3>
+  <p>Show that $\arctan x+\arctan\frac1x=\frac\pi2$ for all $x&gt;0$. What happens for $x&lt;0$?</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Moves:</em> <a class="mvl" href="moves.html#m-mvt">mean value theorem between two points</a> (through Proof H).</p>
+  <p>Let $g(x)=\arctan x+\arctan\frac1x$ on $(0,\infty)$. By the chain rule and Worked example 4,</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}g'(x)&amp;=\frac1{1+x^2}+\frac1{1+x^{-2}}\cdot\left(-\frac1{x^2}\right)\\&amp;=\frac1{1+x^2}-\frac1{x^2+1}\\&amp;=0\end{aligned}.$$</span>
+  <p>$(0,\infty)$ is an interval, so $g$ is constant (Proof H): <span class="math-display" style="display:block">$$g(x)=g(1)=2\arctan1=2\cdot\frac\pi4=\frac\pi2.$$</span>For $x&lt;0$, the same computation on the interval $(-\infty,0)$ gives the constant $g(-1)=-\frac\pi2$. So on $\mathbb R\setminus\{0\}$, $g'=0$ but $g$ is not constant: the domain is not an interval.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-8">Exercise 8 (derivative drill)</h3>
+  <p>Differentiate: (a) $\log(\log x)$ for $x&gt;1$; (b) $x^{\sin x}$ for $x&gt;0$; (c) $\arcsin(2x)$ for $|x|&lt;\frac12$; (d) $e^{-x^2}\cos x$.</p><details class="sol"><summary>Solution</summary><div>
+  <p>(a) $\frac1{\log x}\cdot\frac1x=\frac1{x\log x}$.</p>
+  <p>(b) $x^{\sin x}=e^{\sin x\log x}$, so the derivative is $x^{\sin x}\left(\cos x\,\log x+\frac{\sin x}x\right)$.</p>
+  <p>(c) $\frac1{\sqrt{1-4x^2}}\cdot2=\frac2{\sqrt{1-4x^2}}$.</p>
+  <p>(d)</p><span class="math-display" style="display:block">$$\begin{aligned}-2xe^{-x^2}\cos x-e^{-x^2}\sin x&amp;=-e^{-x^2}(2x\cos x+\sin x)\end{aligned}.$$</span>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-9">Exercise 9 (Einsiedler FS22, question 5, 7 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-08-einsiedler-fs22-repeat-exam.pdf&amp;t=2022-08%20Einsiedler%20-%20FS22%20repeat%20exam">FS22 exam</a></p>
+  <p>(a) [2 points] State Rolle's theorem. (b) [5 points] Prove Rolle's theorem.</p><details class="sol"><summary>Solution</summary><div>
+  <p>Write it from Proof F's exam box, then compare with Proof F's one-piece version. Check: all three hypotheses named in (a) ($a&lt;b$; continuous on $[a,b]$; differentiable on $(a,b)$; $f(a)=f(b)$), $\xi$ in the <em>open</em> interval, the extreme value theorem cited by name, both cases, and the sign argument written out in Case 1.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus: derivatives can't jump (Darboux's theorem)</h3>
+  <p>Let $f:[a,b]\to\mathbb R$ be differentiable (one-sided at the endpoints) with $f'(a)&lt;0&lt;f'(b)$. Show that $f'(\xi)=0$ for some $\xi\in(a,b)$. Conclude that $f'$ has the intermediate value property, even when $f'$ is not continuous.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> like Rolle: find an interior minimum. <em>Moves:</em> <a class="mvl" href="moves.html#m-sign">read a sign from each side</a> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>.</p>
+  <p>$f$ is continuous (Proof A), so it attains its minimum at some $x_m\in[a,b]$. Since $f'(a)=\lim_{x\searrow a}\frac{f(x)-f(a)}{x-a}&lt;0$, the quotient is negative for $x$ close to $a$, so $f(x)&lt;f(a)$ there: $a$ is not the minimum. Since $f'(b)=\lim_{x\nearrow b}\frac{f(x)-f(b)}{x-b}&gt;0$ and $x-b&lt;0$, $f(x)&lt;f(b)$ for $x$ close to $b$: $b$ is not the minimum either. So $x_m\in(a,b)$, and by Proof E, $f'(x_m)=0$.</p>
+  <p>For the intermediate value property: if $f'(a)&lt;\gamma&lt;f'(b)$, apply this to $g(x)=f(x)-\gamma x$. So $f'$ takes every value between $f'(a)$ and $f'(b)$. In particular, a derivative can never have a jump like the sign function. It can only be discontinuous by oscillating, as in Worked example 5.</p>
+</div></details>
+</div>
+
+<h2 id="s10-for-wonder-optional-5-min">10. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>A road the gauges can't see.</strong> The function $\psi(x)=e^{-1/x}$ for $x&gt;0$ and $\psi(x)=0$ for $x\le0$ is smooth, and <em>every</em> derivative of it at $0$ is $0$ (Beispiel 8.23, <a class="pl" href="script.html#p368">p. 368–370</a>). Its climb gauge reads $0$, the gauge of that gauge reads $0$, and so on forever: at $0$ every reading is that of the zero function. Yet it is not zero for $x&gt;0$. So knowing all derivatives at one point does not determine a smooth function. Power series are different: <a class="xl" href="lesson-21.html#we-4">lesson 21</a> will show what extra is needed. Glued together, such functions give smooth “bump” functions, equal to $1$ on one interval and $0$ outside a bigger one, which are a basic tool in physics and geometry.</p>
+<p><strong>A quarrel over the gauge.</strong> Newton and Leibniz both invented the derivative, in the 1660s and 1670s, independently. The Royal Society, whose president was Newton, ruled in 1712 that Leibniz had copied. He hadn't. The quarrel split British and continental mathematics for a century, and the continent won: Leibniz's notation $\frac{df}{dx}$ was so much better that British mathematicians fell behind until they adopted it.</p>
+<p><strong>Monsters, again.</strong> <a class="xl" href="lesson-15.html#s10-for-wonder-optional-5-min">Lesson 15</a>'s Weierstrass function is continuous and differentiable <em>nowhere</em>. Going the other way, there is a differentiable function on $[0,1]$ whose derivative is discontinuous at uncountably many points, on the Cantor set (Section 8.6.2). Worked example 5 is the mildest member of this family.</p>
+
+<h2 id="s11-what-we-skipped">11. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Leibniz notation details and complex-valued derivatives (<a class="pl" href="script.html#p356">p. 356–357</a>).</strong> Low; the definition is the same, applied to real and imaginary parts.</li>
+  <li><strong>Übung 8.7 (<a class="pl" href="script.html#p360">p. 360</a>):</strong> the power rule with the binomial theorem, and the kernel of $f\mapsto f'$ on polynomials. Low; Proof B's Rung 2 does the power rule.</li>
+  <li><strong>Übungen 8.10 and 8.13 (<a class="pl" href="script.html#p362">p. 362–363</a>):</strong> $(x^{-n})'$ and another nested derivative. Low; Exercise 8 is the same kind of drill.</li>
+  <li><strong>Übung 8.19 (<a class="pl" href="script.html#p366">p. 366</a>):</strong> local extrema of $x^3-x$ and of $|x^3-x|$. <a class="xl" href="lesson-18.html#s2-deciding-the-candidates-tests-for">Lesson 18</a>, with the tests that decide candidates.</li>
+  <li><strong>The proof that $\psi$ is smooth (Beispiel 8.23, <a class="pl" href="script.html#p368">p. 368–370</a>)</strong> and Übung 8.24 (the bump function). Optional; For wonder.</li>
+  <li><strong>Proofs of Korollare 8.25 and 8.26 (Übung 8.27, <a class="pl" href="script.html#p370">p. 370</a>):</strong> the Leibniz rule and higher derivatives of compositions. Low; the statements are in <a class="xl" href="#s5-derivatives-of-derivatives">section 5</a>.</li>
+  <li><strong>Übungen 8.31 and 8.34 (<a class="pl" href="script.html#p372">p. 372–373</a>):</strong> $C^1$ on $[a,b]$ ⇒ Lipschitz (Exercise 2 is the same), and $f^{(n)}=0$ ⇒ polynomial. Low.</li>
+  <li><strong>Übung 8.36 (<a class="pl" href="script.html#p374">p. 374</a>):</strong> increasing ⇔ $f'\ge0$. Medium; the converse direction is Proof H's Rung 1.</li>
+  <li><strong>Korollar 8.37 (<a class="pl" href="script.html#p374">p. 374–375</a>):</strong> sufficient conditions for local extrema. <a class="xl" href="lesson-18.html#s2-deciding-the-candidates-tests-for">Lesson 18</a>.</li>
+  <li><strong>Sections 8.3–8.4 (<a class="pl" href="script.html#p384">p. 384–392</a>):</strong> the inverse trigonometric and hyperbolic functions in detail. Their derivatives are in Worked example 4 and the table; the rest comes in <a class="xl" href="lesson-18.html#s7-a-short-tour-the-inverse">lesson 18</a> where it's needed.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-18.html">lesson 18</a>, extrema, convexity and l'Hôpital (Section 8.2): deciding whether a critical point is a maximum or minimum, convex functions and Jensen's inequality, Cauchy's mean value theorem, and l'Hôpital's rule for limits.</p>
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-16.html">← Lesson 16: The Spell with Endless Words</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-18.html">Lesson 18: Ropes over the Valley →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

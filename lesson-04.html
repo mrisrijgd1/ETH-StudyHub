@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Siege Engineer's Three Weapons</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-03.html">← Lesson 3</a>
+<a href="lesson-05.html">Lesson 5 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 4 of 26</span>
+  <h1>The Siege Engineer's Three Weapons</h1>
+  <p class="lead">Implication, the three proof methods (direct, contrapositive, contradiction), induction, and the 16 axioms of $\mathbb R$, with a deep dive into the completeness axiom.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-3-5">Recap of lesson 3 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-knight-s">1. The story: the knight&#x27;s promise</a>
+</li>
+<li><a href="#s2-implication">2. Implication</a>
+</li>
+<li><a href="#s3-the-three-weapons-and-the">3. The three weapons, and the siege tower</a>
+<ol>
+<li><a href="#proof-a">Proof A: by contrapositive, if $n^2$ is even, then $n$ is even (the back gate)</a></li>
+<li><a href="#proof-b">Proof B: $\sqrt2$ is irrational (Lemma 2.30, p. 89–90)</a></li>
+<li><a href="#proof-c">Proof C: Bernoulli&#x27;s inequality, by induction</a></li>
+</ol></li>
+<li><a href="#s4-the-sixteen-laws-of-the">4. The sixteen laws of the realm (Section 2.1)</a>
+<ol>
+<li><a href="#deep-dive-reading-the-completeness">Deep dive: reading the completeness axiom symbol by symbol</a></li>
+</ol></li>
+<li><a href="#s5-worked-examples">5. Worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: watching $\mathbb Q$ fail, with actual numbers</a></li>
+<li><a href="#we-2">Worked example 2: choosing the weapon</a></li>
+</ol></li>
+<li><a href="#s6-exercises">6. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (true/false block, 3 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (induction, linked to a real exam question)</a></li>
+<li><a href="#ex-3">Exercise 3 (contradiction)</a></li>
+<li><a href="#ex-4">Exercise 4 (lesson 1 strikes back)</a></li>
+<li><a href="#bonus">Bonus (spot the mistake)</a></li>
+</ol></li>
+<li><a href="#s7-for-wonder-optional-5-min">7. For wonder</a>
+</li>
+<li><a href="#s8-what-we-skipped">8. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) negate $A\Rightarrow B$ without thinking, (2) say which proof method fits a given claim, (3) <strong>write an induction proof</strong> with a clearly labelled base case and step, (4) <strong>prove that $\sqrt2$ is irrational</strong>, and (5) say in one sentence what the completeness axiom says and why $\mathbb Q$ fails it.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p9">p. 9–10</a>, Section 1.3:</strong> the logical operations, including implication.</li>
+      <li><strong><a class="pl" href="script.html#p53">p. 53–54</a>, Sections 1.8.1–1.8.2:</strong> proof by contradiction and by contrapositive.</li>
+      <li><strong><a class="pl" href="script.html#p71">p. 71–80</a>, Section 2.1:</strong> the 16 axioms of $\mathbb R$. Axioms (1)–(9) are on <a class="pl" href="script.html#p71">p. 71–74</a>, (10)–(15) on <a class="pl" href="script.html#p77">p. 77</a>, and the completeness axiom (16) on <a class="pl" href="script.html#p79">p. 79–80</a>.</li>
+      <li><strong><a class="pl" href="script.html#p83">p. 83</a>, Satz 2.15:</strong> the principle of induction.</li>
+      <li><strong><a class="pl" href="script.html#p89">p. 89–90</a>, Lemma 2.30:</strong> $\sqrt2$ is irrational, so $\mathbb Q$ does not satisfy the completeness axiom.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+The 14-point proof part needs these tools every time. Einsiedler's HS21 exam #12 even says “Hinweis: Argumentieren Sie indirekt” (argue indirectly). And the completeness axiom is the foundation of sup and inf in <a class="xl" href="lesson-06.html#proof-a">lesson 6</a>, and of everything after it.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-3-5">Recap of <a class="xl" href="lesson-03.html">lesson 3</a> (5 min)</h3>
+<ul>
+  <li><strong>Equivalence relation:</strong> reflexive, symmetric, transitive. Prove it with three bullets, one per axiom.</li>
+  <li><strong>Classes</strong> $[x]=\{y\mid y\sim x\}$ are equal or disjoint, so they partition $X$. The quotient $X/\!\sim$ is the set of classes.</li>
+  <li><strong>Countable:</strong> there is a bijection $\mathbb N\to X$. $\mathbb Z$, $\mathbb N\times\mathbb N$ and $\mathbb Q$ are countable.</li>
+  <li><strong>Diagonal argument:</strong> list, flip the diagonal, the flipped one is missing. So $\{A,B\}^{\mathbb N}$ is uncountable.</li>
+</ul>
+<ol class="gq">
+  <li><p>Is $x\sim y\iff|x|=|y|$ an equivalence relation on $\mathbb R$? What are the classes?</p>
+  <details><summary>Answer</summary><div><p>Yes (“same absolute value”). The classes are $\{x,-x\}$ for $x&gt;0$, and $\{0\}$.</p></div></details></li>
+  <li><p>Which proof method did Proof C of <a class="xl" href="lesson-03.html#proof-c">lesson 3</a> use?</p>
+  <details><summary>Answer</summary><div><p>Contradiction: assume a complete list exists, then build a banner that is missing. Today you'll see why that method fitted (“there is no …” claims).</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>implication ($A\Rightarrow B$)</td><td>Implikation</td></tr>
+    <tr><td>premise, hypothesis / conclusion</td><td>Voraussetzung / Folgerung, Behauptung</td></tr>
+    <tr><td>converse ($B\Rightarrow A$)</td><td>Umkehrung</td></tr>
+    <tr><td>contrapositive ($\neg B\Rightarrow\neg A$)</td><td>Kontraposition</td></tr>
+    <tr><td>direct proof</td><td>direkter Beweis</td></tr>
+    <tr><td>proof by contradiction</td><td>Widerspruchsbeweis, indirekter Beweis</td></tr>
+    <tr><td>induction</td><td>vollständige Induktion</td></tr>
+    <tr><td>base case</td><td>Induktionsanfang (Induktionsverankerung)</td></tr>
+    <tr><td>induction hypothesis</td><td>Induktionsvoraussetzung, Induktionsannahme</td></tr>
+    <tr><td>induction step</td><td>Induktionsschritt</td></tr>
+    <tr><td>axiom / field / ordered field</td><td>Axiom / Körper / angeordneter Körper</td></tr>
+    <tr><td>completeness axiom</td><td>Vollständigkeitsaxiom</td></tr>
+    <tr><td>irrational</td><td>irrational</td></tr>
+    <tr><td>without loss of generality (w.l.o.g.)</td><td>ohne Beschränkung der Allgemeinheit (o.B.d.A.)</td></tr>
+    <tr><td>telescoping sum</td><td>Teleskopsumme</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-knight-s">1. The story: the knight's promise</h2>
+<div class="story">
+<p>A knight swears: <em>“If the dragon comes, I will fight.”</em> When has the knight broken the oath? <strong>Only</strong> if the dragon comes and the knight doesn't fight. If the dragon never comes, the oath is kept, whatever the knight does.</p>
+<p>A siege engineer has three ways to take a fortress (a claim): the direct assault, the back gate, and letting the enemy hang themselves. And for fortresses that stretch on forever, there is a siege tower: a line of signal fires along the mountains.</p>
+</div>
+<p>In maths: the oath is the implication $A\Rightarrow B$ (A = the dragon comes, B = the knight fights). The three weapons are the direct proof, the contrapositive and the proof by contradiction, and the signal fires are induction.</p>
+
+<h2 id="s2-implication">2. Implication</h2>
+<div class="box">
+<p><strong>$A\Rightarrow B$ is false only when $A$ is true and $B$ is false.</strong> Three consequences you'll use constantly:</p>
+<ul>
+  <li><strong>Negation:</strong> $\neg(A\Rightarrow B)\iff A\wedge\neg B$. (“The dragon came <em>and</em> the knight didn't fight.”) This is what you assume in a proof by contradiction.</li>
+  <li><strong>Contrapositive = same oath:</strong> $(A\Rightarrow B)\iff(\neg B\Rightarrow\neg A)$. “If I didn't fight, the dragon didn't come.” The same promise, said from the other side.</li>
+  <li><strong>Converse ≠ same oath:</strong> $B\Rightarrow A$ (“if I fight, the dragon came”) is a completely different promise. Mixing these up is one of the most common exam mistakes, and the true/false part loves to test it.</li>
+</ul>
+</div>
+
+<h2 id="s3-the-three-weapons-and-the">3. The three weapons, and the siege tower</h2>
+<ul>
+  <li><strong>Weapon 1: the direct assault (direct proof).</strong> Start from what you know and march straight to the conclusion. Most proofs in <a class="xl" href="lesson-02.html">lessons 2</a> and <a class="xl" href="lesson-03.html">3</a> were direct.</li>
+  <li><strong>Weapon 2: the back gate (contrapositive, Section 1.8.2, <a class="pl" href="script.html#p54">p. 54</a>).</strong> To prove $A\Rightarrow B$, prove $\neg B\Rightarrow\neg A$ instead. Use it when “not $B$” gives you something concrete to hold, and “$A$” doesn't.</li>
+  <li><strong>Weapon 3: let the enemy hang themselves (contradiction, Section 1.8.1, <a class="pl" href="script.html#p53">p. 53</a>).</strong> Assume the claim is <em>false</em> and follow the logic until something impossible appears, like $1=0$ or “$p$ is even and odd”. Then the assumption was wrong. Use it when the claim says something <em>doesn't</em> exist or <em>can't</em> happen (“$\sqrt2$ is not a fraction”, “there is no largest prime”).</li>
+  <li><strong>The siege tower: induction (Satz 2.15, <a class="pl" href="script.html#p83">p. 83</a>).</strong> For claims about <em>every</em> $n\in\mathbb N$. If (1) the first fire is lit (<strong>base case</strong>: $A(1)$) and (2) every lit fire lights the next one (<strong>induction step</strong>: $A(n)\Rightarrow A(n+1)$ for every $n$), then every fire is burning. The fires can't skip anything, because $\mathbb N$ has nothing besides $1,2,3,\dots$ (the script defines $\mathbb N$ as the smallest “inductive” subset of $\mathbb R$).</li>
+</ul>
+<p><strong>The trap with induction:</strong> in the step, you <em>assume</em> $A(n)$ and <em>prove</em> $A(n+1)$. You are not assuming what you want to prove; you are proving the link between two fires, for an arbitrary $n$.</p>
+
+<h3 id="proof-a">Proof A: by contrapositive, if $n^2$ is even, then $n$ is even (the back gate)</h3>
+<div class="box">
+<p><strong>Claim.</strong> For $n\in\mathbb Z$: if $n^2$ is even, then $n$ is even.</p>
+</div>
+<p><strong>The idea.</strong> “$n^2$ is even” is hard to use directly: there's no easy way to take a square root of $2k$. But “$n$ is odd” gives a formula, $n=2k+1$, that we can square. So go through the back gate.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Contrapositive:</strong> the claim is equivalent to “if $n$ is odd, then $n^2$ is odd”.</li>
+  <li><strong>Odd</strong> means $n=2k+1$ for some $k\in\mathbb Z$. So the proof starts “Let $n$ be odd, so $n=2k+1$” and ends “so $n^2=2(\dots)+1$ is odd”.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Go round to the back gate.</p></div><div class="sp-formal"><p>We prove the contrapositive: if $n$ is odd, then $n^2$ is odd.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>An odd number has a concrete shape.</p></div><div class="sp-formal"><p>Let $n$ be odd, so $n=2k+1$ with $k\in\mathbb Z$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Square it and look at the shape again.</p></div><div class="sp-formal"><p>Then $n^2=4k^2+4k+1=2(2k^2+2k)+1$ with $2k^2+2k\in\mathbb Z$, so $n^2$ is odd. By contraposition, the claim follows. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-contrapos">go through the back gate</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>We show the contrapositive. Let $n$ be odd, $n=2k+1$ with $k\in\mathbb Z$. Then $n^2=2(2k^2+2k)+1$ is odd. Hence, if $n^2$ is even, $n$ is even. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $2k^2+2k$ allowed as the “$k$” of the odd-number formula?</p>
+  <details><summary>Answer</summary><div><p>“Odd” means $2m+1$ for some <em>integer</em> $m$. Here $m=2k^2+2k$, and that is an integer because $k$ is one. Say it in the proof: graders check it.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Why not prove the claim directly, from “$n^2=2k$”?</p>
+  <details><summary>Answer</summary><div><p>To get to $n$ you would have to take a square root of $2k$, and nothing tells you that $\sqrt{2k}$ is even, or even an integer. The contrapositive starts from $n=2k+1$, a formula you can square.</p></div></details></li>
+  <li><p><strong>Rung 3 (2 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="proof-b">Proof B: $\sqrt2$ is irrational (Lemma 2.30, <a class="pl" href="script.html#p89">p. 89–90</a>)</h3>
+<div class="box">
+<p><strong>Claim.</strong> There is no $x\in\mathbb Q$ with $x^2=2$.</p>
+</div>
+<p><strong>The idea.</strong> A “there is no” claim: weapon 3. Assume $\sqrt2=\frac pq$ in lowest terms. Squaring shows $p$ is even (Proof A), then $q$ is even, so the fraction wasn't in lowest terms after all.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Contradiction:</strong> “Suppose, for contradiction, that $x=\frac pq$ with $p,q\in\mathbb Z$, $q\neq0$, satisfies $x^2=2$.”</li>
+  <li><strong>The choice that makes it work:</strong> “and the fraction is fully reduced” (every fraction can be reduced). The contradiction will be with exactly this.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The enemy claims $\sqrt2$ is a fraction, as simple as can be.</p></div><div class="sp-formal"><p>Suppose, for contradiction, that $\left(\frac pq\right)^2=2$ with $p,q\in\mathbb Z$, $q\neq0$, and $p,q$ without common factor.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Square and clear the denominator.</p></div><div class="sp-formal"><p>Then $p^2=2q^2$, so $p^2$ is even, and by Proof A $p$ is even: $p=2m$ with $m\in\mathbb Z$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The same trap springs on $q$.</p></div><div class="sp-formal"><p>Substituting: $4m^2=2q^2$, so $q^2=2m^2$ is even, and by Proof A $q$ is even.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Both even: the fraction wasn't as simple as claimed.</p></div><div class="sp-formal"><p>So $2$ divides both $p$ and $q$, contradicting that they have no common factor. Hence no rational $x$ has $x^2=2$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-contra">assume the opposite</a> <a class="mvl" href="moves.html#m-contrapos">go through the back gate</a> (inside Proof A)</p>
+<details><summary>The proof in one piece</summary><div>
+<p>Suppose $\left(\frac pq\right)^2=2$ with $p,q\in\mathbb Z$, $q\neq0$, fully reduced. Then $p^2=2q^2$ is even, so $p=2m$ is even (Proof A). Then $4m^2=2q^2$, so $q^2=2m^2$ is even and $q$ is even. So $p$ and $q$ have the common factor $2$, a contradiction. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Assume</strong> $\sqrt2=\frac pq$, <em>fully reduced</em>.</li>
+  <li><strong>Square:</strong> $p^2=2q^2$, so $p$ even, $p=2m$.</li>
+  <li><strong>Substitute:</strong> $q^2=2m^2$, so $q$ even.</li>
+  <li><strong>Contradiction</strong> with “fully reduced”.</li>
+</ol>
+<p>In short: “assume, square, $p$ even, $q$ even, contradiction”. Proof A is reused twice: proofs are built from smaller proofs.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where exactly does the contradiction come from? What would go wrong if we hadn't said “fully reduced”?</p>
+  <details><summary>Answer</summary><div><p>From “$p$ and $q$ both even” versus “no common factor”. Without “fully reduced” there is nothing to contradict: $\frac{2m}{2m'}$ is a perfectly fine fraction.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Does the same proof show that $\sqrt3$ is irrational? What would you need instead of Proof A?</p>
+  <details><summary>Answer</summary><div><p>Yes, with “if $3\mid n^2$ then $3\mid n$” (contrapositive: if $n=3k+1$ or $3k+2$, then $n^2=3(\dots)+1$). Then $p^2=3q^2$ gives $3\mid p$, then $3\mid q$.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the proof from the exam box alone.</p></li>
+</ol></div>
+
+<h3 id="proof-c">Proof C: Bernoulli's inequality, by induction</h3>
+<div class="box">
+<p><strong>Claim (Bernoulli's inequality).</strong> For every $x\ge-1$ and every $n\in\mathbb N$: $(1+x)^n\ge1+nx$.</p>
+</div>
+<p>You'll use this to compute limits in <a class="xl" href="lesson-10.html#s5-the-limit-rules">lessons 10</a> and <a class="xl" href="lesson-11.html#a-practical-rule-for-computing">11</a>.</p>
+<p><strong>The idea.</strong> Going from $n$ to $n+1$ multiplies the left side by $1+x$. Multiply the hypothesis by $1+x$ (allowed, since it's $\ge0$), expand, and throw away the extra term $nx^2\ge0$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Fix $x\ge-1$ first.</strong> Then $A(n)$ is “$(1+x)^n\ge1+nx$”, and we prove $A(n)$ for all $n$ by induction.</li>
+  <li><strong>Two labelled parts:</strong> base case $A(1)$; induction step “let $n\in\mathbb N$ and assume $A(n)$” … “so $A(n+1)$ holds”.</li>
+  <li><strong>The step must end at</strong> $(1+x)^{n+1}\ge1+(n+1)x$. Write that target down before you start.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Light the first fire.</p></div><div class="sp-formal"><p>Fix $x\ge-1$, and let $A(n)$ be $(1+x)^n\ge1+nx$. <em>Base case ($n=1$):</em> $(1+x)^1=1+x=1+1\cdot x$, so $A(1)$ holds.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Suppose fire $n$ burns.</p></div><div class="sp-formal"><p><em>Induction step:</em> let $n\in\mathbb N$ and assume $A(n)$, i.e. $(1+x)^n\ge1+nx$ (induction hypothesis).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Carry the flame one step further, with care: the multiplier must not be negative.</p></div><div class="sp-formal"><p>Since $1+x\ge0$, multiplying the hypothesis by $1+x$ keeps the inequality: <span class="math-display" style="display:block">$$\begin{aligned}(1+x)^{n+1}&amp;=(1+x)^n(1+x)\\&amp;\ge(1+nx)(1+x).\end{aligned}$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Expand, and drop what can only help.</p></div><div class="sp-formal"><p><span class="math-display" style="display:block">$$\begin{aligned}(1+nx)(1+x)&amp;=1+(n+1)x+nx^2\\&amp;\ge1+(n+1)x,\end{aligned}$$</span> since $nx^2\ge0$. So $A(n+1)$ holds.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>All the fires burn.</p></div><div class="sp-formal"><p>By induction, $A(n)$ holds for all $n\in\mathbb N$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-induct">induction with labelled parts</a> <a class="mvl" href="moves.html#m-drop">drop a non-negative term</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Fix $x\ge-1$. For $n=1$ both sides equal $1+x$. Assume $(1+x)^n\ge1+nx$ for some $n\in\mathbb N$. Since $1+x\ge0$, <span class="math-display" style="display:block">$$\begin{aligned}(1+x)^{n+1}&amp;\ge (1+nx)(1+x)\\&amp;=1+(n+1)x+nx^2\\&amp;\ge 1+(n+1)x\end{aligned}.$$</span> By induction the inequality holds for all $n\in\mathbb N$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Fix $x\ge-1$</strong> and name $A(n)$.</li>
+  <li><strong>Base case</strong> $n=1$, labelled.</li>
+  <li><strong>Step:</strong> multiply the hypothesis by $1+x\ge0$ (say why it's allowed), expand, drop $nx^2\ge0$.</li>
+  <li><strong>Conclude</strong> “by induction”.</li>
+</ol>
+<p>What graders look for: both parts labelled, the hypothesis visibly <em>used</em>, and every step's reason given (here: why we may multiply by $1+x$).</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where is $x\ge-1$ used? Which axiom is behind it?</p>
+  <details><summary>Answer</summary><div><p>In multiplying the inequality by $1+x$: that keeps “$\ge$” only because $1+x\ge0$. It's the order axiom on multiplication (axiom (15)); multiplying by a negative number would flip the inequality.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Where is the induction hypothesis used? Mark the exact “$\ge$”.</p>
+  <details><summary>Answer</summary><div><p>In <span class="math-display" style="display:block">$$(1+x)^n(1+x)\ge(1+nx)(1+x):$$</span>the factor $(1+x)^n$ is replaced by the smaller $1+nx$.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h2 id="s4-the-sixteen-laws-of-the">4. The sixteen laws of the realm (Section 2.1)</h2>
+<p>The script defines $\mathbb R$ not by “what numbers are”, but by the 16 laws they obey.</p>
+<ul>
+  <li><strong>Laws (1)–(9), the field axioms (<a class="pl" href="script.html#p71">p. 71–74</a>):</strong> the usual rules of $+$ and $\cdot$ (associative, commutative, $0$ and $1$, inverses, distributive). Every rule of school algebra follows from these. $\mathbb Q$ obeys them too.</li>
+  <li><strong>Laws (10)–(15), the order axioms (<a class="pl" href="script.html#p77">p. 77</a>):</strong> $\le$ is reflexive, antisymmetric, transitive and total (any two numbers can be compared), and compatible with $+$ and $\cdot$. Together with (1)–(9) this makes an <strong>ordered field</strong>. $\mathbb Q$ obeys these too!</li>
+  <li><strong>Law (16), the completeness axiom (<a class="pl" href="script.html#p79">p. 79–80</a>):</strong> <em>if $X$ and $Y$ are non-empty sets of reals and every $x\in X$ is $\le$ every $y\in Y$, then some $c\in\mathbb R$ sits between them: $x\le c\le y$ for all $x\in X$, $y\in Y$.</em> Picture two armies on the number line, $X$ entirely to the left of $Y$. Law 16 says there's always a real number standing in the no-man's-land between them. <strong>$\mathbb R$ has no gaps.</strong></li>
+</ul>
+<p><strong>Why law 16 is the one that matters:</strong> it's the only law that separates $\mathbb R$ from $\mathbb Q$. In $\mathbb Q$, take $X=\{q&gt;0:q^2&lt;2\}$ and $Y=\{q&gt;0:q^2&gt;2\}$. Every element of $X$ is below every element of $Y$, but the only number that could stand between them is $\sqrt2$, and that's not in $\mathbb Q$ (Proof B). So $\mathbb Q$ has a gap exactly where $\sqrt2$ should be. Everything big in this course rests on law 16: sup and inf (<a class="xl" href="lesson-06.html#s4-the-supremum">lesson 6</a>), limits of monotone sequences (<a class="xl" href="lesson-11.html#s3-monotone-sequences">lesson 11</a>), the intermediate value theorem (<a class="xl" href="lesson-07.html#proof-a">lesson 7</a>), the existence of $e$ and $\pi$.</p>
+
+<h3 id="deep-dive-reading-the-completeness">Deep dive: reading the completeness axiom symbol by symbol</h3>
+<p>This is the formal version from the script (<a class="pl" href="script.html#p80">p. 80</a>):</p>
+<div class="box">
+<span class="math-display" style="display:block">$$\begin{aligned}\forall X,Y\subseteq\mathbb R:\ \Big(X\neq\emptyset\wedge Y\neq\emptyset\wedge\forall x\in X\ \forall y\in Y:\ x\le y\Big)\Rightarrow\exists c\in\mathbb R\ \forall x\in X\ \forall y\in Y:\ x&amp;\le  c\\&amp;\le  y\end{aligned}$$</span>
+</div>
+<p>It looks scary, but it's just a duel from <a class="xl" href="lesson-01.html#s1-the-story-the-duel">lesson 1</a> with a knight's oath inside. Read it left to right.</p>
+<ol>
+  <li><strong>“$\forall X,Y\subseteq\mathbb R$”.</strong> The Doubter picks <em>any</em> two sets of real numbers, as nasty as they like.</li>
+  <li><strong>The bracket before “$\Rightarrow$”: the conditions.</strong> It's a knight's oath. The Champion only has to deliver if the Doubter's sets pass three checks: $X$ has an element, $Y$ has an element, and every element of $X$ is $\le$ every element of $Y$ (on the number line, $X$ lies entirely to the left of $Y$; touching is allowed). If any check fails, the oath is kept automatically (the dragon never came).</li>
+  <li><strong>“$\exists c\in\mathbb R$”.</strong> If the checks pass, the Champion must name <em>one</em> number $c$. The Champion sees $X$ and $Y$ first, so $c$ may depend on them.</li>
+  <li><strong>“$\forall x\in X\ \forall y\in Y:\ x\le c\le y$”.</strong> Now the Doubter tests $c$ against every $x$ and every $y$. $c$ must be $\ge$ all of $X$ and $\le$ all of $Y$: it stands in the no-man's-land.</li>
+</ol>
+<p><strong>Why the order “$\exists c$, then $\forall x\,\forall y$” is the whole point.</strong> If the axiom said $\forall x\,\forall y\,\exists c:\ x\le c\le y$, it would be trivial: for each <em>pair</em> you could just take $c=x$. The power is that <em>one single $c$</em> works against all pairs at once. That's the <em>uniform</em> idea from <a class="xl" href="lesson-01.html#s2-why-the-order-matters">lesson 1</a>.</p>
+<p><strong>Why the two “$\neq\emptyset$” conditions are needed.</strong> Drop “$X\neq\emptyset$” and take $X=\emptyset$, $Y=\mathbb R$. The third check is then vacuously true (<a class="xl" href="lesson-01.html">lesson 1</a>'s “$\forall$ over the empty set”). The axiom would demand a $c$ with $c\le y$ for <em>every</em> real $y$, including $y=c-1$: impossible. So without the condition the axiom would be false even in $\mathbb R$. The same goes for $Y=\emptyset$ and $X=\mathbb R$.</p>
+<p><strong>Three examples to calibrate your intuition.</strong></p>
+<ul>
+  <li>$X=[0,1]$, $Y=[2,3]$: any $c\in[1,2]$ works. So <strong>$c$ doesn't have to be unique</strong>.</li>
+  <li>$X=[0,1]$, $Y=[1,2]$: only $c=1$ works, and it's in both sets. So <strong>$c$ may belong to $X$ or $Y$</strong>.</li>
+  <li>$X=(-\infty,0)$, $Y=(0,\infty)$: only $c=0$ works, and it's in neither set. So <strong>the axiom fills a single missing point</strong>. This case is what makes it powerful.</li>
+</ul>
+<p><strong>Why you never need it for finite sets.</strong> If $X$ is finite, take $c=\max X$. It's $\ge$ all of $X$, and $\le$ all of $Y$ because it <em>is</em> an element of $X$. The axiom only adds something new for infinite sets, where a largest element might not exist (like $X=(-\infty,0)$).</p>
+<p><strong>How it's used in proofs (preview of <a class="xl" href="lesson-06.html#s6-consequences-of-completeness-with-proofs">lesson 6</a>).</strong> To show that some number exists: (1) build two sets $X$ and $Y$ cleverly, (2) check the three conditions, (3) the axiom hands you $c$, (4) show that $c$ has the property you wanted. For example, the supremum of a bounded set $X$ is what you get by choosing $Y=$ “all upper bounds of $X$”: the $c$ in between is then the <em>smallest</em> upper bound.</p>
+
+<h2 id="s5-worked-examples">5. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: watching $\mathbb Q$ fail, with actual numbers</h3>
+<p>Work inside $\mathbb Q$: $X=\{q\in\mathbb Q: q\le0\text{ or }q^2&lt;2\}$ and $Y=\{q\in\mathbb Q: q&gt;0\text{ and }q^2&gt;2\}$.</p>
+<ol class="gq">
+  <li><p>Check the three conditions of the completeness axiom.</p>
+  <details><summary>Answer</summary><div><p>$0\in X$ and $2\in Y$, so both are non-empty. Every element of $X$ is below every element of $Y$: if $x\le0$ this is clear; if $x&gt;0$ with $x^2&lt;2&lt;y^2$, then $x&lt;y$.</p></div></details></li>
+  <li><p>The Champion tries $c=1.4$. What does the Doubter answer?</p>
+  <details><summary>Answer</summary><div><p>$1.41\in X$, since $1.41^2=1.9881&lt;2$, and $1.41&gt;c$. The Doubter wins.</p></div></details></li>
+  <li><p>The Champion tries $c=1.42$. What now?</p>
+  <details><summary>Answer</summary><div><p>$1.415\in Y$, since $1.415^2=2.002225&gt;2$, and $1.415&lt;c$. The Doubter wins again.</p></div></details></li>
+  <li><p>Why does every rational $c$ lose?</p>
+  <details><summary>Answer</summary><div><p>If $c^2&lt;2$, a slightly bigger rational is still in $X$. If $c^2&gt;2$, a slightly smaller rational is still in $Y$. And $c^2=2$ is impossible in $\mathbb Q$ (Proof B). In $\mathbb R$ the Champion simply names $c=\sqrt2$.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-2">Worked example 2: choosing the weapon</h3>
+<ol class="gq">
+  <li><p>“There is no largest prime.” Which weapon?</p>
+  <details><summary>Answer</summary><div><p>Contradiction: a “there is no” claim. Assume there are only finitely many primes and build a number that breaks the list (Exercise 3).</p></div></details></li>
+  <li><p>“If $3n+1$ is even, then $n$ is odd.” Which weapon?</p>
+  <details><summary>Answer</summary><div><p>Contrapositive: if $n$ is even, $n=2k$, then $3n+1=2(3k)+1$ is odd. “Not $B$” gave a formula to compute with.</p></div></details></li>
+  <li><p>“$1+2+\dots+n=\frac{n(n+1)}2$ for all $n\in\mathbb N$.” Which weapon?</p>
+  <details><summary>Answer</summary><div><p>Induction: a claim about every $n$, where the case $n+1$ is the case $n$ plus one more term.</p></div></details></li>
+</ol>
+</div>
+
+<p><strong>Why it's cool.</strong> Sixteen short laws are all of $\mathbb R$: every fact you used in school, from $0\cdot x=0$ to the intermediate value theorem, follows from them. And the one law that $\mathbb Q$ lacks, completeness, is why $\sqrt2$ exists in $\mathbb R$; every big theorem of this course (intermediate value theorem, extreme value theorem, Bolzano–Weierstrass) uses it somewhere.</p>
+
+<h2 id="s6-exercises">6. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1, 2 and 4 count for scoring.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (true/false block, 3 points)</h3>
+<p>For statements $A,B$, which are always true? (a) $\neg(A\Rightarrow B)\iff A\wedge\neg B$. (b) $(A\Rightarrow B)\iff(B\Rightarrow A)$. (c) $(A\Rightarrow B)\iff(\neg B\Rightarrow\neg A)$. (d) $(A\Rightarrow B)\iff(\neg A\vee B)$.</p><details class="sol"><summary>Solution</summary><div>
+<ul>
+  <li><strong>(a) True.</strong> $A\Rightarrow B$ is false in exactly one situation: $A$ true and $B$ false. So “$A\Rightarrow B$ is false” says exactly “$A$ and not $B$”.</li>
+  <li><strong>(b) False.</strong> $B\Rightarrow A$ is the converse. Take $A=$ “$n=2$” and $B=$ “$n$ is even”. Then $A\Rightarrow B$ is true, but $B\Rightarrow A$ is false for $n=4$. So the two sides can have different truth values.</li>
+  <li><strong>(c) True.</strong> $A\Rightarrow B$ is false only when $A$ is true and $B$ false. $\neg B\Rightarrow\neg A$ is false only when $\neg B$ is true and $\neg A$ false, i.e. $B$ false and $A$ true. The same single situation.</li>
+  <li><strong>(d) True.</strong> $\neg A\vee B$ is false only when $\neg A$ and $B$ are both false, i.e. $A$ true and $B$ false. Again the same situation. Handy for negating: $\neg(\neg A\vee B)=A\wedge\neg B$ by De Morgan.</li>
+</ul>
+<p>So T, F, T, T.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (induction, linked to a real exam question)</h3>
+<p>Prove by induction that for all $n\in\mathbb N$: <span class="math-display" style="display:block">$$\frac1{1\cdot2}+\frac1{2\cdot3}+\dots+\frac1{n(n+1)}=\frac n{n+1}.$$</span> Then: what do you think happens to the left side as $n\to\infty$? (Einsiedler's HS21 #4 asked you to show $\sum\frac1{4k^2-1}=\frac12$. The same idea works there. We'll do it properly in <a class="xl" href="lesson-14.html">lesson 14</a>.)</p><details class="sol"><summary>Solution</summary><div>
+<p><em>Frame:</em> name $A(n)$; label the base case; the step starts “let $n\in\mathbb N$ and assume $A(n)$” and must end at $\sum_{k=1}^{n+1}\frac1{k(k+1)}=\frac{n+1}{n+2}$. <em>Moves:</em> <a class="mvl" href="moves.html#m-induct">induction with labelled parts</a>.</p>
+<p>Let $A(n)$ be the statement $\sum_{k=1}^n\frac1{k(k+1)}=\frac n{n+1}$.</p>
+<p><em>Base case ($n=1$):</em> the left side is $\frac1{1\cdot2}=\frac12$, the right side $\frac1{1+1}=\frac12$. So $A(1)$ holds.</p>
+<p><em>Induction step:</em> let $n\in\mathbb N$ and assume $A(n)$. Split off the last term and use $A(n)$ (say so explicitly: this is where the hypothesis is used): <span class="math-display" style="display:block">$$\begin{aligned}\sum_{k=1}^{n+1}\frac1{k(k+1)}&amp;=\frac n{n+1}+\frac1{(n+1)(n+2)}\\&amp;=\frac{n(n+2)+1}{(n+1)(n+2)}\\&amp;=\frac{(n+1)^2}{(n+1)(n+2)}\\&amp;=\frac{n+1}{n+2}\end{aligned},$$</span> cancelling one factor $n+1\neq0$. That is $A(n+1)$. By induction, $A(n)$ holds for all $n\in\mathbb N$. <span class="qed">∎</span></p>
+<p><strong>The limit question.</strong> $\frac n{n+1}=1-\frac1{n+1}$, and $\frac1{n+1}$ gets as small as you like, so the sums approach $1$. <em>Why</em> it works so neatly: $\frac1{k(k+1)}=\frac1k-\frac1{k+1}$, so the sum is <span class="math-display" style="display:block">$$\left(1-\frac12\right)+\left(\frac12-\frac13\right)+\dots+\left(\frac1n-\frac1{n+1}\right),$$</span>and everything in the middle cancels. That's a <strong>telescoping sum</strong>, exactly the trick for HS21 #4, since $\frac1{4k^2-1}=\frac12\left(\frac1{2k-1}-\frac1{2k+1}\right)$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (contradiction)</h3>
+<p>Prove that there are infinitely many prime numbers. <em>Hint:</em> assume there are only finitely many, $p_1,\dots,p_k$, and look at $N=p_1p_2\cdots p_k+1$. What's the remainder when you divide $N$ by any $p_i$? (You may use that every integer $\ge2$ has at least one prime factor.)</p><details class="sol"><summary>Solution</summary><div>
+<p><em>Frame:</em> “there are infinitely many” is a “there is no last one” claim, so the first line is “Assume, for contradiction, that $p_1,\dots,p_k$ are all the primes” and the last is “Contradiction”. The gap: build a number that no $p_i$ divides. <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>.</p>
+<ul>
+  <li><em>Assume for contradiction</em> that there are only finitely many primes, and list all of them: $p_1,\dots,p_k$.</li>
+  <li>Let $N=p_1p_2\cdots p_k+1$. Since every $p_i\ge2$, $N\ge3$.</li>
+  <li><strong>Remainder:</strong> $N$ divided by $p_i$ leaves remainder $1$, because the product is a multiple of $p_i$. So $p_i$ does <em>not</em> divide $N$, for every $i$.</li>
+  <li>But $N\ge2$ has a prime factor $q$. Since the list contains <em>all</em> primes, $q=p_i$ for some $i$, so $p_i$ divides $N$. Contradiction.</li>
+  <li>So there are infinitely many primes. <span class="qed">∎</span></li>
+</ul>
+<p><strong>Common mistake:</strong> claiming “$N$ is prime”. It doesn't have to be: <span class="math-display" style="display:block">$$\begin{aligned}2\cdot3\cdot5\cdot7\cdot11\cdot13+1&amp;=30031\\&amp;=59\cdot509\end{aligned}.$$</span>The proof only needs that $N$ has <em>some</em> prime factor that isn't on the list.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (<a class="xl" href="lesson-01.html#s3-negation-switching-sides">lesson 1</a> strikes back)</h3>
+<p>Negate the completeness axiom, with $\neg$ pushed all the way in. Then say in one sentence what the negation means on the number line.</p><details class="sol"><summary>Solution</summary><div>
+<p>Write the axiom as $\forall X,Y:\ (P\Rightarrow Q)$, where $P=$ “$X\neq\emptyset$ and $Y\neq\emptyset$ and $\forall x\in X\ \forall y\in Y:\ x\le y$” and $Q=$ “$\exists c\in\mathbb R\ \forall x\in X\ \forall y\in Y:\ x\le c\le y$”. Negate step by step:</p>
+<ol>
+  <li>$\neg\forall X,Y:(P\Rightarrow Q)$ becomes $\exists X,Y:\neg(P\Rightarrow Q)$.</li>
+  <li>$\neg(P\Rightarrow Q)$ becomes $P\wedge\neg Q$ ($P$ stays unchanged!).</li>
+  <li><span class="math-display" style="display:block">$$\neg Q=\neg\exists c\,\forall x\,\forall y:(x\le c\wedge c\le y)$$</span>becomes $\forall c\,\exists x\,\exists y:\neg(x\le c\wedge c\le y)$.</li>
+  <li>$\neg(x\le c\wedge c\le y)$ becomes $x&gt;c\vee c&gt;y$ (De Morgan).</li>
+</ol>
+<p><strong>Result:</strong> <span class="math-display" style="display:block">$$\exists X,Y\subseteq\mathbb R:\ X\neq\emptyset\wedge Y\neq\emptyset\wedge(\forall x\in X\ \forall y\in Y:\ x\le y)\wedge(\forall c\in\mathbb R\ \exists x\in X\ \exists y\in Y:\ x&gt;c\vee c&gt;y).$$</span></p>
+<p><strong>In words:</strong> there are two non-empty sets, one entirely to the left of the other, such that for every $c\in\mathbb R$ some $x$ is to the right of $c$ or some $y$ is to the left of $c$ (every number the Champion names is beaten). No number fits in between, so the line has a gap. This is exactly what happens in $\mathbb Q$ with the $\sqrt2$ sets from Worked example 1.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (spot the mistake)</h3>
+<p>Find the mistake in this “proof” that all horses have the same colour. <em>$A(n)$: any $n$ horses have the same colour. Base case: one horse has one colour. Step: given $n+1$ horses, the first $n$ have the same colour by $A(n)$, and so do the last $n$. They overlap, so all $n+1$ have the same colour.</em></p><details class="sol"><summary>Solution</summary><div>
+<p>The base case is fine. The problem is the step, which must work for <em>every</em> $n$, including $n=1$: the link from “1 horse” to “2 horses”.</p>
+<ul>
+  <li>With $n+1=2$ horses $H_1,H_2$: “the first $n$” $=\{H_1\}$ and “the last $n$” $=\{H_2\}$. Each group has one colour, trivially.</li>
+  <li>The argument needs a horse in <em>both</em> groups to carry the colour across. Here the groups don't overlap, so nothing connects $H_1$'s colour to $H_2$'s.</li>
+  <li>So $A(1)\Rightarrow A(2)$ is never proven, and without it the induction proves nothing about $n\ge2$, even though the step really does work from $n=2$ on (the chain of fires breaks at the very first link).</li>
+</ul>
+<p><strong>Lesson:</strong> when you write an induction step, check its smallest case separately. Steps that “obviously” work often hide an assumption like “there are at least 3 elements”.</p>
+</div></details>
+</div>
+<div class="check"><p><strong>Scoring yourself:</strong> Exercise 1 (4 answers), Exercise 2 (base case and step, 2) and Exercise 4 (1) make 7. If you have 5 of 7, you're done. Exercise 3 and the Bonus are for depth.</p></div>
+
+<h2 id="s7-for-wonder-optional-5-min">7. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Induction is recursion.</strong> A recursive function that handles the base case and reduces $n+1$ to $n$ is an induction proof that the program works. Computer scientists call the “what stays true at every step” part a <em>loop invariant</em>. It's the same signal-fire idea.</p>
+<p><strong>The proof that may have cost a life.</strong> Legend says the Pythagoreans believed everything was built from whole-number ratios. When one of them, Hippasus, showed that the diagonal of a square can't be such a ratio (Proof B, in geometric form), he was supposedly thrown overboard at sea. Historians doubt the details, but the shock was real. It took about 2,000 years, until Dedekind and Cantor in the 1870s, to say what irrational numbers actually <em>are</em>. Law 16 is the modern answer.</p>
+
+<h2 id="s8-what-we-skipped">8. What we skipped</h2>
+<p>Also recorded on the skip list:</p>
+<ul>
+  <li><strong>More proof advice (Sections 1.8.3–1.8.10, <a class="pl" href="script.html#p55">p. 55–60</a>):</strong> how to find, write and read proofs. Worth reading once before the exam. Low priority.</li>
+  <li><strong>Deriving school algebra from the axioms (<a class="pl" href="script.html#p73">p. 73–78</a>):</strong> for example $0\cdot x=0$ or $(-x)(-y)=xy$ using only axioms (1)–(15). Low priority.</li>
+  <li><strong>Existence of square roots (<a class="pl" href="script.html#p81">p. 81</a>, Wichtige Übung 2.11):</strong> every $a\ge0$ has a square root, by the completeness axiom. Medium priority; it's the same kind of argument as sup (<a class="xl" href="lesson-06.html#s4-the-supremum">lesson 6</a>).</li>
+  <li><strong>How $\mathbb N$ is defined inside $\mathbb R$ (<a class="pl" href="script.html#p83">p. 83–86</a>):</strong> as the smallest set that contains 1 and is closed under $+1$. This is why induction works. Also variants of induction, like starting at $n=0$ or “strong” induction. Low priority.</li>
+  <li><strong>$\mathbb Z$ and $\mathbb Q$ inside $\mathbb R$, and division with remainder (<a class="pl" href="script.html#p88">p. 88–91</a>).</strong> Optional.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-05.html">lesson 5</a>, complex numbers (Section 2.3), then <a class="xl" href="lesson-06.html">lesson 6</a>, sup and inf, where we take it slowly.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-03.html">← Lesson 3: Great Houses and the Endless Roll Call</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-05.html">Lesson 5: The Quarter-Turn Spell →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

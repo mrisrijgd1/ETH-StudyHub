@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Climber and the Tide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-10.html">← Lesson 10</a>
+<a href="lesson-12.html">Lesson 12 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 11 of 26</span>
+  <h1>The Climber and the Tide</h1>
+  <p class="lead">The first half of chapter 6: the sandwich lemma, why a bounded monotone sequence must converge, and the limit superior and limit inferior, which tell you where a sequence keeps returning even when it doesn't converge.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-10-5">Recap of lesson 10 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-climber-and">1. The story: the climber and the tide</a>
+</li>
+<li><a href="#s2-inequalities-and-the-sandwich-lemma">2. Inequalities and the sandwich lemma</a>
+<ol>
+<li><a href="#proof-a">Proof A: the sandwich lemma (Wichtige Übung 6.3)</a></li>
+</ol></li>
+<li><a href="#s3-monotone-sequences">3. Monotone sequences</a>
+<ol>
+<li><a href="#proof-b">Proof B: bounded monotone sequences converge (Satz 6.5)</a></li>
+</ol></li>
+<li><a href="#s4-limit-superior-and-limit-inferior">4. Limit superior and limit inferior</a>
+<ol>
+<li><a href="#the-two-properties-of-the">The two properties of the limit superior</a></li>
+<li><a href="#proof-c">Proof C: the two properties (Satz 6.11)</a></li>
+<li><a href="#proof-d">Proof D: convergent ⇔ liminf = limsup (Korollar 6.14, p. 258)</a></li>
+<li><a href="#a-practical-rule-for-computing">A practical rule for computing limsup and liminf</a></li>
+</ol></li>
+<li><a href="#s5-worked-examples">5. Worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: $\sqrt[n]{a}\to1$ for every $a&gt;0$ (Beispiel 6.4, p. 254)</a></li>
+<li><a href="#we-2">Worked example 2: a recursive sequence (Übung 6.6, p. 256)</a></li>
+<li><a href="#we-3">Worked example 3: limsup and liminf by splitting</a></li>
+</ol></li>
+<li><a href="#s6-exercises">6. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Kobel-Keller HS24, single choice 4)</a></li>
+<li><a href="#ex-2">Exercise 2 (Kobel-Keller HS24, single choice 1)</a></li>
+<li><a href="#ex-3">Exercise 3 (Figalli FS26, MC2)</a></li>
+<li><a href="#ex-4">Exercise 4 (sandwich)</a></li>
+<li><a href="#ex-5">Exercise 5 (Übung 6.7, p. 256)</a></li>
+<li><a href="#ex-6">Exercise 6 (in the style of Einsiedler FS22, 2 points)</a></li>
+<li><a href="#bonus">Bonus (Übung 6.13 (i))</a></li>
+</ol></li>
+<li><a href="#s7-for-wonder-optional-5-min">7. For wonder</a>
+</li>
+<li><a href="#s8-what-we-skipped">8. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>state and prove the sandwich lemma</strong> and use it to compute limits, (2) <strong>state and prove that a bounded monotone sequence converges</strong> (to its supremum or infimum), (3) handle a recursively defined sequence: show it is monotone and bounded, then find the limit, (4) define $\limsup$ and $\liminf$ through tail suprema and infima and compute them for simple sequences, (5) state the two properties of the $\limsup$ and use them, and (6) prove that a bounded sequence converges exactly when $\liminf=\limsup$.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p253">p. 253–254</a>, Proposition 6.1, Lemma 6.2, Beispiel 6.4:</strong> limits and inequalities, the sandwich lemma, $\sqrt[n]{a}\to1$ and $\sqrt[n]{n}\to1$.</li>
+      <li><strong><a class="pl" href="script.html#p255">p. 255–256</a>, Section 6.1.1, Satz 6.5, Übungen 6.6–6.7:</strong> monotone sequences.</li>
+      <li><strong><a class="pl" href="script.html#p256">p. 256–258</a>, Section 6.1.2, Definitions 6.8–6.9, Beispiel 6.10, Satz 6.11:</strong> limit superior and limit inferior and their two properties.</li>
+      <li><strong><a class="pl" href="script.html#p258">p. 258–259</a>, Übung 6.13, Korollar 6.14:</strong> rules for $\limsup$ and $\liminf$, and convergence ⇔ $\liminf=\limsup$.</li>
+      <li><strong><a class="pl" href="script.html#p262">p. 262</a>, after Übung 6.20:</strong> $\limsup$ and $\liminf$ of unbounded sequences (values $\pm\infty$).</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+The monotone convergence theorem is the workhorse of chapter 7: almost every series test goes back to it. Directly tested: Kobel-Keller HS24 single-choice 1 and 4 (supremum, infimum and accumulation points of sequences, your Exercises 1 and 2), Figalli FS26 MC2 ($\limsup$ and $\liminf$, your Exercise 3), and Einsiedler FS22 (“compute the limsup and liminf of $c_n=a_n+(-1)^nb_n$”, your Exercise 6). Recursive sequences (Worked example 2) are a classic computation question. In <a class="xl" href="lesson-12.html#proof-e">lesson 12</a>, all of this becomes the tool for the 6–7-point Cauchy criterion proof (Einsiedler HS21, Kobel-Keller HS24).</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-10-5">Recap of <a class="xl" href="lesson-10.html">lesson 10</a> (5 min)</h3>
+<ul>
+  <li><strong>Metric:</strong> $d(x,y)\ge0$ with equality only for $x=y$, symmetry, triangle inequality. On $\mathbb{R}$: $d(x,y)=|x-y|$.</li>
+  <li><strong>Convergence:</strong> $a_n\to A$ means $\forall\varepsilon&gt;0\ \exists N\ \forall n\ge N:\ |a_n-A|&lt;\varepsilon$. The limit is unique.</li>
+  <li><strong>Convergent ⇒ bounded:</strong> $\varepsilon=1$ for the tail, a finite maximum for the head.</li>
+  <li><strong>Limit rules:</strong> sums, multiples, products and quotients (with nonzero denominator limit) of convergent sequences converge to the expected limits. Non-strict inequalities survive limits; strict ones can become equalities.</li>
+  <li><strong>Subsequence</strong> $(a_{n_k})_k$ with $n_1&lt;n_2&lt;\dots$; it has the same limit as a convergent sequence. An <strong>accumulation point</strong> of a sequence is a limit of some subsequence.</li>
+  <li><strong>Sequential continuity:</strong> $f$ is continuous at $x_0$ ⇔ $f(x_n)\to f(x_0)$ for every sequence $x_n\to x_0$.</li>
+</ul>
+<ol class="gq">
+  <li><p>What is the key step in proving that a limit is unique?</p>
+  <details><summary>Answer</summary><div><p>Take $\varepsilon=\frac12d(A_1,A_2)$, take $N=\max\{N_1,N_2\}$, and use the triangle inequality through $a_N$: <span class="math-display" style="display:block">$$\begin{aligned}d(A_1,A_2)&amp;\le  d(A_1,a_N)+d(a_N,A_2)\\&amp;&lt;2\varepsilon\\&amp;=d(A_1,A_2)\end{aligned},$$</span> a contradiction.</p></div></details></li>
+  <li><p>Is $a_n=(-1)^n$ bounded? Convergent? What are its accumulation points?</p>
+  <details><summary>Answer</summary><div><p>Bounded by $1$, but divergent. Its accumulation points are $1$ (even terms) and $-1$ (odd terms).</p></div></details></li>
+  <li><p>How do you show that $f$ is <em>not</em> continuous at $x_0$ with sequences?</p>
+  <details><summary>Answer</summary><div><p>Find one sequence $x_n\to x_0$ with $f(x_n)\not\to f(x_0)$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>sandwich lemma (squeeze theorem)</td><td>Sandwich-Lemma</td></tr>
+    <tr><td>monotone, increasing, decreasing</td><td>monoton, monoton wachsend, monoton fallend</td></tr>
+    <tr><td>monotone convergence theorem</td><td>Konvergenz von monotonen Folgen</td></tr>
+    <tr><td>recursively defined sequence</td><td>rekursiv definierte Folge</td></tr>
+    <tr><td>tail of a sequence</td><td>Endabschnitt einer Folge</td></tr>
+    <tr><td>limit superior, limit inferior</td><td>Limes superior, Limes inferior</td></tr>
+    <tr><td>improper limit, diverges to ∞</td><td>uneigentlicher Grenzwert, divergiert gegen ∞</td></tr>
+    <tr><td>without loss of generality</td><td>ohne Beschränkung der Allgemeinheit (oBdA)</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-climber-and">1. The story: the climber and the tide</h2>
+<div class="story">
+<p>A climber goes up the endless stair of the Tower of Wardens. Every step is at least as high as the one before; sometimes she pauses, but she never goes down. Above her, however high she climbs, there is a stone ceiling she can never pass. The tower's riddle: <em>must she come to rest somewhere?</em> She can't climb forever, because the ceiling stops her, and she can't jump back down. The answer is yes, and the place she approaches is the <strong>lowest ceiling she never passes</strong>: the supremum of all her heights. That's the monotone convergence theorem.</p>
+<p>In the harbour below, the tide rises and falls forever and never settles. The harbourmaster has an oracle. Each morning the oracle tells her the highest the water will <em>ever</em> reach from today on: the day's <strong>high-water mark</strong>. As the days pass, the high-water marks can only fall (the future gets shorter, so its highest point can't get higher). They form a falling sequence that never goes below the harbour floor, so by the climber's riddle, read upside down, they come to rest. Where they come to rest is the <strong>limit superior</strong> of the tide: the highest level the water keeps returning to forever. The low-water marks do the same from below and settle at the <strong>limit inferior</strong>. When the two marks meet, the tide has stopped moving: the sequence converges.</p>
+<p>And at the gate, two guards escort a prisoner, one on each side. Where the two guards arrive, the prisoner arrives too. That's the sandwich lemma, and it's where we start.</p>
+</div>
+<p>In maths: the climber is an increasing bounded sequence, the ceiling is an upper bound, the high-water mark on day $n$ is $S_n=\sup\{a_k:k\ge n\}$, the low-water mark is $I_n=\inf\{a_k:k\ge n\}$, and the guards are two sequences that converge to the same limit.</p>
+
+<h2 id="s2-inequalities-and-the-sandwich-lemma">2. Inequalities and the sandwich lemma</h2>
+<div class="box">
+<p><strong>Proposition 6.1 (<a class="pl" href="script.html#p253">p. 253</a>).</strong> Let $a_n\to a$ and $b_n\to b$ in $\mathbb{R}$. (i) If $a_n\le b_n$ for all $n$, then $a\le b$. (ii) If $a&lt;b$, then there is $N$ with $a_n&lt;b_n$ for all $n\ge N$.</p>
+</div>
+<p>You proved (i) in Exercise 6 of <a class="xl" href="lesson-10.html#ex-6">lesson 10</a> with $\varepsilon=\frac{a-b}2$; the script proves (ii) with $\varepsilon=\frac{b-a}2$ and gets (i) as the contrapositive. Remember the warning: $a_n&lt;b_n$ for all $n$ only gives $a\le b$ (take $a_n=0&lt;\frac1n=b_n$).</p>
+<div class="box">
+<p><strong>Sandwich lemma (Lemma 6.2, <a class="pl" href="script.html#p254">p. 254</a>).</strong> Let $a_n\le b_n\le c_n$ for all $n\in\mathbb{N}$, and suppose $a_n\to A$ and $c_n\to A$ (the same limit). Then $(b_n)_n$ converges, and $b_n\to A$.</p>
+</div>
+<p>Note what's special: we don't assume $b_n$ converges; the lemma <em>proves</em> it. That's why it's more than Proposition 6.1 (i).</p>
+
+<h3 id="proof-a">Proof A: the sandwich lemma (Wichtige Übung 6.3)</h3>
+<p><strong>The idea.</strong> From some point on, both guards are within $\varepsilon$ of $A$: $A-\varepsilon&lt;a_n$ and $c_n&lt;A+\varepsilon$. The prisoner is between them, so it's within $\varepsilon$ of $A$ too.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $\varepsilon&gt;0$.” (We must show $b_n\to A$, which starts with “for every ε”.)</li>
+  <li><strong>Last line:</strong> “…so $|b_n-A|&lt;\varepsilon$ for all $n\ge N$.” We must name $N$.</li>
+  <li><strong>The given:</strong> an $N_1$ for $(a_n)$ and an $N_2$ for $(c_n)$, for the same $\varepsilon$.</li>
+  <li><strong>The gap to fill:</strong> combine them, and turn $|b_n-A|&lt;\varepsilon$ into two one-sided inequalities.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Fix a tolerance.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wait until both guards are near the gate.</p></div><div class="sp-formal"><p>Since $a_n\to A$ and $c_n\to A$, there are $N_1,N_2$ with $|a_n-A|&lt;\varepsilon$ for $n\ge N_1$ and $|c_n-A|&lt;\varepsilon$ for $n\ge N_2$. Let $N=\max\{N_1,N_2\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>We only need the outer side of each guard: the left guard is not too far left, the right guard not too far right.</p></div><div class="sp-formal"><p>For $n\ge N$: <span class="math-display" style="display:block">$$A-\varepsilon&lt;a_n\le b_n\le c_n&lt;A+\varepsilon.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the prisoner is near the gate.</p></div><div class="sp-formal"><p>Hence $|b_n-A|&lt;\varepsilon$ for all $n\ge N$, so $b_n\to A$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-maxN">take the larger N</a> <a class="mvl" href="moves.html#m-sandwich">sandwich</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\varepsilon&gt;0$. Choose $N_1,N_2$ with $|a_n-A|&lt;\varepsilon$ for $n\ge N_1$ and $|c_n-A|&lt;\varepsilon$ for $n\ge N_2$, and let $N=\max\{N_1,N_2\}$. For $n\ge N$ we get $A-\varepsilon&lt;a_n\le b_n\le c_n&lt;A+\varepsilon$, so $|b_n-A|&lt;\varepsilon$. Hence $b_n\to A$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Let $\varepsilon&gt;0$</strong>; get $N_1$ for $a_n$, $N_2$ for $c_n$.</li>
+  <li><strong>$N=\max\{N_1,N_2\}$.</strong></li>
+  <li><strong>The chain</strong> $A-\varepsilon&lt;a_n\le b_n\le c_n&lt;A+\varepsilon$.</li>
+  <li><strong>Conclude</strong> $|b_n-A|&lt;\varepsilon$ for $n\ge N$.</li>
+</ol>
+<p>In short: “max of the Ns, one chain, done”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which half of $|a_n-A|&lt;\varepsilon$ do we actually use, and which half of $|c_n-A|&lt;\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>From $|a_n-A|&lt;\varepsilon$ only $a_n&gt;A-\varepsilon$; from $|c_n-A|&lt;\varepsilon$ only $c_n&lt;A+\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> The sandwich also works if $a_n\le b_n\le c_n$ only holds for $n\ge n_0$. What changes in the proof?</p>
+  <details><summary>Answer</summary><div><p>Take $N=\max\{N_1,N_2,n_0\}$. Everything else stays the same.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p class="legend">Typical use: $\left|\frac{(-1)^n}{n}\right|\le\frac1n$, so $-\frac1n\le\frac{(-1)^n}{n}\le\frac1n$ and both outer sequences tend to $0$, hence $\frac{(-1)^n}n\to0$. More generally: <strong>if $|b_n|\le c_n$ and $c_n\to0$, then $b_n\to0$</strong> (sandwich between $-c_n$ and $c_n$).</p>
+<h2 id="s3-monotone-sequences">3. Monotone sequences</h2>
+<div class="box">
+<p><strong>Definitions (as for functions in <a class="xl" href="lesson-07.html">lesson 7</a>).</strong> A real sequence $(a_n)_n$ is <strong>increasing</strong> if $a_{n+1}\ge a_n$ for all $n$, and <strong>strictly increasing</strong> if $a_{n+1}&gt;a_n$ for all $n$. It is <strong>decreasing</strong> (strictly decreasing) if $a_{n+1}\le a_n$ ($a_{n+1}&lt;a_n$) for all $n$. It is <strong>monotone</strong> if it is increasing or decreasing.</p>
+<p><strong>Monotone convergence theorem (Satz 6.5, <a class="pl" href="script.html#p255">p. 255</a>).</strong> A monotone real sequence converges if and only if it is bounded. If $(a_n)_n$ is increasing, then $\lim_{n\to\infty}a_n=\sup\{a_n:n\in\mathbb N\}$; if it is decreasing, then $\lim_{n\to\infty}a_n=\inf\{a_n:n\in\mathbb N\}$.</p>
+</div>
+<p>This is the first time the completeness axiom (every bounded nonempty set has a supremum) produces a limit. It's also the first convergence test that doesn't need you to know the limit in advance: you only check “monotone” and “bounded”.</p>
+<figure style="margin:0" aria-label="An increasing sequence of dots climbing towards a horizontal line S, the supremum. A band from S minus epsilon to S is shaded. One term a sub N lies inside the band, and all later terms lie between a sub N and S.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="270.0" x2="620.0" y2="270.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="30" y="30.0" width="590" height="36.0" style="fill:var(--k-eps);fill-opacity:.16"/><line x1="30.0" y1="30.0" x2="620.0" y2="30.0" style="stroke:var(--k-c)" stroke-width="2.5"/><line x1="30.0" y1="66.0" x2="620.0" y2="66.0" style="stroke:var(--k-eps)" stroke-width="1.2" stroke-dasharray="5 4"/><text x="616.0" y="22.0" text-anchor="end" style="fill:var(--k-c);font-size:14px">S = sup aₙ</text><text x="616.0" y="84.0" text-anchor="end" style="fill:var(--k-eps);font-size:14px">S − ε</text><line x1="244.0" y1="20.0" x2="244.0" y2="270.0" style="stroke:var(--k-del)" stroke-width="1.5" stroke-dasharray="3 3"/><text x="244.0" y="288.0" text-anchor="middle" style="fill:var(--k-del);font-size:14px">N = 6</text><circle cx="74.0" cy="222.0" r="5" style="fill:var(--story-edge)"/><circle cx="108.0" cy="126.0" r="5" style="fill:var(--story-edge)"/><circle cx="142.0" cy="94.0" r="5" style="fill:var(--story-edge)"/><circle cx="176.0" cy="78.0" r="5" style="fill:var(--story-edge)"/><circle cx="210.0" cy="68.4" r="5" style="fill:var(--story-edge)"/><circle cx="244.0" cy="62.0" r="5" style="fill:var(--k-eps)"/><circle cx="278.0" cy="57.4" r="5" style="fill:var(--k-eps)"/><circle cx="312.0" cy="54.0" r="5" style="fill:var(--k-eps)"/><circle cx="346.0" cy="51.3" r="5" style="fill:var(--k-eps)"/><circle cx="380.0" cy="49.2" r="5" style="fill:var(--k-eps)"/><circle cx="414.0" cy="47.5" r="5" style="fill:var(--k-eps)"/><circle cx="448.0" cy="46.0" r="5" style="fill:var(--k-eps)"/><circle cx="482.0" cy="44.8" r="5" style="fill:var(--k-eps)"/><circle cx="516.0" cy="43.7" r="5" style="fill:var(--k-eps)"/><circle cx="550.0" cy="42.8" r="5" style="fill:var(--k-eps)"/><text x="254.0" y="86.0" text-anchor="start" style="fill:var(--k-del);font-size:14px">a<tspan baseline-shift="sub" style="font-size:11px">N</tspan></text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">An increasing sequence bounded by $S=\sup\{a_n\}$. Since $S-\varepsilon$ is not an upper bound, some term $a_N$ lies above it. Every later term lies between $a_N$ and $S$, so inside the band.</figcaption>
+</figure>
+
+<h3 id="proof-b">Proof B: bounded monotone sequences converge (Satz 6.5)</h3>
+<p><strong>The idea.</strong> The candidate limit is the supremum $S$ of all terms. Just below $S$ there must be a term $a_N$ (otherwise there'd be a lower ceiling). After that, the sequence can't fall below $a_N$ (it's increasing) and can't rise above $S$ (it's an upper bound). So it's trapped in $(S-\varepsilon,S]$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Two directions.</strong> “Convergent ⇒ bounded” is <a class="xl" href="lesson-10.html#proof-c">lesson 10</a>'s Proof C. The work is “bounded and monotone ⇒ convergent”.</li>
+  <li><strong>We need a candidate limit</strong>, and the only thing completeness gives us is $S=\sup\{a_n:n\in\mathbb N\}$.</li>
+  <li><strong>First line:</strong> “Let $\varepsilon&gt;0$.” <strong>Last line:</strong> “so $|a_n-S|&lt;\varepsilon$ for all $n\ge N$.”</li>
+  <li><strong>The gap to fill:</strong> find $N$, using the characterisation of the supremum (“$S-\varepsilon$ is not an upper bound”).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A convergent climber stays below some ceiling anyway.</p></div><div class="sp-formal"><p>If $(a_n)_n$ converges, it is bounded (<a class="xl" href="lesson-10.html#proof-c">lesson 10</a>: convergent sequences are bounded). Conversely, let $(a_n)_n$ be monotone and bounded.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A falling climber is a rising one seen upside down.</p></div><div class="sp-formal"><p>Without loss of generality $(a_n)_n$ is increasing; otherwise replace $a_n$ by $-a_n$ (then $\sup\{-a_n\}=-\inf\{a_n\}$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The lowest ceiling she never passes exists.</p></div><div class="sp-formal"><p>The set $\{a_n:n\in\mathbb N\}$ is nonempty and bounded above, so $S=\sup\{a_n:n\in\mathbb N\}$ exists by completeness.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Any lower ceiling would be passed at some step.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$. Since $S-\varepsilon&lt;S$, it is not an upper bound, so there is $N$ with $a_N&gt;S-\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>After that step she never goes down, and never through the ceiling.</p></div><div class="sp-formal"><p>For $n\ge N$, monotonicity and the upper bound give <span class="math-display" style="display:block">$$S-\varepsilon&lt;a_N\le a_n\le S&lt;S+\varepsilon,$$</span> so $|a_n-S|&lt;\varepsilon$. Hence $a_n\to S$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-obda">reduce to one case</a> <a class="mvl" href="moves.html#m-approx">approach a supremum</a> <a class="mvl" href="moves.html#m-trap">trap between two values</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>A convergent sequence is bounded (<a class="xl" href="lesson-10.html#proof-c">lesson 10</a>). Conversely let $(a_n)_n$ be monotone and bounded; without loss of generality it is increasing (otherwise consider $(-a_n)_n$). By completeness, $S=\sup\{a_n:n\in\mathbb N\}$ exists. Let $\varepsilon&gt;0$. Since $S-\varepsilon$ is not an upper bound of $\{a_n\}$, there is $N$ with $a_N&gt;S-\varepsilon$. For $n\ge N$ we get $S-\varepsilon&lt;a_N\le a_n\le S$, so $|a_n-S|&lt;\varepsilon$. Hence $a_n\to S$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>“⇒”</strong> is convergent ⇒ bounded. For “⇐”: <strong>oBdA increasing.</strong></li>
+  <li><strong>$S=\sup\{a_n\}$ exists</strong> (completeness, bounded above).</li>
+  <li><strong>Let $\varepsilon&gt;0$:</strong> $S-\varepsilon$ is not an upper bound, so $a_N&gt;S-\varepsilon$ for some $N$.</li>
+  <li><strong>Chain for $n\ge N$:</strong> $S-\varepsilon&lt;a_N\le a_n\le S$.</li>
+</ol>
+<p>In short: “sup exists, one term above S − ε, monotone carries it to all later terms”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> In the chain $S-\varepsilon&lt;a_N\le a_n\le S$, which fact justifies each of the three inequalities?</p>
+  <details><summary>Answer</summary><div><p>$S-\varepsilon&lt;a_N$: the choice of $N$ (approach a supremum). $a_N\le a_n$: the sequence is increasing and $n\ge N$. $a_n\le S$: $S$ is an upper bound of all terms.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the proof for a <em>decreasing</em> bounded sequence directly, with $I=\inf\{a_n\}$.</p>
+  <details><summary>Answer</summary><div><p>Let $\varepsilon&gt;0$. Since $I+\varepsilon$ is not a lower bound, there is $N$ with $a_N&lt;I+\varepsilon$. For $n\ge N$: $I\le a_n\le a_N&lt;I+\varepsilon$, so $|a_n-I|&lt;\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p class="legend">Two things to remember for multiple choice. <strong>Monotone alone is not enough</strong>: $a_n=n$ is increasing and diverges. <strong>Bounded alone is not enough</strong>: $(-1)^n$ is bounded and diverges. An increasing sequence that is <em>not</em> bounded above diverges to $\infty$ (<a class="xl" href="lesson-12.html#s3-improper-limits-going-to-infinity">lesson 12</a> makes this precise).</p>
+
+<h2 id="s4-limit-superior-and-limit-inferior">4. Limit superior and limit inferior</h2>
+<p>A bounded sequence like $(-1)^n$ need not converge. But we can still ask: what's the highest level it keeps coming back to, and the lowest? Here's the harbourmaster's trick in formulas. Let $(a_n)_n$ be bounded, $|a_k|\le M$ for all $k$. For every $n$ define the tail supremum and the tail infimum:</p>
+<span class="math-display" style="display:block">$$S_n=\sup\{a_k:k\ge n\},\qquad I_n=\inf\{a_k:k\ge n\}.$$</span>
+<ul>
+  <li><strong>$(S_n)_n$ is decreasing:</strong> $\{a_k:k\ge n+1\}\subseteq\{a_k:k\ge n\}$, and the supremum of a smaller set is at most the supremum of the larger set, so $S_{n+1}\le S_n$.</li>
+  <li><strong>$(S_n)_n$ is bounded:</strong> $-M\le a_n\le S_n\le M$.</li>
+  <li>So by the monotone convergence theorem, $S_n$ converges, to $\inf_n S_n$. In the same way $(I_n)_n$ is increasing and bounded and converges to $\sup_n I_n$.</li>
+</ul>
+<div class="box">
+<p><strong>Definitions 6.8 and 6.9 (<a class="pl" href="script.html#p257">p. 257</a>).</strong> For a bounded real sequence $(a_n)_n$, the <strong>limit superior</strong> and <strong>limit inferior</strong> are</p>
+<span class="math-display" style="display:block">$$\limsup_{n\to\infty}a_n=\lim_{n\to\infty}\sup_{k\ge n}a_k=\inf_{n\in\mathbb N}\sup_{k\ge n}a_k,$$</span>
+<span class="math-display" style="display:block">$$\liminf_{n\to\infty}a_n=\lim_{n\to\infty}\inf_{k\ge n}a_k=\sup_{n\in\mathbb N}\inf_{k\ge n}a_k.$$</span>
+<p>Since $I_n\le S_n$ for all $n$, always $\liminf a_n\le\limsup a_n$ (Proposition 6.1).</p>
+</div>
+<p><strong>Example.</strong> For $a_n=(-1)^n$, every tail contains both $1$ and $-1$, so $S_n=1$ and $I_n=-1$ for all $n$: $\limsup(-1)^n=1$ and $\liminf(-1)^n=-1$.</p>
+<p><strong>Example 6.10 (<a class="pl" href="script.html#p257">p. 257</a>).</strong> $a_n=(-1)^n+\frac1n$: the terms are $0,\ \frac32,\ -\frac23,\ \frac54,\ -\frac45,\ \frac76,\dots$ The even terms $1+\frac1n$ decrease towards $1$, the odd terms $-1+\frac1n$ decrease towards $-1$. The largest term in a tail is its first even term, so $S_n=1+\frac1n$ for $n$ even and $S_n=1+\frac1{n+1}$ for $n$ odd, and $S_n\to1$. Every tail contains odd terms arbitrarily close to $-1$ but none below $-1$, so $I_n=-1$ for all $n$. Hence $\limsup a_n=1$ and $\liminf a_n=-1$.</p>
+<figure style="margin:0" aria-label="The terms of minus one to the n plus one over n, plotted against n. The even terms lie above 1 and approach it from above; the odd terms lie above minus 1 and approach it. A falling staircase marks the tail suprema S sub n, approaching the dashed line at 1. A flat line at minus 1 marks the tail infima.">
+<svg viewBox="0 0 640 258" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="150.0" x2="620.0" y2="150.0" style="stroke:var(--muted)" stroke-width="1"/><line x1="30.0" y1="65.0" x2="620.0" y2="65.0" style="stroke:var(--k-c)" stroke-width="1.5" stroke-dasharray="6 4"/><line x1="30.0" y1="235.0" x2="620.0" y2="235.0" style="stroke:var(--k-del)" stroke-width="2.5"/><text x="616.0" y="83.0" text-anchor="end" style="fill:var(--k-c);font-size:14px">limsup = 1</text><text x="616.0" y="253.0" text-anchor="end" style="fill:var(--k-del);font-size:14px">Iₙ = liminf = −1</text><path d="M 58.0 22.5 L 94.0 22.5 L 94.0 22.5 L 130.0 22.5 L 130.0 43.8 L 166.0 43.8 L 166.0 43.8 L 202.0 43.8 L 202.0 50.8 L 238.0 50.8 L 238.0 50.8 L 274.0 50.8 L 274.0 54.4 L 310.0 54.4 L 310.0 54.4 L 346.0 54.4 L 346.0 56.5 L 382.0 56.5 L 382.0 56.5 L 418.0 56.5 L 418.0 57.9 L 454.0 57.9 L 454.0 57.9 L 490.0 57.9 L 490.0 58.9 L 526.0 58.9 L 526.0 58.9 L 562.0 58.9 L 562.0 59.7 L 598.0 59.7" style="fill:none;stroke:var(--k-c)" stroke-width="2.5"/><text x="62.0" y="14.5" text-anchor="start" style="fill:var(--k-c);font-size:14px">Sₙ</text><circle cx="76.0" cy="150.0" r="5" style="fill:var(--story-edge)"/><circle cx="112.0" cy="22.5" r="5" style="fill:var(--accent)"/><circle cx="148.0" cy="206.7" r="5" style="fill:var(--story-edge)"/><circle cx="184.0" cy="43.8" r="5" style="fill:var(--accent)"/><circle cx="220.0" cy="218.0" r="5" style="fill:var(--story-edge)"/><circle cx="256.0" cy="50.8" r="5" style="fill:var(--accent)"/><circle cx="292.0" cy="222.9" r="5" style="fill:var(--story-edge)"/><circle cx="328.0" cy="54.4" r="5" style="fill:var(--accent)"/><circle cx="364.0" cy="225.6" r="5" style="fill:var(--story-edge)"/><circle cx="400.0" cy="56.5" r="5" style="fill:var(--accent)"/><circle cx="436.0" cy="227.3" r="5" style="fill:var(--story-edge)"/><circle cx="472.0" cy="57.9" r="5" style="fill:var(--accent)"/><circle cx="508.0" cy="228.5" r="5" style="fill:var(--story-edge)"/><circle cx="544.0" cy="58.9" r="5" style="fill:var(--accent)"/><circle cx="580.0" cy="229.3" r="5" style="fill:var(--story-edge)"/><text x="580.0" y="166.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">n</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$a_n=(-1)^n+\frac1n$. The staircase is the sequence of tail suprema $S_n$; it falls and settles at $\limsup a_n=1$. The tail infima are all $I_n=-1=\liminf a_n$.</figcaption>
+</figure>
+<p><strong>Unbounded sequences (<a class="pl" href="script.html#p262">p. 262</a>).</strong> If $(a_n)_n$ is not bounded above, then every $S_n=\infty$ and we set $\limsup a_n=\infty$. If it is bounded above but not below, $\limsup a_n=\lim S_n$, which may be $-\infty$ (for example $\limsup(-n)=-\infty$). The same conventions hold for $\liminf$ with signs swapped.</p>
+
+<h3 id="the-two-properties-of-the">The two properties of the limit superior</h3>
+<div class="box">
+<p><strong>Satz 6.11 (<a class="pl" href="script.html#p257">p. 257</a>).</strong> Let $(a_n)_n$ be bounded and $S=\limsup a_n$. For every $\varepsilon&gt;0$:</p>
+<ul>
+  <li><strong>(P1)</strong> only finitely many $n$ satisfy $a_n&gt;S+\varepsilon$ (equivalently: there is $N$ with $a_n\le S+\varepsilon$ for all $n\ge N$);</li>
+  <li><strong>(P2)</strong> infinitely many $n$ satisfy $a_n&gt;S-\varepsilon$.</li>
+</ul>
+<p>The mirror statement for $I=\liminf a_n$: only finitely many $a_n&lt;I-\varepsilon$, and infinitely many $a_n&lt;I+\varepsilon$.</p>
+</div>
+<p>In words: the sequence eventually stays below any level above $S$, and keeps coming back above any level below $S$. Conversely, a number with both properties <em>is</em> the $\limsup$ (Übung 6.12, which we use without proof).</p>
+
+<h3 id="proof-c">Proof C: the two properties (Satz 6.11)</h3>
+<p><strong>The idea.</strong> (P1): the high-water marks $S_n$ settle at $S$, so some mark $S_N$ is below $S+\varepsilon$, and every later term is below its mark. (P2): every high-water mark $S_N$ is at least $S$, and the water really comes within $\varepsilon$ of the mark, after <em>any</em> day $N$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> $S_n=\sup_{k\ge n}a_k$ decreases to $S=\inf_n S_n$. Two facts about $S$: “$S_n\to S$” and “$S\le S_n$ for every $n$”.</li>
+  <li><strong>(P1) needs one $N$</strong> after which $a_k\le S+\varepsilon$.</li>
+  <li><strong>(P2), “infinitely many”,</strong> is best shown as: for every $N$ there is $k\ge N$ with $a_k&gt;S-\varepsilon$. (If there were only finitely many such $k$, take $N$ beyond the largest one.)</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(P1) The marks settle at $S$, so one of them is already below $S+\varepsilon$.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$. Since $S_n\to S$, there is $N$ with $S_N&lt;S+\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The water never rises above that day's mark afterwards.</p></div><div class="sp-formal"><p>For $k\ge N$: $a_k\le S_N&lt;S+\varepsilon$. So $a_k&gt;S+\varepsilon$ can only happen for $k&lt;N$: finitely many indices.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(P2) Pick any day $N$. Its mark is at least $S$.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$ and $N\in\mathbb N$. Since $S=\inf_n S_n$, we have $S_N\ge S$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The mark is the true highest point, so the water comes within $\varepsilon$ of it after day $N$.</p></div><div class="sp-formal"><p>$S_N-\varepsilon$ is not an upper bound of $\{a_k:k\ge N\}$, so there is $k\ge N$ with <span class="math-display" style="display:block">$$a_k&gt;S_N-\varepsilon\ge S-\varepsilon.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>That happens after every day, so it happens infinitely often.</p></div><div class="sp-formal"><p>Since $N$ was arbitrary, there are infinitely many $k$ with $a_k&gt;S-\varepsilon$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">use convergence with a chosen ε</a> <a class="mvl" href="moves.html#m-approx">approach a supremum</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\varepsilon&gt;0$ and $S_n=\sup_{k\ge n}a_k$. (P1): since $S_n\to S$, there is $N$ with $S_N&lt;S+\varepsilon$; then $a_k\le S_N&lt;S+\varepsilon$ for all $k\ge N$, so $a_k&gt;S+\varepsilon$ holds for at most the $N-1$ indices $k&lt;N$. (P2): let $N\in\mathbb N$. Then $S_N\ge\inf_n S_n=S$, and since $S_N-\varepsilon$ is not an upper bound of $\{a_k:k\ge N\}$, there is $k\ge N$ with $a_k&gt;S_N-\varepsilon\ge S-\varepsilon$. As $N$ was arbitrary, infinitely many $k$ satisfy $a_k&gt;S-\varepsilon$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Check (P1) and (P2) for $a_n=(-1)^n+\frac1n$ with $S=1$ and $\varepsilon=\frac14$. Which terms are above $\frac54$? Which terms are above $\frac34$?</p>
+  <details><summary>Answer</summary><div><p>Above $\frac54$: only $a_2=\frac32$ (since $a_4=\frac54$ is not strictly above). Finitely many. Above $\frac34$: all even terms $1+\frac1n$. Infinitely many.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> State (P1) and (P2) in quantifiers (Übung 6.12).</p>
+  <details><summary>Answer</summary><div><p>(P1) $\forall\varepsilon&gt;0\ \exists N\ \forall n\ge N:\ a_n\le S+\varepsilon$. (P2) $\forall\varepsilon&gt;0\ \forall N\ \exists n\ge N:\ a_n&gt;S-\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof of (P2) from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="proof-d">Proof D: convergent ⇔ liminf = limsup (Korollar 6.14, <a class="pl" href="script.html#p258">p. 258</a>)</h3>
+<p><strong>The idea.</strong> “⇐”: if the high- and low-water marks settle at the same level $A$, the water is squeezed: eventually below $A+\varepsilon$ by (P1), and above $A-\varepsilon$ by the mirror of (P1). “⇒”: if $a_n\to A$, every tail lies in $(A-\varepsilon,A+\varepsilon)$, so its supremum and infimum lie in $[A-\varepsilon,A+\varepsilon]$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Two directions</strong>, for a bounded sequence $(a_n)_n$.</li>
+  <li><strong>“⇐” ends with</strong> “so $|a_n-A|&lt;\varepsilon$ for $n\ge N$”. The tools: (P1) for $\limsup$ and its mirror for $\liminf$.</li>
+  <li><strong>“⇒” ends with</strong> “$\liminf a_n=\limsup a_n=A$”: an equality of numbers, so show $|\cdot|\le\varepsilon$ for every $\varepsilon$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>“⇐” Both marks settle at $A$. Use half the tolerance on each side.</p></div><div class="sp-formal"><p>Let $A=\liminf a_n=\limsup a_n$ and $\varepsilon&gt;0$. By (P1) there is $N_1$ with $a_n\le A+\frac\varepsilon2$ for $n\ge N_1$; by its mirror for $\liminf$ there is $N_2$ with $a_n\ge A-\frac\varepsilon2$ for $n\ge N_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>After both days, the water is pinned near $A$.</p></div><div class="sp-formal"><p>For $n\ge N=\max\{N_1,N_2\}$: $|a_n-A|\le\frac\varepsilon2&lt;\varepsilon$. So $a_n\to A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>“⇒” The water settles at $A$, so from some day on it stays in a narrow band.</p></div><div class="sp-formal"><p>Let $a_n\to A$ and $\varepsilon&gt;0$. There is $N$ with $A-\varepsilon&lt;a_k&lt;A+\varepsilon$ for all $k\ge N$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So every later high-water mark and low-water mark is inside the band (or on its edge).</p></div><div class="sp-formal"><p>For $n\ge N$, $A+\varepsilon$ is an upper bound and $A-\varepsilon$ a lower bound of $\{a_k:k\ge n\}$, so <span class="math-display" style="display:block">$$A-\varepsilon\le I_n\le S_n\le A+\varepsilon.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The marks settle inside the band too, and the band can be made as thin as we like.</p></div><div class="sp-formal"><p>Letting $n\to\infty$ (limits preserve $\le$): $A-\varepsilon\le\liminf a_n\le\limsup a_n\le A+\varepsilon$. Since $\varepsilon&gt;0$ was arbitrary, $\liminf a_n=\limsup a_n=A$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-maxN">take the larger N</a> <a class="mvl" href="moves.html#m-ub">sup ≤ an upper bound</a> <a class="mvl" href="moves.html#m-alleps">smaller than every ε</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>“⇐”: Let $A=\liminf a_n=\limsup a_n$ and $\varepsilon&gt;0$. By (P1) of Proof C and its mirror, there are $N_1,N_2$ with $a_n\le A+\frac\varepsilon2$ for $n\ge N_1$ and $a_n\ge A-\frac\varepsilon2$ for $n\ge N_2$. For $n\ge\max\{N_1,N_2\}$ we get $|a_n-A|\le\frac\varepsilon2&lt;\varepsilon$, so $a_n\to A$.</p>
+<p>“⇒”: Let $a_n\to A$ and $\varepsilon&gt;0$. Choose $N$ with $A-\varepsilon&lt;a_k&lt;A+\varepsilon$ for $k\ge N$. For $n\ge N$, $A\pm\varepsilon$ are bounds for $\{a_k:k\ge n\}$, so $A-\varepsilon\le I_n\le S_n\le A+\varepsilon$. Letting $n\to\infty$ gives $A-\varepsilon\le\liminf a_n\le\limsup a_n\le A+\varepsilon$. Since $\varepsilon$ was arbitrary, $\liminf a_n=\limsup a_n=A$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>“⇐”:</strong> (P1) for $\limsup$ gives $a_n\le A+\frac\varepsilon2$ eventually; the mirror for $\liminf$ gives $a_n\ge A-\frac\varepsilon2$ eventually.</li>
+  <li><strong>Max of the two Ns</strong>, then $|a_n-A|&lt;\varepsilon$.</li>
+  <li><strong>“⇒”:</strong> tail in $(A-\varepsilon,A+\varepsilon)$ ⇒ $A-\varepsilon\le I_n\le S_n\le A+\varepsilon$.</li>
+  <li><strong>Limit $n\to\infty$</strong>, then ε arbitrary ⇒ equality.</li>
+</ol>
+<p>In short: “⇐ two properties and a max; ⇒ the band traps the tail sup and inf”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $S_n\le A+\varepsilon$ (not $&lt;$) in the “⇒” part, although every $a_k&lt;A+\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>A supremum of numbers that are all $&lt;c$ can equal $c$; for example $\sup\{1-\frac1k\}=1$. We only know $A+\varepsilon$ is an upper bound, which gives $S_n\le A+\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the “⇐” direction.</p>
+  <details><summary>Answer</summary><div><p>See the first paragraph of the one-piece proof.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write both directions from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="a-practical-rule-for-computing">A practical rule for computing limsup and liminf</h3>
+<p>If a sequence splits into finitely many subsequences that together contain every term (for example the even terms and the odd terms) and each of them converges, then $\limsup a_n$ is the <strong>largest</strong> of their limits and $\liminf a_n$ the <strong>smallest</strong>.</p>
+<p><em>Why:</em> say the even terms tend to $L_1$ and the odd terms to $L_2$, with $L_1\ge L_2$. For $\varepsilon&gt;0$, eventually all even terms are $&lt;L_1+\varepsilon$ and all odd terms are $&lt;L_2+\varepsilon\le L_1+\varepsilon$ (take the larger $N$), which is (P1) for $L_1$. And infinitely many terms (the even ones, from some point on) are $&gt;L_1-\varepsilon$, which is (P2) for $L_1$. By Übung 6.12, $L_1=\limsup a_n$. The same argument from below gives $\liminf a_n=L_2$. This is the rule you use in Exercise 6.</p>
+<h2 id="s5-worked-examples">5. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: $\sqrt[n]{a}\to1$ for every $a&gt;0$ (Beispiel 6.4, <a class="pl" href="script.html#p254">p. 254</a>)</h3>
+<ol class="gq">
+  <li><p>Start with $a&gt;1$. Then $\sqrt[n]a&gt;1$. What should we show about $b_n=\sqrt[n]a-1\ge0$?</p>
+  <details><summary>Answer</summary><div><p>That $b_n\to0$. Then $\sqrt[n]a=1+b_n\to1$ by the sum rule.</p></div></details></li>
+  <li><p>We have $a=(1+b_n)^n$. Which inequality from <a class="xl" href="lesson-04.html#proof-c">lesson 4</a> gives a lower bound for $(1+b_n)^n$ that is linear in $b_n$?</p>
+  <details><summary>Answer</summary><div><p>Bernoulli's inequality: $(1+x)^n\ge1+nx$ for $x\ge-1$. So $a=(1+b_n)^n\ge1+nb_n\ge nb_n$.</p></div></details></li>
+  <li><p>Finish with the sandwich lemma.</p>
+  <details><summary>Answer</summary><div><p>From $a\ge nb_n$: $0\le b_n\le\frac an$. Both $0\to0$ and $\frac an\to0$, so $b_n\to0$ by the sandwich lemma, and $\sqrt[n]a=1+b_n\to1$.</p></div></details></li>
+  <li><p>Now $0&lt;a&lt;1$. Reduce to the first case.</p>
+  <details><summary>Answer</summary><div><p>$\frac1a&gt;1$, so $\sqrt[n]{1/a}\to1$ by the first case, and $\sqrt[n]a=\frac1{\sqrt[n]{1/a}}\to\frac11=1$ by the quotient rule. The case $a=1$ is trivial.</p></div></details></li>
+</ol>
+<p class="legend">The same idea with the binomial theorem instead of Bernoulli shows $\sqrt[n]n\to1$: with $b_n=\sqrt[n]n-1$, $n=(1+b_n)^n\ge\binom n2b_n^2=\frac{n(n-1)}2b_n^2$, so $0\le b_n\le\sqrt{\frac2{n-1}}$ for $n\ge2$.</p>
+</div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: a recursive sequence (Übung 6.6, <a class="pl" href="script.html#p256">p. 256</a>)</h3>
+<p>Let $a_1=1$ and $a_{n+1}=\frac23\left(a_n+\frac1{a_n}\right)$ for $n\ge1$. Show that $(a_n)_n$ converges and find the limit.</p>
+<ol class="gq">
+  <li><p>Compute $a_2$ and $a_3$. What do you guess?</p>
+  <details><summary>Answer</summary><div><p>$a_2=\frac23\cdot2=\frac43\approx1.333$ and $a_3=\frac23\left(\frac43+\frac34\right)=\frac{25}{18}\approx1.389$. Guess: increasing, bounded above.</p></div></details></li>
+  <li><p><strong>Find the only possible limit first.</strong> If $a_n\to A$ with $A&gt;0$, what equation must $A$ satisfy?</p>
+  <details><summary>Answer</summary><div><p>Since $a_{n+1}\to A$ too (shifted index), the limit rules give $A=\frac23\left(A+\frac1A\right)$, so $3A^2=2A^2+2$, $A^2=2$, $A=\sqrt2$. This is only a candidate: we still have to prove convergence.</p></div></details></li>
+  <li><p>Let $f(x)=\frac23\left(x+\frac1x\right)$. Show: for $1\le x\le\sqrt2$ we have $x\le f(x)\le\sqrt2$.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}f(x)\ge x&amp;\iff\tfrac23x+\tfrac2{3x}\ge x\\&amp;\iff\tfrac2{3x}\ge\tfrac x3\iff x^2\le2,\end{aligned}$$</span> which is true for $0&lt;x\le\sqrt2$.</p>
+  <p><span class="math-display" style="display:block">$$\begin{aligned}f(x)\le\sqrt2&amp;\iff x^2+1\le\tfrac{3}{\sqrt2}x\\&amp;\iff x^2-\tfrac3{\sqrt2}x+1\le0\\&amp;\iff\left(x-\sqrt2\right)\left(x-\tfrac1{\sqrt2}\right)\le0,\end{aligned}$$</span> which is true for $\frac1{\sqrt2}\le x\le\sqrt2$, so in particular for $1\le x\le\sqrt2$. (Multiplying out: $\sqrt2\cdot\frac1{\sqrt2}=1$ and $\sqrt2+\frac1{\sqrt2}=\frac3{\sqrt2}$.)</p></div></details></li>
+  <li><p>Prove by induction that $1\le a_n\le\sqrt2$ for all $n$, and conclude that $(a_n)_n$ is increasing.</p>
+  <details><summary>Answer</summary><div><p><strong>Base:</strong> $a_1=1\in[1,\sqrt2]$. <strong>Step:</strong> if $1\le a_n\le\sqrt2$, then by question 3, $1\le a_n\le f(a_n)=a_{n+1}\le\sqrt2$. So $1\le a_n\le\sqrt2$ for all $n$, and then question 3 gives $a_n\le f(a_n)=a_{n+1}$ for all $n$.</p></div></details></li>
+  <li><p>Conclude.</p>
+  <details><summary>Answer</summary><div><p>$(a_n)_n$ is increasing and bounded above by $\sqrt2$, so it converges by the monotone convergence theorem, to some $A\in[1,\sqrt2]$. Since $A\ge1&gt;0$, question 2 applies and $A=\sqrt2$.</p></div></details></li>
+</ol>
+<p class="legend">The recipe for recursive sequences: (1) guess from the first terms, (2) find the candidate limit from the fixed-point equation $A=f(A)$, (3) prove monotone and bounded by induction, (4) monotone convergence, (5) pass to the limit in the recursion. Step (2) alone is <em>not</em> a proof: $a_{n+1}=2a_n$, $a_1=1$ gives the “candidate” $A=0$, but $a_n=2^{n-1}\to\infty$.</p>
+</div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: limsup and liminf by splitting</h3>
+<p>Compute $\limsup$ and $\liminf$ of $a_n=(-1)^n\frac n{n+1}$.</p>
+<p><strong>Solution.</strong> The even terms are $a_{2m}=\frac{2m}{2m+1}\to1$, and the odd terms are $a_{2m+1}=-\frac{2m+1}{2m+2}\to-1$. Every term is even or odd, so by the practical rule, $\limsup a_n=1$ and $\liminf a_n=-1$. Since they differ, $(a_n)_n$ diverges (Korollar 6.14).</p>
+</div>
+
+<p><strong>Why it's cool.</strong> Monotone convergence proves that a limit exists without knowing it, for example for a recursive sequence (Worked example 2), and then the limit can be found from the recursion. limsup and liminf give every bounded sequence two honest “limits”, even when it oscillates forever.</p>
+
+<h2 id="s6-exercises">6. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1, 2, 3 and 6 are exam-style and count for scoring.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Kobel-Keller HS24, single choice 4)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Let $(x_n)_n$ be a monotone real sequence. Which statement is correct? (a) The sequence may have no accumulation point. (b) It has at least one accumulation point. (c) It has exactly one accumulation point. (d) It has at least two accumulation points.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (a).</strong> The sequence $x_n=n$ is increasing and has no accumulation point: every subsequence is unbounded, so none converges. This also rules out (b), (c) and (d).</p>
+  <p>In fact a monotone sequence has <em>at most one</em> accumulation point: if it is bounded, it converges (monotone convergence theorem), so its only accumulation point is the limit; if it is unbounded, every subsequence is unbounded (oBdA increasing: from some index on all terms exceed any given bound), so it has none.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Kobel-Keller HS24, single choice 1)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">HS24 exam</a></p>
+  <p>Let $(x_n)_n$ be a real sequence and $M=\{x_n:n\in\mathbb N\}$. Which statement is correct? (a) $\min M$ is always an accumulation point of the sequence. (b) If the sequence is monotone, it converges and its limit is $\inf M$ or $\sup M$. (c) It may happen that $\sup M$ or $\inf M$ does not exist. (d) The sequence converges if $\inf M=\sup M$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (d).</strong> If $\inf M=\sup M$, then every $x\in M$ satisfies $\inf M\le x\le\sup M$, so $M$ has exactly one element. The sequence is constant and converges.</p>
+  <ul>
+    <li>(a) False: $x_1=0$ and $x_n=1$ for $n\ge2$. Then $\min M=0$, but the only accumulation point is $1$.</li>
+    <li>(b) False: $x_n=n$ is monotone and diverges.</li>
+    <li>(c) False in this course's convention: every nonempty subset of $\mathbb R$ has a supremum and an infimum in $\mathbb R\cup\{\pm\infty\}$ (script section 2.5.3, <a class="pl" href="script.html#p108">p. 108</a>). For $x_n=n$, $\sup M=\infty$ exists in this extended sense. That's why the intended single answer is (d).</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Figalli FS26, MC2)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Let $(x_n)_n$ be a real sequence. Which statement is <strong>false</strong>? (A) If $(x_n)_n$ is bounded, then $\limsup x_n$ is finite. (B) If $\limsup x_n$ is finite, then $(x_n)_n$ is bounded. (C) If $x_n\to L$, then $\liminf x_n=L$. (D) If $\limsup x_n=\liminf x_n$ and both are finite, then $(x_n)_n$ converges.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (B).</strong> Counterexample: $x_n=0$ for even $n$ and $x_n=-n$ for odd $n$. Every tail contains $0$ and no positive terms, so $S_n=0$ and $\limsup x_n=0$ is finite, but the sequence is not bounded below.</p>
+  <ul>
+    <li>(A) True: if $|x_n|\le M$, then $-M\le S_n\le M$, so the limit of $S_n$ lies in $[-M,M]$.</li>
+    <li>(C) True: a convergent sequence has $\limsup=\liminf=$ its limit (Proof D, “⇒”).</li>
+    <li>(D) True: $\limsup x_n&lt;\infty$ means the sequence is bounded above (otherwise $\limsup=\infty$), and $\liminf x_n&gt;-\infty$ means it is bounded below. So it is bounded, and Proof D (“⇐”: a bounded sequence with $\limsup=\liminf$ converges) applies.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (sandwich)</h3>
+  <p>Compute the limits, with justification: (a) $\displaystyle\lim_{n\to\infty}\frac{(-1)^n\,n}{n^2+1}$, (b) $\displaystyle\lim_{n\to\infty}\sqrt[n]{2^n+3^n}$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> for each part, find two simple sequences with the same limit, one below and one above, valid for all $n$; then the sandwich lemma.</p>
+  <p><strong>(a) $0$.</strong> For all $n$: $\left|\frac{(-1)^nn}{n^2+1}\right|=\frac n{n^2+1}\le\frac n{n^2}=\frac1n$. So $-\frac1n\le\frac{(-1)^nn}{n^2+1}\le\frac1n$, both bounds tend to $0$, and the sandwich lemma gives the limit $0$.</p>
+  <p><strong>(b) $3$.</strong> For all $n$: $3^n\le2^n+3^n\le2\cdot3^n$. The $n$-th root is increasing on $[0,\infty)$ (<a class="xl" href="lesson-08.html#the-payoff-th-roots-beispiel">lesson 8</a>), so <span class="math-display" style="display:block">$$3\le\sqrt[n]{2^n+3^n}\le3\sqrt[n]2.$$</span> By Worked example 1 and the multiple rule, $3\sqrt[n]2\to3$. By the sandwich lemma, $\sqrt[n]{2^n+3^n}\to3$.</p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-sandwich">sandwich</a></p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (Übung 6.7, <a class="pl" href="script.html#p256">p. 256</a>)</h3>
+  <p>Let $(a_n)_n$ be increasing, $(b_n)_n$ decreasing, and $a_n\le b_n$ for all $n$. Show that both sequences converge and that $\lim a_n\le\lim b_n$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> “converges” with no limit given: show monotone and bounded, then the monotone convergence theorem; the inequality comes from limits preserving $\le$. <em>Moves:</em> <a class="mvl" href="moves.html#m-trap">trap between two values</a>.</p>
+  <p>For all $n$: $a_1\le a_n\le b_n\le b_1$, using that $(a_n)_n$ is increasing and $(b_n)_n$ is decreasing. So $(a_n)_n$ is increasing and bounded above by $b_1$, and $(b_n)_n$ is decreasing and bounded below by $a_1$. Both are bounded (by $\max\{|a_1|,|b_1|\}$). By the monotone convergence theorem, $a_n\to A$ and $b_n\to B$ for some $A,B\in\mathbb R$. Since $a_n\le b_n$ for all $n$, and limits preserve $\le$ (<a class="xl" href="#s2-inequalities-and-the-sandwich-lemma">section 2</a>), $A\le B$. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Exercise 6 (in the style of Einsiedler FS22, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-08-einsiedler-fs22-repeat-exam.pdf&amp;t=2022-08%20Einsiedler%20-%20FS22%20repeat%20exam">FS22 exam</a></p>
+  <p>Let $a_n=\frac{2n^2+1}{n^2+3}$ and $b_n=\frac{n+5}{n+1}$. Compute $\lim a_n$, $\lim b_n$, and $\limsup$ and $\liminf$ of $c_n=a_n+(-1)^nb_n$. Does $(c_n)_n$ converge?</p><details class="sol"><summary>Solution</summary><div>
+  <p>Dividing numerator and denominator by the highest power: $a_n=\frac{2+1/n^2}{1+3/n^2}\to\frac21=2$ and $b_n=\frac{1+5/n}{1+1/n}\to1$, by the limit rules.</p>
+  <p>Even terms: $c_{2m}=a_{2m}+b_{2m}\to2+1=3$. Odd terms: <span class="math-display" style="display:block">$$c_{2m+1}=a_{2m+1}-b_{2m+1}\to2-1=1$$</span>(subsequences of convergent sequences have the same limits, then the sum rule). Every term is even or odd, so by the practical rule $\limsup c_n=3$ and $\liminf c_n=1$. Since $1\neq3$, $(c_n)_n$ diverges (a convergent sequence would have $\limsup=\liminf$, Proof D).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (Übung 6.13 (i))</h3>
+  <p>Prove that $\limsup(-a_n)=-\liminf a_n$ for every bounded real sequence $(a_n)_n$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> prove the identity for each tail first ($\sup$ of the negatives is minus the $\inf$), then let $n\to\infty$ with the limit rules.</p>
+  <p>For every $n$: <span class="math-display" style="display:block">$$\sup\{-a_k:k\ge n\}=-\inf\{a_k:k\ge n\},$$</span>because $c$ is an upper bound of $\{-a_k\}$ exactly when $-c$ is a lower bound of $\{a_k\}$ (<a class="xl" href="lesson-06.html#infimum">lesson 6</a>). So the tail suprema of $(-a_n)$ are $-I_n$. Letting $n\to\infty$: <span class="math-display" style="display:block">$$\begin{aligned}\limsup(-a_n)&amp;=\lim(-I_n)\\&amp;=-\lim I_n\\&amp;=-\liminf a_n\end{aligned}.$$</span> <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (2), Exercise 2 (2), Exercise 3 (2) and Exercise 6 (2) make 8. If you have 6 of 8, you're done. Exercises 4 and 5 and the Bonus are proof practice and don't count against you.</p>
+</div>
+
+<h2 id="s7-for-wonder-optional-5-min">7. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>A 3,800-year-old recursive sequence.</strong> The Babylonian clay tablet YBC 7289 (around 1800 BC) shows a square with its diagonal labelled $1;24,51,10$ in base 60, which is $1.41421296\ldots$, correct to about six decimal places. The method was probably the recursion $a_{n+1}=\frac12\left(a_n+\frac2{a_n}\right)$, a close cousin of Worked example 2. It converges to $\sqrt2$ by exactly the argument you saw (monotone from the second term on, bounded below by $\sqrt2$), but astonishingly fast: the number of correct digits roughly doubles at every step. Starting from $a_1=1$: $1.5$, $1.41667$, $1.4142157$, $1.41421356237469$. Today this is Newton's method, and it's how computers still calculate square roots.</p>
+<p><strong>Where limsup shows up next.</strong> For a power series $\sum c_nz^n$, the radius of convergence is $\rho=\frac1{\limsup\sqrt[n]{|c_n|}}$ (the Cauchy–Hadamard formula, <a class="xl" href="lesson-16.html#proof-a">lesson 16</a>). The $\limsup$ is needed because $\sqrt[n]{|c_n|}$ often doesn't converge, and it's the reason exam questions about power series quietly assume you're comfortable with today's lesson.</p>
+<p><strong>A sequence that visits every real number.</strong> List the rationals as $q_1,q_2,q_3,\dots$ (they're countable, <a class="xl" href="lesson-03.html#s4-finite-and-countable-sets">lesson 3</a>). Every real number is a limit of some subsequence, so this sequence has <em>every</em> real number as an accumulation point (Übung 6.16). And if $a_{n+1}-a_n\to0$, the accumulation points of a bounded sequence fill the whole interval $[\liminf a_n,\limsup a_n]$ (Übung 6.18): the tide sweeps every level in between, again and again.</p>
+
+<h2 id="s8-what-we-skipped">8. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Übung 6.12 (<a class="pl" href="script.html#p258">p. 258</a>):</strong> the two properties (P1) and (P2) determine the $\limsup$ uniquely. We used it for the practical rule. Medium priority; the proof is a short contradiction with $\varepsilon=\frac{|S-S'|}2$.</li>
+  <li><strong>Übung 6.13 (ii)–(iv) (<a class="pl" href="script.html#p258">p. 258</a>):</strong> the $\liminf$ version of the two properties (stated in <a class="xl" href="#s4-limit-superior-and-limit-inferior">section 4</a>), $\liminf\le\limsup$ (shown in <a class="xl" href="#s4-limit-superior-and-limit-inferior">section 4</a>), and that $\limsup$ is not linear (for example $\limsup((-1)^n+(-1)^{n+1})=0\neq1+1$). Low priority.</li>
+  <li><strong>The full details of $\sqrt[n]n\to1$ (Beispiel 6.4 (iii), <a class="pl" href="script.html#p255">p. 255</a>).</strong> Low priority; the idea is in the note after Worked example 1.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-12.html">lesson 12</a>, Bolzano–Weierstrass (every bounded sequence has a convergent subsequence), sequences that tend to $\pm\infty$, and Cauchy sequences, with a full exam proof of the Cauchy criterion.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-10.html">← Lesson 10: The Measure of Distance</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-12.html">Lesson 12: The Wanderer's Return →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

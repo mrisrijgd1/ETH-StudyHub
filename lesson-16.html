@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Spell with Endless Words</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-15.html">← Lesson 15</a>
+<a href="lesson-17.html">Lesson 17 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 16 of 26</span>
+  <h1>The Spell with Endless Words</h1>
+  <p class="lead">Power series: “polynomials of infinite degree”. Where they converge (the radius of convergence, which is in every exam), how to add, multiply and integrate them, and the most important one of all: the exponential function, with the logarithm, general powers, sine, cosine and $\pi$ coming out of it. Script sections 6.3 and 7.4–7.7.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-15-5">Recap of lesson 15 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-spell-with">1. The story: the spell with endless words</a>
+</li>
+<li><a href="#s2-the-exponential-function-and-the">2. The exponential function and the logarithm</a>
+<ol>
+<li><a href="#we-1">Worked example 1: logarithms lose to every power</a></li>
+<li><a href="#we-2">Worked example 2: two bounds for $\log(1+y)$</a></li>
+</ol></li>
+<li><a href="#s3-power-series-and-the-radius">3. Power series and the radius of convergence</a>
+<ol>
+<li><a href="#proof-a">Proof A: what the radius of convergence says (Satz 7.56, p. 319)</a></li>
+<li><a href="#proof-b">Proof B: the ratio formula (Lemma 7.60, p. 321)</a></li>
+<li><a href="#the-recipe-for-compute-the">The recipe for “compute the radius of convergence”</a></li>
+<li><a href="#we-3">Worked example 3: four radii</a></li>
+<li><a href="#we-4">Worked example 4: the boundary is unpredictable</a></li>
+</ol></li>
+<li><a href="#s4-adding-and-multiplying-series">4. Adding and multiplying series</a>
+<ol>
+<li><a href="#we-5">Worked example 5: $\displaystyle\sum_{n=1}^\infty\frac n{2^n}$ (Übung 7.64)</a></li>
+</ol></li>
+<li><a href="#s5-the-exponential-series">5. The exponential series</a>
+<ol>
+<li><a href="#proof-c">Proof C: the addition formula $e^{z+w}=e^ze^w$ (Section 7.5.3, p. 326)</a></li>
+</ol></li>
+<li><a href="#s6-sine-cosine-and-euler-s">6. Sine, cosine and Euler&#x27;s formula</a>
+<ol>
+<li><a href="#we-6">Worked example 6: Euler&#x27;s formula from the series</a></li>
+<li><a href="#proof-d">Proof D: the addition formulas for sine and cosine (Section 7.6.1, p. 329)</a></li>
+</ol></li>
+<li><a href="#s7-integrating-power-series-term-by">7. Integrating power series term by term</a>
+<ol>
+<li><a href="#proof-e">Proof E: term-by-term integration (Satz 7.85, p. 339)</a></li>
+</ol></li>
+<li><a href="#s8-exercises">8. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Einsiedler HS21, question 2(a), 2 points)</a></li>
+<li><a href="#ex-2">Exercise 2 (Einsiedler FS22, question 2(a), 2 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (Felder HS22, question 1.A4, 2 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (Figalli FS24, MC3, 2 points)</a></li>
+<li><a href="#ex-5">Exercise 5 (Felder FS23, question 1.A2, 2 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (PVK mock HS25, MC3)</a></li>
+<li><a href="#ex-7">Exercise 7 (Figalli HS23, MC5)</a></li>
+<li><a href="#ex-8">Exercise 8 (Figalli FS26, MC7)</a></li>
+<li><a href="#ex-9">Exercise 9 (Einsiedler HS21, question 2(b), 3 points)</a></li>
+<li><a href="#ex-10">Exercise 10 (Einsiedler FS22, question 2(b) ii, 2 points)</a></li>
+<li><a href="#bonus">Bonus: $e$ is irrational</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. For wonder</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>compute the radius of convergence</strong> with the root or the ratio formula, including the “dominant term” trick, (2) say what happens <strong>inside, outside and on the boundary</strong>, (3) use the rules for $\exp$ and $\log$ ($\exp(x+y)=\exp(x)\exp(y)$, $1+x\le e^x$, $x^a=e^{a\log x}$, $\log x&lt;\frac{x^\alpha}\alpha$), (4) <strong>prove the addition formula</strong> for $\exp$ with the Cauchy product, (5) know <strong>Euler's formula</strong> $e^{iz}=\cos z+i\sin z$ and get the trigonometric addition formulas from it, and (6) <strong>state and prove term-by-term integration</strong> of power series (an exam proof in the older Einsiedler exams).</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p266">p. 266–273</a>, Section 6.3:</strong> the exponential function as $\lim(1+\frac xn)^n$, its properties, the logarithm and general powers.</li>
+      <li><strong><a class="pl" href="script.html#p309">p. 309–312</a>, Section 7.2.3:</strong> products of series, the Cauchy product.</li>
+      <li><strong><a class="pl" href="script.html#p319">p. 319–323</a>, Section 7.4:</strong> power series, radius of convergence, sums and products, Abel's theorem.</li>
+      <li><strong><a class="pl" href="script.html#p324">p. 324–338</a>, Sections 7.5–7.6:</strong> the complex exponential, sine, cosine, $\pi$, polar coordinates, complex logarithms.</li>
+      <li><strong><a class="pl" href="script.html#p339">p. 339–341</a>, Section 7.7:</strong> integrating power series, hyperbolic functions.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+The radius of convergence is in <strong>every</strong> recent exam, for 2 points: Einsiedler HS21 2(a), FS22 and the mock HS21; Felder HS22 1.A4 and FS23 1.A2; Figalli HS23 MC5, FS24 MC3 and FS26 MC7; the PVK mock HS25 MC3. These are your Exercises 1–7. Limits with $e$ and $\log$, like $\left(1-\frac5n\right)^{n+\sqrt n}$ (Einsiedler HS21 2(b), 3 points), need <a class="xl" href="#s2-the-exponential-function-and-the">section 2</a>. Term-by-term integration was a 5-point proof in the 2019 winter exam. And $\exp$, $\sin$, $\cos$ are everywhere from now on: derivatives, integrals, Taylor, ODEs.</div>
+
+<div class="box"><h3 id="recap-of-lesson-15-5">Recap of <a class="xl" href="lesson-15.html">lesson 15</a> (5 min)</h3>
+<ul>
+  <li><strong>Pointwise:</strong> $f_n(x)\to f(x)$ for each $x$; $N$ may depend on $x$. <strong>Uniform:</strong> one $N$ for all $x$, that is $\sup_x|f_n(x)-f(x)|\to0$.</li>
+  <li><strong>Uniform limits</strong> of continuous functions are continuous, and of integrable functions are integrable with $\int f_n\to\int f$.</li>
+  <li><strong>M-test:</strong> $|g_k(x)|\le M_k$ for all $x$ and $\sum M_k&lt;\infty$ ⇒ $\sum g_k$ converges uniformly.</li>
+  <li><strong>From <a class="xl" href="lesson-14.html#proof-g">lesson 14</a>:</strong> root test ($\limsup\sqrt[n]{|c_n|}&lt;1$ ⇒ converges absolutely, $&gt;1$ ⇒ diverges) and ratio test (same with $\frac{|c_{n+1}|}{|c_n|}$).</li>
+</ul>
+<ol class="gq">
+  <li><p>Does $\sum_{k\ge0}\frac{x^k}{2^k}$ converge uniformly on $[-1,1]$?</p>
+  <details><summary>Answer</summary><div><p>Yes, by the M-test with $M_k=\frac1{2^k}$: $\left|\frac{x^k}{2^k}\right|\le\frac1{2^k}$ for $|x|\le1$.</p></div></details></li>
+  <li><p>What is $\lim_n\sqrt[n]{n}$? And $\lim_n\sqrt[n]{n^3}$?</p>
+  <details><summary>Answer</summary><div><p>Both are $1$ (<a class="xl" href="lesson-11.html#we-1">lesson 11</a>): $\sqrt[n]{n^3}=\left(\sqrt[n]n\right)^3\to1$. Powers of $n$ are invisible to the $n$-th root. You'll use this constantly today.</p></div></details></li>
+  <li><p>Ratio test on $\sum\frac{3^n}{n!}$?</p>
+  <details><summary>Answer</summary><div><p>$\frac{3^{n+1}/(n+1)!}{3^n/n!}=\frac3{n+1}\to0&lt;1$: converges.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>power series, coefficient</td><td>Potenzreihe, Koeffizient</td></tr>
+    <tr><td>radius of convergence</td><td>Konvergenzradius</td></tr>
+    <tr><td>Cauchy product</td><td>Cauchy-Produkt</td></tr>
+    <tr><td>exponential function, Euler's number</td><td>Exponentialfunktion, Eulersche Zahl</td></tr>
+    <tr><td>natural logarithm</td><td>natürlicher Logarithmus</td></tr>
+    <tr><td>sine, cosine, tangent</td><td>Sinus, Kosinus, Tangens</td></tr>
+    <tr><td>even / odd function</td><td>gerade / ungerade Funktion</td></tr>
+    <tr><td>polar coordinates, unit circle</td><td>Polarkoordinaten, Einheitskreis</td></tr>
+    <tr><td>term-by-term integration</td><td>gliedweise Integration</td></tr>
+    <tr><td>hyperbolic sine / cosine</td><td>Sinus / Kosinus Hyperbolicus</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-spell-with">1. The story: the spell with endless words</h2>
+<div class="story">
+<p>In the old tower lives a wizard whose spells are sentences with infinitely many words. The first word is a constant, the second is multiplied by the distance $x$ from the tower, the third by $x^2$, the fourth by $x^3$, and so on. Spoken at distance $x$, the spell's strength is $a_0+a_1x+a_2x^2+a_3x^3+\dots$</p>
+<p>Every such spell has a <em>range</em>: a circle around the tower. Inside the circle, the words fade fast enough and the spell takes effect. Outside, the words grow and the spell explodes. On the circle itself, nobody can say in advance; each spell must be tested there separately.</p>
+<p>One spell is special. Its words are $1,\ x,\ \frac{x^2}{2},\ \frac{x^3}{6},\ \dots,\ \frac{x^k}{k!},\dots$, and its range is infinite: it works everywhere, even at imaginary distances. It is the spell of growth, $\exp$. Spoken at an imaginary distance $i\theta$, it doesn't grow at all: it turns. That turning is sine and cosine, and the spell needs exactly $2\pi$ to turn once around.</p>
+</div>
+<p>In maths: a spell is a <strong>power series</strong> $\sum a_nz^n$, its range is the <strong>radius of convergence</strong> $R$, and the special spell is $\exp(z)=\sum\frac{z^n}{n!}$. Its “turning” is Euler's formula $e^{i\theta}=\cos\theta+i\sin\theta$.</p>
+
+<h2 id="s2-the-exponential-function-and-the">2. The exponential function and the logarithm</h2>
+<p>Class defined $\exp$ (section 6.3) before series existed, through compound interest. A bank pays $x$ interest per year, split into $n$ payments of $\frac xn$, each one earning interest on the previous ones. After a year you have $\left(1+\frac xn\right)^n$ per franc. More payments give more money, but not unlimited money:</p>
+<div class="box">
+<p><strong>Definition and Proposition 6.29 (<a class="pl" href="script.html#p266">p. 266</a>).</strong> For every $x\in\mathbb R$ the limit</p>
+<span class="math-display" style="display:block">$$\exp(x)=\lim_{n\to\infty}\left(1+\frac xn\right)^n$$</span>
+<p>exists. $e=\exp(1)\approx2.718$. The function $\exp:\mathbb R\to(0,\infty)$ is continuous, strictly increasing and bijective, and satisfies</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\exp(x+y)=\exp(x)\exp(y)\\&amp;\exp(-x)=\frac1{\exp(x)}\\&amp;1+x\le \exp(x)\end{aligned}.$$</span>
+</div>
+<p><strong>Why each fact holds, in one line</strong> (the full proofs are on <a class="pl" href="script.html#p267">p. 267–271</a>; they are on the skip list):</p>
+<ul>
+  <li><strong>The limit exists:</strong> $\left(1+\frac xn\right)^n$ is increasing (from some $n$ on, by Bernoulli's inequality, <a class="xl" href="lesson-04.html#proof-c">lesson 4</a>) and bounded, so it converges (monotone convergence, <a class="xl" href="lesson-11.html#proof-b">lesson 11</a>).</li>
+  <li><strong>$1+x\le\exp(x)$:</strong> Bernoulli's inequality gives $\left(1+\frac xn\right)^n\ge1+n\cdot\frac xn=1+x$ for large $n$, and limits keep $\ge$. <em>This inequality is the workhorse of the section.</em></li>
+  <li><strong>Addition formula:</strong> multiply the sequences and show the error tends to $0$. <a class="xl" href="#s5-the-exponential-series">Section 5</a> gives a much cleaner proof with power series.</li>
+  <li><strong>Strictly increasing:</strong> for $y&gt;x$: $\exp(y)=\exp(x)\exp(y-x)&gt;\exp(x)$, because $\exp(y-x)\ge1+(y-x)&gt;1$.</li>
+  <li><strong>Onto $(0,\infty)$:</strong> for $y&gt;0$, $\exp(-\frac1y)&lt;y&lt;\exp(y)$ (both from $1+x\le e^x$), and the intermediate value theorem (<a class="xl" href="lesson-07.html#proof-a">lesson 7</a>) gives an $x$ with $\exp(x)=y$.</li>
+</ul>
+
+<div class="box">
+<p><strong>The logarithm and powers (Korollar 6.33, <a class="pl" href="script.html#p271">p. 271</a>).</strong> The inverse function of $\exp:\mathbb R\to(0,\infty)$ is the <strong>natural logarithm</strong> $\log:(0,\infty)\to\mathbb R$ (also written $\ln$). It is continuous and strictly increasing (inverse function theorem, <a class="xl" href="lesson-08.html#proof-a">lesson 8</a>), and</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\log(ab)=\log a+\log b\\&amp;\log1=0\\&amp;\log e=1\end{aligned}.$$</span>
+<p>For $x&gt;0$ and any $a\in\mathbb R$ we <em>define</em> $x^a=\exp(a\log x)$. This agrees with the old powers for rational $a$, and gives $e^x=\exp(x)$. The usual rules hold: $\log(x^a)=a\log x$, $x^ax^b=x^{a+b}$, $(x^a)^b=x^{ab}$.</p>
+</div>
+<p><strong>The idea behind $x^a=\exp(a\log x)$:</strong> $x=e^{\log x}$, so “$x^a$” should be $\left(e^{\log x}\right)^a=e^{a\log x}$. For irrational $a$, like $2^{\sqrt2}$, there was no definition before; now there is one, and it is continuous in both $x$ and $a$.</p>
+
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: logarithms lose to every power</h3>
+<p>Claim: for every $\alpha&gt;0$ and $x&gt;0$, $\log x&lt;\frac{x^\alpha}\alpha$. Hence $\frac{\log n}{n^\alpha}\to0$ (Übung 6.35, <a class="pl" href="script.html#p272">p. 272</a>).</p>
+<ol class="gq">
+  <li><p>Apply $1+y\le e^y$ with $y=\alpha\log x$. What do you get?</p>
+  <details><summary>Answer</summary><div><p>$1+\alpha\log x\le e^{\alpha\log x}=x^\alpha$, so $\alpha\log x&lt;x^\alpha$, that is $\log x&lt;\frac{x^\alpha}\alpha$.</p></div></details></li>
+  <li><p>Use this with $\frac\alpha2$ instead of $\alpha$ to bound $\frac{\log n}{n^\alpha}$.</p>
+  <details><summary>Answer</summary><div><p>$\log n&lt;\frac2\alpha n^{\alpha/2}$, so <span class="math-display" style="display:block">$$\begin{aligned}0&amp;&lt;\frac{\log n}{n^\alpha}\\&amp;&lt;\frac2\alpha\cdot\frac{n^{\alpha/2}}{n^\alpha}\\&amp;=\frac2\alpha n^{-\alpha/2}\to0\end{aligned}$$</span>(for $n\ge2$). Sandwich.</p></div></details></li>
+</ol>
+<p class="legend">This was the missing step in <a class="xl" href="lesson-14.html#ex-2">lesson 14</a>, Exercise 2 (“$\log n\le n^{2\eta}$ for large $n$”). The growth ladder for $n\to\infty$: $\log n\ll n^\alpha\ll a^n\ll n!\ll n^n$ (for $\alpha&gt;0$, $a&gt;1$). Each one divided by the next tends to $0$.</p>
+</div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: two bounds for $\log(1+y)$</h3>
+<p>Claim: for $y&gt;-1$, $\frac y{1+y}\le\log(1+y)\le y$. (So $\log(1+y)\approx y$ for small $y$.)</p>
+<ol class="gq">
+  <li><p>Get the upper bound from $1+y\le e^y$.</p>
+  <details><summary>Answer</summary><div><p>Take $\log$ (increasing) of $1+y\le e^y$: $\log(1+y)\le y$.</p></div></details></li>
+  <li><p>For the lower bound, apply the upper bound to $\frac1{1+y}=1+\left(-\frac y{1+y}\right)$.</p>
+  <details><summary>Answer</summary><div><p>$\log\frac1{1+y}\le-\frac y{1+y}$. The left side is $-\log(1+y)$, so $\log(1+y)\ge\frac y{1+y}$.</p></div></details></li>
+</ol>
+<p class="legend">Exercise 9 (an Einsiedler exam limit) uses exactly these two bounds.</p>
+</div>
+
+<h2 id="s3-power-series-and-the-radius">3. Power series and the radius of convergence</h2>
+<div class="box">
+<p><strong>Definitions 7.54 and 7.55 (<a class="pl" href="script.html#p319">p. 319</a>).</strong> A <strong>power series</strong> is an expression $\sum_{n=0}^\infty a_nz^n$ with coefficients $a_n\in\mathbb C$. Its <strong>radius of convergence</strong> is</p>
+<span class="math-display" style="display:block">$$R=\frac1{\limsup_{n\to\infty}\sqrt[n]{|a_n|}}\in[0,\infty],$$</span>
+<p>with the conventions $\frac10=\infty$ and $\frac1\infty=0$ (used only here). This is the <strong>root formula</strong> (also called Cauchy–Hadamard).</p>
+</div>
+<p><strong>The idea in one sentence:</strong> for a fixed $z$, the power series is an ordinary series with terms $a_nz^n$, so <a class="xl" href="lesson-14.html#proof-g">lesson 14</a>'s root test decides. The root of the term is $\sqrt[n]{|a_n|}\,|z|$, which is less than $1$ in the long run exactly when $|z|&lt;\frac1{\limsup\sqrt[n]{|a_n|}}=R$.</p>
+
+<figure style="margin:.4rem 0" aria-label="A disc of radius R around 0 in the complex plane, with a dashed boundary circle. Inside it, a smaller disc of radius S is shaded darker and labelled uniform. The region inside the big disc is labelled absolutely convergent, the outside is labelled diverges, and the boundary circle is marked with a question mark.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="60" y1="150" x2="580" y2="150" style="stroke:var(--muted)" stroke-width="1.2"/><line x1="320" y1="15" x2="320" y2="285" style="stroke:var(--muted)" stroke-width="1.2"/><circle cx="320" cy="150" r="120" style="fill:var(--k-eps);fill-opacity:0.18;stroke:var(--accent);stroke-dasharray:7 5" stroke-width="2.5"/><circle cx="320" cy="150" r="78" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.5"/><circle cx="320" cy="150" r="4" style="fill:var(--ink)"/><line x1="320" y1="150" x2="405" y2="65" style="stroke:var(--accent)" stroke-width="2"/><text x="372" y="96" style="fill:var(--accent);font-size:17px" text-anchor="start">R</text><line x1="320" y1="150" x2="242" y2="150" style="stroke:var(--k-eps)" stroke-width="2"/><text x="275" y="140" style="fill:var(--k-eps);font-size:16px" text-anchor="middle">S</text><text x="320" y="200" style="fill:var(--ink);font-size:15px" text-anchor="middle">uniform on |z| ≤ S</text><text x="320" y="252" style="fill:var(--ink);font-size:15px" text-anchor="middle">absolutely convergent</text><text x="520" y="45" style="fill:var(--k-c);font-size:16px" text-anchor="middle">diverges</text><text x="120" y="270" style="fill:var(--k-c);font-size:16px" text-anchor="middle">diverges</text><text x="470" y="215" style="fill:var(--accent);font-size:16px" text-anchor="start">|z| = R: ?</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">What the radius of convergence says (Proof A). Inside the disc of radius $R$: absolute convergence. Outside: divergence. On any smaller closed disc $|z|\le S&lt;R$: uniform convergence. On the circle $|z|=R$: anything can happen (Worked example 4).</figcaption>
+</figure>
+<h3 id="proof-a">Proof A: what the radius of convergence says (Satz 7.56, <a class="pl" href="script.html#p319">p. 319</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $R$ be the radius of convergence of $\sum a_nz^n$. Then:</p>
+<ol>
+  <li>the series <strong>converges absolutely</strong> for every $z$ with $|z|&lt;R$;</li>
+  <li>it <strong>diverges</strong> for every $z$ with $|z|&gt;R$;</li>
+  <li>for every $S$ with $0&lt;S&lt;R$, the partial sums converge <strong>uniformly</strong> on $\{|z|\le S\}$, and $f(z)=\sum a_nz^n$ is <strong>continuous</strong> on $\{|z|&lt;R\}$.</li>
+</ol>
+<p>On the circle $|z|=R$ the theorem says nothing.</p>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-14.html#proof-g">lessons 14</a> and <a class="xl" href="lesson-15.html#proof-d">15</a>)</span>
+<ul>
+  <li><strong>Root test:</strong> $\limsup\sqrt[n]{|c_n|}&lt;1$ ⇒ $\sum c_n$ converges absolutely; $&gt;1$ ⇒ diverges.</li>
+  <li><strong>M-test</strong> and <strong>uniform limits of continuous functions are continuous</strong>.</li>
+  <li><strong>limsup rule:</strong> for a constant $c\ge0$, $\limsup(c\,b_n)=c\limsup b_n$ (with $0\cdot\infty$ avoided below).</li>
+</ul></div>
+<p><strong>The idea.</strong> Parts 1 and 2: compute the root test's number for the series at $z$; it is $\frac{|z|}R$. Part 3: on the smaller disc $|z|\le S$, the terms are at most $|a_n|S^n$, and $\sum|a_n|S^n$ converges by part 1 (since $S&lt;R$). That is an M-test majorant.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Parts 1–2</strong> start with “Fix $z$ and compute $\limsup\sqrt[n]{|a_nz^n|}$.” They end with the root test.</li>
+  <li><strong>Part 3</strong> must produce numbers $M_n$ with $|a_nz^n|\le M_n$ for all $|z|\le S$ and $\sum M_n&lt;\infty$, then use the M-test.</li>
+  <li><strong>Watch the edge cases:</strong> $R=0$ and $R=\infty$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Speak the spell at distance $|z|$: the $n$-th word shrinks or grows like $\left(\sqrt[n]{|a_n|}\,|z|\right)^n$.</p></div><div class="sp-formal"><p>Let $L=\limsup_n\sqrt[n]{|a_n|}\in[0,\infty]$, so $R=\frac1L$. Fix $z\neq0$. Then $\sqrt[n]{|a_nz^n|}=\sqrt[n]{|a_n|}\,|z|$, so $\limsup_n\sqrt[n]{|a_nz^n|}=L\,|z|$ (also if $L=\infty$, since $|z|&gt;0$). At $z=0$ the series is $a_0$ and converges.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inside the range the words fade geometrically; outside they explode.</p></div><div class="sp-formal"><p>If $|z|&lt;R$, then $L|z|&lt;1$ (for $L=0$: $0&lt;1$), so the root test gives absolute convergence. If $|z|&gt;R$, then $L|z|&gt;1$ (for $L=\infty$: $\infty&gt;1$), so the series diverges. This proves 1 and 2.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>On a slightly smaller circle, each word is at most its strength at the edge of that circle, and those strengths add up to something finite.</p></div><div class="sp-formal"><p>Let $0&lt;S&lt;R$. By part 1 at $z=S$, $\sum_n|a_n|S^n$ converges. For $|z|\le S$: $|a_nz^n|\le|a_n|S^n=:M_n$. By the M-test, the partial sums $\sum_{n\le N}a_nz^n$ converge uniformly on $\{|z|\le S\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Every point inside the range lies on some smaller circle, so the spell's strength changes without jumps everywhere inside.</p></div><div class="sp-formal"><p>The partial sums are polynomials, so continuous; by uniform convergence $f$ is continuous on $\{|z|\le S\}$. Every $z$ with $|z|&lt;R$ has $|z|&lt;S&lt;R$ for some $S$ (e.g. $S=\frac{|z|+R}2$, or $S=|z|+1$ if $R=\infty$), so $f$ is continuous at $z$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-major">find a majorant</a> <a class="mvl" href="moves.html#m-supx">bound independently of x</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $L=\limsup\sqrt[n]{|a_n|}$, $R=\frac1L$. For $z\neq0$, $\limsup\sqrt[n]{|a_nz^n|}=L|z|$, which is $&lt;1$ if $|z|&lt;R$ and $&gt;1$ if $|z|&gt;R$. The root test gives absolute convergence, respectively divergence. For $0&lt;S&lt;R$, $\sum|a_n|S^n$ converges, and $|a_nz^n|\le|a_n|S^n$ for $|z|\le S$; by the M-test the partial sums (polynomials) converge uniformly there, so $f$ is continuous on $\{|z|\le S\}$. Every $|z|&lt;R$ lies in such a disc, so $f$ is continuous on $\{|z|&lt;R\}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does part 3 need $S&lt;R$ and not $S=R$?</p>
+  <details><summary>Answer</summary><div><p>The majorant $\sum|a_n|S^n$ must converge. Part 1 guarantees that only for $S&lt;R$. At $S=R$ it may diverge (for $\sum z^n$: $\sum1^n$).</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Radius of $\sum z^n$? Is the convergence uniform on $\{|z|&lt;1\}$?</p>
+  <details><summary>Answer</summary><div><p>$a_n=1$, $\sqrt[n]1=1$, so $R=1$. The series converges at <em>every</em> point of the open disc, but that is pointwise convergence. Uniform would need one $N$ that works for all $|z|&lt;1$ at once, and that fails. The error is $\left|\frac{z^{N+1}}{1-z}\right|$, and for real $z=x\nearrow1$ it tends to $\infty$, so its supremum over the disc is $\infty$ for every $N$. Another way to see it, as a proof: if $\left|\sum_{k\le N}z^k-\frac1{1-z}\right|&lt;1$ for all $|z|&lt;1$, then $\left|\frac1{1-z}\right|&lt;1+(N+1)$ for all such $z$, but $\frac1{1-x}\to\infty$ as $x\nearrow1$. Uniform only on the smaller discs $|z|\le S&lt;1$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write parts 1 and 2 from the frame alone.</p></li>
+</ol></div>
+
+<h3 id="proof-b">Proof B: the ratio formula (Lemma 7.60, <a class="pl" href="script.html#p321">p. 321</a>)</h3>
+<div class="box">
+<p><strong>Ratio formula.</strong> If $a_n\neq0$ for all $n$ and the limit $\displaystyle\lim_{n\to\infty}\frac{|a_n|}{|a_{n+1}|}$ exists in $[0,\infty]$, then it equals $R$.</p>
+<p>Careful: it is $\frac{|a_n|}{|a_{n+1}|}$, the <em>reciprocal</em> of the ratio test's fraction. That's why it gives $R$ directly, not $\frac1R$.</p>
+</div>
+<p><strong>The idea.</strong> Use the ratio test instead of the root test: the ratio of neighbouring terms of $\sum a_nz^n$ is $\frac{|a_{n+1}|}{|a_n|}|z|$, which tends to $\frac{|z|}{\rho}$, where $\rho$ is the limit in the box. So the series converges for $|z|&lt;\rho$ and diverges for $|z|&gt;\rho$. Only one number has that property: $R$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Last line:</strong> “so $\rho=R$.” <strong>The gap:</strong> show convergence for $|z|&lt;\rho$ and divergence for $|z|&gt;\rho$; then compare with Proof A.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Compare each word with the next one.</p></div><div class="sp-formal"><p>Let $\rho=\lim\frac{|a_n|}{|a_{n+1}|}$. For $z\neq0$: $\dfrac{|a_{n+1}z^{n+1}|}{|a_nz^n|}=\dfrac{|a_{n+1}|}{|a_n|}\,|z|\to\dfrac{|z|}\rho$ (read as $0$ if $\rho=\infty$, and $\infty$ if $\rho=0$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inside distance $\rho$ the words shrink, outside they grow.</p></div><div class="sp-formal"><p>By the ratio test: for $|z|&lt;\rho$ the limit is $&lt;1$, so the series converges; for $|z|&gt;\rho$ it is $&gt;1$, so it diverges.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A range is fixed by where the spell works and where it explodes, so this is the range.</p></div><div class="sp-formal"><p>If $\rho&lt;R$, pick $\rho&lt;|z|&lt;R$: divergence contradicts Proof A (1). If $\rho&gt;R$, pick $R&lt;|z|&lt;\rho$: convergence contradicts Proof A (2). So $\rho=R$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-contra">assume the opposite</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\rho=\lim\frac{|a_n|}{|a_{n+1}|}$. For $z\neq0$, $\frac{|a_{n+1}z^{n+1}|}{|a_nz^n|}\to\frac{|z|}\rho$, so by the ratio test $\sum a_nz^n$ converges for $|z|&lt;\rho$ and diverges for $|z|&gt;\rho$. By Proof A, a $z$ with $\rho&lt;|z|&lt;R$ or $R&lt;|z|&lt;\rho$ would give a contradiction. Hence $\rho=R$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Compute the radius of $\sum\frac{z^n}{n!}$ with the ratio formula.</p>
+  <details><summary>Answer</summary><div><p>$\frac{|a_n|}{|a_{n+1}|}=\frac{(n+1)!}{n!}=n+1\to\infty$, so $R=\infty$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Why can't the ratio formula handle $a_n=2^n$ for even $n$ and $a_n=3^n$ for odd $n$? What does the root formula give?</p>
+  <details><summary>Answer</summary><div><p>The ratios jump between about $\frac{2^n}{3^{n+1}}\to0$ and $\frac{3^n}{2^{n+1}}\to\infty$, so the limit doesn't exist. The root formula: $\sqrt[n]{|a_n|}$ is $2$ or $3$, so $\limsup=3$ and $R=\frac13$. The root formula always works; the ratio formula only when its limit exists.</p></div></details></li>
+  <li><p><strong>Rung 3 (2 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-recipe-for-compute-the">The recipe for “compute the radius of convergence”</h3>
+<ol>
+  <li><strong>Factorials or products</strong> ($n!$, $(2n)!$, $\binom{2n}n$): use the <strong>ratio formula</strong> $R=\lim\frac{|a_n|}{|a_{n+1}|}$. Factorials cancel nicely in ratios.</li>
+  <li><strong>$n$-th powers</strong> ($2^n$, $n^n$, $\left(1+\frac1n\right)^{n^2}$): use the <strong>root formula</strong>. Powers of $n$ disappear: $\sqrt[n]{n^k}\to1$.</li>
+  <li><strong>Sums</strong> like $\frac{n\,6^n}{3^{2n+1}+n2^n}$: find the <strong>dominant term</strong> on top and at the bottom, take its root, and check with a sandwich if needed.</li>
+  <li><strong>Gaps</strong> like $\sum b_nx^{2n}$ (only even powers): substitute $y=x^2$, find the radius $R_y$ in $y$, then $R=\sqrt{R_y}$.</li>
+  <li><strong>Boundary $|z|=R$:</strong> only if asked. Plug in $z=\pm R$ and use <a class="xl" href="lesson-14.html">lesson 14</a>'s tests.</li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: four radii</h3>
+<ol class="gq">
+  <li><p>$\displaystyle\sum n^2x^n$.</p>
+  <details><summary>Answer</summary><div><p>Root: $\sqrt[n]{n^2}\to1$, so $R=1$.</p></div></details></li>
+  <li><p>$\displaystyle\sum n!\,x^n$.</p>
+  <details><summary>Answer</summary><div><p>Ratio: $\frac{n!}{(n+1)!}=\frac1{n+1}\to0$, so $R=0$. It converges only at $x=0$.</p></div></details></li>
+  <li><p>$\displaystyle\sum\frac{2^n}{n}x^n$.</p>
+  <details><summary>Answer</summary><div><p>Root: $\sqrt[n]{\frac{2^n}n}=\frac2{\sqrt[n]n}\to2$, so $R=\frac12$.</p></div></details></li>
+  <li><p>$\displaystyle\sum 4^nx^{2n}$.</p>
+  <details><summary>Answer</summary><div><p>With $y=x^2$: $\sum4^ny^n$ has $R_y=\frac14$. It converges for $|y|=x^2&lt;\frac14$, i.e. $|x|&lt;\frac12$, and diverges for $|x|&gt;\frac12$. So $R=\frac12$. (Directly with the root formula: $a_{2n}=4^n$, $\sqrt[2n]{4^n}=2$, odd coefficients are $0$, so $\limsup=2$ and $R=\frac12$.)</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="we-4">Worked example 4: the boundary is unpredictable</h3>
+<p>All three series have $R=1$. What happens at $x=1$ and $x=-1$?</p>
+<ol class="gq">
+  <li><p>$\sum x^n$.</p>
+  <details><summary>Answer</summary><div><p>At $\pm1$ the terms have absolute value $1\not\to0$: diverges at both.</p></div></details></li>
+  <li><p>$\sum\frac{x^n}n$.</p>
+  <details><summary>Answer</summary><div><p>At $1$: harmonic, diverges. At $-1$: $\sum\frac{(-1)^n}n$ converges by Leibniz.</p></div></details></li>
+  <li><p>$\sum\frac{x^n}{n^2}$.</p>
+  <details><summary>Answer</summary><div><p>At $\pm1$: $\left|\frac{(\pm1)^n}{n^2}\right|=\frac1{n^2}$, absolutely convergent at both.</p></div></details></li>
+</ol>
+<p class="legend">Everything can happen on the circle. <strong>Abel's theorem</strong> (Satz 7.65, <a class="pl" href="script.html#p322">p. 322</a>): if the series converges at $x=R$, the function $x\mapsto\sum a_nx^n$ is also continuous at $R$ from the left. In <a class="xl" href="lesson-19.html">lesson 19</a> this gives the ferryman's point from <a class="xl" href="lesson-14.html#worked-example-the-alternating-harmonic">lesson 14</a>: $1-\frac12+\frac13-\dots=\log2$.</p>
+</div>
+
+<h2 id="s4-adding-and-multiplying-series">4. Adding and multiplying series</h2>
+<p>Adding is easy: $\sum a_n+\sum b_n=\sum(a_n+b_n)$ (<a class="xl" href="lesson-14.html#s2-series-and-partial-sums">lesson 14</a>). Multiplying is harder: in $(a_0+a_1+a_2+\dots)(b_0+b_1+b_2+\dots)$ every $a_k$ meets every $b_j$, and we must decide in which order to add up the infinitely many products. The <strong>Cauchy product</strong> collects them by $k+j=n$, exactly as when multiplying polynomials:</p>
+<div class="box">
+<p><strong>Cauchy product (Korollar 7.37, <a class="pl" href="script.html#p310">p. 310</a>).</strong> If $\sum_{n\ge0}a_n$ and $\sum_{n\ge0}b_n$ converge <strong>absolutely</strong>, then so does $\sum_{n\ge0}c_n$ with $c_n=\sum_{k=0}^na_kb_{n-k}$, and</p>
+<span class="math-display" style="display:block">$$\Bigl(\sum_{n=0}^\infty a_n\Bigr)\Bigl(\sum_{n=0}^\infty b_n\Bigr)=\sum_{n=0}^\infty\ \sum_{k=0}^na_kb_{n-k}.$$</span>
+<p><strong>For power series</strong> (Proposition 7.62): for $|z|$ less than both radii, $\left(\sum a_nz^n\right)\left(\sum b_nz^n\right)=\sum c_nz^n$ with the same $c_n$, because $a_kz^k\cdot b_{n-k}z^{n-k}=a_kb_{n-k}z^n$.</p>
+</div>
+<p><strong>Why “absolutely”?</strong> Absolutely convergent series may be rearranged freely (<a class="xl" href="lesson-14.html#s7-rearranging-series">lesson 14</a>, <a class="xl" href="#s7-integrating-power-series-term-by">section 7</a>), and the Cauchy product is a rearrangement of all the products $a_kb_j$. For conditionally convergent series it can fail: the Cauchy product of $\sum\frac{(-1)^n}{\sqrt{n+1}}$ with itself diverges (Übung 7.39). The proof is on the skip list.</p>
+<div class="box">
+<h3 id="we-5">Worked example 5: $\displaystyle\sum_{n=1}^\infty\frac n{2^n}$ (Übung 7.64)</h3>
+<p><strong>The plan.</strong> We know one series value by heart: $\sum_{n\ge0}x^n=\frac1{1-x}$ for $|x|&lt;1$. The new series has an extra factor $n$ in front of each term. The trick is to <em>produce</em> such a factor by multiplying the geometric series with itself, then to set $x=\frac12$. We go slowly, one step at a time.</p>
+<ol class="gq">
+  <li><p><strong>Step 1: multiply out by hand.</strong> Write <span class="math-display" style="display:block">$$(1+x+x^2+x^3+\dots)\cdot(1+x+x^2+x^3+\dots)$$</span>and collect the terms with $x^0$, $x^1$, $x^2$, $x^3$. How many ways are there to get $x^2$?</p>
+  <details><summary>Answer</summary><div><p>Pick one power from each bracket so that the exponents add up:</p>
+  <ul>
+    <li>$x^0$: only $1\cdot1$, so coefficient $1$.</li>
+    <li>$x^1$: $1\cdot x$ and $x\cdot1$, so coefficient $2$.</li>
+    <li>$x^2$: $1\cdot x^2$, $x\cdot x$, $x^2\cdot1$, so coefficient $3$.</li>
+    <li>$x^3$: four ways, so coefficient $4$.</li>
+  </ul>
+  <p>So the product starts $1+2x+3x^2+4x^3+\dots$: the coefficient of $x^n$ is $n+1$, one for each way to split $n=k+(n-k)$ with $k=0,1,\dots,n$.</p></div></details></li>
+  <li><p><strong>Step 2: say it with the Cauchy product.</strong> Why may we multiply two infinite series like this, and what does the Cauchy product formula $c_n=\sum_{k=0}^na_kb_{n-k}$ give here?</p>
+  <details><summary>Answer</summary><div><p>For $|x|&lt;1$ the geometric series converges absolutely, so the Cauchy product (<a class="xl" href="#s4-adding-and-multiplying-series">section 4</a>) applies. Here $a_k=b_k=1$ for all $k$, so</p>
+  <span class="math-display" style="display:block">$$c_n=\sum_{k=0}^n1\cdot1=n+1.$$</span>
+  <p>The left side is $\frac1{1-x}\cdot\frac1{1-x}$. So, for $|x|&lt;1$,</p>
+  <span class="math-display" style="display:block">$$\frac1{(1-x)^2}=\sum_{n\ge0}(n+1)x^n.$$</span></div></details></li>
+  <li><p><strong>Step 3: from $n+1$ to $n$.</strong> We want $\sum nx^n$, but we have $\sum(n+1)x^n$. What do you subtract?</p>
+  <details><summary>Answer</summary><div><p>$(n+1)x^n-x^n=nx^n$, so subtract the geometric series itself. Both series converge, so we may subtract them term by term:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\sum_{n\ge0}nx^n&amp;=\sum_{n\ge0}(n+1)x^n-\sum_{n\ge0}x^n\\&amp;=\frac1{(1-x)^2}-\frac1{1-x}\\&amp;=\frac{1-(1-x)}{(1-x)^2}=\frac x{(1-x)^2}.\end{aligned}$$</span>
+  <p>(The term with $n=0$ is $0$, so the sum may as well start at $n=1$.) Check the start: <span class="math-display" style="display:block">$$\begin{aligned}\frac x{(1-x)^2}&amp;=x(1+2x+3x^2+\dots)\\&amp;=x+2x^2+3x^3+\dots\end{aligned}$$</span>✓</p></div></details></li>
+  <li><p><strong>Step 4: plug in $x=\frac12$.</strong> Is that allowed, and what comes out?</p>
+  <details><summary>Answer</summary><div><p>Yes, $\left|\frac12\right|&lt;1$. Then $x^n=\frac1{2^n}$, so</p>
+  <span class="math-display" style="display:block">$$\sum_{n=1}^\infty\frac n{2^n}=\frac{1/2}{(1/2)^2}=\frac{1/2}{1/4}=2.$$</span>
+  <p>Sanity check with partial sums: <span class="math-display" style="display:block">$$\begin{aligned}\frac12+\frac24+\frac38+\frac4{16}&amp;=0.5+0.5+0.375+0.25\\&amp;=1.625\end{aligned},$$</span>and the next terms $\frac5{32},\frac6{64},\dots$ keep adding less and less, towards $2$.</p></div></details></li>
+</ol>
+<p><strong>In short:</strong> square the geometric series (coefficients $n+1$), subtract the geometric series (coefficients $n$), plug in. <a class="xl" href="lesson-19.html#proof-c">Lesson 19</a> shows a faster route: differentiate $\sum x^n$ term by term (Proof C there, Rung 2).</p>
+</div>
+
+<h2 id="s5-the-exponential-series">5. The exponential series</h2>
+<div class="box">
+<p><strong>Section 7.5 and Satz 7.68 (<a class="pl" href="script.html#p324">p. 324–325</a>).</strong> For every $z\in\mathbb C$,</p>
+<span class="math-display" style="display:block">$$\exp(z)=\sum_{k=0}^\infty\frac{z^k}{k!}=1+z+\frac{z^2}2+\frac{z^3}6+\dots$$</span>
+<p>converges absolutely ($R=\infty$, Rung 1 of Proof B), defines a continuous function $\exp:\mathbb C\to\mathbb C$, and agrees with $\lim\left(1+\frac xn\right)^n$ for real $x$. Moreover $\exp(z+w)=\exp(z)\exp(w)$ and $|\exp(z)|=\exp(\operatorname{Re}z)$.</p>
+</div>
+<p><strong>Why the two definitions agree:</strong> by the binomial theorem, $\left(1+\frac xn\right)^n=\sum_{k=0}^n\frac{x^k}{k!}\cdot\left(1-\frac1n\right)\cdots\left(1-\frac{k-1}n\right)$, and each bracket tends to $1$. The careful $\varepsilon$-argument (<a class="pl" href="script.html#p324">p. 324–325</a>) is on the skip list. From now on, $\exp$ is the series, and $e^z$ means $\exp(z)$.</p>
+
+<h3 id="proof-c">Proof C: the addition formula $e^{z+w}=e^ze^w$ (Section 7.5.3, <a class="pl" href="script.html#p326">p. 326</a>)</h3>
+<div class="need"><span class="label">You'll need these</span>
+<ul>
+  <li><strong>The Cauchy product</strong> (<a class="xl" href="#s4-adding-and-multiplying-series">section 4</a>), for absolutely convergent series.</li>
+  <li><strong>The binomial theorem</strong> (from school): $(z+w)^n=\sum_{k=0}^n\binom nkz^kw^{n-k}$ with $\binom nk=\frac{n!}{k!\,(n-k)!}$.</li>
+</ul></div>
+<p><strong>The idea.</strong> Multiply the two series with the Cauchy product. The $n$-th term is $\sum_k\frac{z^k}{k!}\frac{w^{n-k}}{(n-k)!}$. Multiply and divide by $n!$: the binomial coefficients appear, and the binomial theorem folds the sum into $\frac{(z+w)^n}{n!}$, the $n$-th term of $e^{z+w}$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Both series converge absolutely, so the Cauchy product applies.” <strong>Last line:</strong> “$=\sum\frac{(z+w)^n}{n!}=\exp(z+w)$.”</li>
+  <li><strong>The gap:</strong> turn $\sum_{k}\frac{z^kw^{n-k}}{k!(n-k)!}$ into $\frac{(z+w)^n}{n!}$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Both growth spells work everywhere, absolutely, so they may be multiplied word by word in any order.</p></div><div class="sp-formal"><p>Let $z,w\in\mathbb C$. The series $\sum\frac{z^k}{k!}$ and $\sum\frac{w^j}{j!}$ converge absolutely, so by the Cauchy product</p>
+<span class="math-display" style="display:block">$$e^ze^w=\sum_{n=0}^\infty\ \sum_{k=0}^n\frac{z^k}{k!}\cdot\frac{w^{n-k}}{(n-k)!}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Group the words of total degree $n$, and recognise the binomial counting.</p></div><div class="sp-formal"><p>For each $n$:</p><span class="math-display" style="display:block">$$\begin{aligned}\sum_{k=0}^n\frac{z^kw^{n-k}}{k!\,(n-k)!}&amp;=\frac1{n!}\sum_{k=0}^n\frac{n!}{k!\,(n-k)!}z^kw^{n-k}\\&amp;=\frac1{n!}\sum_{k=0}^n\binom nkz^kw^{n-k}\\&amp;=\frac{(z+w)^n}{n!}\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the product of the two spells is the spell at the summed distance.</p></div><div class="sp-formal"><p>Hence $e^ze^w=\sum_{n=0}^\infty\frac{(z+w)^n}{n!}=e^{z+w}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-cauchyprod">multiply with the Cauchy product</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Both series converge absolutely, so by the Cauchy product and the binomial theorem</p>
+<span class="math-display" style="display:block">$$\begin{aligned}e^ze^w&amp;=\sum_{n=0}^\infty\sum_{k=0}^n\frac{z^k}{k!}\frac{w^{n-k}}{(n-k)!}\\&amp;=\sum_{n=0}^\infty\frac1{n!}\sum_{k=0}^n\binom nkz^kw^{n-k}\\&amp;=\sum_{n=0}^\infty\frac{(z+w)^n}{n!}\\&amp;=e^{z+w}.\ \ ∎\end{aligned}$$</span>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Deduce $e^{-z}=\frac1{e^z}$ and $e^z\neq0$ from the addition formula.</p>
+  <details><summary>Answer</summary><div><p>$e^ze^{-z}=e^{z-z}=e^0=1$ (the series at $0$ is just $1$). So $e^z\neq0$ and $e^{-z}=\frac1{e^z}$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Prove $|e^z|=e^{\operatorname{Re}z}$. Use that conjugation can be pulled through the series: $\overline{e^z}=e^{\bar z}$.</p>
+  <details><summary>Answer</summary><div><span class="math-display" style="display:block">$$\begin{aligned}|e^z|^2&amp;=e^z\,\overline{e^z}\\&amp;=e^ze^{\bar z}\\&amp;=e^{z+\bar z}\\&amp;=e^{2\operatorname{Re}z}\\&amp;=\left(e^{\operatorname{Re}z}\right)^2\end{aligned}.$$</span><p>Take the positive root. In particular $|e^{iy}|=1$ for real $y$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<h2 id="s6-sine-cosine-and-euler-s">6. Sine, cosine and Euler's formula</h2>
+<div class="box">
+<p><strong>Definition and Satz 7.72 (<a class="pl" href="script.html#p328">p. 328</a>).</strong> For $z\in\mathbb C$,</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\sin z=\sum_{n=0}^\infty\frac{(-1)^nz^{2n+1}}{(2n+1)!}=z-\frac{z^3}{3!}+\frac{z^5}{5!}-\dots\\&amp;\cos z=\sum_{n=0}^\infty\frac{(-1)^nz^{2n}}{(2n)!}=1-\frac{z^2}{2!}+\frac{z^4}{4!}-\dots\end{aligned}$$</span>
+<p>Both have $R=\infty$, are continuous, real on $\mathbb R$; $\sin$ is odd, $\cos$ is even. And:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;e^{iz}=\cos z+i\sin z\\&amp;\cos z=\frac{e^{iz}+e^{-iz}}2\\&amp;\sin z=\frac{e^{iz}-e^{-iz}}{2i}\end{aligned}.$$</span>
+</div>
+<div class="box">
+<h3 id="we-6">Worked example 6: Euler's formula from the series</h3>
+<ol class="gq">
+  <li><p>What are the powers $i^0,i^1,i^2,i^3,i^4,\dots$?</p>
+  <details><summary>Answer</summary><div><p>$1,i,-1,-i,1,\dots$, repeating with period 4. So $i^{2n}=(-1)^n$ and $i^{2n+1}=(-1)^ni$.</p></div></details></li>
+  <li><p>Split $e^{iz}=\sum\frac{(iz)^k}{k!}$ into even $k=2n$ and odd $k=2n+1$. (Allowed: both parts converge absolutely.)</p>
+  <details><summary>Answer</summary><div><p>$$e^{iz}=\sum_n\frac{(-1)^nz^{2n}}{(2n)!}+i\sum_n\frac{(-1)^nz^{2n+1}}{(2n+1)!}=\cos z+i\sin z.$$</p></div></details></li>
+  <li><p>Replace $z$ by $-z$ and solve for $\cos z$ and $\sin z$.</p>
+  <details><summary>Answer</summary><div><p>$e^{-iz}=\cos z-i\sin z$ (cos even, sin odd). Adding: $\cos z=\frac{e^{iz}+e^{-iz}}2$. Subtracting: $\sin z=\frac{e^{iz}-e^{-iz}}{2i}$.</p></div></details></li>
+</ol>
+</div>
+
+<h3 id="proof-d">Proof D: the addition formulas for sine and cosine (Section 7.6.1, <a class="pl" href="script.html#p329">p. 329</a>)</h3>
+<div class="box">
+<p><strong>Claim.</strong> For all $z,w\in\mathbb C$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\cos(z+w)=\cos z\cos w-\sin z\sin w\\&amp;\sin(z+w)=\sin z\cos w+\cos z\sin w\end{aligned}.$$</span>
+</div>
+<p><strong>The idea.</strong> In school these were geometry. Here they are one line of algebra: $e^{i(z+w)}=e^{iz}e^{iw}$, and expand both sides with Euler's formula. For real $z,w$, compare real and imaginary parts. For complex $z,w$ (where $\cos z$ may not be real) use the same equation with $-z,-w$ too, and add or subtract.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Start:</strong> “By Proof C, $e^{i(z+w)}=e^{iz}e^{iw}$ and $e^{-i(z+w)}=e^{-iz}e^{-iw}$.” <strong>End:</strong> the two formulas.</li>
+  <li><strong>The gap:</strong> expand with Euler and separate the $\cos$ and $\sin$ parts.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Turning by $z$ and then by $w$ is turning by $z+w$.</p></div><div class="sp-formal"><p>By Proof C and Euler's formula:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\cos(z+w)+i\sin(z+w)&amp;=e^{iz}e^{iw}\\&amp;=(\cos z+i\sin z)(\cos w+i\sin w)\end{aligned}$$</span>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;=(\cos z\cos w-\sin z\sin w)+i(\sin z\cos w+\cos z\sin w)\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Turning backwards gives the same with the signs of the sine parts flipped.</p></div><div class="sp-formal"><p>Likewise with $-z,-w$ (cos even, sin odd):</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\cos(z+w)-i\sin(z+w)&amp;=(\cos z\cos w-\sin z\sin w)-i(\sin z\cos w+\cos z\sin w)\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Average the two turns and take half their difference.</p></div><div class="sp-formal"><p>Adding the two equations and dividing by $2$ gives the formula for $\cos(z+w)$. Subtracting and dividing by $2i$ gives the one for $\sin(z+w)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-pm">add and subtract two versions</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>By the addition formula for $\exp$ and Euler's formula,</p><span class="math-display" style="display:block">$$\begin{aligned}\cos(z+w)\pm i\sin(z+w)&=e^{\pm iz}e^{\pm iw}=(\cos z\pm i\sin z)(\cos w\pm i\sin w)\\&=(\cos z\cos w-\sin z\sin w)\pm i(\sin z\cos w+\cos z\sin w).\end{aligned}$$</span><p>Adding the “+” and “−” versions and dividing by $2$ gives $\cos(z+w)$; subtracting and dividing by $2i$ gives $\sin(z+w)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Put $w=-z$ in the cosine formula. What do you get?</p>
+  <details><summary>Answer</summary><div><span class="math-display" style="display:block">$$\begin{aligned}1&amp;=\cos0\\&amp;=\cos z\cos(-z)-\sin z\sin(-z)\\&amp;=\cos^2z+\sin^2z\end{aligned}.$$</span><p>The circle equation.</p></div></details></li>
+  <li><p><strong>Rung 2 (1 min).</strong> Put $w=z$: the double-angle formulas.</p>
+  <details><summary>Answer</summary><div><p>$\sin(2z)=2\sin z\cos z$ and $\cos(2z)=\cos^2z-\sin^2z$.</p></div></details></li>
+  <li><p><strong>Rung 3 (3 min).</strong> Write the proof from the frame alone.</p></li>
+</ol></div>
+
+<p><strong>Why it's cool.</strong> In school, the addition formulas came from triangles and pictures, and each had to be memorised. Here they fall out of one line of algebra, $e^{i(z+w)}=e^{iz}e^{iw}$. Complex numbers make trigonometry <em>easier</em>, not harder. If you ever forget a formula, multiply out two Euler formulas and read it off.</p>
+<div class="box">
+<p><strong>$\pi$ (Satz 7.74, <a class="pl" href="script.html#p330">p. 330</a>).</strong> There is exactly one $\pi\in(0,4)$ with $\sin\pi=0$. With it:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;e^{i\pi/2}=i\\&amp;e^{i\pi}=-1\\&amp;e^{2\pi i}=1\\&amp;e^{i\pi/4}=\tfrac1{\sqrt2}+\tfrac i{\sqrt2}\end{aligned}.$$</span>
+<p><strong>Periodicity (Korollar 7.75):</strong> $\sin(z+2\pi)=\sin z$, $\cos(z+2\pi)=\cos z$, $\sin(z+\pi)=-\sin z$, $\cos z=\sin\left(z+\frac\pi2\right)$. <strong>Zeros (Übung 7.76):</strong> $\sin z=0$ ⇔ $z\in\pi\mathbb Z$; $\cos z=0$ ⇔ $z\in\frac\pi2+\pi\mathbb Z$. <strong>Tangent:</strong> $\tan z=\frac{\sin z}{\cos z}$ where $\cos z\neq0$.</p>
+</div>
+<p><strong>How the script finds $\pi$</strong> (<a class="pl" href="script.html#p330">p. 330–331</a>, proof on the skip list): the series give $\sin x&gt;0$ and $\cos x&gt;0$ on $(0,1]$ and $\sin1&gt;\frac1{\sqrt2}$, so by the intermediate value theorem there's $p\in(0,1)$ with $\sin p=\cos p=\frac1{\sqrt2}$. Then $\pi:=4p$. No circles, no geometry: $\pi$ comes out of a power series.</p>
+<p><strong>Polar coordinates (Lemma 7.81, <a class="pl" href="script.html#p333">p. 333</a>).</strong> Every $z\in\mathbb C$ is $z=re^{i\theta}$ with $r=|z|\ge0$ and an angle $\theta\in[0,2\pi)$, unique if $z\neq0$. Then multiplication is easy: $re^{i\theta}\cdot se^{i\psi}=rs\,e^{i(\theta+\psi)}$. <strong>Multiply the lengths, add the angles.</strong> This is the geometric meaning of complex multiplication you saw in <a class="xl" href="lesson-05.html#s1-a-realm-with-a-second">lesson 5</a>, now with a proof.</p>
+<p><strong>Hyperbolic functions (Section 7.7.1, <a class="pl" href="script.html#p340">p. 340</a>).</strong> $\cosh z=\frac{e^z+e^{-z}}2$ and $\sinh z=\frac{e^z-e^{-z}}2$: the same series as $\cos$ and $\sin$, without the alternating signs. They satisfy $\cosh^2z-\sinh^2z=1$ (a hyperbola instead of a circle) and $\cosh z+\sinh z=e^z$.</p>
+
+<h2 id="s7-integrating-power-series-term-by">7. Integrating power series term by term</h2>
+<h3 id="proof-e">Proof E: term-by-term integration (Satz 7.85, <a class="pl" href="script.html#p339">p. 339</a>)</h3>
+<div class="box">
+<p><strong>Theorem.</strong> Let $f(x)=\sum_{n=0}^\infty c_nx^n$ have radius of convergence $R&gt;0$. Then $F(x)=\sum_{n=0}^\infty\frac{c_n}{n+1}x^{n+1}$ has the <strong>same</strong> radius $R$, and</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\int_a^bf(x)\,dx=F(b)-F(a)\\&amp;\text{for all }a,b\in(-R,R)\end{aligned}.$$</span>
+<p>“Integrate each term separately; the answer is right.”</p>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-09.html#consequences-piecewise-monotone-functions-and">lessons 9</a>, <a class="xl" href="lesson-14.html#s6-the-root-test-and-the">14</a> and <a class="xl" href="lesson-15.html#proof-c">15</a>)</span>
+<ul>
+  <li><strong>Integral of a power</strong> (<a class="xl" href="lesson-09.html#consequences-piecewise-monotone-functions-and">lesson 9</a>): $\int_a^bx^n\,dx=\frac{b^{n+1}-a^{n+1}}{n+1}$, and the integral is linear.</li>
+  <li><strong>Comparison and ratio test</strong> (<a class="xl" href="lesson-14.html#proof-c">lesson 14</a>); a convergent series has bounded terms (they tend to $0$).</li>
+  <li><strong>Uniform convergence</strong> on $|x|\le S&lt;R$ (Proof A), and <strong>integral and uniform limit can be swapped</strong> (<a class="xl" href="lesson-15.html#proof-c">lesson 15</a>).</li>
+</ul></div>
+<p><strong>The idea.</strong> The integral: on $[a,b]$ the partial sums (polynomials) converge uniformly, and for polynomials term-by-term integration is just <a class="xl" href="lesson-09.html#consequences-piecewise-monotone-functions-and">lesson 9</a>; <a class="xl" href="lesson-15.html#proof-c">lesson 15</a> lets the limit pass through the integral. The radius: dividing by $n+1$ only helps convergence, so $F$'s radius is at least $R$. Conversely, the factor $n+1$ is too small to destroy geometric decay: beyond any point where $F$ converges, $f$ converges too.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Radius</strong> (call $F$'s radius $S$): show $S\ge R$ and $R\ge S$. Each direction: “if one series converges at $x$, the other converges at $x$ (or a little inside)”.</li>
+  <li><strong>Integral:</strong> must end with “$\int_a^bf=\lim_N\int_a^bf_N$ $=\lim_N(F_N(b)-F_N(a))$ $=F(b)-F(a)$”. The gap: justify the first equality.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Dividing each word by $n+1$ makes it weaker, so the new spell works at least wherever the old one works.</p></div><div class="sp-formal"><p><strong>$S\ge R$.</strong> Let $|x|&lt;R$. Then $\sum|c_nx^n|$ converges, and $\left|\frac{c_n}{n+1}x^{n+1}\right|\le|x|\,|c_nx^n|$. By comparison, $F(x)$ converges absolutely. So $S\ge R$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Where the weakened spell still works at distance $|y|$, its words are bounded there; a bit closer in, the original words fade geometrically, and the extra factor $n+1$ can't stop that.</p></div><div class="sp-formal"><p><strong>$R\ge S$.</strong> Let $|x|&lt;S$ and choose $y$ with $|x|&lt;|y|&lt;S$. Since $F(y)$ converges, its terms are bounded: $\frac{|c_n|}{n+1}|y|^{n+1}\le M$ for all $n$. With $q=\frac{|x|}{|y|}&lt;1$:</p>
+<span class="math-display" style="display:block">$$|c_nx^n|=\frac{|c_n|\,|y|^{n+1}}{n+1}\cdot\frac{n+1}{|y|}\,q^n\le\frac M{|y|}(n+1)q^n.$$</span>
+<p>$\sum(n+1)q^n$ converges (ratio test: $\frac{n+2}{n+1}q\to q&lt;1$), so $\sum c_nx^n$ converges absolutely. So $R\ge S$, and $S=R$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>For finitely many words, integrating word by word is just school.</p></div><div class="sp-formal"><p><strong>Integral.</strong> Let $a,b\in(-R,R)$ and $f_N(x)=\sum_{n=0}^Nc_nx^n$, $F_N(x)=\sum_{n=0}^N\frac{c_n}{n+1}x^{n+1}$. By <a class="xl" href="lesson-09.html#consequences-piecewise-monotone-functions-and">lesson 9</a>, $\int_a^bf_N\,dx=F_N(b)-F_N(a)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>On the stretch from $a$ to $b$ the partial spells converge uniformly, so the integral follows the limit.</p></div><div class="sp-formal"><p>With $S'=\max\{|a|,|b|\}&lt;R$, Proof A gives $f_N\to f$ uniformly on $[a,b]\subseteq[-S',S']$. By <a class="xl" href="lesson-15.html#proof-c">lesson 15</a>, $f$ is integrable and</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\int_a^bf\,dx&amp;=\lim_{N\to\infty}\int_a^bf_N\,dx\\&amp;=\lim_{N\to\infty}\bigl(F_N(b)-F_N(a)\bigr)\\&amp;=F(b)-F(a)\end{aligned},$$</span>
+<p>since $F$ converges at $a$ and $b$ (they lie inside its radius $R$). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-major">find a majorant</a> <a class="mvl" href="moves.html#m-partial">go to partial sums</a> <a class="mvl" href="moves.html#m-supx">bound independently of x</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p><strong>Radius.</strong> Let $S$ be the radius of $F$. If $|x|&lt;R$, then $\left|\frac{c_n}{n+1}x^{n+1}\right|\le|x||c_nx^n|$, so $F(x)$ converges absolutely: $S\ge R$. If $|x|&lt;|y|&lt;S$, the terms of $F(y)$ are bounded by some $M$, so with $q=\frac{|x|}{|y|}&lt;1$: $|c_nx^n|\le\frac M{|y|}(n+1)q^n$, and $\sum(n+1)q^n$ converges by the ratio test. So $f(x)$ converges absolutely: $R\ge S$.</p>
+<p><strong>Integral.</strong> For $a,b\in(-R,R)$, the partial sums $f_N$ converge uniformly to $f$ on $[a,b]$ (Proof A with $\max\{|a|,|b|\}&lt;R$), and $\int_a^bf_N=F_N(b)-F_N(a)$. By <a class="xl" href="lesson-15.html#proof-c">lesson 15</a>,</p><span class="math-display" style="display:block">$$\begin{aligned}\int_a^bf&amp;=\lim_N\int_a^bf_N\\&amp;=\lim_N\bigl(F_N(b)-F_N(a)\bigr)\\&amp;=F(b)-F(a)\end{aligned}.$$</span><p><span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>$S\ge R$:</strong> $\left|\frac{c_n}{n+1}x^{n+1}\right|\le|x|\,|c_nx^n|$, comparison.</li>
+  <li><strong>$R\ge S$:</strong> go a bit further out to $y$; terms of $F(y)$ bounded by $M$; $|c_nx^n|\le\frac M{|y|}(n+1)q^n$; ratio test on $\sum(n+1)q^n$.</li>
+  <li><strong>Polynomials:</strong> $\int_a^bf_N=F_N(b)-F_N(a)$.</li>
+  <li><strong>Uniform on $[a,b]$</strong> (inside the radius) ⇒ swap limit and integral.</li>
+</ol>
+<p>In short: “compare, step out and bound, polynomials, uniform swap”. This was the 2019 winter exam's question 11: part (a) is steps 1–2 (2 points), part (b) is steps 3–4 (3 points).</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Use the theorem to compute $\int_a^be^x\,dx$.</p>
+  <details><summary>Answer</summary><div><p>$c_n=\frac1{n!}$, so $F(x)=\sum\frac{x^{n+1}}{(n+1)!}=e^x-1$. Hence <span class="math-display" style="display:block">$$\begin{aligned}\int_a^be^x\,dx&amp;=(e^b-1)-(e^a-1)\\&amp;=e^b-e^a\end{aligned}.$$</span>Likewise $\int_a^b\cos x\,dx=\sin b-\sin a$ and $\int_a^b\sin x\,dx=\cos a-\cos b$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Why can't step 4 use uniform convergence on all of $(-R,R)$?</p>
+  <details><summary>Answer</summary><div><p>Power series need not converge uniformly on the whole open disc (Rung 2 of Proof A: $\sum x^n$ on $(-1,1)$). Only on $|x|\le S&lt;R$. That's why we take $S'=\max\{|a|,|b|\}&lt;R$.</p></div></details></li>
+  <li><p><strong>Rung 3 (8 min).</strong> Write the whole proof from the exam box alone.</p></li>
+</ol></div>
+
+<h2 id="s8-exercises">8. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1–5 are exam questions and count for scoring. Exercises 6–8 are three more exam radii, for extra practice.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Einsiedler HS21, question 2(a), 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Determine the radius of convergence (with respect to $z\in\mathbb C$) of $\displaystyle\sum_{n=0}^\infty\frac{(2i)^n}{n!}z^n$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> a factorial, so the ratio formula. <strong>$R=\infty$.</strong> $|a_n|=\frac{2^n}{n!}$ (since $|2i|=2$), and</p>
+  <span class="math-display" style="display:block">$$\frac{|a_n|}{|a_{n+1}|}=\frac{2^n}{n!}\cdot\frac{(n+1)!}{2^{n+1}}=\frac{n+1}2\to\infty.$$</span>
+  <p>(In fact the series is $e^{2iz}$.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Einsiedler FS22, question 2(a), 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-08-einsiedler-fs22-repeat-exam.pdf&amp;t=2022-08%20Einsiedler%20-%20FS22%20repeat%20exam">FS22 exam</a></p>
+  <p>Determine the radius of convergence $\rho$ of $\displaystyle\sum_{n=0}^\infty\left(2^n+n^3\right)z^n$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> a sum with an $n$-th power, so the dominant term and the root formula. <em>Moves:</em> <a class="mvl" href="moves.html#m-sandwich">sandwich</a>.</p>
+  <p><strong>$\rho=\frac12$.</strong> For $n\ge10$, $n^3\le2^n$ (check $n=10$: $1000\le1024$; then by induction the left side grows by a factor $\left(\frac{n+1}n\right)^3\le1.34$, the right side by $2$). So $2^n\le2^n+n^3\le2\cdot2^n$, and taking $n$-th roots:</p>
+  <span class="math-display" style="display:block">$$2\le\sqrt[n]{2^n+n^3}\le2\sqrt[n]2\to2.$$</span>
+  <p>By the sandwich, $\sqrt[n]{|a_n|}\to2$, so $\rho=\frac12$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Felder HS22, question 1.A4, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">HS22 exam</a></p>
+  <p>Compute the radius of convergence of $\displaystyle\sum_{n=0}^\infty\frac{(3n)!}{(n!)^3}z^n$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> factorials, so the ratio formula. <strong>$R=\frac1{27}$.</strong></p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\frac{a_n}{a_{n+1}}&amp;=\frac{(3n)!}{(3n+3)!}\cdot\frac{((n+1)!)^3}{(n!)^3}\\&amp;=\frac{(n+1)^3}{(3n+1)(3n+2)(3n+3)}\to\frac1{27}\end{aligned},$$</span>
+  <p>dividing top and bottom by $n^3$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Figalli FS24, MC3, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">FS24 exam with solutions</a></p>
+  <p>Radius of convergence of $\displaystyle\sum_{n=1}^\infty\frac{n\,6^n}{3^{2n+1}+n\,2^n}x^n$? (A) $\frac13$. (B) $\frac23$. (C) $\frac32$. (D) $3$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (C).</strong> <em>Frame:</em> dominant term. At the bottom, $3^{2n+1}=3\cdot9^n$ beats $n2^n$, so for large $n$: $3\cdot9^n\le3^{2n+1}+n2^n\le6\cdot9^n$. Hence</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\frac{n6^n}{6\cdot9^n}\le  a_n\le \frac{n6^n}{3\cdot9^n}\\&amp;\text{so}\\&amp;\sqrt[n]{a_n}\to\frac69=\frac23\end{aligned}$$</span>
+  <p>(the factors $\sqrt[n]n$, $\sqrt[n]{\frac16}$, $\sqrt[n]{\frac13}$ all tend to $1$). So $R=\frac32$. Trap: (B) is $\lim\sqrt[n]{a_n}$, not $R$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (Felder FS23, question 1.A2, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a></p>
+  <p>Compute the radius of convergence of $\displaystyle\sum_{n=1}^\infty\left(1+\frac1n\right)^{n^2}x^n$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> an $n$-th power inside, so the root formula. <strong>$R=\frac1e$.</strong> $\sqrt[n]{\left(1+\frac1n\right)^{n^2}}=\left(1+\frac1n\right)^n\to e$ (the definition of $e$, <a class="xl" href="#s2-the-exponential-function-and-the">section 2</a>). So $R=\frac1e$.</p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercises 1–5 are 2 points each, 10 in total. If you have 7 of 10, you're done. Exercises 6–10 and the Bonus are extra practice and don't count against you.</p>
+</div>
+<div class="box"><h3 id="ex-6">Exercise 6 (PVK mock HS25, MC3)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK mock exam</a> · <a href="pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">solutions</a></p>
+  <p>Radius of convergence of $\displaystyle\sum_{n=1}^\infty\left(1+\frac{(-1)^n}n\right)^{n^2}x^n$? (A) $\frac1e$. (B) $1$. (C) $0$. (D) $e$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (A).</strong> $\sqrt[n]{|a_n|}=\left(1+\frac{(-1)^n}n\right)^n$. For even $n$ this is $\left(1+\frac1n\right)^n\to e$; for odd $n$ it is $\left(1-\frac1n\right)^n\to e^{-1}$. So the limit doesn't exist, but $\limsup=e$ (the larger accumulation point, <a class="xl" href="lesson-11.html#the-two-properties-of-the">lesson 11</a>). $R=\frac1e$. This is why the formula has a limsup.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-7">Exercise 7 (Figalli HS23, MC5)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">HS23 exam with solutions</a></p>
+  <p>Radius of convergence of $\displaystyle\sum_{n=1}^\infty\frac{(2n)^{n-1}+3^n}{3^n+n^n}x^n$? (A) $\frac12$. (B) $\frac23$. (C) $\frac32$. (D) $1$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (A).</strong> Dominant terms: $(2n)^{n-1}$ on top, $n^n$ at the bottom. For large $n$, $(2n)^{n-1}\le\text{top}\le2(2n)^{n-1}$ and $n^n\le\text{bottom}\le2n^n$. So $a_n$ lies between $\frac12\cdot\frac{(2n)^{n-1}}{n^n}$ and $2\cdot\frac{(2n)^{n-1}}{n^n}$, where $\frac{(2n)^{n-1}}{n^n}=\frac{2^{n-1}}n$. The $n$-th root of $\frac{2^{n-1}}n$ is $\frac{2}{\sqrt[n]{2n}}\to2$. So $R=\frac12$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-8">Exercise 8 (Figalli FS26, MC7)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Compute the radius of convergence of $\displaystyle\sum_{n=1}^\infty\frac{n^3\,5^n}{2^{2n+2}+n\,3^n}x^n$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>$R=\frac45$.</strong> At the bottom $2^{2n+2}=4\cdot4^n$ dominates $n3^n$. So $\sqrt[n]{a_n}\approx\sqrt[n]{\frac{n^35^n}{4\cdot4^n}}\to\frac54$ (sandwich as in Exercise 4), and $R=\frac45$. Trap: $\frac54$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-9">Exercise 9 (Einsiedler HS21, question 2(b), 3 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">HS21 exam</a> · <a href="pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">solutions</a></p>
+  <p>Compute $\displaystyle\lim_{n\to\infty}\left(1-\frac5n\right)^{n+\sqrt n}$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> write the power with $\exp$ and $\log$, find the limit of the exponent, use continuity of $\exp$. <em>Moves:</em> <a class="mvl" href="moves.html#m-sandwich">sandwich</a>.</p>
+  <p><strong>Rewrite (1 point).</strong> For $n&gt;5$:</p><span class="math-display" style="display:block">$$\begin{aligned}\left(1-\frac5n\right)^{n+\sqrt n}&amp;=\exp\Bigl((n+\sqrt n)\log\bigl(1-\tfrac5n\bigr)\Bigr)\end{aligned}.$$</span>
+  <p><strong>The exponent (1 point).</strong> Worked example 2 with $y=-\frac5n$ gives $\frac{-5/n}{1-5/n}\le\log\left(1-\frac5n\right)\le-\frac5n$, that is $-\frac5{n-5}\le\log\left(1-\frac5n\right)\le-\frac5n$. Multiply by $n+\sqrt n&gt;0$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}-\frac{5(n+\sqrt n)}{n-5}&amp;\le (n+\sqrt n)\log\left(1-\tfrac5n\right)\\&amp;\le -\frac{5(n+\sqrt n)}n\end{aligned}.$$</span>
+  <p>Both bounds tend to $-5$ (divide by $n$; $\frac{\sqrt n}n\to0$). By the sandwich, the exponent tends to $-5$.</p>
+  <p><strong>Conclusion (1 point).</strong> $\exp$ is continuous, so the limit is $e^{-5}$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-10">Exercise 10 (Einsiedler FS22, question 2(b) ii, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2022-08-einsiedler-fs22-repeat-exam.pdf&amp;t=2022-08%20Einsiedler%20-%20FS22%20repeat%20exam">FS22 exam</a></p>
+  <p>Compute $\displaystyle\lim_{n\to\infty}\frac{\ln(4n+1)}{\ln(n+2)}$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>$1$.</strong> Pull out $\ln n$ with $\log(ab)=\log a+\log b$: $\ln(4n+1)=\ln n+\ln\left(4+\frac1n\right)$ and $\ln(n+2)=\ln n+\ln\left(1+\frac2n\right)$. Divide top and bottom by $\ln n$ (for $n\ge2$, $\ln n&gt;0$):</p>
+  <span class="math-display" style="display:block">$$\frac{1+\frac{\ln(4+1/n)}{\ln n}}{1+\frac{\ln(1+2/n)}{\ln n}}\to\frac{1+0}{1+0}=1,$$</span>
+  <p>since the small logarithms stay bounded (between $0$ and $\ln5$) while $\ln n\to\infty$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus: $e$ is irrational</h3>
+  <p>Use $e=\sum_{k=0}^\infty\frac1{k!}$. Suppose $e=\frac pq$ with $p,q\in\mathbb N$, $q\ge2$. Consider $x=q!\left(e-\sum_{k=0}^q\frac1{k!}\right)$. Show that $x$ is an integer and that $0&lt;x&lt;1$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> assume the opposite, find an integer strictly between $0$ and $1$. <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a> <a class="mvl" href="moves.html#m-major">find a majorant</a>.</p>
+  <p><strong>Integer.</strong> $q!\,e=q!\frac pq=(q-1)!\,p$ is an integer, and so is each $\frac{q!}{k!}$ for $k\le q$. So $x$ is an integer.</p>
+  <p><strong>Between $0$ and $1$.</strong> $x=\sum_{k=q+1}^\infty\frac{q!}{k!}&gt;0$. And $\frac{q!}{k!}=\frac1{(q+1)(q+2)\cdots k}\le\frac1{(q+1)^{k-q}}$, so by a geometric majorant</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}x&amp;\le \sum_{j=1}^\infty\frac1{(q+1)^j}\\&amp;=\frac{1/(q+1)}{1-1/(q+1)}\\&amp;=\frac1q\\&amp;&lt;1\end{aligned}.$$</span>
+  <p>No integer lies strictly between $0$ and $1$, a contradiction. So $e$ is irrational. <span class="qed">∎</span></p>
+</div></details>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>$e^{i\pi}+1=0$.</strong> Five of the most important numbers ($0$, $1$, $e$, $i$, $\pi$) in one equation, with addition, multiplication and powers. It isn't a coincidence or a trick. It says: the growth spell, spoken at an imaginary distance, turns instead of grows. $e^{i\theta}$ walks around the unit circle at speed $1$ (since $|e^{i\theta}|=1$), and after the distance $\pi$ it has gone halfway round, to $-1$.</p>
+<p><strong>Why bankers met $e$ first.</strong> Jacob Bernoulli found $e$ in 1683, studying exactly the compound interest of <a class="xl" href="#s2-the-exponential-function-and-the">section 2</a>: what happens to $\left(1+\frac1n\right)^n$ as interest is paid more and more often? He showed it stays between $2$ and $3$. Euler named it $e$, computed it to 23 digits, and found $e^{ix}=\cos x+i\sin x$.</p>
+<p><strong>A logarithm with too many answers.</strong> On $\mathbb C$, $e^{2\pi i}=1=e^0$, so $\exp$ is not injective and “$\log1$” could be $0$ or $2\pi i$ or $-4\pi i$… Section 7.6.5 picks one value by cutting the plane along the negative real axis, and the cut can never be avoided. This is the start of Riemann surfaces, a topic of the third year.</p>
+
+<h2 id="s10-what-we-skipped">10. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>The proofs in Sections 6.3.2–6.3.7 (<a class="pl" href="script.html#p267">p. 267–271</a>):</strong> existence of $\lim(1+\frac xn)^n$ and the properties of $\exp$ from that definition. Low; <a class="xl" href="#s2-the-exponential-function-and-the">section 2</a> gives one-line reasons, and the series gives cleaner proofs.</li>
+  <li><strong>Übungen 6.30–6.32, 6.34, 6.36 and Applet 6.37 (<a class="pl" href="script.html#p268">p. 268–273</a>):</strong> another bound for $\exp$, raisins in bread, $1+x+\frac{x^2}2\le e^x$, rules for powers, Bernoulli for real exponents, the slide rule. Low.</li>
+  <li><strong>Proof of the Cauchy product (Satz 7.36, Korollar 7.37, <a class="pl" href="script.html#p309">p. 309–311</a>)</strong> and Übung 7.39. Low; the statement is in <a class="xl" href="#s4-adding-and-multiplying-series">section 4</a>.</li>
+  <li><strong>Übungen 7.58, 7.59, 7.61, 7.64, 7.67 (<a class="pl" href="script.html#p321">p. 321–323</a>).</strong> Low; 7.61 is Proof B and 7.64 is Worked example 5.</li>
+  <li><strong>Proof of Abel's theorem (Satz 7.65, <a class="pl" href="script.html#p322">p. 322–323</a>)</strong> and Beispiel 7.66. Low; the statement is in Worked example 4.</li>
+  <li><strong>Why the series equals $\lim(1+\frac xn)^n$ (Section 7.5.1, <a class="pl" href="script.html#p324">p. 324–325</a>)</strong> and Übungen 7.69–7.70. Low.</li>
+  <li><strong>Proof of the existence of $\pi$ (Satz 7.74), Übungen 7.76–7.80 (<a class="pl" href="script.html#p330">p. 330–332</a>):</strong> zeros of sin and cos, sin is increasing on $[-\frac\pi2,\frac\pi2]$, $\cos\frac\pi7$ is algebraic, $3.1&lt;\pi&lt;3.2$, the tangent addition formula. Medium for 7.76 (the statement is in <a class="xl" href="#s6-sine-cosine-and-euler-s">section 6</a> and worth knowing); the rest Low.</li>
+  <li><strong>Proof of polar coordinates (Lemma 7.81, <a class="pl" href="script.html#p333">p. 333–334</a>)</strong>, the pictures of $z\mapsto z^2$, Übungen 7.83 ($n$-th roots of unity) and 7.84 (complex quadratic formula). Optional; roots of unity may come back in Linear Algebra.</li>
+  <li><strong>Complex logarithms (Section 7.6.5, <a class="pl" href="script.html#p336">p. 336–338</a>).</strong> Optional; For wonder.</li>
+  <li><strong>Übung 7.89 (<a class="pl" href="script.html#p341">p. 341</a>):</strong> addition formulas for $\sinh$ and $\cosh$. Low.</li>
+  <li><strong>Section 7.8* (<a class="pl" href="script.html#p342">p. 342–349</a>):</strong> digit expansions, the Cantor set, the devil's staircase, Peano's space-filling curve. Optional (starred in the script).</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-17.html">lesson 17</a>, derivatives (Sections 8.1–8.2): the definition, the rules, and the mean value theorem with Rolle's theorem, an exam proof.</p>
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-15.html">← Lesson 15: The Mapmaker's Apprentices</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-17.html">Lesson 17: The Cart's Climb Gauge →</a>
+</nav>
+</main>
+
+
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

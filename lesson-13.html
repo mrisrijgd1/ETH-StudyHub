@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Approaching the Gate</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-12.html">← Lesson 12</a>
+<a href="lesson-14.html">Lesson 14 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 13 of 26</span>
+  <h1>Approaching the Gate</h1>
+  <p class="lead">The rest of chapter 6: limits of functions ($\lim_{x\to x_0}f(x)$, one-sided limits, limits at $\infty$), the integral as a limit of Riemann sums, and Landau's $O$ and $o$. After this lesson you're level with class (Monday 2 November).</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-12-5">Recap of lesson 12 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-approaching-the-gate">1. The story: approaching the gate</a>
+</li>
+<li><a href="#s2-limits-of-functions">2. Limits of functions</a>
+<ol>
+<li><a href="#proof-a">Proof A: limits through sequences (Lemma 6.40, p. 275)</a></li>
+</ol></li>
+<li><a href="#s3-one-sided-limits-one-sided">3. One-sided limits, one-sided continuity, jumps</a>
+</li>
+<li><a href="#s4-limits-at-infinity">4. Limits at infinity</a>
+<ol>
+<li><a href="#worked-example">Worked example: $\lim_{x\to\infty}\frac1x=0$</a></li>
+</ol></li>
+<li><a href="#s5-riemann-sums">5. Riemann sums</a>
+<ol>
+<li><a href="#proof-b">Proof B: Riemann sums converge, for continuous $f$ (Satz 6.47)</a></li>
+</ol></li>
+<li><a href="#s6-landau-notation-and">6. Landau notation: $O$ and $o$</a>
+<ol>
+<li><a href="#worked-example-compare-and">Worked example: compare $x^2$ and $x$</a></li>
+<li><a href="#worked-example-and">Worked example: $O(1)$ and $o(1)$</a></li>
+<li><a href="#worked-example-a-main-part">Worked example: a main part plus an error</a></li>
+</ol></li>
+<li><a href="#s7-worked-examples">7. Worked examples</a>
+<ol>
+<li><a href="#we-1">Worked example 1: $\displaystyle\lim_{x\to0}\frac{\sqrt{1+x}-1}x$</a></li>
+<li><a href="#we-2">Worked example 2: a limit of sums as an integral</a></li>
+<li><a href="#we-3">Worked example 3: big O and little o</a></li>
+</ol></li>
+<li><a href="#s8-exercises">8. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Einsiedler HS21 mock exam, question 10, true or false)</a></li>
+<li><a href="#ex-2">Exercise 2 (Figalli FS26, MC11)</a></li>
+<li><a href="#ex-3">Exercise 3 (Felder FS23, 1.A5, 2 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (computing limits)</a></li>
+<li><a href="#ex-5">Exercise 5 (sandwich for functions, Übung 6.38 (iii))</a></li>
+<li><a href="#ex-6">Exercise 6 (Riemann sums)</a></li>
+<li><a href="#bonus">Bonus (Übung 6.38 (i))</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. For wonder</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) <strong>define $\lim_{x\to x_0}f(x)=A$</strong> with a punctured neighbourhood and compute such limits, (2) prove the sequence characterisation of function limits, (3) use one-sided limits to recognise removable discontinuities and jumps, and answer true/false questions on one-sided continuity, (4) state that Riemann sums converge to the integral, <strong>prove it for continuous functions</strong>, and turn a sum like $\frac1n\sum_{k=1}^n f\left(\frac kn\right)$ into an integral, and (5) read and use $f=O(g)$ and $f=o(g)$.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p274">p. 274–276</a>, Section 6.4.1, Lemmas 6.39–6.40, Proposition 6.41:</strong> limits of functions, continuity, sequences, composition.</li>
+      <li><strong><a class="pl" href="script.html#p276">p. 276–278</a>, Sections 6.4.2–6.4.4:</strong> one-sided limits, one-sided continuity, jumps, limits at $\infty$.</li>
+      <li><strong><a class="pl" href="script.html#p278">p. 278–279</a>, Section 6.4.5, Übung 6.45:</strong> computing limits.</li>
+      <li><strong><a class="pl" href="script.html#p280">p. 280–281</a>, Section 6.5, Definition 6.46, Satz 6.47:</strong> Riemann sums.</li>
+      <li><strong><a class="pl" href="script.html#p284">p. 284–286</a>, Section 6.6:</strong> Landau notation.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+Limits of functions are in every “compute” section (for example $\lim_{x\to0}x\tan\left(x+\frac\pi2\right)$ in Einsiedler's HS21 mock exam). One-sided continuity was a 3-point true/false block in the HS21 mock (your Exercise 1). “Compute the limit of Riemann sums” was Felder FS23 1.A5 (your Exercise 3). Landau notation is tested directly in Figalli FS26 MC11 (your Exercise 2) and is the language of Taylor expansions, which Figalli's exams use in almost every limit computation (“use big-O to give the remainder”, HS23).</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-12-5">Recap of <a class="xl" href="lesson-12.html">lesson 12</a> (5 min)</h3>
+<ul>
+  <li><strong>Bolzano–Weierstrass:</strong> every bounded real sequence has a convergent subsequence; $\limsup$ and $\liminf$ are its largest and smallest accumulation points.</li>
+  <li><strong>$a_n\to\infty$:</strong> for every $K&gt;0$ there is $N$ with $a_n\ge K$ for $n\ge N$. Increasing and unbounded ⇒ $a_n\to\infty$.</li>
+  <li><strong>Cauchy sequence:</strong> <span class="math-display" style="display:block">$$\forall\varepsilon&gt;0\ \exists N\ \forall m,n\ge N:\ |a_m-a_n|&lt;\varepsilon.$$</span></li>
+  <li><strong>Cauchy criterion:</strong> a real sequence converges ⇔ it is Cauchy. “⇐”: bounded, Bolzano–Weierstrass, the whole sequence follows its subsequence (two ε/2's and $k=\max\{N,K\}$).</li>
+</ul>
+<ol class="gq">
+  <li><p>Is every bounded sequence convergent? Does it have a convergent subsequence?</p>
+  <details><summary>Answer</summary><div><p>Not convergent: $(-1)^n$. But it always has a convergent subsequence (Bolzano–Weierstrass).</p></div></details></li>
+  <li><p>For $a_n=\sqrt n$, $|a_{n+1}-a_n|\to0$. Why isn't it Cauchy?</p>
+  <details><summary>Answer</summary><div><p>The Cauchy condition needs <em>all</em> pairs $m,n\ge N$ close, not just neighbours. $\sqrt{4N}-\sqrt N=\sqrt N\ge1$, so with $\varepsilon=1$ no $N$ works.</p></div></details></li>
+  <li><p>In the Cauchy criterion, why is $n_k\ge N$ for $k=\max\{N,K\}$?</p>
+  <details><summary>Answer</summary><div><p>Subsequence indices satisfy $n_k\ge k$, and $k\ge N$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>limit of a function at $x_0$</td><td>Grenzwert von $f(x)$ für $x\to x_0$</td></tr>
+    <tr><td>punctured neighbourhood</td><td>punktierte Umgebung</td></tr>
+    <tr><td>removable discontinuity</td><td>hebbare Unstetigkeitsstelle</td></tr>
+    <tr><td>left-/right-sided limit</td><td>links-/rechtsseitiger Grenzwert</td></tr>
+    <tr><td>left-/right-sided accumulation point</td><td>links-/rechtsseitiger Häufungspunkt</td></tr>
+    <tr><td>left-/right-continuous</td><td>linksseitig/rechtsseitig stetig</td></tr>
+    <tr><td>jump (discontinuity)</td><td>Sprungstelle</td></tr>
+    <tr><td>Riemann sum, partition, mesh, tags</td><td>Riemann-Summe, Zerlegung, Maschenweite, Zwischenpunkte</td></tr>
+    <tr><td>Landau notation, big O, little o</td><td>Landau-Notation, Gross-O, Klein-o</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-approaching-the-gate">1. The story: approaching the gate</h2>
+<div class="story">
+<p>The castle gate is enchanted: whatever stands <em>in</em> the gateway may be an illusion, or there may be nothing there at all. The king's surveyors don't care. They ask a different question: as a traveller walks closer and closer to the gate, <em>never stepping into it</em>, what height does the road settle at? That's the <strong>limit</strong> at the gate. If the road's height at the gate itself agrees with the height it settles at, the road is continuous there. If the road settles at one height but the gate shows another, the illusion can be removed: just repaint the gate. And sometimes the road from the west settles at one height and the road from the east at another: a <strong>jump</strong>, and no repainting can fix it.</p>
+<p>The king's tax collectors measure a field differently from <a class="xl" href="lesson-09.html#s1-the-story-tiles-and-canopies">lesson 9</a>'s tilers. They cut the field into strips, walk into each strip, pick <em>any</em> spot they like, measure the height there, and multiply by the strip's width. Their total is a <strong>Riemann sum</strong>. Cheating is pointless: once the strips are thin enough, every possible choice of spots gives nearly the true area.</p>
+<p>And the royal astronomer, who deals with huge and tiny numbers, never says exactly how big something is, only “of the order of”. That's Landau's notation.</p>
+</div>
+<p>In maths: the gate is the point $x_0$, the road's height is $f(x)$, “never stepping into it” is the punctured neighbourhood $0&lt;|x-x_0|&lt;\delta$, the strips are a partition, the spots are tags $z_k$, and “of the order of” is $O(\cdot)$.</p>
+
+<h2 id="s2-limits-of-functions">2. Limits of functions</h2>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="script.html#p274">p. 274</a>).</strong> Let $D\subseteq\mathbb R$, $f:D\to\mathbb R$, and $x_0\in\mathbb R$ an <strong>accumulation point of $D$</strong> (every punctured interval $(x_0-\delta,x_0+\delta)\setminus\{x_0\}$ contains points of $D$). Then $\lim_{x\to x_0}f(x)=A$ means</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists\delta\\&amp;&gt;0\ \forall x\in D:\ 0\\&amp;&lt;|x-x_0|\\&amp;&lt;\delta\Rightarrow|f(x)-A|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+</div>
+<ul>
+  <li><strong>$x_0$ itself is excluded</strong> ($0&lt;|x-x_0|$). The value $f(x_0)$ plays no role, and $f$ need not even be defined at $x_0$. The set $(x_0-\delta,x_0+\delta)\setminus\{x_0\}$ is the <strong>punctured δ-neighbourhood</strong>.</li>
+  <li><strong>Why an accumulation point:</strong> so that there are points to approach with. Then the limit is unique if it exists (Übung 6.38 (i), the Bonus).</li>
+  <li><strong>Rules</strong> (as for sequences): limits of sums, multiples and products are the sums, multiples and products of the limits; $f\le g$ gives $\lim f\le\lim g$; and there's a sandwich lemma (Exercise 5).</li>
+</ul>
+<div class="box">
+<p><strong>Lemma 6.39 (<a class="pl" href="script.html#p275">p. 275</a>).</strong> For $x_0\in D$ an accumulation point of $D$: $f$ is continuous at $x_0$ ⇔ $\lim_{x\to x_0}f(x)=f(x_0)$.</p>
+</div>
+<p>If $\lim_{x\to x_0}f(x)$ exists but differs from $f(x_0)$, then $x_0$ is a <strong>removable discontinuity</strong>: redefining $f(x_0)$ as the limit makes $f$ continuous there. If $x_0\notin D$ and the limit exists, setting $f(x_0)=\lim_{x\to x_0}f(x)$ extends $f$ continuously.</p>
+<p><strong>Example.</strong> $f(x)=\frac{x^2-4}{x-2}$ on $D=\mathbb R\setminus\{2\}$. For $x\neq2$, $f(x)=x+2$, so $\lim_{x\to2}f(x)=4$: with $\delta=\varepsilon$, $0&lt;|x-2|&lt;\delta$ gives $|f(x)-4|=|x-2|&lt;\varepsilon$. Setting $f(2)=4$ extends $f$ continuously.</p>
+
+<h3 id="proof-a">Proof A: limits through sequences (Lemma 6.40, <a class="pl" href="script.html#p275">p. 275</a>)</h3>
+<div class="box">
+<p><strong>Lemma 6.40.</strong> Let $x_0$ be an accumulation point of $D$. Then $\lim_{x\to x_0}f(x)=A$ ⇔ for every sequence $(a_n)_n$ in $D\setminus\{x_0\}$ with $a_n\to x_0$ we have $f(a_n)\to A$.</p>
+</div>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-10.html#proof-e">lesson 10</a>)</span>
+<ul>
+  <li><strong>Proof E of <a class="xl" href="lesson-10.html#proof-e">lesson 10</a></strong> (ε-δ continuity ⇔ sequential continuity). This proof is the same with $A$ in place of $f(x_0)$ and with $x_0$ excluded.</li>
+  <li><strong>The negation</strong> of the limit statement: <span class="math-display" style="display:block">$$\begin{aligned}\exists\varepsilon&amp;&gt;0\ \forall\delta\\&amp;&gt;0\ \exists x\in D:\ 0\\&amp;&lt;|x-x_0|\\&amp;&lt;\delta\ \text{and}\ |f(x)-A|\\&amp;\ge \varepsilon\end{aligned}.$$</span></li>
+</ul></div>
+<p><strong>The idea.</strong> (⇒) If $f$ is within $\varepsilon$ of $A$ on a whole punctured neighbourhood, any sequence that eventually enters the neighbourhood (and never hits $x_0$) has images eventually within $\varepsilon$ of $A$. (⇐) Contrapositive: if the limit fails, for one bad $\varepsilon$ every punctured neighbourhood contains a bad point; choose one in radius $\frac1n$ for each $n$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>“⇒” starts</strong> “Let $(a_n)_n$ be in $D\setminus\{x_0\}$ with $a_n\to x_0$, and let $\varepsilon&gt;0$”, and ends “$|f(a_n)-A|&lt;\varepsilon$ for $n\ge N$”.</li>
+  <li><strong>“⇐” by contrapositive:</strong> assume the limit statement fails, and <em>build</em> a sequence for which $f(a_n)\not\to A$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>“⇒” Near the gate, the road is within $\varepsilon$ of its settling height.</p></div><div class="sp-formal"><p>Let $\lim_{x\to x_0}f(x)=A$, let $(a_n)_n$ be in $D\setminus\{x_0\}$ with $a_n\to x_0$, and let $\varepsilon&gt;0$. Choose $\delta&gt;0$ with $|f(x)-A|&lt;\varepsilon$ for all $x\in D$ with $0&lt;|x-x_0|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The traveller eventually comes that near, and never stands in the gate.</p></div><div class="sp-formal"><p>Since $a_n\to x_0$, there is $N$ with $|a_n-x_0|&lt;\delta$ for $n\ge N$; and $a_n\neq x_0$. So for $n\ge N$: $0&lt;|a_n-x_0|&lt;\delta$, hence $|f(a_n)-A|&lt;\varepsilon$. So $f(a_n)\to A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>“⇐” Suppose the road doesn't settle at $A$: for some tolerance, bad spots exist arbitrarily close to the gate.</p></div><div class="sp-formal"><p>Suppose $\lim_{x\to x_0}f(x)=A$ fails. Then there is $\varepsilon&gt;0$ such that for every $\delta&gt;0$ there is $x\in D$ with $0&lt;|x-x_0|&lt;\delta$ and $|f(x)-A|\ge\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Pick one bad spot within $1$, one within $\frac12$, one within $\frac13$…</p></div><div class="sp-formal"><p>For each $n$, with $\delta=\frac1n$, choose $a_n\in D$ with $0&lt;|a_n-x_0|&lt;\frac1n$ and $|f(a_n)-A|\ge\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>That traveller approaches the gate, but the road under him never comes near $A$.</p></div><div class="sp-formal"><p>Then $(a_n)_n$ lies in $D\setminus\{x_0\}$, $a_n\to x_0$, but $f(a_n)\not\to A$. This contradicts the sequence condition, which proves “⇐”. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">use the limit with a chosen ε</a> <a class="mvl" href="moves.html#m-neg">the negation recipe</a> <a class="mvl" href="moves.html#m-seq">δ = 1/n builds a sequence</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>“⇒”: Let $(a_n)_n$ be in $D\setminus\{x_0\}$ with $a_n\to x_0$, and $\varepsilon&gt;0$. Choose $\delta&gt;0$ with $|f(x)-A|&lt;\varepsilon$ whenever $x\in D$, $0&lt;|x-x_0|&lt;\delta$, and $N$ with $|a_n-x_0|&lt;\delta$ for $n\ge N$. As $a_n\neq x_0$, $|f(a_n)-A|&lt;\varepsilon$ for $n\ge N$.</p>
+<p>“⇐”: If $\lim_{x\to x_0}f(x)=A$ fails, there is $\varepsilon&gt;0$ such that for each $n$ some $a_n\in D$ satisfies $0&lt;|a_n-x_0|&lt;\frac1n$ and $|f(a_n)-A|\ge\varepsilon$. Then $a_n\to x_0$ in $D\setminus\{x_0\}$ but $f(a_n)\not\to A$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Where in “⇒” do we use that $a_n\neq x_0$?</p>
+  <details><summary>Answer</summary><div><p>The δ-statement only covers $0&lt;|x-x_0|&lt;\delta$. Without $a_n\neq x_0$ we couldn't apply it to $a_n=x_0$, where $f$ may have any value (or none).</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> What is different from <a class="xl" href="lesson-10.html#proof-e">lesson 10</a>'s Proof E? Name two changes.</p>
+  <details><summary>Answer</summary><div><p>$A$ replaces $f(x_0)$, and $x_0$ is excluded: the sequences live in $D\setminus\{x_0\}$, and the bad points satisfy $0&lt;|a_n-x_0|$.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write both directions from the frame alone.</p></li>
+</ol></div>
+<p><strong>Use it to show a limit does not exist:</strong> find two sequences $a_n,b_n\to x_0$ (avoiding $x_0$) with different limits of $f(a_n)$ and $f(b_n)$. For the sign function at $0$: $f\left(\frac1n\right)=1$ but $f\left(-\frac1n\right)=-1$, so $\lim_{x\to0}\operatorname{sgn}(x)$ does not exist.</p>
+<div class="box">
+<p><strong>Proposition 6.41 (<a class="pl" href="script.html#p276">p. 276</a>), composition.</strong> If $\lim_{x\to x_0}f(x)=y_0$ and $g$ is continuous at $y_0$, then $\lim_{x\to x_0}g(f(x))=g(y_0)$. <em>Why:</em> for $a_n\to x_0$ in $D\setminus\{x_0\}$, Lemma 6.40 gives $f(a_n)\to y_0$, continuity gives $g(f(a_n))\to g(y_0)$, and Lemma 6.40 again gives the claim.</p>
+<p><strong>Improper limits.</strong> $\lim_{x\to x_0}f(x)=+\infty$ means: for every $\varepsilon&gt;0$ there is $\delta&gt;0$ with $f(x)&gt;\frac1\varepsilon$ for all $x\in D$ with $0&lt;|x-x_0|&lt;\delta$. Similarly for $-\infty$.</p>
+</div>
+<h2 id="s3-one-sided-limits-one-sided">3. One-sided limits, one-sided continuity, jumps</h2>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="script.html#p276">p. 276</a>).</strong> $x_0$ is a <strong>right-sided accumulation point</strong> of $D$ if $D\cap(x_0,x_0+\delta)\neq\emptyset$ for every $\delta&gt;0$. Then the <strong>right-sided limit</strong> $\lim_{x\searrow x_0}f(x)=A$ (also written $\lim_{x\to x_0^+}f(x)$) means</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists\delta\\&amp;&gt;0\ \forall x\in D\cap(x_0,x_0+\delta):\ |f(x)-A|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+<p>The left-sided limit $\lim_{x\nearrow x_0}f(x)$ uses $D\cap(x_0-\delta,x_0)$ instead.</p>
+<p>For $x_0\in D$: $f$ is <strong>right-continuous</strong> at $x_0$ if $\lim_{x\searrow x_0}f(x)=f(x_0)$, and <strong>left-continuous</strong> if $\lim_{x\nearrow x_0}f(x)=f(x_0)$. If both one-sided limits exist but are different, $x_0$ is a <strong>jump</strong>.</p>
+</div>
+<ul>
+  <li><strong>Both sides agree ⇔ the limit exists.</strong> If $x_0$ is a left- and right-sided accumulation point, then $\lim_{x\to x_0}f(x)$ exists ⇔ both one-sided limits exist and are equal. So for $x_0\in D$: continuous at $x_0$ ⇔ left- and right-continuous there.</li>
+  <li><strong>Only one side available.</strong> If $D$ has no points just right of $x_0$ (for example $x_0=b$ for $D=[a,b]$), the right-sided limit isn't defined, and the left-sided limit alone decides: $\lim_{x\to b}f(x)=\lim_{x\nearrow b}f(x)$.</li>
+  <li><strong>Examples.</strong> $\lim_{x\searrow0}\frac1x=+\infty$ and $\lim_{x\nearrow0}\frac1x=-\infty$. $\lim_{x\searrow0}\sqrt x=\lim_{x\to0}\sqrt x=0$ (on $D=[0,\infty)$, only the right side exists). The sign function has a jump at $0$: left limit $-1$, right limit $1$.</li>
+</ul>
+<figure style="margin:0" aria-label="Graph of a function with three special points. At x1 the graph has a hole and the function value is a separate dot above it: a removable discontinuity. At x2 the graph jumps up; the filled dot is on the left piece, so the function is left-continuous there. At x3 the graph jumps down; the filled dot is on the right piece, so it is right-continuous there.">
+<svg viewBox="0 0 640 290" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="230.0" x2="620.0" y2="230.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="40.0" y1="30.0" x2="40.0" y2="240.0" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 40.0 160.0 L 43.3 159.2 L 46.6 158.5 L 49.9 157.7 L 53.2 156.9 L 56.5 156.2 L 59.8 155.4 L 63.1 154.6 L 66.4 153.8 L 69.7 153.1 L 73.0 152.3 L 76.3 151.5 L 79.6 150.8 L 82.9 150.0 L 86.2 149.2 L 89.5 148.4 L 92.8 147.7 L 96.1 146.9 L 99.4 146.1 L 102.7 145.4 L 106.0 144.6 L 109.3 143.8 L 112.6 143.1 L 115.9 142.3 L 119.2 141.5 L 122.5 140.8 L 125.8 140.0 L 129.1 139.2 L 132.4 138.4 L 135.7 137.7 L 139.0 136.9 L 142.3 136.1 L 145.6 135.4 L 148.9 134.6 L 152.2 133.8 L 155.5 133.1 L 158.8 132.3 L 162.1 131.5 L 165.4 130.7 L 168.7 130.0 L 172.0 129.2 L 175.3 128.4 L 178.6 127.7 L 181.9 126.9 L 185.2 126.1 L 188.5 125.3 L 191.8 124.6 L 195.1 123.8 L 198.4 123.0 L 201.7 122.3 L 205.0 121.5 L 208.3 120.7 L 211.6 120.0 L 214.9 119.2 L 218.2 118.4 L 221.5 117.7 L 224.8 116.9 L 228.1 116.1 L 231.4 115.3 L 234.7 114.6 L 238.0 113.8 L 241.3 113.0 L 244.6 112.3 L 247.9 111.5 L 251.2 110.7 L 254.5 109.9 L 257.8 109.2 L 261.1 108.4 L 264.4 107.6 L 267.7 106.9 L 271.0 106.1 L 274.3 105.3 L 277.6 104.6 L 280.9 103.8 L 284.2 103.0 L 287.5 102.2 L 290.8 101.5 L 294.1 100.7 L 297.4 99.9 L 300.7 99.2 L 304.0 98.4" style="fill:none;stroke:var(--accent)" stroke-width="3"/><path d="M 304.0 188.0 L 305.8 187.7 L 307.6 187.4 L 309.4 187.1 L 311.2 186.7 L 313.0 186.4 L 314.8 186.1 L 316.6 185.8 L 318.4 185.5 L 320.2 185.2 L 322.0 184.9 L 323.8 184.5 L 325.6 184.2 L 327.4 183.9 L 329.2 183.6 L 331.0 183.3 L 332.8 183.0 L 334.6 182.6 L 336.4 182.3 L 338.2 182.0 L 340.0 181.7 L 341.8 181.4 L 343.6 181.1 L 345.4 180.8 L 347.2 180.4 L 349.0 180.1 L 350.8 179.8 L 352.6 179.5 L 354.4 179.2 L 356.2 178.9 L 358.0 178.6 L 359.8 178.2 L 361.6 177.9 L 363.4 177.6 L 365.2 177.3 L 367.0 177.0 L 368.8 176.7 L 370.6 176.3 L 372.4 176.0 L 374.2 175.7 L 376.0 175.4 L 377.8 175.1 L 379.6 174.8 L 381.4 174.5 L 383.2 174.1 L 385.0 173.8 L 386.8 173.5 L 388.6 173.2 L 390.4 172.9 L 392.2 172.6 L 394.0 172.2 L 395.8 171.9 L 397.6 171.6 L 399.4 171.3 L 401.2 171.0 L 403.0 170.7 L 404.8 170.4 L 406.6 170.0 L 408.4 169.7 L 410.2 169.4 L 412.0 169.1 L 413.8 168.8 L 415.6 168.5 L 417.4 168.2 L 419.2 167.8 L 421.0 167.5 L 422.8 167.2 L 424.6 166.9 L 426.4 166.6 L 428.2 166.3 L 430.0 165.9 L 431.8 165.6 L 433.6 165.3 L 435.4 165.0 L 437.2 164.7 L 439.0 164.4 L 440.8 164.1 L 442.6 163.7 L 444.4 163.4 L 446.2 163.1 L 448.0 162.8" style="fill:none;stroke:var(--accent)" stroke-width="3"/><path d="M 448.0 90.0 L 449.8 90.2 L 451.6 90.4 L 453.4 90.6 L 455.2 90.8 L 457.0 91.1 L 458.8 91.3 L 460.6 91.5 L 462.4 91.7 L 464.2 91.9 L 466.0 92.1 L 467.8 92.3 L 469.6 92.5 L 471.4 92.7 L 473.2 92.9 L 475.0 93.2 L 476.8 93.4 L 478.6 93.6 L 480.4 93.8 L 482.2 94.0 L 484.0 94.2 L 485.8 94.4 L 487.6 94.6 L 489.4 94.8 L 491.2 95.0 L 493.0 95.2 L 494.8 95.5 L 496.6 95.7 L 498.4 95.9 L 500.2 96.1 L 502.0 96.3 L 503.8 96.5 L 505.6 96.7 L 507.4 96.9 L 509.2 97.1 L 511.0 97.3 L 512.8 97.6 L 514.6 97.8 L 516.4 98.0 L 518.2 98.2 L 520.0 98.4 L 521.8 98.6 L 523.6 98.8 L 525.4 99.0 L 527.2 99.2 L 529.0 99.4 L 530.8 99.7 L 532.6 99.9 L 534.4 100.1 L 536.2 100.3 L 538.0 100.5 L 539.8 100.7 L 541.6 100.9 L 543.4 101.1 L 545.2 101.3 L 547.0 101.6 L 548.8 101.8 L 550.6 102.0 L 552.4 102.2 L 554.2 102.4 L 556.0 102.6 L 557.8 102.8 L 559.6 103.0 L 561.4 103.2 L 563.2 103.4 L 565.0 103.7 L 566.8 103.9 L 568.6 104.1 L 570.4 104.3 L 572.2 104.5 L 574.0 104.7 L 575.8 104.9 L 577.6 105.1 L 579.4 105.3 L 581.2 105.5 L 583.0 105.7 L 584.8 106.0 L 586.6 106.2 L 588.4 106.4 L 590.2 106.6 L 592.0 106.8" style="fill:none;stroke:var(--accent)" stroke-width="3"/><circle cx="160.0" cy="132.0" r="5.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="160.0" cy="62.0" r="5.5" style="fill:var(--accent)"/><line x1="160.0" y1="68.0" x2="160.0" y2="126.0" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><circle cx="304.0" cy="98.4" r="5.5" style="fill:var(--accent)"/><circle cx="304.0" cy="188.0" r="5.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="448.0" cy="162.8" r="5.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="448.0" cy="90.0" r="5.5" style="fill:var(--accent)"/><line x1="160.0" y1="225.0" x2="160.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><text x="160.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">x₁</text><line x1="304.0" y1="225.0" x2="304.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><text x="304.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">x₂</text><line x1="448.0" y1="225.0" x2="448.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><text x="448.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">x₃</text><text x="170.0" y="54.0" text-anchor="start" style="fill:var(--k-c);font-size:14px">f(x₁)</text><text x="160.0" y="270.0" text-anchor="middle" style="fill:var(--k-c);font-size:13px">removable</text><text x="304.0" y="270.0" text-anchor="middle" style="fill:var(--k-c);font-size:13px">jump, left-cont.</text><text x="468.0" y="270.0" text-anchor="middle" style="fill:var(--k-c);font-size:13px">jump, right-cont.</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Compare Figur 6.5 (<a class="pl" href="script.html#p277">p. 277</a>). At $x_1$: the limit exists but differs from $f(x_1)$, a removable discontinuity. At $x_2$: a jump, left-continuous. At $x_3$: a jump, right-continuous. Filled dots are function values, open dots are not.</figcaption>
+</figure>
+
+<h2 id="s4-limits-at-infinity">4. Limits at infinity</h2>
+<p><strong>The idea.</strong> $\lim_{x\to\infty}f(x)=A$ says: far enough to the right, the graph stays as close to the height $A$ as you like. Draw a horizontal band of half-width $\varepsilon$ around the line $y=A$. However thin the band, there is a point $R$ from which on the graph never leaves it again. This is the definition of $a_n\to A$ for sequences with one swap: the whole numbers $n\ge N$ become the real numbers $x&gt;R$.</p>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="script.html#p278">p. 278</a>).</strong> Let $D$ be not bounded above.</p>
+<ul>
+  <li>$\lim_{x\to\infty}f(x)=A$ means: for every $\varepsilon&gt;0$ there is $R$ with $|f(x)-A|&lt;\varepsilon$ for all $x\in D$ with $x&gt;R$.</li>
+  <li>$\lim_{x\to\infty}f(x)=\infty$ means: for every $K$ there is $R$ with $f(x)&gt;K$ for all $x\in D$ with $x&gt;R$.</li>
+</ul>
+<p>(The script writes $R=\frac1\delta$, which turns this into a “$\delta$” definition. It says the same thing.) $x\to-\infty$ works the same way with “$x&lt;-R$”.</p>
+</div>
+<div class="frame"><span class="label">What the definition forces</span>
+<ul>
+  <li><strong>First line:</strong> “Let $\varepsilon&gt;0$.” <strong>Next:</strong> “Let $R=\dots$” (to be found). <strong>Last line:</strong> “so $|f(x)-A|&lt;\varepsilon$ for all $x&gt;R$.”</li>
+  <li><strong>The gap:</strong> bound $|f(x)-A|$ by something that shrinks as $x$ grows, then choose $R$ large enough.</li>
+</ul></div>
+<div class="box">
+<h3 id="worked-example">Worked example: $\lim_{x\to\infty}\frac1x=0$</h3>
+<ol class="gq">
+  <li><p>What has to become small?</p>
+  <details><summary>Answer</summary><div><p>$\left|\frac1x-0\right|=\frac1x$ (for $x&gt;0$).</p></div></details></li>
+  <li><p>For which $x$ is $\frac1x&lt;\varepsilon$? Which $R$ does that suggest?</p>
+  <details><summary>Answer</summary><div><p>Exactly for $x&gt;\frac1\varepsilon$. So $R=\frac1\varepsilon$ works.</p></div></details></li>
+  <li><p>Write the proof down.</p>
+  <details><summary>Answer</summary><div><p>Let $\varepsilon&gt;0$ and $R=\frac1\varepsilon$. For all $x&gt;R$: $\left|\frac1x-0\right|=\frac1x&lt;\frac1R=\varepsilon$. Hence $\lim_{x\to\infty}\frac1x=0$. In the same way, $\frac c{x^m}\to0$ for every constant $c$ and every $m\ge1$.</p></div></details></li>
+</ol>
+</div>
+<p><strong>Rational functions at $\infty$ (Übung 6.45).</strong> The trick: divide the numerator and the denominator by the highest power of $x$ in the <em>denominator</em>. Then every term of the form $\frac c{x^m}$ tends to $0$ (worked example above), and the limit can be read off with the limit rules.</p>
+<div class="box">
+<p><strong>The three cases, one example each.</strong></p>
+<ul>
+  <li><strong>Same degree:</strong> $\frac{3x^2+x}{x^2-5}=\frac{3+\frac1x}{1-\frac5{x^2}}\to\frac{3+0}{1-0}=3$. The limit is the ratio of the leading coefficients.</li>
+  <li><strong>Denominator has the higher degree:</strong> $\frac{x}{x^2+1}=\frac{\frac1x}{1+\frac1{x^2}}\to\frac01=0$.</li>
+  <li><strong>Numerator has the higher degree:</strong> $\frac{x^2}{x+1}=\frac{x}{1+\frac1x}$. The denominator tends to $1$ and the numerator to $\infty$, so the quotient tends to $\infty$.</li>
+</ul>
+<p>In general, for polynomials $p,q$ with leading terms $a_kx^k$ and $b_\ell x^\ell$: $\lim_{x\to\infty}\frac{p(x)}{q(x)}$ is $\frac{a_k}{b_\ell}$ if $k=\ell$, it is $0$ if $k&lt;\ell$, and it is $\pm\infty$ (the sign of $\frac{a_k}{b_\ell}$) if $k&gt;\ell$. Also $\lim_{x\to\infty}p(x)=\pm\infty$ (the sign of $a_k$) for $k\ge1$.</p>
+</div>
+
+<h2 id="s5-riemann-sums">5. Riemann sums</h2>
+<div class="box">
+<p><strong>Definition 6.46 (<a class="pl" href="script.html#p280">p. 280</a>).</strong> For a partition $Z=\{a=x_0&lt;x_1&lt;\dots&lt;x_n=b\}$ of $[a,b]$, the <strong>mesh</strong> is $|Z|=\max_k(x_k-x_{k-1})$, the width of the widest piece. <strong>Tags</strong> are points $z_k\in[x_{k-1},x_k]$, one per piece. The <strong>Riemann sum</strong> is</p>
+<span class="math-display" style="display:block">$$R(f,Z,z)=\sum_{k=1}^nf(z_k)\,(x_k-x_{k-1}).$$</span>
+<p><strong>Satz 6.47 (<a class="pl" href="script.html#p280">p. 280</a>).</strong> If $f$ is Riemann integrable on $[a,b]$, then the Riemann sums converge to the integral as the mesh tends to $0$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists\delta\\&amp;&gt;0\ \forall Z,z:\ |Z|\\&amp;&lt;\delta\Rightarrow\left|R(f,Z,z)-\int_a^bf\,dx\right|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+</div>
+<figure style="margin:0" aria-label="A curve over an interval from a to b, cut into five pieces of different widths. Over each piece a rectangle is drawn whose height is the function value at a chosen tag point, marked with a dot on the curve.">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="235.0" x2="620.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50.0" y1="20.0" x2="50.0" y2="245.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="50.0" y="112.6" width="91.0" height="122.4" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="141.0" y="58.2" width="117.0" height="176.8" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="258.0" y="64.8" width="78.0" height="170.2" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="336.0" y="118.4" width="117.0" height="116.6" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="453.0" y="129.8" width="117.0" height="105.2" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><path d="M 50.0 140.0 L 56.5 135.3 L 63.0 130.7 L 69.5 126.1 L 76.0 121.5 L 82.5 117.0 L 89.0 112.6 L 95.5 108.3 L 102.0 104.1 L 108.5 100.0 L 115.0 96.0 L 121.5 92.2 L 128.0 88.5 L 134.5 85.0 L 141.0 81.7 L 147.5 78.6 L 154.0 75.6 L 160.5 72.9 L 167.0 70.4 L 173.5 68.1 L 180.0 66.1 L 186.5 64.3 L 193.0 62.7 L 199.5 61.3 L 206.0 60.2 L 212.5 59.3 L 219.0 58.7 L 225.5 58.3 L 232.0 58.2 L 238.5 58.2 L 245.0 58.5 L 251.5 59.1 L 258.0 59.8 L 264.5 60.8 L 271.0 62.0 L 277.5 63.3 L 284.0 64.8 L 290.5 66.6 L 297.0 68.4 L 303.5 70.5 L 310.0 72.6 L 316.5 74.9 L 323.0 77.3 L 329.5 79.8 L 336.0 82.4 L 342.5 85.0 L 349.0 87.7 L 355.5 90.4 L 362.0 93.2 L 368.5 95.9 L 375.0 98.7 L 381.5 101.4 L 388.0 104.1 L 394.5 106.7 L 401.0 109.2 L 407.5 111.7 L 414.0 114.0 L 420.5 116.3 L 427.0 118.4 L 433.5 120.4 L 440.0 122.2 L 446.5 123.9 L 453.0 125.3 L 459.5 126.6 L 466.0 127.7 L 472.5 128.6 L 479.0 129.3 L 485.5 129.7 L 492.0 130.0 L 498.5 130.0 L 505.0 129.8 L 511.5 129.3 L 518.0 128.6 L 524.5 127.6 L 531.0 126.4 L 537.5 125.0 L 544.0 123.3 L 550.5 121.4 L 557.0 119.3 L 563.5 116.9 L 570.0 114.4" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><line x1="89.0" y1="235.0" x2="89.0" y2="112.6" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="89.0" cy="112.6" r="5.5" style="fill:var(--k-c)"/><text x="89.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₁</text><line x1="232.0" y1="235.0" x2="232.0" y2="58.2" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="232.0" cy="58.2" r="5.5" style="fill:var(--k-c)"/><text x="232.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₂</text><line x1="284.0" y1="235.0" x2="284.0" y2="64.8" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="284.0" cy="64.8" r="5.5" style="fill:var(--k-c)"/><text x="284.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₃</text><line x1="427.0" y1="235.0" x2="427.0" y2="118.4" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="427.0" cy="118.4" r="5.5" style="fill:var(--k-c)"/><text x="427.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₄</text><line x1="505.0" y1="235.0" x2="505.0" y2="129.8" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="505.0" cy="129.8" r="5.5" style="fill:var(--k-c)"/><text x="505.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₅</text><text x="50.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₀</text><text x="141.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₁</text><text x="258.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₂</text><text x="336.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₃</text><text x="453.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₄</text><text x="570.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₅</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">A Riemann sum: on each piece, the rectangle's height is $f(z_k)$ at a freely chosen tag $z_k$ (the dots). Unlike <a class="xl" href="lesson-09.html#s2-step-functions-the-rectangles">lesson 9</a>'s step functions $u\le f\le o$, a Riemann rectangle can stick out above or below the graph.</figcaption>
+</figure>
+<p><strong>The everyday form.</strong> Take $n$ equal pieces of width $\frac{b-a}n$ and right endpoints as tags: $z_k=a+k\frac{b-a}n$. The mesh is $\frac{b-a}n\to0$, so for integrable $f$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\lim_{n\to\infty}\frac{b-a}n\sum_{k=1}^nf\left(a+k\,\frac{b-a}n\right)=\int_a^bf(x)\,dx.\\&amp;\text{On }[0,1]:\ \lim_{n\to\infty}\frac1n\sum_{k=1}^nf\left(\frac kn\right)=\int_0^1f(x)\,dx\end{aligned}.$$</span>
+<p>That's how exam questions use it: you <em>recognise</em> a sum as a Riemann sum and replace its limit by an integral.</p>
+
+<h3 id="proof-b">Proof B: Riemann sums converge, for continuous $f$ (Satz 6.47)</h3>
+<div class="need"><span class="label">You'll need these (<a class="xl" href="lesson-08.html#s6-heine-s-theorem-and-its">lessons 8</a> and <a class="xl" href="lesson-09.html#we-2">9</a>)</span>
+<ul>
+  <li><strong>Heine:</strong> a continuous function on $[a,b]$ is uniformly continuous: for every $\eta&gt;0$ there is $\delta&gt;0$ with $|f(x)-f(y)|&lt;\eta$ whenever $|x-y|&lt;\delta$.</li>
+  <li><strong>Additivity over intervals:</strong> $\int_a^bf=\sum_k\int_{x_{k-1}}^{x_k}f$. <strong>Constants:</strong> $\int_{x_{k-1}}^{x_k}c\,dx=c\,(x_k-x_{k-1})$.</li>
+  <li><strong>Triangle inequality and monotonicity:</strong> $\left|\int g\right|\le\int|g|$, and $|g|\le c$ gives $\int_{x_{k-1}}^{x_k}|g|\le c\,(x_k-x_{k-1})$.</li>
+</ul></div>
+<p><strong>The idea.</strong> On a thin piece, a continuous function barely changes (Heine), so $f(x)$ is close to the tag value $f(z_k)$ everywhere on the piece. Then the true area of the strip and the rectangle differ by at most “small height × width”. Add up the strips: the total error is at most “small height × $(b-a)$”.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $\varepsilon&gt;0$.” Then we must produce $\delta$, and only then take an arbitrary $Z$ with $|Z|&lt;\delta$ and arbitrary tags $z$.</li>
+  <li><strong>Last line:</strong> “so $\left|\int_a^bf-R(f,Z,z)\right|&lt;\varepsilon$.”</li>
+  <li><strong>The gap:</strong> compare piece by piece: $\int_{x_{k-1}}^{x_k}f$ versus $f(z_k)(x_k-x_{k-1})$. Aim for an error of $\eta\cdot$width per piece with $\eta(b-a)&lt;\varepsilon$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Fix a tolerance, and make the strips so thin that the height barely changes within one.</p></div><div class="sp-formal"><p>Let $\varepsilon&gt;0$ and $\eta=\frac\varepsilon{2(b-a)}$. By Heine, $f$ is uniformly continuous, so there is $\delta&gt;0$ with $|f(x)-f(y)|&lt;\eta$ for all $x,y\in[a,b]$ with $|x-y|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Now any cut into thin strips, and any choice of spots.</p></div><div class="sp-formal"><p>Let $Z$ be a partition with $|Z|&lt;\delta$ and $z$ tags. For $x\in[x_{k-1},x_k]$ we have $|x-z_k|\le x_k-x_{k-1}&lt;\delta$, so $|f(x)-f(z_k)|&lt;\eta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>On one strip, the true area and the rectangle differ by at most “small height × width”.</p></div><div class="sp-formal"><p><span class="math-display" style="display:block">$$\begin{aligned}\left|\int_{x_{k-1}}^{x_k}f\,dx-f(z_k)(x_k-x_{k-1})\right|&amp;=\left|\int_{x_{k-1}}^{x_k}\bigl(f(x)-f(z_k)\bigr)dx\right|\\&amp;\le\int_{x_{k-1}}^{x_k}|f(x)-f(z_k)|\,dx\le\eta\,(x_k-x_{k-1}).\end{aligned}$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Add up the strips; the widths add up to the whole field.</p></div><div class="sp-formal"><p>By additivity and the triangle inequality, <span class="math-display" style="display:block">$$\begin{aligned}\left|\int_a^bf\,dx-R(f,Z,z)\right|&amp;\le \sum_{k=1}^n\eta\,(x_k-x_{k-1})\\&amp;=\eta\,(b-a)\\&amp;=\tfrac\varepsilon2\\&amp;&lt;\varepsilon\end{aligned}.$$</span> <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-eps">uniform continuity with a chosen tolerance</a> <a class="mvl" href="moves.html#m-piece">estimate piece by piece</a> <a class="mvl" href="moves.html#m-tele">the widths add up</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $f$ be continuous on $[a,b]$ and $\varepsilon&gt;0$. By Heine there is $\delta&gt;0$ with $|f(x)-f(y)|&lt;\eta=\frac\varepsilon{2(b-a)}$ whenever $|x-y|&lt;\delta$. Let $|Z|&lt;\delta$ and let $z$ be tags. For $x\in[x_{k-1},x_k]$, $|x-z_k|&lt;\delta$, so $|f(x)-f(z_k)|&lt;\eta$, and therefore <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left|\int_{x_{k-1}}^{x_k}f\,dx-f(z_k)(x_k-x_{k-1})\right|\\&amp;\quad\le\int_{x_{k-1}}^{x_k}|f(x)-f(z_k)|\,dx\le\eta(x_k-x_{k-1}).\end{aligned}$$</span> Summing over $k$ and using additivity: <span class="math-display" style="display:block">$$\left|\int_a^bf\,dx-R(f,Z,z)\right|\le\eta(b-a)=\frac\varepsilon2&lt;\varepsilon.$$</span><span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Heine</strong> with $\eta=\frac\varepsilon{2(b-a)}$ gives $\delta$.</li>
+  <li><strong>$|Z|&lt;\delta$</strong> ⇒ $|f(x)-f(z_k)|&lt;\eta$ on each piece.</li>
+  <li><strong>Per piece:</strong> $\left|\int_{x_{k-1}}^{x_k}(f(x)-f(z_k))\,dx\right|\le\eta\,\Delta x_k$.</li>
+  <li><strong>Sum:</strong> total error $\le\eta(b-a)&lt;\varepsilon$.</li>
+</ol>
+<p>In short: “Heine, per piece error η·width, the widths sum to b − a”. It's <a class="xl" href="lesson-09.html#we-2">lesson 9</a>'s “continuous ⇒ integrable” estimate in new clothes.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why do we need <em>uniform</em> continuity, not just continuity at each point?</p>
+  <details><summary>Answer</summary><div><p>One $\delta$ must work for every piece of every partition with $|Z|&lt;\delta$, wherever it lies in $[a,b]$. Pointwise continuity gives a $\delta$ depending on the point.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Write the per-piece estimate, naming each fact you use.</p>
+  <details><summary>Answer</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\int_{x_{k-1}}^{x_k}f\,dx-f(z_k)\Delta x_k&amp;=\int_{x_{k-1}}^{x_k}(f(x)-f(z_k))\,dx\end{aligned}$$</span> (linearity and the integral of a constant); its absolute value is $\le\int|f(x)-f(z_k)|\,dx$ (triangle inequality) $\le\eta\,\Delta x_k$ (monotonicity, since the integrand is $&lt;\eta$).</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p class="legend">For a general integrable $f$, the script squeezes $f$ between continuous functions $f_-\le f\le f_+$ with $\int(f_+-f_-)&lt;\frac\varepsilon2$ (Proposition 4.44) and applies the continuous case to both. That part is on the skip list.</p>
+
+<h2 id="s6-landau-notation-and">6. Landau notation: $O$ and $o$</h2>
+<p><strong>The idea.</strong> Often we don't care what a function is exactly, only how big it is <em>compared to</em> a simpler function $g$, near one point $x_0$ (often $0$ or $\infty$). Landau notation (like the royal astronomer's “of the order of”) has two words for this:</p>
+<ul>
+  <li><strong>$f=O(g)$, “big O”:</strong> $f$ is <em>at most about as big as</em> $g$. Near $x_0$, $|f|$ is at most a fixed multiple $M$ of $|g|$.</li>
+  <li><strong>$f=o(g)$, “little o”:</strong> $f$ is <em>negligible compared to</em> $g$. Near $x_0$, $|f|$ is smaller than <em>any</em> fraction $\varepsilon$ of $|g|$, however tiny.</li>
+</ul>
+<p><strong>The practical test: look at the ratio $\frac{f(x)}{g(x)}$</strong> as $x\to x_0$ (when $g\neq0$ near $x_0$).</p>
+<ul>
+  <li>The ratio stays <strong>bounded</strong> ⇔ $f=O(g)$.</li>
+  <li>The ratio <strong>tends to $0$</strong> ⇔ $f=o(g)$.</li>
+  <li>The ratio tends to a number $c\neq0$: then $f=O(g)$ but not $o(g)$ (same order).</li>
+  <li>The ratio is <strong>unbounded</strong>: $f$ is neither $O(g)$ nor $o(g)$.</li>
+</ul>
+<p>Since “tends to $0$” implies “bounded near $x_0$”, every $o(g)$ is also $O(g)$.</p>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="script.html#p284">p. 284</a>).</strong> Let $x_0$ be an accumulation point of $D$ (or $x_0=\pm\infty$), and $f,g:D\to\mathbb R$.</p>
+<ul>
+  <li>$f(x)=O(g(x))$ for $x\to x_0$ if there are $\delta&gt;0$ and $M&gt;0$ with $|f(x)|\le M|g(x)|$ for all $x\in D$ with $0&lt;|x-x_0|&lt;\delta$.</li>
+  <li>$f(x)=o(g(x))$ for $x\to x_0$ if for every $\varepsilon&gt;0$ there is $\delta&gt;0$ with $|f(x)|\le\varepsilon|g(x)|$ for all $x\in D$ with $0&lt;|x-x_0|&lt;\delta$.</li>
+</ul>
+<p>For $x_0=\infty$, replace “$0&lt;|x-x_0|&lt;\delta$” by “$x&gt;R$”. The difference between the two: in $O$, one constant $M$ is enough; in $o$, it must work for <em>every</em> $\varepsilon&gt;0$.</p>
+</div>
+<p><strong>Careful with “=”.</strong> “$f=O(g)$” is not an equation; read it as “$f$ is in the class $O(g)$”. It only goes one way: $x=O(x^2)$ for $x\to\infty$ is true, but “$O(x^2)=x$” means nothing.</p>
+<div class="box">
+<h3 id="worked-example-compare-and">Worked example: compare $x^2$ and $x$</h3>
+<ol class="gq">
+  <li><p>Compute the ratio $\frac{x^2}{x}$. Is $x^2=o(x)$ for $x\to0$?</p>
+  <details><summary>Answer</summary><div><p>$\frac{x^2}x=x\to0$ for $x\to0$. So yes: $x^2=o(x)$, and hence also $x^2=O(x)$ for $x\to0$. Near $0$, $x^2$ is much smaller than $x$ (for $x=0.01$: $0.0001$ versus $0.01$).</p></div></details></li>
+  <li><p>And for $x\to\infty$?</p>
+  <details><summary>Answer</summary><div><p>$\frac{x^2}x=x\to\infty$ is unbounded. So $x^2\neq O(x)$ for $x\to\infty$. The other way round, $\frac{x}{x^2}=\frac1x\to0$, so $x=o(x^2)$ for $x\to\infty$.</p></div></details></li>
+  <li><p>What does this example teach?</p>
+  <details><summary>Answer</summary><div><p><strong>The point $x_0$ matters.</strong> Near $0$, higher powers are smaller; near $\infty$, higher powers are bigger. Always say “for $x\to x_0$”.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="worked-example-and">Worked example: $O(1)$ and $o(1)$</h3>
+<ol class="gq">
+  <li><p>Take $g=1$. What do $f=O(1)$ and $f=o(1)$ mean?</p>
+  <details><summary>Answer</summary><div><p>The ratio is $\frac f1=f$ itself. So $f=O(1)$ means $f$ is <strong>bounded</strong> near $x_0$, and $f=o(1)$ means $f(x)\to0$.</p></div></details></li>
+  <li><p>Is $\frac x{x+1}=O(1)$ for $x\to\infty$? Is it $o(1)$?</p>
+  <details><summary>Answer</summary><div><p>$\frac x{x+1}=\frac1{1+\frac1x}\to1$. It is bounded (between $0$ and $1$ for $x&gt;0$), so $O(1)$. It does not tend to $0$, so it is not $o(1)$.</p></div></details></li>
+</ol>
+</div>
+<p><strong>As a placeholder.</strong> $o(g)$ and $O(g)$ are also used inside formulas, for “some function of that size, which we don't write out”. So $f(x)=h(x)+o(g(x))$ means $f(x)-h(x)=o(g(x))$: $h$ is the main part, and the error is negligible compared to $g$.</p>
+<div class="box">
+<h3 id="worked-example-a-main-part">Worked example: a main part plus an error</h3>
+<ol class="gq">
+  <li><p>Polynomial division gives $\frac{x^2+1}{x-1}=x+1+\frac2{x-1}$. What size is the remainder $\frac2{x-1}$ for $x\to\infty$?</p>
+  <details><summary>Answer</summary><div><p>$\frac2{x-1}\to0$, so it is $o(1)$.</p></div></details></li>
+  <li><p>Write the result in Landau notation and say what it means.</p>
+  <details><summary>Answer</summary><div><p>$\frac{x^2+1}{x-1}=x+1+o(1)$ for $x\to\infty$: for large $x$, the function is $x+1$ up to an error that tends to $0$. (Its graph approaches the line $y=x+1$.)</p></div></details></li>
+</ol>
+</div>
+<p><strong>Rules (Übung 6.53).</strong> $o(g)+o(g)=o(g)$ and $\alpha\,o(g)=o(g)$ for a constant $\alpha$, and the same for $O$. (Reason: if $\frac{f_1}g\to0$ and $\frac{f_2}g\to0$, then $\frac{f_1+f_2}g\to0$ and $\frac{\alpha f_1}g\to0$.) <strong>Why you'll need this:</strong> Taylor expansions later are written this way, for example $\sqrt{1+s}=1+\frac s2+O(s^2)$ for $s\to0$. In this lesson it appears in the worked examples (<a class="xl" href="#s7-worked-examples">section 7</a>) and in an exam multiple-choice question (Exercise 2).</p>
+
+<h2 id="s7-worked-examples">7. Worked examples</h2>
+<p>The worked examples are questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: $\displaystyle\lim_{x\to0}\frac{\sqrt{1+x}-1}x$</h3>
+<ol class="gq">
+  <li><p>What happens if you plug in $x=0$? Is that allowed?</p>
+  <details><summary>Answer</summary><div><p>You get $\frac00$, which is meaningless, and $x=0$ isn't in the domain anyway. The limit only looks at $x\neq0$ near $0$ (here $x\ge-1$), so we may transform the expression for $x\neq0$.</p></div></details></li>
+  <li><p>Multiply numerator and denominator by $\sqrt{1+x}+1$. What do you get for $x\neq0$?</p>
+  <details><summary>Answer</summary><div><p>$\frac{(1+x)-1}{x\left(\sqrt{1+x}+1\right)}=\frac1{\sqrt{1+x}+1}$.</p></div></details></li>
+  <li><p>Finish the computation, and name the facts you use.</p>
+  <details><summary>Answer</summary><div><p>$x\mapsto\frac1{\sqrt{1+x}+1}$ is continuous at $0$ (the root is continuous by <a class="xl" href="lesson-08.html#the-payoff-th-roots-beispiel">lesson 8</a>, then sums and quotients with nonzero denominator), so by Lemma 6.39 its limit at $0$ is its value $\frac12$. Since the two functions agree for $x\neq0$, $\lim_{x\to0}\frac{\sqrt{1+x}-1}x=\frac12$.</p></div></details></li>
+  <li><p>Rewrite the result in Landau notation.</p>
+  <details><summary>Answer</summary><div><p>$\frac{\sqrt{1+x}-1}x-\frac12\to0$, i.e. $\sqrt{1+x}-1-\frac x2=o(x)$, i.e. $\sqrt{1+x}=1+\frac x2+o(x)$ for $x\to0$.</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: a limit of sums as an integral</h3>
+<p>Compute $\displaystyle\lim_{n\to\infty}\sum_{k=1}^n\frac{k^2}{n^3}$.</p>
+<ol class="gq">
+  <li><p>Rewrite the sum in the form $\frac1n\sum_{k=1}^nf\left(\frac kn\right)$.</p>
+  <details><summary>Answer</summary><div><p>$\frac{k^2}{n^3}=\frac1n\left(\frac kn\right)^2$, so $f(x)=x^2$ on $[0,1]$.</p></div></details></li>
+  <li><p>Why does Satz 6.47 apply, and what is the limit?</p>
+  <details><summary>Answer</summary><div><p>$f(x)=x^2$ is continuous, hence integrable, and the sum is the Riemann sum for $n$ equal pieces with right endpoints as tags; the mesh $\frac1n\to0$. So the limit is $\int_0^1x^2\,dx=\frac13$ (<a class="xl" href="lesson-09.html#ex-3">lesson 9</a>, Exercise 3).</p></div></details></li>
+</ol>
+<p class="legend">Check without integrals: $\sum_{k=1}^nk^2=\frac{n(n+1)(2n+1)}6$, so the sum is $\frac{(n+1)(2n+1)}{6n^2}\to\frac26=\frac13$. The Riemann-sum view is faster and works when no formula exists.</p>
+</div>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: big O and little o</h3>
+<p>Let $f(x)=3x+x^2$.</p>
+<ul>
+  <li><strong>For $x\to0$:</strong> $f(x)=O(x)$, since $|3x+x^2|\le|x|(3+|x|)\le4|x|$ for $0&lt;|x|&lt;1$ ($M=4$, $\delta=1$). More precisely, $f(x)=3x+o(x)$, since $\frac{x^2}x=x\to0$.</li>
+  <li><strong>For $x\to\infty$:</strong> $f(x)=O(x^2)$, since $\frac{3x+x^2}{x^2}=\frac3x+1\le4$ for $x&gt;1$. But $f(x)\neq o(x^2)$, since $\frac{f(x)}{x^2}\to1\neq0$; and $f(x)\neq O(x)$, since $\frac{f(x)}x=3+x$ is unbounded.</li>
+</ul>
+</div>
+
+<p><strong>Why it's cool.</strong> Riemann sums turn hard limits of sums into easy integrals (Worked example 2), and $O$ and $o$ let you compute limits by keeping the main term and throwing away the rest. That bookkeeping is the whole idea behind Taylor expansions (<a class="xl" href="lesson-21.html#the-decision-list-for-compute">lesson 21</a>).</p>
+
+<h2 id="s8-exercises">8. Exercises</h2>
+<p>Each solution is folded under its exercise. Exercises 1, 2 and 3 are exam-style and count for scoring.</p>
+<div class="box"><h3 id="ex-1">Exercise 1 (Einsiedler HS21 mock exam, question 10, true or false)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2021-12-einsiedler-mock-exam-hs21.pdf&amp;t=2021-12%20Einsiedler%20-%20mock%20exam%20HS21">mock exam HS21</a></p>
+  <p>Let $D\subseteq\mathbb R$, $x_0\in D$ an accumulation point of $D$, and $f:D\to\mathbb R$. In which cases does it follow that $f$ is continuous at $x_0$?</p>
+  <ul>
+    <li>(a) If $\lim_{x\to x_0}f(x)$ exists, then $f$ is continuous at $x_0$.</li>
+    <li>(b) If $x_0$ is a left- and right-sided accumulation point of $D$ and $f$ is left- and right-continuous at $x_0$, then $f$ is continuous at $x_0$.</li>
+    <li>(c) If $x_0$ is not a right-sided accumulation point of $D$ and $\lim_{x\nearrow x_0}f(x)=f(x_0)$, then $f$ is continuous at $x_0$.</li>
+    <li>(d) If there is a sequence $x_n\in D$ with $x_n\to x_0$ and $f(x_n)\to f(x_0)$, then $f$ is continuous at $x_0$.</li>
+  </ul><details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(a) False.</strong> $f(x)=0$ for $x\neq0$ and $f(0)=1$ on $D=\mathbb R$: $\lim_{x\to0}f(x)=0$ exists but differs from $f(0)$ (a removable discontinuity). Continuity at an accumulation point means exactly that the limit exists <em>and equals</em> $f(x_0)$.</li>
+    <li><strong>(b) True.</strong> Both one-sided limits exist and equal $f(x_0)$, so $\lim_{x\to x_0}f(x)=f(x_0)$, and $f$ is continuous at $x_0$ (continuity at an accumulation point means $\lim_{x\to x_0}f(x)=f(x_0)$).</li>
+    <li><strong>(c) True.</strong> Since $x_0$ is not a right-sided accumulation point, there is $\delta_0&gt;0$ with $D\cap(x_0,x_0+\delta_0)=\emptyset$. For $\delta\le\delta_0$, the points $x\in D$ with $0&lt;|x-x_0|&lt;\delta$ all lie left of $x_0$. So the left-sided limit is the limit: $\lim_{x\to x_0}f(x)=f(x_0)$, and $f$ is continuous at $x_0$.</li>
+    <li><strong>(d) False.</strong> One sequence is not enough; continuity needs <em>every</em> sequence. Example: $f(x)=0$ for $x\le0$, $f(x)=1$ for $x&gt;0$, $x_0=0$, $x_n=-\frac1n$: $f(x_n)=0=f(0)$, but $f\left(\frac1n\right)=1\not\to0$, so $f$ is not continuous at $0$.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Figalli FS26, MC11)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Which asymptotic statement is true for $x\to\infty$? (A) $x^2\cos x=O(x)$. (B) $\frac{\sin x}x=o\left(\frac1{x^2}\right)$. (C) $\sin x=o\left(\frac1{\log x}\right)$. (D) $\cos x=O\left((\log x)^2\right)$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer (D).</strong> $|\cos x|\le1\le(\log x)^2$ for $x\ge e$, so $M=1$ and $R=e$ work.</p>
+  <ul>
+    <li>(A) False: $\frac{x^2\cos x}x=x\cos x$ is unbounded (at $x=2\pi m$ it equals $2\pi m$).</li>
+    <li>(B) False: $\frac{\sin x/x}{1/x^2}=x\sin x$ does not tend to $0$ (at $x=\frac\pi2+2\pi m$ it equals $x$).</li>
+    <li>(C) False: $\frac{\sin x}{1/\log x}=\sin x\log x$ does not tend to $0$ (at $x=\frac\pi2+2\pi m$ it equals $\log x\to\infty$).</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Felder FS23, 1.A5, 2 points)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">FS23 exam with solutions</a></p>
+  <p>Compute the limit of Riemann sums $\displaystyle\lim_{n\to\infty}\frac1n\sum_{k=1}^n\sin\left(\frac kn\right)$. (Write it as an integral. To evaluate it, use that $-\cos$ is an antiderivative of $\sin$, which you know from school; <a class="xl" href="lesson-19.html">lesson 19</a> justifies it.)</p><details class="sol"><summary>Solution</summary><div>
+  <p>The sum is the Riemann sum of $f(x)=\sin x$ on $[0,1]$ with $n$ equal pieces and right endpoints $z_k=\frac kn$ as tags. The mesh is $\frac1n\to0$ and $\sin$ is continuous, so the Riemann sums converge to the integral:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\lim_{n\to\infty}\frac1n\sum_{k=1}^n\sin\left(\frac kn\right)&amp;=\int_0^1\sin x\,dx\\&amp;=\bigl[-\cos x\bigr]_0^1\\&amp;=1-\cos1\end{aligned}.$$</span>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Exercise 4 (computing limits)</h3>
+  <p>(a) $\displaystyle\lim_{x\to2}\frac{x^3-x^2-x-2}{x-2}$ (Übung 6.45). (b) $\displaystyle\lim_{x\to\infty}\frac{2x^2-x}{5x^2+3}$. (c) The one-sided limits of $\frac{|x|}x$ at $0$; does $\lim_{x\to0}\frac{|x|}x$ exist? (d) $\displaystyle\lim_{x\searrow0}\left(\frac1x-\frac1{x^2}\right)$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a) $7$.</strong> $x=2$ is a root of the numerator ($8-4-2-2=0$), and polynomial division gives <span class="math-display" style="display:block">$$x^3-x^2-x-2=(x-2)(x^2+x+1).$$</span>For $x\neq2$ the quotient is $x^2+x+1$, which is continuous, so the limit is $4+2+1=7$.</p>
+  <p><strong>(b) $\frac25$.</strong> $\frac{2x^2-x}{5x^2+3}=\frac{2-\frac1x}{5+\frac3{x^2}}\to\frac25$.</p>
+  <p><strong>(c)</strong> For $x&gt;0$, $\frac{|x|}x=1$; for $x&lt;0$, it is $-1$. So $\lim_{x\searrow0}=1$ and $\lim_{x\nearrow0}=-1$. They differ, so $\lim_{x\to0}\frac{|x|}x$ does not exist (a jump, if we define a value at $0$).</p>
+  <p><strong>(d) $-\infty$.</strong> <em>Frame:</em> “$\to-\infty$” means “Let $K&gt;0$ … so the expression is $&lt;-K$ for $0&lt;x&lt;\delta$”. $\frac1x-\frac1{x^2}=\frac{x-1}{x^2}$. For $0&lt;x&lt;\frac12$: $x-1&lt;-\frac12$, so the expression is $&lt;-\frac1{2x^2}$. Given $K&gt;0$, take $\delta=\min\left\{\frac12,\frac1{\sqrt{2K}}\right\}$; for $0&lt;x&lt;\delta$, $\frac1{2x^2}&gt;K$, so the expression is $&lt;-K$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Exercise 5 (sandwich for functions, Übung 6.38 (iii))</h3>
+  <p>Let $x_0$ be an accumulation point of $D$ and $f\le g\le h$ on $D$, with $\lim_{x\to x_0}f(x)=\lim_{x\to x_0}h(x)=A$. Prove that $\lim_{x\to x_0}g(x)=A$.</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> “Let $\varepsilon&gt;0$ … so $|g(x)-A|&lt;\varepsilon$ for $x\in D$, $0&lt;|x-x_0|&lt;\delta$”. The gap: one $\delta$ that works for $f$ and $h$ at once, then trap $g$.</p>
+  <p>Let $\varepsilon&gt;0$. Choose $\delta_1,\delta_2&gt;0$ with $|f(x)-A|&lt;\varepsilon$ for $x\in D$, $0&lt;|x-x_0|&lt;\delta_1$, and $|h(x)-A|&lt;\varepsilon$ for $x\in D$, $0&lt;|x-x_0|&lt;\delta_2$. Let $\delta=\min\{\delta_1,\delta_2\}$. For $x\in D$ with $0&lt;|x-x_0|&lt;\delta$:</p>
+  <span class="math-display" style="display:block">$$A-\varepsilon&lt;f(x)\le g(x)\le h(x)&lt;A+\varepsilon,$$</span>
+  <p>so $|g(x)-A|&lt;\varepsilon$. Hence $\lim_{x\to x_0}g(x)=A$. <span class="qed">∎</span></p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-min">minimum of two δs</a> <a class="mvl" href="moves.html#m-sandwich">sandwich</a></p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Exercise 6 (Riemann sums)</h3>
+  <p>Compute $\displaystyle\lim_{n\to\infty}\frac1n\sum_{k=1}^n\left(1+\frac kn\right)$ in two ways: as an integral, and directly.</p><details class="sol"><summary>Solution</summary><div>
+  <p><strong>As an integral:</strong> it is the right-endpoint Riemann sum of $f(x)=1+x$ on $[0,1]$, so the limit is $\int_0^1(1+x)\,dx=1+\frac12=\frac32$ (linearity, and $\int_0^1x\,dx=\frac12$ from <a class="xl" href="lesson-09.html#we-1">lesson 9</a>).</p>
+  <p><strong>Directly:</strong> <span class="math-display" style="display:block">$$\begin{aligned}\frac1n\sum_{k=1}^n\left(1+\frac kn\right)&amp;=1+\frac1{n^2}\cdot\frac{n(n+1)}2\\&amp;=1+\frac{n+1}{2n}\to\frac32.\end{aligned}$$</span></p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (Übung 6.38 (i))</h3>
+  <p>Prove that $\lim_{x\to x_0}f(x)$ is unique if it exists. Where do you use that $x_0$ is an accumulation point of $D$?</p><details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> uniqueness by contradiction: “Suppose the limits $A\neq B$”, take $\varepsilon$ = half the distance, and find one $x$ close to both. <em>Moves:</em> <a class="mvl" href="moves.html#m-contra">assume the opposite</a>, <a class="mvl" href="moves.html#m-min">minimum of two δs</a>.</p>
+  <p>Suppose $f(x)\to A$ and $f(x)\to B$ with $A\neq B$, and let $\varepsilon=\frac{|A-B|}2$. Choose $\delta_1,\delta_2$ for $A$ and $B$, and $\delta=\min\{\delta_1,\delta_2\}$. Since $x_0$ is an accumulation point of $D$, there is $x\in D$ with $0&lt;|x-x_0|&lt;\delta$. <em>(This is where we use it: otherwise there might be no such $x$, and every number would be a “limit”.)</em> Then <span class="math-display" style="display:block">$$\begin{aligned}|A-B|&amp;\le |A-f(x)|+|f(x)-B|\\&amp;&lt;2\varepsilon\\&amp;=|A-B|\end{aligned},$$</span> a contradiction. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (4, one per part), Exercise 2 (2) and Exercise 3 (2) make 8. If you have 6 of 8, you're done. Exercises 4–6 and the Bonus are practice and don't count against you.</p>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Why mathematicians took 150 years to define a limit.</strong> Newton and Leibniz (around 1680) computed with “infinitely small” quantities and got correct answers, but couldn't say what those quantities were. Bishop Berkeley mocked them as “the ghosts of departed quantities”. The ε-δ definition you used today was finally written down by Bolzano (1817), Cauchy (1821) and, in today's precise form, Weierstrass (1860s). The trick that solved it is exactly the punctured neighbourhood: never look <em>at</em> the point, only near it.</p>
+<p><strong>Riemann sums run your computer's integrals.</strong> When software computes an area numerically, it adds up Riemann sums with a clever choice of tags. Choosing the <em>midpoint</em> of each piece instead of an endpoint makes the error shrink like $O\left(\frac1{n^2}\right)$ instead of $O\left(\frac1n\right)$ for smooth functions; Simpson's rule (weights $\frac16,\frac46,\frac16$ on each piece) gets $O\left(\frac1{n^4}\right)$. Landau's notation is how these speeds are compared.</p>
+<p><strong>A sum you'll be able to evaluate soon.</strong> <span class="math-display" style="display:block">$$\begin{aligned}\sum_{k=1}^n\frac1{n+k}&amp;=\frac1n\sum_{k=1}^n\frac1{1+k/n}\to\int_0^1\frac{dx}{1+x}\\&amp;=\log2\approx0.693\end{aligned}.$$</span> With logarithms (<a class="xl" href="lesson-16.html#we-1">lesson 16</a>) and the fundamental theorem (<a class="xl" href="lesson-19.html#s2-the-fundamental-theorem">lesson 19</a>), this will be a two-line computation.</p>
+
+<h2 id="s10-what-we-skipped">10. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Satz 6.47 for general integrable $f$</strong>, via continuous functions above and below (Proposition 4.44, <a class="pl" href="script.html#p281">p. 281</a>). Medium priority; the continuous case is Proof B.</li>
+  <li><strong>Übungen 6.49–6.50 (<a class="pl" href="script.html#p281">p. 281</a>):</strong> convergence of Riemann sums characterises integrability. Low priority.</li>
+  <li><strong>Vector-valued and complex integrals (Section 6.5.1, <a class="pl" href="script.html#p282">p. 282–283</a>)</strong> and the triangle inequality for them (Wichtige Übung 6.51). Low priority now; it returns with curves.</li>
+  <li><strong>Beispiel 6.44 ($\lim_{x\to0}x^x=1$, <a class="pl" href="script.html#p278">p. 278</a>)</strong> and the exponential limits in Übung 6.45 (<a class="pl" href="script.html#p279">p. 279</a>) and Übung 6.52 (<a class="pl" href="script.html#p285">p. 285</a>). They need $\exp$ and $\log$; they come back in <a class="xl" href="lesson-16.html">lesson 16</a>.</li>
+  <li><strong>Übung 6.38 (ii):</strong> proofs of the rules for function limits. Low priority; same as for sequences, or via Lemma 6.40.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-14.html">lesson 14</a>, series (chapter 7), which is where class goes on Thursday 5 November. With this lesson you've caught up with the lectures.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-12.html">← Lesson 12: The Wanderer's Return</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-14.html">Lesson 14: The Tower over the Lake →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

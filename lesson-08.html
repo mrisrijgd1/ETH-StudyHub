@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Walled Garden</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+<a href="lesson-07.html">← Lesson 7</a>
+<a href="lesson-09.html">Lesson 9 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lesson 8 of 26</span>
+  <h1>The Walled Garden</h1>
+  <p class="lead">Inverse functions and $n$-th roots, then the three promises a closed, bounded interval makes to every continuous function: it is bounded, it attains its maximum and minimum, and it is uniformly continuous.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-7-5">Recap of lesson 7 (5 min)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-walled-garden">1. The story: the walled garden</a>
+</li>
+<li><a href="#s2-inverse-functions-and-roots">2. Inverse functions and roots</a>
+<ol>
+<li><a href="#the-payoff-th-roots-beispiel">The payoff: $n$-th roots (Beispiel 3.63, p. 161)</a></li>
+<li><a href="#proof-a">Proof A: the inverse function theorem</a></li>
+</ol></li>
+<li><a href="#s3-promise-one-bounded">3. Promise one: bounded</a>
+<ol>
+<li><a href="#proof-b">Proof B: continuous on $[a,b]$ means bounded</a></li>
+</ol></li>
+<li><a href="#s4-promise-two-maximum-and-minimum">4. Promise two: maximum and minimum are attained (the highest tower)</a>
+<ol>
+<li><a href="#proof-c">Proof C: the maximum and minimum are attained</a></li>
+</ol></li>
+<li><a href="#s5-promise-three-uniform-continuity-one">5. Promise three: uniform continuity (one rule for the whole garden)</a>
+<ol>
+<li><a href="#proof-d">Proof D: $x^2$ is not uniformly continuous on $\mathbb{R}$ (Übung 3.73, p. 167)</a></li>
+</ol></li>
+<li><a href="#s6-heine-s-theorem-and-its">6. Heine&#x27;s theorem and its proof (worth 7 exam points)</a>
+<ol>
+<li><a href="#proof-e">Proof E: Heine&#x27;s theorem</a></li>
+</ol></li>
+<li><a href="#s7-using-the-theorems">7. Using the theorems</a>
+<ol>
+<li><a href="#we-1">Worked example 1: compute a maximum (Felder HS22, 1.A3)</a></li>
+<li><a href="#we-2">Worked example 2: multiple choice (Einsiedler HS21, #10 (a) and (b))</a></li>
+</ol></li>
+<li><a href="#s8-your-turn">8. Your turn</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Übung 3.70, p. 167)</a></li>
+<li><a href="#ex-2">Exercise 2 (Figalli HS23, MC3)</a></li>
+<li><a href="#ex-3">Exercise 3 (Felder HS22, MC5 (B) and (D))</a></li>
+<li><a href="#ex-4">Exercise 4 (the twin of Worked example 1)</a></li>
+<li><a href="#ex-5">Exercise 5 (proof, FS26 MC3 (D) made precise)</a></li>
+<li><a href="#ex-6">Exercise 6 (inverse function theorem)</a></li>
+<li><a href="#bonus">Bonus</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. For wonder</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. What we skipped</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) state the inverse function theorem and use it to get $\sqrt[n]{x}$, (2) state the boundedness theorem and the max/min theorem and give a counterexample for each missing hypothesis, (3) prove the max/min theorem from boundedness (the short $\tfrac{1}{S-f}$ trick), (4) define uniform continuity, say how it differs from continuity, and show $x^2$ is not uniformly continuous on $\mathbb{R}$, and (5) <strong>state and prove Heine's theorem</strong>, which is a 7-point exam question on its own.</dd></div>
+  <div><dt>Script (German, printed pages)</dt><dd>You don't need to open it. Only in case you want the original:
+    <ul>
+      <li><strong><a class="pl" href="script.html#p161">p. 161</a>, Satz 3.62 (Umkehrsatz):</strong> a continuous, strictly monotone function on an interval has a continuous, strictly monotone inverse, and its image is again an interval. The proof runs to <a class="pl" href="script.html#p163">p. 163</a>.</li>
+      <li><strong><a class="pl" href="script.html#p161">p. 161</a>, Beispiel 3.63:</strong> $n$-th roots exist and are continuous, as an application.</li>
+      <li><strong><a class="pl" href="script.html#p165">p. 165</a>, Satz 3.67 (Beschränktheit):</strong> a continuous function on $[a,b]$ is bounded.</li>
+      <li><strong><a class="pl" href="script.html#p166">p. 166</a>, Wichtige Übung 3.68:</strong> counterexamples when a hypothesis is missing.</li>
+      <li><strong><a class="pl" href="script.html#p166">p. 166</a>, Korollar 3.69:</strong> a continuous function on $[a,b]$ attains its maximum and minimum.</li>
+      <li><strong><a class="pl" href="script.html#p167">p. 167</a>, Definition 3.71:</strong> uniform continuity (<em>gleichmässige Stetigkeit</em>). <em>Übung 3.73, same page:</em> $x^2$ is not uniformly continuous on $\mathbb{R}$.</li>
+      <li><strong><a class="pl" href="script.html#p167">p. 167–169</a>, Satz 3.75 (Heine):</strong> a continuous function on $[a,b]$ is uniformly continuous, with the proof we do in <a class="xl" href="#s6-heine-s-theorem-and-its">section 6</a>.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+“Show that a continuous function on a compact interval is uniformly continuous” is Figalli FS26 B1, worth 7 points, word for word Heine's theorem. The multiple-choice blocks keep testing exactly the counterexamples of this lesson: Einsiedler HS21 #10, Figalli FS26 MC3 (your Exercise 4 in <a class="xl" href="lesson-07.html#ex-4">lesson 7</a>), Figalli HS23 MC3, Felder HS22 MC5. Felder HS22 1.A3 asks you to compute a maximum. These theorems are also the engine for later results: continuous functions are integrable (<a class="xl" href="lesson-09.html#we-2">lesson 9</a>), and Rolle's theorem and the mean value theorem (<a class="xl" href="lesson-17.html#s7-rolle-s-theorem-and-the">lesson 17</a>) start with "the maximum is attained".</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-7-5">Recap of <a class="xl" href="lesson-07.html">lesson 7</a> (5 min)</h3>
+<ul>
+  <li><strong>Continuity at $x_0$:</strong> for every $\varepsilon&gt;0$ there is $\delta&gt;0$ such that $|x-x_0|&lt;\delta$ implies $|f(x)-f(x_0)|&lt;\varepsilon$. Here $\delta$ may depend on $\varepsilon$ <em>and</em> on $x_0$.</li>
+  <li><strong>Rules:</strong> sums, products, quotients (no zero in the denominator) and compositions of continuous functions are continuous; polynomials are continuous.</li>
+  <li><strong>Intermediate value theorem:</strong> on an interval, a continuous $f$ takes every value between $f(a)$ and $f(b)$. Proof: $x_0=\sup\{x: f(x)\le c\}$, and continuity with $\varepsilon$ = the gap rules out $f(x_0)&lt;c$ and $f(x_0)&gt;c$.</li>
+</ul>
+<ol class="gq">
+  <li><p>Is $f(x)=\frac1{x^2+1}$ continuous on $\mathbb R$? Why?</p>
+  <details><summary>Answer</summary><div><p>Yes: a quotient of polynomials whose denominator is $\ge1$, never $0$.</p></div></details></li>
+  <li><p>Does $x^3=x+1$ have a solution in $[1,2]$?</p>
+  <details><summary>Answer</summary><div><p>$g(x)=x^3-x-1$ is continuous with $g(1)=-1&lt;0&lt;5=g(2)$, so yes, by the IVT.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>compact interval $[a,b]$</td><td>kompaktes Intervall</td></tr>
+    <tr><td>bounded function</td><td>beschränkte Funktion</td></tr>
+    <tr><td>$f$ attains its maximum / minimum</td><td>$f$ nimmt ihr Maximum / Minimum an</td></tr>
+    <tr><td>inverse function, inverse map</td><td>Umkehrfunktion, Umkehrabbildung $f^{-1}$</td></tr>
+    <tr><td>inverse function theorem</td><td>Umkehrsatz</td></tr>
+    <tr><td>$n$-th root</td><td>$n$-te Wurzel</td></tr>
+    <tr><td>strictly increasing / decreasing</td><td>streng monoton wachsend / fallend</td></tr>
+    <tr><td>image $f(I)$</td><td>Bild</td></tr>
+    <tr><td>extreme value theorem</td><td>Satz vom Maximum und Minimum (Satz von Weierstrass)</td></tr>
+    <tr><td>Heine's theorem</td><td>Satz von Heine</td></tr>
+    <tr><td>uniformly continuous</td><td>gleichmässig stetig</td></tr>
+    <tr><td>Lipschitz continuous</td><td>Lipschitz-stetig</td></tr>
+    <tr><td>counterexample</td><td>Gegenbeispiel</td></tr>
+    <tr><td>well-defined</td><td>wohldefiniert</td></tr>
+    <tr><td>(proof) by contradiction</td><td>indirekt, durch Widerspruch</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-walled-garden">1. The story: the walled garden</h2>
+<div class="story">
+<p>Beyond the kingdom lie two kinds of land. There is the <strong>open meadow</strong>, which has no fence: you can walk towards its edge forever without ever arriving. There is the <strong>endless plain</strong>, which never ends at all. And there is the <strong>walled garden</strong> $[a,b]$: it has a wall on each side, and the walls belong to the garden. It is <em>closed</em> (the edges are included) and <em>bounded</em> (finite length). Mathematicians call such an interval <strong>compact</strong>.</p>
+<p>The ground in each land is a continuous road from <a class="xl" href="lesson-07.html#s2-the-definition">lesson 7</a>: no cliffs. On the open meadow, the ground near the missing edge can rise forever, like $\tfrac1x$ on $(0,1]$, or creep towards a height it never reaches, like $x$ on $[0,1)$. On the endless plain it can simply keep climbing, like $x$ on $[0,\infty)$.</p>
+<p>The walled garden makes three promises that the other lands cannot keep:</p>
+<ol>
+  <li><strong>No tower is infinitely high.</strong> The ground is bounded.</li>
+  <li><strong>There is a highest tower, and you can stand on top of it.</strong> The maximum is attained, and so is the minimum.</li>
+  <li><strong>One rule of caution fits the whole garden.</strong> If you want your height to change by less than $\varepsilon$, a single step size $\delta$ works everywhere, not a different one at every spot. This is uniform continuity.</li>
+</ol>
+<p>All three promises are proved with the same weapon as the intermediate value theorem: the supremum. Before we get there, one more gift of <a class="xl" href="lesson-07.html">lesson 7</a>. A road that <em>always climbs</em> can be read backwards. Tell me a height, and I can tell you the one place where the road has that height. That is the inverse function theorem.</p>
+</div>
+
+<h2 id="s2-inverse-functions-and-roots">2. Inverse functions and roots</h2>
+<p><strong>Recall (Definition 3.39, <a class="pl" href="script.html#p150">p. 150</a>).</strong> $f:D\to\mathbb{R}$ is <em>strictly increasing</em> (<em>streng monoton wachsend</em>) if $x&lt;y$ implies $f(x)&lt;f(y)$ for all $x,y\in D$, and <em>strictly decreasing</em> if $x&lt;y$ implies $f(x)&gt;f(y)$. <em>Strictly monotone</em> means one of the two.</p>
+<p>A strictly monotone function is automatically injective: if $x\neq y$, say $x&lt;y$, then $f(x)&lt;f(y)$ (or $&gt;$), so $f(x)\neq f(y)$. So it has an inverse on its image. The theorem says this inverse is as nice as $f$.</p>
+<div class="box">
+<p><strong>Satz 3.62, Umkehrsatz (<a class="pl" href="script.html#p161">p. 161</a>).</strong> Let $I$ be an interval and $f:I\to\mathbb{R}$ continuous and strictly monotone. Then $f(I)$ is again an interval, and $f:I\to f(I)$ has an inverse $f^{-1}:f(I)\to I$ that is <strong>continuous</strong> and strictly monotone, in the same direction as $f$. If $I=[a,b]$, then $f(I)$ is the closed interval with endpoints $f(a)$ and $f(b)$.</p>
+</div>
+<figure style="margin:0" aria-label="The graph of x squared on the interval from 0 to 1.45 and the graph of the square root, mirrored across the dashed diagonal y equals x. The point 1.2, 1.44 on the first graph corresponds to the point 1.44, 1.2 on the second.">
+<svg viewBox="0 0 640 350" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="70.0" y1="330.0" x2="420.0" y2="330.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="80.0" y1="340.0" x2="80.0" y2="20.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="80.0" y1="330.0" x2="388.0" y2="22.0" style="stroke:var(--muted)" stroke-width="1.5" stroke-dasharray="5 5"/><path d="M 80.0 330.0 L 82.5 330.0 L 85.1 329.8 L 87.6 329.6 L 90.2 329.3 L 92.7 328.9 L 95.2 328.3 L 97.8 327.7 L 100.3 327.1 L 102.8 326.3 L 105.4 325.4 L 107.9 324.4 L 110.4 323.4 L 113.0 322.2 L 115.5 321.0 L 118.1 319.7 L 120.6 318.2 L 123.1 316.7 L 125.7 315.1 L 128.2 313.4 L 130.8 311.6 L 133.3 309.7 L 135.8 307.7 L 138.4 305.7 L 140.9 303.5 L 143.4 301.3 L 146.0 298.9 L 148.5 296.5 L 151.1 293.9 L 153.6 291.3 L 156.1 288.6 L 158.7 285.8 L 161.2 282.9 L 163.7 279.9 L 166.3 276.8 L 168.8 273.7 L 171.3 270.4 L 173.9 267.0 L 176.4 263.6 L 179.0 260.0 L 181.5 256.4 L 184.0 252.7 L 186.6 248.9 L 189.1 245.0 L 191.6 241.0 L 194.2 236.9 L 196.7 232.7 L 199.3 228.4 L 201.8 224.0 L 204.3 219.6 L 206.9 215.0 L 209.4 210.4 L 211.9 205.6 L 214.5 200.8 L 217.0 195.9 L 219.6 190.9 L 222.1 185.8 L 224.6 180.6 L 227.2 175.3 L 229.7 169.9 L 232.2 164.4 L 234.8 158.9 L 237.3 153.2 L 239.9 147.5 L 242.4 141.6 L 244.9 135.7 L 247.5 129.7 L 250.0 123.5 L 252.5 117.3 L 255.1 111.0 L 257.6 104.6 L 260.2 98.2 L 262.7 91.6 L 265.2 84.9 L 267.8 78.1 L 270.3 71.3 L 272.9 64.3 L 275.4 57.3 L 277.9 50.2 L 280.5 43.0 L 283.0 35.6" style="fill:none;stroke:var(--accent)" stroke-width="3"/><path d="M 80.0 330.0 L 83.7 307.3 L 87.3 297.9 L 91.0 290.7 L 94.7 284.6 L 98.4 279.3 L 102.1 274.4 L 105.7 270.0 L 109.4 265.8 L 113.1 262.0 L 116.8 258.3 L 120.4 254.8 L 124.1 251.4 L 127.8 248.2 L 131.5 245.1 L 135.1 242.2 L 138.8 239.3 L 142.5 236.5 L 146.2 233.8 L 149.8 231.1 L 153.5 228.6 L 157.2 226.1 L 160.9 223.6 L 164.5 221.2 L 168.2 218.9 L 171.9 216.6 L 175.6 214.3 L 179.2 212.1 L 182.9 210.0 L 186.6 207.9 L 190.2 205.8 L 193.9 203.7 L 197.6 201.7 L 201.3 199.7 L 205.0 197.7 L 208.6 195.8 L 212.3 193.9 L 216.0 192.0 L 219.7 190.2 L 223.3 188.3 L 227.0 186.5 L 230.7 184.8 L 234.3 183.0 L 238.0 181.3 L 241.7 179.5 L 245.4 177.8 L 249.1 176.2 L 252.7 174.5 L 256.4 172.9 L 260.1 171.2 L 263.8 169.6 L 267.4 168.0 L 271.1 166.4 L 274.8 164.9 L 278.4 163.3 L 282.1 161.8 L 285.8 160.3 L 289.5 158.8 L 293.2 157.3 L 296.8 155.8 L 300.5 154.3 L 304.2 152.8 L 307.9 151.4 L 311.5 150.0 L 315.2 148.5 L 318.9 147.1 L 322.5 145.7 L 326.2 144.3 L 329.9 143.0 L 333.6 141.6 L 337.2 140.2 L 340.9 138.9 L 344.6 137.5 L 348.3 136.2 L 351.9 134.9 L 355.6 133.6 L 359.3 132.3 L 363.0 131.0 L 366.7 129.7 L 370.3 128.4 L 374.0 127.1" style="fill:none;stroke:var(--story-edge)" stroke-width="3"/><line x1="248.0" y1="128.4" x2="281.6" y2="162.0" style="stroke:var(--muted)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="248.0" cy="128.4" r="5.5" style="fill:var(--accent)"/><circle cx="281.6" cy="162.0" r="5.5" style="fill:var(--story-edge)"/><text x="238.0" y="122.4" text-anchor="end" style="fill:var(--accent);font-size:15px">(1.2, 1.44)</text><text x="291.6" y="178.0" text-anchor="start" style="fill:var(--story-edge);font-size:15px">(1.44, 1.2)</text><text x="291.0" y="42.0" text-anchor="start" style="fill:var(--accent);font-size:17px">f(x) = x²</text><text x="382.0" y="133.1" text-anchor="start" style="fill:var(--story-edge);font-size:17px">f⁻¹(y) = √y</text><text x="394.0" y="28.0" text-anchor="start" style="fill:var(--muted);font-size:15px">y = x</text><text x="80.0" y="347.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">0</text><text x="220.0" y="347.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">1</text><line x1="220.0" y1="326.0" x2="220.0" y2="334.0" style="stroke:var(--muted)" stroke-width="1.5"/><text x="360.0" y="347.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">2</text><line x1="360.0" y1="326.0" x2="360.0" y2="334.0" style="stroke:var(--muted)" stroke-width="1.5"/></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The graph of $f^{-1}$ is the graph of $f$ mirrored across the diagonal $y=x$, because $(x,y)$ lies on the graph of $f$ exactly when $(y,x)$ lies on the graph of $f^{-1}$. Mirroring can't create cliffs, which is the picture behind “the inverse is continuous”.</figcaption>
+</figure>
+
+<h3 id="the-payoff-th-roots-beispiel">The payoff: $n$-th roots (Beispiel 3.63, <a class="pl" href="script.html#p161">p. 161</a>)</h3>
+<p>Let $n\in\mathbb{N}$, $n\ge1$, and $f(x)=x^n$ on $[0,\infty)$.</p>
+<ul>
+  <li><strong>Strictly increasing:</strong> if $0\le x&lt;y$, multiplying the inequality $x&lt;y$ with itself $n$ times gives $x^n&lt;y^n$ (all factors are $\ge0$, and at least $y&gt;0$).</li>
+  <li><strong>Every $c\ge0$ is a value:</strong> by Bernoulli's inequality (Lemma 3.5, <a class="pl" href="script.html#p131">p. 131</a>: $(1+a)^n\ge1+na$ for $a\ge-1$) we get $(1+c)^n\ge1+nc&gt;c$. So $c$ lies between $0^n=0$ and $(c+1)^n$, and the IVT gives an $x\in[0,c+1]$ with $x^n=c$.</li>
+  <li><strong>The theorem:</strong> so $f:[0,\infty)\to[0,\infty)$ is a continuous, strictly increasing bijection, and its inverse $\sqrt[n]{\ }:[0,\infty)\to[0,\infty)$ is continuous and strictly increasing.</li>
+</ul>
+<p>This is the third time $\sqrt2$ appears in this course. In <a class="xl" href="lesson-06.html#bonus">lesson 6</a> the supremum built it as a number. In <a class="xl" href="lesson-07.html#s5-the-intermediate-value-theorem">lesson 7</a> the IVT found it as a crossing point. Now it's a value of a continuous function. With roots we can define rational powers, $x^{m/n}=\sqrt[n]{x^m}$ for $x\ge0$, and $x^{-m/n}=1/x^{m/n}$ for $x&gt;0$.</p>
+
+<h3 id="proof-a">Proof A: the inverse function theorem</h3>
+<p>Not a classic exam question, but it uses only tools you have.</p>
+<p><strong>The idea.</strong> A road that always climbs meets every height once, so it can be read backwards, and reading it backwards can't create cliffs, because anything <em>between</em> two heights belongs to a place <em>between</em> the two corresponding positions.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<p>The theorem has three claims, so the proof has three parts. Parts (a) and (b) follow from what we know. Part (c) is “$g=f^{-1}$ is continuous at every $y_0\in f(I)$”, and the definition of continuity forces its frame:</p>
+<ul>
+  <li><strong>First line:</strong> “Let $y_0\in f(I)$ and $\varepsilon&gt;0$, and put $x_0=g(y_0)$.”</li>
+  <li><strong>Last line:</strong> “…so $|y-y_0|&lt;\delta$ implies $|g(y)-g(y_0)|&lt;\varepsilon$ for all $y\in f(I)$.”</li>
+  <li><strong>The gap to fill:</strong> find a $\delta&gt;0$. That's the only real idea.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>We may assume the road climbs. A road that always descends is a climbing road walked from the other end.</p></div><div class="sp-formal"><p>Without loss of generality $f$ is strictly increasing; otherwise replace $f$ by $-f$, which is strictly increasing and continuous.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A climbing road meets each height it reaches exactly once. So the question “where is the road at height $y$?” always has exactly one answer. Reading the road backwards is the function $g$.</p></div><div class="sp-formal"><p><strong>(a)</strong> $f:I\to f(I)$ is surjective by definition of $f(I)$, and injective because it is strictly increasing. Hence it is bijective, and $g=f^{-1}:f(I)\to I$ exists.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Further along means higher, and higher means further along. Read backwards: a higher height belongs to a later place.</p></div><div class="sp-formal"><p>For $x_1,x_2\in I$: $x_1&lt;x_2\iff f(x_1)&lt;f(x_2)$. (“$\Rightarrow$” is the definition. “$\Leftarrow$”: if $x_1\ge x_2$, then $f(x_1)=f(x_2)$ or $f(x_1)&gt;f(x_2)$, contradicting $f(x_1)&lt;f(x_2)$.) With $y_i=f(x_i)$ this reads $g(y_1)&lt;g(y_2)\iff y_1&lt;y_2$, so $g$ is strictly increasing.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Between the lowest and the highest height the road reaches, no height is skipped. That's <a class="xl" href="lesson-07.html#s1-the-story-the-road-with">lesson 7</a>'s unbroken road.</p></div><div class="sp-formal"><p><strong>(b)</strong> If $I=[a,b]$: monotonicity gives $f(a)\le f(x)\le f(b)$, so $f([a,b])\subseteq[f(a),f(b)]$, and the intermediate value theorem gives equality. For a general interval, let $c=\inf f(I)$, $d=\sup f(I)$ (possibly $\mp\infty$). For $c&lt;y&lt;d$ there are $x_-,x_+\in I$ with $f(x_-)&lt;y&lt;f(x_+)$, since $y$ is neither a lower nor an upper bound of $f(I)$. The intermediate value theorem between $x_-$ and $x_+$ gives $y\in f(I)$. So $(c,d)\subseteq f(I)\subseteq[c,d]$, an interval.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Now the backwards reading must not jump. To keep the answer within $\varepsilon$ of $x_0$, post two guards on the road: one just left of $x_0$, one just right, both closer than $\varepsilon$.</p></div><div class="sp-formal"><p><strong>(c)</strong> Let $y_0\in f(I)$, $\varepsilon&gt;0$, $x_0=g(y_0)$, and suppose first that $x_0$ is not an endpoint of $I$. Choose $x_-,x_+\in I$ with $x_0-\varepsilon&lt;x_-&lt;x_0&lt;x_+&lt;x_0+\varepsilon$, and let $y_\pm=f(x_\pm)$. Then $y_-&lt;y_0&lt;y_+$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The guards' heights $y_-$ and $y_+$ fence in $y_0$. Any height between the two fences belongs to a place between the two guards, so within $\varepsilon$ of $x_0$.</p></div><div class="sp-formal"><p>Let $\delta=\min(y_+-y_0,\ y_0-y_-)&gt;0$. If $y\in f(I)$ and $|y-y_0|&lt;\delta$, then $y_-&lt;y&lt;y_+$. Since $g$ is strictly increasing, $x_-&lt;g(y)&lt;x_+$, so $|g(y)-g(y_0)|&lt;\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>At an end of the road there is only one side to guard.</p></div><div class="sp-formal"><p>If $x_0$ is the left endpoint, then $y_0=\min f(I)$ and there are no $y\in f(I)$ below $y_0$; take only $x_+$ and $\delta=y_+-y_0$. The right endpoint is symmetric. So $g$ is continuous. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-obda">reduce to one case (oBdA)</a> <a class="mvl" href="moves.html#m-trap">trap between two values</a> <a class="mvl" href="moves.html#m-min">minimum of two δs</a></p>
+<details><summary>The proof in one piece (as you'd write it in the exam)</summary><div>
+<p>Without loss of generality $f$ is strictly increasing (else use $-f$). (a) $f:I\to f(I)$ is surjective by definition and injective by strict monotonicity, so $g=f^{-1}$ exists. Since $x_1&lt;x_2\iff f(x_1)&lt;f(x_2)$, we get $g(y_1)&lt;g(y_2)\iff y_1&lt;y_2$: $g$ is strictly increasing. (b) For $I=[a,b]$, monotonicity gives $f([a,b])\subseteq[f(a),f(b)]$ and the intermediate value theorem gives equality; for general $I$, every $y$ strictly between $\inf f(I)$ and $\sup f(I)$ lies between two values of $f$, hence in $f(I)$ by the intermediate value theorem, so $f(I)$ is an interval. (c) Let $y_0\in f(I)$, $\varepsilon&gt;0$, $x_0=g(y_0)$. If $x_0$ is not an endpoint, choose $x_\pm\in I$ with $x_0-\varepsilon&lt;x_-&lt;x_0&lt;x_+&lt;x_0+\varepsilon$, set $y_\pm=f(x_\pm)$ and $\delta=\min(y_+-y_0,y_0-y_-)&gt;0$. For $y\in f(I)$ with $|y-y_0|&lt;\delta$ we have $y_-&lt;y&lt;y_+$, so $x_-&lt;g(y)&lt;x_+$ and $|g(y)-g(y_0)|&lt;\varepsilon$. At an endpoint only one of $x_\pm$ is needed. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is a strictly increasing function injective?</p>
+  <details><summary>Answer</summary><div><p>If $x\neq y$, say $x&lt;y$, then $f(x)&lt;f(y)$, so $f(x)\neq f(y)$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> In part (c), why does $y_-&lt;y&lt;y_+$ give $x_-&lt;g(y)&lt;x_+$?</p>
+  <details><summary>Answer</summary><div><p>$g$ is strictly increasing (part (a)). Apply it to $y_-&lt;y$ and to $y&lt;y_+$, and use $g(y_\pm)=x_\pm$.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+
+<h2 id="s3-promise-one-bounded">3. Promise one: bounded</h2>
+<p><strong>Recall (Definition 3.37, <a class="pl" href="script.html#p149">p. 149</a>).</strong> $f:D\to\mathbb{R}$ is <em>bounded</em> if there is an $M$ with $|f(x)|\le M$ for all $x\in D$.</p>
+<div class="box">
+<p><strong>Satz 3.67, Beschränktheit (<a class="pl" href="script.html#p165">p. 165</a>).</strong> Let $a&lt;b$ and $f:[a,b]\to\mathbb{R}$ continuous. Then $f$ is bounded. (The script allows $f$ to be complex-valued; the proof is the same with $|\cdot|$ on $\mathbb{C}$.)</p>
+</div>
+<p><strong>Every hypothesis is needed</strong> (Wichtige Übung 3.68, <a class="pl" href="script.html#p166">p. 166</a>). These three are the counterexamples the exam asks for:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Drop this</th><th>Counterexample</th><th>Why it's unbounded</th></tr></thead>
+  <tbody>
+    <tr><td>closed (the wall)</td><td>$f(x)=\tfrac1x$ on $(0,1]$</td><td>$f\!\left(\tfrac1n\right)=n$ for every $n\in\mathbb{N}$</td></tr>
+    <tr><td>bounded (finite length)</td><td>$f(x)=x$ on $[0,\infty)$</td><td>$f(n)=n$; and $[0,\infty)$ <em>is</em> closed</td></tr>
+    <tr><td>continuous (one cliff)</td><td>$f(0)=0$, $f(x)=\tfrac1x$ for $x\in(0,1]$</td><td>$f\!\left(\tfrac1n\right)=n$ again, on the compact $[0,1]$</td></tr>
+  </tbody>
+</table></div>
+<h3 id="proof-b">Proof B: continuous on $[a,b]$ means bounded</h3>
+<p><strong>The idea.</strong> A surveyor starts at the left wall and maps the land eastwards, keeping track of how far the map reaches with a finite height limit. Wherever the survey seems to stop, continuity lights up a small neighbourhood where the heights are under control, and the survey can be pushed past that point. So it can only stop at the east wall.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>The goal</strong> “$f$ is bounded on $[a,b]$” forces the <strong>last line</strong>: “…so $|f(x)|\le M$ for all $x\in[a,b]$.”</li>
+  <li>There's no formula for $M$, so we use the supremum move, which forces the <strong>first line</strong>: “Let <span class="math-display" style="display:block">$$X=\{\,t\in[a,b]: f\text{ is bounded on }[a,t]\,\}.$$</span>” The goal becomes $b\in X$.</li>
+  <li><strong>The gap to fill:</strong> show $X$ can't stop before $b$. That's where continuity comes in.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The surveyor's map: every point $t$ such that the stretch from the wall $a$ to $t$ has some height limit.</p></div><div class="sp-formal"><p>Let <span class="math-display" style="display:block">$$X=\{\,t\in[a,b]: f\text{ is bounded on }[a,t]\,\}.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>At the wall itself there is only one point, so the survey has begun. The map can't go past the east wall, so it has a furthest edge $s_0$ (<a class="xl" href="lesson-06.html#s4-the-supremum">lesson 6</a>).</p></div><div class="sp-formal"><p>$a\in X$, since $|f|\le|f(a)|$ on $\{a\}$. So $X\neq\emptyset$, and $X$ is bounded above by $b$. By completeness, $s_0=\sup X$ exists, and $a\le s_0\le b$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>At $s_0$ the surveyor lights a lantern. Continuity says: within the lantern's radius $\delta$, the ground stays within $1$ of the height at $s_0$. So the lit stretch has a height limit.</p></div><div class="sp-formal"><p>By continuity of $f$ at $s_0$ with $\varepsilon=1$, there is $\delta&gt;0$ with $|f(x)-f(s_0)|&lt;1$ for $x\in[a,b]$, $|x-s_0|&lt;\delta$. By the triangle inequality, <span class="math-display" style="display:block">$$|f(x)|\le|f(x)-f(s_0)|+|f(s_0)|&lt;1+|f(s_0)|$$</span> for these $x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The light reaches back past $s_0-\delta$. And the map already reached past that point, because $s_0$ is its <em>furthest</em> edge. Say it reached $t$, with height limit $M_0$.</p></div><div class="sp-formal"><p>Since $s_0-\delta&lt;s_0=\sup X$, the number $s_0-\delta$ is not an upper bound of $X$. So there is $t\in X$ with $t&gt;s_0-\delta$, and some $M_0$ with $|f(x)|\le M_0$ on $[a,t]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Glue the old map (up to $t$) and the lit stretch together. They overlap, and together they reach $s_0+\frac\delta2$, or the east wall if that's closer. Both pieces have a height limit, so the whole has one: the bigger of the two.</p></div><div class="sp-formal"><p>Let $t_1=\min\left(b,\ s_0+\tfrac\delta2\right)$ and $x\in[a,t_1]$. If $x\le t$, then $|f(x)|\le M_0$. If $x&gt;t$, then $s_0-\delta&lt;x\le s_0+\frac\delta2$, so $|x-s_0|&lt;\delta$ and $|f(x)|&lt;1+|f(s_0)|$. Hence $|f(x)|\le\max\big(M_0,\,1+|f(s_0)|\big)$ on $[a,t_1]$, so $t_1\in X$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>But nothing in the map lies beyond its furthest edge $s_0$. Since $s_0+\frac\delta2$ <em>is</em> beyond it, the minimum must have been the east wall: the survey reached $b$.</p></div><div class="sp-formal"><p>As $s_0$ is an upper bound of $X$, $t_1\le s_0$. Since $s_0+\frac\delta2&gt;s_0$, this forces $t_1=b$. So $b\in X$: $f$ is bounded on $[a,b]$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-sup">the supremum trick</a> <a class="mvl" href="moves.html#m-eps">continuity with a chosen ε</a></p>
+<details><summary>The proof in one piece (as you'd write it in the exam)</summary><div>
+<p>Let $X=\{t\in[a,b]: f\text{ is bounded on }[a,t]\}$. Then $a\in X$ and $X\subseteq[a,b]$, so $s_0=\sup X\in[a,b]$ exists by completeness. By continuity at $s_0$ (with $\varepsilon=1$) there is $\delta&gt;0$ with $|f(x)|&lt;1+|f(s_0)|$ for all $x\in[a,b]$ with $|x-s_0|&lt;\delta$. As $s_0-\delta$ is not an upper bound of $X$, there is $t\in X$ with $t&gt;s_0-\delta$ and $M_0$ with $|f|\le M_0$ on $[a,t]$. Let $t_1=\min(b,s_0+\frac\delta2)$. Every $x\in[a,t_1]$ satisfies $x\le t$ or $|x-s_0|&lt;\delta$, so $|f(x)|\le\max(M_0,1+|f(s_0)|)$, and $t_1\in X$. Hence $t_1\le s_0&lt;s_0+\frac\delta2$, so $t_1=b\in X$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $a\in X$?</p>
+  <details><summary>Answer</summary><div><p>On $[a,a]=\{a\}$ the only value is $f(a)$, so $|f|\le|f(a)|$ there: $f$ is bounded on $[a,a]$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Why must $t_1$ be $b$? Give both reasons.</p>
+  <details><summary>Answer</summary><div><p>$t_1\in X$ and $s_0$ is an upper bound of $X$, so $t_1\le s_0$. If the minimum were $s_0+\frac\delta2$, then $t_1&gt;s_0$, impossible. So $t_1=b$.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<p class="legend">The script compares this to induction: “$a\in X$” is the base case, and “from any point of the map we can push further” is the step. On its own that could get stuck, taking ever smaller steps. The supremum is what rules that out.</p>
+
+<h2 id="s4-promise-two-maximum-and-minimum">4. Promise two: maximum and minimum are attained (the highest tower)</h2>
+<p><strong>Definition (<a class="pl" href="script.html#p166">p. 166</a>).</strong> $f:D\to\mathbb{R}$ <em>attains a maximum</em> at $x_{\max}\in D$ if $f(x)\le f(x_{\max})$ for all $x\in D$, and a <em>minimum</em> at $x_{\min}\in D$ if $f(x)\ge f(x_{\min})$ for all $x\in D$. The value $f(x_{\max})$ is <em>the maximum of $f$</em>.</p>
+<div class="box">
+<p><strong>Korollar 3.69 (<a class="pl" href="script.html#p166">p. 166</a>).</strong> Let $a&lt;b$ and $f:[a,b]\to\mathbb{R}$ continuous. Then $f$ attains both a maximum and a minimum.</p>
+</div>
+<figure style="margin:0" aria-label="Left: a continuous curve on a closed interval from a to b with its highest point marked max and its lowest point marked min. Right: the line f of x equals x on the half-open interval from 0 to 1, with an open circle at the top, because the supremum 1 is never reached.">
+<svg viewBox="0 0 640 260" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="210.0" x2="300.0" y2="210.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="40.0" y1="215.0" x2="40.0" y2="20.0" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 40.0 95.0 L 43.1 92.2 L 46.2 89.5 L 49.4 87.0 L 52.5 84.7 L 55.6 82.6 L 58.8 80.7 L 61.9 79.0 L 65.0 77.6 L 68.1 76.4 L 71.2 75.4 L 74.4 74.7 L 77.5 74.2 L 80.6 74.0 L 83.8 74.1 L 86.9 74.4 L 90.0 74.9 L 93.1 75.7 L 96.2 76.7 L 99.4 78.0 L 102.5 79.6 L 105.6 81.3 L 108.8 83.3 L 111.9 85.4 L 115.0 87.8 L 118.1 90.4 L 121.2 93.1 L 124.4 96.0 L 127.5 99.0 L 130.6 102.2 L 133.8 105.5 L 136.9 108.9 L 140.0 112.3 L 143.1 115.8 L 146.2 119.4 L 149.4 123.0 L 152.5 126.6 L 155.6 130.2 L 158.8 133.8 L 161.9 137.3 L 165.0 140.8 L 168.1 144.1 L 171.2 147.4 L 174.4 150.6 L 177.5 153.7 L 180.6 156.6 L 183.8 159.3 L 186.9 161.9 L 190.0 164.3 L 193.1 166.5 L 196.2 168.5 L 199.4 170.3 L 202.5 171.8 L 205.6 173.1 L 208.8 174.2 L 211.9 175.0 L 215.0 175.6 L 218.1 175.9 L 221.2 176.0 L 224.4 175.8 L 227.5 175.4 L 230.6 174.7 L 233.8 173.7 L 236.9 172.6 L 240.0 171.1 L 243.1 169.5 L 246.2 167.6 L 249.4 165.5 L 252.5 163.3 L 255.6 160.8 L 258.8 158.1 L 261.9 155.3 L 265.0 152.3 L 268.1 149.2 L 271.2 146.0 L 274.4 142.7 L 277.5 139.2 L 280.6 135.7 L 283.8 132.2 L 286.9 128.6 L 290.0 125.0" style="fill:none;stroke:var(--accent)" stroke-width="3"/><circle cx="40.0" cy="95.0" r="5" style="fill:var(--accent)"/><circle cx="290.0" cy="125.0" r="5" style="fill:var(--accent)"/><circle cx="81.9" cy="74.0" r="6.5" style="fill:var(--story-edge)"/><circle cx="220.6" cy="176.0" r="6.5" style="fill:var(--exam-edge)"/><text x="81.9" y="60.0" text-anchor="middle" style="fill:var(--story-edge);font-size:16px">max</text><text x="220.6" y="200.0" text-anchor="middle" style="fill:var(--exam-edge);font-size:16px">min</text><text x="40.0" y="232.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">a</text><text x="290.0" y="232.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">b</text><text x="165.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">continuous on [a, b]</text><line x1="360.0" y1="210.0" x2="630.0" y2="210.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="370.0" y1="215.0" x2="370.0" y2="20.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="370.0" y1="40.0" x2="600.0" y2="40.0" style="stroke:var(--story-edge)" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M 370.0 201.5 L 600.0 48.5" style="fill:none;stroke:var(--accent)" stroke-width="3"/><circle cx="370.0" cy="201.5" r="5" style="fill:var(--accent)"/><circle cx="600.0" cy="48.5" r="6" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.5"/><text x="594.0" y="30.0" text-anchor="end" style="fill:var(--story-edge);font-size:15px">sup = 1, never reached</text><text x="370.0" y="232.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">0</text><text x="600.0" y="232.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">1</text><text x="500.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">f(x) = x on [0, 1)</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Left: on a compact interval the highest and lowest points exist (they may also sit at an endpoint). Right: on $[0,1)$ the function $f(x)=x$ is bounded with supremum $1$, but no point reaches it. Bounded is not enough; we need the wall at $1$.</figcaption>
+</figure>
+<h3 id="proof-c">Proof C: the maximum and minimum are attained</h3>
+<p><strong>The idea.</strong> Being bounded already gives a lowest ceiling $S=\sup f([a,b])$. The question is whether some tower actually <em>touches</em> it. If none does, carry a bell that rings louder the closer you are to the ceiling. The bell is itself continuous on the walled garden, so promise one limits how loud it gets, and that means the towers stay a fixed distance below $S$. Then $S$ wasn't the lowest ceiling after all.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>The goal</strong> “a maximum is attained” means: there is $x_{\max}$ with $f(x)\le f(x_{\max})$ for all $x$. The only possible value is $S=\sup f([a,b])$, so the goal is “some $x$ has $f(x)=S$”.</li>
+  <li>An existence claim with no formula for $x$ suggests contradiction. <strong>First line:</strong> “Suppose $f(x)&lt;S$ for all $x\in[a,b]$.” <strong>Last line:</strong> “…an upper bound smaller than $S$, contradicting that $S$ is the least upper bound. So some $x_{\max}$ has $f(x_{\max})=S$.”</li>
+  <li><strong>The gap to fill:</strong> produce that smaller upper bound. That's the bell.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Promise one: the towers have a height limit. So there is a lowest ceiling $S$ over the garden.</p></div><div class="sp-formal"><p>By the boundedness theorem $f$ is bounded, so $S=\sup f([a,b])$ exists by completeness.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Suppose no tower touches the ceiling.</p></div><div class="sp-formal"><p>Suppose, for a contradiction, that $f(x)&lt;S$ for all $x\in[a,b]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Carry a bell whose loudness is $1$ divided by the gap between the tower under you and the ceiling. The closer to the ceiling, the louder. The gap is never $0$, so the bell always works.</p></div><div class="sp-formal"><p>Then $F(x)=\dfrac{1}{S-f(x)}$ is well-defined and positive on $[a,b]$, and continuous as a quotient of continuous functions whose denominator has no zero.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The bell's loudness is a continuous function on the walled garden too, so promise one applies to it: the loudness has a limit $M$.</p></div><div class="sp-formal"><p>By the boundedness theorem applied to $F$, there is $M&gt;0$ with $\dfrac{1}{S-f(x)}\le M$ for all $x\in[a,b]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A loudness limit means no tower comes closer than $\frac1M$ to the ceiling. So the ceiling could be lowered by $\frac1M$, and $S$ wasn't the lowest ceiling.</p></div><div class="sp-formal"><p>Multiplying by $\frac{S-f(x)}{M}&gt;0$ gives $\frac1M\le S-f(x)$, that is, $f(x)\le S-\frac1M$ for all $x$. So $S-\frac1M$ is an upper bound of $f([a,b])$ smaller than $S$, contradicting that $S$ is the least upper bound.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So some tower touches the ceiling. For the lowest point, turn the garden upside down.</p></div><div class="sp-formal"><p>Hence there is $x_{\max}\in[a,b]$ with $f(x_{\max})=S$, the maximum. Applying this to $-f$ gives the minimum. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-helper">a helper function</a> <a class="mvl" href="moves.html#m-least">contradict “least”</a> <a class="mvl" href="moves.html#m-obda">reduce to one case (−f)</a></p>
+<details><summary>The proof in one piece (as you'd write it in the exam)</summary><div>
+<p>By the boundedness theorem, $S=\sup f([a,b])$ exists. Suppose $f(x)&lt;S$ for all $x$. Then $F(x)=\frac1{S-f(x)}$ is well-defined and continuous on $[a,b]$, hence bounded by some $M&gt;0$. So $f(x)\le S-\frac1M$ for all $x$, an upper bound smaller than $S$, contradicting $S=\sup f([a,b])$. Hence $f(x_{\max})=S$ for some $x_{\max}$. Applying this to $-f$ gives the minimum. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Boundedness</strong> ⇒ $S=\sup f([a,b])$ exists.</li>
+  <li><strong>Assume</strong> $f(x)&lt;S$ for all $x\in[a,b]$.</li>
+  <li><strong>Helper:</strong> $F=\frac1{S-f}$ is continuous on $[a,b]$, so bounded by some $M&gt;0$ (boundedness again).</li>
+  <li><strong>Contradiction:</strong> $f\le S-\frac1M$, an upper bound smaller than $S$.</li>
+  <li><strong>Minimum:</strong> apply the result to $-f$.</li>
+</ol>
+<p>In short: “if the supremum is never attained, one over the gap is bounded, so the gap is not small”.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why is $F=\frac1{S-f}$ well-defined and continuous?</p>
+  <details><summary>Answer</summary><div><p>By the assumption, $S-f(x)&gt;0$ for every $x$, so the denominator is never $0$; a quotient of continuous functions with non-zero denominator is continuous.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> From $\frac1{S-f(x)}\le M$, derive the smaller upper bound.</p>
+  <details><summary>Answer</summary><div><p>Multiply by the positive number $\frac{S-f(x)}M$: $\frac1M\le S-f(x)$, so $f(x)\le S-\frac1M$ for all $x$.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the exam box alone.</p></li>
+</ol></div>
+<div class="exam"><span class="label">Exam technique: “compute the maximum”</span>
+<p>The theorem only says the maximum <em>exists</em>. To find it, you guess a candidate and prove nothing is bigger. Later (<a class="xl" href="lesson-18.html#s2-deciding-the-candidates-tests-for">lesson 18</a>) derivatives give you the candidates. Even now you can often do it by algebra: see Worked example 1. Always say <em>why</em> a maximum exists: “$f$ is continuous on the compact interval $[a,b]$, so it attains its maximum (extreme value theorem).” It's often a point in the marking scheme. In the exam you never cite script numbers like “Korollar 3.69”; give the theorem's name, or just state its hypotheses and conclusion in a sentence. The numbers in these lessons are only so you can find things in the script.</p></div>
+
+<h2 id="s5-promise-three-uniform-continuity-one">5. Promise three: uniform continuity (one rule for the whole garden)</h2>
+<p>Compare the two definitions with the quantifiers in front. Read them slowly; the only difference is <em>where</em> the point stands.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th></th><th>Definition</th></tr></thead>
+  <tbody>
+    <tr><td><strong>continuous on $D$</strong><br>(Def. 3.45, <a class="pl" href="script.html#p153">p. 153</a>)</td><td>$\forall\varepsilon&gt;0\ \ \forall x_0\in D\ \ \exists\delta&gt;0\ \ \forall x\in D:\ |x-x_0|&lt;\delta\Rightarrow|f(x)-f(x_0)|&lt;\varepsilon$</td></tr>
+    <tr><td><strong>uniformly continuous on $D$</strong><br>(Def. 3.71, <a class="pl" href="script.html#p167">p. 167</a>)</td><td>$\forall\varepsilon&gt;0\ \ \exists\delta&gt;0\ \ \forall x,y\in D:\ |x-y|&lt;\delta\Rightarrow|f(x)-f(y)|&lt;\varepsilon$</td></tr>
+  </tbody>
+</table></div>
+<p>In the first line you choose $\delta$ <em>after</em> seeing the point $x_0$, so $\delta$ may depend on $\varepsilon$ <em>and</em> on $x_0$. In the second line you must choose $\delta$ <em>before</em> any point is named, so one $\delta$ has to work everywhere. In <a class="xl" href="lesson-01.html#s2-why-the-order-matters">lesson 1</a> terms: “$\forall x_0\ \exists\delta$” became “$\exists\delta\ \forall x_0$”, and swapping $\forall$ and $\exists$ changes the meaning. Uniformly continuous implies continuous (take $y=x_0$), not the other way round.</p>
+<figure style="margin:0" aria-label="The graph of x squared from 0 to 3 with two horizontal epsilon bands of the same height, one around the point x equals 0.5 and one around x equals 2.5. The green delta window that keeps the graph inside the band is wide at 0.5, about 0.62, and narrow at 2.5, about 0.19.">
+<svg viewBox="0 0 640 320" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><rect x="70.0" y="260.0" width="530.0" height="56.0" style="fill:var(--k-eps)" opacity=".15"/><rect x="70.0" y="30" width="190.1" height="265" style="fill:var(--k-del)" opacity=".2"/><rect x="70.0" y="92.0" width="530.0" height="56.0" style="fill:var(--k-eps)" opacity=".15"/><rect x="462.2" y="30" width="65.6" height="265" style="fill:var(--k-del)" opacity=".2"/><line x1="60.0" y1="295.0" x2="610.0" y2="295.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="70.0" y1="300.0" x2="70.0" y2="25.0" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 70.0 295.0 L 76.4 295.0 L 82.8 294.8 L 89.1 294.6 L 95.5 294.4 L 101.9 294.0 L 108.2 293.6 L 114.6 293.1 L 121.0 292.5 L 127.4 291.8 L 133.8 291.1 L 140.1 290.2 L 146.5 289.3 L 152.9 288.3 L 159.2 287.3 L 165.6 286.1 L 172.0 284.9 L 178.4 283.6 L 184.8 282.2 L 191.1 280.8 L 197.5 279.2 L 203.9 277.6 L 210.2 275.9 L 216.6 274.2 L 223.0 272.3 L 229.4 270.4 L 235.8 268.4 L 242.1 266.3 L 248.5 264.1 L 254.9 261.9 L 261.2 259.6 L 267.6 257.2 L 274.0 254.7 L 280.4 252.1 L 286.8 249.5 L 293.1 246.8 L 299.5 244.0 L 305.9 241.1 L 312.2 238.1 L 318.6 235.1 L 325.0 232.0 L 331.4 228.8 L 337.8 225.5 L 344.1 222.2 L 350.5 218.8 L 356.9 215.3 L 363.2 211.7 L 369.6 208.0 L 376.0 204.3 L 382.4 200.5 L 388.8 196.6 L 395.1 192.6 L 401.5 188.5 L 407.9 184.4 L 414.2 180.2 L 420.6 175.9 L 427.0 171.5 L 433.4 167.1 L 439.7 162.5 L 446.1 157.9 L 452.5 153.2 L 458.9 148.5 L 465.3 143.6 L 471.6 138.7 L 478.0 133.7 L 484.4 128.6 L 490.8 123.5 L 497.1 118.2 L 503.5 112.9 L 509.9 107.5 L 516.2 102.1 L 522.6 96.5 L 529.0 90.9 L 535.4 85.2 L 541.8 79.4 L 548.1 73.5 L 554.5 67.6 L 560.9 61.5 L 567.2 55.4 L 573.6 49.3 L 580.0 43.0" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><circle cx="155.0" cy="288.0" r="5.5" style="fill:var(--k-x0)"/><circle cx="495.0" cy="120.0" r="5.5" style="fill:var(--k-x0)"/><text x="155.0" y="315.0" text-anchor="middle" style="fill:var(--k-del);font-size:15px">δ ≈ 0.62</text><text x="495.0" y="315.0" text-anchor="middle" style="fill:var(--k-del);font-size:15px">δ ≈ 0.19</text><text x="600.0" y="86.0" text-anchor="end" style="fill:var(--k-eps);font-size:15px">ε-band</text><text x="600.0" y="254.0" text-anchor="end" style="fill:var(--k-eps);font-size:15px">ε-band</text><text x="574.0" y="47.0" text-anchor="end" style="fill:var(--ink);font-size:16px">f(x) = x²</text><line x1="70.0" y1="291.0" x2="70.0" y2="299.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="240.0" y1="291.0" x2="240.0" y2="299.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="410.0" y1="291.0" x2="410.0" y2="299.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="580.0" y1="291.0" x2="580.0" y2="299.0" style="stroke:var(--muted)" stroke-width="1.5"/></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$f(x)=x^2$ with $\varepsilon=1$. At $x_0=0.5$ the window $\delta\approx0.62$ keeps the graph inside the $\varepsilon$-band; at $x_0=2.5$, where the curve is steeper, only $\delta\approx0.19$ does. On $[0,3]$ the steepest spot is the right end, so one $\delta$ (the smallest) works everywhere. On all of $\mathbb{R}$ the needed $\delta$ shrinks to $0$, and no single one works.</figcaption>
+</figure>
+
+<h3 id="proof-d">Proof D: $x^2$ is not uniformly continuous on $\mathbb{R}$ (Übung 3.73, <a class="pl" href="script.html#p167">p. 167</a>)</h3>
+<p><strong>The idea.</strong> On the endless plain the parabola gets steeper and steeper. Whatever single step size you promise, far enough out half a step already climbs more than $1$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<p>The goal is a negation, built with the <a class="xl" href="lesson-01.html#s3-negation-switching-sides">lesson 1</a> rules:</p>
+<div class="math-display">$$\begin{aligned}&\exists\varepsilon&gt;0\ \ \forall\delta&gt;0\ \ \exists x,y\in D:\\ &|x-y|&lt;\delta\ \text{ and }\ |f(x)-f(y)|\ge\varepsilon.\end{aligned}$$</div>
+<ul>
+  <li><strong>First lines:</strong> “Let $\varepsilon=1$. Let $\delta&gt;0$ be arbitrary.” (We choose $\varepsilon$; $\delta$ is given to us.)</li>
+  <li><strong>Last line:</strong> “Then $|x-y|&lt;\delta$ but $|f(x)-f(y)|\ge1$.”</li>
+  <li><strong>The gap to fill:</strong> choose $x$ and $y$, depending on $\delta$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The Doubter names a tolerance: the height may change by less than $1$.</p></div><div class="sp-formal"><p>Let $\varepsilon=1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>You claim one step size works everywhere. The Doubter accepts whatever step size $\delta$ you offer.</p></div><div class="sp-formal"><p>Let $\delta&gt;0$ be arbitrary.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The Doubter walks far east, to where the ground is very steep, and takes half of your step.</p></div><div class="sp-formal"><p>Let $x=\frac1\delta$ and $y=x+\frac\delta2$. Then $|x-y|=\frac\delta2&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Half a step on such steep ground climbs more than the tolerance.</p></div><div class="sp-formal"><div class="math-display">$$y^2-x^2=x\delta+\tfrac{\delta^2}{4}&gt;x\delta=1.$$</div><p>So no $\delta$ works for $\varepsilon=1$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-neg">the negation recipe</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $\varepsilon=1$ and let $\delta&gt;0$ be arbitrary. Put $x=\frac1\delta$ and $y=x+\frac\delta2$. Then $|x-y|=\frac\delta2&lt;\delta$, but $y^2-x^2=x\delta+\frac{\delta^2}4&gt;x\delta=1$. So no $\delta$ works for $\varepsilon=1$, and $x^2$ is not uniformly continuous on $\mathbb{R}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why $x=\frac1\delta$?</p>
+  <details><summary>Answer</summary><div><p>So that $x\delta=1=\varepsilon$: the climb $y^2-x^2=x\delta+\frac{\delta^2}4$ is then more than $\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Run the same proof on $D=[0,1]$. Where does it break?</p>
+  <details><summary>Answer</summary><div><p>For $\delta&lt;1$ the point $x=\frac1\delta$ is not in $[0,1]$, so the Doubter cannot walk that far. Indeed on $[0,1]$ the function is uniformly continuous (the box below).</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Write the whole proof from the frame alone.</p></li>
+</ol></div>
+<div class="box">
+<p><strong>On $[0,1]$ it is uniformly continuous.</strong> Here the frame is the positive one: first line “Let $\varepsilon&gt;0$. Choose $\delta=\dots$” (one $\delta$, before any points), last line “so $|x-y|&lt;\delta$ implies $|x^2-y^2|&lt;\varepsilon$ for all $x,y\in[0,1]$”. The gap: for $x,y\in[0,1]$, $|x^2-y^2|=|x+y|\,|x-y|\le2|x-y|$. So $\delta=\frac\varepsilon2$ fills it: $|x-y|&lt;\frac\varepsilon2$ gives $|x^2-y^2|&lt;\varepsilon$. (Numbers: $\varepsilon=0.1$, $\delta=0.05$.)</p>
+</div>
+<p class="legend"><strong>Lipschitz, in one line</strong> (Übung 3.78, <a class="pl" href="script.html#p169">p. 169</a>). A bound $|f(x)-f(y)|\le L|x-y|$ for all $x,y$ (with $L&gt;0$) is called <em>Lipschitz continuity</em>. It always gives uniform continuity with $\delta=\frac\varepsilon L$, exactly as just done with $L=2$.</p>
+
+<h2 id="s6-heine-s-theorem-and-its">6. Heine's theorem and its proof (worth 7 exam points)</h2>
+<div class="box">
+<p><strong>Satz 3.75, Heine (<a class="pl" href="script.html#p167">p. 167</a>).</strong> Let $a&lt;b$ and $f:[a,b]\to\mathbb{R}$ continuous. Then $f$ is uniformly continuous.</p>
+</div>
+<h3 id="proof-e">Proof E: Heine's theorem</h3>
+<p>This is exactly Figalli FS26 B1. <strong>The idea</strong> is the surveyor from promise one again, now carrying a fixed stride. For a given tolerance $\class{k-eps}{\varepsilon}$, the surveyor maps how far a single stride length $\class{k-del}{\delta}$ keeps any two nearby heights within $\class{k-eps}{\varepsilon}$ of each other. Wherever that map seems to stop, a lantern (continuity) gives a stride that works near that point, and gluing the two strides together pushes the map further. So it reaches the east wall.</p>
+<div class="need"><span class="label">You'll need these</span>
+<ul>
+  <li><strong>Supremum, two properties</strong> (<a class="xl" href="lesson-06.html#s4-the-supremum">lesson 6</a>; Satz 2.59, <a class="pl" href="script.html#p105">p. 105–106</a>, says a non-empty set that is bounded above has one). $s=\sup \class{k-X}{X}$ means (1) <em>upper bound</em>: $t\le s$ for all $t\in \class{k-X}{X}$, and (2) <em>least</em>: no number below $s$ is an upper bound, so for every $r&lt;s$ some $t\in \class{k-X}{X}$ has $t&gt;r$.</li>
+  <li><strong>Continuity at $\class{k-x0}{s_0}$</strong> (Definition 3.45, <a class="pl" href="script.html#p153">p. 153</a>): for every $\class{k-eps}{\varepsilon}&gt;0$ there is $\class{k-del}{\delta}&gt;0$ with <span class="math-display" style="display:block">$$|x-\class{k-x0}{s_0}|&lt;\class{k-del}{\delta}\Rightarrow|f(x)-f(\class{k-x0}{s_0})|&lt;\class{k-eps}{\varepsilon}.$$</span></li>
+  <li><strong>Triangle inequality</strong> (<a class="xl" href="lesson-05.html#proof-a">lesson 5</a>): $|u-w|\le|u-v|+|v-w|$. Two points that are each close to a third are close to each other.</li>
+  <li><strong>Uniform continuity on $[a,t]$:</strong> one $\class{k-del}{\delta}&gt;0$ such that all $x_1,x_2\in[a,t]$ with $|x_1-x_2|&lt;\class{k-del}{\delta}$ have $|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}$.</li>
+</ul></div>
+<p class="legend"><span class="label">Colour code</span>$\class{k-x0}{s_0}$ gold, $\class{k-eps}{\varepsilon}$ blue, every $\class{k-del}{\delta}$ green, $\class{k-X}{X}$ teal.</p>
+
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>The goal</strong> “$f$ is uniformly continuous” forces the <strong>first line</strong> “Let $\class{k-eps}{\varepsilon}&gt;0$.” and the <strong>last lines</strong> “…so there is $\class{k-del}{\delta}&gt;0$ with $|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}$ for all $x_1,x_2\in[a,b]$ with $|x_1-x_2|&lt;\class{k-del}{\delta}$. As $\class{k-eps}{\varepsilon}$ was arbitrary, $f$ is uniformly continuous.”</li>
+  <li>There's no formula for $\class{k-del}{\delta}$, so we use the supremum move: “Let $\class{k-X}{X}$ be the set of $t$ for which one $\class{k-del}{\delta}$ works on $[a,t]$.” The goal becomes $b\in \class{k-X}{X}$.</li>
+  <li><strong>The gap to fill:</strong> show $\class{k-X}{X}$ can't stop before $b$, exactly as in the boundedness proof, with one extra step (gluing two strides).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The Doubter fixes a tolerance $\class{k-eps}{\varepsilon}$. The surveyor's map: every point $t$ such that one single stride length works on the whole stretch from $a$ to $t$.</p></div><div class="sp-formal"><p>Let $\class{k-eps}{\varepsilon}&gt;0$ and let $\class{k-X}{X}$ be the set of $t\in[a,b]$ for which there is $\class{k-del}{\delta}&gt;0$ with $|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}$ for all $x_1,x_2\in[a,t]$ with $|x_1-x_2|&lt;\class{k-del}{\delta}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>At the wall any stride works. A stride that works on a long stretch also works on a shorter one, so the map has no holes: it is everything from $a$ up to its furthest edge $\class{k-x0}{s_0}$, maybe without $\class{k-x0}{s_0}$ itself.</p></div><div class="sp-formal"><p>$a\in \class{k-X}{X}$ (on $\{a\}$ every $\class{k-del}{\delta}$ works), and $\class{k-X}{X}\subseteq[a,b]$, so $\class{k-x0}{s_0}=\sup \class{k-X}{X}\in[a,b]$ exists by completeness. If $t\in \class{k-X}{X}$ and $a\le t'\le t$, then $t'\in \class{k-X}{X}$ with the same $\class{k-del}{\delta}$. Hence $[a,\class{k-x0}{s_0})\subseteq \class{k-X}{X}\subseteq[a,\class{k-x0}{s_0}]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>At $\class{k-x0}{s_0}$ the surveyor lights a lantern, asking for <em>half</em> the tolerance. Inside its radius $\class{k-del}{\delta}_1$ every height is within $\frac{\class{k-eps}{\varepsilon}}{2}$ of the height at $\class{k-x0}{s_0}$, so any two of them are within $\class{k-eps}{\varepsilon}$ of each other.</p></div><div class="sp-formal"><p>By continuity at $\class{k-x0}{s_0}$ there is $\class{k-del}{\delta}_1&gt;0$ with $|f(x)-f(\class{k-x0}{s_0})|&lt;\frac{\class{k-eps}{\varepsilon}}{2}$ for $x\in[a,b]$, $|x-\class{k-x0}{s_0}|&lt;\class{k-del}{\delta}_1$. For two such points $x_1,x_2$, the triangle inequality gives <span class="math-display" style="display:block">$$|f(x_1)-f(x_2)|&lt;\frac{\class{k-eps}{\varepsilon}}{2}+\frac{\class{k-eps}{\varepsilon}}{2}=\class{k-eps}{\varepsilon}.$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Step back half a lantern radius, to $t_0$. That point is inside the map, so the old map gives a stride $\class{k-del}{\delta}_0$ that works up to $t_0$.</p></div><div class="sp-formal"><p>Let <span class="math-display" style="display:block">$$t_0=\max\left(a,\ \class{k-x0}{s_0}-\frac{\class{k-del}{\delta}_1}2\right).$$</span> Then $t_0\in \class{k-X}{X}$, so there is $\class{k-del}{\delta}_0&gt;0$ that works on $[a,t_0]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Take the shorter of the two strides and walk up to $t_1$, half a radius past $\class{k-x0}{s_0}$. Two points one stride apart are either near the lantern, which handles them, or both left of $t_0$, where the old stride handles them. The stride is short enough that no pair can straddle both.</p></div><div class="sp-formal"><p>Let <span class="math-display" style="display:block">$$t_1=\min\left(b,\ \class{k-x0}{s_0}+\frac{\class{k-del}{\delta}_1}2\right),$$</span> <span class="math-display" style="display:block">$$\class{k-del}{\delta}=\min\left(\class{k-del}{\delta}_0,\frac{\class{k-del}{\delta}_1}2\right),$$</span> and $x_1,x_2\in[a,t_1]$ with $|x_1-x_2|&lt;\class{k-del}{\delta}$. <em>Case A</em>, one of them (oBdA $x_1$) has $|x_1-\class{k-x0}{s_0}|\le\frac{\class{k-del}{\delta}_1}2$: then <span class="math-display" style="display:block">$$|x_2-\class{k-x0}{s_0}|&lt;\class{k-del}{\delta}+\frac{\class{k-del}{\delta}_1}2\le\class{k-del}{\delta}_1,$$</span> so both are within $\class{k-del}{\delta}_1$ of $\class{k-x0}{s_0}$ and $|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}$. <em>Case B</em>, both have $|x_j-\class{k-x0}{s_0}|&gt;\frac{\class{k-del}{\delta}_1}2$: as $x_j\le \class{k-x0}{s_0}+\frac{\class{k-del}{\delta}_1}2$, both are $&lt;\class{k-x0}{s_0}-\frac{\class{k-del}{\delta}_1}2\le t_0$, so $\class{k-del}{\delta}\le\class{k-del}{\delta}_0$ gives $|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}$. Hence $t_1\in \class{k-X}{X}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>But nothing in the map lies beyond its furthest edge. So $t_1$ must be the east wall, and the wall is in the map: one stride works for the whole garden.</p></div><div class="sp-formal"><p>So $t_1\le \class{k-x0}{s_0}&lt;\class{k-x0}{s_0}+\frac{\class{k-del}{\delta}_1}2$, which forces $t_1=b$. Then $b\in \class{k-X}{X}$: some $\class{k-del}{\delta}&gt;0$ works on all of $[a,b]$. As $\class{k-eps}{\varepsilon}$ was arbitrary, $f$ is uniformly continuous. <span class="qed">∎</span></p></div></div>
+</div>
+<figure style="margin:0" aria-label="Graph of x squared on the interval from 0 to 2 with the pretend edge s zero at 1, the green lantern window from 0.8 to 1.2, t zero at 0.9, t one at 1.1, and two pairs of points for case A and case B.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)">
+<rect x="278.0" y="30" width="104.0" height="240" style="fill:var(--k-del)" opacity=".18"/>
+<line x1="60.0" y1="270.0" x2="610.0" y2="270.0" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="70.0" y1="20.0" x2="70.0" y2="280.0" style="stroke:var(--muted)" stroke-width="1.5"/>
+<line x1="70.0" y1="265.0" x2="70.0" y2="275.0" style="stroke:var(--muted)" stroke-width="1.5"/>
+<text x="70.0" y="292.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">0</text>
+<line x1="330.0" y1="265.0" x2="330.0" y2="275.0" style="stroke:var(--muted)" stroke-width="1.5"/>
+<text x="330.0" y="292.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">1</text>
+<line x1="590.0" y1="265.0" x2="590.0" y2="275.0" style="stroke:var(--muted)" stroke-width="1.5"/>
+<text x="590.0" y="292.0" text-anchor="middle" style="fill:var(--ink);font-size:16px">2</text>
+<path d="M 70.0 270.0 L 76.5 270.0 L 83.0 269.9 L 89.5 269.7 L 96.0 269.4 L 102.5 269.1 L 109.0 268.6 L 115.5 268.2 L 122.0 267.6 L 128.5 267.0 L 135.0 266.2 L 141.5 265.5 L 148.0 264.6 L 154.5 263.7 L 161.0 262.6 L 167.5 261.6 L 174.0 260.4 L 180.5 259.2 L 187.0 257.9 L 193.5 256.5 L 200.0 255.0 L 206.5 253.5 L 213.0 251.8 L 219.5 250.2 L 226.0 248.4 L 232.5 246.6 L 239.0 244.7 L 245.5 242.7 L 252.0 240.6 L 258.5 238.5 L 265.0 236.2 L 271.5 234.0 L 278.0 231.6 L 284.5 229.2 L 291.0 226.7 L 297.5 224.1 L 304.0 221.4 L 310.5 218.7 L 317.0 215.8 L 323.5 213.0 L 330.0 210.0 L 336.5 207.0 L 343.0 203.8 L 349.5 200.7 L 356.0 197.4 L 362.5 194.1 L 369.0 190.7 L 375.5 187.2 L 382.0 183.6 L 388.5 180.0 L 395.0 176.2 L 401.5 172.5 L 408.0 168.6 L 414.5 164.7 L 421.0 160.6 L 427.5 156.6 L 434.0 152.4 L 440.5 148.2 L 447.0 143.8 L 453.5 139.5 L 460.0 135.0 L 466.5 130.5 L 473.0 125.8 L 479.5 121.2 L 486.0 116.4 L 492.5 111.6 L 499.0 106.7 L 505.5 101.7 L 512.0 96.6 L 518.5 91.5 L 525.0 86.2 L 531.5 81.0 L 538.0 75.6 L 544.5 70.2 L 551.0 64.6 L 557.5 59.1 L 564.0 53.4 L 570.5 47.7 L 577.0 41.9 L 583.5 36.0 L 590.0 30.0" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/>
+<line x1="70.0" y1="270.0" x2="356.0" y2="270.0" style="stroke:var(--k-X)" stroke-width="8"/>
+<line x1="330.0" y1="34.0" x2="330.0" y2="270.0" style="stroke:var(--k-x0)" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="336.0" y="26.0" text-anchor="start" style="fill:var(--k-x0);font-size:15px">s₀ = 1</text>
+<line x1="304.0" y1="34.0" x2="304.0" y2="270.0" style="stroke:var(--k-X)" stroke-width="2.5"/>
+<line x1="356.0" y1="34.0" x2="356.0" y2="270.0" style="stroke:var(--k-X)" stroke-width="2.5"/>
+<text x="362.0" y="46.0" text-anchor="start" style="fill:var(--k-X);font-size:15px">t₁ = 1.1</text>
+<circle cx="317.0" cy="215.8" r="5.5" style="fill:var(--k-del)"/>
+<circle cx="340.4" cy="205.1" r="5.5" style="fill:var(--k-del)"/>
+<circle cx="200.0" cy="255.0" r="5.5" style="fill:var(--k-X)"/>
+<circle cx="220.8" cy="249.8" r="5.5" style="fill:var(--k-X)"/>
+<text x="210.4" y="238.6" text-anchor="middle" style="fill:var(--k-X);font-size:14px">case B</text>
+<text x="388.0" y="240.0" text-anchor="start" style="fill:var(--k-del);font-size:14px">case A</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">The gluing step with the numbers above: lantern window (green) around $\class{k-x0}{s_0}=1$, the old map up to $t_0=0.9$, and the new reach $t_1=1.1$. Case A pairs sit in the window; case B pairs sit left of $t_0$.</figcaption>
+</figure>
+<p class="moves">Moves used: <a class="mvl" href="moves.html#m-sup">the supremum trick</a> <a class="mvl" href="moves.html#m-eps">continuity with a chosen ε</a> <a class="mvl" href="moves.html#m-half">ε/2 twice</a> <a class="mvl" href="moves.html#m-min">minimum of two δs</a></p>
+<details><summary>The proof in one piece (as you'd write it in the exam)</summary><div>
+<p><strong>Proof.</strong> Let $\class{k-eps}{\varepsilon}&gt;0$ and</p>
+<div class="math-display">$$\begin{aligned}&\class{k-X}{X}=\big\{\,t\in[a,b]\ :\ \exists\class{k-del}{\delta}&gt;0\\ &\qquad\forall x_1,x_2\in[a,t]:\\ &\qquad|x_1-x_2|&lt;\class{k-del}{\delta}\Rightarrow|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}\,\big\}.\end{aligned}$$</div>
+<p>$a\in \class{k-X}{X}$, since for $x_1,x_2\in[a,a]$ we have $|f(x_1)-f(x_2)|=0$. So $\class{k-X}{X}\subseteq[a,b]$ is non-empty and bounded, and $\class{k-x0}{s_0}=\sup \class{k-X}{X}\in[a,b]$ exists by completeness. If $t\in \class{k-X}{X}$ and $a\le t'\le t$, the $\class{k-del}{\delta}$ for $t$ also works for $t'$, so $t'\in \class{k-X}{X}$. Since every $t'&lt;\class{k-x0}{s_0}$ lies below some element of $\class{k-X}{X}$, we get</p>
+<div class="math-display">$$[a,\class{k-x0}{s_0})\subseteq \class{k-X}{X}\subseteq[a,\class{k-x0}{s_0}].\qquad(1)$$</div>
+<p>By continuity of $f$ at $\class{k-x0}{s_0}$ there is $\class{k-del}{\delta}_1&gt;0$ with $|f(x)-f(\class{k-x0}{s_0})|&lt;\frac{\class{k-eps}{\varepsilon}}{2}$ for all $x\in[a,b]$ with $|x-\class{k-x0}{s_0}|&lt;\class{k-del}{\delta}_1$. For <span class="math-display" style="display:block">$$x_1,x_2\in[a,b]\cap(\class{k-x0}{s_0}-\class{k-del}{\delta}_1,\class{k-x0}{s_0}+\class{k-del}{\delta}_1)$$</span> the triangle inequality gives</p>
+<div class="math-display">$$\begin{aligned}|f(x_1)-f(x_2)|&\le|f(x_1)-f(\class{k-x0}{s_0})|\\ &\quad+|f(\class{k-x0}{s_0})-f(x_2)|\\ &&lt;\tfrac{\class{k-eps}{\varepsilon}}{2}+\tfrac{\class{k-eps}{\varepsilon}}{2}=\class{k-eps}{\varepsilon}.\qquad(2)\end{aligned}$$</div>
+<p>By (1), <span class="math-display" style="display:block">$$t_0=\max\left(a,\ \class{k-x0}{s_0}-\frac{\class{k-del}{\delta}_1}2\right)\in \class{k-X}{X},$$</span> so there is $\class{k-del}{\delta}_0&gt;0$ with</p>
+<div class="math-display">$$\begin{aligned}&\forall x_1,x_2\in[a,t_0]:\\ &|x_1-x_2|&lt;\class{k-del}{\delta}_0\Rightarrow|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}.\qquad(3)\end{aligned}$$</div>
+<p>Let <span class="math-display" style="display:block">$$t_1=\min\left(b,\ \class{k-x0}{s_0}+\frac{\class{k-del}{\delta}_1}2\right)$$</span> and <span class="math-display" style="display:block">$$\class{k-del}{\delta}=\min\left(\class{k-del}{\delta}_0,\ \frac{\class{k-del}{\delta}_1}2\right).$$</span> We claim that $|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}$ for all $x_1,x_2\in[a,t_1]$ with $|x_1-x_2|&lt;\class{k-del}{\delta}$.</p>
+<ul>
+  <li><strong>Case A:</strong> $|x_1-\class{k-x0}{s_0}|\le\frac{\class{k-del}{\delta}_1}2$ or $|x_2-\class{k-x0}{s_0}|\le\frac{\class{k-del}{\delta}_1}2$; oBdA the first. Then $|x_2-\class{k-x0}{s_0}|\le|x_2-x_1|+|x_1-\class{k-x0}{s_0}|$, which is $&lt;\class{k-del}{\delta}+\frac{\class{k-del}{\delta}_1}2\le\class{k-del}{\delta}_1$. Both points lie within $\class{k-del}{\delta}_1$ of $\class{k-x0}{s_0}$, and (2) gives the claim.</li>
+  <li><strong>Case B:</strong> $|x_1-\class{k-x0}{s_0}|&gt;\frac{\class{k-del}{\delta}_1}2$ and $|x_2-\class{k-x0}{s_0}|&gt;\frac{\class{k-del}{\delta}_1}2$. Since $x_j\le t_1\le \class{k-x0}{s_0}+\frac{\class{k-del}{\delta}_1}2$, we get $x_j&lt;\class{k-x0}{s_0}-\frac{\class{k-del}{\delta}_1}2\le t_0$ for $j=1,2$. So $x_1,x_2\in[a,t_0]$ and $|x_1-x_2|&lt;\class{k-del}{\delta}\le\class{k-del}{\delta}_0$, and (3) gives the claim.</li>
+</ul>
+<p>So $t_1\in \class{k-X}{X}$, hence $t_1\le \class{k-x0}{s_0}$. Since $\class{k-x0}{s_0}+\frac{\class{k-del}{\delta}_1}2&gt;\class{k-x0}{s_0}$, this forces $t_1=b$, and then $b\le \class{k-x0}{s_0}\le b$. So $b=t_1\in \class{k-X}{X}$, which says exactly: there is $\class{k-del}{\delta}&gt;0$ with $|f(x_1)-f(x_2)|&lt;\class{k-eps}{\varepsilon}$ for all $x_1,x_2\in[a,b]$ with $|x_1-x_2|&lt;\class{k-del}{\delta}$. As $\class{k-eps}{\varepsilon}&gt;0$ was arbitrary, $f$ is uniformly continuous. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li><strong>Fix $\class{k-eps}{\varepsilon}$, define $\class{k-X}{X}$</strong> = endpoints $t$ with a uniform $\class{k-del}{\delta}$ on $[a,t]$.</li>
+  <li><strong>$a\in \class{k-X}{X}$, bounded</strong> ⇒ $\class{k-x0}{s_0}=\sup \class{k-X}{X}$; and $[a,\class{k-x0}{s_0})\subseteq \class{k-X}{X}$ because shrinking keeps a $\class{k-del}{\delta}$ valid.</li>
+  <li><strong>Window:</strong> continuity at $\class{k-x0}{s_0}$ with $\frac{\class{k-eps}{\varepsilon}}{2}$ gives $\class{k-del}{\delta}_1$; any two points in the window differ by less than $\class{k-eps}{\varepsilon}$.</li>
+  <li><strong>Left piece:</strong> $t_0=\class{k-x0}{s_0}-\frac{\class{k-del}{\delta}_1}2\in \class{k-X}{X}$ gives $\class{k-del}{\delta}_0$.</li>
+  <li><strong>Glue:</strong> $t_1=\min(b,\class{k-x0}{s_0}+\frac{\class{k-del}{\delta}_1}2)$, $\class{k-del}{\delta}=\min(\class{k-del}{\delta}_0,\frac{\class{k-del}{\delta}_1}2)$, cases “near $\class{k-x0}{s_0}$” and “far from $\class{k-x0}{s_0}$”. So $t_1\in \class{k-X}{X}$.</li>
+  <li><strong>Hence</strong> $t_1\le \class{k-x0}{s_0}$ forces $\class{k-x0}{s_0}=b\in \class{k-X}{X}$.</li>
+</ol>
+<p>Compared with the IVT proof: same skeleton (set, supremum, continuity at the supremum, contradiction), but here the contradiction is “we can reach past $\class{k-x0}{s_0}$” in every case, so there's only one case to run, plus the gluing.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does the lantern ask for $\frac\varepsilon2$ at $s_0$, and not $\varepsilon$?</p>
+  <details><summary>Answer</summary><div><p>Two points in the window are each within $\frac\varepsilon2$ of $f(s_0)$, so by the triangle inequality they are within $\varepsilon$ of each other. With $\varepsilon$ you would only get $2\varepsilon$.</p></div></details></li>
+  <li><p><strong>Rung 2 (2 min).</strong> Why $\delta=\min\left(\delta_0,\frac{\delta_1}2\right)$? Say what each part of the minimum is for.</p>
+  <details><summary>Answer</summary><div><p>$\delta\le\delta_0$ handles case B (both points left of $t_0$). $\delta\le\frac{\delta_1}2$ makes case A work: $|x_2-s_0|&lt;\delta+\frac{\delta_1}2\le\delta_1$.</p></div></details></li>
+  <li><p><strong>Rung 3 (10 min).</strong> Write the whole proof from the six steps of the exam box alone.</p></li>
+</ol></div>
+
+<div class="box"><p><strong>Why each hypothesis matters</strong> (Übung 3.76, <a class="pl" href="script.html#p169">p. 169</a>, and <a class="xl" href="lesson-07.html#ex-4">lesson 7</a>'s FS26 MC3 (D)). On $(0,1)$ the function $\tfrac1x$ is continuous but not uniformly continuous (Exercise 5 proves it). On $\mathbb{R}$, $x^2$ is continuous but not uniformly continuous (<a class="xl" href="#s5-promise-three-uniform-continuity-one">section 5</a>). In the proof, compactness enters through the supremum: $\class{k-x0}{s_0}$ lies in $[a,b]$, so $f$ is continuous <em>at</em> $\class{k-x0}{s_0}$ and step 3 can run. On $(0,1)$ the supremum could be the missing endpoint $0$ or $1$, where there is no continuity to use.</p></div>
+
+<h2 id="s7-using-the-theorems">7. Using the theorems</h2>
+<p>The worked examples are now questions: try each one in your head, then open the answer. Your answers, in order, are the solution.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: compute a maximum (Felder HS22, 1.A3)</h3>
+<p><em>Compute $\max\{3x^3-x\ :\ x\in[-1,1]\}$.</em></p>
+<ol class="gq">
+  <li><p>Before computing anything: why must a maximum exist?</p>
+  <details><summary>Answer</summary><div><p>$f(x)=3x^3-x$ is a polynomial, so continuous, and $[-1,1]$ is a compact interval. By the extreme value theorem, $f$ attains a maximum. (Write this sentence in the exam; it's often a point.)</p></div></details></li>
+  <li><p>Evaluate $f$ at $-1$, $0$ and $1$. Which value is the best candidate for the maximum?</p>
+  <details><summary>Answer</summary><div><p>$f(-1)=-3+1=-2$, $f(0)=0$, $f(1)=3-1=2$. Candidate: $2$, at $x=1$.</p></div></details></li>
+  <li><p>What inequality do you have to prove to confirm the candidate?</p>
+  <details><summary>Answer</summary><div><p>$3x^3-x\le2$ for all $x\in[-1,1]$, that is, $3x^3-x-2\le0$.</p></div></details></li>
+  <li><p>$x=1$ makes $3x^3-x-2$ equal to $0$. What does that let you do?</p>
+  <details><summary>Answer</summary><div><p>Factor out $(x-1)$:</p><div class="math-display">$$3x^3-x-2=(x-1)(3x^2+3x+2).$$</div><p>Check by expanding: $(x-1)(3x^2+3x+2)$ is $3x^3+3x^2+2x-3x^2-3x-2$, which is $3x^3-x-2$.</p></div></details></li>
+  <li><p>What sign does each factor have for $x\in[-1,1]$?</p>
+  <details><summary>Answer</summary><div><p>$x-1\le0$ because $x\le1$. And $3x^2+3x+2=3\left(x+\tfrac12\right)^2+\tfrac54$, which is $&gt;0$ always (completing the square). So the product is $\le0$.</p></div></details></li>
+  <li><p>Write the conclusion in one line.</p>
+  <details><summary>Answer</summary><div><p>$3x^3-x\le2$ on $[-1,1]$, with equality at $x=1$, so $\max\{3x^3-x : x\in[-1,1]\}=2$, attained at $x=1$.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-2">Worked example 2: multiple choice (Einsiedler HS21, #10 (a) and (b))</h3>
+<p><em>Let $I\subseteq\mathbb{R}$ be a bounded interval and $f:I\to\mathbb{R}$. True or false? (a) If $f$ is continuous, then $f$ is bounded. (b) If $f$ is continuous and injective, then $f$ is monotone.</em></p>
+<ol class="gq">
+  <li><p>For (a): which theorem looks relevant, and what does it assume that this statement doesn't?</p>
+  <details><summary>Answer</summary><div><p>The boundedness theorem: continuous on $[a,b]$ implies bounded. It needs the interval to be <em>closed</em> and bounded. Here $I$ is only bounded, so it could be open at an end.</p></div></details></li>
+  <li><p>So look for a counterexample: a continuous, unbounded function on a bounded interval that isn't closed.</p>
+  <details><summary>Answer</summary><div><p>$f(x)=\frac1x$ on $I=(0,1]$: continuous (quotient, denominator never $0$ there), and $f\!\left(\frac1n\right)=n$ for every $n$, so unbounded. <strong>(a) is false.</strong></p></div></details></li>
+  <li><p>For (b): what would a continuous function on an interval have to do in order to be <em>not</em> monotone?</p>
+  <details><summary>Answer</summary><div><p>Turn around: go up and then down (or down and then up).</p></div></details></li>
+  <li><p>Why does turning around contradict injectivity?</p>
+  <details><summary>Answer</summary><div><p>If it goes up and then down, a value slightly below the turning point is taken once on the way up and once on the way down, by the intermediate value theorem on each side. Two different points with the same value contradict injectivity. <strong>(b) is true.</strong> This is Übung 3.61 (<a class="pl" href="script.html#p160">p. 160</a>), proved in full in <a class="xl" href="lesson-07.html#bonus">lesson 7</a>'s Bonus (b).</p></div></details></li>
+</ol>
+<p>Parts (c) and (d) ask about antiderivatives (<em>Stammfunktionen</em>), which come in <a class="xl" href="lesson-09.html">lesson 9</a> and later.</p>
+</div>
+
+<p><strong>Why it's cool.</strong> On a closed, bounded interval, continuity alone gives three promises for free: bounded, maximum and minimum attained, uniformly continuous. Drop any one hypothesis (an open interval, an unbounded interval, a jump) and a counterexample breaks the promise, which is exactly what the exam's true/false questions test.</p>
+
+<h2 id="s8-your-turn">8. Your turn</h2>
+<div class="box">
+  <h3 id="ex-1">Exercise 1 (Übung 3.70, <a class="pl" href="script.html#p167">p. 167</a>)</h3>
+  <p>Does every continuous function $f:(0,1)\to\mathbb{R}$ attain its maximum? Give a counterexample, or a proof. Then give one continuous function on $(0,1)$ that <em>does</em> attain a maximum.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> “every function … attains” is a “for all” claim, so one counterexample refutes it: name $f$, compute its supremum, show no point reaches it. <em>Moves:</em> <a class="mvl" href="moves.html#m-counter">a small counterexample</a>.</p>
+  <p><strong>No.</strong> $f(x)=x$ is continuous on $(0,1)$ and $f(x)&lt;1$ for all $x$, with $\sup f((0,1))=1$ (<a class="xl" href="lesson-06.html#we-1">lesson 6</a>: for every $\varepsilon&gt;0$ the point $x=\max\left(\tfrac12,\,1-\tfrac\varepsilon2\right)$ has $f(x)&gt;1-\varepsilon$). If $f$ attained a maximum at some $x_{\max}\in(0,1)$, then $x_{\max}&lt;1$ and the point $\frac{x_{\max}+1}2\in(0,1)$ would have a bigger value. So there is no maximum. The extreme value theorem doesn't apply because $(0,1)$ is not closed.</p>
+  <p><strong>One that does:</strong> $f(x)=-\left(x-\tfrac12\right)^2$. Every value is $\le0$, and $f\left(\tfrac12\right)=0$, so the maximum $0$ is attained at $\tfrac12$. The theorem gives a guarantee on compact intervals; elsewhere a maximum can still happen, just not for sure.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-2">Exercise 2 (Figalli HS23, MC3)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">HS23 exam with solutions</a></p>
+  <p>Let $f:[0,\infty)\to[0,\infty)$ be continuous with $f(0)=0$. Which implication is always correct?</p>
+  <p>(A) If $f$ is uniformly continuous, then $f$ is bounded. &nbsp; (B) If $f$ is unbounded, then $f$ is surjective. &nbsp; (C) If $f$ is monotone, then $f$ is injective.</p>
+  <p class="legend">(The exam's option (D) is about derivatives, <a class="xl" href="lesson-17.html#we-1">lesson 17</a>; the solution covers it anyway.)</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Answer B.</strong></p>
+  <ul>
+    <li><strong>(A) False.</strong> $f(x)=x$ fits the setting ($f(0)=0$, values in $[0,\infty)$) and is uniformly continuous: for $\varepsilon&gt;0$ take $\delta=\varepsilon$, then $|x-y|&lt;\delta$ gives $|f(x)-f(y)|=|x-y|&lt;\varepsilon$. But $f$ is unbounded. Uniform continuity limits how <em>fast</em> $f$ changes, not how <em>far</em> it gets.</li>
+    <li><strong>(B) True.</strong> Let $c\in[0,\infty)$. Since $f\ge0$ and $f$ is unbounded, $f$ is not bounded by $c$, so there is $x_1$ with $f(x_1)&gt;c$. Then $f(0)=0\le c&lt;f(x_1)$, so $c$ lies between $f(0)$ and $f(x_1)$. The IVT on $[0,x_1]$ gives $x$ with $f(x)=c$. So every $c\ge0$ is a value: $f$ is surjective onto $[0,\infty)$.</li>
+    <li><strong>(C) False.</strong> $f=0$ (constant) fits the setting and is monotone (increasing in the non-strict sense: $x\le y\Rightarrow f(x)\le f(y)$), but $f(1)=f(2)$. Only <em>strict</em> monotonicity gives injectivity.</li>
+    <li><strong>(D) False</strong> (for later). $f(x)=\min(x,1)$ is Lipschitz with $L=1$ but has a kink at $x=1$, where it isn't differentiable.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-3">Exercise 3 (Felder HS22, MC5 (B) and (D))</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">HS22 exam</a></p>
+  <p>Let $a&lt;b$ and $f:[a,b]\to\mathbb{R}$. True or false? (B) If $f$ is monotonically increasing, then $f$ is bounded. (D) If $f$ attains a maximum and a minimum, then $f$ is continuous.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <ul>
+    <li><strong>(B) True.</strong> For $x\in[a,b]$ we have $a\le x\le b$, so monotonicity gives $f(a)\le f(x)\le f(b)$. Hence $|f(x)|\le\max\big(|f(a)|,|f(b)|\big)$ for all $x$. Notice we needed no continuity at all, only the two endpoints, which $[a,b]$ contains.</li>
+    <li><strong>(D) False.</strong> Let $m=\frac{a+b}2$ and $f(x)=0$ for $x&lt;m$, $f(x)=1$ for $x\ge m$. It attains its maximum $1$ (at $b$) and its minimum $0$ (at $a$), but it jumps at $m$. The extreme value theorem says “continuous on $[a,b]$ ⇒ max and min attained”; the converse is false.</li>
+  </ul>
+  <p>For the record, the exam's (A) “continuous ⇒ differentiable” and (C) “Riemann integrable ⇒ continuous” are also false, so the answer is (B).</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-4">Exercise 4 (the twin of Worked example 1)</h3>
+  <p>Compute $\min\{3x^3-x\ :\ x\in[-1,1]\}$, with the same three parts: existence, candidate, proof.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><em>Frame:</em> existence (extreme value theorem), a candidate (the values at a few points), then the inequality $f(x)\ge$ candidate for all $x$, proved by factoring.</p>
+  <ul>
+    <li><strong>Existence:</strong> $f(x)=3x^3-x$ is continuous on the compact interval $[-1,1]$, so the minimum exists by the extreme value theorem.</li>
+    <li><strong>Candidate:</strong> $f(-1)=-3+1=-2$, which is the smallest of the values $-2,0,2$ at $-1,0,1$.</li>
+    <li><strong>Proof:</strong> we need $3x^3-x\ge-2$, that is, $3x^3-x+2\ge0$. Since $x=-1$ is a root, <span class="math-display" style="display:block">$$3x^3-x+2=(x+1)(3x^2-3x+2).$$</span>(Check: <span class="math-display" style="display:block">$$\begin{aligned}3x^3-3x^2+2x+3x^2-3x+2&amp;=3x^3-x+2\end{aligned}.$$</span>) For $x\ge-1$ the first factor is $\ge0$, and <span class="math-display" style="display:block">$$3x^2-3x+2=3\left(x-\tfrac12\right)^2+\tfrac54&gt;0.$$</span>So the product is $\ge0$.</li>
+    <li><strong>Answer:</strong> $\min=-2$, attained at $x=-1$.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-5">Exercise 5 (proof, FS26 MC3 (D) made precise)</h3>
+<p class="examsrc">Open the original: <a href="pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">FS26 exam</a></p>
+  <p>Show that $f(x)=\frac1x$ is not uniformly continuous on $(0,1)$. Write down the negation first, then do $\delta=0.1$ with numbers, then the general proof.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Negation:</strong> $\exists\varepsilon&gt;0\ \forall\delta&gt;0\ \exists x,y\in(0,1)$ with $|x-y|&lt;\delta$ and $\left|\frac1x-\frac1y\right|\ge\varepsilon$.</p>
+  <p><strong>Numbers, $\varepsilon=1$, $\delta=0.1$:</strong> go close to $0$, where $\frac1x$ is steep: $x=0.1$, $y=0.05$. Then $|x-y|=0.05&lt;0.1$, but $\frac1y-\frac1x=20-10=10\ge1$.</p>
+  <p><strong>Frame:</strong> first lines “Let $\varepsilon=1$. Let $\delta&gt;0$ be arbitrary.”, last line “Then $|x-y|&lt;\delta$ but $\left|\frac1x-\frac1y\right|\ge1$.” The gap: choose $x,y$ depending on $\delta$.</p>
+  <p><strong>Proof.</strong> Let $\varepsilon=1$ and $\delta&gt;0$. Put $h=\min\left(\delta,\tfrac12\right)$, $x=h$ and $y=\frac h2$. Both lie in $(0,1)$, and $|x-y|=\frac h2&lt;\delta$. But</p>
+  <div class="math-display">$$\frac1y-\frac1x=\frac2h-\frac1h=\frac1h\ge2\ge1=\varepsilon.$$</div>
+  <p>So no $\delta$ works for $\varepsilon=1$. <span class="qed">∎</span> (We took $h\le\frac12$ only to make sure $x$ stays inside $(0,1)$ when someone offers a big $\delta$.)</p>
+  <p class="moves">Moves used: <a class="mvl" href="moves.html#m-neg">the negation recipe</a></p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-6">Exercise 6 (inverse function theorem)</h3>
+  <p>Let $f(x)=x^3+x$ on $[0,2]$. (a) Show $f$ is strictly increasing. (b) What is $f([0,2])$, and what does the inverse function theorem say about $f^{-1}$? (c) Compute $f^{-1}(2)$ and $f^{-1}(10)$.</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>(a)</strong> <em>Frame:</em> first line “Let $x&lt;y$ in $[0,2]$”, last line “so $f(x)&lt;f(y)$”. The gap: show $y^3-x^3&gt;0$ by factoring.</p>
+  <p>Let $x&lt;y$. Then $y^3-x^3=(y-x)(y^2+xy+x^2)$, and <span class="math-display" style="display:block">$$y^2+xy+x^2=\left(y+\tfrac x2\right)^2+\tfrac34x^2&gt;0$$</span>(it could only be $0$ if $x=0$ and $y=0$, but $x\neq y$). So $x^3&lt;y^3$. Adding $x&lt;y$ gives $x^3+x&lt;y^3+y$: $f$ is strictly increasing.</p>
+  <p><strong>(b)</strong> $f$ is a polynomial, so continuous, and strictly increasing on $I=[0,2]$. By the inverse function theorem $f([0,2])=[f(0),f(2)]=[0,10]$, and $f^{-1}:[0,10]\to[0,2]$ exists and is continuous and strictly increasing.</p>
+  <p><strong>(c)</strong> $f(1)=1+1=2$, so $f^{-1}(2)=1$. $f(2)=8+2=10$, so $f^{-1}(10)=2$. (We can't write $f^{-1}$ as a closed formula, but the theorem tells us it exists and is continuous anyway.)</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="bonus">Bonus</h3>
+  <p>(a) (Übung 3.78 a, <a class="pl" href="script.html#p169">p. 169</a>) Show that a Lipschitz continuous function is uniformly continuous. (b) Let $f:[a,b]\to\mathbb{R}$ be continuous. Show that $f([a,b])$ is a closed bounded interval, namely $[\min f,\ \max f]$. (Combine <a class="xl" href="lesson-07.html">lessons 7</a> and 8.)</p>
+<details class="sol"><summary>Solution</summary><div>
+  <p><strong>Frame for (a):</strong> first line “Let $\varepsilon&gt;0$.”, then one $\delta$ chosen before any points, last line “so $|x-y|&lt;\delta$ implies $|f(x)-f(y)|&lt;\varepsilon$ for all $x,y$”. <strong>Frame for (b):</strong> a set equality $A=B$ is always proved as two inclusions, $A\subseteq B$ and $B\subseteq A$. <em>Moves:</em> <a class="mvl" href="moves.html#m-subset">set equality by two inclusions</a>.</p>
+  <p><strong>(a)</strong> Let $|f(x)-f(y)|\le L|x-y|$ for all $x,y\in D$, and $\varepsilon&gt;0$. If $L=0$, then $f$ is constant and any $\delta$ works. If $L&gt;0$, let $\delta=\frac\varepsilon L$. Then $|x-y|&lt;\delta$ gives <span class="math-display" style="display:block">$$|f(x)-f(y)|\le L|x-y|&lt;L\cdot\frac\varepsilon L=\varepsilon.$$</span>The $\delta$ does not depend on the points, so $f$ is uniformly continuous. <span class="qed">∎</span></p>
+  <p><strong>(b)</strong> By the extreme value theorem there are $p,q\in[a,b]$ with $f(p)=m=\min f$ and $f(q)=M=\max f$. By definition $m\le f(x)\le M$ for all $x$, so $f([a,b])\subseteq[m,M]$. Conversely, let $c\in[m,M]$. Then $c$ lies between $f(p)$ and $f(q)$, and the IVT on the interval between $p$ and $q$ (which lies inside $[a,b]$) gives $x$ with $f(x)=c$. So $f([a,b])=[m,M]$. <span class="qed">∎</span> In words: a continuous image of a compact interval is a compact interval. This one sentence holds <a class="xl" href="lesson-07.html">lessons 7</a> and 8 together.</p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercise 1 (1), Exercise 2 (1), Exercise 3 (2), Exercise 4 (1) and Exercise 6 (2) make 7. If you have 5 of 7, you're done. Exercise 5 and the Bonus are proof practice and don't count against you.</p>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. For wonder <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 min)</span></h2>
+<p><strong>Why your screen can draw a graph.</strong> A plotting program evaluates $f$ at finitely many points, one per pixel, and joins them up. That's only honest if values at nearby points are close, <em>with one tolerance for the whole picture</em>. That is uniform continuity, and Heine's theorem guarantees it for every continuous function on a closed interval. Engineers rely on the same thing whenever a machine with precision $\delta$ is promised to deliver an output within $\varepsilon$, at every setting.</p>
+<p><strong>A whole family of irrational numbers</strong> (Lemma 3.65, <a class="pl" href="script.html#p164">p. 164</a>). For $m,k\in\mathbb{N}$, $\sqrt[m]{k}$ is rational only if it is an integer. <em>Proof:</em> suppose $\sqrt[m]{k}=\frac pq$ in lowest terms. Then $k=\frac{p^m}{q^m}$, and $p^m,q^m$ still share no prime factor (any prime dividing $p^m$ divides $p$, and likewise for $q$). A fraction in lowest terms is an integer only if its denominator is $1$, so $q^m=1$, $q=1$, and $\sqrt[m]{k}=p\in\mathbb{Z}$. <span class="qed">∎</span> So $\sqrt2,\sqrt3,\sqrt5,\sqrt[3]2,\sqrt[3]{9},\dots$ are all irrational in one stroke, because no integer squared is $2$, no integer cubed is $9$, and so on.</p>
+<p><strong>The word “compact”.</strong> We used it for $[a,b]$, but it's much bigger. In chapter 5 (<a class="xl" href="lesson-10.html">lesson 10</a> onwards) compact sets are defined for any metric space, and all three promises of this lesson hold for continuous functions on <em>any</em> compact set. Heine published the uniform continuity theorem in 1872. Dirichlet had already used the idea in his lectures in the 1850s, and Borel's covering theorem of 1895 later turned “compact” into one of the central ideas of modern mathematics.</p>
+
+<h2 id="s10-what-we-skipped">10. What we skipped</h2>
+<p>All of this is also on the skip list.</p>
+<ul>
+  <li><strong>Wichtige Übung 3.64 (<a class="pl" href="script.html#p161">p. 161</a>):</strong> the rules for rational powers, $(xy)^{m/n}=x^{m/n}y^{m/n}$ and friends. Medium priority; they matter once $\exp$ and $\log$ arrive.</li>
+  <li><strong>The endpoint bookkeeping in the proof of Satz 3.62 (<a class="pl" href="script.html#p162">p. 162</a>)</strong> for half-open and unbounded intervals. Low priority; the idea is in part (b) above.</li>
+  <li><strong>Übung 3.66 (<a class="pl" href="script.html#p164">p. 164</a>):</strong> exactly when $\sqrt[m]{k}$ is rational, via prime factorisations. Low priority.</li>
+  <li><strong>Übung 3.77 (<a class="pl" href="script.html#p169">p. 169</a>):</strong> a second proof of Heine with a continuous choice of $\delta$. Low priority.</li>
+  <li><strong>Übung 3.78 (b)–(d) (<a class="pl" href="script.html#p169">p. 169–170</a>):</strong> $\sqrt x$ is uniformly continuous on $[0,2]$ but not Lipschitz there, and Lipschitz on $[1,\infty)$. Medium priority; good multiple-choice material.</li>
+  <li><strong>Applets 3.72 and 3.74 (<a class="pl" href="script.html#p167">p. 167</a>):</strong> interactive pictures of uniform continuity; our ε-band figure in <a class="xl" href="#s5-promise-three-uniform-continuity-one">section 5</a> shows the same thing.</li>
+  <li><strong>Complex-valued versions</strong> of Satz 3.67 and Satz 3.75. Low priority; the proofs are word for word the same with $|\cdot|$ on $\mathbb{C}$.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="lesson-09.html">lesson 9</a>, the idea of the Riemann integral and the proof that monotone functions are integrable (Einsiedler HS21 #5, Felder HS22 2.A2). It also answers the antiderivative parts of HS21 #10.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="lesson-07.html">← Lesson 7: The Unbroken Road</a>
+<a href="analysis.html">Analysis home</a>
+<a href="lesson-09.html">Lesson 9: Tiles and Canopies →</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

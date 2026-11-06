@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flashcards</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+</nav>
+<header>
+<span class="eyebrow">Analysis 1 · Flashcards</span>
+<h1>Flashcards</h1>
+<p class="lead">Definitions, theorems and proof moves, lesson by lesson. Say the answer out loud or write it down before you flip the card: definitions and theorem statements must come out exactly.</p>
+</header>
+<div class="fc-controls" aria-label="Choose cards">
+  <label>Lessons <select id="fc-from" aria-label="From lesson"></select></label>
+  <label>to <select id="fc-to" aria-label="To lesson"></select></label>
+  <label><input type="checkbox" id="fc-def" checked> Definitions</label>
+  <label><input type="checkbox" id="fc-thm" checked> Theorems</label>
+  <label><input type="checkbox" id="fc-move" checked> Moves</label>
+  <label><input type="checkbox" id="fc-recipe" checked> Recipes</label>
+  <button type="button" class="primary" id="fc-start">Start</button>
+</div>
+<p class="fc-meta" id="fc-count" aria-live="polite"></p>
+<div class="fc-stage" id="fc-stage">
+  <p>Choose the lessons and the kinds of card, then press Start. The cards come in random order. “Again” puts a card back a few places later; “Got it” removes it from this round.</p>
+</div>
+<div class="fc-btns" id="fc-btns" hidden>
+  <button type="button" class="primary" id="fc-show">Show answer</button>
+  <button type="button" id="fc-again" hidden>Again</button>
+  <button type="button" class="primary" id="fc-got" hidden>Got it</button>
+</div>
+<p class="legend">Recipe cards are added with the calculation units of the refresher. New definition and theorem cards arrive with each refresher unit.</p>
+<div id="fc-pool">
+<!-- Flashcards: one <div class="fc"> per card. data-t = def | thm | recipe ; data-l = lesson where it is taught. Moves cards are added automatically from the moves library. -->
+
+<div class="fc" data-t="def" data-l="1"><div class="q">Negate $\forall x\in X:\ A(x)$ and $\exists x\in X:\ A(x)$. What stays the same?</div>
+<div class="a"><p>$\neg(\forall x\in X:\ A(x))\iff\exists x\in X:\ \neg A(x)$ and $\neg(\exists x\in X:\ A(x))\iff\forall x\in X:\ \neg A(x)$.</p><p>The order of the quantifiers and their ranges stay the same ($\forall\varepsilon&gt;0$ becomes $\exists\varepsilon&gt;0$). Only the type of each quantifier and the final condition change.</p></div></div>
+
+<div class="fc" data-t="def" data-l="1"><div class="q">Pointwise versus uniform existence: which of $\forall x\,\exists y$ and $\exists y\,\forall x$ is stronger, and why?</div>
+<div class="a"><p>$\exists y\,\forall x:\ A(x,y)$ (uniform: one $y$ for all $x$) implies $\forall x\,\exists y:\ A(x,y)$ (pointwise: $y$ may depend on $x$), not conversely. Example on $\mathbb N$: $\forall x\,\exists y:\ x&lt;y$ is true, $\exists y\,\forall x:\ x&lt;y$ is false.</p></div></div>
+
+<div class="fc" data-t="def" data-l="1"><div class="q">Is “$\forall x\in\emptyset:\ A(x)$” true or false? And “$\exists x\in\emptyset:\ A(x)$”?</div>
+<div class="a"><p>“$\forall x\in\emptyset:\ A(x)$” is always true (vacuously true), whatever $A$ says. “$\exists x\in\emptyset:\ A(x)$” is always false.</p></div></div>
+
+<div class="fc" data-t="def" data-l="2"><div class="q">Definition: $f:X\to Y$ is <em>injective</em>.</div>
+<div class="a"><p>$\forall x_1,x_2\in X:\ f(x_1)=f(x_2)\Rightarrow x_1=x_2$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="2"><div class="q">Definition: $f:X\to Y$ is <em>surjective</em>. And <em>bijective</em>?</div>
+<div class="a"><p>Surjective: $\forall y\in Y\ \exists x\in X:\ f(x)=y$. Bijective: injective and surjective. Then the inverse map $f^{-1}:Y\to X$ exists, with $f^{-1}(f(x))=x$ and $f(f^{-1}(y))=y$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="2"><div class="q">Definitions: the image $f(A)$ and the preimage $f^{-1}(B)$, for $f:X\to Y$, $A\subseteq X$, $B\subseteq Y$.</div>
+<div class="a"><p>$f(A)=\{f(x)\mid x\in A\}\subseteq Y$ and $f^{-1}(B)=\{x\in X\mid f(x)\in B\}\subseteq X$. The preimage exists for every $f$: the symbol does not mean that $f$ is invertible.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="2"><div class="q">Which set operations do the preimage and the image respect?</div>
+<div class="a"><p>Preimage: all of them. $f^{-1}(B_1\cup B_2)=f^{-1}(B_1)\cup f^{-1}(B_2)$, the same with $\cap$, and $f^{-1}(Y\setminus B)=X\setminus f^{-1}(B)$.</p><p>Image: only $\cup$. In general only $f(A_1\cap A_2)\subseteq f(A_1)\cap f(A_2)$; equality holds if $f$ is injective.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="2"><div class="q">Composition of $f:X\to Y$ and $g:Y\to Z$: what follows forwards, and what follows backwards from $g\circ f$?</div>
+<div class="a"><p>Forwards: $f,g$ injective (surjective, bijective) $\Rightarrow$ $g\circ f$ injective (surjective, bijective).</p><p>Backwards: $g\circ f$ injective $\Rightarrow$ $f$ injective (the first map). $g\circ f$ surjective $\Rightarrow$ $g$ surjective (the last map). Nothing more: $g$ resp. $f$ need not be.</p></div></div>
+
+<div class="fc" data-t="def" data-l="3"><div class="q">Definition: a relation $\sim$ on $X$ is an <em>equivalence relation</em>.</div>
+<div class="a"><p>Reflexive: $\forall x\in X:\ x\sim x$. Symmetric: $\forall x,y\in X:\ x\sim y\Rightarrow y\sim x$. Transitive: $\forall x,y,z\in X:\ (x\sim y\wedge y\sim z)\Rightarrow x\sim z$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="3"><div class="q">Definitions: the equivalence class $[x]$, the quotient $X/\!\sim$, and a partition of $X$.</div>
+<div class="a"><p>$[x]=\{y\in X\mid y\sim x\}$. $X/\!\sim\ =\{[x]\mid x\in X\}$, the set of all classes. A partition of $X$ is a set of non-empty, pairwise disjoint subsets of $X$ whose union is $X$.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="3"><div class="q">Let $\sim$ be an equivalence relation and $x,y\in X$. Which three statements are equivalent, and what follows for the classes?</div>
+<div class="a"><p>$x\sim y\iff[x]=[y]\iff[x]\cap[y]\neq\emptyset$. So two classes are equal or disjoint, and the classes form a partition of $X$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="3"><div class="q">Definitions: $X$ has $n$ elements; $X$ is countable (countably infinite); $X$ is uncountable.</div>
+<div class="a"><p>$X$ has $n$ elements if there is a bijection $\{1,\dots,n\}\to X$. $X$ is countable if there is a bijection $\mathbb N\to X$. $X$ is uncountable if it is infinite and not countable.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="3"><div class="q">The pigeonhole principle.</div>
+<div class="a"><p>If $X$ and $Y$ are finite with $|X|&gt;|Y|$, there is no injective map $X\to Y$: two elements of $X$ land on the same element of $Y$.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="3"><div class="q">Which of $\mathbb Z$, $\mathbb N\times\mathbb N$, $\mathbb Q$, $\{A,B\}^{\mathbb N}$ are countable? What about subsets of a countable set?</div>
+<div class="a"><p>$\mathbb Z$, $\mathbb N\times\mathbb N$ and $\mathbb Q$ are countable. $\{A,B\}^{\mathbb N}$ (all infinite A/B-sequences) is uncountable, by the diagonal argument. A subset of a countable set is finite or countable.</p></div></div>
+
+<div class="fc" data-t="move" data-l="1"><div class="q">Move: The negation recipe. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show something is <em>not</em> continuous or <em>not</em> uniformly continuous. <strong>Sentences:</strong> “Let $\varepsilon=\dots$ (you choose). Let $\delta&gt;0$ be arbitrary. Take $x=\dots$, $y=\dots$ (depending on $\delta$). Then $|x-y|&lt;\delta$ but $|f(x)-f(y)|\ge\varepsilon$.”</p><p><a href="moves.html#m-neg">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="2"><div class="q">Move: The injectivity template. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show a map $f$ is injective. <strong>Sentences:</strong> “Let $x_1,x_2$ with $f(x_1)=f(x_2)$. … Hence $x_1=x_2$.” Start from equal outputs, end at equal inputs.</p><p><a href="moves.html#m-inj">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="2"><div class="q">Move: The surjectivity template. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show a map $f:X\to Y$ is surjective. <strong>Sentences:</strong> “Let $y\in Y$. Put $x=\dots$ (found on scrap paper by solving $f(x)=y$). Then $x\in X$ and $f(x)=\dots=y$.”</p><p><a href="moves.html#m-surj">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="2"><div class="q">Move: A small counterexample. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a statement “for all …” looks false. One concrete example kills it. <strong>Sentences:</strong> “The statement is false: take $X=\{1,2\}$, $f=\dots$. Then … but not ….” Use the smallest sets and simplest maps that work.</p><p><a href="moves.html#m-counter">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Move: The three-bullet check. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show a relation $\sim$ is an equivalence relation. <strong>Sentences:</strong> “Reflexive: for every $x$, $x\sim x$ because …. Symmetric: let $x\sim y$; then … so $y\sim x$. Transitive: let $x\sim y$ and $y\sim z$; then … so $x\sim z$.”</p><p><a href="moves.html#m-equiv">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Move: Prove a circle of implications. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> several statements (i), (ii), (iii) are claimed to be equivalent. <strong>Sentences:</strong> “We show (i) ⇒ (ii) ⇒ (iii) ⇒ (i).” Three arrows instead of six.</p><p><a href="moves.html#m-circle">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Move: Set equality by two inclusions. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show $A=B$ for sets. <strong>Sentences:</strong> “⊆: let $x\in A$. … so $x\in B$. ⊇: let $x\in B$. … so $x\in A$.”</p><p><a href="moves.html#m-subset">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Move: Assume the opposite. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> the claim is a “no such thing exists” or “cannot be” statement, so there is nothing to build directly. <strong>Sentences:</strong> “Suppose, for contradiction, that …. Then …, which contradicts …. Hence ….” Negate carefully (the negation recipe).</p><p><a href="moves.html#m-contra">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Move: The diagonal argument. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show that no list (no map $\mathbb N\to X$) reaches everything. <strong>Sentences:</strong> “Let $x_1,x_2,\dots$ be any list. Build $y$ that differs from $x_n$ in the $n$-th place, for every $n$. Then $y\ne x_n$ for all $n$, so $y$ is not on the list.”</p><p><a href="moves.html#m-diag">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="4"><div class="q">Move: Go through the back gate (contrapositive). When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> “$A$ ⇒ $B$” is hard but “not $B$ ⇒ not $A$” is easy, often because “not $B$” gives you a formula to work with. <strong>Sentences:</strong> “We prove the contrapositive. Suppose $n$ is odd, so $n=2k+1$. Then … so $n^2$ is odd.”</p><p><a href="moves.html#m-contrapos">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="4"><div class="q">Move: Induction with labelled parts. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a statement $P(n)$ for every $n\ge n_0$. <strong>Sentences:</strong> “Base case $n=n_0$: …. Induction step: assume $P(n)$ for some $n\ge n_0$ (induction hypothesis). Then … (by the induction hypothesis) … which is $P(n+1)$.” Point to the exact line where the hypothesis is used.</p><p><a href="moves.html#m-induct">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="4"><div class="q">Move: Drop a non-negative term. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need a lower bound and the expression has an extra term that is $\ge0$. <strong>Sentences:</strong> “$1+(n+1)x+nx^2\ge1+(n+1)x$, since $nx^2\ge0$.” A cousin of <a class="mvl" href="moves.html#m-diff">reduce to “≥ 0”</a>.</p><p><a href="moves.html#m-drop">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Move: Minimum of two δs. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> two different conditions each give you a $\delta$, and you need both at once. <strong>Sentences:</strong> “Let $\delta=\min(\delta_1,\delta_2)&gt;0$. Then both … hold.”</p><p><a href="moves.html#m-min">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Move: Reduce to one case (oBdA). When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> two cases are mirror images. <strong>Sentences:</strong> “Without loss of generality $f$ is increasing; otherwise replace $f$ by $-f$.”</p><p><a href="moves.html#m-obda">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Move: Choose n by Archimedes. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you have a bound like $\frac Cn$ and need it below $\varepsilon$. <strong>Sentences:</strong> “By the Archimedean principle choose $n\in\mathbb N$ with $n&gt;\frac C\varepsilon$. Then $\frac Cn&lt;\varepsilon$.”</p><p><a href="moves.html#m-arch">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Move: Insert a middle point. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need to bound a distance $d(x,z)$ but only know things about $d(x,y)$ and $d(y,z)$. <strong>Sentences:</strong> “By the triangle inequality, $d(x,z)\le d(x,y)+d(y,z)&lt;\dots$.” For numbers: $|a-c|\le|a-b|+|b-c|$; the reverse form is $\bigl||a|-|b|\bigr|\le|a-b|$.</p><p><a href="moves.html#m-tri">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Move: Unfold an absolute value. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a statement about $|x|$ you can't see directly. <strong>Sentences:</strong> “$|x|\le c$ ⇔ $-c\le x\le c$.” Or split into cases: “If $x\ge0$, $|x|=x$; if $x&lt;0$, $|x|=-x$.” Then add the two-sided inequalities.</p><p><a href="moves.html#m-abs">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Move: The supremum trick. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need something to hold all the way to $b$, but there's no formula. <strong>Sentences:</strong> “Let $X=\{t\in[a,b]: \text{it holds on }[a,t]\}$. Then $a\in X$ and $X$ is bounded by $b$, so $s_0=\sup X$ exists. By continuity at $s_0$ … so some $t_1&gt;s_0$ lies in $X$ unless $s_0=b$.”</p><p><a href="moves.html#m-sup">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Move: Continuity with a chosen ε. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you know $f$ is continuous at a point and need a neighbourhood where $f$ is under control. Choose $\varepsilon$ as the room you have. <strong>Sentences:</strong> “By continuity at $x_0$ with $\varepsilon=\dots$, there is $\delta&gt;0$ such that $|x-x_0|&lt;\delta$ implies $|f(x)-f(x_0)|&lt;\varepsilon$.”</p><p><a href="moves.html#m-eps">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Move: ε/2 twice. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need two quantities within $\varepsilon$ of each other, and each is close to a third. <strong>Sentences:</strong> “$|u-w|\le|u-v|+|v-w|&lt;\frac\varepsilon2+\frac\varepsilon2=\varepsilon$.”</p><p><a href="moves.html#m-half">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Move: sup ≤ an upper bound. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you want $\sup A\le c$ (or $c\le\inf B$). <strong>Sentences:</strong> “Every element of $A$ is $\le c$, so $c$ is an upper bound of $A$, hence $\sup A\le c$.” And the other way round: “$x\in A$, so $x\le\sup A$.”</p><p><a href="moves.html#m-ub">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Move: Approach a supremum. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need an element of $A$ almost as big as $\sup A$. <strong>Sentences:</strong> “Since $\sup A-\eta&lt;\sup A$, it is not an upper bound of $A$, so there is $x\in A$ with $x&gt;\sup A-\eta$.” The twin of “contradict least”.</p><p><a href="moves.html#m-approx">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Move: Two armies for completeness. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need a real number to exist (a supremum, a common point) and only have the completeness axiom. <strong>Sentences:</strong> “Let $A$ be the set …, $B$ the set of its upper bounds. Both are non-empty and $a\le b$ for all $a\in A$, $b\in B$. By completeness there is $c$ with $a\le c\le b$ for all of them.”</p><p><a href="moves.html#m-complete">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="7"><div class="q">Move: Contradict “least”. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you assumed something about a supremum $S$ and want a contradiction. <strong>Sentences:</strong> “So $S-\eta$ is an upper bound smaller than $S$, contradicting that $S$ is the least upper bound.”</p><p><a href="moves.html#m-least">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="7"><div class="q">Move: A helper function. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> “$f$ gets arbitrarily close to $S$” needs to become something a theorem can catch. Build a new function, like $\frac1{S-f}$, that turns “close” into “large”. <strong>Sentences:</strong> “Then $F(x)=\dots$ is well-defined and continuous, so by … it is bounded.”</p><p><a href="moves.html#m-helper">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="8"><div class="q">Move: Trap between two values. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a function is monotone and you need to control it. <strong>Sentences:</strong> “Since $y_-&lt;y&lt;y_+$ and $g$ is increasing, $g(y_-)&lt;g(y)&lt;g(y_+)$.”</p><p><a href="moves.html#m-trap">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Move: The ε-criterion (squeeze). When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show a function is Riemann integrable. <strong>Sentences:</strong> “Let $\varepsilon&gt;0$. Let $u,o$ be the step functions … Then $u\le f\le o$ and $\int_a^b(o-u)\,dx=\dots&lt;\varepsilon$. By the ε-criterion, $f$ is Riemann integrable.”</p><p><a href="moves.html#m-squeeze">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Move: Smaller than every ε. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you want two numbers to be equal. <strong>Sentences:</strong> “$0\le d&lt;\varepsilon$ for every $\varepsilon&gt;0$, so $d=0$.” (If $d&gt;0$, take $\varepsilon=d$.)</p><p><a href="moves.html#m-alleps">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Move: Telescoping sum. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a sum of differences of consecutive terms. <strong>Sentences:</strong> “$\sum_{k=1}^n(a_k-a_{k-1})=a_n-a_0$, since the middle terms cancel.”</p><p><a href="moves.html#m-tele">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Move: Density in every piece. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a function behaves differently on $\mathbb Q$ and on the irrationals. <strong>Sentences:</strong> “Every interval $(x_{k-1},x_k)$ contains a rational and an irrational number, so …”</p><p><a href="moves.html#m-dense">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Move: Reduce to “≥ 0”. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need $A\le B$. <strong>Sentences:</strong> “$B-A=\dots\ge0$.” For integrals: “by linearity, $\int g-\int f=\int(g-f)$, and this is $\ge0$ since $g-f\ge0$.”</p><p><a href="moves.html#m-diff">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="10"><div class="q">Move: Take the larger N. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> two (or finitely many) “from some index on” statements must hold at the same time. <strong>Sentences:</strong> “There are $N_1,N_2$ with … for $n\ge N_1$ and … for $n\ge N_2$. Let $N=\max\{N_1,N_2\}$. Then for $n\ge N$ both hold.” It is the sequence version of the minimum of two δs.</p><p><a href="moves.html#m-maxN">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="10"><div class="q">Move: δ = 1/n builds a sequence. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you have “for every δ &gt; 0 there is a point with …” and want a sequence. <strong>Sentences:</strong> “For each $n\in\mathbb N$ apply this with $\delta=\frac1n$ to get $x_n$ with $|x_n-x_0|&lt;\frac1n$ and …. Then $x_n\to x_0$.”</p><p><a href="moves.html#m-seq">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="11"><div class="q">Move: Sandwich. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you can't compute $b_n$ directly but can trap it. <strong>Sentences:</strong> “For all $n$: $a_n\le b_n\le c_n$, and $a_n\to A$, $c_n\to A$. By the sandwich lemma, $b_n\to A$.” Common form: “$|b_n|\le c_n\to0$, so $b_n\to0$.”</p><p><a href="moves.html#m-sandwich">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="12"><div class="q">Move: Bolzano–Weierstrass for a candidate. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show something converges, have no candidate limit, but know the sequence is bounded. <strong>Sentences:</strong> “$(a_n)_n$ is bounded, so by Bolzano–Weierstrass it has a convergent subsequence $a_{n_k}\to L$. We show that $a_n\to L$.”</p><p><a href="moves.html#m-bw">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="13"><div class="q">Move: Estimate piece by piece. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you compare an integral over $[a,b]$ with something built from a partition. <strong>Sentences:</strong> “On each piece the error is at most $\eta\,(x_k-x_{k-1})$. Summing over $k$, the total error is at most $\eta\sum_k(x_k-x_{k-1})=\eta\,(b-a)$.” Choose $\eta=\frac\varepsilon{b-a}$ (or half of it) in advance.</p><p><a href="moves.html#m-piece">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Move: Go to partial sums. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> any question about a series: its value, its convergence, its terms. A series <em>is</em> the sequence of its partial sums. <strong>Sentences:</strong> “Let $s_n=\sum_{k=1}^na_k$. Then … so $(s_n)_n$ converges, i.e. the series converges.” Terms: $a_n=s_n-s_{n-1}$.</p><p><a href="moves.html#m-partial">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Move: Group into blocks. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> terms decrease, but you need a lower or upper bound for a long sum. Cut it into blocks of length $1,2,4,8,\dots$ and bound each block by (number of terms) × (smallest or largest term). <strong>Sentences:</strong> “The block $\sum_{k=2^{j-1}+1}^{2^j}a_k$ has $2^{j-1}$ terms, each $\ge a_{2^j}$, so it is $\ge2^{j-1}a_{2^j}$.”</p><p><a href="moves.html#m-group">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Move: Monotone and bounded. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show convergence, and the sequence only goes up (or only down). Then boundedness is all you need, and no candidate limit. <strong>Sentences:</strong> “$(s_n)_n$ is increasing (since $a_{n+1}\ge0$) and bounded above by $B$, so it converges by monotone convergence.”</p><p><a href="moves.html#m-monob">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Move: Even and odd separately. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a sequence alternates, so it isn't monotone, but every second term is. <strong>Sentences:</strong> “$(s_{2n})_n$ is increasing and $(s_{2n-1})_n$ is decreasing, both converge, and their difference tends to $0$. With $N=2\max\{N_1,N_2\}$, the whole sequence converges.”</p><p><a href="moves.html#m-parity">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Move: Find a majorant (or minorant). When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must decide whether a series converges. Bound its terms by a series you know: geometric or $\sum\frac1{n^p}$. <strong>Sentences:</strong> “For $n\ge N$: $|a_n|\le b_n$, and $\sum b_n$ converges, so $\sum a_n$ converges absolutely.” Or: “$a_n\ge b_n\ge0$ and $\sum b_n$ diverges, so $\sum a_n$ diverges.” Dominant powers tell you which $b_n$ to try.</p><p><a href="moves.html#m-major">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Move: Cauchy instead of a candidate. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show convergence but cannot guess the limit, and nothing is monotone. <strong>Sentences:</strong> “Let $\varepsilon&gt;0$. There is $N$ with $\left|\sum_{k=m}^na_k\right|&lt;\varepsilon$ for $n\ge m\ge N$, so by the Cauchy criterion the series converges.”</p><p><a href="moves.html#m-cauchy">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="15"><div class="q">Move: ε/3 three times. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must compare $f(x)$ and $f(x_0)$, but only know a nicer $g$ that is close to $f$ everywhere. <strong>Sentences:</strong></p><span class="math-display" style="display:block">$$|f(x)-f(x_0)|\le|f(x)-g(x)|+|g(x)-g(x_0)|+|g(x_0)-f(x_0)|&lt;\tfrac\varepsilon3+\tfrac\varepsilon3+\tfrac\varepsilon3=\varepsilon.$$</span><p>Fix $g$ first (one $N$), then find $\delta$ from $g$.</p><p><a href="moves.html#m-eps3">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="15"><div class="q">Move: Bound independently of x. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show uniform convergence. Find a bound $|f_n(x)-f(x)|\le r_n$ in which $x$ doesn't appear, with $r_n\to0$. <strong>Sentences:</strong> “For all $x\in X$: $|f_n(x)-f(x)|\le r_n$, so $\sup_x|f_n(x)-f(x)|\le r_n\to0$.” To disprove it, find a bad point $x_n$ with $|f_n(x_n)-f(x_n)|\ge c&gt;0$.</p><p><a href="moves.html#m-supx">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="15"><div class="q">Move: Finitely many points, then fill the gaps. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you know something at every single point (pointwise), want it everywhere at once (uniformly), and have a Lipschitz or continuity bound. <strong>Sentences:</strong> “Choose grid points $x_0,\dots,x_M$ with spacing $&lt;\delta$. For these finitely many points take $N=\max_iN_i$. Every $x$ is within $\delta$ of some $x_i$, and the bound bridges the gap.”</p><p><a href="moves.html#m-grid">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="16"><div class="q">Move: Multiply with the Cauchy product. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need the product of two series, or of two power series. Check absolute convergence first, then collect the products by total index. <strong>Sentences:</strong> “Both series converge absolutely, so by the Cauchy product $\left(\sum a_n\right)\left(\sum b_n\right)=\sum_n\sum_{k=0}^na_kb_{n-k}$.” Then simplify the inner sum (often with the binomial theorem).</p><p><a href="moves.html#m-cauchyprod">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="16"><div class="q">Move: Add and subtract two versions. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you have one equation for $X+iY$ (or $A+B$) and can get a second one for $X-iY$ (by replacing $z$ with $-z$, or by conjugating). <strong>Sentences:</strong> “Adding the two equations and dividing by $2$ gives $X$; subtracting and dividing by $2i$ gives $Y$.”</p><p><a href="moves.html#m-pm">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Move: Multiply and divide by x − a. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you know something about a difference quotient $\frac{f(x)-f(a)}{x-a}$ and need something about $f(x)-f(a)$ itself (or the other way round). <strong>Sentences:</strong> “For $x\neq a$, $f(x)-f(a)=\frac{f(x)-f(a)}{x-a}\cdot(x-a)$, and as $x\to a$ the first factor tends to $f'(a)$ and the second to $0$.”</p><p><a href="moves.html#m-dq">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Move: Write f as line plus error. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a proof about derivatives would divide by something that might be $0$. Replace the fraction by an equation with no fractions. <strong>Sentences:</strong> “Define $\varepsilon(x)=\frac{f(x)-f(a)}{x-a}-f'(a)$ for $x\neq a$ and $\varepsilon(a)=0$. Then $\varepsilon$ is continuous at $a$ and $f(x)=f(a)+(f'(a)+\varepsilon(x))(x-a)$ for all $x$.”</p><p><a href="moves.html#m-linapprox">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Move: Flip the difference quotient. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you need the derivative of an inverse function. With $y=f(x)$: “$\frac{f^{-1}(y)-f^{-1}(y_0)}{y-y_0}=\left(\frac{f(x)-f(x_0)}{x-x_0}\right)^{-1}$.” Check first that neither side divides by $0$ (injectivity).</p><p><a href="moves.html#m-flip">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Move: Read a sign from each side. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you know where $f(x)$ lies compared with $f(x_0)$ near $x_0$ (a maximum, a minimum) and want information about $f'(x_0)$, or the other way round. <strong>Sentences:</strong> “For $x&gt;x_0$ close to $x_0$ the quotient $\frac{f(x)-f(x_0)}{x-x_0}$ is $\le0$, so $f'(x_0)\le0$; for $x&lt;x_0$ it is $\ge0$, so $f'(x_0)\ge0$.” Limits keep $\le$, not $&lt;$.</p><p><a href="moves.html#m-sign">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Move: Split into cases. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> the objects you get from a theorem can sit in different places, and each place needs a different argument. <strong>Sentences:</strong> “Case 1: …. Then …. Case 2: …. Then ….” Make sure the cases cover everything (here: inside the interval, or both at the endpoints).</p><p><a href="moves.html#m-cases">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Move: Subtract the secant. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a theorem needs $f(a)=f(b)$ (like Rolle) but your $f$ doesn't have it. Subtract the straight line through $(a,f(a))$ and $(b,f(b))$. <strong>Sentences:</strong> “Let $F(x)=f(x)-\frac{f(b)-f(a)}{b-a}(x-a)$. Then $F(a)=F(b)=f(a)$ and $F'=f'-\frac{f(b)-f(a)}{b-a}$.”</p><p><a href="moves.html#m-tilt">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Move: Mean value theorem between two points. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you know something about $f'$ (a sign, a bound) and want something about $f(x)-f(y)$. <strong>Sentences:</strong> “Let $y&lt;x$ in $I$. Since $I$ is an interval, $[y,x]\subseteq I$, and $f$ is continuous on $[y,x]$ and differentiable on $(y,x)$. By the mean value theorem, $f(x)-f(y)=f'(\xi)(x-y)$ for some $\xi\in(y,x)$.” Then use the sign or the bound of $f'(\xi)$.</p><p><a href="moves.html#m-mvt">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="18"><div class="q">Move: Compare three slopes. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> a proof about a convex function, with or without derivatives. Take three points $x_0&lt;x&lt;x_1$. <strong>Sentences:</strong> “Since $f$ is convex, $\frac{f(x)-f(x_0)}{x-x_0}\le\frac{f(x_1)-f(x_0)}{x_1-x_0}\le\frac{f(x_1)-f(x)}{x_1-x}$.” Then let one point move (to a tangent, or to $\pm\infty$).</p><p><a href="moves.html#m-slopes">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="18"><div class="q">Move: Merge two weights into one. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> an induction over weighted averages (Jensen). <strong>Sentences:</strong> “Put $s=t_n+t_{n+1}$ and $y=\frac{t_n}sx_n+\frac{t_{n+1}}sx_{n+1}$. Then $\sum_{k\le n+1}t_kx_k=\sum_{k\le n-1}t_kx_k+sy$ is an average of $n$ points.” Handle $s=0$ separately.</p><p><a href="moves.html#m-regroup">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="19"><div class="q">Move: Write a number as an average. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must compare an integral (or an average) with one fixed value $c$. <strong>Sentences:</strong> “Since $c=\frac1{x-x_0}\int_{x_0}^xc\,dt$, we get $\frac1{x-x_0}\int_{x_0}^xf(t)\,dt-c=\frac1{x-x_0}\int_{x_0}^x\bigl(f(t)-c\bigr)\,dt$.” Now both sit under one integral and the triangle inequality applies.</p><p><a href="moves.html#m-avg">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="19"><div class="q">Move: Name the constant, then plug in a point. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> two functions have the same derivative on an interval, and you want an exact formula. <strong>Sentences:</strong> “Since $(F-G)'=0$ on the interval, $F=G+C$ for a constant $C$. Setting $x=a$ gives $C=F(a)-G(a)$.”</p><p><a href="moves.html#m-const">The card in the moves library</a></p></div></div>
+<div class="fc" data-t="move" data-l="19"><div class="q">Move: Check by differentiating. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> any antiderivative you have just computed, and when proving an integration rule. <strong>Sentences:</strong> “Indeed, $\frac d{dx}\bigl(\dots\bigr)=\dots=f(x)$.” Twenty seconds, and it catches almost every sign error and missing factor.</p><p><a href="moves.html#m-check">The card in the moves library</a></p></div></div>
+</div>
+<script>
+(function () {
+  var pool = Array.prototype.slice.call(document.querySelectorAll('#fc-pool .fc'));
+  var from = document.getElementById('fc-from'), to = document.getElementById('fc-to');
+  var maxL = 1; pool.forEach(function (c) { maxL = Math.max(maxL, +c.dataset.l); });
+  for (var i = 1; i <= maxL; i++) { from.add(new Option(i, i)); to.add(new Option(i, i)); }
+  var saved = null; try { saved = JSON.parse(localStorage.getItem('fc-range')); } catch (e) {}
+  var m = /^#l(\d+)-(\d+)$/.exec(location.hash);
+  if (m) saved = { a: +m[1], b: +m[2] };
+  from.value = saved && saved.a <= maxL ? saved.a : 1; to.value = saved && saved.b <= maxL ? saved.b : maxL;
+  var stage = document.getElementById('fc-stage'), count = document.getElementById('fc-count'), btns = document.getElementById('fc-btns');
+  var bShow = document.getElementById('fc-show'), bAgain = document.getElementById('fc-again'), bGot = document.getElementById('fc-got');
+  var names = { def: 'Definition', thm: 'Theorem', move: 'Move', recipe: 'Recipe' };
+  var queue = [], cur = null, done = 0;
+  function render() {
+    stage.innerHTML = '';
+    if (!cur) {
+      btns.hidden = true;
+      stage.innerHTML = queue.length === 0 && done ? '<p><strong>Round done: ' + done + ' cards.</strong> Press Start for another round, or change the lessons.</p>' : '<p>No cards match this choice.</p>';
+      count.textContent = ''; return;
+    }
+    var meta = document.createElement('p'); meta.className = 'fc-meta';
+    meta.textContent = names[cur.dataset.t] + ' · lesson ' + cur.dataset.l;
+    stage.appendChild(meta);
+    stage.appendChild(cur.querySelector('.q').cloneNode(true));
+    var a = cur.querySelector('.a').cloneNode(true); a.hidden = true; stage.appendChild(a);
+    btns.hidden = false; bShow.hidden = false; bAgain.hidden = true; bGot.hidden = true;
+    count.textContent = (queue.length + 1) + ' left in this round';
+    bShow.focus({ preventScroll: true });
+  }
+  function next() { cur = queue.shift() || null; render(); }
+  document.getElementById('fc-start').addEventListener('click', function () {
+    var a = +from.value, b = +to.value; if (a > b) { var t = a; a = b; b = t; }
+    try { localStorage.setItem('fc-range', JSON.stringify({ a: a, b: b })); } catch (e) {}
+    var types = ['def', 'thm', 'move', 'recipe'].filter(function (t) { return document.getElementById('fc-' + t).checked; });
+    queue = pool.filter(function (c) { var l = +c.dataset.l; return l >= a && l <= b && types.indexOf(c.dataset.t) >= 0; });
+    for (var i = queue.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t2 = queue[i]; queue[i] = queue[j]; queue[j] = t2; }
+    done = 0; next();
+  });
+  bShow.addEventListener('click', function () {
+    stage.querySelector('.a').hidden = false; bShow.hidden = true; bAgain.hidden = false; bGot.hidden = false;
+    if (window.__siteFit) window.__siteFit(stage);
+    bGot.focus({ preventScroll: true });
+  });
+  bAgain.addEventListener('click', function () { queue.splice(Math.min(3, queue.length), 0, cur); next(); });
+  bGot.addEventListener('click', function () { if (!cur) return; done++; next(); });
+})();
+</script>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="analysis.html">Analysis home</a>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

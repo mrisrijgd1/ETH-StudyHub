@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moves library</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Flashcards</a>
+<a href="moves.html">Moves</a>
+<a href="exam-map.html">Exam map</a>
+<a href="skipped.html">Skipped</a>
+<a href="script.html">Script</a>
+<a href="docs.html">Exams</a>
+</nav>
+<header>
+<span class="eyebrow">Analysis 1 · Moves library</span>
+<h1>Moves library</h1>
+<p class="lead">Proofs in this course reuse a small number of moves. Mathematicians mostly don't invent proofs from nothing: they recognise a situation and reach for a move they know. Each card says when to use the move, the sentences it produces, and where it has appeared so far, grouped by the lesson where the move first appears.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<li><a href="#from-1">First used in lesson 1: The Oath and the Challenge</a>
+<ol>
+<li><a href="#the-negation-recipe">The negation recipe</a></li>
+</ol></li>
+<li><a href="#from-2">First used in lesson 2: The Messenger Guild</a>
+<ol>
+<li><a href="#the-injectivity-template">The injectivity template</a></li>
+<li><a href="#the-surjectivity-template">The surjectivity template</a></li>
+<li><a href="#a-small-counterexample">A small counterexample</a></li>
+</ol></li>
+<li><a href="#from-3">First used in lesson 3: Great Houses and the Endless Roll Call</a>
+<ol>
+<li><a href="#the-three-bullet-check">The three-bullet check</a></li>
+<li><a href="#prove-a-circle-of-implications">Prove a circle of implications</a></li>
+<li><a href="#set-equality-by-two-inclusions">Set equality by two inclusions</a></li>
+<li><a href="#assume-the-opposite">Assume the opposite</a></li>
+<li><a href="#the-diagonal-argument">The diagonal argument</a></li>
+</ol></li>
+<li><a href="#from-4">First used in lesson 4: The Siege Engineer&#x27;s Three Weapons</a>
+<ol>
+<li><a href="#go-through-the-back-gate">Go through the back gate (contrapositive)</a></li>
+<li><a href="#induction-with-labelled-parts">Induction with labelled parts</a></li>
+<li><a href="#drop-a-non-negative-term">Drop a non-negative term</a></li>
+</ol></li>
+<li><a href="#from-5">First used in lesson 5: The Quarter-Turn Spell</a>
+<ol>
+<li><a href="#minimum-of-two-s">Minimum of two δs</a></li>
+<li><a href="#reduce-to-one-case-obda">Reduce to one case (oBdA)</a></li>
+<li><a href="#choose-n-by-archimedes">Choose n by Archimedes</a></li>
+<li><a href="#insert-a-middle-point">Insert a middle point</a></li>
+<li><a href="#unfold-an-absolute-value">Unfold an absolute value</a></li>
+</ol></li>
+<li><a href="#from-6">First used in lesson 6: The Lowest Ceiling</a>
+<ol>
+<li><a href="#the-supremum-trick">The supremum trick</a></li>
+<li><a href="#continuity-with-a-chosen">Continuity with a chosen ε</a></li>
+<li><a href="#2-twice">ε/2 twice</a></li>
+<li><a href="#sup-an-upper-bound">sup ≤ an upper bound</a></li>
+<li><a href="#approach-a-supremum">Approach a supremum</a></li>
+<li><a href="#two-armies-for-completeness">Two armies for completeness</a></li>
+</ol></li>
+<li><a href="#from-7">First used in lesson 7: The Unbroken Road</a>
+<ol>
+<li><a href="#contradict-least">Contradict “least”</a></li>
+<li><a href="#a-helper-function">A helper function</a></li>
+</ol></li>
+<li><a href="#from-8">First used in lesson 8: The Walled Garden</a>
+<ol>
+<li><a href="#trap-between-two-values">Trap between two values</a></li>
+</ol></li>
+<li><a href="#from-9">First used in lesson 9: Tiles and Canopies</a>
+<ol>
+<li><a href="#the-criterion-squeeze">The ε-criterion (squeeze)</a></li>
+<li><a href="#smaller-than-every">Smaller than every ε</a></li>
+<li><a href="#telescoping-sum">Telescoping sum</a></li>
+<li><a href="#density-in-every-piece">Density in every piece</a></li>
+<li><a href="#reduce-to-0">Reduce to “≥ 0”</a></li>
+</ol></li>
+<li><a href="#from-10">First used in lesson 10: The Measure of Distance</a>
+<ol>
+<li><a href="#take-the-larger-n">Take the larger N</a></li>
+<li><a href="#1-n-builds-a-sequence">δ = 1/n builds a sequence</a></li>
+</ol></li>
+<li><a href="#from-11">First used in lesson 11: The Climber and the Tide</a>
+<ol>
+<li><a href="#sandwich">Sandwich</a></li>
+</ol></li>
+<li><a href="#from-12">First used in lesson 12: The Wanderer&#x27;s Return</a>
+<ol>
+<li><a href="#bolzano-weierstrass-for-a-candidate">Bolzano–Weierstrass for a candidate</a></li>
+</ol></li>
+<li><a href="#from-13">First used in lesson 13: Approaching the Gate</a>
+<ol>
+<li><a href="#estimate-piece-by-piece">Estimate piece by piece</a></li>
+</ol></li>
+<li><a href="#from-14">First used in lesson 14: The Tower over the Lake</a>
+<ol>
+<li><a href="#go-to-partial-sums">Go to partial sums</a></li>
+<li><a href="#group-into-blocks">Group into blocks</a></li>
+<li><a href="#monotone-and-bounded">Monotone and bounded</a></li>
+<li><a href="#even-and-odd-separately">Even and odd separately</a></li>
+<li><a href="#find-a-majorant-or-minorant">Find a majorant (or minorant)</a></li>
+<li><a href="#cauchy-instead-of-a-candidate">Cauchy instead of a candidate</a></li>
+</ol></li>
+<li><a href="#from-15">First used in lesson 15: The Mapmaker&#x27;s Apprentices</a>
+<ol>
+<li><a href="#3-three-times">ε/3 three times</a></li>
+<li><a href="#bound-independently-of-x">Bound independently of x</a></li>
+<li><a href="#finitely-many-points-then-fill">Finitely many points, then fill the gaps</a></li>
+</ol></li>
+<li><a href="#from-16">First used in lesson 16: The Spell with Endless Words</a>
+<ol>
+<li><a href="#multiply-with-the-cauchy-product">Multiply with the Cauchy product</a></li>
+<li><a href="#add-and-subtract-two-versions">Add and subtract two versions</a></li>
+</ol></li>
+<li><a href="#from-17">First used in lesson 17: The Cart&#x27;s Climb Gauge</a>
+<ol>
+<li><a href="#multiply-and-divide-by-x">Multiply and divide by x − a</a></li>
+<li><a href="#write-f-as-line-plus">Write f as line plus error</a></li>
+<li><a href="#flip-the-difference-quotient">Flip the difference quotient</a></li>
+<li><a href="#read-a-sign-from-each">Read a sign from each side</a></li>
+<li><a href="#split-into-cases">Split into cases</a></li>
+<li><a href="#subtract-the-secant">Subtract the secant</a></li>
+<li><a href="#mean-value-theorem-between-two">Mean value theorem between two points</a></li>
+</ol></li>
+<li><a href="#from-18">First used in lesson 18: Ropes over the Valley</a>
+<ol>
+<li><a href="#compare-three-slopes">Compare three slopes</a></li>
+<li><a href="#merge-two-weights-into-one">Merge two weights into one</a></li>
+</ol></li>
+<li><a href="#from-19">First used in lesson 19: The Ledger and the Hourglass</a>
+<ol>
+<li><a href="#write-a-number-as-an">Write a number as an average</a></li>
+<li><a href="#name-the-constant-then-plug">Name the constant, then plug in a point</a></li>
+<li><a href="#check-by-differentiating">Check by differentiating</a></li>
+</ol></li>
+</ol></details>
+
+<h2 id="from-1">First used in <a class="xl" href="lesson-01.html">lesson 1</a>: The Oath and the Challenge</h2>
+<div class="movecards">
+<div class="mcard" id="m-neg"><h3 id="the-negation-recipe">The negation recipe</h3>
+<p><strong>When:</strong> you must show something is <em>not</em> continuous or <em>not</em> uniformly continuous. <strong>Sentences:</strong> “Let $\varepsilon=\dots$ (you choose). Let $\delta&gt;0$ be arbitrary. Take $x=\dots$, $y=\dots$ (depending on $\delta$). Then $|x-y|&lt;\delta$ but $|f(x)-f(y)|\ge\varepsilon$.”</p>
+<p class="legend">Seen in: negating statements (<a class="xl" href="lesson-01.html#s3-negation-switching-sides">1</a>), the floor function (<a class="xl" href="lesson-07.html#e-the-floor-function-is">7</a>), $x^2$ on $\mathbb{R}$ and $\frac1x$ on $(0,1)$ (<a class="xl" href="lesson-08.html#proof-d">8</a>), ε-δ ⇔ sequential continuity and closed ⇔ contains its limits (<a class="xl" href="lesson-10.html#proof-f">10</a>); limits of functions through sequences (<a class="xl" href="lesson-13.html#proof-a">13</a>); Exercise 5 (<a class="xl" href="lesson-15.html#ex-5">15</a>).</p></div>
+</div>
+<h2 id="from-2">First used in <a class="xl" href="lesson-02.html">lesson 2</a>: The Messenger Guild</h2>
+<div class="movecards">
+<div class="mcard" id="m-inj"><h3 id="the-injectivity-template">The injectivity template</h3>
+<p><strong>When:</strong> you must show a map $f$ is injective. <strong>Sentences:</strong> “Let $x_1,x_2$ with $f(x_1)=f(x_2)$. … Hence $x_1=x_2$.” Start from equal outputs, end at equal inputs.</p>
+<p class="legend">Seen in: $g\circ f$ injective ⇒ $f$ injective, Worked example 1 (<a class="xl" href="lesson-02.html#we-1">2</a>); Exercise 5 (<a class="xl" href="lesson-17.html#ex-5">17</a>).</p></div>
+<div class="mcard" id="m-surj"><h3 id="the-surjectivity-template">The surjectivity template</h3>
+<p><strong>When:</strong> you must show a map $f:X\to Y$ is surjective. <strong>Sentences:</strong> “Let $y\in Y$. Put $x=\dots$ (found on scrap paper by solving $f(x)=y$). Then $x\in X$ and $f(x)=\dots=y$.”</p>
+<p class="legend">Seen in: Worked example 1 and the exercises (<a class="xl" href="lesson-02.html#we-1">2</a>); Exercise 5 (<a class="xl" href="lesson-17.html#ex-5">17</a>).</p></div>
+<div class="mcard" id="m-counter"><h3 id="a-small-counterexample">A small counterexample</h3>
+<p><strong>When:</strong> a statement “for all …” looks false. One concrete example kills it. <strong>Sentences:</strong> “The statement is false: take $X=\{1,2\}$, $f=\dots$. Then … but not ….” Use the smallest sets and simplest maps that work.</p>
+<p class="legend">Seen in: $x^2$ not injective on $\mathbb R$, the two-point image example (<a class="xl" href="lesson-02.html#we-1">2</a>); the negation recipe tells you what the counterexample must show (<a class="xl" href="lesson-01.html#s3-negation-switching-sides">1</a>); Exercise 5 (b) (<a class="xl" href="lesson-14.html#ex-2">14</a>); Exercises 1, 4 and 6 (<a class="xl" href="lesson-15.html#s9-exercises">15</a>); Exercises 2 (b) and 4 (b) (<a class="xl" href="lesson-17.html">17</a>).</p></div>
+</div>
+<h2 id="from-3">First used in <a class="xl" href="lesson-03.html">lesson 3</a>: Great Houses and the Endless Roll Call</h2>
+<div class="movecards">
+<div class="mcard" id="m-equiv"><h3 id="the-three-bullet-check">The three-bullet check</h3>
+<p><strong>When:</strong> you must show a relation $\sim$ is an equivalence relation. <strong>Sentences:</strong> “Reflexive: for every $x$, $x\sim x$ because …. Symmetric: let $x\sim y$; then … so $y\sim x$. Transitive: let $x\sim y$ and $y\sim z$; then … so $x\sim z$.”</p>
+<p class="legend">Seen in: congruence mod 3 (<a class="xl" href="lesson-03.html#proof-a">3</a>).</p></div>
+<div class="mcard" id="m-circle"><h3 id="prove-a-circle-of-implications">Prove a circle of implications</h3>
+<p><strong>When:</strong> several statements (i), (ii), (iii) are claimed to be equivalent. <strong>Sentences:</strong> “We show (i) ⇒ (ii) ⇒ (iii) ⇒ (i).” Three arrows instead of six.</p>
+<p class="legend">Seen in: equivalence classes are equal or disjoint (<a class="xl" href="lesson-03.html#proof-b">3</a>).</p></div>
+<div class="mcard" id="m-subset"><h3 id="set-equality-by-two-inclusions">Set equality by two inclusions</h3>
+<p><strong>When:</strong> you must show $A=B$ for sets. <strong>Sentences:</strong> “⊆: let $x\in A$. … so $x\in B$. ⊇: let $x\in B$. … so $x\in A$.”</p>
+<p class="legend">Seen in: equivalence classes are equal or disjoint (<a class="xl" href="lesson-03.html#proof-b">3</a>); superposition, second-order equations (<a class="xl" href="lesson-22.html#proof-b">22</a>).</p></div>
+<div class="mcard" id="m-contra"><h3 id="assume-the-opposite">Assume the opposite</h3>
+<p><strong>When:</strong> the claim is a “no such thing exists” or “cannot be” statement, so there is nothing to build directly. <strong>Sentences:</strong> “Suppose, for contradiction, that …. Then …, which contradicts …. Hence ….” Negate carefully (the negation recipe).</p>
+<p class="legend">Seen in: Cantor's diagonal argument (<a class="xl" href="lesson-03.html#proof-c">3</a>), $\sqrt2$ irrational (<a class="xl" href="lesson-04.html#proof-b">4</a>), an open set never contains its supremum (<a class="xl" href="lesson-06.html#proof-b">6</a>). Contradict “least” is a special case (7, 8); Exercise 5 (<a class="xl" href="lesson-15.html#ex-5">15</a>); the ratio formula, Bonus (<a class="xl" href="lesson-16.html#proof-b">16</a>); Exercise 6, Bonus (<a class="xl" href="lesson-17.html#ex-6">17</a>); Cauchy's mean value theorem, Exercise 6 (<a class="xl" href="lesson-18.html#proof-e">18</a>); uniqueness of the Taylor polynomial (<a class="xl" href="lesson-21.html#proof-d">21</a>).</p></div>
+<div class="mcard" id="m-diag"><h3 id="the-diagonal-argument">The diagonal argument</h3>
+<p><strong>When:</strong> you must show that no list (no map $\mathbb N\to X$) reaches everything. <strong>Sentences:</strong> “Let $x_1,x_2,\dots$ be any list. Build $y$ that differs from $x_n$ in the $n$-th place, for every $n$. Then $y\ne x_n$ for all $n$, so $y$ is not on the list.”</p>
+<p class="legend">Seen in: Cantor's diagonal argument (<a class="xl" href="lesson-03.html#proof-c">3</a>), Alice beats every list, so $\mathbb R$ is uncountable (<a class="xl" href="lesson-06.html#proof-f">6</a>).</p></div>
+</div>
+<h2 id="from-4">First used in <a class="xl" href="lesson-04.html">lesson 4</a>: The Siege Engineer's Three Weapons</h2>
+<div class="movecards">
+<div class="mcard" id="m-contrapos"><h3 id="go-through-the-back-gate">Go through the back gate (contrapositive)</h3>
+<p><strong>When:</strong> “$A$ ⇒ $B$” is hard but “not $B$ ⇒ not $A$” is easy, often because “not $B$” gives you a formula to work with. <strong>Sentences:</strong> “We prove the contrapositive. Suppose $n$ is odd, so $n=2k+1$. Then … so $n^2$ is odd.”</p>
+<p class="legend">Seen in: $n^2$ even ⇒ $n$ even, used again inside the $\sqrt2$ proof (<a class="xl" href="lesson-04.html#proof-a">4</a>); the comparison test (<a class="xl" href="lesson-14.html#proof-c">14</a>).</p></div>
+<div class="mcard" id="m-induct"><h3 id="induction-with-labelled-parts">Induction with labelled parts</h3>
+<p><strong>When:</strong> a statement $P(n)$ for every $n\ge n_0$. <strong>Sentences:</strong> “Base case $n=n_0$: …. Induction step: assume $P(n)$ for some $n\ge n_0$ (induction hypothesis). Then … (by the induction hypothesis) … which is $P(n+1)$.” Point to the exact line where the hypothesis is used.</p>
+<p class="legend">Seen in: Bernoulli's inequality, Exercise 2 (<a class="xl" href="lesson-04.html#ex-2">4</a>); Jensen's inequality (<a class="xl" href="lesson-18.html#proof-d">18</a>); the Gamma function (<a class="xl" href="lesson-20.html#proof-e">20</a>); Taylor's theorem (<a class="xl" href="lesson-21.html#proof-a">21</a>).</p></div>
+<div class="mcard" id="m-drop"><h3 id="drop-a-non-negative-term">Drop a non-negative term</h3>
+<p><strong>When:</strong> you need a lower bound and the expression has an extra term that is $\ge0$. <strong>Sentences:</strong> “$1+(n+1)x+nx^2\ge1+(n+1)x$, since $nx^2\ge0$.” A cousin of <a href="#m-diff">reduce to “≥ 0”</a>.</p>
+<p class="legend">Seen in: Bernoulli's inequality (<a class="xl" href="lesson-04.html#proof-c">4</a>). It returns whenever an estimate only needs one direction, for example $|q|^n\ge1+nx$ (<a class="xl" href="lesson-10.html#we-2">10</a>).</p></div>
+</div>
+<h2 id="from-5">First used in <a class="xl" href="lesson-05.html">lesson 5</a>: The Quarter-Turn Spell</h2>
+<div class="movecards">
+<div class="mcard" id="m-min"><h3 id="minimum-of-two-s">Minimum of two δs</h3>
+<p><strong>When:</strong> two different conditions each give you a $\delta$, and you need both at once. <strong>Sentences:</strong> “Let $\delta=\min(\delta_1,\delta_2)&gt;0$. Then both … hold.”</p>
+<p class="legend">Seen in: intersection of two open sets (<a class="xl" href="lesson-05.html#ex-6">5</a>), sums (<a class="xl" href="lesson-07.html#we-2">7</a>), inverse function theorem and Heine (<a class="xl" href="lesson-08.html#proof-a">8</a>), intersection of two balls (<a class="xl" href="lesson-10.html#proof-a">10</a>); sandwich for functions, Exercise 5 (<a class="xl" href="lesson-13.html#ex-5">13</a>).</p></div>
+<div class="mcard" id="m-obda"><h3 id="reduce-to-one-case-obda">Reduce to one case (oBdA)</h3>
+<p><strong>When:</strong> two cases are mirror images. <strong>Sentences:</strong> “Without loss of generality $f$ is increasing; otherwise replace $f$ by $-f$.”</p>
+<p class="legend">Seen in: intermediate value theorem (<a class="xl" href="lesson-07.html#s6-the-proof-worth-7-9">7</a>), inverse function theorem and max/min (<a class="xl" href="lesson-08.html#proof-a">8</a>), monotone ⇒ integrable (<a class="xl" href="lesson-09.html#proof-e">9</a>); monotone convergence (<a class="xl" href="lesson-11.html#proof-b">11</a>); an interior extremum has $f'=0$ (<a class="xl" href="lesson-17.html#proof-e">17</a>); the higher-derivative test (<a class="xl" href="lesson-21.html#proof-e">21</a>).</p></div>
+<div class="mcard" id="m-arch"><h3 id="choose-n-by-archimedes">Choose n by Archimedes</h3>
+<p><strong>When:</strong> you have a bound like $\frac Cn$ and need it below $\varepsilon$. <strong>Sentences:</strong> “By the Archimedean principle choose $n\in\mathbb N$ with $n&gt;\frac C\varepsilon$. Then $\frac Cn&lt;\varepsilon$.”</p>
+<p class="legend">Seen in: $\frac1n$ gets below every ε and a fraction in every gap (<a class="xl" href="lesson-06.html#proof-c">6</a>), monotone and continuous ⇒ integrable (<a class="xl" href="lesson-09.html#s7-the-rising-slope-monotone-functions">9</a>), $\frac1n\to0$ and $|q|^n$ unbounded (<a class="xl" href="lesson-10.html#we-1">10</a>); the harmonic series diverges (<a class="xl" href="lesson-14.html#proof-b">14</a>).</p></div>
+<div class="mcard" id="m-tri"><h3 id="insert-a-middle-point">Insert a middle point</h3>
+<p><strong>When:</strong> you need to bound a distance $d(x,z)$ but only know things about $d(x,y)$ and $d(y,z)$. <strong>Sentences:</strong> “By the triangle inequality, $d(x,z)\le d(x,y)+d(y,z)&lt;\dots$.” For numbers: $|a-c|\le|a-b|+|b-c|$; the reverse form is $\bigl||a|-|b|\bigr|\le|a-b|$.</p>
+<p class="legend">Seen in: the triangle inequality and its uses (<a class="xl" href="lesson-05.html#proof-a">5</a>), balls are open, intersection of two balls, uniqueness of limits, convergent ⇒ bounded, Exercise 4 (<a class="xl" href="lesson-10.html#ex-4">10</a>). Also hidden inside every “ε/2 twice”; Cauchy ⇒ bounded and the Cauchy criterion (<a class="xl" href="lesson-12.html#proof-c">12</a>); absolute convergence implies convergence (<a class="xl" href="lesson-14.html#proof-f">14</a>); Proof B, Exercise 6 (<a class="xl" href="lesson-15.html#proof-b">15</a>); the product rule (<a class="xl" href="lesson-17.html#proof-b">17</a>).</p></div>
+<div class="mcard" id="m-abs"><h3 id="unfold-an-absolute-value">Unfold an absolute value</h3>
+<p><strong>When:</strong> a statement about $|x|$ you can't see directly. <strong>Sentences:</strong> “$|x|\le c$ ⇔ $-c\le x\le c$.” Or split into cases: “If $x\ge0$, $|x|=x$; if $x&lt;0$, $|x|=-x$.” Then add the two-sided inequalities.</p>
+<p class="legend">Seen in: the triangle inequality (<a class="xl" href="lesson-05.html#proof-a">5</a>).</p></div>
+</div>
+<h2 id="from-6">First used in <a class="xl" href="lesson-06.html">lesson 6</a>: The Lowest Ceiling</h2>
+<div class="movecards">
+<div class="mcard" id="m-sup"><h3 id="the-supremum-trick">The supremum trick</h3>
+<p><strong>When:</strong> you need something to hold all the way to $b$, but there's no formula. <strong>Sentences:</strong> “Let $X=\{t\in[a,b]: \text{it holds on }[a,t]\}$. Then $a\in X$ and $X$ is bounded by $b$, so $s_0=\sup X$ exists. By continuity at $s_0$ … so some $t_1&gt;s_0$ lies in $X$ unless $s_0=b$.”</p>
+<p class="legend">Seen in: accumulation points (<a class="xl" href="lesson-06.html#proof-g">lesson 6</a>), intermediate value theorem (<a class="xl" href="lesson-07.html#s6-the-proof-worth-7-9">7</a>), boundedness and Heine (<a class="xl" href="lesson-08.html#proof-b">8</a>).</p></div>
+<div class="mcard" id="m-eps"><h3 id="continuity-with-a-chosen">Continuity with a chosen ε</h3>
+<p><strong>When:</strong> you know $f$ is continuous at a point and need a neighbourhood where $f$ is under control. Choose $\varepsilon$ as the room you have. <strong>Sentences:</strong> “By continuity at $x_0$ with $\varepsilon=\dots$, there is $\delta&gt;0$ such that $|x-x_0|&lt;\delta$ implies $|f(x)-f(x_0)|&lt;\varepsilon$.”</p>
+<p class="legend">Seen in: an open set never contains its supremum (<a class="xl" href="lesson-06.html#proof-b">6</a>), intermediate value theorem (the gap $|f(x_0)-c|$, <a class="xl" href="lesson-07.html#s6-the-proof-worth-7-9">lesson 7</a>), boundedness ($\varepsilon=1$), Heine ($\frac\varepsilon2$), continuous ⇒ integrable ($\frac\varepsilon{b-a}$, <a class="xl" href="lesson-09.html#we-2">lesson 9</a>), convergent ⇒ bounded ($\varepsilon=1$, <a class="xl" href="lesson-10.html#proof-c">lesson 10</a>). For sequences the sentence is “there is $N$ with $d(a_n,A)&lt;\varepsilon$ for all $n\ge N$”; Heine in the Riemann-sum proof (<a class="xl" href="lesson-13.html#proof-b">13</a>); the uniform limit of continuous functions is continuous (<a class="xl" href="lesson-15.html#proof-b">15</a>); the fundamental theorem, Exercise 10 (<a class="xl" href="lesson-19.html#ex-1">19</a>).</p></div>
+<div class="mcard" id="m-half"><h3 id="2-twice">ε/2 twice</h3>
+<p><strong>When:</strong> you need two quantities within $\varepsilon$ of each other, and each is close to a third. <strong>Sentences:</strong> “$|u-w|\le|u-v|+|v-w|&lt;\frac\varepsilon2+\frac\varepsilon2=\varepsilon$.”</p>
+<p class="legend">Seen in: $\sup(A+B)=\sup A+\sup B$, Worked example 3 (<a class="xl" href="lesson-06.html#we-3">6</a>), sums of continuous functions (<a class="xl" href="lesson-07.html#we-2">7</a>), Heine (<a class="xl" href="lesson-08.html#proof-e">8</a>), the ε-criterion (<a class="xl" href="lesson-09.html#proof-b">9</a>), uniqueness of limits and the sum rule (<a class="xl" href="lesson-10.html#proof-b">10</a>); liminf = limsup (<a class="xl" href="lesson-11.html#proof-d">11</a>); convergent ⇒ Cauchy and the Cauchy criterion (<a class="xl" href="lesson-12.html#proof-b">12</a>); the sup test (<a class="xl" href="lesson-15.html#proof-a">15</a>).</p></div>
+<div class="mcard" id="m-ub"><h3 id="sup-an-upper-bound">sup ≤ an upper bound</h3>
+<p><strong>When:</strong> you want $\sup A\le c$ (or $c\le\inf B$). <strong>Sentences:</strong> “Every element of $A$ is $\le c$, so $c$ is an upper bound of $A$, hence $\sup A\le c$.” And the other way round: “$x\in A$, so $x\le\sup A$.”</p>
+<p class="legend">Seen in: nested intervals (<a class="xl" href="lesson-06.html#proof-e">6</a>), every tiling ≤ every canopy and monotonicity (<a class="xl" href="lesson-09.html#proof-a">9</a>); limsup and liminf (<a class="xl" href="lesson-11.html#proof-d">11</a>); the sup test (<a class="xl" href="lesson-15.html#proof-a">15</a>).</p></div>
+<div class="mcard" id="m-approx"><h3 id="approach-a-supremum">Approach a supremum</h3>
+<p><strong>When:</strong> you need an element of $A$ almost as big as $\sup A$. <strong>Sentences:</strong> “Since $\sup A-\eta&lt;\sup A$, it is not an upper bound of $A$, so there is $x\in A$ with $x&gt;\sup A-\eta$.” The twin of “contradict least”.</p>
+<p class="legend">Seen in: $\sup(A+B)=\sup A+\sup B$, Worked example 3 (<a class="xl" href="lesson-06.html#we-3">6</a>), boundedness (<a class="xl" href="lesson-08.html#proof-b">8</a>), the ε-criterion (<a class="xl" href="lesson-09.html#proof-b">9</a>); monotone convergence and the limsup properties (<a class="xl" href="lesson-11.html#proof-b">11</a>); limsup is an accumulation point (<a class="xl" href="lesson-12.html#proof-a">12</a>); the root test (<a class="xl" href="lesson-14.html#proof-g">14</a>); Exercise 10 (<a class="xl" href="lesson-18.html#ex-10">18</a>); the comparison test (<a class="xl" href="lesson-20.html#proof-b">20</a>).</p></div>
+<div class="mcard" id="m-complete"><h3 id="two-armies-for-completeness">Two armies for completeness</h3>
+<p><strong>When:</strong> you need a real number to exist (a supremum, a common point) and only have the completeness axiom. <strong>Sentences:</strong> “Let $A$ be the set …, $B$ the set of its upper bounds. Both are non-empty and $a\le b$ for all $a\in A$, $b\in B$. By completeness there is $c$ with $a\le c\le b$ for all of them.”</p>
+<p class="legend">Seen in: the completeness axiom (<a class="xl" href="lesson-04.html#deep-dive-reading-the-completeness">4</a>), the supremum exists (<a class="xl" href="lesson-06.html#proof-a">6</a>). Afterwards the supremum trick takes over this job (7, 8).</p></div>
+</div>
+<h2 id="from-7">First used in <a class="xl" href="lesson-07.html">lesson 7</a>: The Unbroken Road</h2>
+<div class="movecards">
+<div class="mcard" id="m-least"><h3 id="contradict-least">Contradict “least”</h3>
+<p><strong>When:</strong> you assumed something about a supremum $S$ and want a contradiction. <strong>Sentences:</strong> “So $S-\eta$ is an upper bound smaller than $S$, contradicting that $S$ is the least upper bound.”</p>
+<p class="legend">Seen in: intermediate value theorem case 2 (<a class="xl" href="lesson-07.html#s6-the-proof-worth-7-9">7</a>), max/min (<a class="xl" href="lesson-08.html#s4-promise-two-maximum-and-minimum">8</a>).</p></div>
+<div class="mcard" id="m-helper"><h3 id="a-helper-function">A helper function</h3>
+<p><strong>When:</strong> “$f$ gets arbitrarily close to $S$” needs to become something a theorem can catch. Build a new function, like $\frac1{S-f}$, that turns “close” into “large”. <strong>Sentences:</strong> “Then $F(x)=\dots$ is well-defined and continuous, so by … it is bounded.”</p>
+<p class="legend">Seen in: max/min (<a class="xl" href="lesson-08.html#s4-promise-two-maximum-and-minimum">8</a>); the fixed-point exercise used $g(x)=f(x)-x$ (<a class="xl" href="lesson-07.html#ex-5">7</a>); the mean value theorem (<a class="xl" href="lesson-17.html#proof-g">17</a>); Cauchy's mean value theorem, l'Hôpital's rule, Exercise 10 (<a class="xl" href="lesson-18.html#proof-e">18</a>); the Lagrange remainder (<a class="xl" href="lesson-21.html#proof-c">21</a>); the integrating factor (<a class="xl" href="lesson-22.html">22</a>).</p></div>
+</div>
+<h2 id="from-8">First used in <a class="xl" href="lesson-08.html">lesson 8</a>: The Walled Garden</h2>
+<div class="movecards">
+<div class="mcard" id="m-trap"><h3 id="trap-between-two-values">Trap between two values</h3>
+<p><strong>When:</strong> a function is monotone and you need to control it. <strong>Sentences:</strong> “Since $y_-&lt;y&lt;y_+$ and $g$ is increasing, $g(y_-)&lt;g(y)&lt;g(y_+)$.”</p>
+<p class="legend">Seen in: inverse function theorem (<a class="xl" href="lesson-08.html#proof-a">8</a>), monotone convergence: $S-\varepsilon&lt;a_N\le a_n\le S$ (<a class="xl" href="lesson-11.html#proof-b">11</a>).</p></div>
+</div>
+<h2 id="from-9">First used in <a class="xl" href="lesson-09.html">lesson 9</a>: Tiles and Canopies</h2>
+<div class="movecards">
+<div class="mcard" id="m-squeeze"><h3 id="the-criterion-squeeze">The ε-criterion (squeeze)</h3>
+<p><strong>When:</strong> you must show a function is Riemann integrable. <strong>Sentences:</strong> “Let $\varepsilon&gt;0$. Let $u,o$ be the step functions … Then $u\le f\le o$ and $\int_a^b(o-u)\,dx=\dots&lt;\varepsilon$. By the ε-criterion, $f$ is Riemann integrable.”</p>
+<p class="legend">Seen in: monotone ⇒ integrable, continuous ⇒ integrable, Exercise 6 (<a class="xl" href="lesson-09.html#ex-6">9</a>); uniform limits are integrable (<a class="xl" href="lesson-15.html#s5-uniform-limits-of-integrable-functions">15</a>).</p></div>
+<div class="mcard" id="m-alleps"><h3 id="smaller-than-every">Smaller than every ε</h3>
+<p><strong>When:</strong> you want two numbers to be equal. <strong>Sentences:</strong> “$0\le d&lt;\varepsilon$ for every $\varepsilon&gt;0$, so $d=0$.” (If $d&gt;0$, take $\varepsilon=d$.)</p>
+<p class="legend">Seen in: the ε-criterion, Worked example 1, Exercises 3 and 6 (<a class="xl" href="lesson-09.html#we-1">9</a>); liminf = limsup (<a class="xl" href="lesson-11.html#proof-d">11</a>); uniform limits are integrable (<a class="xl" href="lesson-15.html#s5-uniform-limits-of-integrable-functions">15</a>).</p></div>
+<div class="mcard" id="m-tele"><h3 id="telescoping-sum">Telescoping sum</h3>
+<p><strong>When:</strong> a sum of differences of consecutive terms. <strong>Sentences:</strong> “$\sum_{k=1}^n(a_k-a_{k-1})=a_n-a_0$, since the middle terms cancel.”</p>
+<p class="legend">Seen in: $\sum\frac1{k(k+1)}=1-\frac1{n+1}$, Exercise 2 (<a class="xl" href="lesson-04.html#ex-2">4</a>), Dirichlet function ($\sum\Delta x_k=1$), monotone ⇒ integrable (<a class="xl" href="lesson-09.html#proof-e">9</a>); Riemann sums, $\sum\Delta x_k=b-a$ (<a class="xl" href="lesson-13.html#proof-b">13</a>); Exercise 1, $\sum\frac1{k(k+1)}$ and $\sum\frac1{k^2}$ (<a class="xl" href="lesson-14.html#ex-1">14</a>); the Lagrange remainder (<a class="xl" href="lesson-21.html#proof-c">21</a>).</p></div>
+<div class="mcard" id="m-dense"><h3 id="density-in-every-piece">Density in every piece</h3>
+<p><strong>When:</strong> a function behaves differently on $\mathbb Q$ and on the irrationals. <strong>Sentences:</strong> “Every interval $(x_{k-1},x_k)$ contains a rational and an irrational number, so …”</p>
+<p class="legend">Seen in: $\mathbb Q$ is dense (<a class="xl" href="lesson-06.html#proof-d">6</a>), the Dirichlet function and the Bonus (<a class="xl" href="lesson-09.html#s5-the-glittering-field-a-function">9</a>), Exercises 2 and 5 (<a class="xl" href="lesson-10.html#ex-2">10</a>).</p></div>
+<div class="mcard" id="m-diff"><h3 id="reduce-to-0">Reduce to “≥ 0”</h3>
+<p><strong>When:</strong> you need $A\le B$. <strong>Sentences:</strong> “$B-A=\dots\ge0$.” For integrals: “by linearity, $\int g-\int f=\int(g-f)$, and this is $\ge0$ since $g-f\ge0$.”</p>
+<p class="legend">Seen in: max/min check in <a class="xl" href="lesson-08.html#s4-promise-two-maximum-and-minimum">lesson 8</a> (factoring), monotonicity of the integral (<a class="xl" href="lesson-09.html#proof-d">9</a>). Its cousin is <a href="#m-drop">drop a non-negative term</a> (<a class="xl" href="lesson-04.html#proof-c">4</a>).</p></div>
+</div>
+<h2 id="from-10">First used in <a class="xl" href="lesson-10.html">lesson 10</a>: The Measure of Distance</h2>
+<div class="movecards">
+<div class="mcard" id="m-maxN"><h3 id="take-the-larger-n">Take the larger N</h3>
+<p><strong>When:</strong> two (or finitely many) “from some index on” statements must hold at the same time. <strong>Sentences:</strong> “There are $N_1,N_2$ with … for $n\ge N_1$ and … for $n\ge N_2$. Let $N=\max\{N_1,N_2\}$. Then for $n\ge N$ both hold.” It is the sequence version of the minimum of two δs.</p>
+<p class="legend">Seen in: uniqueness of limits and the sum rule (<a class="xl" href="lesson-10.html#proof-b">10</a>); sandwich lemma and liminf = limsup (<a class="xl" href="lesson-11.html#proof-a">11</a>); the Cauchy criterion (<a class="xl" href="lesson-12.html#proof-e">12</a>); the Leibniz criterion (<a class="xl" href="lesson-14.html#proof-e">14</a>); Bonus (<a class="xl" href="lesson-15.html">15</a>).</p></div>
+<div class="mcard" id="m-seq"><h3 id="1-n-builds-a-sequence">δ = 1/n builds a sequence</h3>
+<p><strong>When:</strong> you have “for every δ &gt; 0 there is a point with …” and want a sequence. <strong>Sentences:</strong> “For each $n\in\mathbb N$ apply this with $\delta=\frac1n$ to get $x_n$ with $|x_n-x_0|&lt;\frac1n$ and …. Then $x_n\to x_0$.”</p>
+<p class="legend">Seen in: ε-δ ⇔ sequential continuity, closed ⇔ contains its limits, Exercise 5 (<a class="xl" href="lesson-10.html#ex-5">10</a>); limits of functions through sequences (<a class="xl" href="lesson-13.html#proof-a">13</a>); the derivative of the inverse function (<a class="xl" href="lesson-17.html#proof-d">17</a>).</p></div>
+</div>
+<h2 id="from-11">First used in <a class="xl" href="lesson-11.html">lesson 11</a>: The Climber and the Tide</h2>
+<div class="movecards">
+<div class="mcard" id="m-sandwich"><h3 id="sandwich">Sandwich</h3>
+<p><strong>When:</strong> you can't compute $b_n$ directly but can trap it. <strong>Sentences:</strong> “For all $n$: $a_n\le b_n\le c_n$, and $a_n\to A$, $c_n\to A$. By the sandwich lemma, $b_n\to A$.” Common form: “$|b_n|\le c_n\to0$, so $b_n\to0$.”</p>
+<p class="legend">Seen in: Worked example 1 and Exercise 4 (<a class="xl" href="lesson-11.html#we-1">11</a>); Exercise 5 (<a class="xl" href="lesson-13.html#ex-5">13</a>); Exercises 2 and 9 (<a class="xl" href="lesson-16.html#s8-exercises">16</a>); the integral test (<a class="xl" href="lesson-20.html#proof-a">20</a>).</p></div>
+</div>
+<h2 id="from-12">First used in <a class="xl" href="lesson-12.html">lesson 12</a>: The Wanderer's Return</h2>
+<div class="movecards">
+<div class="mcard" id="m-bw"><h3 id="bolzano-weierstrass-for-a-candidate">Bolzano–Weierstrass for a candidate</h3>
+<p><strong>When:</strong> you must show something converges, have no candidate limit, but know the sequence is bounded. <strong>Sentences:</strong> “$(a_n)_n$ is bounded, so by Bolzano–Weierstrass it has a convergent subsequence $a_{n_k}\to L$. We show that $a_n\to L$.”</p>
+<p class="legend">Seen in: the Cauchy criterion, Exercise 5 (<a class="xl" href="lesson-12.html#ex-5">12</a>). It returns for the maximum theorem and uniform continuity in a second proof style, and in the second semester (compactness); Exercise 5 (<a class="xl" href="lesson-15.html#ex-5">15</a>).</p></div>
+</div>
+<h2 id="from-13">First used in <a class="xl" href="lesson-13.html">lesson 13</a>: Approaching the Gate</h2>
+<div class="movecards">
+<div class="mcard" id="m-piece"><h3 id="estimate-piece-by-piece">Estimate piece by piece</h3>
+<p><strong>When:</strong> you compare an integral over $[a,b]$ with something built from a partition. <strong>Sentences:</strong> “On each piece the error is at most $\eta\,(x_k-x_{k-1})$. Summing over $k$, the total error is at most $\eta\sum_k(x_k-x_{k-1})=\eta\,(b-a)$.” Choose $\eta=\frac\varepsilon{b-a}$ (or half of it) in advance.</p>
+<p class="legend">Seen in: continuous ⇒ integrable (<a class="xl" href="lesson-09.html#we-2">9</a>), Riemann sums (<a class="xl" href="lesson-13.html#proof-b">13</a>).</p></div>
+</div>
+<h2 id="from-14">First used in <a class="xl" href="lesson-14.html">lesson 14</a>: The Tower over the Lake</h2>
+<div class="movecards">
+<div class="mcard" id="m-partial"><h3 id="go-to-partial-sums">Go to partial sums</h3>
+<p><strong>When:</strong> any question about a series: its value, its convergence, its terms. A series <em>is</em> the sequence of its partial sums. <strong>Sentences:</strong> “Let $s_n=\sum_{k=1}^na_k$. Then … so $(s_n)_n$ converges, i.e. the series converges.” Terms: $a_n=s_n-s_{n-1}$.</p>
+<p class="legend">Seen in: terms tend to 0, the harmonic series, comparison, Leibniz, Exercise 1 (<a class="xl" href="lesson-14.html#ex-1">14</a>); the Weierstrass M-test (<a class="xl" href="lesson-15.html#proof-d">15</a>); term-by-term integration (<a class="xl" href="lesson-16.html#proof-e">16</a>); differentiating power series (<a class="xl" href="lesson-19.html#proof-c">19</a>); the integral test (<a class="xl" href="lesson-20.html#proof-a">20</a>).</p></div>
+<div class="mcard" id="m-group"><h3 id="group-into-blocks">Group into blocks</h3>
+<p><strong>When:</strong> terms decrease, but you need a lower or upper bound for a long sum. Cut it into blocks of length $1,2,4,8,\dots$ and bound each block by (number of terms) × (smallest or largest term). <strong>Sentences:</strong> “The block $\sum_{k=2^{j-1}+1}^{2^j}a_k$ has $2^{j-1}$ terms, each $\ge a_{2^j}$, so it is $\ge2^{j-1}a_{2^j}$.”</p>
+<p class="legend">Seen in: the harmonic series diverges, condensation and the $p$-test, the Bonus (<a class="xl" href="lesson-14.html#proof-b">14</a>).</p></div>
+<div class="mcard" id="m-monob"><h3 id="monotone-and-bounded">Monotone and bounded</h3>
+<p><strong>When:</strong> you must show convergence, and the sequence only goes up (or only down). Then boundedness is all you need, and no candidate limit. <strong>Sentences:</strong> “$(s_n)_n$ is increasing (since $a_{n+1}\ge0$) and bounded above by $B$, so it converges by monotone convergence.”</p>
+<p class="legend">Seen in: monotone convergence (<a class="xl" href="lesson-11.html#proof-b">11</a>); the comparison test, condensation, Leibniz (<a class="xl" href="lesson-14.html#proof-c">14</a>); the comparison test, the integral test (<a class="xl" href="lesson-20.html#proof-b">20</a>).</p></div>
+<div class="mcard" id="m-parity"><h3 id="even-and-odd-separately">Even and odd separately</h3>
+<p><strong>When:</strong> a sequence alternates, so it isn't monotone, but every second term is. <strong>Sentences:</strong> “$(s_{2n})_n$ is increasing and $(s_{2n-1})_n$ is decreasing, both converge, and their difference tends to $0$. With $N=2\max\{N_1,N_2\}$, the whole sequence converges.”</p>
+<p class="legend">Seen in: the Leibniz criterion, Exercise 5 (<a class="xl" href="lesson-14.html#ex-5">14</a>); the higher-derivative test (<a class="xl" href="lesson-21.html#proof-e">21</a>).</p></div>
+<div class="mcard" id="m-major"><h3 id="find-a-majorant-or-minorant">Find a majorant (or minorant)</h3>
+<p><strong>When:</strong> you must decide whether a series converges. Bound its terms by a series you know: geometric or $\sum\frac1{n^p}$. <strong>Sentences:</strong> “For $n\ge N$: $|a_n|\le b_n$, and $\sum b_n$ converges, so $\sum a_n$ converges absolutely.” Or: “$a_n\ge b_n\ge0$ and $\sum b_n$ diverges, so $\sum a_n$ diverges.” Dominant powers tell you which $b_n$ to try.</p>
+<p class="legend">Seen in: $\sum\frac1{k^2}$, condensation, the root and ratio tests, Exercises 2, 3 and 7 (<a class="xl" href="lesson-14.html#s6-the-root-test-and-the">14</a>); the Weierstrass M-test (<a class="xl" href="lesson-15.html#proof-d">15</a>); the radius of convergence, term-by-term integration, Bonus (<a class="xl" href="lesson-16.html#proof-a">16</a>); the comparison test, absolute convergence, the Gamma function (<a class="xl" href="lesson-20.html#s3-comparison-and-absolute-convergence">20</a>); the Taylor estimate (<a class="xl" href="lesson-21.html#proof-b">21</a>).</p></div>
+<div class="mcard" id="m-cauchy"><h3 id="cauchy-instead-of-a-candidate">Cauchy instead of a candidate</h3>
+<p><strong>When:</strong> you must show convergence but cannot guess the limit, and nothing is monotone. <strong>Sentences:</strong> “Let $\varepsilon&gt;0$. There is $N$ with $\left|\sum_{k=m}^na_k\right|&lt;\varepsilon$ for $n\ge m\ge N$, so by the Cauchy criterion the series converges.”</p>
+<p class="legend">Seen in: the Cauchy criterion (<a class="xl" href="lesson-12.html#proof-e">12</a>); absolute convergence implies convergence, the harmonic series a second way (<a class="xl" href="lesson-14.html#proof-f">14</a>).</p></div>
+</div>
+<h2 id="from-15">First used in <a class="xl" href="lesson-15.html">lesson 15</a>: The Mapmaker's Apprentices</h2>
+<div class="movecards">
+<div class="mcard" id="m-eps3"><h3 id="3-three-times">ε/3 three times</h3>
+<p><strong>When:</strong> you must compare $f(x)$ and $f(x_0)$, but only know a nicer $g$ that is close to $f$ everywhere. <strong>Sentences:</strong></p><span class="math-display" style="display:block">$$|f(x)-f(x_0)|\le|f(x)-g(x)|+|g(x)-g(x_0)|+|g(x_0)-f(x_0)|&lt;\tfrac\varepsilon3+\tfrac\varepsilon3+\tfrac\varepsilon3=\varepsilon.$$</span><p>Fix $g$ first (one $N$), then find $\delta$ from $g$.</p>
+<p class="legend">Seen in: the uniform limit of continuous functions is continuous, Exercise 4, Bonus (<a class="xl" href="lesson-15.html#ex-4">15</a>).</p></div>
+<div class="mcard" id="m-supx"><h3 id="bound-independently-of-x">Bound independently of x</h3>
+<p><strong>When:</strong> you must show uniform convergence. Find a bound $|f_n(x)-f(x)|\le r_n$ in which $x$ doesn't appear, with $r_n\to0$. <strong>Sentences:</strong> “For all $x\in X$: $|f_n(x)-f(x)|\le r_n$, so $\sup_x|f_n(x)-f(x)|\le r_n\to0$.” To disprove it, find a bad point $x_n$ with $|f_n(x_n)-f(x_n)|\ge c&gt;0$.</p>
+<p class="legend">Seen in: the sup test, uniform limits are integrable, the M-test, Worked examples 3–6, Exercises 2 and 3 (<a class="xl" href="lesson-15.html#s5-uniform-limits-of-integrable-functions">15</a>); power series converge uniformly inside the radius (<a class="xl" href="lesson-16.html#s3-power-series-and-the-radius">16</a>); Exercise 4 (<a class="xl" href="lesson-17.html#ex-4">17</a>).</p></div>
+<div class="mcard" id="m-grid"><h3 id="finitely-many-points-then-fill">Finitely many points, then fill the gaps</h3>
+<p><strong>When:</strong> you know something at every single point (pointwise), want it everywhere at once (uniformly), and have a Lipschitz or continuity bound. <strong>Sentences:</strong> “Choose grid points $x_0,\dots,x_M$ with spacing $&lt;\delta$. For these finitely many points take $N=\max_iN_i$. Every $x$ is within $\delta$ of some $x_i$, and the bound bridges the gap.”</p>
+<p class="legend">Seen in: Bonus (<a class="xl" href="lesson-15.html">15</a>).</p></div>
+</div>
+<h2 id="from-16">First used in <a class="xl" href="lesson-16.html">lesson 16</a>: The Spell with Endless Words</h2>
+<div class="movecards">
+<div class="mcard" id="m-cauchyprod"><h3 id="multiply-with-the-cauchy-product">Multiply with the Cauchy product</h3>
+<p><strong>When:</strong> you need the product of two series, or of two power series. Check absolute convergence first, then collect the products by total index. <strong>Sentences:</strong> “Both series converge absolutely, so by the Cauchy product $\left(\sum a_n\right)\left(\sum b_n\right)=\sum_n\sum_{k=0}^na_kb_{n-k}$.” Then simplify the inner sum (often with the binomial theorem).</p>
+<p class="legend">Seen in: the addition formula for exp, Worked example 5 (<a class="xl" href="lesson-16.html#we-5">16</a>).</p></div>
+<div class="mcard" id="m-pm"><h3 id="add-and-subtract-two-versions">Add and subtract two versions</h3>
+<p><strong>When:</strong> you have one equation for $X+iY$ (or $A+B$) and can get a second one for $X-iY$ (by replacing $z$ with $-z$, or by conjugating). <strong>Sentences:</strong> “Adding the two equations and dividing by $2$ gives $X$; subtracting and dividing by $2i$ gives $Y$.”</p>
+<p class="legend">Seen in: Euler's formula solved for cos and sin, the addition formulas for sine and cosine (<a class="xl" href="lesson-16.html#proof-d">16</a>); absolute convergence implies convergence (<a class="xl" href="lesson-20.html#proof-c">20</a>).</p></div>
+</div>
+<h2 id="from-17">First used in <a class="xl" href="lesson-17.html">lesson 17</a>: The Cart's Climb Gauge</h2>
+<div class="movecards">
+<div class="mcard" id="m-dq"><h3 id="multiply-and-divide-by-x">Multiply and divide by x − a</h3>
+<p><strong>When:</strong> you know something about a difference quotient $\frac{f(x)-f(a)}{x-a}$ and need something about $f(x)-f(a)$ itself (or the other way round). <strong>Sentences:</strong> “For $x\neq a$, $f(x)-f(a)=\frac{f(x)-f(a)}{x-a}\cdot(x-a)$, and as $x\to a$ the first factor tends to $f'(a)$ and the second to $0$.”</p>
+<p class="legend">Seen in: differentiable ⇒ continuous (<a class="xl" href="lesson-17.html#proof-a">17</a>).</p></div>
+<div class="mcard" id="m-linapprox"><h3 id="write-f-as-line-plus">Write f as line plus error</h3>
+<p><strong>When:</strong> a proof about derivatives would divide by something that might be $0$. Replace the fraction by an equation with no fractions. <strong>Sentences:</strong> “Define $\varepsilon(x)=\frac{f(x)-f(a)}{x-a}-f'(a)$ for $x\neq a$ and $\varepsilon(a)=0$. Then $\varepsilon$ is continuous at $a$ and $f(x)=f(a)+(f'(a)+\varepsilon(x))(x-a)$ for all $x$.”</p>
+<p class="legend">Seen in: the chain rule (<a class="xl" href="lesson-17.html#proof-c">17</a>).</p></div>
+<div class="mcard" id="m-flip"><h3 id="flip-the-difference-quotient">Flip the difference quotient</h3>
+<p><strong>When:</strong> you need the derivative of an inverse function. With $y=f(x)$: “$\frac{f^{-1}(y)-f^{-1}(y_0)}{y-y_0}=\left(\frac{f(x)-f(x_0)}{x-x_0}\right)^{-1}$.” Check first that neither side divides by $0$ (injectivity).</p>
+<p class="legend">Seen in: the derivative of the inverse function (<a class="xl" href="lesson-17.html#proof-d">17</a>).</p></div>
+<div class="mcard" id="m-sign"><h3 id="read-a-sign-from-each">Read a sign from each side</h3>
+<p><strong>When:</strong> you know where $f(x)$ lies compared with $f(x_0)$ near $x_0$ (a maximum, a minimum) and want information about $f'(x_0)$, or the other way round. <strong>Sentences:</strong> “For $x&gt;x_0$ close to $x_0$ the quotient $\frac{f(x)-f(x_0)}{x-x_0}$ is $\le0$, so $f'(x_0)\le0$; for $x&lt;x_0$ it is $\ge0$, so $f'(x_0)\ge0$.” Limits keep $\le$, not $&lt;$.</p>
+<p class="legend">Seen in: an interior extremum has $f'=0$, Bonus (<a class="xl" href="lesson-17.html#proof-e">17</a>).</p></div>
+<div class="mcard" id="m-cases"><h3 id="split-into-cases">Split into cases</h3>
+<p><strong>When:</strong> the objects you get from a theorem can sit in different places, and each place needs a different argument. <strong>Sentences:</strong> “Case 1: …. Then …. Case 2: …. Then ….” Make sure the cases cover everything (here: inside the interval, or both at the endpoints).</p>
+<p class="legend">Seen in: Rolle's theorem (<a class="xl" href="lesson-17.html#proof-f">17</a>), Exercise 6 (<a class="xl" href="lesson-18.html#ex-6">18</a>); the fundamental theorem (<a class="xl" href="lesson-19.html#s2-the-fundamental-theorem">19</a>); the x^(-alpha) test (<a class="xl" href="lesson-20.html#proof-a">20</a>); the Taylor estimate, the higher-derivative test (<a class="xl" href="lesson-21.html#proof-e">21</a>); second-order equations (<a class="xl" href="lesson-22.html#proof-b">22</a>).</p></div>
+<div class="mcard" id="m-tilt"><h3 id="subtract-the-secant">Subtract the secant</h3>
+<p><strong>When:</strong> a theorem needs $f(a)=f(b)$ (like Rolle) but your $f$ doesn't have it. Subtract the straight line through $(a,f(a))$ and $(b,f(b))$. <strong>Sentences:</strong> “Let $F(x)=f(x)-\frac{f(b)-f(a)}{b-a}(x-a)$. Then $F(a)=F(b)=f(a)$ and $F'=f'-\frac{f(b)-f(a)}{b-a}$.”</p>
+<p class="legend">Seen in: the mean value theorem (<a class="xl" href="lesson-17.html#proof-g">17</a>).</p></div>
+<div class="mcard" id="m-mvt"><h3 id="mean-value-theorem-between-two">Mean value theorem between two points</h3>
+<p><strong>When:</strong> you know something about $f'$ (a sign, a bound) and want something about $f(x)-f(y)$. <strong>Sentences:</strong> “Let $y&lt;x$ in $I$. Since $I$ is an interval, $[y,x]\subseteq I$, and $f$ is continuous on $[y,x]$ and differentiable on $(y,x)$. By the mean value theorem, $f(x)-f(y)=f'(\xi)(x-y)$ for some $\xi\in(y,x)$.” Then use the sign or the bound of $f'(\xi)$.</p>
+<p class="legend">Seen in: $f'=0$ ⇒ constant and the monotonicity criteria, Worked example 7, Exercises 2 and 4–7 (<a class="xl" href="lesson-17.html#proof-h">17</a>); the tests for extrema, convex ⇔ $f'$ increasing, Exercises 1, 5, 10 and the Bonus (<a class="xl" href="lesson-18.html#proof-a">18</a>).</p></div>
+</div>
+<h2 id="from-18">First used in <a class="xl" href="lesson-18.html">lesson 18</a>: Ropes over the Valley</h2>
+<div class="movecards">
+<div class="mcard" id="m-slopes"><h3 id="compare-three-slopes">Compare three slopes</h3>
+<p><strong>When:</strong> a proof about a convex function, with or without derivatives. Take three points $x_0&lt;x&lt;x_1$. <strong>Sentences:</strong> “Since $f$ is convex, $\frac{f(x)-f(x_0)}{x-x_0}\le\frac{f(x_1)-f(x_0)}{x_1-x_0}\le\frac{f(x_1)-f(x)}{x_1-x}$.” Then let one point move (to a tangent, or to $\pm\infty$).</p>
+<p class="legend">Seen in: the slope form of convexity, convex ⇔ $f'$ increasing, Exercise 6 (<a class="xl" href="lesson-18.html#proof-b">18</a>).</p></div>
+<div class="mcard" id="m-regroup"><h3 id="merge-two-weights-into-one">Merge two weights into one</h3>
+<p><strong>When:</strong> an induction over weighted averages (Jensen). <strong>Sentences:</strong> “Put $s=t_n+t_{n+1}$ and $y=\frac{t_n}sx_n+\frac{t_{n+1}}sx_{n+1}$. Then $\sum_{k\le n+1}t_kx_k=\sum_{k\le n-1}t_kx_k+sy$ is an average of $n$ points.” Handle $s=0$ separately.</p>
+<p class="legend">Seen in: Jensen's inequality (<a class="xl" href="lesson-18.html#proof-d">18</a>).</p></div>
+</div>
+<h2 id="from-19">First used in <a class="xl" href="lesson-19.html">lesson 19</a>: The Ledger and the Hourglass</h2>
+<div class="movecards">
+<div class="mcard" id="m-avg"><h3 id="write-a-number-as-an">Write a number as an average</h3>
+<p><strong>When:</strong> you must compare an integral (or an average) with one fixed value $c$. <strong>Sentences:</strong> “Since $c=\frac1{x-x_0}\int_{x_0}^xc\,dt$, we get $\frac1{x-x_0}\int_{x_0}^xf(t)\,dt-c=\frac1{x-x_0}\int_{x_0}^x\bigl(f(t)-c\bigr)\,dt$.” Now both sit under one integral and the triangle inequality applies.</p>
+<p class="legend">Seen in: the fundamental theorem, Exercise 10 (<a class="xl" href="lesson-19.html#ex-1">19</a>).</p></div>
+<div class="mcard" id="m-const"><h3 id="name-the-constant-then-plug">Name the constant, then plug in a point</h3>
+<p><strong>When:</strong> two functions have the same derivative on an interval, and you want an exact formula. <strong>Sentences:</strong> “Since $(F-G)'=0$ on the interval, $F=G+C$ for a constant $C$. Setting $x=a$ gives $C=F(a)-G(a)$.”</p>
+<p class="legend">Seen in: $\int_a^bf=F(b)-F(a)$, differentiating power series (<a class="xl" href="lesson-19.html#proof-c">19</a>); separation of variables, linear first-order equations (<a class="xl" href="lesson-22.html#proof-b">22</a>).</p></div>
+<div class="mcard" id="m-check"><h3 id="check-by-differentiating">Check by differentiating</h3>
+<p><strong>When:</strong> any antiderivative you have just computed, and when proving an integration rule. <strong>Sentences:</strong> “Indeed, $\frac d{dx}\bigl(\dots\bigr)=\dots=f(x)$.” Twenty seconds, and it catches almost every sign error and missing factor.</p>
+<p class="legend">Seen in: integration by parts, the substitution rule, Exercise 1 (<a class="xl" href="lesson-19.html#ex-1">19</a>); separation of variables (<a class="xl" href="lesson-22.html#proof-a">22</a>).</p></div>
+</div>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="analysis.html">Analysis home</a>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Archers of the Tower</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<nav class="site" aria-label="Site">
+<a href="index.html">Home</a>
+<a href="physics.html">Physics</a>
+<a href="phys-plan.html">Plan</a>
+<a href="phys-script.html">Script</a>
+<a href="phys-docs.html">Exams</a>
+</nav>
+<header>
+<span class="eyebrow">Physics I · Lesson 1</span>
+<h1>The Archers of the Tower</h1>
+<p class="lead">Kinematics: position, velocity and acceleration as vectors, the throw, circular motion.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-archers-of">1. The story: the archers of the tower</a>
+</li>
+<li><a href="#s2-units-and-dimensions-the-free">2. Units and dimensions: the free check</a>
+<ol>
+<li><a href="#we-1">Worked example 1: check a formula in ten seconds</a></li>
+</ol></li>
+<li><a href="#s3-position-velocity-acceleration">3. Position, velocity, acceleration</a>
+</li>
+<li><a href="#s4-constant-acceleration-free-fall-and">4. Constant acceleration: free fall and the throw</a>
+<ol>
+<li><a href="#we-2">Worked example 2: height, flight time and range on flat ground</a></li>
+</ol></li>
+<li><a href="#s5-circular-motion">5. Circular motion</a>
+<ol>
+<li><a href="#we-3">Worked example 3: a speeding-up circle (HS25, Konzeptfrage 1.2(c))</a></li>
+</ol></li>
+<li><a href="#s6-exercises">6. Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (HS25, Konzeptfrage 1.1(a), 1 point)</a></li>
+<li><a href="#ex-2">Exercise 2 (HS23, problem 2 (a)–(c), 5 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (HS25, problem 2 (f)–(g), 4 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (circular motion, a quick one)</a></li>
+</ol></li>
+<li><a href="#s7-for-wonder-optional-5-min">7. For wonder</a>
+</li>
+<li><a href="#s8-what-we-skipped">8. What we skipped</a>
+</li>
+</ol></details>
+<dl class="meta">
+  <dt>Covers</dt><dd>Ensslin's script, chapters 1–2 (pages 1–29): units and dimensions, position, velocity and acceleration as vectors, motion with constant acceleration (free fall, the oblique throw), circular motion, angular velocity, tangential and normal acceleration.</dd>
+  <dt>Time</dt><dd>About 60 minutes, with paper for the exercises.</dd>
+  <dt>You're done when</dt><dd>you can (1) set up the six initial conditions of a throw and write $x(t)$, $y(t)$ in components, (2) get the flight time, the maximum height and the range from them, and (3) write $v=\omega r$, $a=\omega^2r=\frac{v^2}r$ for a circle and say where the acceleration points.</dd>
+  <dt>Formula sheet</dt><dd>Page 1, section 2 “Kinematik des Massenpunktes”: all formulas of this lesson are there. You need to know <em>when</em> to use each one, not to memorise them.</dd>
+  <dt>Script</dt><dd><a href="phys-script.html#p11">Chapter 2, from page 11</a>; the throw is on <a href="phys-script.html#p19">page 19–20</a>, circular motion on <a href="phys-script.html#p20">page 20–25</a>, tangential and normal acceleration on <a href="phys-script.html#p25">page 25–28</a>.</dd>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Every recent exam's problem 2 is a throw or a motion along a track, and it starts exactly with this lesson: write $x(t)$ and $y(t)$, then use a condition (top of the flight, landing, meeting). The multiple-choice part has a block “Konzeptfragen: Kinematik”. No calculator is allowed, so answers are formulas, and numbers come out round (like $g=10\,\mathrm{m/s^2}$).</p></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+<tr><th>English</th><th>Deutsch</th></tr>
+<tr><td>point mass</td><td>Massenpunkt</td></tr>
+<tr><td>position vector</td><td>Ortsvektor</td></tr>
+<tr><td>velocity / speed</td><td>Geschwindigkeit / Betrag der Geschwindigkeit</td></tr>
+<tr><td>acceleration</td><td>Beschleunigung</td></tr>
+<tr><td>trajectory</td><td>Bahnkurve</td></tr>
+<tr><td>initial conditions</td><td>Anfangsbedingungen</td></tr>
+<tr><td>free fall / oblique throw</td><td>freier Fall / schräger Wurf</td></tr>
+<tr><td>range / maximum height</td><td>Wurfweite / Wurfhöhe</td></tr>
+<tr><td>circular motion</td><td>Kreisbewegung</td></tr>
+<tr><td>angular velocity / angular acceleration</td><td>Winkelgeschwindigkeit / Winkelbeschleunigung</td></tr>
+<tr><td>period / frequency</td><td>Periode, Umlaufzeit / Frequenz</td></tr>
+<tr><td>centripetal acceleration</td><td>Zentripetalbeschleunigung</td></tr>
+<tr><td>tangential / normal acceleration</td><td>Tangential- / Normalbeschleunigung</td></tr>
+<tr><td>radius of curvature</td><td>Krümmungsradius</td></tr>
+<tr><td>reference frame</td><td>Bezugssystem</td></tr>
+<tr><td>dimension, unit</td><td>Dimension, Einheit</td></tr>
+</table></div>
+
+<h2 id="s1-the-story-the-archers-of">1. The story: the archers of the tower</h2>
+<div class="story">
+<p>On the wall of the old fortress stand the archers, and their captain has one rule: never guess where an arrow lands, <em>predict</em> it. Before each shot she writes two lines on her slate. One says how far the arrow travels along the ground as time passes, the other how high it is. The secret of the guild is that the two lines don't talk to each other. Along the ground the arrow keeps its pace forever; upwards, the earth pulls it down a little more every moment. Only the clock ties the two lines together: the arrow lands when the height line says zero, and at that moment the ground line tells you where.</p>
+<p>The captain also trains the sling-throwers, who whirl stones in a circle before letting go. Their stones never fly in a straight line while whirling: something constantly pulls them towards the hand, and the faster they whirl, the harder the pull.</p>
+</div>
+<p>In physics: the arrow is a <strong>point mass</strong>, the two lines on the slate are the <strong>components</strong> $x(t)$ and $y(t)$ of the position vector, the earth's pull is the constant acceleration $g$, and the pull towards the hand is the <strong>centripetal acceleration</strong>.</p>
+
+<h2 id="s2-units-and-dimensions-the-free">2. Units and dimensions: the free check</h2>
+<p>Every physical quantity is a number times a unit, and its <strong>dimension</strong> (length, time, mass, …) is fixed (script, section 1.2). In the exam this is your free error check: both sides of every equation must have the same dimension. If your result for a height has the dimension of a time, there is a mistake upstream.</p>
+<div class="box">
+<h3 id="we-1">Worked example 1: check a formula in ten seconds</h3>
+<ol class="gq">
+  <li><p>Is $h=\dfrac{v_0^2\sin^2\alpha}{2g}$ a possible formula for a height?</p>
+  <details><summary>Answer</summary><div><p>$[v_0^2]=\mathrm{m^2/s^2}$, $[g]=\mathrm{m/s^2}$, and $\sin^2\alpha$ has no unit. So $[h]=\frac{\mathrm{m^2/s^2}}{\mathrm{m/s^2}}=\mathrm m$. A length: possible.</p></div></details></li>
+  <li><p>Is $t=\dfrac{v_0^2}{g}$ a possible formula for a time?</p>
+  <details><summary>Answer</summary><div><p>$\frac{\mathrm{m^2/s^2}}{\mathrm{m/s^2}}=\mathrm m$, not $\mathrm s$. Impossible: the correct flight time of a throw is $\frac{2v_0\sin\alpha}g$, with dimension $\frac{\mathrm{m/s}}{\mathrm{m/s^2}}=\mathrm s$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s3-position-velocity-acceleration">3. Position, velocity, acceleration</h2>
+<p>We describe a point mass by its <strong>position vector</strong> $\vec r(t)=\begin{pmatrix}x(t)\\y(t)\\z(t)\end{pmatrix}$ relative to an origin we choose (script, section 2.3). Then (sections 2.4–2.5):</p>
+<ul>
+  <li>mean velocity over $[t,t+\Delta t]$: $\langle\vec v\rangle=\dfrac{\Delta\vec r}{\Delta t}$; <strong>instantaneous velocity</strong> $\vec v(t)=\dot{\vec r}(t)=\dfrac{d\vec r}{dt}$;</li>
+  <li><strong>acceleration</strong> $\vec a(t)=\dot{\vec v}(t)=\ddot{\vec r}(t)$.</li>
+</ul>
+<p>The dot means the derivative with respect to time; you differentiate each component separately. Going backwards is integration: $\vec v(t)=\vec v(t_0)+\int_{t_0}^t\vec a(t')\,dt'$ and $\vec r(t)=\vec r(t_0)+\int_{t_0}^t\vec v(t')\,dt'$. This is <a class="xl" href="lesson-19.html">lesson 19</a> of Analysis applied to each component.</p>
+<p>Velocity and acceleration are vectors: a body accelerates when the <em>size</em> of its velocity changes, when its <em>direction</em> changes, or both. A car driving around a bend at a constant 50 km/h is accelerating.</p>
+
+<h2 id="s4-constant-acceleration-free-fall-and">4. Constant acceleration: free fall and the throw</h2>
+<p>If $\vec a(t)=\vec a_0$ is constant, integrating twice gives (script, equations (2.25)–(2.26)):</p>
+<span class="math-display" style="display:block">$$\vec v(t)=\vec v(t_0)+\vec a_0\,(t-t_0),\qquad \vec r(t)=\vec r(t_0)+\vec v(t_0)\,(t-t_0)+\tfrac12\vec a_0\,(t-t_0)^2.$$</span>
+<p>This is a second-order differential equation in three dimensions, so the motion is fixed by $2\cdot3=6$ <strong>initial conditions</strong>: the three coordinates of $\vec r(t_0)$ and the three components of $\vec v(t_0)$. Free fall and the throw are the same formula with different initial conditions.</p>
+<p>Near the earth's surface, with the $z$-axis (or $y$-axis) pointing up, $\vec a_0=\vec g=(0,0,-g)$ with $g\approx9.81\,\mathrm{m/s^2}$ (in exams usually $10\,\mathrm{m/s^2}$).</p>
+<p><strong>The oblique throw</strong> (script, page 20). Thrown from height $z_0$ with speed $v$ at angle $\alpha$ to the horizontal, in the $xz$-plane, with $t_0=0$:</p>
+<span class="math-display" style="display:block">$$x(t)=v\cos\alpha\cdot t,\qquad z(t)=z_0+v\sin\alpha\cdot t-\tfrac12gt^2.$$</span>
+<p>The two components are independent; only the time links them. Eliminating $t=\frac x{v\cos\alpha}$ gives the trajectory $z(x)=z_0+x\tan\alpha-\frac{g}{2v^2\cos^2\alpha}x^2$: a parabola, the <em>Wurfparabel</em>.</p>
+
+<div class="exam"><span class="label">Recipe: any throw problem</span>
+<ol>
+  <li>Draw axes and choose the origin (usually the launch point, $y$ upwards).</li>
+  <li>Write the six initial conditions (in the plane: four) as components: $x_0,y_0,v_{x0}=v_0\cos\alpha,v_{y0}=v_0\sin\alpha$.</li>
+  <li>Write $x(t)$, $y(t)$ and, if needed, $v_x(t)=v_{x0}$, $v_y(t)=v_{y0}-gt$.</li>
+  <li>Turn the question into a condition: top of the flight $\Leftrightarrow v_y=0$; landing $\Leftrightarrow y=0$ (with $t&gt;0$); two bodies meet $\Leftrightarrow$ same $x$ <em>and</em> same $y$ at the same $t$.</li>
+  <li>Solve the condition for $t$, then put that $t$ into the other component.</li>
+  <li>Check the dimension, and put numbers in only at the end.</li>
+</ol>
+<p><strong>In short:</strong> axes, components, condition, time, insert.</p></div>
+
+<div class="box">
+<h3 id="we-2">Worked example 2: height, flight time and range on flat ground</h3>
+<p>A stone is thrown from the ground ($x_0=y_0=0$) with speed $v_0$ at angle $\alpha$. Find the time to the top, the maximum height $h$, the flight time $T$ and the range $w$. Which angle gives the largest range?</p>
+<ol class="gq">
+  <li><p>Write the components and the vertical velocity.</p>
+  <details><summary>Answer</summary><div><p>$x(t)=v_0\cos\alpha\,t$, $y(t)=v_0\sin\alpha\,t-\frac12gt^2$, $v_y(t)=v_0\sin\alpha-gt$.</p></div></details></li>
+  <li><p>Top of the flight: which condition, and what are $t_{\text{top}}$ and $h$?</p>
+  <details><summary>Answer</summary><div><p>$v_y=0$ gives $t_{\text{top}}=\frac{v_0\sin\alpha}g$. Inserting into $y$:</p>
+  <span class="math-display" style="display:block">$$h=v_0\sin\alpha\cdot\frac{v_0\sin\alpha}g-\frac g2\cdot\frac{v_0^2\sin^2\alpha}{g^2}=\frac{v_0^2\sin^2\alpha}{2g}.$$</span></div></details></li>
+  <li><p>Landing: which condition, and what are $T$ and $w$?</p>
+  <details><summary>Answer</summary><div><p>$y(T)=0$ with $T&gt;0$: $T\left(v_0\sin\alpha-\frac g2T\right)=0$, so $T=\frac{2v_0\sin\alpha}g=2t_{\text{top}}$ (the flight is symmetric). Then</p>
+  <span class="math-display" style="display:block">$$w=x(T)=v_0\cos\alpha\cdot\frac{2v_0\sin\alpha}g=\frac{v_0^2\sin2\alpha}g,$$</span>
+  <p>using $2\sin\alpha\cos\alpha=\sin2\alpha$.</p></div></details></li>
+  <li><p>Which angle maximises $w$?</p>
+  <details><summary>Answer</summary><div><p>$\sin2\alpha\le1$ with equality for $2\alpha=90^\circ$, so $\alpha=45^\circ$ and $w_{\max}=\frac{v_0^2}g$. Angles $\alpha$ and $90^\circ-\alpha$ give the same range, since $\sin(180^\circ-2\alpha)=\sin2\alpha$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s5-circular-motion">5. Circular motion</h2>
+<p>A point mass moving on a circle of radius $r$ around the origin, in the $xy$-plane (script, section 2.5.3):</p>
+<span class="math-display" style="display:block">$$\vec r(t)=r\begin{pmatrix}\cos\varphi(t)\\\sin\varphi(t)\\0\end{pmatrix}.$$</span>
+<ul>
+  <li><strong>Angular velocity</strong> $\omega=\dot\varphi$. For uniform circular motion $\varphi(t)=\omega t+\varphi_0$, with period $T=\frac{2\pi}\omega$ and frequency $f=\frac1T$.</li>
+  <li>Differentiating: $\vec v(t)=r\omega\begin{pmatrix}-\sin\varphi\\\cos\varphi\\0\end{pmatrix}$, tangent to the circle, with speed $v=\omega r$.</li>
+  <li>Differentiating again (uniform case): $\vec a(t)=-\omega^2\vec r(t)$. It points to the centre, with size $a=\omega^2r=\frac{v^2}r$: the <strong>centripetal acceleration</strong>.</li>
+  <li>As a vector, $\vec\omega$ is perpendicular to the plane of the circle (right-hand rule), and $\vec v=\vec\omega\times\vec r$ (section 2.5.4).</li>
+  <li>If $\omega$ changes: <strong>angular acceleration</strong> $\alpha=\dot\omega=\ddot\varphi$ (section 2.5.5). For constant $\alpha$: $\varphi(t)=\varphi_0+\omega_0t+\frac12\alpha t^2$, exactly like the throw formula.</li>
+</ul>
+<p><strong>Any curved path</strong> (section 2.5.6). Write $\vec v=v\,\vec e_\parallel$ with the unit vector $\vec e_\parallel$ along the motion. Then</p>
+<span class="math-display" style="display:block">$$\vec a=\dot v\,\vec e_\parallel+\frac{v^2}\rho\,\vec e_\perp:$$</span>
+<p>the <strong>tangential acceleration</strong> $\dot v$ changes the speed, the <strong>normal acceleration</strong> $\frac{v^2}\rho$ changes the direction, where $\rho$ is the radius of the circle that best fits the path at that point (the radius of curvature). On a circle, $\rho=r$.</p>
+
+<div class="box">
+<h3 id="we-3">Worked example 3: a speeding-up circle (HS25, Konzeptfrage 1.2(c))</h3>
+<p>A point mass moves on $x(t)=R\cos(c_0t^2)$, $y(t)=R\sin(c_0t^2)$ with constants $R,c_0&gt;0$. How does the speed $|\vec v(t)|$ depend on $t$, and what is its acceleration?</p>
+<ol class="gq">
+  <li><p>What is $\varphi(t)$, and what is $\omega(t)$?</p>
+  <details><summary>Answer</summary><div><p>$\varphi(t)=c_0t^2$, so $\omega(t)=\dot\varphi=2c_0t$: the circle is run faster and faster.</p></div></details></li>
+  <li><p>The speed?</p>
+  <details><summary>Answer</summary><div><p>$|\vec v(t)|=\omega(t)R=2Rc_0t$: a straight line through the origin in a $|v|$–$t$ graph. (Check by differentiating: $\dot x=-2Rc_0t\sin(c_0t^2)$, $\dot y=2Rc_0t\cos(c_0t^2)$, so $|\vec v|^2=4R^2c_0^2t^2$.)</p></div></details></li>
+  <li><p>Tangential and normal acceleration?</p>
+  <details><summary>Answer</summary><div><p>Tangential: $\dot v=2Rc_0$, constant. Normal: $\frac{v^2}R=4Rc_0^2t^2$, towards the centre, growing with $t^2$.</p></div></details></li>
+</ol>
+</div>
+
+<p><strong>Why it's cool.</strong> The two-line trick (components that ignore each other, tied only by time) is why a dropped bullet and a fired bullet hit level ground at the same moment, and why aiming straight at a falling target always works: gravity pulls the arrow and the target down by exactly the same amount. Exercise 3 below is an exam question built on this.</p>
+
+<h2 id="s6-exercises">6. Exercises</h2>
+<p>Do them on paper. Numbers only at the end, $g=10\,\mathrm{m/s^2}$, no calculator: leave $\sqrt2$ standing.</p>
+
+<div class="box">
+<h3 id="ex-1">Exercise 1 (HS25, Konzeptfrage 1.1(a), 1 point)</h3>
+<p>You throw a stone on the earth and on the moon with identical initial values $v_{x0},v_{y0}&gt;0$ and $x_0=y_0=0$, where $g_{\text{earth}}=10\,\mathrm{m/s^2}$ and $g_{\text{moon}}=2\,\mathrm{m/s^2}$. Which is correct? (A) The impact speed is the same on the earth and the moon. (B) The maximum height is the same. (C) The range is the same. (D) The time in the air is the same.</p>
+<details><summary>Solution</summary><div>
+<p><strong>A.</strong> On landing $y=0$, so by Worked example 2 the flight lasts $T=\frac{2v_{y0}}g$ and then $v_y(T)=v_{y0}-gT=-v_{y0}$, while $v_x=v_{x0}$ throughout. So the impact speed is $\sqrt{v_{x0}^2+v_{y0}^2}$, independent of $g$. The others all depend on $g$: $h=\frac{v_{y0}^2}{2g}$, $w=\frac{2v_{x0}v_{y0}}g$, $T=\frac{2v_{y0}}g$ are each 5 times larger on the moon.</p>
+</div></details>
+</div>
+
+<div class="box">
+<h3 id="ex-2">Exercise 2 (HS23, problem 2 (a)–(c), 5 points)</h3>
+<p>Ball 1 is thrown from the ground ($y=0$) with $v_0=20\,\mathrm{m/s}$ at $\alpha=45^\circ$. Neglect air resistance; $g=10\,\mathrm{m/s^2}$.</p>
+<p>(a) At horizontal distance $d=20\,\mathrm m$, ball 1 reaches its maximum height $h$, at time $\Delta t_1$ after the throw. Compute $h$ and $\Delta t_1$.</p>
+<p>(b) Ball 2 is thrown straight up from the ground at $x=d$, with the same speed $v_0$, and is meant to hit ball 1 from below at the top of its flight. How long, $\Delta t_2$, is ball 2 in the air before it hits ball 1?</p>
+<p>(c) Give the $x$- and $y$-components of both velocities just before the collision.</p>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> axes with origin at the launch point of ball 1, $y$ upwards; ball 1: <span class="math-display" style="display:block">$$v_{x0}=v_{y0}=v_0\cos45^\circ=\frac{v_0}{\sqrt2}=10\sqrt2\,\mathrm{m/s}.$$</span></p>
+<p>(a) Top of the flight: $v_y(\Delta t_1)=0$, so $\Delta t_1=\frac{v_0\sin\alpha}g=\frac{10\sqrt2}{10}\,\mathrm s=\sqrt2\,\mathrm s$. Height: $h=\frac{v_0^2\sin^2\alpha}{2g}=\frac{400\cdot\frac12}{20}\,\mathrm m=10\,\mathrm m$. (Check: $x(\Delta t_1)=10\sqrt2\cdot\sqrt2\,\mathrm m=20\,\mathrm m=d$. ✓)</p>
+<p>(b) Ball 2: $y_2(t)=v_0t-\frac12gt^2$, with $t$ measured from its throw. It must reach $y_2=h$ on the way up:</p>
+<span class="math-display" style="display:block">$$20t-5t^2=10\iff t^2-4t+2=0\iff t=2\pm\sqrt2.$$</span>
+<p>On the way up means the earlier time, so $\Delta t_2=(2-\sqrt2)\,\mathrm s\approx0.59\,\mathrm s$. (Ball 2 must therefore be thrown $\Delta t_1-\Delta t_2=(2\sqrt2-2)\,\mathrm s$ after ball 1.)</p>
+<p>(c) Ball 1 at the top: $v_{1x}=10\sqrt2\,\mathrm{m/s}$, $v_{1y}=0$. Ball 2: $v_{2x}=0$, <span class="math-display" style="display:block">$$v_{2y}=v_0-g\Delta t_2=20-10(2-\sqrt2)=10\sqrt2\,\mathrm{m/s},$$</span>upwards.</p>
+<p>The rest of the problem (the collision) comes in the lesson on momentum.</p>
+</div></details>
+</div>
+
+<div class="box">
+<h3 id="ex-3">Exercise 3 (HS25, problem 2 (f)–(g), 4 points)</h3>
+<p>A clay disc is thrown from $x=0$, $y=0$ with speed $v_0$ at angle $\beta$ above the horizontal, towards positive $x$. From the other side, at $x=x_0$, $y=0$, in the same plane, you fire a projectile with speed $v_s$ at angle $\gamma$ above the horizontal, towards the disc. Assume both leave at $t=0$.</p>
+<p>(f) Write $x_T(t)$, $y_T(t)$ for the disc and $x_S(t)$, $y_S(t)$ for the projectile. (g) Give the place $x$ and the time $t$ at which the projectile hits the disc.</p>
+<details><summary>Solution</summary><div>
+<p>(f) The disc moves towards $+x$, the projectile towards $-x$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}x_T(t)&amp;=v_0\cos\beta\,t, &amp; y_T(t)&amp;=v_0\sin\beta\,t-\tfrac12gt^2,\\ x_S(t)&amp;=x_0-v_s\cos\gamma\,t, &amp; y_S(t)&amp;=v_s\sin\gamma\,t-\tfrac12gt^2.\end{aligned}$$</span>
+<p>(g) A hit means the same $x$ and the same $y$ at the same time. Same $x$:</p>
+<span class="math-display" style="display:block">$$v_0\cos\beta\,t=x_0-v_s\cos\gamma\,t\iff t=\frac{x_0}{v_0\cos\beta+v_s\cos\gamma},$$</span>
+<p>and then $x=x_T(t)=\dfrac{v_0\cos\beta\;x_0}{v_0\cos\beta+v_s\cos\gamma}$. Same $y$: the $-\frac12gt^2$ terms cancel, leaving $v_0\sin\beta\,t=v_s\sin\gamma\,t$, so for $t&gt;0$ the hit needs $v_0\sin\beta=v_s\sin\gamma$: both must start with the same vertical velocity. Gravity drops both by the same amount, so it doesn't matter at all. (Points come from setting both conditions up; the hit must also happen before either body lands, that is, $y_T(t)\ge0$.)</p>
+</div></details>
+</div>
+
+<div class="box">
+<h3 id="ex-4">Exercise 4 (circular motion, a quick one)</h3>
+<p>A point on the rim of a wheel of radius $r=0.5\,\mathrm m$ turns 2 times per second. Find $\omega$, the speed $v$ and the centripetal acceleration $a$, and compare $a$ with $g$.</p>
+<details><summary>Solution</summary><div>
+<p>$f=2\,\mathrm{s^{-1}}$, so $\omega=2\pi f=4\pi\,\mathrm{s^{-1}}$. Speed $v=\omega r=2\pi\,\mathrm{m/s}\approx6.3\,\mathrm{m/s}$. Acceleration <span class="math-display" style="display:block">$$a=\omega^2r=16\pi^2\cdot0.5\,\mathrm{m/s^2}=8\pi^2\,\mathrm{m/s^2}\approx79\,\mathrm{m/s^2},$$</span>about $8g$ (using $\pi^2\approx10$), pointing to the axle.</p>
+</div></details>
+</div>
+
+<p><strong>Scoring yourself:</strong> Exercise 1 (1), Exercise 2 (5) and Exercise 3 (4) make 10 points. With 7 of 10 you're done. Exercise 4 is a warm-up for the lesson on forces.</p>
+
+<h2 id="s7-for-wonder-optional-5-min">7. For wonder (optional, 5 min)</h2>
+<p><strong>Why $45^\circ$ is not the real answer.</strong> With air resistance the best angle for a thrown ball drops below $45^\circ$, because a flatter flight spends less time fighting the air. Shot-putters also release lower, at roughly $35$–$40^\circ$: the ball starts above the ground, and their arms push harder at flatter angles. The clean $45^\circ$ is the answer of the idealised model, and much of physics is knowing which idealisation you're allowed.</p>
+<p><strong>Galileo's trick.</strong> Galileo was the first to treat the horizontal and vertical motion separately, around 1600. He couldn't time a falling stone accurately, so he rolled balls down gentle ramps, “diluting” gravity, and timed them with a water clock. The distances grew like $1:3:5:7$ in equal times: the odd numbers, which add up to the squares $1,4,9,16$, exactly $\frac12at^2$.</p>
+
+<h2 id="s8-what-we-skipped">8. What we skipped</h2>
+<ul>
+  <li>Section 1.1 (physics as a science) and the history of units in section 1.2: reading only.</li>
+  <li>Polar coordinates in general, beyond the circle (section 2.5.3): they return with planetary orbits.</li>
+  <li>The derivation of $\dot{\vec e}_\parallel=\vec\omega\times\vec e_\parallel$ (leading to equation (2.68)): the result $\vec a=\dot v\,\vec e_\parallel+\frac{v^2}\rho\vec e_\perp$ is what you use.</li>
+</ul>
+<p>Next: Physics <a class="xl" href="lesson-02.html">lesson 2</a>, Newton's laws and momentum (chapter 3, sections 3.1–3.8).</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="physics.html">Physics home</a>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.fb-btn{position:fixed;right:16px;bottom:16px;z-index:50;padding:8px 14px;border-radius:999px;background:var(--accent);color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}@media print{.fb-btn{display:none}}</style>
+<a class="fb-btn" href="https://example.com/form" target="_blank" rel="noopener">Feedback</a>
+</body>
+</html>
