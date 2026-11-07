@@ -83,13 +83,18 @@
     return;
   }
   if (get('sh-tips-off') === '1') return;
-  var i = parseInt(get('sh-tip-i') || '0', 10) || 0, tip = null;
+  // Random order, and each tip is shown at most once per browser (shared across EN/DE by position).
+  var seen = {};
+  try { seen = JSON.parse(get('sh-tips-seen') || '{}') || {}; } catch (e) { seen = {}; }
+  function key(n) { var c = L[n]; return c.id ? c.id.split(':')[0] : 't' + n; }
+  var i = -1, tip = null;
   function pick() {
-    for (var n = 0; n < L.length; n++) {
-      var c = L[(i + n) % L.length];
-      if (!(c.id && answered[c.id])) { i = (i + n) % L.length; set('sh-tip-i', String((i + 1) % L.length)); return c; }
-    }
-    return null;
+    var free = [];
+    for (var n = 0; n < L.length; n++) if (!seen[key(n)] && !(L[n].id && answered[L[n].id])) free.push(n);
+    if (!free.length) return null;
+    i = free[Math.floor(Math.random() * free.length)];
+    seen[key(i)] = 1; set('sh-tips-seen', JSON.stringify(seen));
+    return L[i];
   }
   tip = pick();
   if (!tip) return;
@@ -117,7 +122,7 @@
       box.innerHTML = html;
       box.querySelector('.x').onclick = function () { track('tip-close', { i: i }); close(); };
       box.querySelector('.off').onclick = function () { set('sh-tips-off', '1'); track('tips-off', { i: i }); close(); };
-      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); i = (i + 1) % L.length; var t = pick(); if (t) { tip = t; render(); } else close(); };
+      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); var t = pick(); if (t) { tip = t; render(); } else close(); };
       var links = box.querySelectorAll('.t a');
       for (var k = 0; k < links.length; k++) links[k].addEventListener('click', function () { track('tip-click', { i: i, href: this.getAttribute('href') }); });
       if (tip.q) {
