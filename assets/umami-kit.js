@@ -51,7 +51,7 @@ class UmamiTracker {
         });
     }
 
-    waitForUmami(callback, attempts = 0, maxAttempts = 50) {
+    waitForUmami(callback, attempts = 0, maxAttempts = 300) {
         if (window.umami && typeof window.umami.track === 'function') {
             callback();
         } else if (attempts < maxAttempts) {
@@ -116,7 +116,7 @@ class UmamiTracker {
 
     startHeartbeat() {
         this.state.heartbeatTimer = setInterval(() => {
-            if (!this.state.isIdle) {
+            if (!this.state.isIdle && document.visibilityState === 'visible') {
                 const timeSpent = Math.round((Date.now() - this.state.startTime) / 1000);
                 this.track('time-on-page', {
                     seconds: timeSpent,
@@ -148,9 +148,11 @@ class UmamiTracker {
         };
 
         // Track user activity
-        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'touchmove', 'wheel', 'pointerdown', 'click'].forEach(event => {
             document.addEventListener(event, resetIdleTimer, { passive: true });
         });
+        window.addEventListener('scroll', resetIdleTimer, { passive: true });
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') resetIdleTimer(); });
 
         // Check for idle state every 30 seconds
         setInterval(checkIdle, 30000);
@@ -412,5 +414,5 @@ if (typeof define === 'function' && define.amd) {
 
 // Global export
 window.UmamiTracker = UmamiTracker;
-// Study hub: start the tracker on every page (time on page every 30 s, scroll depth, clicks, page exit).
-window.umamiTracker = window.umamiTracker || new UmamiTracker({ heartbeatInterval: 30000 });
+// StudyHub: start the tracker on every page (time on page every 30 s while visible, idle after 5 min without input, scroll depth, clicks, page exit).
+window.umamiTracker = window.umamiTracker || new UmamiTracker({ heartbeatInterval: 30000, idleTimeout: 300000 });
