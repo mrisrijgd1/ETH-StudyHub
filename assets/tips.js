@@ -9,14 +9,13 @@
   if (get('sh-tips-off') === '1') return;
   var EN = [
     { t: 'Every lesson ends with an optional <b>For wonder</b> section: five minutes of the beautiful side of the topic, no exam pressure.' },
-    { t: 'Low-energy day? Each refresher unit has a <b>bad-day version</b>: a small minimum that still counts.' },
+    { t: 'Low-energy day? Every lesson and refresher unit has a <b>bad-day version</b> at the top: a small minimum that still counts.' },
     { t: 'Stuck in a proof? The <a href="moves.html">moves library</a> lists the tricks proofs keep reusing, and when to reach for each one.' },
     { t: 'Ten minutes of <a href="flashcards.html">flashcards</a> a day keeps definitions exam-exact.' },
     { t: 'Not sure where to start? <a href="path.html">Find your path</a> in five quick questions.' },
     { t: 'You can <a href="download.html">download everything</a> and make your own version with Claude, tuned to how you learn.' },
     { t: 'Every story has a formal twin: read the picture first, then the exact version right next to it.' },
     { t: 'The <a href="exam-map.html">exam map</a> shows what the old exams actually ask, so you know what matters most.' },
-    { t: 'Prefer German? Use the <b>Deutsch</b> button at the top of every page.' },
     { q: 'Would you like a progress system (tick off lessons, see how far you are)?', id: 'progress' },
     { q: 'Would you like a forum to ask questions about each lesson?', id: 'forum' },
     { q: 'Would you like lesson stories retold in a world you love (music, sport, games…)?', id: 'own-world' },
@@ -24,14 +23,13 @@
   ];
   var DE = [
     { t: 'Jede Lektion endet mit einem optionalen Abschnitt <b>Zum Staunen</b>: fünf Minuten für die schöne Seite des Themas, ohne Prüfungsdruck.' },
-    { t: 'Wenig Energie heute? Jede Repetitionseinheit hat eine <b>Version für schlechte Tage</b>: ein kleines Minimum, das trotzdem zählt.' },
+    { t: 'Wenig Energie heute? Jede Lektion und jede Repetitionseinheit hat oben eine <b>Version für schlechte Tage</b>: ein kleines Minimum, das trotzdem zählt.' },
     { t: 'Hängst du in einem Beweis? Die <a href="moves.html">Kniff-Sammlung</a> zeigt die Tricks, die Beweise immer wieder verwenden, und wann du welchen brauchst.' },
     { t: 'Zehn Minuten <a href="flashcards.html">Lernkarten</a> pro Tag, und die Definitionen sitzen prüfungsgenau.' },
     { t: 'Unsicher, wo du anfangen sollst? <a href="path.html">Finde deinen Weg</a> mit fünf kurzen Fragen.' },
     { t: 'Du kannst <a href="download.html">alles herunterladen</a> und mit Claude deine eigene Version machen, passend zu deiner Art zu lernen.' },
     { t: 'Jede Geschichte hat einen formalen Zwilling: zuerst das Bild, direkt daneben die exakte Version.' },
     { t: 'Die <a href="exam-map.html">Prüfungslandkarte</a> zeigt, was die alten Prüfungen wirklich fragen, damit du weisst, was am meisten zählt.' },
-    { t: 'Lieber Englisch? Oben auf jeder Seite gibt es den Knopf <b>English</b>.' },
     { q: 'Hättest du gern ein Fortschrittssystem (Lektionen abhaken, sehen, wie weit du bist)?', id: 'progress' },
     { q: 'Hättest du gern ein Forum, um Fragen zu jeder Lektion zu stellen?', id: 'forum' },
     { q: 'Hättest du gern die Geschichten in einer Welt, die du liebst (Musik, Sport, Games …)?', id: 'own-world' },
