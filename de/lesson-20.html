@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="../assets/umami-kit.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strassen ohne Ende</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<p style="text-align:right;margin:0"><a class="lang-switch" href="../lesson-20.html" lang="en">English</a></p>
+<nav class="site" aria-label="Website">
+<a href="index.html">Start</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Lernkarten</a>
+<a href="moves.html">Kniffe</a>
+<a href="exam-map.html">Prüfungslandkarte</a>
+<a href="skipped.html">Ausgelassen</a>
+<a href="../script.html">Skript</a>
+<a href="docs.html">Prüfungen</a>
+<a href="lesson-19.html">← Lektion 19</a>
+<a href="lesson-21.html">Lektion 21 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lektion 20 von 26</span>
+  <h1>Strassen ohne Ende</h1>
+  <p class="lead"><strong>Uneigentliche Integrale</strong>: Integrale über ein unendliches Intervall wie $[1,\infty)$ oder über eine Funktion, die an einem Randpunkt explodiert, definiert als Grenzwerte gewöhnlicher Integrale. Wann konvergieren sie? Der $x^{-\alpha}$-Test, das <strong>Vergleichskriterium</strong>, absolute Konvergenz und der <strong>Integraltest</strong>, der uneigentliche Integrale mit Reihen verbindet. Danach die Gamma-Funktion, die $n!$ auf alle positiven reellen Zahlen erweitert. Skript Abschnitt 9.3.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-19-5">Rückblick auf Lektion 19 (5 Min.)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</a>
+</li>
+<li><a href="#s1-the-story-roads-without-end">1. Die Geschichte: Strassen ohne Ende</a>
+</li>
+<li><a href="#s2-integrals-over-infinite-intervals">2. Integrale über unendliche Intervalle</a>
+<ol>
+<li><a href="#proof-a">Beweis A: der $x^{-\alpha}$-Test für Integrale (Beispiel 9.30, S. 438, und Übung 9.42, S. 442)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: zwei Problemstellen und eine Falle</a></li>
+</ol></li>
+<li><a href="#s3-comparison-and-absolute-convergence">3. Vergleich und absolute Konvergenz</a>
+<ol>
+<li><a href="#proof-b">Beweis B: nichtnegative Integranden und das Vergleichskriterium (Lemma 9.33, S. 439)</a></li>
+<li><a href="#how-to-compare-the-limit">Wie man vergleicht: die Grenzwertform</a></li>
+<li><a href="#proof-c">Beweis C: absolute Konvergenz impliziert Konvergenz (Übung 9.43, S. 443)</a></li>
+</ol></li>
+<li><a href="#s4-the-integral-test-for-series">4. Der Integraltest für Reihen</a>
+<ol>
+<li><a href="#proof-d">Beweis D: der Integraltest (Satz 9.35, S. 440–441)</a></li>
+<li><a href="#we-2">Musterbeispiel 2: Reihen über Integrale</a></li>
+</ol></li>
+<li><a href="#s5-integrals-of-unbounded-functions">5. Integrale unbeschränkter Funktionen</a>
+<ol>
+<li><a href="#we-3">Musterbeispiel 3: Integranden, die an einem Randpunkt unbeschränkt sind</a></li>
+</ol></li>
+<li><a href="#s6-the-gamma-function">6. Die Gamma-Funktion</a>
+<ol>
+<li><a href="#proof-e">Beweis E: die Gamma-Funktion erweitert die Fakultät (Abschnitt 9.3.3, S. 443–444)</a></li>
+</ol></li>
+<li><a href="#s7-worked-examples-converges-or-not">7. Musterbeispiele: konvergent oder nicht?</a>
+<ol>
+<li><a href="#the-decision-list-for-does">Die Entscheidungsliste für «konvergiert $\int f$?»</a></li>
+<li><a href="#we-4">Musterbeispiel 4: Welche konvergieren?</a></li>
+</ol></li>
+<li><a href="#s8-exercises">8. Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Felder HS22, 3.MC3, 2 Punkte)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (PVK-Probeprüfung HS25, MC9, 2 Punkte)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Figalli FS24, MC10, 2 Punkte)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Figalli FS24, MC5, 2 Punkte)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Figalli FS26, MC9, 2 Punkte)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (PVK-Probeprüfung HS25, Frage A1, 9 Punkte)</a></li>
+<li><a href="#ex-7">Aufgabe 7 (Winterprüfung 2018, Frage 7, 6 Punkte)</a></li>
+<li><a href="#ex-8">Aufgabe 8 (Sommerprüfung 2011, Frage 5b)</a></li>
+<li><a href="#ex-9">Aufgabe 9 (Übung 9.42)</a></li>
+<li><a href="#bonus">Bonus: die Euler-Mascheroni-Konstante (Übung 9.36, erweitert)</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. Zum Staunen</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. Was wir auslassen</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>Fertig, wenn</dt><dd>du (1) ein uneigentliches Integral als Grenzwert schreiben und berechnen kannst, auch in den Fällen mit zwei Problemstellen, (2) <strong>schnell entscheiden kannst, ob ein uneigentliches Integral konvergiert</strong>: $\int_1^\infty x^{-\alpha}$ und $\int_0^1x^{-\alpha}$ auswendig kennst, damit vergleichst und <em>jede</em> Problemstelle einzeln anschaust, (3) den <strong>Integraltest formulieren und beweisen</strong> und seinen Beweis für Abschätzungen wie $\sum_{n\le N}\frac1{\sqrt n}=2\sqrt N+O(1)$ verwenden kannst, (4) $\Gamma(n+1)=n!$ kennst.</dd></div>
+  <div><dt>Skript (deutsch, gedruckte Seitenzahlen)</dt><dd>Du musst es nicht öffnen. Nur falls du das Original willst:
+    <ul>
+      <li><strong><a class="pl" href="../script.html#p438">S. 438–441</a>, Abschnitt 9.3.1:</strong> uneigentliche obere Grenzen, $\int_1^\infty x^{-\alpha}$, nichtnegative Integranden, die Gausssche Glockenkurve, der Integraltest.</li>
+      <li><strong><a class="pl" href="../script.html#p441">S. 441–443</a>, Abschnitt 9.3.2:</strong> Integrale unbeschränkter Funktionen, $\int_0^1\log x$, $\int_{-1}^1\frac1x$, der Umfang des Kreises, absolute Konvergenz.</li>
+      <li><strong><a class="pl" href="../script.html#p443">S. 443–445</a>, Abschnitt 9.3.3:</strong> die Gamma-Funktion.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum das für die Prüfung zählt</span>
+«Welches dieser uneigentlichen Integrale konvergiert?» ist eine Multiple-Choice-Frage zu 2 Punkten in Felder HS22 (MC3), Figalli FS24 (MC10) und der PVK-Probeprüfung (MC9), und in Figalli FS24 MC5 und FS26 MC9 sollst du eines <em>berechnen</em>. Der Integraltest ist eine 6-Punkte-Frage in der Winterprüfung 2018 (formulieren, dann seinen Beweis für eine Abschätzung verwenden), und die 9-Punkte-Frage A1 der PVK-Probeprüfung baut auf $\int_0^\infty|f'|&lt;\infty$ auf. Die älteren Einsiedler-Prüfungen fragen, ob $\int_0^\infty x\sin(x^3)\,dx$ konvergiert (Sommer 2011).</div>
+
+<div class="box"><h3 id="recap-of-lesson-19-5">Rückblick auf <a class="xl" href="lesson-19.html">Lektion 19</a> (5 Min.)</h3>
+<ul>
+  <li><strong>Fundamentalsatz:</strong> $F(x)=\int_a^xf$ erfüllt $F'(x_0)=f(x_0)$ überall, wo $f$ stetig ist; $\int_a^bf=F(b)-F(a)$ für jede Stammfunktion $F$ eines stetigen $f$.</li>
+  <li><strong>Werkzeuge:</strong> partielle Integration $\int uv'=uv-\int u'v$; Substitution $\int_a^bg(\varphi)\varphi'=\int_{\varphi(a)}^{\varphi(b)}g$; Partialbruchzerlegung; $x=a\sin\theta$, $x=a\tan\theta$, $u=\tan\frac x2$.</li>
+</ul>
+<ol class="gq">
+  <li><p>Berechne $\int_1^b\frac{dx}{x^2}$ und $\int_1^b\frac{dx}x$ für $b&gt;1$. Was passiert für $b\to\infty$?</p>
+  <details><summary>Antwort</summary><div><p>$1-\frac1b\to1$ und $\log b\to\infty$. Die ganze heutige Lektion in einem Beispiel: Die Fläche unter $\frac1{x^2}$ über $[1,\infty)$ ist endlich, unter $\frac1x$ nicht.</p></div></details></li>
+  <li><p>Welche Methode für $\int\frac{dx}{x(1+x)}$, und was kommt heraus?</p>
+  <details><summary>Antwort</summary><div><p>Partialbruchzerlegung: $\frac1x-\frac1{1+x}$, also $\log\frac x{1+x}+C$ für $x&gt;0$.</p></div></details></li>
+  <li><p><a class="xl" href="lesson-14.html#proof-d">Lektion 14</a>: Wann konvergiert $\sum\frac1{n^p}$?</p>
+  <details><summary>Antwort</summary><div><p>Genau für $p&gt;1$ (Verdichtung). Heute liefert der Integraltest einen zweiten Beweis, und dieselbe Schwelle taucht bei $\int_1^\infty x^{-p}$ auf.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>English</th></tr></thead>
+  <tbody>
+    <tr><td>uneigentliches Integral</td><td>improper integral</td></tr>
+    <tr><td>konvergiert / divergiert</td><td>converges / diverges</td></tr>
+    <tr><td>Vergleichskriterium, Majorante / Minorante</td><td>comparison test, majorant / minorant</td></tr>
+    <tr><td>absolut konvergent</td><td>absolutely convergent</td></tr>
+    <tr><td>Integraltest (Integralkriterium) für Reihen</td><td>integral test for series</td></tr>
+    <tr><td>Gausssche Glockenkurve, Normalverteilung</td><td>Gauss bell curve, normal distribution</td></tr>
+    <tr><td>Gamma-Funktion</td><td>Gamma function</td></tr>
+    <tr><td>Bogenlänge</td><td>arc length</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-roads-without-end">1. Die Geschichte: Strassen ohne Ende</h2>
+<div class="story">
+<p>Östlich der Flussstadt führt eine Strasse in die Ebene hinaus und hört nie auf. Die Strassenwächter verkaufen den Reisenden Lampenöl: Auf jeder Meile brauchst du ein wenig Öl, immer weniger, je weiter du kommst, denn die Strasse wird gerader und ruhiger. Kann eine Reisende mit einer endlichen Flasche aufbrechen und die Strasse trotzdem für immer beleuchten?</p>
+<p>Die alten Wächter sagen, das hänge davon ab, <em>wie schnell</em> der Bedarf schrumpft. Schrumpft das Öl für Meile $x$ wie $\frac1x$, wird jede Flasche leer: Der Bedarf summiert sich ohne Schranke auf, langsam, wie die Hälften, Drittel und Viertel der harmonischen Strasse. Schrumpft er wie $\frac1{x^2}$, reicht eine Flasche für die Ewigkeit. Und die Wächter kennen einen zweiten Trick: Um zu wissen, ob eine Strasse, die an den Meilensteinen den Ölbedarf $f(1),f(2),f(3),\dots$ hat, beleuchtet werden kann, musst du die Meilensteine nicht addieren. Du misst stattdessen das Öl entlang der glatten Strasse, und die beiden Antworten stimmen immer überein.</p>
+</div>
+<p>In Mathematik: Das Öl entlang der Strasse ist ein <strong>uneigentliches Integral</strong> $\int_1^\infty f(x)\,dx=\lim_{b\to\infty}\int_1^bf$. Es konvergiert für $f=x^{-2}$ und divergiert für $f=x^{-1}$. Der zweite Trick ist der <strong>Integraltest</strong>: Für monoton fallendes $f\ge0$ konvergiert $\sum f(n)$ genau dann, wenn $\int_1^\infty f$ konvergiert.</p>
+
+<h2 id="s2-integrals-over-infinite-intervals">2. Integrale über unendliche Intervalle</h2>
+<div class="box">
+<p><strong>Definition.</strong> Sei $f:[a,\infty)\to\mathbb R$ auf jedem $[a,b]$, $b&gt;a$, integrierbar. Das <strong>uneigentliche Integral</strong> ist</p>
+<span class="math-display" style="display:block">$$\int_a^\infty f(x)\,dx=\lim_{b\to\infty}\int_a^bf(x)\,dx,$$</span>
+<p>falls der Grenzwert existiert. Ist er eine reelle Zahl, so <strong>konvergiert</strong> das uneigentliche Integral; andernfalls <strong>divergiert</strong> es (und ist der Grenzwert $\pm\infty$, schreiben wir $\int_a^\infty f=\pm\infty$). $\int_{-\infty}^bf$ wird genauso mit $a\to-\infty$ definiert.</p>
+<p><strong>Beide Enden unendlich:</strong> $\int_{-\infty}^\infty f=\int_{-\infty}^0f+\int_0^\infty f$, und es existiert nur, wenn <strong>beide</strong> Hälften konvergieren, mit zwei <em>unabhängigen</em> Grenzwerten.</p>
+</div>
+
+<h3 id="proof-a">Beweis A: der $x^{-\alpha}$-Test für Integrale (Beispiel 9.30, <a class="pl" href="../script.html#p438">S. 438</a>, und Übung 9.42, <a class="pl" href="../script.html#p442">S. 442</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Sei $\alpha\in\mathbb R$.</p>
+<ol>
+  <li>$\displaystyle\int_1^\infty\frac{dx}{x^\alpha}$ konvergiert genau dann, wenn $\alpha&gt;1$, und ist dann gleich $\frac1{\alpha-1}$. Für $\alpha\le1$ ist es $+\infty$.</li>
+  <li>$\displaystyle\int_0^1\frac{dx}{x^\alpha}$ konvergiert genau dann, wenn $\alpha&lt;1$, und ist dann gleich $\frac1{1-\alpha}$. Für $\alpha\ge1$ ist es $+\infty$.</li>
+</ol>
+</div>
+<p><strong>Die Idee.</strong> Berechne $\int_1^b$ (bzw. $\int_a^1$) mit der Stammfunktion und lass dann $b\to\infty$ (bzw. $a\searrow0$) gehen. Alles hängt davon ab, ob der Exponent $1-\alpha$ der Stammfunktion $\frac{x^{1-\alpha}}{1-\alpha}$ negativ oder positiv ist, plus vom Spezialfall $\alpha=1$ mit $\log$. Die beiden Teile sind Spiegelbilder: Bei $\infty$ brauchst du schnelles Abklingen (grosses $\alpha$), bei $0$ ein mildes Explodieren (kleines $\alpha$).</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Anfang:</strong> «Für $b&gt;1$ ist $\int_1^bx^{-\alpha}\,dx=\dots$» (bzw. für $0&lt;a&lt;1$ $\int_a^1$).</li>
+  <li><strong>Ende:</strong> der Grenzwert für $b\to\infty$ (bzw. $a\searrow0$) in jedem Fall.</li>
+  <li><strong>Die Lücke:</strong> drei Fälle: $\alpha&gt;1$, $\alpha&lt;1$, $\alpha=1$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Miss das Öl bis zum Meilenstein $b$.</p></div><div class="sp-formal"><p><strong>1.</strong> Für $b&gt;1$ und $\alpha\neq1$: $\int_1^bx^{-\alpha}dx=\left[\frac{x^{1-\alpha}}{1-\alpha}\right]_1^b=\frac{b^{1-\alpha}-1}{1-\alpha}$. Für $\alpha=1$: $\int_1^b\frac{dx}x=\log b$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Schnell schrumpfender Bedarf: Die Messungen pendeln sich ein.</p></div><div class="sp-formal"><p>Ist $\alpha&gt;1$, so ist $1-\alpha&lt;0$ und $b^{1-\alpha}\to0$, also streben die Integrale gegen $\frac{-1}{1-\alpha}=\frac1{\alpha-1}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Langsam schrumpfender Bedarf: Die Messungen wachsen ohne Schranke.</p></div><div class="sp-formal"><p>Ist $\alpha&lt;1$, so gilt $b^{1-\alpha}\to\infty$ und die Integrale streben gegen $+\infty$. Ist $\alpha=1$, gilt $\log b\to\infty$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Am Anfang einer Strasse, die mit einer Klippe beginnt, tauschen die Rollen.</p></div><div class="sp-formal"><p><strong>2.</strong> Für $0&lt;a&lt;1$ und $\alpha\neq1$: $\int_a^1x^{-\alpha}dx=\frac{1-a^{1-\alpha}}{1-\alpha}$, und $\int_a^1\frac{dx}x=-\log a$. Für $a\searrow0$: $a^{1-\alpha}\to0$ falls $\alpha&lt;1$ (Grenzwert $\frac1{1-\alpha}$), $a^{1-\alpha}\to\infty$ falls $\alpha&gt;1$, und $-\log a\to\infty$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-cases">Fallunterscheidung</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Für $b&gt;1$: $\int_1^bx^{-\alpha}dx=\frac{b^{1-\alpha}-1}{1-\alpha}$ falls $\alpha\neq1$, und $\log b$ falls $\alpha=1$. Für $b\to\infty$ gilt $b^{1-\alpha}\to0$ für $\alpha&gt;1$ und $\to\infty$ für $\alpha&lt;1$, und $\log b\to\infty$. Also konvergiert das Integral genau für $\alpha&gt;1$, mit Wert $\frac1{\alpha-1}$. Für $0&lt;a&lt;1$: $\int_a^1x^{-\alpha}dx=\frac{1-a^{1-\alpha}}{1-\alpha}$ falls $\alpha\neq1$, und $-\log a$ falls $\alpha=1$; für $a\searrow0$ konvergiert das genau für $\alpha&lt;1$, gegen $\frac1{1-\alpha}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Für welche $\alpha$ konvergiert $\int_0^\infty x^{-\alpha}dx$?</p>
+  <details><summary>Antwort</summary><div><p>Für keines: Es zerfällt in $\int_0^1+\int_1^\infty$, und das braucht gleichzeitig $\alpha&lt;1$ und $\alpha&gt;1$.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Berechne $\int_0^\infty e^{-x}dx$ und $\int_0^\infty\frac{dx}{1+x^2}$.</p>
+  <details><summary>Antwort</summary><div><p><span class="math-display" style="display:block">$$\lim_b\bigl[-e^{-x}\bigr]_0^b=\lim_b(1-e^{-b})=1.$$</span>$\lim_b\arctan b=\frac\pi2$.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den ganzen Beweis nur anhand des Rahmens.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-1">Musterbeispiel 1: zwei Problemstellen und eine Falle</h3>
+<p>Die Musterbeispiele sind Fragen: Versuch jede zuerst im Kopf und öffne dann die Antwort. Deine Antworten, der Reihe nach, sind die Lösung.</p>
+<ol class="gq">
+  <li><p>$\int_{-\infty}^\infty\frac{dx}{1+x^2}$.</p>
+  <details><summary>Antwort</summary><div><p>Beide Hälften konvergieren: $\int_0^\infty=\frac\pi2$ und aus Symmetrie $\int_{-\infty}^0=\frac\pi2$. Das Integral ist also $\pi$.</p></div></details></li>
+  <li><p>Existiert $\int_{-\infty}^\infty x\,dx$? Was ist $\lim_{c\to\infty}\int_{-c}^cx\,dx$?</p>
+  <details><summary>Antwort</summary><div><p>Es existiert nicht: Schon $\int_0^\infty x\,dx=\lim\frac{b^2}2=\infty$. Aber $\int_{-c}^cx\,dx=0$ für jedes $c$, also ist der symmetrische Grenzwert $0$. Darum verwendet die Definition zwei unabhängige Grenzwerte: Mit $\int_{-c}^{c+1}x\,dx=c+\frac12\to\infty$ würde eine andere Art, nach unendlich zu gehen, einen anderen «Wert» liefern.</p></div></details></li>
+  <li><p>Wahr oder falsch: Wenn $\int_1^\infty f$ konvergiert, dann gilt $f(x)\to0$.</p>
+  <details><summary>Antwort</summary><div><p>Falsch! Anders als bei Reihen. Nimm ein $f$ mit einer dünnen Spitze der Höhe $1$ und Breite $\frac1{n^2}$ bei jeder ganzen Zahl $n$ und $0$ sonst: Das Integral ist höchstens $\sum\frac1{n^2}&lt;\infty$, aber $f(n)=1$. Aufgabe 8 hat ein stetiges Beispiel, bei dem der Integrand sogar unbeschränkt ist.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s3-comparison-and-absolute-convergence">3. Vergleich und absolute Konvergenz</h2>
+<p>Die meisten Prüfungsfragen wollen nur wissen, <em>ob</em> ein uneigentliches Integral konvergiert, und die meisten Integranden haben keine schöne Stammfunktion. Wie bei Reihen (<a class="xl" href="lesson-14.html#s3-series-with-non-negative-terms">Lektion 14</a>) sind nichtnegative Funktionen der einfache Fall.</p>
+
+<h3 id="proof-b">Beweis B: nichtnegative Integranden und das Vergleichskriterium (Lemma 9.33, <a class="pl" href="../script.html#p439">S. 439</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Seien $f,g:[a,\infty)\to\mathbb R$ auf jedem $[a,b]$ integrierbar.</p>
+<ol>
+  <li>Ist $f\ge0$, so konvergiert $\int_a^\infty f$ entweder oder ist $+\infty$, und $\int_a^\infty f=\sup_{b&gt;a}\int_a^bf$. Es konvergiert genau dann, wenn die Integrale $\int_a^bf$ beschränkt sind.</li>
+  <li><strong>Vergleichskriterium.</strong> Ist $0\le f\le g$ und konvergiert $\int_a^\infty g$, so konvergiert $\int_a^\infty f$ (und ist $\le\int_a^\infty g$). Ist $\int_a^\infty f=\infty$, so ist $\int_a^\infty g=\infty$.</li>
+</ol>
+<p>Dasselbe gilt für Integrale über $(A,b]$ mit einer Problemstelle bei $A$.</p>
+</div>
+<p><strong>Die Idee.</strong> Für $f\ge0$ ist $b\mapsto\int_a^bf$ monoton wachsend (mehr Strasse, mehr Öl). Eine monoton wachsende Funktion konvergiert für $b\to\infty$ genau dann, wenn sie beschränkt ist, und der Grenzwert ist ihr Supremum, genau wie bei monotonen Folgen. Das Vergleichskriterium folgt: Die Integrale von $f$ sind durch die von $g$ beschränkt.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Ziel von 1:</strong> mit $I(b)=\int_a^bf$ und $S=\sup_bI(b)$: «Für jedes $\varepsilon&gt;0$ gibt es $B$ mit $|I(b)-S|\le\varepsilon$ für $b\ge B$», falls $S&lt;\infty$; «$I(b)\to\infty$», falls $S=\infty$.</li>
+  <li><strong>Ziel von 2:</strong> «$\int_a^bf$ ist beschränkt», dann 1 anwenden.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Das bisher verbrauchte Öl wächst immer nur.</p></div><div class="sp-formal"><p><strong>1.</strong> Sei $I(b)=\int_a^bf$. Für $b&lt;b'$ ist $I(b')-I(b)=\int_b^{b'}f\ge0$, also ist $I$ monoton wachsend. Sei $S=\sup_{b&gt;a}I(b)\in(-\infty,\infty]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wenn eine Flasche für alle Distanzen reicht, kriecht der Verbrauch bis zur kleinsten ausreichenden Flaschengrösse hinauf.</p></div><div class="sp-formal"><p>Falls $S&lt;\infty$: Zu $\varepsilon&gt;0$ gibt es $B$ mit $I(B)&gt;S-\varepsilon$ ($S$ ist die kleinste obere Schranke). Für $b\ge B$ gilt $S-\varepsilon&lt;I(B)\le I(b)\le S$. Also $I(b)\to S$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wenn keine Flasche reicht, übersteigt der Verbrauch jede Grösse.</p></div><div class="sp-formal"><p>Falls $S=\infty$: Zu jedem $M$ gibt es $B$ mit $I(B)&gt;M$, und dann ist $I(b)&gt;M$ für alle $b\ge B$. Also $I(b)\to\infty$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wer weniger braucht als jemand, der Glück hat, hat auch Glück.</p></div><div class="sp-formal"><p><strong>2.</strong> Ist $0\le f\le g$, liefert die Monotonie des Integrals $\int_a^bf\le\int_a^bg\le\int_a^\infty g$ (nach 1 für $g$). Also sind die Integrale von $f$ beschränkt, und nach 1 konvergiert $\int_a^\infty f$, mit $\int_a^\infty f\le\int_a^\infty g$. Die zweite Aussage ist die Kontraposition. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-approx">Sich einem Supremum nähern</a> <a class="mvl" href="moves.html#m-monob">Monoton und beschränkt</a> <a class="mvl" href="moves.html#m-major">Eine Majorante (oder Minorante) finden</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>$I(b)=\int_a^bf$ ist monoton wachsend, da $f\ge0$. Sei $S=\sup I$. Falls $S&lt;\infty$, wähle zu $\varepsilon&gt;0$ ein $B$ mit $I(B)&gt;S-\varepsilon$; dann ist $S-\varepsilon&lt;I(b)\le S$ für $b\ge B$, also $I(b)\to S$. Falls $S=\infty$, ist zu jedem $M$ ein $I(B)&gt;M$, also $I(b)&gt;M$ für $b\ge B$. Zu 2: $\int_a^bf\le\int_a^bg\le\int_a^\infty g$, also ist $\int_a^bf$ beschränkt und 1 greift. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Zeige, dass $\int_1^\infty e^{-x^2}dx$ konvergiert.</p>
+  <details><summary>Antwort</summary><div><p>Für $x\ge1$ ist $x^2\ge x$, also $0\le e^{-x^2}\le e^{-x}$, und $\int_1^\infty e^{-x}=\frac1e$ konvergiert. Nach dem Vergleichskriterium konvergiert $\int_1^\infty e^{-x^2}$. Mit Symmetrie und dem beschränkten Stück $\int_{-1}^1$ konvergiert auch die ganze Glockenkurve $\int_{-\infty}^\infty e^{-x^2}dx$ (ihr Wert $\sqrt\pi$ kommt im zweiten Semester).</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Konvergiert $\int_2^\infty\frac{dx}{\log x}$?</p>
+  <details><summary>Antwort</summary><div><p>Nein. $\log x\le x$, also $\frac1{\log x}\ge\frac1x\ge0$, und $\int_2^\infty\frac{dx}x=\infty$. Nach dem Vergleichskriterium (zweite Aussage) ist $\int_2^\infty\frac{dx}{\log x}=\infty$.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den ganzen Beweis nur anhand des Rahmens.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="how-to-compare-the-limit">Wie man vergleicht: die Grenzwertform</h3>
+<p>Oft weisst du nur, wie sich $f$ in der Nähe der Problemstelle verhält. Sind $f,g&gt;0$ und gilt $\frac{f(x)}{g(x)}\to L$ mit $0&lt;L&lt;\infty$ an der Problemstelle, so ist $\frac L2g\le f\le2Lg$ nahe daran, also <strong>konvergieren oder divergieren $\int f$ und $\int g$ gemeinsam</strong>. Die Vergleichsfunktionen sind fast immer $x^{-\alpha}$ (Beweis A) oder $e^{-x}$.</p>
+<ul>
+  <li>$\frac{x+3}{x^3+1}$ bei $\infty$: verhält sich wie $\frac1{x^2}$, konvergiert.</li>
+  <li>$\frac1{\sqrt{x+x^3}}$ bei $0$: wie $\frac1{\sqrt x}$, konvergiert; bei $\infty$: wie $x^{-3/2}$, konvergiert.</li>
+  <li>$\frac{\sin x}{x^2}$ bei $0$: wie $\frac1x$, divergiert.</li>
+</ul>
+<p>Beschränkte Stücke auf kompakten Intervallen machen nie Ärger: Nur die Problemstellen zählen, und jede muss <strong>einzeln</strong> geprüft werden.</p>
+</div>
+
+<h3 id="proof-c">Beweis C: absolute Konvergenz impliziert Konvergenz (Übung 9.43, <a class="pl" href="../script.html#p443">S. 443</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Sei $f:[a,\infty)\to\mathbb R$ auf jedem $[a,b]$ integrierbar. Konvergiert $\int_a^\infty|f|$ («$\int f$ konvergiert absolut»), so konvergiert $\int_a^\infty f$.</p>
+</div>
+<p><strong>Die Idee.</strong> Vorzeichen können nur helfen: Auslöschungen machen das Integral kleiner, nicht grösser. Formal schiebst du $f$ um $|f|$ nach oben: Die Funktion $f+|f|$ ist nichtnegativ und höchstens $2|f|$, also konvergiert ihr Integral nach dem Vergleichskriterium. Dann ist $f=(f+|f|)-|f|$ eine Differenz zweier konvergenter Integrale.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Ziel:</strong> «$\lim_{b\to\infty}\int_a^bf$ existiert in $\mathbb R$.»</li>
+  <li><strong>Bekannt:</strong> nur Beweis B, der $f\ge0$ braucht. <strong>Die Lücke:</strong> $f$ mit nichtnegativen Funktionen schreiben.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Heb die Strasse an, damit sie nie unter den Boden taucht.</p></div><div class="sp-formal"><p>$|f|$ ist auf jedem $[a,b]$ integrierbar (<a class="xl" href="lesson-09.html#proof-d">Lektion 9</a>), und $0\le f+|f|\le2|f|$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die angehobene Strasse braucht höchstens doppelt so viel Öl wie die ehrliche.</p></div><div class="sp-formal"><p>$\int_a^\infty2|f|$ konvergiert, also konvergiert nach dem Vergleichskriterium (Beweis B) $\int_a^\infty(f+|f|)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Nimm die Anhebung wieder weg.</p></div><div class="sp-formal"><p>Für jedes $b$: $\int_a^bf=\int_a^b(f+|f|)-\int_a^b|f|$. Beide Terme konvergieren für $b\to\infty$, also konvergiert $\int_a^\infty f$, und $\left|\int_a^\infty f\right|\le\int_a^\infty|f|$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-major">Eine Majorante (oder Minorante) finden</a> <a class="mvl" href="moves.html#m-pm">Zwei Versionen addieren und subtrahieren</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>$|f|$ ist auf jedem $[a,b]$ integrierbar und $0\le f+|f|\le2|f|$. Da $\int_a^\infty2|f|$ konvergiert, konvergiert $\int_a^\infty(f+|f|)$ nach dem Vergleichskriterium. Also konvergiert $\int_a^bf=\int_a^b(f+|f|)-\int_a^b|f|$ für $b\to\infty$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Zeige, dass $\int_1^\infty\frac{\sin x}{x^2}dx$ konvergiert.</p>
+  <details><summary>Antwort</summary><div><p>$\left|\frac{\sin x}{x^2}\right|\le\frac1{x^2}$, und $\int_1^\infty x^{-2}$ konvergiert (Beweis A). Also konvergiert es absolut und damit nach Beweis C auch gewöhnlich.</p></div></details></li>
+  <li><p><strong>Stufe 2 (3 Min.).</strong> Zeige, dass $\int_1^\infty\frac{\sin x}x dx$ konvergiert. (Tipp: zuerst partiell integrieren.)</p>
+  <details><summary>Antwort</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\int_1^b\frac{\sin x}xdx&amp;=\left[-\frac{\cos x}x\right]_1^b-\int_1^b\frac{\cos x}{x^2}dx\end{aligned}.$$</span>Die Klammer ist $\cos1-\frac{\cos b}b\to\cos1$. Das letzte Integral konvergiert absolut, wie in Stufe 1. Also existiert der Grenzwert. (Es konvergiert <em>nicht</em> absolut, die Umkehrung von Beweis C gilt also nicht, genau wie bei Reihen.)</p></div></details></li>
+  <li><p><strong>Stufe 3 (2 Min.).</strong> Schreib den Beweis nur anhand des Rahmens.</p></li>
+</ol></div>
+
+<h2 id="s4-the-integral-test-for-series">4. Der Integraltest für Reihen</h2>
+<figure style="margin:.4rem 0" aria-label="Der Graph einer monoton fallenden Funktion f von 1 bis 6. Über jedem Intervall von n bis n plus 1 ragt ein hoher Balken der Höhe f(n) über den Graphen hinaus, und ein niedriger Balken der Höhe f(n+1) bleibt darunter.">
+<svg viewBox="0 0 640 300" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><rect x="50.0" y="40.0" width="105" height="220.0" style="fill:var(--story-edge);opacity:.18;stroke:var(--story-edge)" stroke-width="1.2"/><rect x="50.0" y="150.0" width="105" height="110.0" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="1.2"/><rect x="155.0" y="150.0" width="105" height="110.0" style="fill:var(--story-edge);opacity:.18;stroke:var(--story-edge)" stroke-width="1.2"/><rect x="155.0" y="186.7" width="105" height="73.3" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="1.2"/><rect x="260.0" y="186.7" width="105" height="73.3" style="fill:var(--story-edge);opacity:.18;stroke:var(--story-edge)" stroke-width="1.2"/><rect x="260.0" y="205.0" width="105" height="55.0" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="1.2"/><rect x="365.0" y="205.0" width="105" height="55.0" style="fill:var(--story-edge);opacity:.18;stroke:var(--story-edge)" stroke-width="1.2"/><rect x="365.0" y="216.0" width="105" height="44.0" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="1.2"/><rect x="470.0" y="216.0" width="105" height="44.0" style="fill:var(--story-edge);opacity:.18;stroke:var(--story-edge)" stroke-width="1.2"/><rect x="470.0" y="223.3" width="105" height="36.7" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="1.2"/><path d="M50.0 40.0 L52.6 45.4 L55.3 50.5 L57.9 55.3 L60.5 60.0 L63.1 64.4 L65.7 68.7 L68.4 72.8 L71.0 76.7 L73.6 80.4 L76.2 84.0 L78.9 87.5 L81.5 90.8 L84.1 94.0 L86.8 97.0 L89.4 100.0 L92.0 102.9 L94.6 105.6 L97.2 108.3 L99.9 110.8 L102.5 113.3 L105.1 115.7 L107.8 118.1 L110.4 120.3 L113.0 122.5 L115.6 124.6 L118.2 126.7 L120.9 128.7 L123.5 130.6 L126.1 132.5 L128.8 134.3 L131.4 136.1 L134.0 137.8 L136.6 139.5 L139.2 141.1 L141.9 142.7 L144.5 144.2 L147.1 145.7 L149.8 147.2 L152.4 148.6 L155.0 150.0 L157.6 151.4 L160.2 152.7 L162.9 154.0 L165.5 155.2 L168.1 156.5 L170.8 157.7 L173.4 158.9 L176.0 160.0 L178.6 161.1 L181.2 162.2 L183.9 163.3 L186.5 164.3 L189.1 165.4 L191.8 166.4 L194.4 167.4 L197.0 168.3 L199.6 169.3 L202.3 170.2 L204.9 171.1 L207.5 172.0 L210.1 172.9 L212.7 173.7 L215.4 174.6 L218.0 175.4 L220.6 176.2 L223.2 177.0 L225.9 177.8 L228.5 178.5 L231.1 179.3 L233.8 180.0 L236.4 180.7 L239.0 181.4 L241.6 182.1 L244.2 182.8 L246.9 183.5 L249.5 184.1 L252.1 184.8 L254.8 185.4 L257.4 186.1 L260.0 186.7 L262.6 187.3 L265.2 187.9 L267.9 188.5 L270.5 189.0 L273.1 189.6 L275.8 190.2 L278.4 190.7 L281.0 191.2 L283.6 191.8 L286.2 192.3 L288.9 192.8 L291.5 193.3 L294.1 193.8 L296.8 194.3 L299.4 194.8 L302.0 195.3 L304.6 195.8 L307.2 196.2 L309.9 196.7 L312.5 197.1 L315.1 197.6 L317.8 198.0 L320.4 198.5 L323.0 198.9 L325.6 199.3 L328.2 199.7 L330.9 200.1 L333.5 200.5 L336.1 200.9 L338.8 201.3 L341.4 201.7 L344.0 202.1 L346.6 202.5 L349.2 202.9 L351.9 203.2 L354.5 203.6 L357.1 203.9 L359.8 204.3 L362.4 204.7 L365.0 205.0 L367.6 205.3 L370.2 205.7 L372.9 206.0 L375.5 206.3 L378.1 206.7 L380.8 207.0 L383.4 207.3 L386.0 207.6 L388.6 207.9 L391.2 208.2 L393.9 208.5 L396.5 208.8 L399.1 209.1 L401.7 209.4 L404.4 209.7 L407.0 210.0 L409.6 210.3 L412.2 210.6 L414.9 210.8 L417.5 211.1 L420.1 211.4 L422.8 211.6 L425.4 211.9 L428.0 212.2 L430.6 212.4 L433.3 212.7 L435.9 212.9 L438.5 213.2 L441.1 213.4 L443.8 213.7 L446.4 213.9 L449.0 214.2 L451.6 214.4 L454.2 214.6 L456.9 214.9 L459.5 215.1 L462.1 215.3 L464.8 215.6 L467.4 215.8 L470.0 216.0 L472.6 216.2 L475.2 216.4 L477.9 216.7 L480.5 216.9 L483.1 217.1 L485.8 217.3 L488.4 217.5 L491.0 217.7 L493.6 217.9 L496.2 218.1 L498.9 218.3 L501.5 218.5 L504.1 218.7 L506.7 218.9 L509.4 219.1 L512.0 219.3 L514.6 219.4 L517.2 219.6 L519.9 219.8 L522.5 220.0 L525.1 220.2 L527.8 220.4 L530.4 220.5 L533.0 220.7 L535.6 220.9 L538.2 221.1 L540.9 221.2 L543.5 221.4 L546.1 221.6 L548.8 221.7 L551.4 221.9 L554.0 222.1 L556.6 222.2 L559.2 222.4 L561.9 222.6 L564.5 222.7 L567.1 222.9 L569.8 223.0 L572.4 223.2 L575.0 223.3" style="fill:none;stroke:var(--ink)" stroke-width="2.4"/><line x1="40" y1="260" x2="620" y2="260" style="stroke:var(--muted)" stroke-width="1.2"/><text x="50.0" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">1</text><text x="155.0" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">2</text><text x="260.0" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">3</text><text x="365.0" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">4</text><text x="470.0" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">5</text><text x="575.0" y="282" text-anchor="middle" font-size="17" style="fill:var(--ink)">6</text><text x="102" y="32" text-anchor="middle" font-size="16" style="fill:var(--story-edge)">f(1)</text><text x="102" y="172" text-anchor="middle" font-size="16" style="fill:var(--accent)">f(2)</text><text x="428" y="180" text-anchor="middle" font-size="17" style="fill:var(--ink)">f</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Für monoton fallendes $f$ liegt der Graph auf $[n,n+1]$ zwischen dem niedrigen Balken der Höhe $f(n+1)$ und dem hohen Balken der Höhe $f(n)$. Also $f(n+1)\le\int_n^{n+1}f\le f(n)$: Das Integral ist zwischen zwei Summen eingeklemmt.</figcaption>
+</figure>
+
+<h3 id="proof-d">Beweis D: der Integraltest (Satz 9.35, <a class="pl" href="../script.html#p440">S. 440–441</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Sei $f:[1,\infty)\to[0,\infty)$ monoton fallend. Dann gilt</p>
+<span class="math-display" style="display:block">$$\sum_{n=2}^\infty f(n)\le\int_1^\infty f(x)\,dx\le\sum_{n=1}^\infty f(n).$$</span>
+<p>Insbesondere konvergiert $\sum_{n=1}^\infty f(n)$ genau dann, wenn $\int_1^\infty f(x)\,dx$ konvergiert.</p>
+</div>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="lesson-09.html#proof-e">Lektionen 9</a>, <a class="xl" href="lesson-11.html#proof-b">11</a>, <a class="xl" href="lesson-14.html">14</a>)</span>
+<ul>
+  <li><strong>Monotone Funktionen sind integrierbar</strong> auf jedem $[1,b]$ (<a class="xl" href="lesson-09.html#proof-e">Lektion 9</a>).</li>
+  <li><strong>Monotone und beschränkte</strong> Folgen konvergieren, und eine Reihe mit nichtnegativen Gliedern konvergiert genau dann, wenn ihre Partialsummen beschränkt sind.</li>
+</ul></div>
+<p><strong>Die Idee.</strong> Das Bild: Auf jedem $[n,n+1]$ liegt die Fläche unter $f$ zwischen dem niedrigen Balken $f(n+1)$ und dem hohen Balken $f(n)$. Summiere über $n=1,\dots,N$: Das Integral $\int_1^{N+1}f$ ist zwischen zwei Partialsummen eingeklemmt. Ist eine Seite beschränkt, so auch die andere.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Zwei Richtungen:</strong> «$\int$ konvergiert ⇒ Partialsummen beschränkt» und «Reihe konvergiert ⇒ $\int_1^bf$ beschränkt». Jede ist das Beschränktheitskriterium für nichtnegative Glieder (Reihen) bzw. Integranden (Beweis B).</li>
+  <li><strong>Die Lücke:</strong> eine Ungleichung pro Intervall $[n,n+1]$, dann summieren.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Auf jeder Meile liegt der Ölbedarf zwischen dem Bedarf an ihren beiden Meilensteinen.</p></div><div class="sp-formal"><p>Für $n\in\mathbb N$ und $x\in[n,n+1]$ liefert die Monotonie von $f$: $f(n+1)\le f(x)\le f(n)$. Wegen der Monotonie des Integrals gilt $f(n+1)\le\int_n^{n+1}f\le f(n)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zähl die Meilen zusammen.</p></div><div class="sp-formal"><p>Summieren über $k=1,\dots,N$ und Additivität bezüglich des Intervalls:</p><span class="math-display" style="display:block">$$\sum_{n=2}^{N+1}f(n)\le\int_1^{N+1}f\le\sum_{n=1}^Nf(n).\qquad(*)$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wenn die glatte Strasse beleuchtet werden kann, dann auch die Meilensteine.</p></div><div class="sp-formal"><p>Konvergiert $\int_1^\infty f$: Nach $(*)$ und $f\ge0$ ist $\sum_{n=2}^{N+1}f(n)\le\int_1^\infty f$ für alle $N$. Die Partialsummen sind beschränkt, also konvergiert die Reihe, und $\sum_{n\ge2}f(n)\le\int_1^\infty f$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Und wenn die Meilensteine beleuchtet werden können, dann auch die Strasse.</p></div><div class="sp-formal"><p>Konvergiert $\sum f(n)$: Für $b&gt;1$ sei $N=\lfloor b\rfloor$. Dann ist $\int_1^bf\le\int_1^{N+1}f\le\sum_{n=1}^Nf(n)\le\sum_{n=1}^\infty f(n)$. Nach Beweis B konvergiert $\int_1^\infty f$ und ist $\le\sum_{n\ge1}f(n)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-sandwich">Sandwich</a> <a class="mvl" href="moves.html#m-partial">Zu den Partialsummen übergehen</a> <a class="mvl" href="moves.html#m-monob">Monoton und beschränkt</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Da $f$ monoton fallend ist, gilt $f(n+1)\le\int_n^{n+1}f\le f(n)$ für jedes $n$. Summieren von $1$ bis $N$: $\sum_{n=2}^{N+1}f(n)\le\int_1^{N+1}f\le\sum_{n=1}^Nf(n)$. Konvergiert $\int_1^\infty f$, so sind die Partialsummen von $\sum_{n\ge2}f(n)$ dadurch beschränkt (da $f\ge0$), also konvergiert die Reihe. Konvergiert $\sum f(n)$, so ist $\int_1^bf\le\int_1^{\lfloor b\rfloor+1}f\le\sum_{n\ge1}f(n)$ für jedes $b$, also konvergiert $\int_1^\infty f$ nach Beweis B. Die Ungleichungen übertragen sich auf die Grenzwerte. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Ein Intervall:</strong> $f(n+1)\le\int_n^{n+1}f\le f(n)$ (monoton fallend).</li>
+  <li><strong>Summieren:</strong> $\sum_{2}^{N+1}f(n)\le\int_1^{N+1}f\le\sum_1^Nf(n)$.</li>
+  <li><strong>Beide Richtungen:</strong> auf einer Seite beschränkt ⇒ auf der anderen beschränkt; nichtnegativ ⇒ konvergiert.</li>
+</ol>
+<p><em>Kurz gesagt:</em> «niedrige Balken, Kurve, hohe Balken.» Für die Abschätzung in der Winterprüfung 2018 (Aufgabe 7) brauchst du nur $(*)$ mit dem exakten Integral.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum ist $f$ auf $[1,b]$ integrierbar, und wo wird «monoton fallend» sonst noch verwendet?</p>
+  <details><summary>Antwort</summary><div><p>Monotone Funktionen auf kompakten Intervallen sind integrierbar (<a class="xl" href="lesson-09.html#proof-e">Lektion 9</a>). Und «monoton fallend» liefert $f(n+1)\le f(x)\le f(n)$ auf $[n,n+1]$, das Herz des Beweises.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Zeige mit dem Integraltest nochmals, dass $\sum\frac1{n^p}$ genau für $p&gt;1$ konvergiert ($p&gt;0$).</p>
+  <details><summary>Antwort</summary><div><p>$f(x)=x^{-p}$ ist für $p&gt;0$ positiv und monoton fallend, also konvergiert $\sum n^{-p}$ genau dann, wenn $\int_1^\infty x^{-p}$ konvergiert, d.h. genau für $p&gt;1$ (Beweis A). (Für $p\le0$ streben die Glieder nicht gegen $0$.)</p></div></details></li>
+  <li><p><strong>Stufe 3 (5 Min.).</strong> Schreib den ganzen Beweis nur anhand der Prüfungsbox.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-2">Musterbeispiel 2: Reihen über Integrale</h3>
+<ol class="gq">
+  <li><p>Konvergiert $\sum_{n\ge2}\frac1{n\log n}$? Und $\sum_{n\ge2}\frac1{n(\log n)^2}$?</p>
+  <details><summary>Antwort</summary><div><p>Beide $f$ sind auf $[2,\infty)$ positiv und monoton fallend. Mit der Substitution $u=\log x$, $du=\frac{dx}x$: <span class="math-display" style="display:block">$$\begin{aligned}\int_2^b\frac{dx}{x\log x}&amp;=\log\log b-\log\log2\to\infty\end{aligned},$$</span>also divergiert die erste. $\int_2^b\frac{dx}{x(\log x)^2}=\frac1{\log2}-\frac1{\log b}\to\frac1{\log2}$, also konvergiert die zweite. (<a class="xl" href="lesson-14.html#proof-d">Lektion 14</a> hat diese mit Verdichtung erhalten.)</p></div></details></li>
+  <li><p>Zeige $\sum_{n=1}^N\frac1n=\log N+O(1)$, genauer: $\log(N+1)\le\sum_{n=1}^N\frac1n\le1+\log N$.</p>
+  <details><summary>Antwort</summary><div><p>Verwende $(*)$ mit $f=\frac1x$. Die rechte Ungleichung von $(*)$ mit $N$: <span class="math-display" style="display:block">$$\log(N+1)=\int_1^{N+1}\frac{dx}x\le\sum_{n=1}^N\frac1n.$$</span>Die linke Ungleichung mit $N-1$: $\sum_{n=2}^N\frac1n\le\int_1^N\frac{dx}x=\log N$, also $\sum_{n=1}^N\frac1n\le1+\log N$. Die harmonische Summe wächst wie $\log N$: Um $100$ zu erreichen, bräuchtest du etwa $e^{100}\approx10^{43}$ Glieder.</p></div></details></li>
+</ol>
+</div>
+
+
+<h2 id="s5-integrals-of-unbounded-functions">5. Integrale unbeschränkter Funktionen</h2>
+<div class="box">
+<p><strong>Definition.</strong> Sei $f:[a,B)\to\mathbb R$ auf jedem $[a,b]$ mit $b&lt;B$ integrierbar (typischerweise ist $f$ nahe $B$ unbeschränkt). Dann ist</p>
+<span class="math-display" style="display:block">$$\int_a^Bf(x)\,dx=\lim_{b\nearrow B}\int_a^bf(x)\,dx,$$</span>
+<p>falls der Grenzwert existiert; analog $\int_A^bf=\lim_{a\searrow A}\int_a^bf$ für eine Problemstelle am linken Rand. Bei mehreren Problemstellen (ein unendliches Ende, ein Explodieren, ein Punkt im Inneren) <strong>zerlegst</strong> du das Integral so, dass jedes Stück genau eine Problemstelle hat, und verlangst, dass <strong>jedes Stück</strong> konvergiert.</p>
+</div>
+<p>Ist $f$ beschränkt und war das Problem nur, dass $f$ bei $B$ nicht definiert ist, passiert nichts Neues: Der Grenzwert existiert und ist gleich dem gewöhnlichen Riemann-Integral. Beweis B (Vergleich) und Beweis C (absolute Konvergenz) funktionieren für diese Integrale genauso.</p>
+
+<div class="box">
+<h3 id="we-3">Musterbeispiel 3: Integranden, die an einem Randpunkt unbeschränkt sind</h3>
+<ol class="gq">
+  <li><p>$\int_0^1\log x\,dx$.</p>
+  <details><summary>Antwort</summary><div><p>$\log x\to-\infty$ für $x\searrow0$. Mit der Stammfunktion $x\log x-x$ (<a class="xl" href="lesson-19.html#we-4">Lektion 19</a>): <span class="math-display" style="display:block">$$\int_a^1\log x\,dx=-1-a\log a+a\to-1,$$</span>wegen $a\log a\to0$. Das Integral ist also $-1$.</p></div></details></li>
+  <li><p>$\int_{-1}^1\frac{dx}x$. (Vorsicht!)</p>
+  <details><summary>Antwort</summary><div><p>Die Problemstelle $0$ liegt im Inneren, also zerlegen: $\int_{-1}^0\frac{dx}x+\int_0^1\frac{dx}x$. Schon $\int_0^1\frac{dx}x=\lim_{a\searrow0}(-\log a)=+\infty$, und $\int_{-1}^0=-\infty$. Das Integral <strong>existiert nicht</strong>, und wir nennen es nicht $0$, obwohl $\frac1x$ ungerade ist. (Wie die Warnung in <a class="xl" href="lesson-19.html#we-2">Lektion 19</a> zu $\int_{-1}^1\frac1{x^2}$.)</p></div></details></li>
+  <li><p>Der Umfang eines Kreises: Die obere Hälfte des Einheitskreises ist der Graph von $f(x)=\sqrt{1-x^2}$, und ihre Länge ist $\int_{-1}^1\sqrt{1+f'(x)^2}\,dx$. Berechne sie.</p>
+  <details><summary>Antwort</summary><div><p>$f'(x)=\frac{-x}{\sqrt{1-x^2}}$, also $1+f'^2=\frac1{1-x^2}$, was bei $\pm1$ explodiert. Zerlege bei $0$: $\int_0^1\frac{dx}{\sqrt{1-x^2}}=\lim_{b\nearrow1}\arcsin b=\frac\pi2$, und dasselbe auf $[-1,0]$. Der Halbkreis hat also Länge $\pi$, der ganze Kreis $2\pi$.</p></div></details></li>
+  <li><p>$\int_0^{\pi/2}\tan x\,dx$.</p>
+  <details><summary>Antwort</summary><div><p>$\int_0^b\tan x\,dx=-\log\cos b\to+\infty$ für $b\nearrow\frac\pi2$. Divergiert.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s6-the-gamma-function">6. Die Gamma-Funktion</h2>
+<p>Ein uneigentliches Integral verdient einen eigenen Namen: Es macht aus der Fakultät $n!$ eine glatte Funktion einer reellen Variablen.</p>
+
+<h3 id="proof-e">Beweis E: die Gamma-Funktion erweitert die Fakultät (Abschnitt 9.3.3, <a class="pl" href="../script.html#p443">S. 443–444</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Für $s&gt;0$ konvergiert das uneigentliche Integral</p>
+<span class="math-display" style="display:block">$$\Gamma(s)=\int_0^\infty x^{s-1}e^{-x}\,dx$$</span>
+<p>Es erfüllt $\Gamma(s+1)=s\,\Gamma(s)$ und $\Gamma(1)=1$, also $\Gamma(n+1)=n!$ für alle $n\in\mathbb N_0$.</p>
+</div>
+<p><strong>Die Idee.</strong> Zwei Problemstellen, also zwei Vergleiche: Nahe $0$ ist der Integrand höchstens $x^{s-1}$, ein mildes Explodieren, da $s-1&gt;-1$ (Beweis A). Nahe $\infty$ schlägt die Exponentialfunktion jede Potenz: $x^{s-1}e^{-x}\le Ce^{-x/2}$. Die Funktionalgleichung ist eine partielle Integration, und die Fakultäten folgen per Induktion.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Konvergenz:</strong> zerlege $\int_0^\infty=\int_0^1+\int_1^\infty$ und zeige, dass beide konvergieren.</li>
+  <li><strong>Funktionalgleichung:</strong> partiell integrieren auf $[a,b]$, dann $a\searrow0$, $b\to\infty$.</li>
+  <li><strong>Fakultäten:</strong> $\Gamma(1)$ von Hand, dann Induktion.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Am Anfang der Strasse ist die Klippe sanft genug.</p></div><div class="sp-formal"><p><strong>Nahe $0$.</strong> Für $0&lt;x\le1$: $0\le x^{s-1}e^{-x}\le x^{s-1}=x^{-(1-s)}$ mit $1-s&lt;1$. Nach Beweis A und dem Vergleichskriterium konvergiert $\int_0^1x^{s-1}e^{-x}dx$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Weit draussen stirbt der Ölbedarf schneller, als jede Potenz wachsen kann.</p></div><div class="sp-formal"><p><strong>Nahe $\infty$.</strong> $x^{s-1}e^{-x/2}\to0$ für $x\to\infty$ (exp schlägt Potenzen, <a class="xl" href="lesson-16.html#s5-the-exponential-series">Lektion 16</a>), also ist es auf $[1,\infty)$ durch ein $C$ beschränkt. Dann ist $0\le x^{s-1}e^{-x}\le Ce^{-x/2}$, und $\int_1^\infty Ce^{-x/2}dx=2Ce^{-1/2}$ konvergiert. Nach dem Vergleichskriterium konvergiert $\int_1^\infty x^{s-1}e^{-x}dx$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Ein Schritt weiter kostet genau $s$-mal die vorherige Reise.</p></div><div class="sp-formal"><p><strong>Funktionalgleichung.</strong> Partielle Integration mit $u=x^s$, $v'=e^{-x}$, für $0&lt;a&lt;b$:</p><span class="math-display" style="display:block">$$\begin{aligned}&\int_a^bx^se^{-x}dx\\&\quad=\bigl[-x^se^{-x}\bigr]_a^b+s\int_a^bx^{s-1}e^{-x}dx.\end{aligned}$$</span><p>Für $a\searrow0$ und $b\to\infty$ gilt $a^se^{-a}\to0$ und $b^se^{-b}\to0$, also $\Gamma(s+1)=s\,\Gamma(s)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die erste Reise kostet eine Flasche, und jede spätere multipliziert.</p></div><div class="sp-formal"><p>$\Gamma(1)=\int_0^\infty e^{-x}dx=1$. Induktion: $\Gamma(1)=1=0!$, und falls $\Gamma(n+1)=n!$, dann $\Gamma(n+2)=(n+1)\Gamma(n+1)=(n+1)!$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-major">Eine Majorante (oder Minorante) finden</a> <a class="mvl" href="moves.html#m-induct">Induktion mit beschrifteten Teilen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Auf $(0,1]$ gilt $0\le x^{s-1}e^{-x}\le x^{s-1}$, und $\int_0^1x^{s-1}dx$ konvergiert, da $s-1&gt;-1$. Auf $[1,\infty)$ ist $x^{s-1}e^{-x/2}$ stetig mit Grenzwert $0$, also durch ein $C$ beschränkt, somit $0\le x^{s-1}e^{-x}\le Ce^{-x/2}$, was ein konvergentes Integral hat. Nach dem Vergleichskriterium konvergiert $\Gamma(s)$. Partielle Integration liefert $\int_a^bx^se^{-x}=[-x^se^{-x}]_a^b+s\int_a^bx^{s-1}e^{-x}$; mit $a\searrow0$, $b\to\infty$ folgt $\Gamma(s+1)=s\Gamma(s)$. Mit $\Gamma(1)=1$ liefert Induktion $\Gamma(n+1)=n!$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Berechne $\int_0^\infty x^3e^{-x}dx$, ohne zu integrieren.</p>
+  <details><summary>Antwort</summary><div><p>$\Gamma(4)=3!=6$.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Warum divergiert $\int_0^1x^{s-1}e^{-x}dx$ für $s=0$?</p>
+  <details><summary>Antwort</summary><div><p>Für $0&lt;x\le1$ ist $e^{-x}\ge e^{-1}$, also $x^{-1}e^{-x}\ge\frac1{ex}\ge0$, und $\int_0^1\frac{dx}x=\infty$. Nach dem Vergleichskriterium (zweite Aussage) divergiert es. $s&gt;0$ ist also wirklich nötig.</p></div></details></li>
+  <li><p><strong>Stufe 3 (4 Min.).</strong> Schreib den ganzen Beweis nur anhand des Rahmens.</p></li>
+</ol></div>
+<p><strong>Warum das cool ist.</strong> $n!$ ergibt nur für ganze Zahlen Sinn: Was wäre $\left(\frac12\right)!$? Die Gamma-Funktion beantwortet das: $\left(\frac12\right)!=\Gamma\left(\frac32\right)=\frac12\Gamma\left(\frac12\right)=\frac{\sqrt\pi}2$, denn $\Gamma\left(\frac12\right)=\int_{-\infty}^\infty e^{-u^2}du=\sqrt\pi$ (nach der Substitution $x=u^2$). In der Fakultät von einem Halb stecken $\pi$, die Glockenkurve und ein Kreis. Dieselbe Gamma-Funktion taucht im Volumen einer Kugel in beliebiger Dimension auf, in der Wahrscheinlichkeitstheorie und in der Riemannschen Zetafunktion.</p>
+
+<h2 id="s7-worked-examples-converges-or-not">7. Musterbeispiele: konvergent oder nicht?</h2>
+<p>Eine gemischte Auswahl, um vor den Aufgaben die ganze Lektion zu repetieren. In der Prüfung besteht die Arbeit in einer schnellen, verlässlichen Entscheidung für jede Problemstelle.</p>
+<div class="box">
+<h3 id="the-decision-list-for-does">Die Entscheidungsliste für «konvergiert $\int f$?»</h3>
+<ol>
+  <li><strong>Finde alle Problemstellen:</strong> $\pm\infty$ und jeden Punkt, an dem $f$ unbeschränkt ist (Nullstellen eines Nenners, $\log$ bei $0$). Zerlege so, dass jedes Stück eine hat.</li>
+  <li><strong>Finde an jeder Problemstelle das dominante Verhalten:</strong> wie $x^{-\alpha}$ (oder $|x-c|^{-\alpha}$), wie $e^{-x}$ oder mit Oszillation.</li>
+  <li><strong>Vergleiche</strong> (Beweis B oder seine Grenzwertform) mit Beweis A: bei $\infty$ braucht es $\alpha&gt;1$; an einem endlichen Punkt $\alpha&lt;1$.</li>
+  <li><strong>Oszillierendes Vorzeichen</strong> ($\sin x$, $\cos x$): versuch zuerst absolute Konvergenz (Beweis C); wenn das scheitert, partiell integrieren (Beweis C, Stufe 2).</li>
+  <li><strong>Ein divergentes Stück</strong> reicht, damit das ganze Integral divergiert.</li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-4">Musterbeispiel 4: Welche konvergieren?</h3>
+<ol class="gq">
+  <li><p>$\int_0^\infty\frac{dx}{\sqrt x\,(1+x)}$.</p>
+  <details><summary>Antwort</summary><div><p>Zwei Problemstellen. Bei $0$: wie $x^{-1/2}$, $\alpha=\frac12&lt;1$, konvergiert. Bei $\infty$: wie $x^{-3/2}$, $\alpha&gt;1$, konvergiert. Also konvergiert es. (Sein Wert: $u=\sqrt x$ liefert $\int_0^\infty\frac{2\,du}{1+u^2}=\pi$.)</p></div></details></li>
+  <li><p>$\int_0^\infty\frac{x}{1+x^2}dx$.</p>
+  <details><summary>Antwort</summary><div><p>Bei $\infty$ wie $\frac1x$: divergiert. Tatsächlich ist $\int_0^b=\frac12\log(1+b^2)\to\infty$.</p></div></details></li>
+  <li><p>$\int_1^\infty\frac{\cos x}{\sqrt x}\,dx$.</p>
+  <details><summary>Antwort</summary><div><p>Mit der einfachen Schranke nicht absolut konvergent ($|\cos x|/\sqrt x\le x^{-1/2}$ bringt nichts). Partiell: $\left[\frac{\sin x}{\sqrt x}\right]_1^b+\frac12\int_1^b\frac{\sin x}{x^{3/2}}dx$; die Klammer konvergiert, und das Integral konvergiert absolut ($\alpha=\frac32$). Also konvergiert es.</p></div></details></li>
+  <li><p>$\int_0^1\frac{dx}{x^2+\sqrt x}$.</p>
+  <details><summary>Antwort</summary><div><p>Problemstelle $0$, wo $\sqrt x$ dominiert: $\frac1{x^2+\sqrt x}\le\frac1{\sqrt x}$. Konvergiert nach dem Vergleichskriterium.</p></div></details></li>
+  <li><p>$\int_0^\infty e^{-x}\log x\,dx$.</p>
+  <details><summary>Antwort</summary><div><p>Bei $0$: $|e^{-x}\log x|\le|\log x|$, und $\int_0^1|\log x|=1$ konvergiert (Musterbeispiel 3). Bei $\infty$: $|e^{-x}\log x|\le e^{-x}x\le Ce^{-x/2}$, konvergiert. Also konvergiert es absolut. (Sein Wert ist $-\gamma\approx-0.577$, die Euler-Mascheroni-Konstante aus dem Bonus.)</p></div></details></li>
+  <li><p>$\int_{-\infty}^\infty\frac{dx}{|x|+1}$.</p>
+  <details><summary>Antwort</summary><div><p>Bei $\infty$ wie $\frac1x$: $\int_0^b\frac{dx}{x+1}=\log(b+1)\to\infty$. Divergiert (ein divergentes Stück reicht).</p></div></details></li>
+</ol>
+</div>
+
+
+<h2 id="s8-exercises">8. Aufgaben</h2>
+<p>Jede Lösung ist unter ihrer Aufgabe eingeklappt. Die Aufgaben 1–5 zählen für die Bewertung. Die Aufgaben 6–9 sind die längeren Prüfungsfragen, und der Bonus ist eine berühmte Konstante.</p>
+<div class="box"><h3 id="ex-1">Aufgabe 1 (Felder HS22, 3.MC3, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">Prüfung HS22</a></p>
+  <p>Welches dieser uneigentlichen Integrale konvergiert? (A) $\int_0^1\frac{dx}{\sqrt{1-x}}$ (B) $\int_{-\infty}^\infty\frac{dx}{|x|+1}$ (C) $\int_{-1}^1\frac x{x^2-1}dx$ (D) $\int_0^\infty\sin x\,dx$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(A).</strong> <span class="math-display" style="display:block">$$\begin{aligned}\int_0^b(1-x)^{-1/2}dx&amp;=\bigl[-2\sqrt{1-x}\bigr]_0^b\\&amp;=2-2\sqrt{1-b}\to2\end{aligned}$$</span>für $b\nearrow1$. (Nahe der Problemstelle $1$ ist es $|x-1|^{-1/2}$, und $\frac12&lt;1$.)</p>
+  <p>(B) divergiert (Musterbeispiel 4, Punkt 6). (C) hat die Problemstellen $\pm1$; nahe $1$ verhält sich $\frac x{x^2-1}=\frac x{(x-1)(x+1)}$ wie $\frac1{2(x-1)}$, und $\int\frac{dx}{x-1}$ divergiert ($\alpha=1$). (D) $\int_0^b\sin x\,dx=1-\cos b$ hat keinen Grenzwert.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Aufgabe 2 (PVK-Probeprüfung HS25, MC9, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK-Probeprüfung</a> · <a href="../pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">Lösungen</a></p>
+  <p>Welches uneigentliche Integral konvergiert? (A) $\int_1^\infty\frac{dx}x$ (B) $\int_1^\infty\frac{dx}{x^{3/2}}$ (C) $\int_0^1\frac{dx}x$ (D) $\int_0^\infty e^x\,dx$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(B)</strong>: $\alpha=\frac32&gt;1$ bei $\infty$, Wert $\frac1{\alpha-1}=2$ (Beweis A). (A) und (C) sind der Grenzfall $\alpha=1$, beide $+\infty$. (D) $e^b-1\to\infty$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Aufgabe 3 (Figalli FS24, MC10, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">Prüfung FS24 mit Lösungen</a></p>
+  <p>Welches konvergiert? (A) $\int_0^\infty\frac{\sin x}{x^2}dx$ (B) $\int_0^\infty\frac{dx}{x^2}$ (C) $\int_0^\infty\frac{1-\cos x}{x^2}dx$ (D) $\int_0^\infty\frac{dx}{1+x}$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(C).</strong> Zwei Problemstellen. Bei $0$: $\frac{1-\cos x}{x^2}\to\frac12$ (<a class="xl" href="lesson-18.html#proof-f">Lektion 18</a> oder die Reihe $1-\cos x=\frac{x^2}2-\dots$), also ist der Integrand nahe $0$ beschränkt: kein echtes Problem. Bei $\infty$: $0\le\frac{1-\cos x}{x^2}\le\frac2{x^2}$, konvergiert nach dem Vergleichskriterium.</p>
+  <p>(A) Bei $0$ ist $\frac{\sin x}{x^2}\ge\frac{2}{\pi}\cdot\frac1x$ für $0&lt;x\le\frac\pi2$ (denn dort ist $\sin x\ge\frac2\pi x$, Konkavität), also divergiert es bei $0$, obwohl es bei $\infty$ in Ordnung ist. (B) divergiert bei $0$ ($\alpha=2\ge1$). (D) divergiert bei $\infty$ (wie $\frac1x$).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Aufgabe 4 (Figalli FS24, MC5, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2024-08-figalli-fs24-repeat-exam-with-solutions.pdf&amp;t=2024-08%20Figalli%20-%20FS24%20repeat%20exam%20%28with%20solutions%29">Prüfung FS24 mit Lösungen</a></p>
+  <p>Berechne $\int_0^1\frac{dx}{\sqrt{x(1-x)}}$. (A) $2\pi$ (B) $\pi$ (C) $2$ (D) $1$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(B).</strong> Problemstellen $0$ und $1$, jede wie $|x-c|^{-1/2}$, also konvergiert es. Wert: $x=u^2$, $dx=2u\,du$, Grenzen $0$ und $1$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\int_0^1\frac{2u\,du}{u\sqrt{1-u^2}}&amp;=2\int_0^1\frac{du}{\sqrt{1-u^2}}\\&amp;=2\cdot\frac\pi2\\&amp;=\pi.\end{aligned}$$</span>
+  <p>(Das letzte Integral ist bei $1$ uneigentlich; $\lim_{b\nearrow1}2\arcsin b=\pi$.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Aufgabe 5 (Figalli FS26, MC9, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">Prüfung FS26</a></p>
+  <p>Berechne $\int_0^1\frac{dx}{\sqrt{x(2-x)}}$. (A) $\pi$ (B) $\frac\pi2$ (C) $2$ (D) $1$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(B).</strong> Quadratisch ergänzen: $x(2-x)=1-(x-1)^2$. Substituiere $u=x-1$, Grenzen $-1$ und $0$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\int_{-1}^0\frac{du}{\sqrt{1-u^2}}&amp;=\arcsin0-\lim_{a\searrow-1}\arcsin a\\&amp;=0-\left(-\frac\pi2\right)\\&amp;=\frac\pi2.\end{aligned}$$</span>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Selbstbewertung:</strong> Die Aufgaben 1–5 geben je 2 Punkte, zusammen 10. Hast du 7 von 10, bist du fertig. Die Aufgaben 6–9 und der Bonus sind zusätzliche Übung und zählen nicht gegen dich. Aufgabe 7 ist Beweis D als Prüfungsfrage: Mach sie, wenn sich Beweis D gut angefühlt hat.</p>
+</div>
+
+<div class="box"><h3 id="ex-6">Aufgabe 6 (PVK-Probeprüfung HS25, Frage A1, 9 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK-Probeprüfung</a> · <a href="../pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">Lösungen</a></p>
+  <p>Sei $f:[0,\infty)\to\mathbb R$ stetig differenzierbar mit $\lim_{x\to\infty}f(x)=0$ und $\int_0^\infty|f'(x)|\,dx&lt;\infty$. (A) Beweise, dass $f$ beschränkt ist. (B) Zeige, dass $|f(x)|\le\int_x^\infty|f'(s)|\,ds$ für alle $x\ge0$. (C) Folgere: Für jedes $\varepsilon&gt;0$ gibt es $R&gt;0$ mit $|f(x)|&lt;\varepsilon$ für alle $x\ge R$.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> der Fundamentalsatz (<a class="xl" href="lesson-19.html#proof-b">Lektion 19</a>, Beweis B, Teil 3) zwischen $x$ und einem weit entfernten Punkt $y$, dann $y\to\infty$. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-tri">Einen Zwischenpunkt einfügen</a> <a class="mvl" href="moves.html#m-major">Eine Majorante (oder Minorante) finden</a>.</p>
+  <p>Sei $M=\int_0^\infty|f'|$. Für $x\ge0$ konvergiert $\int_x^\infty|f'|=M-\int_0^x|f'|$, ist $\le M$ und ist monoton fallend in $x$ mit Grenzwert $0$ für $x\to\infty$ (nach der Definition von $\int_0^\infty$).</p>
+  <p><strong>Zuerst (B).</strong> Sei $0\le x&lt;y$. Nach dem Fundamentalsatz ist $f(x)=f(y)-\int_x^yf'(s)\,ds$, also</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f(x)|&amp;\le |f(y)|+\int_x^y|f'(s)|\,ds\\&amp;\le |f(y)|+\int_x^\infty|f'(s)|\,ds.\end{aligned}$$</span>
+  <p>Lass $y\to\infty$: $f(y)\to0$, also $|f(x)|\le\int_x^\infty|f'(s)|\,ds$.</p>
+  <p><strong>(A).</strong> Nach (B) ist $|f(x)|\le\int_x^\infty|f'|\le M$ für alle $x\ge0$.</p>
+  <p><strong>(C).</strong> Zu $\varepsilon&gt;0$ wähle $R$ mit $\int_R^\infty|f'|&lt;\varepsilon$ (möglich, da $\int_x^\infty|f'|\to0$). Für $x\ge R$: $|f(x)|\le\int_x^\infty|f'|\le\int_R^\infty|f'|&lt;\varepsilon$.</p>
+  <p>(Die Reihenfolge zählt: Wenn du (B) zuerst beweist, sind (A) und (C) je eine Zeile. In der Prüfung darfst du die Teile in beliebiger Reihenfolge beweisen, solange nichts zirkulär ist.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-7">Aufgabe 7 (Winterprüfung 2018, Frage 7, 6 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2018-winter-rechnungen-format.pdf&amp;t=2018%20winter%20%28Rechnungen%20format%29">Winterprüfung 2018</a></p>
+  <p>(a) Formuliere den Integraltest für Reihen. (b) Zeige mit dem Beweis des Integraltests, dass $\sum_{n=1}^N\frac1{\sqrt n}=2\sqrt N+O(1)$ für $N\to\infty$, d.h. $\left|2\sqrt N-\sum_{n=1}^N\frac1{\sqrt n}\right|$ ist durch eine von $N$ unabhängige Konstante beschränkt.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> Beweis D, die Ungleichung $(*)$. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-sandwich">Sandwich</a>.</p>
+  <p>(a) Die Aussage von Beweis D: Für monoton fallendes $f:[1,\infty)\to[0,\infty)$ gilt $\sum_{n\ge2}f(n)\le\int_1^\infty f\le\sum_{n\ge1}f(n)$, und die Reihe konvergiert genau dann, wenn das Integral konvergiert.</p>
+  <p>(b) $f(x)=x^{-1/2}$ ist positiv und monoton fallend, und $\int_1^Nx^{-1/2}dx=2\sqrt N-2$. Sei $S_N=\sum_{n=1}^N\frac1{\sqrt n}$. Wie im Beweis ist $f(n+1)\le\int_n^{n+1}f\le f(n)$; Summieren über $n=1,\dots,N-1$:</p>
+  <span class="math-display" style="display:block">$$S_N-1\le2\sqrt N-2\le S_N-\frac1{\sqrt N}.$$</span>
+  <p>Die linke Ungleichung liefert $S_N\le2\sqrt N-1$, die rechte $S_N\ge2\sqrt N-2+\frac1{\sqrt N}\ge2\sqrt N-2$. Also $-2\le S_N-2\sqrt N\le-1$, und $\left|2\sqrt N-S_N\right|\le2$ für alle $N$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-8">Aufgabe 8 (Sommerprüfung 2011, Frage 5b)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2011-summer-einsiedler.pdf&amp;t=2011%20summer%20Einsiedler">Sommerprüfung 2011</a></p>
+  <p>Konvergiert $\int_0^\infty x\sin\left(x^3\right)dx$?</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> Oszillation bei $\infty$: substituieren, um die Oszillation zu sehen, dann partiell integrieren (Beweis C, Stufe 2).</p>
+  <p>Auf $[0,1]$ ist der Integrand stetig: kein Problem. Für $b&gt;1$ substituiere $u=x^3$, $x=u^{1/3}$, $dx=\frac13u^{-2/3}du$:</p>
+  <span class="math-display" style="display:block">$$\int_1^bx\sin(x^3)\,dx=\frac13\int_1^{b^3}u^{-1/3}\sin u\,du.$$</span>
+  <p>Partiell mit $v'=\sin u$: <span class="math-display" style="display:block">$$\begin{aligned}&\int_1^Bu^{-1/3}\sin u\,du\\&\quad=\bigl[-u^{-1/3}\cos u\bigr]_1^B\\&\qquad-\frac13\int_1^Bu^{-4/3}\cos u\,du.\end{aligned}$$</span>Die Klammer ist $\cos1-B^{-1/3}\cos B\to\cos1$. Das letzte Integral konvergiert absolut, da $|u^{-4/3}\cos u|\le u^{-4/3}$ und $\frac43&gt;1$. Also existiert der Grenzwert: <strong>Ja, es konvergiert</strong>.</p>
+  <p>Bemerkenswert: Der Integrand $x\sin(x^3)$ strebt nicht gegen $0$; er schwingt zwischen $\pm x$, ist also nicht einmal beschränkt. Die Schwingungen werden nur so schnell, dass sich positive und negative Teile aufheben.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-9">Aufgabe 9 (Übung 9.42)</h3>
+  <p>Berechne $\int_0^1\frac{dx}{\sqrt x}$ und entscheide, ob $\int_0^{\pi/2}\tan x\,dx$ konvergiert. Berechne dann $\int_1^\infty\frac{dx}{x(1+x)}$.</p><details class="sol"><summary>Lösung</summary><div>
+  <p>$\int_a^1x^{-1/2}dx=2-2\sqrt a\to2$. $\int_0^{\pi/2}\tan x$ divergiert (Musterbeispiel 3, Punkt 4).</p>
+  <p>Partialbruchzerlegung: <span class="math-display" style="display:block">$$\begin{aligned}\int_1^b\left(\frac1x-\frac1{1+x}\right)dx&amp;=\left[\log\frac x{1+x}\right]_1^b\\&amp;=\log\frac b{1+b}-\log\frac12\\&amp;\to0+\log2\\&amp;=\log2.\end{aligned}$$</span>(Jedes der Integrale $\int_1^\infty\frac{dx}x$ und $\int_1^\infty\frac{dx}{1+x}$ divergiert für sich: Fasse sie <em>vor</em> dem Grenzübergang zusammen.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus: die Euler-Mascheroni-Konstante (Übung 9.36, erweitert)</h3>
+  <p>Sei $a_N=\sum_{n=1}^N\frac1n-\log N$. Zeige, dass $(a_N)$ monoton fallend und nach unten durch $0$ beschränkt ist, also konvergiert. (Ihr Grenzwert $\gamma\approx0.5772$ ist die Euler-Mascheroni-Konstante.)</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Kniffe:</em> <a class="mvl" href="moves.html#m-monob">Monoton und beschränkt</a> <a class="mvl" href="moves.html#m-sandwich">Sandwich</a>.</p>
+  <p><strong>Monoton fallend:</strong> $a_{N+1}-a_N=\frac1{N+1}-\int_N^{N+1}\frac{dx}x\le0$, da $\frac1x\ge\frac1{N+1}$ auf $[N,N+1]$.</p>
+  <p><strong>Nach unten beschränkt:</strong> Nach Musterbeispiel 2, Punkt 2, ist $\sum_{n=1}^N\frac1n\ge\log(N+1)&gt;\log N$, also $a_N&gt;0$.</p>
+  <p>Monoton und beschränkt, also $a_N\to\gamma\in[0,1]$. Niemand weiss, ob $\gamma$ rational ist.</p>
+</div></details>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. Zum Staunen <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 Min.)</span></h2>
+<p><strong>Das Paradoxon des Malers.</strong> Dreh den Graphen von $\frac1x$ für $x\ge1$ um die $x$-Achse: Du erhältst «Gabriels Horn» (Torricelli, 1643). Sein Volumen ist $\pi\int_1^\infty\frac{dx}{x^2}=\pi$, endlich. Seine Oberfläche ist mindestens $2\pi\int_1^\infty\frac{dx}x=\infty$. Du könntest das Horn also mit $\pi$ Litern Farbe füllen, aber nie seine Innenwand streichen. Torricellis Zeitgenossen fanden das zutiefst verstörend: Es war eines der ersten Male, dass sich das Unendliche so anders verhielt, als die Intuition sagt.</p>
+<p><strong>Transzendenz mit Integralen im Stil der Gamma-Funktion.</strong> 1893 verwendete Hilbert uneigentliche Integrale wie $\int_0^\infty x^ne^{-x}dx=n!$, um kurze Beweise dafür zu geben, dass $e$ und $\pi$ transzendent sind: Sie sind keine Nullstellen eines Polynoms mit ganzzahligen Koeffizienten. Die Beweise sind mit deinem jetzigen Wissen lesbar (das Skript empfiehlt sie). Und trotzdem weiss niemand, ob $e+\pi$ transzendent ist, oder auch nur irrational.</p>
+
+<h2 id="s10-what-we-skipped">10. Was wir auslassen</h2>
+<p>All das steht auch auf der Auslassliste.</p>
+<ul>
+  <li><strong>Übung 9.31 (<a class="pl" href="../script.html#p438">S. 438</a>):</strong> $\int_1^\infty x^{-\alpha}$ für komplexes $\alpha$. Gering.</li>
+  <li><strong>Die Verteilungsfunktion der Normalverteilung (<a class="pl" href="../script.html#p440">S. 440</a>).</strong> Gering; Stufe 1 von Beweis B zeigt, dass das Integral der Glockenkurve konvergiert.</li>
+  <li><strong>Übung 9.36 (<a class="pl" href="../script.html#p441">S. 441</a>):</strong> der $p$-Test über den Integraltest und $\sum\frac1n=\log N+O(1)$. Erledigt: Stufe 2 von Beweis D und Musterbeispiel 2.</li>
+  <li><strong>Übung 9.37 (<a class="pl" href="../script.html#p441">S. 441</a>):</strong> Für welche $p$ konvergiert $\int_0^\infty x\sin(x^p)\,dx$? Mittel; Aufgabe 8 ist $p=3$, und dieselbe Methode liefert genau $p&gt;2$.</li>
+  <li><strong>Übung 9.38 (<a class="pl" href="../script.html#p441">S. 441</a>):</strong> Für beschränktes $f$ ist das uneigentliche Integral gleich dem Riemann-Integral. Gering; erwähnt in <a class="xl" href="#s5-integrals-of-unbounded-functions">Abschnitt 5</a>.</li>
+  <li><strong>Bemerkung zum Lebesgue-Integral (<a class="pl" href="../script.html#p443">S. 443</a>).</strong> Zweites Studienjahr.</li>
+  <li><strong>$\Gamma$ ist glatt, $\Gamma\left(\frac12\right)=\sqrt\pi$, Übung 9.44 (komplexe Gamma-Funktion) (<a class="pl" href="../script.html#p444">S. 444–445</a>).</strong> Gering; zweites Semester.</li>
+</ul>
+<p><strong>Als Nächstes:</strong> <a class="xl" href="lesson-21.html">Lektion 21</a>, Taylor-Approximation (Abschnitt 9.4): eine Funktion durch Polynome approximieren, mit dem Restglied als Integral, und die Taylor-Entwicklungen bis Ordnung 3–4, nach denen die neueren Prüfungen fragen.</p>
+
+<nav class="site foot" aria-label="Navigation der Lektionen">
+<a href="lesson-19.html">← Lektion 19: Das Kassenbuch und die Sanduhr</a>
+<a href="analysis.html">Analysis-Startseite</a>
+<a href="lesson-21.html">Lektion 21: Der Seher der Wagen →</a>
+<a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Feedback geben</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.lang-switch{margin-left:auto;font-weight:600;font-size:.85em}nav.site .lang-switch{border:1px solid currentColor;border-radius:999px;padding:0 .6em}</style><style>.fb-line{margin-top:2.5rem;font-size:.9em;opacity:.8}</style>
+</body>
+</html>

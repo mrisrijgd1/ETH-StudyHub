@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="../assets/umami-kit.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Der Vierteldrehungszauber</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<p style="text-align:right;margin:0"><a class="lang-switch" href="../lesson-05.html" lang="en">English</a></p>
+<nav class="site" aria-label="Website">
+<a href="index.html">Start</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Lernkarten</a>
+<a href="moves.html">Kniffe</a>
+<a href="exam-map.html">Prüfungslandkarte</a>
+<a href="skipped.html">Ausgelassen</a>
+<a href="../script.html">Skript</a>
+<a href="docs.html">Prüfungen</a>
+<a href="lesson-04.html">← Lektion 4</a>
+<a href="lesson-06.html">Lektion 6 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lektion 5 von 26</span>
+  <h1>Der Vierteldrehungszauber</h1>
+  <p class="lead">Komplexe Zahlen, der Absolutbetrag und die Dreiecksungleichung, offene und abgeschlossene Mengen.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-4-5">Rückblick auf Lektion 4 (5 Min.)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</a>
+</li>
+<li><a href="#s1-a-realm-with-a-second">1. Ein Reich mit einer zweiten Richtung</a>
+<ol>
+<li><a href="#the-mirror-conjugation-p-96">Der Spiegel (Konjugation, S. 96)</a></li>
+<li><a href="#distance-from-the-capital">Abstand von der Hauptstadt</a></li>
+<li><a href="#the-price-of-the-second">Der Preis der zweiten Richtung: keine Ordnung mehr</a></li>
+</ol></li>
+<li><a href="#s2-absolute-value-and-the-triangle">2. Absolutbetrag und Dreiecksungleichung</a>
+<ol>
+<li><a href="#proof-a">Beweis A: die Dreiecksungleichung (Regel (g), S. 99–100)</a></li>
+</ol></li>
+<li><a href="#s3-open-and-closed-sets-slowly">3. Offene und abgeschlossene Mengen, langsam</a>
+<ol>
+<li><a href="#3-1-the-picture-first">3.1 Zuerst das Bild</a></li>
+<li><a href="#3-2-the-neighbourhood-the">3.2 Die ε-Umgebung (die Laterne) in Symbolen</a></li>
+<li><a href="#3-3-the-three-formal">3.3 Die drei formalen Definitionen</a></li>
+<li><a href="#3-4-why-every-point">3.4 Warum jeder Punkt genau eins der drei ist</a></li>
+<li><a href="#3-5-open-and-closed">3.5 Offen und abgeschlossen, mit den neuen Wörtern gelesen</a></li>
+<li><a href="#3-6-the-theorem-behind">3.6 Der Satz hinter dem Randpunkt-Test</a></li>
+<li><a href="#proof-b">Beweis B: der Randpunkt-Test</a></li>
+<li><a href="#3-7-finding-the-border">3.7 Randpunkte in der Praxis finden</a></li>
+<li><a href="#3-8-worked-examples-with">3.8 Musterbeispiele, mit den formalen Beweisen</a></li>
+<li><a href="#example-a-is-neither-open">Beispiel A: $[0,1)$ ist weder offen noch abgeschlossen</a></li>
+<li><a href="#example-b-is-closed-and">Beispiel B: $[0,1]$ ist abgeschlossen und nicht offen</a></li>
+<li><a href="#example-c-is-neither">Beispiel C: $A=\left\{\tfrac1n : n\in\mathbb{N}\right\}=\left\{1,\tfrac12,\tfrac13,\dots\right\}$ ist keins von beiden</a></li>
+<li><a href="#example-d-extra">Beispiel D (Zusatz): $(0,1)\cup\{2\}$</a></li>
+</ol></li>
+<li><a href="#s4-worked-examples">4. Musterbeispiele</a>
+<ol>
+<li><a href="#we-1">Musterbeispiel 1: multiplizieren</a></li>
+<li><a href="#we-2">Musterbeispiel 2: dividieren</a></li>
+<li><a href="#we-3">Musterbeispiel 3: $(0,1)$ ist offen</a></li>
+</ol></li>
+<li><a href="#s5-your-turn">5. Du bist dran</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Rechnung)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (echte Prüfungsfragen)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Beweis, braucht den Spiegel)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Richtig/Falsch-Block im Einsiedler-Stil)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (offen, abgeschlossen oder keins von beiden?)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (formale Beweise, Prüfungsstil)</a></li>
+<li><a href="#bonus">Bonus (nur wenn du noch Energie hast)</a></li>
+</ol></li>
+<li><a href="#s6-for-wonder-optional-5-min">6. Zum Staunen</a>
+</li>
+<li><a href="#s7-what-we-skipped">7. Was wir auslassen</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) komplexe Zahlen in der Form $x+yi$ multiplizieren und dividieren kannst, (2) geometrisch sagen kannst, warum $i^2=-1$ gilt, (3) die Dreiecksungleichung mit Begründungen beweisen kannst und (4) die formalen Definitionen von innerem, äusserem und Randpunkt angeben und entscheiden kannst, ob eine Menge offen, abgeschlossen oder keins von beiden ist, mit einem Randpunkt-Test und, wenn verlangt, einem formalen Beweis.</dd></div>
+  <div><dt>Skript (Deutsch, gedruckte Seiten)</dt><dd>Du musst es nicht öffnen. Nur falls du das Original willst:
+    <ul>
+      <li><strong><a class="pl" href="../script.html#p92">S. 92–95</a>, §2.3:</strong> $\mathbb{C}$ definiert als Paare $(x,y)=x+yi$ mit einer speziellen Multiplikation. <em>Proposition 2.33</em> (<a class="pl" href="../script.html#p93">S. 93</a>): Damit wird $\mathbb{C}$ ein Körper (die Axiome 1–9 aus <a class="xl" href="lesson-04.html#s4-the-sixteen-laws-of-the">Lektion 4</a> gelten).</li>
+      <li><strong><a class="pl" href="../script.html#p95">S. 95</a>:</strong> $\mathbb{C}$ kann nicht angeordnet werden.</li>
+      <li><strong><a class="pl" href="../script.html#p96">S. 96</a>, Definition 2.36 und Lemma 2.37:</strong> die Konjugierte $\bar z$ und ihre Regeln.</li>
+      <li><strong><a class="pl" href="../script.html#p99">S. 99–100</a>, Definition 2.45:</strong> der Absolutbetrag auf $\mathbb{R}$ und seine Regeln (a)–(h), inklusive Dreiecksungleichung.</li>
+      <li><strong><a class="pl" href="../script.html#p101">S. 101</a>, Definition 2.48:</strong> offene und abgeschlossene Teilmengen von $\mathbb{R}$. <em>Übung 2.50</em>: für einige Mengen entscheiden, ob offen/abgeschlossen/keins von beiden (jetzt Aufgabe 5).</li>
+      <li><strong><a class="pl" href="../script.html#p483">S. 483</a>, Definition 10.14:</strong> innerer Punkt, Randpunkt und Rand, formuliert für metrische Räume. Früh ausgeliehen in <a class="xl" href="#s3-open-and-closed-sets-slowly">Abschnitt 3</a>.</li>
+      <li><strong><a class="pl" href="../script.html#p101">S. 101–103</a>, Definitionen 2.51–2.54:</strong> $|z|$ auf $\mathbb{C}$, offene Bälle, offene Mengen in $\mathbb{C}$.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum das für die Prüfung zählt</span>
+Komplexe Zahlen kommen in fast jeder Prüfung vor, über «Konvergenzradius <em>bezüglich $z\in\mathbb{C}$</em>» (<a class="xl" href="lesson-16.html#proof-a">Lektion 16</a>), und in Richtig/Falsch-Blöcken wie Einsiedler HS21 #8 (komplexe Folgen in Polarform, wofür man $e^{i\theta}$ aus <a class="xl" href="lesson-16.html#proof-a">Lektion 16</a> braucht). Die Dreiecksungleichung ist das meistgebrauchte Werkzeug in allen $\varepsilon$-Beweisen ab <a class="xl" href="lesson-07.html">Lektion 7</a>. Offene und abgeschlossene Mengen waren 2-Punkte-Multiple-Choice-Fragen in HS23, FS24 und FS26. Zwei davon sind in deinen Aufgaben.</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-4-5">Rückblick auf <a class="xl" href="lesson-04.html">Lektion 4</a> (5 Min.)</h3>
+<ul>
+  <li><strong>$A\Rightarrow B$</strong> ist nur falsch, wenn $A$ wahr und $B$ falsch ist. Negation: $A\wedge\neg B$. Die Kontraposition $\neg B\Rightarrow\neg A$ ist dieselbe Aussage; die Umkehrung $B\Rightarrow A$ nicht.</li>
+  <li><strong>Drei Waffen:</strong> direkt, Kontraposition, Widerspruch. <strong>Induktion:</strong> Verankerung, dann Induktionsschritt $A(n)\Rightarrow A(n+1)$, beide beschriftet.</li>
+  <li><strong>Axiome von $\mathbb R$:</strong> (1)–(9) Körper, (10)–(15) Ordnung, (16) Vollständigkeit: Zwischen zwei nichtleeren Mengen $X\le Y$ gibt es ein $c$ mit $X\le c\le Y$. $\mathbb Q$ verletzt (16), weil $\sqrt2\notin\mathbb Q$.</li>
+</ul>
+<ol class="gq">
+  <li><p>Warum sind Quadrate in jedem angeordneten Körper $\ge0$? (Du brauchst es in <a class="xl" href="#s1-a-realm-with-a-second">Abschnitt 1</a>.)</p>
+  <details><summary>Antwort</summary><div><p>Ist $x\ge0$, dann gilt $x\cdot x\ge0$ nach Axiom (15). Ist $x\le0$, dann ist $-x\ge0$ und $x^2=(-x)(-x)\ge0$.</p></div></details></li>
+  <li><p>Welche Waffe beweist «es gibt keine Ordnung auf $\mathbb C$»?</p>
+  <details><summary>Antwort</summary><div><p>Widerspruch: Nimm an, es gibt eine Ordnung, und leite $-1\ge0$ und $-1&lt;0$ her (<a class="xl" href="#s1-a-realm-with-a-second">Abschnitt 1</a>).</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>English</th></tr></thead>
+  <tbody>
+    <tr><td>komplexe Zahlen</td><td>complex numbers</td></tr>
+    <tr><td>imaginäre Einheit $i$</td><td>imaginary unit $i$</td></tr>
+    <tr><td>Realteil $\operatorname{Re}(z)$ / Imaginärteil $\operatorname{Im}(z)$</td><td>real part / imaginary part</td></tr>
+    <tr><td>rein imaginär</td><td>purely imaginary</td></tr>
+    <tr><td>komplexe Ebene, Gausssche Zahlenebene</td><td>complex plane</td></tr>
+    <tr><td>komplex Konjugierte, $\bar z$</td><td>complex conjugate</td></tr>
+    <tr><td>Absolutbetrag, Betrag</td><td>absolute value, modulus</td></tr>
+    <tr><td>Dreiecksungleichung</td><td>triangle inequality</td></tr>
+    <tr><td>umgekehrte Dreiecksungleichung</td><td>reverse triangle inequality</td></tr>
+    <tr><td>Intervall (offen / abgeschlossen / halboffen)</td><td>interval (open / closed / half-open)</td></tr>
+    <tr><td>Umgebung</td><td>neighbourhood</td></tr>
+    <tr><td>offene Menge / abgeschlossene Menge</td><td>open set / closed set</td></tr>
+    <tr><td>Komplement</td><td>complement</td></tr>
+    <tr><td>$\varepsilon$-Umgebung</td><td>$\varepsilon$-neighbourhood (“bubble”, “lantern”)</td></tr>
+    <tr><td>innerer Punkt</td><td>inside point, interior point</td></tr>
+    <tr><td>das Innere, $A^\circ$</td><td>interior (all inside points)</td></tr>
+    <tr><td>äusserer Punkt</td><td>outside point, exterior point</td></tr>
+    <tr><td>Randpunkt</td><td>border point, boundary point</td></tr>
+    <tr><td>der Rand, $\partial A$</td><td>boundary (all border points)</td></tr>
+    <tr><td>weder offen noch abgeschlossen</td><td>neither open nor closed</td></tr>
+    <tr><td>offener Ball</td><td>open ball</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-a-realm-with-a-second">1. Ein Reich mit einer zweiten Richtung</h2>
+<div class="story">
+  <p>Vier Lektionen lang war das Reich eine einzige Strasse, die Zahlengerade. Du konntest nach Osten (positiv) oder nach Westen (negativ) gehen, sonst nichts. Manche Gleichungen hatten auf dieser Strasse keine Antwort: $x^2=-1$ hat keine Lösung, weil Quadrate nie negativ sind (<a class="xl" href="lesson-04.html#s4-the-sixteen-laws-of-the">Lektion 4</a>, eine Folgerung aus Axiom 15).</p>
+  <p>Die Hofmathematikerinnen und Hofmathematiker fanden einen Ausweg. <strong>Füge eine zweite Richtung hinzu.</strong> Das Reich wird eine Ebene: Ost–West ist die alte reelle Strasse, Nord–Süd ist neu. Ein Punkt ist $z=x+yi$: Geh $x$ nach Osten, dann $y$ nach Norden.</p>
+</div>
+<p>$x=\operatorname{Re}(z)$ ist der <em>Realteil</em> und $y=\operatorname{Im}(z)$ der <em>Imaginärteil</em>. Formal definiert das Skript $\mathbb{C}$ einfach als Paare $(x,y)$ reeller Zahlen (<a class="pl" href="../script.html#p92">S. 92</a>). $x+yi$ zu schreiben ist ein bequemer Name für das Paar.</p>
+<p><strong>Addieren</strong> ist Gehen. Du addierst die Ostanteile und die Nordanteile getrennt:</p>
+<div class="math-display">$$(x_1+y_1 i)+(x_2+y_2 i)=(x_1+x_2)+(y_1+y_2)\,i.$$</div>
+<p><strong>Multiplizieren</strong> ist, wo der Zauber steckt. Die Regel (<a class="pl" href="../script.html#p92">S. 92</a>) lautet</p>
+<div class="math-display">$$\begin{aligned}(x_1+y_1 i)\cdot(x_2+y_2 i)&amp;=(x_1x_2-y_1y_2)+(x_1y_2+y_1x_2)\,i\end{aligned}.$$</div>
+<p>Du musst sie nicht auswendig lernen. Multipliziere die Klammern aus wie in der Schule und ersetze $i^2$ durch $-1$. Aber was <em>bedeutet</em> sie?</p>
+
+<div class="story">
+  <p><strong>Der Vierteldrehungszauber.</strong> Multiplizieren mit $i$ dreht jeden Punkt der Ebene um $90^\circ$ im Gegenuhrzeigersinn um den Ursprung. Probe: $1\cdot i=i$, also wird Osten zu Norden. Und $i\cdot i=i^2$, also wird Norden zu Westen, und das ist $-1$.</p>
+  <p>$i^2=-1$ sagt also nur, dass <strong>zwei Vierteldrehungen eine halbe Drehung ergeben</strong>, und eine halbe Drehung schickt $1$ auf $-1$. Nichts Geheimnisvolles: $-1$ hat eine Wurzel, sobald du drehen darfst und nicht nur vor- und zurückgehen.</p>
+</div>
+<p>Allgemeiner (genau in <a class="xl" href="lesson-16.html#s4-adding-and-multiplying-series">Lektion 16</a>, mit $e^{i\theta}$): Multiplizieren mit einer komplexen Zahl $w$ <em>dreht</em> um den Winkel von $w$ und <em>streckt</em> um die Länge von $w$. Darum ist $\mathbb{C}$ perfekt für alles, was dreht oder schwingt: Wellen, Wechselstrom, Quantenmechanik.</p>
+
+<h3 id="the-mirror-conjugation-p-96">Der Spiegel (Konjugation, <a class="pl" href="../script.html#p96">S. 96</a>)</h3>
+<p>$\bar z=x-yi$ spiegelt $z$ an der reellen Strasse. Zwei Tatsachen tragen fast jede Rechnung:</p>
+<ul>
+  <li>$z\bar z=(x+yi)(x-yi)=x^2+y^2$. Das ist eine <em>reelle</em> Zahl, und sie ist $\ge 0$.</li>
+  <li>Der Spiegel respektiert $+$ und $\cdot$: $\;\overline{z+w}=\bar z+\bar w\;$ und $\;\overline{zw}=\bar z\,\bar w\;$ (Lemma 2.37).</li>
+</ul>
+<p><strong>Dividieren</strong> braucht den Spiegel. Erweitere oben und unten mit $\bar z$, damit der Nenner reell wird:</p>
+<div class="math-display">$$\frac{1}{x+yi}=\frac{x-yi}{(x+yi)(x-yi)}=\frac{x-yi}{x^2+y^2}.$$</div>
+
+<h3 id="distance-from-the-capital">Abstand von der Hauptstadt</h3>
+<p>$|z|=\sqrt{x^2+y^2}$ ist die Länge von $z$, sein Abstand von $0$ (Pythagoras). Beachte, dass $|z|^2=z\bar z$ gilt und dass $|z-w|$ der Abstand zwischen $z$ und $w$ ist.</p>
+
+<h3 id="the-price-of-the-second">Der Preis der zweiten Richtung: keine Ordnung mehr</h3>
+<p>Auf $\mathbb{C}$ gibt es <em>kein</em> $\le$, das die Ordnungsaxiome erfüllt (<a class="pl" href="../script.html#p95">S. 95</a>). In jedem angeordneten Körper sind Quadrate $\ge 0$. Also ist $1=1^2>0$, folglich $-1&lt;0$. Aber auch $-1=i^2\ge 0$, ein Widerspruch. Schreib also nie $z&lt;w$ für komplexe Zahlen. Nur ihre Grössen kann man vergleichen: $|z|&lt;|w|$.</p>
+
+<h2 id="s2-absolute-value-and-the-triangle">2. Absolutbetrag und Dreiecksungleichung</h2>
+<p>Zurück auf der reellen Strasse: $|x|=x$ falls $x\ge0$ und $|x|=-x$ falls $x&lt;0$ (<a class="pl" href="../script.html#p99">S. 99</a>). Lies $|x|$ als Abstand von $0$ und $|x-y|$ als Abstand zwischen $x$ und $y$. Die Regeln, die du das ganze Semester brauchst (<a class="pl" href="../script.html#p99">S. 99–100</a>):</p>
+<div class="box">
+  <p><strong>Regel (e):</strong> «$x$ liegt höchstens $y$ von $0$ entfernt.» Sie macht aus einem Betrag zwei gewöhnliche Ungleichungen und ist das Arbeitspferd beim Lösen von Ungleichungen.</p>
+  <div class="math-display">$$|x|\le y \iff -y\le x\le y$$</div>
+  <p><strong>Dreiecksungleichung, Regel (g):</strong> Der direkte Weg ist nie länger als ein Umweg. In $\mathbb{C}$ ist es wörtlich ein Dreieck: Direkt von $0$ nach $z+w$ ist höchstens so weit wie $0\to z$, dann $z\to z+w$.</p>
+  <div class="math-display">$$|x+y|\le|x|+|y|$$</div>
+  <p><strong>Umgekehrte Dreiecksungleichung, Regel (h):</strong> Liegen zwei Punkte nahe beieinander, so liegen auch ihre Abstände von $0$ nahe beieinander.</p>
+  <div class="math-display">$$\big|\,|x|-|y|\,\big|\le|x-y|$$</div>
+</div>
+<h3 id="proof-a">Beweis A: die Dreiecksungleichung (Regel (g), <a class="pl" href="../script.html#p99">S. 99–100</a>)</h3>
+<div class="box">
+<p><strong>Behauptung.</strong> Für alle $x,y\in\mathbb{R}$ gilt: $|x+y|\le|x|+|y|$.</p>
+</div>
+<p><strong>Die Idee.</strong> Jede Zahl liegt zwischen minus ihrer Grösse und ihrer Grösse. Addiere die beiden Sandwiches und lies das Ergebnis mit Regel (e).</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Das einzige Werkzeug für $|\cdot|$ ist Regel (e):</strong> $|a|\le b\iff-b\le a\le b$. Das Ziel $|x+y|\le|x|+|y|$ ist also dasselbe wie $-(|x|+|y|)\le x+y\le|x|+|y|$.</li>
+  <li><strong>Zwei getrennte Informationen</strong> ($x$ und $y$) müssen zu einer über $x+y$ kombiniert werden: Ungleichungen addieren (Axiom (14)).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Jede Zahl liegt innerhalb ihres eigenen Abstands von $0$.</p></div><div class="sp-formal"><p>Da $|x|\le|x|$, liefert Regel (e) ($|a|\le b\iff-b\le a\le b$) mit $a=x$, $b=|x|$: $-|x|\le x\le|x|$. Genauso gilt $-|y|\le y\le|y|$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Geh beide Strecken: Die Summe bleibt innerhalb der Summe der Abstände.</p></div><div class="sp-formal"><p>Addition der beiden Ketten (Ungleichungen darf man addieren, Axiom (14)): $-(|x|+|y|)\le x+y\le|x|+|y|$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Lies das Sandwich wieder als Abstand.</p></div><div class="sp-formal"><p>Das ist $-b\le a\le b$ mit $a=x+y$ und $b=|x|+|y|$, also liefert Regel (e), $-b\le a\le b\Rightarrow|a|\le b$: $|x+y|\le|x|+|y|$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-abs">Einen Betrag auflösen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Nach Regel (e) ($|a|\le b\iff-b\le a\le b$) gilt $-|x|\le x\le|x|$ und $-|y|\le y\le|y|$. Addition ergibt $-(|x|+|y|)\le x+y\le|x|+|y|$, und Regel (e) liefert erneut $|x+y|\le|x|+|y|$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Jede Zahl einklemmen:</strong> $-|x|\le x\le|x|$, $-|y|\le y\le|y|$ (Regel (e)).</li>
+  <li><strong>Addiere</strong> die Sandwiches (Axiom (14)).</li>
+  <li><strong>Sandwich auflösen</strong> mit Regel (e).</li>
+</ol>
+<p>Kurz gesagt: «einklemmen, addieren, auflösen». Die umgekehrte Dreiecksungleichung (der Bonus) folgt aus dieser mit $x=(x-y)+y$.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum gilt $-|x|\le x\le|x|$? Gib die Begründung an, nicht bloss «offensichtlich».</p>
+  <details><summary>Antwort</summary><div><p>Regel (e), $|a|\le b\iff-b\le a\le b$, mit $a=x$ und $b=|x|$: Die linke Seite $|x|\le|x|$ ist trivialerweise wahr, also gilt die rechte.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Wo würde der Beweis für $|x+y|\le|x|-|y|$ scheitern? Finde ein Gegenbeispiel.</p>
+  <details><summary>Antwort</summary><div><p>Addieren von $-|y|\le y$ schränkt nur durch $+|y|$ ein. Gegenbeispiel: $x=0$, $y=1$ ergibt $1\le-1$, falsch.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den Beweis nur anhand der Prüfungsbox.</p></li>
+</ol></div>
+
+<p><strong>Warum du sie später lieben wirst:</strong> In jedem $\varepsilon$-Beweis willst du etwas wie $|a_n-a|&lt;\varepsilon$. Der Standardtrick ist, einen geschickten Zwischenpunkt $b$ einzufügen und aufzuteilen. Dann machst du jedes Stück kleiner als $\tfrac{\varepsilon}{2}$:</p>
+<div class="math-display">$$|a_n-a|\le|a_n-b|+|b-a|.$$</div>
+<p class="moves">Später verwendete Kniffe: <a class="mvl" href="moves.html#m-tri">Einen Zwischenpunkt einfügen</a></p>
+
+<h2 id="s3-open-and-closed-sets-slowly">3. Offene und abgeschlossene Mengen, langsam</h2>
+<p class="lead">Von Grund auf neu aufgebaut. Lies es der Reihe nach, denn jeder Schritt braucht den vorherigen. Etwa 15 Minuten.</p><h3 id="3-1-the-picture-first">3.1 Zuerst das Bild</h3>
+<div class="story">
+<p><strong>Die Späher und ihre Laternen.</strong> Das Königreich $A$ ist ein Stück der Zahlengeraden. Späherinnen und Späher stehen an Punkten der Geraden, und alle tragen eine Laterne. Eine Laterne mit Radius $\varepsilon$ beleuchtet alles, was weniger als $\varepsilon$ vom Späher entfernt ist. Die Laterne lässt sich so klein drehen, wie du willst, aber nie auf null. Sie beleuchtet immer auf beiden Seiten <em>etwas</em>.</p>
+<p>Wo auch immer ein Späher steht, genau eines von drei Dingen trifft zu.</p>
+<ul>
+<li><strong>Tief drinnen.</strong> Der Späher kann die Laterne so weit herunterdrehen, dass alles Beleuchtete Land des Königreichs ist.</li>
+<li><strong>Weit draussen.</strong> Der Späher kann sie so weit herunterdrehen, dass alles Beleuchtete fremdes Land ist.</li>
+<li><strong>Auf der Grenze.</strong> Egal wie klein die Laterne ist, sie beleuchtet immer etwas Land des Königreichs <em>und</em> etwas fremdes Land.</li>
+</ul>
+<p>Ein Königreich ist <strong>offen</strong>, wenn keiner seiner eigenen Bürger auf der Grenze steht. Alle Bürger haben Luft zum Atmen. Ein Königreich ist <strong>abgeschlossen</strong>, wenn ihm seine ganze Grenze gehört.</p>
+</div>
+
+<figure style="margin:0" aria-label="Die Menge [0,1) auf der Zahlengeraden, mit einem inneren Punkt bei 0.5, einem Randpunkt bei 0, einem Randpunkt bei 1 und einem äusseren Punkt bei 1.5">
+<svg viewBox="0 0 640 150" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util);font-size:17px">
+  <line x1="20" y1="80" x2="620" y2="80" style="stroke:var(--muted)" stroke-width="1.5"/>
+  <line x1="120" y1="80" x2="420" y2="80" style="stroke:var(--accent)" stroke-width="6"/>
+  <circle cx="120" cy="80" r="7" style="fill:var(--accent)"/>
+  <circle cx="420" cy="80" r="7" style="fill:var(--bg);stroke:var(--accent)" stroke-width="2.5"/>
+  <text x="120" y="112" text-anchor="middle" style="fill:var(--ink)">0</text>
+  <text x="420" y="112" text-anchor="middle" style="fill:var(--ink)">1</text>
+  <text x="270" y="40" text-anchor="middle" style="fill:var(--accent)">A = [0,1)</text>
+  <rect x="245" y="68" width="50" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2"/>
+  <text x="270" y="132" text-anchor="middle" style="fill:var(--muted)">innen</text>
+  <rect x="98" y="68" width="44" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="120" y="132" text-anchor="middle" style="fill:var(--muted)">Rand, in A</text>
+  <rect x="398" y="68" width="44" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="420" y="132" text-anchor="middle" style="fill:var(--muted)">Rand, nicht in A</text>
+  <rect x="545" y="68" width="50" height="24" rx="12" style="fill:none;stroke:var(--story-edge)" stroke-width="2"/>
+  <text x="570" y="132" text-anchor="middle" style="fill:var(--muted)">aussen</text>
+</svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Gefüllter Punkt: Der Punkt gehört zu $A$. Hohler Punkt: Er gehört nicht dazu. Die abgerundeten Formen sind Laternen. Eine gestrichelte Laterne steht auf der Grenze: Sie beleuchtet Land auf beiden Seiten, egal wie klein du sie machst.</figcaption>
+</figure>
+
+<h3 id="3-2-the-neighbourhood-the">3.2 Die ε-Umgebung (die Laterne) in Symbolen</h3>
+<p>«Alles, was weniger als $\varepsilon$ von $p$ entfernt ist» braucht den Absolutbetrag aus <a class="xl" href="#s2-absolute-value-and-the-triangle">Abschnitt 2</a>. Der Abstand zwischen $y$ und $p$ ist $|y-p|$, also</p>
+<div class="math-display">$$\{\,y\in\mathbb{R} : |y-p|&lt;\varepsilon\,\}=(p-\varepsilon,\;p+\varepsilon).$$</div>
+<p>Das ist ein <strong>offenes Intervall mit Mittelpunkt $p$</strong>. Das Skript nennt es eine $\varepsilon$-<em>Umgebung</em> von $p$ (<a class="pl" href="../script.html#p100">S. 100</a>). Ich nenne es weiterhin Laterne oder Blase. Zwei Details zählen:</p>
+<ul>
+<li>$\varepsilon&gt;0$ strikt. Eine Laterne mit Radius $0$ würde nichts beleuchten.</li>
+<li>$p$ selbst liegt immer in seiner eigenen Blase, da $|p-p|=0&lt;\varepsilon$.</li>
+</ul>
+
+<h3 id="3-3-the-three-formal">3.3 Die drei formalen Definitionen</h3>
+<p>Sei $A\subseteq\mathbb{R}$ und sei $p\in\mathbb{R}$ ein beliebiger Punkt der Geraden, in $A$ oder nicht.</p>
+<div class="box">
+<p><strong>$p$ ist ein innerer Punkt</strong> (<em>innerer Punkt</em>) von $A$, falls</p>
+<div class="math-display">$$\exists\,\varepsilon>0:\;(p-\varepsilon,\,p+\varepsilon)\subseteq A.$$</div>
+<p><em>Laut gelesen:</em> «Es gibt einen Radius, sodass die ganze Blase in $A$ liegt.» Dann ist automatisch $p\in A$, weil $p$ in seiner eigenen Blase liegt.</p>
+</div>
+<div class="box">
+<p><strong>$p$ ist ein äusserer Punkt</strong> (<em>äusserer Punkt</em>) von $A$, falls</p>
+<div class="math-display">$$\exists\,\varepsilon>0:\;(p-\varepsilon,\,p+\varepsilon)\subseteq \mathbb{R}\setminus A.$$</div>
+<p><em>Laut gelesen:</em> «Eine Blase verfehlt $A$ komplett.» Dann ist automatisch $p\notin A$. Anders gesagt: $p$ ist ein innerer Punkt des Komplements.</p>
+</div>
+<div class="box">
+<p><strong>$p$ ist ein Randpunkt</strong> (<em>Randpunkt</em>) von $A$, falls</p>
+<div class="math-display">$$\forall\,\varepsilon>0:\;\;(p-\varepsilon,\,p+\varepsilon)\cap A\neq\emptyset\;\;\text{ und }\;\;(p-\varepsilon,\,p+\varepsilon)\cap(\mathbb{R}\setminus A)\neq\emptyset.$$</div>
+<p><em>Laut gelesen:</em> «Jede Blase, egal wie klein, enthält mindestens einen Punkt von $A$ und mindestens einen Punkt nicht in $A$.» Darüber, ob $p$ selbst in $A$ liegt, wird nichts gesagt. Beides kann vorkommen, wie $0$ und $1$ im Bild zeigen.</p>
+<p>Die Menge aller Randpunkte heisst der <em>Rand</em> von $A$, geschrieben $\partial A$.</p>
+</div>
+<p><strong>Wo das im Skript steht:</strong> Die offiziellen Definitionen von <em>innerer Punkt</em>, <em>Randpunkt</em> und <em>Rand</em> sind Definition 10.14 (<a class="pl" href="../script.html#p483">S. 483</a>). Sie sind für metrische Räume formuliert, mit einem Ball $B_\varepsilon(x)$ anstelle unseres Intervalls, was auf $\mathbb{R}$ dasselbe ist. Offiziell begegnest du ihnen in <a class="xl" href="lesson-10.html">Lektion 10</a>. Sie sind schon jetzt der sauberste Weg, offene und abgeschlossene Mengen zu verstehen, darum leihen wir sie früh aus. «Äusserer Punkt» wird im Skript nicht verwendet, ist aber der übliche deutsche Begriff.</p>
+
+<h3 id="3-4-why-every-point">3.4 Warum jeder Punkt genau eins der drei ist</h3>
+<p>Das ist die Negationstechnik aus <a class="xl" href="lesson-01.html#s3-negation-switching-sides">Lektion 1</a>, und sie ist der Kern der Sache. Zuerst zwei kleine Tatsachen.</p>
+<ul>
+<li><strong>«⊆» negieren.</strong> $X\subseteq A$ heisst $\forall y\in X:\ y\in A$. Die Negation ist $\exists y\in X:\ y\notin A$. In Worten: <em>$X$ ist genau dann nicht in $A$ enthalten, wenn $X$ einen Punkt ausserhalb von $A$ hat</em>, also $X\cap(\mathbb{R}\setminus A)\neq\emptyset$.</li>
+<li>Ebenso gilt $X\not\subseteq\mathbb{R}\setminus A$ genau dann, wenn $X$ einen Punkt in $A$ hat, also $X\cap A\neq\emptyset$.</li>
+</ul>
+<p>Negiere nun «$p$ ist ein innerer Punkt»: $\exists$ wird zu $\forall$, und $\subseteq$ wird zu $\not\subseteq$.</p>
+<div class="math-display">$$\text{nicht innen:}\quad\forall\,\varepsilon>0:\;(p-\varepsilon,p+\varepsilon)\cap(\mathbb{R}\setminus A)\neq\emptyset.$$</div>
+<p>Negiere «$p$ ist ein äusserer Punkt» genauso:</p>
+<div class="math-display">$$\text{nicht aussen:}\quad\forall\,\varepsilon>0:\;(p-\varepsilon,p+\varepsilon)\cap A\neq\emptyset.$$</div>
+<p>Setz beides zusammen («für alle $\varepsilon$ dies» und «für alle $\varepsilon$ das» ist dasselbe wie «für alle $\varepsilon$ dies und das»). Du erhältst <em>genau</em> die Definition eines Randpunkts. Also:</p>
+<div class="exam"><span class="label">Die Schlüsseltatsache</span>
+<p>$p$ ist ein Randpunkt $\iff$ $p$ ist weder ein innerer noch ein äusserer Punkt.</p>
+<p>Also ist jeder Punkt von $\mathbb{R}$ genau eins der drei. Er kann nicht gleichzeitig innen und aussen sein, denn innen erzwingt $p\in A$ und aussen erzwingt $p\notin A$.</p></div>
+<p>Der Rand ist also keine vierte geheimnisvolle Idee. Er ist einfach «was übrig bleibt», wenn du das Innere und das Äussere wegnimmst.</p>
+
+<h3 id="3-5-open-and-closed">3.5 Offen und abgeschlossen, mit den neuen Wörtern gelesen</h3>
+<p><strong>Offen (Definition 2.48, <a class="pl" href="../script.html#p101">S. 101</a>).</strong> $U\subseteq\mathbb{R}$ heisst <em>offen</em>, falls</p>
+<div class="math-display">$$\forall x\in U\;\;\exists\,\varepsilon>0:\;(x-\varepsilon,\,x+\varepsilon)\subseteq U.$$</div>
+<p>Vergleiche mit 3.3: Der Teil nach «$\forall x\in U$» sagt «$x$ ist ein innerer Punkt von $U$». Also <strong>heisst offen: Jeder Punkt von $U$ ist ein innerer Punkt.</strong></p>
+<p><strong>Abgeschlossen (ebenfalls Definition 2.48).</strong> $A$ heisst <em>abgeschlossen</em>, falls das Komplement $\mathbb{R}\setminus A$ offen ist.</p>
+<p>Die Negationen, also das, was du schreibst, wenn du «nicht offen» oder «nicht abgeschlossen» beweist:</p>
+<div class="math-display">$$\begin{aligned}
+U\text{ nicht offen:}&\quad \exists\, x\in U\;\;\forall\,\varepsilon>0:\;(x-\varepsilon,x+\varepsilon)\not\subseteq U,\\
+A\text{ nicht abgeschlossen:}&\quad \exists\, x\notin A\;\;\forall\,\varepsilon>0:\;(x-\varepsilon,x+\varepsilon)\cap A\neq\emptyset.
+\end{aligned}$$</div>
+<p>In Worten: Um <em>nicht offen</em> zu zeigen, nenne einen Punkt der Menge, an dem jede Blase nach draussen leckt. Um <em>nicht abgeschlossen</em> zu zeigen, nenne einen Punkt ausserhalb der Menge, an dem jede Blase nach drinnen leckt. In beiden Fällen ist der genannte Punkt ein Randpunkt.</p>
+
+<h3 id="3-6-the-theorem-behind">3.6 Der Satz hinter dem Randpunkt-Test</h3>
+<div class="box">
+<p><strong>Satz.</strong> Sei $A\subseteq\mathbb{R}$.</p>
+<ol type="i">
+<li>$A$ ist offen $\iff$ $A$ enthält <em>keinen</em> seiner Randpunkte.</li>
+<li>$A$ ist abgeschlossen $\iff$ $A$ enthält <em>alle</em> seine Randpunkte.</li>
+</ol>
+<p><strong>Ein kleines Lemma, das er braucht.</strong> $A$ und $\mathbb{R}\setminus A$ haben <em>dieselben</em> Randpunkte.</p>
+</div>
+<h3 id="proof-b">Beweis B: der Randpunkt-Test</h3>
+<p><strong>Die Idee.</strong> Ein Punkt von $A$ kann nie ein äusserer Punkt von $A$ sein, also ist er entweder innen oder auf dem Rand. «Alle innen» ist dann dasselbe wie «keiner auf dem Rand», und das ist (i). Für (ii): Abgeschlossen ist über das Komplement definiert, und das Komplement hat denselben Rand, also ist (ii) einfach (i), angewandt auf $\mathbb{R}\setminus A$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>(i):</strong> «offen» heisst «jeder Punkt von $A$ ist ein innerer Punkt» (3.5). Die erste Zeile ist also «Sei $p\in A$», und die Lücke, die du füllst, ist zu zeigen, dass für solche $p$ «innen» und «kein Randpunkt» dasselbe sind.</li>
+  <li><strong>(ii):</strong> Die einzige Definition von «abgeschlossen» ist «$\mathbb{R}\setminus A$ ist offen». Die erste Zeile ist also «$A$ abgeschlossen $\iff\mathbb{R}\setminus A$ offen» und die letzte «jeder Randpunkt von $A$ liegt in $A$». Die Lücke: vom Komplement zurück auf $A$ übersetzen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Ein Bürger kann nicht weit draussen sein: Jede Laterne beleuchtet seinen eigenen Standort, und der ist Land des Königreichs.</p></div><div class="sp-formal"><p>Sei $p\in A$. Nach 3.4 ist $p$ genau eines von: innerer Punkt, äusserer Punkt, Randpunkt von $A$. Er ist kein äusserer Punkt, denn jedes Intervall $(p-\varepsilon,p+\varepsilon)$ enthält $p\in A$ und ist also nie in $\mathbb{R}\setminus A$ enthalten. Folglich ist $p$ ein innerer Punkt oder ein Randpunkt von $A$, und nicht beides.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>«Alle haben Luft zum Atmen» ist also dasselbe wie «niemand steht auf der Grenze».</p></div><div class="sp-formal"><p>Darum gilt: Jeder Punkt von $A$ ist ein innerer Punkt $\iff$ kein Punkt von $A$ ist ein Randpunkt von $A$. Die linke Seite ist die Definition von «$A$ ist offen» (3.5). Das beweist (i).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Grenze gehört beiden Reichen, die an ihr liegen.</p></div><div class="sp-formal"><p><em>Lemma.</em> $p$ ist ein Randpunkt von $A$ $\iff$ für jedes $\varepsilon&gt;0$ trifft $(p-\varepsilon,p+\varepsilon)$ sowohl $A$ als auch $\mathbb{R}\setminus A$. Da $\mathbb{R}\setminus(\mathbb{R}\setminus A)=A$, ist diese Bedingung symmetrisch in $A$ und $\mathbb{R}\setminus A$, sie sagt also genau, dass $p$ ein Randpunkt von $\mathbb{R}\setminus A$ ist.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Abgeschlossen heisst, das fremde Land ist offen. Wende dort (i) an und übersetze zurück.</p></div><div class="sp-formal"><div class="math-display">$$\begin{aligned}
+A\text{ abgeschlossen}&\iff \mathbb{R}\setminus A\text{ offen} &&\text{(Definition)}\\
+&\iff \mathbb{R}\setminus A\text{ enthält keinen seiner Randpunkte} &&\text{((i) für }\mathbb{R}\setminus A)\\
+&\iff \mathbb{R}\setminus A\text{ enthält keinen Randpunkt von }A &&\text{(Lemma)}\\
+&\iff \text{jeder Randpunkt von }A\text{ liegt in }A &&\text{(jeder Punkt liegt in }A\text{ oder in }\mathbb{R}\setminus A).
+\end{aligned}$$</div><p>Das beweist (ii). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-neg">Das Negationsrezept</a> (in 3.4, worauf dieser Beweis beruht)</p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p><strong>(i)</strong> Sei $p\in A$. Nach 3.4 ist $p$ genau eines von innerem, äusserem oder Randpunkt von $A$. Er ist nicht äusserer Punkt, da jedes Intervall um $p$ den Punkt $p\in A$ enthält. Also ist $p$ innerer Punkt oder Randpunkt, nicht beides. Folglich ist jeder Punkt von $A$ genau dann ein innerer Punkt (das heisst, $A$ ist offen), wenn kein Punkt von $A$ ein Randpunkt von $A$ ist.</p>
+<p><strong>Lemma.</strong> Die Randpunkt-Bedingung «jedes $(p-\varepsilon,p+\varepsilon)$ trifft $A$ und trifft $\mathbb{R}\setminus A$» ändert sich nicht, wenn man $A$ durch $\mathbb{R}\setminus A$ ersetzt, weil $\mathbb{R}\setminus(\mathbb{R}\setminus A)=A$. Also haben $A$ und $\mathbb{R}\setminus A$ dieselben Randpunkte.</p>
+<p><strong>(ii)</strong> $A$ ist abgeschlossen $\iff\mathbb{R}\setminus A$ ist offen $\iff$ (nach (i)) $\mathbb{R}\setminus A$ enthält keinen seiner Randpunkte $\iff$ (nach dem Lemma) $\mathbb{R}\setminus A$ enthält keinen Randpunkt von $A$ $\iff$ jeder Randpunkt von $A$ liegt in $A$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum kann ein Punkt $p\in A$ nie ein äusserer Punkt von $A$ sein? Gib die Begründung in einer Zeile an.</p>
+  <details><summary>Antwort</summary><div><p>Ein äusserer Punkt braucht ein Intervall $(p-\varepsilon,p+\varepsilon)\subseteq\mathbb{R}\setminus A$. Aber dieses Intervall enthält $p$, und $p\in A$, also ist es nie in $\mathbb{R}\setminus A$ enthalten.</p></div></details></li>
+  <li><p><strong>Stufe 2 (3 Min.).</strong> Schreib die Äquivalenzkette für (ii), mit einer Begründung auf jeder Zeile, beginnend mit «$A$ abgeschlossen $\iff\mathbb{R}\setminus A$ offen».</p>
+  <details><summary>Antwort</summary><div><p>Die vier Zeilen der letzten Reihe oben: Definition, dann (i) für $\mathbb{R}\setminus A$, dann das Lemma, dann «jeder Punkt liegt in $A$ oder in $\mathbb{R}\setminus A$».</p></div></details></li>
+  <li><p><strong>Stufe 3 (5 Min.).</strong> Schreib den ganzen Beweis nur anhand des Rahmens.</p></li>
+</ol></div>
+<p><strong>Was daraus folgt:</strong></p>
+<ul>
+<li><strong>Weder</strong> offen noch abgeschlossen: $A$ enthält <em>einige</em> seiner Randpunkte, aber nicht alle.</li>
+<li><strong>Sowohl</strong> offen als auch abgeschlossen: $A$ hat überhaupt keine Randpunkte. In $\mathbb{R}$ passiert das nur für $\mathbb{R}$ und $\emptyset$. (Der Beweis, dass es keine anderen gibt, braucht die Vollständigkeit. Er steht auf der Auslassliste.)</li>
+<li>«Offen» und «abgeschlossen» sind also <strong>keine Gegensätze</strong>, anders als bei Türen. «Nicht offen» impliziert <em>nicht</em> «abgeschlossen». Das ist die klassische Prüfungsfalle.</li>
+</ul>
+
+<h3 id="3-7-finding-the-border">3.7 Randpunkte in der Praxis finden</h3>
+<ul>
+<li><strong>Ein Intervall</strong> mit Endpunkten $a&lt;b$ (beliebige Klammern) hat genau die zwei Randpunkte $a$ und $b$. Punkte echt dazwischen sind innen (wähle $\varepsilon$ als den kleineren Abstand zu den Enden, wie in Musterbeispiel 3). Punkte jenseits der Enden sind aussen.</li>
+<li><strong>«$\infty$» ist kein Punkt.</strong> $(a,\infty)$ und $[a,\infty)$ haben nur einen Randpunkt, $a$. Also ist $(a,\infty)$ offen und $[a,\infty)$ abgeschlossen.</li>
+<li><strong>Eine Vereinigung von Intervallen:</strong> zuerst vereinfachen! In $(0,1)\cup[1,2)=(0,2)$ sieht der Punkt $1$ wie ein Endpunkt aus, ist aber ein innerer Punkt. Nach dem Vereinfachen sind die Randpunkte die übrigen Enden.</li>
+<li><strong>Ein einzelner Punkt</strong> $\{a\}$, der zu einer Menge hinzugefügt wird, ist ein Randpunkt: Jede Blase enthält $a$ selbst (in der Menge) und $a+\tfrac{\varepsilon}{2}$ (meist nicht).</li>
+<li><strong>Häufungsstellen:</strong> Drängen sich Punkte von $A$ immer näher an ein $p$, wie $\tfrac1n$ gegen $0$, dann ist $p$ ein Randpunkt.</li>
+</ul>
+
+<h3 id="3-8-worked-examples-with">3.8 Musterbeispiele, mit den formalen Beweisen</h3>
+<p>Jedes Beispiel macht zwei Dinge: zuerst den schnellen Randpunkt-Test (was du in einer Multiple-Choice-Frage machst), dann den formalen Beweis (was du schreibst, wenn in der Prüfung «beweisen Sie» steht). Versuch jeden Schritt im Kopf, dann öffne die Antwort. Deine Antworten, der Reihe nach, sind die Lösung.</p>
+
+<div class="box">
+<h3 id="example-a-is-neither-open">Beispiel A: $[0,1)$ ist weder offen noch abgeschlossen</h3>
+<ol class="gq">
+  <li><p><strong>Schnelltest.</strong> Was sind die Randpunkte von $A=[0,1)$, und welche davon liegen in $A$?</p>
+  <details><summary>Antwort</summary><div><p>Die Randpunkte sind $0$ und $1$. $0\in A$ und $1\notin A$: einige drin, einige draussen. Keins von beiden.</p></div></details></li>
+  <li><p><strong>Nicht offen.</strong> Was genau musst du liefern, und welchen Punkt wählst du?</p>
+  <details><summary>Antwort</summary><div><p>Einen Punkt $x\in A$, sodass für jedes $\varepsilon&gt;0$ das Intervall $(x-\varepsilon,x+\varepsilon)$ nicht in $A$ enthalten ist. Wähle den Randpunkt, der in $A$ liegt: $x=0$.</p></div></details></li>
+  <li><p>Sei $\varepsilon&gt;0$ beliebig. Nenne einen Punkt von $(-\varepsilon,\varepsilon)$, der nicht in $A$ liegt, und prüfe beide Tatsachen.</p>
+  <details><summary>Antwort</summary><div><p>$-\tfrac{\varepsilon}{2}$. Er liegt in $(-\varepsilon,\varepsilon)$, da $|-\tfrac{\varepsilon}{2}-0|=\tfrac{\varepsilon}{2}&lt;\varepsilon$. Und $-\tfrac{\varepsilon}{2}&lt;0$, also liegt er nicht in $A$. Folglich ist $(-\varepsilon,\varepsilon)\not\subseteq A$ für jedes $\varepsilon&gt;0$, und $A$ ist nicht offen.</p></div></details></li>
+  <li><p><strong>Nicht abgeschlossen.</strong> Welchen Punkt wählst du jetzt, und was musst du über ihn zeigen?</p>
+  <details><summary>Antwort</summary><div><p>Den fehlenden Randpunkt: $x=1\notin A$. Du musst zeigen, dass für jedes $\varepsilon&gt;0$ das Intervall $(1-\varepsilon,1+\varepsilon)$ einen Punkt von $A$ enthält.</p></div></details></li>
+  <li><p>Sei $\varepsilon&gt;0$. Warum funktioniert der Punkt $1-\tfrac{\varepsilon}{2}$ nicht immer, und was nimmst du stattdessen?</p>
+  <details><summary>Antwort</summary><div><p>$\varepsilon$ ist beliebig (der Zweifler wählt es), es kann also gross sein, zum Beispiel $\varepsilon=10$. Dann ist $1-\tfrac{\varepsilon}{2}=-4\notin A$. Setze stattdessen $\delta=\tfrac12\min(\varepsilon,1)$, also $0&lt;\delta\le\tfrac12$ und $\delta&lt;\varepsilon$. Dann ist $1-\delta\in(1-\varepsilon,1+\varepsilon)$, da $|(1-\delta)-1|=\delta&lt;\varepsilon$, und $\tfrac12\le 1-\delta&lt;1$, also $1-\delta\in[0,1)=A$. Also ist $A$ nicht abgeschlossen. <span class="qed">∎</span> Dieser $\min$-Trick lohnt sich zum Auswendiglernen.</p></div></details></li>
+</ol>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-neg">Das Negationsrezept</a>, <a class="mvl" href="moves.html#m-min">Minimum zweier δs</a></p>
+</div>
+
+<div class="box"><h3 id="example-b-is-closed-and">Beispiel B: $[0,1]$ ist abgeschlossen und nicht offen</h3>
+<ol class="gq">
+  <li><p><strong>Schnelltest.</strong> Randpunkte, und welche liegen in $A=[0,1]$?</p>
+  <details><summary>Antwort</summary><div><p>$0$ und $1$, und beide liegen in $A$. Also ist die Menge abgeschlossen. Offen ist sie nicht, weil diese Randpunkte zu $A$ gehören.</p></div></details></li>
+  <li><p><strong>Abgeschlossen.</strong> Über welche Menge spricht die Definition von abgeschlossen? Schreib sie hin.</p>
+  <details><summary>Antwort</summary><div><p>Über das Komplement: Zeige, dass $\mathbb{R}\setminus A=(-\infty,0)\cup(1,\infty)$ offen ist. Erste Zeile: «Sei $x\in(-\infty,0)\cup(1,\infty)$.»</p></div></details></li>
+  <li><p>Wähle $\varepsilon$ in den beiden Fällen $x&lt;0$ und $x&gt;1$ und prüfe, dass das Intervall im Komplement bleibt.</p>
+  <details><summary>Antwort</summary><div><p>Falls $x&lt;0$: $\varepsilon=-x&gt;0$, der Abstand zu $0$. Dann gilt <span class="math-display" style="display:block">$$(x-\varepsilon,x+\varepsilon)=(2x,0)\subseteq(-\infty,0).$$</span>Falls $x&gt;1$: $\varepsilon=x-1&gt;0$, der Abstand zu $1$. Dann gilt <span class="math-display" style="display:block">$$(x-\varepsilon,x+\varepsilon)=(1,2x-1)\subseteq(1,\infty).$$</span>Also ist jeder Punkt des Komplements ein innerer Punkt davon, das Komplement ist offen, und $A$ ist abgeschlossen. <span class="qed">∎</span></p></div></details></li>
+  <li><p><strong>Nicht offen.</strong> Welches frühere Argument kannst du wiederverwenden?</p>
+  <details><summary>Antwort</summary><div><p>Beispiel A bei $x=0$, Wort für Wort: Für jedes $\varepsilon&gt;0$ ist $-\tfrac{\varepsilon}{2}\in(-\varepsilon,\varepsilon)$, aber $-\tfrac{\varepsilon}{2}\notin[0,1]$.</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="example-c-is-neither">Beispiel C: $A=\left\{\tfrac1n : n\in\mathbb{N}\right\}=\left\{1,\tfrac12,\tfrac13,\dots\right\}$ ist keins von beiden</h3>
+<ol class="gq">
+  <li><p><strong>Schnelltest.</strong> Welche Punkte sind Randpunkte, und welche davon liegen in $A$?</p>
+  <details><summary>Antwort</summary><div><p>Jedes Element $\tfrac1n$ ist ein Randpunkt (es ist ein isolierter Punkt), und ebenso die Häufungsstelle $0$. Die Elemente liegen in $A$, $0$ nicht. Keins von beiden.</p></div></details></li>
+  <li><p><strong>Nicht offen.</strong> Nimm $x=1\in A$ und $\varepsilon&gt;0$. Welcher Punkt von $(1-\varepsilon,1+\varepsilon)$ liegt nicht in $A$?</p>
+  <details><summary>Antwort</summary><div><p>$1+\tfrac{\varepsilon}{2}$. Er liegt im Intervall, ist aber grösser als $1$, und jedes Element von $A$ ist $\le 1$. Also $(1-\varepsilon,1+\varepsilon)\not\subseteq A$.</p></div></details></li>
+  <li><p><strong>Nicht abgeschlossen.</strong> Nimm $x=0\notin A$ und $\varepsilon&gt;0$. Wie findest du ein Element von $A$ in $(-\varepsilon,\varepsilon)$?</p>
+  <details><summary>Antwort</summary><div><p>Nach dem archimedischen Prinzip (Skript §2.6.1, <a class="pl" href="../script.html#p111">S. 111</a>, kommt in <a class="xl" href="lesson-06.html#6-1-the-archimedean-principle">Lektion 6</a>: Zu jeder reellen Zahl gibt es eine grössere natürliche Zahl) gibt es ein $n\in\mathbb{N}$ mit $n&gt;\tfrac1\varepsilon$, also $0&lt;\tfrac1n&lt;\varepsilon$. Also ist $\tfrac1n\in(-\varepsilon,\varepsilon)\cap A$, und dieser Schnitt ist für jedes $\varepsilon&gt;0$ nichtleer. <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-arch">$n$ nach Archimedes wählen</a></p>
+<p><em>Zusatztatsache:</em> $A\cup\{0\}$ ist abgeschlossen. Den einen fehlenden Randpunkt hinzuzufügen, repariert es.</p>
+</div>
+
+<div class="box">
+<h3 id="example-d-extra">Beispiel D (Zusatz): $(0,1)\cup\{2\}$</h3>
+<ol class="gq">
+  <li><p><strong>Schnelltest.</strong> Randpunkte, und welche liegen in der Menge?</p>
+  <details><summary>Antwort</summary><div><p>$0$, $1$ und $2$. Der Punkt $2$ liegt in der Menge, $0$ und $1$ nicht. Einige drin, einige draussen: keins von beiden.</p></div></details></li>
+  <li><p><strong>Nicht offen.</strong> Um welchen Punkt der Menge liegt kein Intervall in der Menge? Beweise es.</p>
+  <details><summary>Antwort</summary><div><p>$x=2$. Für jedes $\varepsilon&gt;0$ liegt der Punkt $2+\tfrac{\varepsilon}{2}$ in $(2-\varepsilon,2+\varepsilon)$. Er ist grösser als $2$, liegt also nicht in $(0,1)$ und ist nicht $2$. Also ist $(2-\varepsilon,2+\varepsilon)$ nicht in der Menge enthalten.</p></div></details></li>
+  <li><p><strong>Nicht abgeschlossen.</strong> Nimm $x=0$, das nicht in der Menge liegt. Welcher Punkt der Menge liegt für $\varepsilon&gt;0$ in $(-\varepsilon,\varepsilon)$?</p>
+  <details><summary>Antwort</summary><div><p>$\delta=\tfrac12\min(\varepsilon,1)$. Dann ist $0&lt;\delta\le\tfrac12$, also $\delta\in(0,1)$, und $|\delta-0|&lt;\varepsilon$. Also ist $\delta\in(-\varepsilon,\varepsilon)\cap(0,1)$, und dieser Schnitt ist damit nichtleer. <span class="qed">∎</span></p></div></details></li>
+</ol>
+<p><em>Lehre:</em> Einen einzelnen Punkt zu einer offenen Menge hinzuzufügen, zerstört die Offenheit, denn der hinzugefügte Punkt ist nie ein innerer Punkt (kein einsamer Punkt hat Luft zum Atmen).</p>
+</div>
+<div class="exam"><span class="label">Prüfungstechnik, an einem Ort</span>
+<p><strong>Multiple Choice:</strong> (1) Vereinfache die Menge, (2) liste die Randpunkte auf, (3) prüfe, welche zur Menge gehören. Keiner drin: offen. Alle drin: abgeschlossen. Gemischt: keins von beiden. Keine Randpunkte: beides (nur $\mathbb{R}$ und $\emptyset$).</p>
+<p><strong>Beweisfragen:</strong></p>
+<ul>
+<li><em>Offen:</em> «Sei $x\in U$. Wähle $\varepsilon=$ (kleinster Abstand zu den Enden).» Dann zeige $(x-\varepsilon,x+\varepsilon)\subseteq U$.</li>
+<li><em>Nicht offen:</em> Nenne einen Punkt von $U$, sei $\varepsilon&gt;0$ beliebig, und nenne einen expliziten Punkt von $(x-\varepsilon,x+\varepsilon)$, der nicht in $U$ liegt.</li>
+<li><em>Abgeschlossen:</em> Zeige, dass das Komplement offen ist.</li>
+<li><em>Nicht abgeschlossen:</em> Nenne einen Punkt ausserhalb von $A$, sei $\varepsilon&gt;0$ beliebig, und nenne einen expliziten Punkt von $(x-\varepsilon,x+\varepsilon)$, der in $A$ liegt. Nimm $\min(\varepsilon,\dots)$, damit dein Punkt wirklich in $A$ landet.</li>
+</ul></div>
+
+<p>Die Aufgaben 5 und 6 unten sind neue Übung genau zu diesem Abschnitt.</p>
+<p>In $\mathbb{C}$ funktioniert alles gleich, mit Kreisscheiben statt Intervallen: die <em>offenen Bälle</em> $B_r(z)=\{w\in\mathbb{C}:|z-w|&lt;r\}$ (<a class="pl" href="../script.html#p103">S. 103</a>). Sie kommen in <a class="xl" href="lesson-10.html">Lektion 10</a> wieder.</p>
+
+<h2 id="s4-worked-examples">4. Musterbeispiele</h2>
+<p>Die Musterbeispiele sind Fragen: Versuch jede im Kopf, dann öffne die Antwort. Deine Antworten, der Reihe nach, sind die Lösung.</p>
+<div class="box">
+  <h3 id="we-1">Musterbeispiel 1: multiplizieren</h3>
+  <p>Schreib $(2+3i)(1-i)$ in der Form $x+yi$.</p>
+  <ol class="gq">
+    <li><p>Multipliziere die Klammern aus wie in der Schule. Was erhältst du?</p>
+    <details><summary>Antwort</summary><div><p>$2-2i+3i-3i^2$.</p></div></details></li>
+    <li><p>Ersetze $i^2$ und fasse Real- und Imaginärteil zusammen.</p>
+    <details><summary>Antwort</summary><div><p>$i^2=-1$, also $2+i+3=5+i$.</p></div></details></li>
+  </ol>
+</div>
+<div class="box">
+  <h3 id="we-2">Musterbeispiel 2: dividieren</h3>
+  <p>Schreib $\dfrac{1+2i}{3-4i}$ in der Form $x+yi$.</p>
+  <ol class="gq">
+    <li><p>Womit erweiterst du oben und unten, und warum ist das erlaubt?</p>
+    <details><summary>Antwort</summary><div><p>Mit der Konjugierten des Nenners, $3+4i$. Das ist Multiplikation mit $\frac{3+4i}{3+4i}=1$, der Wert ändert sich also nicht.</p></div></details></li>
+    <li><p>Berechne den neuen Nenner. Warum war genau das der Sinn der Sache?</p>
+    <details><summary>Antwort</summary><div><p>$(3-4i)(3+4i)=3^2+4^2=25$. Er ist reell, also ist das Teilen durch ihn einfach.</p></div></details></li>
+    <li><p>Berechne den neuen Zähler und schliesse ab.</p>
+    <details><summary>Antwort</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}(1+2i)(3+4i)&amp;=3+4i+6i+8i^2\\&amp;=-5+10i,\end{aligned}$$</span> also $\frac{1+2i}{3-4i}=\frac{-5+10i}{25}=-\frac15+\frac25\,i$.</p></div></details></li>
+    <li><p>Wie prüfst du die Antwort in einer Zeile?</p>
+    <details><summary>Antwort</summary><div><p>Zurückmultiplizieren: <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left(-\tfrac15+\tfrac25 i\right)(3-4i)\\&amp;=-\tfrac35+\tfrac45 i+\tfrac65 i+\tfrac85=1+2i.\ ✓\end{aligned}$$</span></p></div></details></li>
+  </ol>
+</div>
+<div class="box">
+  <h3 id="we-3">Musterbeispiel 3: $(0,1)$ ist offen</h3>
+  <ol class="gq">
+    <li><p>Schreib auf, was du zeigen musst, mit der Definition von offen.</p>
+    <details><summary>Antwort</summary><div><p>Für jedes $x\in(0,1)$ gibt es $\varepsilon&gt;0$ mit $(x-\varepsilon,x+\varepsilon)\subseteq(0,1)$. Also: «Sei $x\in(0,1)$. Wähle $\varepsilon=\dots$»</p></div></details></li>
+    <li><p>Welches $\varepsilon$? Denk an die nächsten Gefahren.</p>
+    <details><summary>Antwort</summary><div><p>Die Endpunkte $0$ und $1$ sind $x$ und $1-x$ entfernt. Wähle $\varepsilon=\min(x,1-x)$, das ist $&gt;0$, weil $0&lt;x&lt;1$.</p></div></details></li>
+    <li><p>Sei $|y-x|&lt;\varepsilon$. Zeige $y\in(0,1)$.</p>
+    <details><summary>Antwort</summary><div><p>$y&gt;x-\varepsilon\ge x-x=0$ und $y&lt;x+\varepsilon\le x+(1-x)=1$. Also $(x-\varepsilon,x+\varepsilon)\subseteq(0,1)$, und $(0,1)$ ist offen. <span class="qed">∎</span></p></div></details></li>
+  </ol>
+  <p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-min">Minimum zweier δs</a></p>
+</div>
+
+<p><strong>Warum das cool ist.</strong> Komplexe Zahlen zu multiplizieren multipliziert Längen und addiert Winkel, also ist $i\cdot i=-1$ bloss zwei Vierteldrehungen. Und «offen» fängt «jeder Punkt hat Luft zum Atmen» ein: Diese eine Idee definiert später Grenzwerte und Stetigkeit, und ein ganzer Zweig der Mathematik (die Topologie) ist darauf gebaut.</p><h2 id="s5-your-turn">5. Du bist dran</h2>
+<div class="box">
+  <h3 id="ex-1">Aufgabe 1 (Rechnung)</h3>
+  <p>Schreib in der Form $x+yi$: &nbsp;(a) $(3-2i)^2$ &nbsp;(b) $i^{2026}$ &nbsp;(c) $\dfrac{1}{1+i}$ &nbsp;(d) Berechne ausserdem $|3+4i|$.</p>
+<details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(a)</strong> Binomische Formel, mit $(2i)^2=4i^2=-4$:</p>
+  <div class="math-display">$$\begin{aligned}(3-2i)^2&amp;=9-12i+4i^2\\&amp;=9-12i-4\\&amp;=5-12i\end{aligned}.$$</div>
+  <p><strong>(b)</strong> Die Potenzen von $i$ wiederholen sich mit Periode 4: $i^1=i,\ i^2=-1,\ i^3=-i,\ i^4=1$, und dann geht es von vorn los (vier Vierteldrehungen ergeben eine volle Drehung). Da $2026=4\cdot506+2$:</p>
+  <div class="math-display">$$i^{2026}=\left(i^4\right)^{506}\cdot i^2=1\cdot(-1)=-1.$$</div>
+  <p><strong>(c)</strong> Mit der Konjugierten $1-i$ erweitern:</p>
+  <div class="math-display">$$\begin{aligned}\frac{1}{1+i}&amp;=\frac{1-i}{(1+i)(1-i)}\\&amp;=\frac{1-i}{2}\\&amp;=\frac12-\frac12\,i\end{aligned}.$$</div>
+  <p><em>Probe:</em> <span class="math-display" style="display:block">$$\begin{aligned}(1+i)\left(\tfrac12-\tfrac12 i\right)&amp;=\tfrac12-\tfrac12 i+\tfrac12 i+\tfrac12\\&amp;=1\end{aligned}.$$</span>✓</p>
+  <p><strong>(d)</strong> $|3+4i|=\sqrt{9+16}=\sqrt{25}=5$, das 3–4–5-Dreieck.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-2">Aufgabe 2 (echte Prüfungsfragen)</h3>
+  <p>(a) <em>Figalli HS23, MC1.</em> Welche Menge ist <strong>nicht</strong> offen?<br>
+  (A) $(0,1)\cup(2,\infty)$ &nbsp; (B) $(0,1)\cup[1,2)$ &nbsp; (C) $[0,1)\cup(1,2)$ &nbsp; (D) $[1,2)\cup(0,3)$</p>
+  <p>(b) <em>Figalli FS24, MC12.</em> Welche Menge <strong>ist</strong> abgeschlossen?<br>
+  (A) $\{0\}\cup(1,\infty)$ &nbsp; (B) $\left\{\tfrac1n : n\in\mathbb{N}\right\}$ &nbsp; (C) $[0,1)\cup(1,2]$ &nbsp; (D) $\{2\}\cup(2,3]$</p>
+<details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(a) Antwort C.</strong> Vereinfache zuerst jede Menge.</p>
+  <ul>
+    <li>(A) Eine Vereinigung zweier offener Intervalle, also offen.</li>
+    <li>(B) $(0,1)\cup[1,2)=(0,2)$. Der Punkt $1$ ist über $[1,2)$ enthalten, es gibt also keine Lücke. Offen.</li>
+    <li>(C) $[0,1)\cup(1,2)$ enthält $0$, und jedes Intervall $(-\varepsilon,\varepsilon)$ enthält negative Zahlen, die nicht in der Menge liegen. <strong>Nicht offen.</strong></li>
+    <li>(D) $[1,2)\cup(0,3)=(0,3)$, weil $[1,2)$ schon in $(0,3)$ liegt. Offen.</li>
+  </ul>
+  <p><strong>(b) Antwort D.</strong> Prüfe die Randpunkte.</p>
+  <ul>
+    <li>(A) $\{0\}\cup(1,\infty)$: Der Randpunkt $1$ fehlt. Nicht abgeschlossen.</li>
+    <li>(B) $\{1,\tfrac12,\tfrac13,\dots\}$: Die Punkte häufen sich bei $0$, also ist $0$ ein Randpunkt (jedes Intervall $(-\varepsilon,\varepsilon)$ enthält ein $\tfrac1n$), aber $0$ liegt nicht in der Menge. Nicht abgeschlossen.</li>
+    <li>(C) $[0,1)\cup(1,2]$: Der Randpunkt $1$ fehlt. Nicht abgeschlossen.</li>
+    <li>(D) $\{2\}\cup(2,3]=[2,3]$, ein abgeschlossenes Intervall. Sein Komplement $(-\infty,2)\cup(3,\infty)$ ist offen. <strong>Abgeschlossen.</strong></li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-3">Aufgabe 3 (Beweis, braucht den Spiegel)</h3>
+  <p>Zeige, dass $|zw|=|z|\,|w|$ für alle $z,w\in\mathbb{C}$. <em>Tipp:</em> Berechne $|zw|^2$ mit $|u|^2=u\bar u$ und der Regel $\overline{zw}=\bar z\,\bar w$.</p>
+<details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> Mit Längen direkt zu arbeiten ist schwer, aber quadrierte Längen sind Produkte $u\bar u$. Berechne also $|zw|^2$, forme es zu $|z|^2|w|^2$ um und zieh am Schluss die Wurzel.</p>
+  <div class="math-display">$$\begin{aligned}|zw|^2&=(zw)\,\overline{zw} &&\text{(}|u|^2=u\bar u\text{ mit }u=zw)\\&=(zw)(\bar z\,\bar w) &&\text{(die Konjugierte eines Produkts ist das Produkt der Konjugierten)}\\&=(z\bar z)(w\bar w) &&\text{(Kommutativität und Assoziativität im Körper }\mathbb{C})\\&=|z|^2\,|w|^2.\end{aligned}$$</div>
+  <p>Sowohl $|zw|$ als auch $|z|\,|w|$ sind $\ge 0$, und ihre Quadrate sind gleich. Die nichtnegative Wurzel ergibt $|zw|=|z|\,|w|$. <span class="qed">∎</span></p>
+  <p>Der letzte Schritt zählt: Aus $a^2=b^2$ folgt nur $a=\pm b$, du brauchst also $a,b\ge0$.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-4">Aufgabe 4 (Richtig/Falsch-Block im Einsiedler-Stil)</h3>
+  <p>Immer wahr? &nbsp;(a) $|x+y|=|x|+|y|$ für alle $x,y\in\mathbb{R}$. &nbsp;(b) $\mathbb{Z}$ ist abgeschlossen in $\mathbb{R}$. &nbsp;(c) $\mathbb{Q}$ ist offen in $\mathbb{R}$. &nbsp;(d) $z+\bar z$ ist reell für jedes $z\in\mathbb{C}$.</p>
+<details class="sol"><summary>Lösung</summary><div>
+  <ul>
+    <li><strong>(a) Falsch.</strong> Nimm $x=1,\ y=-1$: $|0|=0$, aber $|1|+|-1|=2$. Gleichheit gilt nur, wenn $x,y$ dasselbe Vorzeichen haben (oder eines $0$ ist).</li>
+    <li><strong>(b) Wahr.</strong> Das Komplement $\mathbb{R}\setminus\mathbb{Z}$ ist die Vereinigung der offenen Intervalle $(n,n+1)$, $n\in\mathbb{Z}$. Für $x\in(n,n+1)$ nimm $\varepsilon=\min(x-n,\ n+1-x)$, wie in Musterbeispiel 3. Also ist das Komplement offen und $\mathbb{Z}$ abgeschlossen.</li>
+    <li><strong>(c) Falsch.</strong> Nimm ein beliebiges $q\in\mathbb{Q}$. Jedes Intervall $(q-\varepsilon,q+\varepsilon)$ enthält eine irrationale Zahl, zum Beispiel $q+\tfrac{\sqrt2}{n}$ mit $n$ so gross, dass $\tfrac{\sqrt2}{n}&lt;\varepsilon$. (Wäre $r=q+\tfrac{\sqrt2}{n}$ rational, dann wäre auch $\sqrt2=n(r-q)$ rational, was falsch ist.) Also ist kein $(q-\varepsilon,q+\varepsilon)$ in $\mathbb{Q}$ enthalten, und $q$ ist kein innerer Punkt.</li>
+    <li><strong>(d) Wahr.</strong> <span class="math-display" style="display:block">$$z+\bar z=(x+yi)+(x-yi)=2x\in\mathbb{R}.$$</span>Allgemein gilt $\operatorname{Re}(z)=\tfrac{z+\bar z}{2}$.</li>
+  </ul>
+  <p>Die Antwort ist also F, W, F, W.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-5">Aufgabe 5 (offen, abgeschlossen oder keins von beiden?)</h3>
+  <p>Liste für jede Menge ihre Randpunkte auf, sag, welche davon zur Menge gehören, und entscheide: offen, abgeschlossen, beides oder keins von beiden. Teile (a) und (b) stammen aus dem Skript, Übung 2.50 (<a class="pl" href="../script.html#p101">S. 101</a>).</p>
+  <p>(a) $(0,1]$ &nbsp; (b) $(0,1)\cup(2,3)$ &nbsp; (c) $[-1,0]\cup\{3\}$ &nbsp; (d) $(-\infty,2]$ &nbsp; (e) $(1,2)\cup(2,3)$ &nbsp; (f) $\left\{1-\tfrac1n : n\in\mathbb{N}\right\}$ &nbsp; (g) $\mathbb{N}$</p>
+<details class="sol"><summary>Lösung</summary><div>
+  <ul>
+    <li><strong>(a) $(0,1]$: keins von beiden.</strong> Randpunkte $0$ und $1$. $1$ ist drin, $0$ nicht. Gemischt.</li>
+    <li><strong>(b) $(0,1)\cup(2,3)$: offen.</strong> Randpunkte $0,1,2,3$, keiner davon in der Menge. Für $x\in(0,1)$ nimm $\varepsilon=\min(x,1-x)$, für $x\in(2,3)$ nimm $\varepsilon=\min(x-2,3-x)$. Nicht abgeschlossen, da die Randpunkte fehlen.</li>
+    <li><strong>(c) $[-1,0]\cup\{3\}$: abgeschlossen.</strong> Randpunkte $-1$, $0$ und $3$ (der einsame Punkt). Alle drei sind drin. Nicht offen, genau wegen dieser Punkte: zum Beispiel enthält jedes Intervall $(3-\varepsilon,3+\varepsilon)$ den Punkt $3+\tfrac\varepsilon2$, der nicht in der Menge liegt.</li>
+    <li><strong>(d) $(-\infty,2]$: abgeschlossen.</strong> Der einzige Randpunkt ist $2$, da $-\infty$ kein Punkt ist. Er ist drin. Das Komplement $(2,\infty)$ ist offen, das ist Aufgabe 6(a). Nicht offen, wegen $2$.</li>
+    <li><strong>(e) $(1,2)\cup(2,3)$: offen.</strong> Das ist die Falle. Randpunkte $1,2,3$, keiner davon in der Menge. Das Loch bei $2$ schadet der Offenheit nicht: Offenheit fragt nur nach Punkten <em>der</em> Menge, und $2$ ist keiner (er ist kein Bürger, braucht also keine Luft zum Atmen). Jeder Punkt der Menge ist ein innerer Punkt, zum Beispiel mit $\varepsilon=\min(x-1,2-x)$ für $x\in(1,2)$. Nicht abgeschlossen, weil $2$ ein Randpunkt ist, der fehlt.</li>
+    <li><strong>(f) $\left\{0,\tfrac12,\tfrac23,\tfrac34,\dots\right\}$: keins von beiden.</strong> Jedes Element ist ein isolierter Punkt, also ein Randpunkt, und es liegt in der Menge. Die Elemente häufen sich bei $1$: Für jedes $\varepsilon&gt;0$ gibt es ein $n$ mit $\tfrac1n&lt;\varepsilon$, also liegt $1-\tfrac1n$ in $(1-\varepsilon,1+\varepsilon)$. Also ist $1$ ein Randpunkt, und $1$ liegt <em>nicht</em> in der Menge, da stets $1-\tfrac1n&lt;1$. Einige drin ($0$), einige draussen ($1$): keins von beiden. Vergleiche Beispiel C, das Spiegelbild davon.</li>
+    <li><strong>(g) $\mathbb{N}=\{1,2,3,\dots\}$: abgeschlossen.</strong> Jedes $n$ ist ein Randpunkt: Jedes Intervall $(n-\varepsilon,n+\varepsilon)$ enthält $n$ selbst und die nicht-ganze Zahl $n+\tfrac12\min(\varepsilon,1)$. Nichts häuft sich, da Nachbarn $1$ auseinanderliegen. Alle Randpunkte sind drin, also ist die Menge abgeschlossen. Formal ist das Komplement $(-\infty,1)\cup(1,2)\cup(2,3)\cup\dots$ eine Vereinigung offener Intervalle, also offen. Nicht offen, da kein Intervall $(1-\varepsilon,1+\varepsilon)$ in $\mathbb{N}$ enthalten ist.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="ex-6">Aufgabe 6 (formale Beweise, Prüfungsstil)</h3>
+  <p>(a) Beweise, dass $(2,\infty)$ offen ist.<br>
+  (b) Beweise, dass $[0,1)\cup(1,2)$ nicht abgeschlossen ist. Nenne den Punkt $x$ und, für jedes $\varepsilon&gt;0$, einen expliziten Punkt von $(x-\varepsilon,x+\varepsilon)$ in der Menge.<br>
+  (c) Beweise: Sind $U,V\subseteq\mathbb{R}$ offen, so ist $U\cup V$ offen.<br>
+  (d) <em>Optional:</em> Beweise, dass $U\cap V$ offen ist, wenn $U,V$ offen sind. <em>Tipp:</em> Du bekommst zwei Radien, nimm also den kleineren.</p>
+<details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(a)</strong> <em>Rahmen:</em> «offen» heisst «für alle $x$ gibt es $\varepsilon$», also ist die erste Zeile «Sei $x\in(2,\infty)$», dann «Wähle $\varepsilon=\dots$», und die letzte Zeile «also $(x-\varepsilon,x+\varepsilon)\subseteq(2,\infty)$». Die Lücke: das richtige $\varepsilon$ (der Abstand zum Endpunkt). <em>Kniffe:</em> <a class="mvl" href="moves.html#m-min">Minimum zweier δs</a> (hier nur ein Abstand).</p>
+  <p>Sei $x\in(2,\infty)$, also $x&gt;2$. Wähle $\varepsilon=x-2$, das ist $&gt;0$. Es ist der Abstand zum einzigen Endpunkt, $2$. Sei $y\in(x-\varepsilon,x+\varepsilon)$. Dann gilt</p>
+  <div class="math-display">$$y>x-\varepsilon=x-(x-2)=2,$$</div>
+  <p>also $y\in(2,\infty)$. Folglich ist $(x-\varepsilon,x+\varepsilon)\subseteq(2,\infty)$. Da $x$ beliebig war, ist $(2,\infty)$ offen. <span class="qed">∎</span> Um ein rechtes Ende musst du dich nicht kümmern, weil $\infty$ kein Punkt ist.</p>
+
+  <p><strong>(b)</strong> <em>Rahmen:</em> Negiere «abgeschlossen»: Nenne einen Punkt $x\notin A$, dann «Sei $\varepsilon&gt;0$ beliebig», und schliesse mit einem expliziten Punkt von $(x-\varepsilon,x+\varepsilon)$, der in $A$ liegt. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-neg">Das Negationsrezept</a>, <a class="mvl" href="moves.html#m-min">Minimum zweier δs</a>.</p>
+  <p>Sei $A=[0,1)\cup(1,2)$. Um zu zeigen, dass $A$ nicht abgeschlossen ist, zeigen wir, dass $\mathbb{R}\setminus A$ nicht offen ist. Nimm $x=1$, das in $\mathbb{R}\setminus A$ liegt. Sei $\varepsilon&gt;0$ beliebig und setze $\delta=\tfrac12\min(\varepsilon,1)$. Dann gilt:</p>
+  <ul>
+    <li>$|(1+\delta)-1|=\delta&lt;\varepsilon$, also $1+\delta\in(1-\varepsilon,1+\varepsilon)$.</li>
+    <li>$0&lt;\delta\le\tfrac12$, also $1&lt;1+\delta\le\tfrac32&lt;2$, das heisst $1+\delta\in(1,2)\subseteq A$.</li>
+  </ul>
+  <p>Also ist $(1-\varepsilon,1+\varepsilon)\not\subseteq\mathbb{R}\setminus A$ für jedes $\varepsilon&gt;0$. Das Komplement ist nicht offen, also ist $A$ nicht abgeschlossen. <span class="qed">∎</span> (Mit $1-\delta\in[0,1)$ geht es genauso gut.)</p>
+
+  <p><strong>(c)</strong> <em>Rahmen:</em> erste Zeile «Sei $x\in U\cup V$», letzte Zeile «also $(x-\varepsilon,x+\varepsilon)\subseteq U\cup V$». Die Lücke: Ein «oder» in der Voraussetzung bedeutet zwei Fälle. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-obda">Auf einen Fall reduzieren (oBdA)</a>.</p>
+  <p>Sei $x\in U\cup V$. Dann ist $x\in U$ oder $x\in V$.</p>
+  <ul>
+    <li>Falls $x\in U$: Da $U$ offen ist, gibt es ein $\varepsilon&gt;0$ mit $(x-\varepsilon,x+\varepsilon)\subseteq U\subseteq U\cup V$.</li>
+    <li>Falls $x\in V$: dasselbe Argument mit $V$.</li>
+  </ul>
+  <p>In beiden Fällen gibt es ein $\varepsilon&gt;0$ mit $(x-\varepsilon,x+\varepsilon)\subseteq U\cup V$. Also ist $U\cup V$ offen. <span class="qed">∎</span> Derselbe Beweis funktioniert für eine Vereinigung beliebig vieler offener Mengen, sogar unendlich vieler.</p>
+
+  <p><strong>(d)</strong> <em>Rahmen:</em> dieselbe erste und letzte Zeile wie in (c), mit $\cap$. Die Lücke: Zwei Radien, einer pro Menge, müssen zu einem werden. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-min">Minimum zweier δs</a>.</p>
+  <p>Sei $x\in U\cap V$. Dann ist $x\in U$ und $x\in V$. Weil $U$ offen ist, gibt es ein $\varepsilon_1&gt;0$ mit $(x-\varepsilon_1,x+\varepsilon_1)\subseteq U$. Weil $V$ offen ist, gibt es ein $\varepsilon_2&gt;0$ mit $(x-\varepsilon_2,x+\varepsilon_2)\subseteq V$. Sei $\varepsilon=\min(\varepsilon_1,\varepsilon_2)&gt;0$. Das kleinere Intervall liegt in beiden grösseren:</p>
+  <div class="math-display">$$\begin{aligned}&amp;(x-\varepsilon,x+\varepsilon)\subseteq(x-\varepsilon_1,x+\varepsilon_1)\subseteq U\\&amp;\text{und}\\&amp;(x-\varepsilon,x+\varepsilon)\subseteq(x-\varepsilon_2,x+\varepsilon_2)\subseteq V\end{aligned}.$$</div>
+  <p>Also ist $(x-\varepsilon,x+\varepsilon)\subseteq U\cap V$, und $U\cap V$ ist offen. <span class="qed">∎</span></p>
+  <p><em>Aus Neugier:</em> Für unendlich viele Mengen scheitert das. Jedes $\left(-\tfrac1n,\tfrac1n\right)$ ist offen, aber ihr Schnitt über alle $n\in\mathbb{N}$ ist $\{0\}$, und das ist nicht offen. Das Minimum unendlich vieler Radien existiert vielleicht nicht, und ihr Infimum kann $0$ sein. Das ist Gebiet von <a class="xl" href="lesson-06.html">Lektion 6</a>.</p>
+</div></details>
+</div>
+<div class="box">
+  <h3 id="bonus">Bonus (nur wenn du noch Energie hast)</h3>
+  <p>Beweise die umgekehrte Dreiecksungleichung $\big||x|-|y|\big|\le|x-y|$. <em>Tipp:</em> Schreib $x=(x-y)+y$ und wende die Dreiecksungleichung an. Vertausche dann die Rollen von $x$ und $y$ und schliesse mit Regel (e) ab: $|a|\le b\iff -b\le a\le b$.</p>
+<details class="sol"><summary>Lösung</summary><div>
+  <ul>
+    <li><em>Rahmen:</em> Das Ziel $\big||x|-|y|\big|\le b$ zerfällt (Regel (e): $|a|\le b\iff-b\le a\le b$) in zwei Ungleichungen, beweise also $|x|-|y|\le|x-y|$ und $|y|-|x|\le|x-y|$ getrennt. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-abs">Einen Betrag auflösen</a>, <a class="mvl" href="moves.html#m-tri">Einen Zwischenpunkt einfügen</a>.</li>
+    <li>$x=(x-y)+y$, also nach der Dreiecksungleichung $|x|\le|x-y|+|y|$, das heisst $|x|-|y|\le|x-y|$.</li>
+    <li>Vertausche $x$ und $y$: $|y|-|x|\le|y-x|=|x-y|$ (Regel (b): $|-a|=|a|$). Also $-|x-y|\le|x|-|y|$.</li>
+    <li>Zusammen: $-|x-y|\le|x|-|y|\le|x-y|$. Wende nun Regel (e), $|a|\le b\iff -b\le a\le b$, von rechts nach links an, mit $a=|x|-|y|$ und $b=|x-y|$. Das ergibt $\big||x|-|y|\big|\le|x-y|$. <span class="qed">∎</span></li>
+  </ul>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Selbst bewerten:</strong> Der Kern sind Aufgabe 1 (4), Aufgabe 2 (2), Aufgabe 4 (4) und Aufgabe 5 (7), zusammen 17. Hast du 14 von 17, bist du fertig. Bei Aufgabe 6 versuch mindestens (a) und (b): Beweise wie diese geben in der Prüfung Punkte. Aufgabe 3 und 6(c)–(d) sind gute Beweisübung und zählen nicht gegen dich.</p>
+</div>
+
+<h2 id="s6-for-wonder-optional-5-min">6. Zum Staunen <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 Min.)</span></h2>
+<p><strong>Aus einem Duell geboren.</strong> Komplexe Zahlen wurden nicht für $x^2=-1$ erfunden. Kubische Gleichungen zwangen sie den Mathematikern im Italien des 16. Jahrhunderts auf, wo sich Mathematiker öffentliche Duelle lieferten und einander 30 Aufgaben stellten, mit Ruf und Studenten als Einsatz. Tartaglia hatte eine geheime Formel für kubische Gleichungen. Cardano bettelte darum, schwor, sie nie zu veröffentlichen, und veröffentlichte sie 1545 trotzdem. Die Formel zwingt dich manchmal durch Wurzeln aus negativen Zahlen hindurch, selbst wenn die Endantwort eine ganz gewöhnliche reelle Zahl wie $4$ ist. Etwa 250 Jahre lang benutzte man diese «unmöglichen» Zahlen, bevor jemand sie als Punkte einer Ebene verstand.</p>
+<p><strong>Sie steuern deine anderen Fächer.</strong> In der Physik schreibt man Schwingungen und Wellen als komplexe Exponentialfunktionen, weil die Drehung (der Vierteldrehungszauber) die Rechnungen einfach macht. In der Quantenmechanik ist die Wellenfunktion komplexwertig. In der Elektrotechnik löst man Wechselstromkreise mit komplexer «Impedanz».</p>
+<p><strong>Auch $\mathbb{C}$ hat keine Lücken.</strong> Das Skript (<a class="pl" href="../script.html#p95">S. 95</a>) erwähnt den <em>Fundamentalsatz der Algebra</em>: Jedes nichtkonstante Polynom hat eine Nullstelle in $\mathbb{C}$. Die Vollständigkeit sagt, dass $\mathbb{R}$ auf der Geraden keine Lücken hat, und dieser Satz sagt, dass $\mathbb{C}$ keine <em>algebraischen</em> Lücken hat. Sobald du $i$ hinzugefügt hast, musst du nie wieder eine neue Zahlenart erfinden, um Polynomgleichungen zu lösen.</p><h2 id="s7-what-we-skipped">7. Was wir auslassen</h2>
+<p>All das steht auch auf der Auslassliste.</p>
+<ul>
+  <li><strong>Vollständige Prüfung, dass $\mathbb{C}$ ein Körper ist (<a class="pl" href="../script.html#p93">S. 93–94</a>):</strong> alle 9 Axiome durch Rechnung nachgeprüft. Tiefe Priorität.</li>
+  <li><strong>$\mathbb{C}$ als $2\times2$-Matrizen (<a class="pl" href="../script.html#p95">S. 95</a>, Bemerkung).</strong> Optional, schön nach der LinAlg.</li>
+  <li><strong>Regeln für $\operatorname{Re}$, $\operatorname{Im}$ und Konjugierte (Wichtige Übungen 2.38–2.40, <a class="pl" href="../script.html#p96">S. 96</a>).</strong> Tiefe Priorität.</li>
+  <li><strong>Intervalle und Umgebungen (Definitionen 2.41–2.43, <a class="pl" href="../script.html#p98">S. 98</a>) sowie die Vorzeichenfunktion.</strong> Tiefe Priorität. «Umgebung» kommt bei der Stetigkeit wieder.</li>
+  <li><strong>Wann in der Dreiecksungleichung Gleichheit gilt, und $\sqrt{x^2}=|x|$ (<a class="pl" href="../script.html#p100">S. 100</a>).</strong> Tiefe Priorität.</li>
+  <li><strong>Offene Bälle und offene Mengen in $\mathbb{C}$ (<a class="pl" href="../script.html#p103">S. 103</a>).</strong> Mittlere Priorität, kommt in <a class="xl" href="lesson-10.html">Lektion 10</a> wieder.</li>
+  <li><strong>Warum $\mathbb{R}$ und $\emptyset$ die einzigen Teilmengen von $\mathbb{R}$ sind, die offen und abgeschlossen zugleich sind</strong> (braucht die Vollständigkeit; «$\mathbb{R}$ ist zusammenhängend»). Tiefe Priorität.</li>
+  <li><strong>Inneres und Abschluss, $A^\circ$ und $\overline{A}=A\cup\partial A$ (Definition 10.14, <a class="pl" href="../script.html#p483">S. 483</a>).</strong> Mittlere Priorität, kommt in <a class="xl" href="lesson-10.html">Lektion 10</a> wieder.</li>
+</ul>
+<p><strong>Als Nächstes:</strong> <a class="xl" href="lesson-06.html">Lektion 6</a>, Maximum, Supremum und Infimum (§2.5–2.6).</p>
+
+<nav class="site foot" aria-label="Lektionsnavigation">
+<a href="lesson-04.html">← Lektion 4: Die drei Waffen des Belagerungsingenieurs</a>
+<a href="analysis.html">Analysis-Start</a>
+<a href="lesson-06.html">Lektion 6: Die tiefste Decke →</a>
+<a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Feedback geben</a>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.lang-switch{margin-left:auto;font-weight:600;font-size:.85em}nav.site .lang-switch{border:1px solid currentColor;border-radius:999px;padding:0 .6em}</style><style>.fb-line{margin-top:2.5rem;font-size:.9em;opacity:.8}</style>
+</body>
+</html>

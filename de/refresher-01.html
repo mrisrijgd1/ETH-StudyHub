@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="../assets/umami-kit.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Einheit 1. Lektionen 1–3: Quantoren, Funktionen, Äquivalenzrelationen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<p style="text-align:right;margin:0"><a class="lang-switch" href="../refresher-01.html" lang="en">English</a></p>
+<nav class="site" aria-label="Website">
+<a href="index.html">Start</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Lernkarten</a>
+<a href="moves.html">Kniffe</a>
+<a href="exam-map.html">Prüfungslandkarte</a>
+<a href="skipped.html">Ausgelassen</a>
+<a href="../script.html">Skript</a>
+<a href="docs.html">Prüfungen</a>
+</nav>
+<header>
+<span class="eyebrow">Analysis 1 · Repetition, Einheit 1 von 12</span>
+<h1>Einheit 1. Lektionen 1–3: Quantoren, Funktionen, Äquivalenzrelationen</h1>
+<p class="lead">Drei Prüfungsbeweise auf Papier, ein Finde-den-Fehler, die Aufgaben der Lektionen nochmals gelöst und zwei neue.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<li><a href="#s1-warm-up-5-min">1. Aufwärmen (5 Min.)</a>
+</li>
+<li><a href="#s2-recap-card-10-min">2. Rückblick-Karte (10 Min.)</a>
+<ol>
+<li><a href="#lesson-1-quantifiers">Lektion 1: Quantoren</a></li>
+<li><a href="#lesson-2-functions">Lektion 2: Funktionen</a></li>
+<li><a href="#lesson-3-equivalence-relations-and">Lektion 3: Äquivalenzrelationen und Abzählbarkeit</a></li>
+</ol></li>
+<li><a href="#s3-flashcards-10-min">3. Lernkarten (10 Min.)</a>
+</li>
+<li><a href="#s4-write-it-on-paper-three">4. Schreib es auf Papier: drei Prüfungsbeweise (20 Min.)</a>
+<ol>
+<li><a href="#proof-1">Beweis 1: Ist $g\circ f$ injektiv, dann ist $f$ injektiv</a></li>
+<li><a href="#proof-2">Beweis 2: Gleicher Rest modulo $m$ ist eine Äquivalenzrelation</a></li>
+<li><a href="#proof-3">Beweis 3: Keine Liste, auch nicht mit Wiederholungen, enthält alle A/B-Folgen</a></li>
+</ol></li>
+<li><a href="#s5-spot-the-mistake-5-min">5. Finde den Fehler (5 Min.)</a>
+</li>
+<li><a href="#s6-exercises-on-paper-20-30">6. Aufgaben auf Papier (20–30 Min.)</a>
+<ol>
+<li><a href="#new-exercise-1-true-false">Neue Aufgabe 1 (wahr/falsch, Prüfungsformat)</a></li>
+<li><a href="#new-exercise-2-negation">Neue Aufgabe 2 (Negation)</a></li>
+</ol></li>
+<li><a href="#s7-tick-off-and-tell-me">7. Abhaken und selbst bewerten</a>
+</li>
+</ol></details>
+<dl class="meta">
+  <dt>Umfasst</dt><dd><a href="lesson-01.html">Lektion 1</a> (Quantoren), <a href="lesson-02.html">Lektion 2</a> (Funktionen), <a href="lesson-03.html">Lektion 3</a> (Äquivalenzrelationen, Abzählbarkeit).</dd>
+  <dt>Zeit</dt><dd>Etwa 60–75 Minuten. Du brauchst Papier und einen Stift.</dd>
+  <dt>Du bist fertig, wenn</dt><dd>du die drei Beweise in Abschnitt 4 auf Papier geschrieben und mit der Liste der Korrektur verglichen hast und die Aufgaben in Abschnitt 6 auf Papier gelöst hast.</dd>
+  <dt>Schlechter Tag?</dt><dd>Mach nur die Abschnitte 1, 3 und einen Beweis aus Abschnitt 4. Das zählt trotzdem als Einheit.</dd>
+</dl>
+
+<h2 id="s1-warm-up-5-min">1. Aufwärmen (5 Min.)</h2>
+<p>Drei schnelle Fragen. Beantworte jede im Kopf und öffne sie dann.</p>
+<ol class="gq">
+  <li><p>Negiere: «Jeder Drache im Königreich hat einen Namen».</p>
+  <details><summary>Antwort</summary><div><p>«Es gibt einen Drachen im Königreich ohne Namen.» Aus «jeder» wird «es gibt», und nur der letzte Teil wird negiert.</p></div></details></li>
+  <li><p>$f:\mathbb N\to\mathbb N$, $f(n)=n+1$. Injektiv? Surjektiv?</p>
+  <details><summary>Antwort</summary><div><p>Injektiv: $n+1=m+1$ liefert $n=m$. Nicht surjektiv: $1$ hat kein Urbild, da $n+1\ge2$ für alle $n\in\mathbb N$.</p></div></details></li>
+  <li><p>Ist auf der Menge aller Menschen «hat am selben Tag Geburtstag wie» eine Äquivalenzrelation?</p>
+  <details><summary>Antwort</summary><div><p>Ja: Es ist eine «gleiche(r) ___»-Relation, also reflexiv, symmetrisch und transitiv. Die Klassen sind die 366 möglichen Geburtstage (diejenigen, die vorkommen).</p></div></details></li>
+</ol>
+
+<h2 id="s2-recap-card-10-min">2. Rückblick-Karte (10 Min.)</h2>
+<p>Lies das einmal, langsam. Alles Fettgedruckte muss in der Prüfung exakt herauskommen.</p>
+<div class="box">
+<h3 id="lesson-1-quantifiers"><a class="xl" href="lesson-01.html">Lektion 1</a>: Quantoren</h3>
+<ul>
+  <li>$\forall$: Der Zweifler wählt; $\exists$: Der Champion wählt; von links nach rechts lesen.</li>
+  <li><strong>Negation:</strong> $\neg(\forall x:\ A(x))\iff\exists x:\ \neg A(x)$ und $\neg(\exists x:\ A(x))\iff\forall x:\ \neg A(x)$. Reihenfolge und Bereiche bleiben; nur die Quantorentypen und die Schlussbedingung ändern sich.</li>
+  <li>$\exists y\,\forall x$ (gleichmässig) ist stärker als $\forall x\,\exists y$ (punktweise).</li>
+  <li>«$\forall x\in\emptyset:\ A(x)$» ist immer wahr.</li>
+</ul>
+</div>
+<div class="box">
+<h3 id="lesson-2-functions"><a class="xl" href="lesson-02.html">Lektion 2</a>: Funktionen</h3>
+<ul>
+  <li><strong>Injektiv:</strong> <span class="math-display" style="display:block">$$\forall x_1,x_2\in X:\ f(x_1)=f(x_2)\Rightarrow x_1=x_2.$$</span><strong>Surjektiv:</strong> $\forall y\in Y\ \exists x\in X:\ f(x)=y$. <strong>Bijektiv:</strong> beides.</li>
+  <li>Vorlagen: «Seien $x_1,x_2\in X$ mit $f(x_1)=f(x_2)$. … Somit $x_1=x_2$.» und «Sei $y\in Y$. Setze $x:=\dots$ Dann ist $f(x)=y$.»</li>
+  <li>$g\circ f$ injektiv $\Rightarrow$ $f$ injektiv; $g\circ f$ surjektiv $\Rightarrow$ $g$ surjektiv.</li>
+  <li><strong>Bild</strong> $f(A)=\{f(x)\mid x\in A\}$, <strong>Urbild</strong> $f^{-1}(B)=\{x\in X\mid f(x)\in B\}$. Das Urbild respektiert $\cup$, $\cap$ und Komplemente; das Bild nur $\cup$ (und auch $\cap$, wenn $f$ injektiv ist).</li>
+</ul>
+</div>
+<div class="box">
+<h3 id="lesson-3-equivalence-relations-and"><a class="xl" href="lesson-03.html#s2-equivalence-relations">Lektion 3</a>: Äquivalenzrelationen und Abzählbarkeit</h3>
+<ul>
+  <li><strong>Äquivalenzrelation:</strong> reflexiv, symmetrisch, transitiv (jede mit ihrem $\forall$).</li>
+  <li><strong>Klasse</strong> $[x]=\{y\in X\mid y\sim x\}$; Quotient $X/\!\sim$; <span class="math-display" style="display:block">$$x\sim y\iff[x]=[y]\iff[x]\cap[y]\neq\emptyset,$$</span>also bilden die Klassen eine Partition.</li>
+  <li><strong>Abzählbar:</strong> Es gibt eine Bijektion $\mathbb N\to X$. $\mathbb Z$, $\mathbb N\times\mathbb N$, $\mathbb Q$ sind abzählbar; $\{A,B\}^{\mathbb N}$ ist überabzählbar (Diagonalargument).</li>
+  <li>Schubfachprinzip: Ist $|X|&gt;|Y|$ (endlich), so ist keine Abbildung $X\to Y$ injektiv.</li>
+</ul>
+</div>
+
+<h2 id="s3-flashcards-10-min">3. Lernkarten (10 Min.)</h2>
+<p>Öffne die <a href="flashcards.html">Lernkarten</a>, stelle die Lektionen auf 1 bis 3, lass alle Arten angekreuzt und drücke Start. Sag jede Definition laut (oder schreib sie auf), bevor du umdrehst. Drücke «Nochmal», wann immer deine Formulierung nicht exakt war; die Runde endet, wenn jede Karte auf «Gewusst» steht.</p>
+
+<h2 id="s4-write-it-on-paper-three">4. Schreib es auf Papier: drei Prüfungsbeweise (20 Min.)</h2>
+<p>Für jeden Beweis: Lies die Behauptung und den Rahmen, schliesse zehn Sekunden die Augen und schreibe dann den <em>ganzen</em> Beweis auf Papier, ohne in die Lektion zu schauen. Erst dann öffne die Klappe und bewerte dich mit der Liste der Korrektur.</p>
+
+<div class="box">
+<h3 id="proof-1">Beweis 1: Ist $g\circ f$ injektiv, dann ist $f$ injektiv</h3>
+<p><strong>Behauptung.</strong> Seien $f:X\to Y$ und $g:Y\to Z$ Abbildungen. Ist $g\circ f$ injektiv, dann ist $f$ injektiv. (Figalli FS26, A1(a), 2 Punkte.)</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen</span>
+<p>Erste Zeile: «Seien $x_1,x_2\in X$ mit $f(x_1)=f(x_2)$.» Letzte Zeile: «Somit $x_1=x_2$, also ist $f$ injektiv.» Die Lücke: zu der Gleichung gelangen, die die Voraussetzung über $g\circ f$ verwenden kann.</p></div>
+<details><summary>Der Beweis und die Liste der Korrektur</summary><div>
+<p>Seien $x_1,x_2\in X$ mit $f(x_1)=f(x_2)$. Wendet man $g$ auf beide Seiten an, erhält man $g(f(x_1))=g(f(x_2))$, das heisst $(g\circ f)(x_1)=(g\circ f)(x_2)$. Da $g\circ f$ injektiv ist, folgt $x_1=x_2$. Somit ist $f$ injektiv. ∎</p>
+<p><strong>Die Korrektur gibt die Punkte für:</strong></p>
+<ul>
+  <li>den Beginn mit der Injektivitäts-Vorlage für $f$ (nicht für $g$ oder $g\circ f$);</li>
+  <li>den Schritt $g(f(x_1))=g(f(x_2))$, der erlaubt ist, weil $g$ eine Abbildung ist;</li>
+  <li>die Angabe, wo die Voraussetzung verwendet wird («da $g\circ f$ injektiv ist»), und den Schlusssatz.</li>
+</ul>
+</div></details>
+</div>
+
+<div class="box">
+<h3 id="proof-2">Beweis 2: Gleicher Rest modulo $m$ ist eine Äquivalenzrelation</h3>
+<p><strong>Behauptung.</strong> Sei $m\in\mathbb N$. Definiere auf $\mathbb Z$ die Relation $a\sim b\iff m\mid a-b$, das heisst $a-b=mk$ für ein $k\in\mathbb Z$. Dann ist $\sim$ eine Äquivalenzrelation, und sie hat genau die $m$ Klassen $[0],[1],\dots,[m-1]$. (<a class="xl" href="lesson-03.html#proof-a">Lektion 3</a>, Beweis A mit $m$ statt $3$; die Anzahl der Klassen war dort Stufe 2 und steht auf deiner Auslassliste.)</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen</span>
+<p>Drei beschriftete Punkte (reflexiv, symmetrisch, transitiv). Jeder beginnt mit «Sei …», entfaltet $\sim$ mit einem neuen Buchstaben, rechnet und faltet zurück. Für die Klassen: Jedes $a$ liegt in einer von $[0],\dots,[m-1]$, und diese sind paarweise verschieden.</p></div>
+<details><summary>Der Beweis und die Liste der Korrektur</summary><div>
+<p><strong>Reflexiv.</strong> Sei $a\in\mathbb Z$. Dann ist $a-a=0=m\cdot0$, also $a\sim a$.</p>
+<p><strong>Symmetrisch.</strong> Sei $a\sim b$, also $a-b=mk$ mit $k\in\mathbb Z$. Dann ist $b-a=m(-k)$ mit $-k\in\mathbb Z$, also $b\sim a$.</p>
+<p><strong>Transitiv.</strong> Seien $a\sim b$ und $b\sim c$, also $a-b=mk$ und $b-c=ml$ mit $k,l\in\mathbb Z$. Addieren liefert $a-c=m(k+l)$ mit $k+l\in\mathbb Z$, also $a\sim c$.</p>
+<p><strong>Die Klassen.</strong> Sei $a\in\mathbb Z$. Division mit Rest liefert $a=mq+r$ mit $q\in\mathbb Z$ und $r\in\{0,\dots,m-1\}$, also $a-r=mq$, $a\sim r$ und $a\in[r]$. Also liegt jede ganze Zahl in einer von $[0],\dots,[m-1]$. Diese sind paarweise verschieden: Für $0\le r&lt;s\le m-1$ ist $0&lt;s-r&lt;m$, also $m\nmid s-r$, also $r\not\sim s$ und $[r]\neq[s]$. Somit hat $\mathbb Z/\!\sim$ genau $m$ Elemente. ∎</p>
+<p><strong>Die Korrektur gibt die Punkte für:</strong></p>
+<ul>
+  <li>drei getrennte, beschriftete Punkte, jeder beginnend mit «Sei …»;</li>
+  <li>einen neuen Buchstaben ($k$, $l$) für jede entfaltete Voraussetzung, wobei beim Zurückfalten «$\in\mathbb Z$» geprüft wird;</li>
+  <li>für die Klassen: beide Hälften (jedes $a$ liegt in einem $[r]$, und die $[r]$ sind verschieden).</li>
+</ul>
+</div></details>
+</div>
+
+<div class="box">
+<h3 id="proof-3">Beweis 3: Keine Liste, auch nicht mit Wiederholungen, enthält alle A/B-Folgen</h3>
+<p><strong>Behauptung.</strong> Es gibt keine surjektive Abbildung $f:\mathbb N\to\{A,B\}^{\mathbb N}$. Insbesondere ist $\{A,B\}^{\mathbb N}$ überabzählbar. (<a class="xl" href="lesson-03.html#proof-c">Lektion 3</a>, Beweis C in seiner stärkeren Form; das war dort Stufe 2 und steht auf deiner Auslassliste.)</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen</span>
+<p>«Es gibt keine» verlangt einen Widerspruch: «Angenommen, $f:\mathbb N\to\{A,B\}^{\mathbb N}$ ist surjektiv.» Das Ziel: eine Folge $s$ mit $s\neq f(n)$ für jedes $n$, also ist $f$ nicht surjektiv.</p></div>
+<details><summary>Der Beweis und die Liste der Korrektur</summary><div>
+<p>Angenommen, zum Widerspruch, $f:\mathbb N\to\{A,B\}^{\mathbb N}$ ist surjektiv, und schreibe $f(n)=(f(n)_1,f(n)_2,\dots)$. Definiere $s\in\{A,B\}^{\mathbb N}$ durch $s_n=B$, falls $f(n)_n=A$, und $s_n=A$, falls $f(n)_n=B$. Dann gilt für jedes $n\in\mathbb N$ $s_n\neq f(n)_n$, also $s\neq f(n)$. Somit liegt $s$ nicht im Bild von $f$, im Widerspruch zur Surjektivität. Also existiert keine Surjektion.</p>
+<p>Insbesondere gibt es keine Bijektion $\mathbb N\to\{A,B\}^{\mathbb N}$, und die Menge ist unendlich (sie enthält die paarweise verschiedenen Folgen $BAAA\dots$, $ABAA\dots$, $AABA\dots$, …), also ist sie überabzählbar. ∎</p>
+<p><strong>Die Korrektur gibt die Punkte für:</strong></p>
+<ul>
+  <li>die ausgeschriebene Widerspruchsannahme, mit der Notation $f(n)_k$ für die Einträge;</li>
+  <li>die Definition von $s$ über die Diagonale, Fall für Fall;</li>
+  <li>den Satz «$s_n\neq f(n)_n$, also $s\neq f(n)$ für jedes $n$» und den benannten Widerspruch.</li>
+</ul>
+</div></details>
+</div>
+
+<h2 id="s5-spot-the-mistake-5-min">5. Finde den Fehler (5 Min.)</h2>
+<p>Ein Student gibt diesen «Beweis» ab. Die Behauptung ist falsch (Musterbeispiel 1 von <a class="xl" href="lesson-02.html#we-1">Lektion 2</a> zeigt es), also muss der Beweis irgendwo brechen. Wo genau?</p>
+<div class="box">
+<p><strong>«Behauptung.»</strong> Ist $g\circ f$ injektiv, dann ist $g$ injektiv.</p>
+<p><strong>«Beweis.»</strong> Seien $y_1,y_2\in Y$ mit $g(y_1)=g(y_2)$. Schreibe $y_1=f(x_1)$ und $y_2=f(x_2)$ mit $x_1,x_2\in X$. Dann ist $(g\circ f)(x_1)=(g\circ f)(x_2)$, also $x_1=x_2$, weil $g\circ f$ injektiv ist. Somit $y_1=f(x_1)=f(x_2)=y_2$, also ist $g$ injektiv. ∎</p>
+<details><summary>Der Fehler</summary><div>
+<p>Der zweite Satz. $y_1=f(x_1)$ zu schreiben setzt voraus, dass $y_1$ ein Urbild unter $f$ hat, das heisst, dass $f$ surjektiv ist (oder zumindest, dass $y_1,y_2\in f(X)$). Nichts in der Voraussetzung liefert das.</p>
+<p>Das Gegenbeispiel zeigt genau diese Lücke: $f:\mathbb R_{\ge0}\to\mathbb R$, $f(x)=x$, und $g:\mathbb R\to\mathbb R$, $g(y)=y^2$. Dann ist $g\circ f$ auf $\mathbb R_{\ge0}$ injektiv, aber $g(1)=g(-1)$, und $-1$ ist nicht von der Form $f(x)$. Das Argument ist korrekt, wenn $f$ surjektiv ist: Dann ist auch $g$ injektiv.</p>
+</div></details>
+</div>
+
+<h2 id="s6-exercises-on-paper-20-30">6. Aufgaben auf Papier (20–30 Min.)</h2>
+<p>Löse diese nochmals auf Papier, in ganzen Sätzen, auch die Wahr/Falsch-Fragen (je eine Zeile Begründung). Jeder Link öffnet die Aufgabe mit ihrer zugeklappten Lösung darunter.</p>
+<ul>
+  <li><a class="xl" href="lesson-01.html#ex-1">Lektion 1</a>: <a href="lesson-01.html#ex-1">Aufgabe 1</a> und <a href="lesson-01.html#ex-2">Aufgabe 2</a>.</li>
+  <li><a class="xl" href="lesson-02.html#ex-1">Lektion 2</a>: <a href="lesson-02.html#ex-1">Aufgabe 1</a>, <a href="lesson-02.html#ex-2">Aufgabe 2</a> und der <a href="lesson-02.html#bonus">Bonus</a>.</li>
+  <li><a class="xl" href="lesson-03.html#s6-exercises">Lektion 3</a>: <a href="lesson-03.html#ex-1">Aufgaben 1–4</a> und der <a href="lesson-03.html#bonus">Bonus</a>.</li>
+</ul>
+<p>Dann zwei neue, die du noch nicht gesehen hast:</p>
+<div class="box">
+<h3 id="new-exercise-1-true-false">Neue Aufgabe 1 (wahr/falsch, Prüfungsformat)</h3>
+<p>Wahr oder falsch? Gib eine einzeilige Begründung oder ein Gegenbeispiel. (a) $f:\mathbb R\to\mathbb R$, $f(x)=x^3$, ist bijektiv. (b) Für jede Abbildung $f:X\to Y$ und jedes $B\subseteq Y$ gilt $f(f^{-1}(B))=B$. (c) Auf $\mathbb R$ ist $x\sim y\iff x-y\in\mathbb Q$ eine Äquivalenzrelation. (d) Die Menge aller <em>endlichen</em> A/B-Wörter ist überabzählbar.</p>
+<details><summary>Lösung</summary><div>
+<p>(a) Wahr. Injektiv: $x\mapsto x^3$ ist streng wachsend, also liefert $x_1\neq x_2$ auch $x_1^3\neq x_2^3$. Surjektiv: Für $y\in\mathbb R$ nimm $x=\sqrt[3]{y}$ (die reelle Kubikwurzel, die wegen der Vollständigkeit existiert; <a class="xl" href="lesson-07.html#proof-a">Lektion 7</a> liefert sie über den Zwischenwertsatz).</p>
+<p>(b) Falsch. Gegenbeispiel: $f:\{1\}\to\{0,1\}$, $f(1)=0$, $B=\{0,1\}$. Dann ist $f^{-1}(B)=\{1\}$ und $f(f^{-1}(B))=\{0\}\neq B$. Allgemein ist $f(f^{-1}(B))=B\cap f(X)$, also gilt Gleichheit genau dann, wenn $B\subseteq f(X)$.</p>
+<p>(c) Wahr. Reflexiv: $x-x=0\in\mathbb Q$. Symmetrisch: $x-y\in\mathbb Q$ liefert $y-x=-(x-y)\in\mathbb Q$. Transitiv: $x-y,\ y-z\in\mathbb Q$ liefern $x-z=(x-y)+(y-z)\in\mathbb Q$.</p>
+<p>(d) Falsch. Liste die Wörter nach Länge auf: zuerst das leere Wort, dann die 2 Wörter der Länge 1, dann die 4 der Länge 2 und so weiter. Jede Länge hat endlich viele Wörter, also bekommt jedes Wort einen Platz in der Liste (dieselbe Idee wie bei den Diagonalen von $\mathbb N\times\mathbb N$). Die Menge ist abzählbar.</p>
+</div></details>
+</div>
+<div class="box">
+<h3 id="new-exercise-2-negation">Neue Aufgabe 2 (Negation)</h3>
+<p>Eine Folge $(a_n)$ ist beschränkt, wenn $\exists M&gt;0\ \forall n\in\mathbb N:\ |a_n|\le M$. Schreibe die Negation mit $\neg$ ganz nach rechts geschoben, sag sie in einem Satz und zeige damit, dass $a_n=n$ nicht beschränkt ist.</p>
+<details><summary>Lösung</summary><div>
+<p>Negation: $\forall M&gt;0\ \exists n\in\mathbb N:\ |a_n|&gt;M$. In Worten: Welche Schranke du auch vorschlägst, irgendein Glied übertrifft sie.</p>
+<p>Für $a_n=n$: Sei $M&gt;0$. Nach dem Archimedischen Prinzip gibt es ein $n\in\mathbb N$ mit $n&gt;M$, also $|a_n|=n&gt;M$. Somit ist $(a_n)$ nicht beschränkt.</p>
+</div></details>
+</div>
+
+<h2 id="s7-tick-off-and-tell-me">7. Abhaken und selbst bewerten</h2>
+<p>Wenn du fertig bist, bewerte dich auf einer Skala bis 10: wie gut du diese Lektionen jetzt verstehst und wie gut du ihre Beweise schreiben könntest. Hake dann diese Zeilen auf der <a href="skipped.html">Auslassliste</a> ab: <a class="xl" href="lesson-03.html#proof-a">Lektion 3</a> Beweis A Stufe 2 (modulo $m$ hat $m$ Klassen), <a class="xl" href="lesson-03.html#proof-a">Lektion 3</a> Beweis C Stufe 2 (keine Surjektion auf die Folgen) und <a class="xl" href="lesson-01.html#s5-exercises">Lektionen 1</a>–<a class="xl" href="lesson-03.html#proof-a">3</a> in der Zeile «alle Aufgaben auf Papier».</p>
+<p>Als Nächstes: Einheit 2, <a class="xl" href="lesson-04.html">Lektionen 4</a>–<a class="xl" href="lesson-06.html">6</a> (Beweismethoden, Induktion, die Axiome von $\mathbb R$, komplexe Zahlen, das Supremum), dazu der kurze Rückblick auf Summen und Binomialkoeffizienten.</p>
+
+<nav class="site foot" aria-label="Navigation zwischen Lektionen">
+<a href="analysis.html">Analysis-Start</a>
+<a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Feedback geben</a>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.lang-switch{margin-left:auto;font-weight:600;font-size:.85em}nav.site .lang-switch{border:1px solid currentColor;border-radius:999px;padding:0 .6em}</style><style>.fb-line{margin-top:2.5rem;font-size:.9em;opacity:.8}</style>
+</body>
+</html>

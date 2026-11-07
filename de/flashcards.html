@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="../assets/umami-kit.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lernkarten</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<p style="text-align:right;margin:0"><a class="lang-switch" href="../flashcards.html" lang="en">English</a></p>
+<nav class="site" aria-label="Website">
+<a href="index.html">Start</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Lernkarten</a>
+<a href="moves.html">Kniffe</a>
+<a href="exam-map.html">Prüfungslandkarte</a>
+<a href="skipped.html">Ausgelassen</a>
+<a href="../script.html">Skript</a>
+<a href="docs.html">Prüfungen</a>
+</nav>
+<header>
+<span class="eyebrow">Analysis 1 · Lernkarten</span>
+<h1>Lernkarten</h1>
+<p class="lead">Definitionen, Sätze und Beweis-Kniffe, Lektion für Lektion. Sag die Antwort laut oder schreib sie auf, bevor du die Karte umdrehst: Definitionen und Satzaussagen müssen exakt sitzen.</p>
+</header>
+<div class="fc-controls" aria-label="Karten auswählen">
+  <label>Lektionen <select id="fc-from" aria-label="Von Lektion"></select></label>
+  <label>bis <select id="fc-to" aria-label="Bis Lektion"></select></label>
+  <label><input type="checkbox" id="fc-def" checked> Definitionen</label>
+  <label><input type="checkbox" id="fc-thm" checked> Sätze</label>
+  <label><input type="checkbox" id="fc-move" checked> Kniffe</label>
+  <label><input type="checkbox" id="fc-recipe" checked> Rezepte</label>
+  <button type="button" class="primary" id="fc-start">Start</button>
+</div>
+<p class="fc-meta" id="fc-count" aria-live="polite"></p>
+<div class="fc-stage" id="fc-stage">
+  <p>Wähle die Lektionen und die Kartenarten und drück dann auf Start. Die Karten kommen in zufälliger Reihenfolge. «Nochmal» legt eine Karte ein paar Plätze weiter hinten wieder ein; «Gewusst» nimmt sie aus dieser Runde heraus.</p>
+</div>
+<div class="fc-btns" id="fc-btns" hidden>
+  <button type="button" class="primary" id="fc-show">Antwort zeigen</button>
+  <button type="button" id="fc-again" hidden>Nochmal</button>
+  <button type="button" class="primary" id="fc-got" hidden>Gewusst</button>
+</div>
+<p class="legend">Rezeptkarten kommen mit den Rechen-Einheiten der Repetition dazu. Neue Definitions- und Satzkarten kommen mit jeder Repetitionseinheit.</p>
+<div id="fc-pool">
+<!-- Flashcards: one <div class="fc"> per card. data-t = def | thm | recipe ; data-l = lesson where it is taught. Moves cards are added automatically from the moves library. -->
+
+<div class="fc" data-t="def" data-l="1"><div class="q">Verneine $\forall x\in X:\ A(x)$ und $\exists x\in X:\ A(x)$. Was bleibt gleich?</div>
+<div class="a"><p>$\neg(\forall x\in X:\ A(x))\iff\exists x\in X:\ \neg A(x)$ und $\neg(\exists x\in X:\ A(x))\iff\forall x\in X:\ \neg A(x)$.</p><p>Die Reihenfolge der Quantoren und ihre Bereiche bleiben gleich ($\forall\varepsilon&gt;0$ wird zu $\exists\varepsilon&gt;0$). Nur die Art jedes Quantors und die Schlussbedingung ändern sich.</p></div></div>
+
+<div class="fc" data-t="def" data-l="1"><div class="q">Punktweise gegenüber gleichmässiger Existenz: Welche der Aussagen $\forall x\,\exists y$ und $\exists y\,\forall x$ ist stärker, und warum?</div>
+<div class="a"><p>$\exists y\,\forall x:\ A(x,y)$ (gleichmässig: ein $y$ für alle $x$) impliziert $\forall x\,\exists y:\ A(x,y)$ (punktweise: $y$ darf von $x$ abhängen), nicht umgekehrt. Beispiel auf $\mathbb N$: $\forall x\,\exists y:\ x&lt;y$ ist wahr, $\exists y\,\forall x:\ x&lt;y$ ist falsch.</p></div></div>
+
+<div class="fc" data-t="def" data-l="1"><div class="q">Ist «$\forall x\in\emptyset:\ A(x)$» wahr oder falsch? Und «$\exists x\in\emptyset:\ A(x)$»?</div>
+<div class="a"><p>«$\forall x\in\emptyset:\ A(x)$» ist immer wahr (leer wahr), egal was $A$ sagt. «$\exists x\in\emptyset:\ A(x)$» ist immer falsch.</p></div></div>
+
+<div class="fc" data-t="def" data-l="2"><div class="q">Definition: $f:X\to Y$ ist <em>injektiv</em>.</div>
+<div class="a"><p>$\forall x_1,x_2\in X:\ f(x_1)=f(x_2)\Rightarrow x_1=x_2$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="2"><div class="q">Definition: $f:X\to Y$ ist <em>surjektiv</em>. Und <em>bijektiv</em>?</div>
+<div class="a"><p>Surjektiv: $\forall y\in Y\ \exists x\in X:\ f(x)=y$. Bijektiv: injektiv und surjektiv. Dann existiert die Umkehrabbildung $f^{-1}:Y\to X$, mit $f^{-1}(f(x))=x$ und $f(f^{-1}(y))=y$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="2"><div class="q">Definitionen: das Bild $f(A)$ und das Urbild $f^{-1}(B)$, für $f:X\to Y$, $A\subseteq X$, $B\subseteq Y$.</div>
+<div class="a"><p>$f(A)=\{f(x)\mid x\in A\}\subseteq Y$ und $f^{-1}(B)=\{x\in X\mid f(x)\in B\}\subseteq X$. Das Urbild existiert für jedes $f$: Das Symbol bedeutet nicht, dass $f$ invertierbar ist.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="2"><div class="q">Welche Mengenoperationen respektieren das Urbild und das Bild?</div>
+<div class="a"><p>Urbild: alle. $f^{-1}(B_1\cup B_2)=f^{-1}(B_1)\cup f^{-1}(B_2)$, dasselbe mit $\cap$, und $f^{-1}(Y\setminus B)=X\setminus f^{-1}(B)$.</p><p>Bild: nur $\cup$. Im Allgemeinen gilt nur $f(A_1\cap A_2)\subseteq f(A_1)\cap f(A_2)$; Gleichheit gilt, wenn $f$ injektiv ist.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="2"><div class="q">Verknüpfung von $f:X\to Y$ und $g:Y\to Z$: Was folgt vorwärts, und was folgt rückwärts aus $g\circ f$?</div>
+<div class="a"><p>Vorwärts: $f,g$ injektiv (surjektiv, bijektiv) $\Rightarrow$ $g\circ f$ injektiv (surjektiv, bijektiv).</p><p>Rückwärts: $g\circ f$ injektiv $\Rightarrow$ $f$ injektiv (die erste Abbildung). $g\circ f$ surjektiv $\Rightarrow$ $g$ surjektiv (die letzte Abbildung). Mehr nicht: $g$ bzw. $f$ muss es nicht sein.</p></div></div>
+
+<div class="fc" data-t="def" data-l="3"><div class="q">Definition: eine Relation $\sim$ auf $X$ ist eine <em>Äquivalenzrelation</em>.</div>
+<div class="a"><p>Reflexiv: $\forall x\in X:\ x\sim x$. Symmetrisch: $\forall x,y\in X:\ x\sim y\Rightarrow y\sim x$. Transitiv: $\forall x,y,z\in X:\ (x\sim y\wedge y\sim z)\Rightarrow x\sim z$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="3"><div class="q">Definitionen: die Äquivalenzklasse $[x]$, der Quotient $X/\!\sim$ und eine Partition von $X$.</div>
+<div class="a"><p>$[x]=\{y\in X\mid y\sim x\}$. $X/\!\sim\ =\{[x]\mid x\in X\}$, die Menge aller Klassen. Eine Partition von $X$ ist eine Menge nichtleerer, paarweise disjunkter Teilmengen von $X$, deren Vereinigung $X$ ist.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="3"><div class="q">Sei $\sim$ eine Äquivalenzrelation und $x,y\in X$. Welche drei Aussagen sind äquivalent, und was folgt für die Klassen?</div>
+<div class="a"><p>$x\sim y\iff[x]=[y]\iff[x]\cap[y]\neq\emptyset$. Zwei Klassen sind also gleich oder disjunkt, und die Klassen bilden eine Partition von $X$.</p></div></div>
+
+<div class="fc" data-t="def" data-l="3"><div class="q">Definitionen: $X$ hat $n$ Elemente; $X$ ist abzählbar (abzählbar unendlich); $X$ ist überabzählbar.</div>
+<div class="a"><p>$X$ hat $n$ Elemente, wenn es eine Bijektion $\{1,\dots,n\}\to X$ gibt. $X$ ist abzählbar, wenn es eine Bijektion $\mathbb N\to X$ gibt. $X$ ist überabzählbar, wenn es unendlich und nicht abzählbar ist.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="3"><div class="q">Das Schubfachprinzip.</div>
+<div class="a"><p>Sind $X$ und $Y$ endlich mit $|X|&gt;|Y|$, so gibt es keine injektive Abbildung $X\to Y$: Zwei Elemente von $X$ landen auf demselben Element von $Y$.</p></div></div>
+
+<div class="fc" data-t="thm" data-l="3"><div class="q">Welche der Mengen $\mathbb Z$, $\mathbb N\times\mathbb N$, $\mathbb Q$, $\{A,B\}^{\mathbb N}$ sind abzählbar? Und Teilmengen einer abzählbaren Menge?</div>
+<div class="a"><p>$\mathbb Z$, $\mathbb N\times\mathbb N$ und $\mathbb Q$ sind abzählbar. $\{A,B\}^{\mathbb N}$ (alle unendlichen A/B-Folgen) ist überabzählbar, nach dem Diagonalargument. Eine Teilmenge einer abzählbaren Menge ist endlich oder abzählbar.</p></div></div>
+
+<div class="fc" data-t="move" data-l="1"><div class="q">Kniff: Das Verneinungsrezept. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst zeigen, dass etwas <em>nicht</em> stetig oder <em>nicht</em> gleichmässig stetig ist. <strong>Sätze:</strong> «Sei $\varepsilon=\dots$ (du wählst). Sei $\delta&gt;0$ beliebig. Nimm $x=\dots$, $y=\dots$ (abhängig von $\delta$). Dann ist $|x-y|&lt;\delta$, aber $|f(x)-f(y)|\ge\varepsilon$.»</p><p><a href="moves.html#m-neg">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="2"><div class="q">Kniff: Die Injektivitäts-Vorlage. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst zeigen, dass eine Abbildung $f$ injektiv ist. <strong>Sätze:</strong> «Seien $x_1,x_2$ mit $f(x_1)=f(x_2)$. … Also $x_1=x_2$.» Beginne bei gleichen Bildern, ende bei gleichen Argumenten.</p><p><a href="moves.html#m-inj">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="2"><div class="q">Kniff: Die Surjektivitäts-Vorlage. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst zeigen, dass eine Abbildung $f:X\to Y$ surjektiv ist. <strong>Sätze:</strong> «Sei $y\in Y$. Setze $x=\dots$ (auf dem Schmierzettel gefunden, indem du $f(x)=y$ löst). Dann ist $x\in X$ und $f(x)=\dots=y$.»</p><p><a href="moves.html#m-surj">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="2"><div class="q">Kniff: Ein kleines Gegenbeispiel. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Eine Aussage «für alle …» sieht falsch aus. Ein konkretes Beispiel erledigt sie. <strong>Sätze:</strong> «Die Aussage ist falsch: Nimm $X=\{1,2\}$, $f=\dots$. Dann … aber nicht ….» Verwende die kleinsten Mengen und einfachsten Abbildungen, die funktionieren.</p><p><a href="moves.html#m-counter">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Kniff: Der Drei-Punkte-Check. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst zeigen, dass eine Relation $\sim$ eine Äquivalenzrelation ist. <strong>Sätze:</strong> «Reflexiv: Für jedes $x$ gilt $x\sim x$, weil …. Symmetrisch: Sei $x\sim y$; dann … also $y\sim x$. Transitiv: Seien $x\sim y$ und $y\sim z$; dann … also $x\sim z$.»</p><p><a href="moves.html#m-equiv">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Kniff: Einen Ringschluss beweisen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Mehrere Aussagen (i), (ii), (iii) sollen äquivalent sein. <strong>Sätze:</strong> «Wir zeigen (i) ⇒ (ii) ⇒ (iii) ⇒ (i).» Drei Pfeile statt sechs.</p><p><a href="moves.html#m-circle">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Kniff: Mengengleichheit durch zwei Inklusionen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst $A=B$ für Mengen zeigen. <strong>Sätze:</strong> «⊆: Sei $x\in A$. … also $x\in B$. ⊇: Sei $x\in B$. … also $x\in A$.»</p><p><a href="moves.html#m-subset">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Kniff: Das Gegenteil annehmen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Die Behauptung ist eine Aussage der Art «so etwas gibt es nicht» oder «kann nicht sein», es gibt also nichts direkt zu konstruieren. <strong>Sätze:</strong> «Angenommen, zum Widerspruch, …. Dann …, im Widerspruch zu …. Also ….» Sorgfältig verneinen (das Verneinungsrezept).</p><p><a href="moves.html#m-contra">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="3"><div class="q">Kniff: Das Diagonalargument. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst zeigen, dass keine Liste (keine Abbildung $\mathbb N\to X$) alles erreicht. <strong>Sätze:</strong> «Sei $x_1,x_2,\dots$ eine beliebige Liste. Konstruiere $y$, das sich für jedes $n$ an der $n$-ten Stelle von $x_n$ unterscheidet. Dann ist $y\ne x_n$ für alle $n$, also steht $y$ nicht auf der Liste.»</p><p><a href="moves.html#m-diag">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="4"><div class="q">Kniff: Durchs Hintertor (Kontraposition). Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> «$A$ ⇒ $B$» ist schwer, aber «nicht $B$ ⇒ nicht $A$» ist leicht, oft weil «nicht $B$» dir eine Formel zum Arbeiten gibt. <strong>Sätze:</strong> «Wir beweisen die Kontraposition. Sei $n$ ungerade, also $n=2k+1$. Dann … also ist $n^2$ ungerade.»</p><p><a href="moves.html#m-contrapos">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="4"><div class="q">Kniff: Induktion mit beschrifteten Teilen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> eine Aussage $P(n)$ für jedes $n\ge n_0$. <strong>Sätze:</strong> «Induktionsanfang $n=n_0$: …. Induktionsschritt: Gelte $P(n)$ für ein $n\ge n_0$ (Induktionsannahme). Dann … (nach Induktionsannahme) … und das ist $P(n+1)$.» Zeig auf die genaue Zeile, in der die Annahme verwendet wird.</p><p><a href="moves.html#m-induct">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="4"><div class="q">Kniff: Einen nichtnegativen Term weglassen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du brauchst eine untere Schranke, und der Ausdruck hat einen zusätzlichen Term, der $\ge0$ ist. <strong>Sätze:</strong> «$1+(n+1)x+nx^2\ge1+(n+1)x$, da $nx^2\ge0$.» Ein Verwandter von <a class="mvl" href="moves.html#m-diff">Auf «≥ 0» zurückführen</a>.</p><p><a href="moves.html#m-drop">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Kniff: Minimum zweier δs. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Zwei verschiedene Bedingungen liefern je ein $\delta$, und du brauchst beide gleichzeitig. <strong>Sätze:</strong> «Sei $\delta=\min(\delta_1,\delta_2)&gt;0$. Dann gelten beide ….»</p><p><a href="moves.html#m-min">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Kniff: Auf einen Fall reduzieren (oBdA). Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Zwei Fälle sind Spiegelbilder. <strong>Sätze:</strong> «Ohne Beschränkung der Allgemeinheit ist $f$ monoton wachsend; sonst ersetze $f$ durch $-f$.»</p><p><a href="moves.html#m-obda">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Kniff: n nach Archimedes wählen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du hast eine Schranke wie $\frac Cn$ und brauchst sie unter $\varepsilon$. <strong>Sätze:</strong> «Nach dem archimedischen Prinzip wähle $n\in\mathbb N$ mit $n&gt;\frac C\varepsilon$. Dann ist $\frac Cn&lt;\varepsilon$.»</p><p><a href="moves.html#m-arch">n nach Archimedes wählen</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Kniff: Einen Zwischenpunkt einfügen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst einen Abstand $d(x,z)$ abschätzen, weisst aber nur etwas über $d(x,y)$ und $d(y,z)$. <strong>Sätze:</strong> «Nach der Dreiecksungleichung ist $d(x,z)\le d(x,y)+d(y,z)&lt;\dots$.» Für Zahlen: $|a-c|\le|a-b|+|b-c|$; die umgekehrte Form ist $\bigl||a|-|b|\bigr|\le|a-b|$.</p><p><a href="moves.html#m-tri">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="5"><div class="q">Kniff: Einen Betrag auflösen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> eine Aussage über $|x|$, die du nicht direkt siehst. <strong>Sätze:</strong> «$|x|\le c$ ⇔ $-c\le x\le c$.» Oder Fallunterscheidung: «Ist $x\ge0$, so ist $|x|=x$; ist $x&lt;0$, so ist $|x|=-x$.» Dann die zweiseitigen Ungleichungen addieren.</p><p><a href="moves.html#m-abs">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Kniff: Der Supremumstrick. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du brauchst, dass etwas bis ganz zu $b$ gilt, aber es gibt keine Formel. <strong>Sätze:</strong> «Sei $X=\{t\in[a,b]: \text{es gilt auf }[a,t]\}$. Dann ist $a\in X$ und $X$ durch $b$ beschränkt, also existiert $s_0=\sup X$. Wegen der Stetigkeit in $s_0$ … liegt also ein $t_1&gt;s_0$ in $X$, ausser $s_0=b$.»</p><p><a href="moves.html#m-sup">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Kniff: Stetigkeit mit gewähltem ε. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du weisst, dass $f$ in einem Punkt stetig ist, und brauchst eine Umgebung, in der $f$ unter Kontrolle ist. Wähle $\varepsilon$ als den Spielraum, den du hast. <strong>Sätze:</strong> «Wegen der Stetigkeit in $x_0$ mit $\varepsilon=\dots$ gibt es $\delta&gt;0$, sodass aus $|x-x_0|&lt;\delta$ folgt $|f(x)-f(x_0)|&lt;\varepsilon$.»</p><p><a href="moves.html#m-eps">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Kniff: Zweimal ε/2. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Zwei Grössen sollen weniger als $\varepsilon$ voneinander entfernt sein, und jede liegt nahe an einer dritten. <strong>Sätze:</strong> «$|u-w|\le|u-v|+|v-w|&lt;\frac\varepsilon2+\frac\varepsilon2=\varepsilon$.»</p><p><a href="moves.html#m-half">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Kniff: sup ≤ eine obere Schranke. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du willst $\sup A\le c$ (oder $c\le\inf B$). <strong>Sätze:</strong> «Jedes Element von $A$ ist $\le c$, also ist $c$ eine obere Schranke von $A$, somit $\sup A\le c$.» Und umgekehrt: «$x\in A$, also $x\le\sup A$.»</p><p><a href="moves.html#m-ub">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Kniff: An ein Supremum herantasten. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du brauchst ein Element von $A$, das fast so gross ist wie $\sup A$. <strong>Sätze:</strong> «Da $\sup A-\eta&lt;\sup A$, ist es keine obere Schranke von $A$, also gibt es $x\in A$ mit $x&gt;\sup A-\eta$.» Der Zwilling von «‹kleinste› widerlegen».</p><p><a href="moves.html#m-approx">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="6"><div class="q">Kniff: Zwei Heere für die Vollständigkeit. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du brauchst die Existenz einer reellen Zahl (ein Supremum, ein gemeinsamer Punkt) und hast nur das Vollständigkeitsaxiom. <strong>Sätze:</strong> «Sei $A$ die Menge …, $B$ die Menge ihrer oberen Schranken. Beide sind nichtleer und $a\le b$ für alle $a\in A$, $b\in B$. Nach der Vollständigkeit gibt es $c$ mit $a\le c\le b$ für alle.»</p><p><a href="moves.html#m-complete">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="7"><div class="q">Kniff: «Kleinste» widerlegen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du hast etwas über ein Supremum $S$ angenommen und willst einen Widerspruch. <strong>Sätze:</strong> «Also ist $S-\eta$ eine obere Schranke, die kleiner als $S$ ist, im Widerspruch dazu, dass $S$ die kleinste obere Schranke ist.»</p><p><a href="moves.html#m-least">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="7"><div class="q">Kniff: Eine Hilfsfunktion. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> «$f$ kommt $S$ beliebig nahe» muss zu etwas werden, das ein Satz fassen kann. Baue eine neue Funktion wie $\frac1{S-f}$, die «nahe» in «gross» verwandelt. <strong>Sätze:</strong> «Dann ist $F(x)=\dots$ wohldefiniert und stetig, also nach … beschränkt.»</p><p><a href="moves.html#m-helper">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="8"><div class="q">Kniff: Zwischen zwei Werten einfangen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Eine Funktion ist monoton, und du musst sie kontrollieren. <strong>Sätze:</strong> «Da $y_-&lt;y&lt;y_+$ und $g$ monoton wachsend ist, gilt $g(y_-)&lt;g(y)&lt;g(y_+)$.»</p><p><a href="moves.html#m-trap">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Kniff: Das ε-Kriterium (Einschachteln). Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst zeigen, dass eine Funktion Riemann-integrierbar ist. <strong>Sätze:</strong> «Sei $\varepsilon&gt;0$. Seien $u,o$ die Treppenfunktionen … Dann gilt $u\le f\le o$ und $\int_a^b(o-u)\,dx=\dots&lt;\varepsilon$. Nach dem ε-Kriterium ist $f$ Riemann-integrierbar.»</p><p><a href="moves.html#m-squeeze">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Kniff: Kleiner als jedes ε. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du willst, dass zwei Zahlen gleich sind. <strong>Sätze:</strong> «$0\le d&lt;\varepsilon$ für jedes $\varepsilon&gt;0$, also $d=0$.» (Wäre $d&gt;0$, nimm $\varepsilon=d$.)</p><p><a href="moves.html#m-alleps">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Kniff: Teleskopsumme. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> eine Summe von Differenzen aufeinanderfolgender Glieder. <strong>Sätze:</strong> «$\sum_{k=1}^n(a_k-a_{k-1})=a_n-a_0$, da sich die mittleren Terme wegheben.»</p><p><a href="moves.html#m-tele">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Kniff: Dichtheit in jedem Stück. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Eine Funktion verhält sich auf $\mathbb Q$ anders als auf den irrationalen Zahlen. <strong>Sätze:</strong> «Jedes Intervall $(x_{k-1},x_k)$ enthält eine rationale und eine irrationale Zahl, also …»</p><p><a href="moves.html#m-dense">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="9"><div class="q">Kniff: Auf «≥ 0» zurückführen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du brauchst $A\le B$. <strong>Sätze:</strong> «$B-A=\dots\ge0$.» Für Integrale: «Wegen der Linearität ist $\int g-\int f=\int(g-f)$, und das ist $\ge0$, da $g-f\ge0$.»</p><p><a href="moves.html#m-diff">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="10"><div class="q">Kniff: Das grössere N nehmen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Zwei (oder endlich viele) Aussagen «ab einem Index» müssen gleichzeitig gelten. <strong>Sätze:</strong> «Es gibt $N_1,N_2$ mit … für $n\ge N_1$ und … für $n\ge N_2$. Sei $N=\max\{N_1,N_2\}$. Dann gelten für $n\ge N$ beide.» Das ist die Folgenversion des Minimums zweier δs.</p><p><a href="moves.html#m-maxN">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="10"><div class="q">Kniff: δ = 1/n baut eine Folge. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du hast «für jedes δ &gt; 0 gibt es einen Punkt mit …» und willst eine Folge. <strong>Sätze:</strong> «Wende das für jedes $n\in\mathbb N$ mit $\delta=\frac1n$ an und erhalte $x_n$ mit $|x_n-x_0|&lt;\frac1n$ und …. Dann gilt $x_n\to x_0$.»</p><p><a href="moves.html#m-seq">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="11"><div class="q">Kniff: Sandwich. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du kannst $b_n$ nicht direkt berechnen, aber einfangen. <strong>Sätze:</strong> «Für alle $n$: $a_n\le b_n\le c_n$, und $a_n\to A$, $c_n\to A$. Nach dem Sandwich-Lemma gilt $b_n\to A$.» Häufige Form: «$|b_n|\le c_n\to0$, also $b_n\to0$.»</p><p><a href="moves.html#m-sandwich">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="12"><div class="q">Kniff: Bolzano-Weierstrass für einen Kandidaten. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst zeigen, dass etwas konvergiert, hast keinen Kandidaten für den Grenzwert, weisst aber, dass die Folge beschränkt ist. <strong>Sätze:</strong> «$(a_n)_n$ ist beschränkt, hat also nach dem Satz von Bolzano-Weierstrass eine konvergente Teilfolge $a_{n_k}\to L$. Wir zeigen, dass $a_n\to L$.»</p><p><a href="moves.html#m-bw">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="13"><div class="q">Kniff: Stück für Stück abschätzen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du vergleichst ein Integral über $[a,b]$ mit etwas, das aus einer Zerlegung gebaut ist. <strong>Sätze:</strong> «Auf jedem Stück ist der Fehler höchstens $\eta\,(x_k-x_{k-1})$. Summiert über $k$ ist der Gesamtfehler höchstens $\eta\sum_k(x_k-x_{k-1})=\eta\,(b-a)$.» Wähle $\eta=\frac\varepsilon{b-a}$ (oder die Hälfte davon) im Voraus.</p><p><a href="moves.html#m-piece">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Kniff: Zu Partialsummen übergehen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> jede Frage zu einer Reihe: ihr Wert, ihre Konvergenz, ihre Glieder. Eine Reihe <em>ist</em> die Folge ihrer Partialsummen. <strong>Sätze:</strong> «Sei $s_n=\sum_{k=1}^na_k$. Dann … also konvergiert $(s_n)_n$, d.h. die Reihe konvergiert.» Glieder: $a_n=s_n-s_{n-1}$.</p><p><a href="moves.html#m-partial">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Kniff: In Blöcke gruppieren. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Die Glieder fallen, aber du brauchst eine untere oder obere Schranke für eine lange Summe. Zerlege sie in Blöcke der Länge $1,2,4,8,\dots$ und schätze jeden Block durch (Anzahl Glieder) × (kleinstes oder grösstes Glied) ab. <strong>Sätze:</strong> «Der Block $\sum_{k=2^{j-1}+1}^{2^j}a_k$ hat $2^{j-1}$ Glieder, jedes $\ge a_{2^j}$, also ist er $\ge2^{j-1}a_{2^j}$.»</p><p><a href="moves.html#m-group">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Kniff: Monoton und beschränkt. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst Konvergenz zeigen, und die Folge geht nur nach oben (oder nur nach unten). Dann brauchst du nur Beschränktheit und keinen Kandidaten für den Grenzwert. <strong>Sätze:</strong> «$(s_n)_n$ ist monoton wachsend (da $a_{n+1}\ge0$) und nach oben durch $B$ beschränkt, konvergiert also nach dem Satz über monotone Konvergenz.»</p><p><a href="moves.html#m-monob">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Kniff: Gerade und ungerade getrennt. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Eine Folge alterniert, ist also nicht monoton, aber jedes zweite Glied ist es. <strong>Sätze:</strong> «$(s_{2n})_n$ ist monoton wachsend und $(s_{2n-1})_n$ monoton fallend, beide konvergieren, und ihre Differenz strebt gegen $0$. Mit $N=2\max\{N_1,N_2\}$ konvergiert die ganze Folge.»</p><p><a href="moves.html#m-parity">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Kniff: Eine Majorante (oder Minorante) finden. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst entscheiden, ob eine Reihe konvergiert. Schätze ihre Glieder durch eine Reihe ab, die du kennst: geometrisch oder $\sum\frac1{n^p}$. <strong>Sätze:</strong> «Für $n\ge N$: $|a_n|\le b_n$, und $\sum b_n$ konvergiert, also konvergiert $\sum a_n$ absolut.» Oder: «$a_n\ge b_n\ge0$ und $\sum b_n$ divergiert, also divergiert $\sum a_n$.» Die dominanten Potenzen sagen dir, welches $b_n$ du versuchen sollst.</p><p><a href="moves.html#m-major">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="14"><div class="q">Kniff: Cauchy statt eines Kandidaten. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst Konvergenz zeigen, kannst den Grenzwert aber nicht erraten, und nichts ist monoton. <strong>Sätze:</strong> «Sei $\varepsilon&gt;0$. Es gibt $N$ mit $\left|\sum_{k=m}^na_k\right|&lt;\varepsilon$ für $n\ge m\ge N$, also konvergiert die Reihe nach dem Cauchy-Kriterium.»</p><p><a href="moves.html#m-cauchy">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="15"><div class="q">Kniff: Dreimal ε/3. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst $f(x)$ und $f(x_0)$ vergleichen, kennst aber nur ein schöneres $g$, das überall nahe an $f$ ist. <strong>Sätze:</strong></p><span class="math-display" style="display:block">$$|f(x)-f(x_0)|\le|f(x)-g(x)|+|g(x)-g(x_0)|+|g(x_0)-f(x_0)|&lt;\tfrac\varepsilon3+\tfrac\varepsilon3+\tfrac\varepsilon3=\varepsilon.$$</span><p>Leg zuerst $g$ fest (ein $N$), dann finde $\delta$ aus $g$.</p><p><a href="moves.html#m-eps3">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="15"><div class="q">Kniff: Unabhängig von x abschätzen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst gleichmässige Konvergenz zeigen. Finde eine Schranke $|f_n(x)-f(x)|\le r_n$, in der $x$ nicht vorkommt, mit $r_n\to0$. <strong>Sätze:</strong> «Für alle $x\in X$: $|f_n(x)-f(x)|\le r_n$, also $\sup_x|f_n(x)-f(x)|\le r_n\to0$.» Um sie zu widerlegen, finde einen schlechten Punkt $x_n$ mit $|f_n(x_n)-f(x_n)|\ge c&gt;0$.</p><p><a href="moves.html#m-supx">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="15"><div class="q">Kniff: Endlich viele Punkte, dann die Lücken füllen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du weisst etwas in jedem einzelnen Punkt (punktweise), willst es überall gleichzeitig (gleichmässig) und hast eine Lipschitz- oder Stetigkeitsschranke. <strong>Sätze:</strong> «Wähle Gitterpunkte $x_0,\dots,x_M$ mit Abstand $&lt;\delta$. Für diese endlich vielen Punkte nimm $N=\max_iN_i$. Jedes $x$ liegt innerhalb von $\delta$ an einem $x_i$, und die Schranke überbrückt die Lücke.»</p><p><a href="moves.html#m-grid">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="16"><div class="q">Kniff: Mit dem Cauchy-Produkt multiplizieren. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du brauchst das Produkt zweier Reihen oder zweier Potenzreihen. Prüfe zuerst absolute Konvergenz, dann sammle die Produkte nach Gesamtindex. <strong>Sätze:</strong> «Beide Reihen konvergieren absolut, also gilt nach dem Cauchy-Produkt $\left(\sum a_n\right)\left(\sum b_n\right)=\sum_n\sum_{k=0}^na_kb_{n-k}$.» Dann die innere Summe vereinfachen (oft mit dem binomischen Lehrsatz).</p><p><a href="moves.html#m-cauchyprod">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="16"><div class="q">Kniff: Zwei Versionen addieren und subtrahieren. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du hast eine Gleichung für $X+iY$ (oder $A+B$) und kannst eine zweite für $X-iY$ bekommen (indem du $z$ durch $-z$ ersetzt oder konjugierst). <strong>Sätze:</strong> «Addieren der beiden Gleichungen und Division durch $2$ liefert $X$; Subtrahieren und Division durch $2i$ liefert $Y$.»</p><p><a href="moves.html#m-pm">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Kniff: Mit x − a multiplizieren und dividieren. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du weisst etwas über einen Differenzenquotienten $\frac{f(x)-f(a)}{x-a}$ und brauchst etwas über $f(x)-f(a)$ selbst (oder umgekehrt). <strong>Sätze:</strong> «Für $x\neq a$ ist $f(x)-f(a)=\frac{f(x)-f(a)}{x-a}\cdot(x-a)$, und für $x\to a$ strebt der erste Faktor gegen $f'(a)$ und der zweite gegen $0$.»</p><p><a href="moves.html#m-dq">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Kniff: f als Gerade plus Fehler schreiben. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Ein Beweis über Ableitungen würde durch etwas teilen, das $0$ sein könnte. Ersetze den Bruch durch eine Gleichung ohne Brüche. <strong>Sätze:</strong> «Definiere $\varepsilon(x)=\frac{f(x)-f(a)}{x-a}-f'(a)$ für $x\neq a$ und $\varepsilon(a)=0$. Dann ist $\varepsilon$ stetig in $a$ und $f(x)=f(a)+(f'(a)+\varepsilon(x))(x-a)$ für alle $x$.»</p><p><a href="moves.html#m-linapprox">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Kniff: Den Differenzenquotienten umdrehen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du brauchst die Ableitung einer Umkehrfunktion. Mit $y=f(x)$: «$\frac{f^{-1}(y)-f^{-1}(y_0)}{y-y_0}=\left(\frac{f(x)-f(x_0)}{x-x_0}\right)^{-1}$.» Prüfe zuerst, dass keine Seite durch $0$ teilt (Injektivität).</p><p><a href="moves.html#m-flip">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Kniff: Von jeder Seite ein Vorzeichen ablesen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du weisst, wo $f(x)$ nahe $x_0$ im Vergleich zu $f(x_0)$ liegt (ein Maximum, ein Minimum), und willst Information über $f'(x_0)$, oder umgekehrt. <strong>Sätze:</strong> «Für $x&gt;x_0$ nahe $x_0$ ist der Quotient $\frac{f(x)-f(x_0)}{x-x_0}$ $\le0$, also $f'(x_0)\le0$; für $x&lt;x_0$ ist er $\ge0$, also $f'(x_0)\ge0$.» Grenzwerte erhalten $\le$, nicht $&lt;$.</p><p><a href="moves.html#m-sign">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Kniff: Fallunterscheidung. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Die Objekte, die dir ein Satz liefert, können an verschiedenen Orten liegen, und jeder Ort braucht ein anderes Argument. <strong>Sätze:</strong> «Fall 1: …. Dann …. Fall 2: …. Dann ….» Stell sicher, dass die Fälle alles abdecken (hier: im Inneren des Intervalls oder beide an den Randpunkten).</p><p><a href="moves.html#m-cases">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Kniff: Die Sekante abziehen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Ein Satz braucht $f(a)=f(b)$ (wie der Satz von Rolle), aber dein $f$ erfüllt das nicht. Zieh die Gerade durch $(a,f(a))$ und $(b,f(b))$ ab. <strong>Sätze:</strong> «Sei $F(x)=f(x)-\frac{f(b)-f(a)}{b-a}(x-a)$. Dann ist $F(a)=F(b)=f(a)$ und $F'=f'-\frac{f(b)-f(a)}{b-a}$.»</p><p><a href="moves.html#m-tilt">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="17"><div class="q">Kniff: Mittelwertsatz zwischen zwei Punkten. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du weisst etwas über $f'$ (ein Vorzeichen, eine Schranke) und willst etwas über $f(x)-f(y)$. <strong>Sätze:</strong> «Seien $y&lt;x$ in $I$. Da $I$ ein Intervall ist, gilt $[y,x]\subseteq I$, und $f$ ist stetig auf $[y,x]$ und differenzierbar auf $(y,x)$. Nach dem Mittelwertsatz ist $f(x)-f(y)=f'(\xi)(x-y)$ für ein $\xi\in(y,x)$.» Dann das Vorzeichen oder die Schranke von $f'(\xi)$ verwenden.</p><p><a href="moves.html#m-mvt">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="18"><div class="q">Kniff: Drei Steigungen vergleichen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> ein Beweis über eine konvexe Funktion, mit oder ohne Ableitungen. Nimm drei Punkte $x_0&lt;x&lt;x_1$. <strong>Sätze:</strong> «Da $f$ konvex ist, gilt $\frac{f(x)-f(x_0)}{x-x_0}\le\frac{f(x_1)-f(x_0)}{x_1-x_0}\le\frac{f(x_1)-f(x)}{x_1-x}$.» Dann einen Punkt wandern lassen (zu einer Tangente oder nach $\pm\infty$).</p><p><a href="moves.html#m-slopes">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="18"><div class="q">Kniff: Zwei Gewichte zu einem zusammenfassen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> eine Induktion über gewichtete Mittel (Jensen). <strong>Sätze:</strong> «Setze $s=t_n+t_{n+1}$ und $y=\frac{t_n}sx_n+\frac{t_{n+1}}sx_{n+1}$. Dann ist $\sum_{k\le n+1}t_kx_k=\sum_{k\le n-1}t_kx_k+sy$ ein Mittel von $n$ Punkten.» Den Fall $s=0$ separat behandeln.</p><p><a href="moves.html#m-regroup">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="19"><div class="q">Kniff: Eine Zahl als Mittelwert schreiben. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Du musst ein Integral (oder einen Mittelwert) mit einem festen Wert $c$ vergleichen. <strong>Sätze:</strong> «Da $c=\frac1{x-x_0}\int_{x_0}^xc\,dt$, erhalten wir $\frac1{x-x_0}\int_{x_0}^xf(t)\,dt-c=\frac1{x-x_0}\int_{x_0}^x\bigl(f(t)-c\bigr)\,dt$.» Jetzt stehen beide unter einem Integral, und die Dreiecksungleichung greift.</p><p><a href="moves.html#m-avg">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="19"><div class="q">Kniff: Die Konstante benennen, dann einen Punkt einsetzen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> Zwei Funktionen haben auf einem Intervall dieselbe Ableitung, und du willst eine exakte Formel. <strong>Sätze:</strong> «Da $(F-G)'=0$ auf dem Intervall, ist $F=G+C$ für eine Konstante $C$. Einsetzen von $x=a$ liefert $C=F(a)-G(a)$.»</p><p><a href="moves.html#m-const">Die Karte in der Kniff-Sammlung</a></p></div></div>
+<div class="fc" data-t="move" data-l="19"><div class="q">Kniff: Durch Ableiten prüfen. Wann verwendest du ihn, und was schreibst du?</div><div class="a"><p><strong>Wann:</strong> bei jeder Stammfunktion, die du gerade berechnet hast, und beim Beweis einer Integrationsregel. <strong>Sätze:</strong> «Tatsächlich ist $\frac d{dx}\bigl(\dots\bigr)=\dots=f(x)$.» Zwanzig Sekunden, und es fängt fast jeden Vorzeichenfehler und fehlenden Faktor.</p><p><a href="moves.html#m-check">Die Karte in der Kniff-Sammlung</a></p></div></div>
+</div>
+<script>
+(function () {
+  var pool = Array.prototype.slice.call(document.querySelectorAll('#fc-pool .fc'));
+  var from = document.getElementById('fc-from'), to = document.getElementById('fc-to');
+  var maxL = 1; pool.forEach(function (c) { maxL = Math.max(maxL, +c.dataset.l); });
+  for (var i = 1; i <= maxL; i++) { from.add(new Option(i, i)); to.add(new Option(i, i)); }
+  var saved = null; try { saved = JSON.parse(localStorage.getItem('fc-range')); } catch (e) {}
+  var m = /^#l(\d+)-(\d+)$/.exec(location.hash);
+  if (m) saved = { a: +m[1], b: +m[2] };
+  from.value = saved && saved.a <= maxL ? saved.a : 1; to.value = saved && saved.b <= maxL ? saved.b : maxL;
+  var stage = document.getElementById('fc-stage'), count = document.getElementById('fc-count'), btns = document.getElementById('fc-btns');
+  var bShow = document.getElementById('fc-show'), bAgain = document.getElementById('fc-again'), bGot = document.getElementById('fc-got');
+  var names = { def: 'Definition', thm: 'Satz', move: 'Kniff', recipe: 'Rezept' };
+  var queue = [], cur = null, done = 0;
+  function render() {
+    stage.innerHTML = '';
+    if (!cur) {
+      btns.hidden = true;
+      stage.innerHTML = queue.length === 0 && done ? '<p><strong>Runde fertig: ' + done + ' Karten.</strong> Drücke Start für eine neue Runde oder ändere die Lektionen.</p>' : '<p>Keine Karten passen zu dieser Auswahl.</p>';
+      count.textContent = ''; return;
+    }
+    var meta = document.createElement('p'); meta.className = 'fc-meta';
+    meta.textContent = names[cur.dataset.t] + ' · Lektion ' + cur.dataset.l;
+    stage.appendChild(meta);
+    stage.appendChild(cur.querySelector('.q').cloneNode(true));
+    var a = cur.querySelector('.a').cloneNode(true); a.hidden = true; stage.appendChild(a);
+    btns.hidden = false; bShow.hidden = false; bAgain.hidden = true; bGot.hidden = true;
+    count.textContent = (queue.length + 1) + ' übrig in dieser Runde';
+    bShow.focus({ preventScroll: true });
+  }
+  function next() { cur = queue.shift() || null; render(); }
+  document.getElementById('fc-start').addEventListener('click', function () {
+    var a = +from.value, b = +to.value; if (a > b) { var t = a; a = b; b = t; }
+    try { localStorage.setItem('fc-range', JSON.stringify({ a: a, b: b })); } catch (e) {}
+    var types = ['def', 'thm', 'move', 'recipe'].filter(function (t) { return document.getElementById('fc-' + t).checked; });
+    queue = pool.filter(function (c) { var l = +c.dataset.l; return l >= a && l <= b && types.indexOf(c.dataset.t) >= 0; });
+    for (var i = queue.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t2 = queue[i]; queue[i] = queue[j]; queue[j] = t2; }
+    done = 0; next();
+  });
+  bShow.addEventListener('click', function () {
+    stage.querySelector('.a').hidden = false; bShow.hidden = true; bAgain.hidden = false; bGot.hidden = false;
+    if (window.__siteFit) window.__siteFit(stage);
+    bGot.focus({ preventScroll: true });
+  });
+  bAgain.addEventListener('click', function () { queue.splice(Math.min(3, queue.length), 0, cur); next(); });
+  bGot.addEventListener('click', function () { if (!cur) return; done++; next(); });
+})();
+</script>
+
+<nav class="site foot" aria-label="Navigation der Lektionen">
+<a href="analysis.html">Analysis-Startseite</a>
+<a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Feedback geben</a>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.lang-switch{margin-left:auto;font-weight:600;font-size:.85em}nav.site .lang-switch{border:1px solid currentColor;border-radius:999px;padding:0 .6em}</style><style>.fb-line{margin-top:2.5rem;font-size:.9em;opacity:.8}</style>
+</body>
+</html>
