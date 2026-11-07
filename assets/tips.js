@@ -6,7 +6,6 @@
   var de = (document.documentElement.lang || '').slice(0, 2) === 'de';
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  if (get('sh-tips-off') === '1') return;
   var EN = [
     { t: 'Every lesson ends with an optional <b>For wonder</b> section: five minutes of the beautiful side of the topic, no exam pressure.' },
     { t: 'Low-energy day? Every lesson and refresher unit has a <b>bad-day version</b> at the top: a small minimum that still counts.' },
@@ -48,6 +47,40 @@
   var L = de ? DE : EN;
   var answered = {};
   try { answered = JSON.parse(get('sh-polls') || '{}') || {}; } catch (e) { answered = {}; }
+  function track(name, data) { try { if (window.umami && window.umami.track) window.umami.track(name, data); } catch (e) {} }
+  var page = document.getElementById('sh-tips-page');
+  if (page) {
+    var css2 = '#sh-tips-page .tp{border:1px solid var(--rule,#ccd);border-left:4px solid var(--accent,#5b5bd6);border-radius:10px;padding:.7rem .9rem;margin:.6rem 0}' +
+      '#sh-tips-page .b{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap;align-items:center}' +
+      '#sh-tips-page button{font:inherit;font-size:.85rem;font-weight:600;padding:.3rem .9rem;border-radius:999px;border:1px solid var(--accent,#5b5bd6);background:none;color:var(--accent,#5b5bd6);cursor:pointer}' +
+      '#sh-tips-page button.on{background:var(--accent,#5b5bd6);color:#fff}#sh-tips-page .tg{margin:1rem 0 1.5rem}';
+    var st2 = document.createElement('style'); st2.textContent = css2; document.head.appendChild(st2);
+    function draw() {
+      var off = get('sh-tips-off') === '1';
+      var h = '<div class="tg"><strong>' + (de ? 'Tipp-Pop-up: ' : 'Tip pop-up: ') + '</strong>' + (off ? (de ? 'aus' : 'off') : (de ? 'an' : 'on')) +
+        ' <button id="sh-tg">' + (off ? (de ? 'Wieder einschalten' : 'Turn back on') : (de ? 'Ausschalten' : 'Turn off')) + '</button></div>';
+      h += '<h2>' + (de ? 'Wusstest du?' : 'Did you know?') + '</h2>';
+      L.forEach(function (c) { if (c.t) h += '<div class="tp">' + c.t + '</div>'; });
+      h += '<h2>' + (de ? 'Kurze Fragen' : 'Quick questions') + '</h2>';
+      L.forEach(function (c, n) {
+        if (!c.q || c.id.indexOf('helped:') === 0) return;
+        var a = answered[c.id];
+        h += '<div class="tp">' + c.q + '<div class="b"><button data-n="' + n + '" data-a="yes"' + (a === 'yes' ? ' class="on"' : '') + '>' + (de ? 'Ja' : 'Yes') +
+          '</button><button data-n="' + n + '" data-a="no"' + (a === 'no' ? ' class="on"' : '') + '>' + (de ? 'Eher nicht' : 'Not really') + '</button></div></div>';
+      });
+      page.innerHTML = h;
+      document.getElementById('sh-tg').onclick = function () { set('sh-tips-off', off ? '0' : '1'); track(off ? 'tips-on' : 'tips-off', { from: 'page' }); draw(); };
+      var bs = page.querySelectorAll('.b button');
+      for (var j = 0; j < bs.length; j++) bs[j].onclick = function () {
+        var c = L[+this.getAttribute('data-n')], a = this.getAttribute('data-a');
+        if (answered[c.id] !== a) track('poll', { q: c.id, a: a, lang: de ? 'de' : 'en' });
+        answered[c.id] = a; set('sh-polls', JSON.stringify(answered)); draw();
+      };
+    }
+    draw();
+    return;
+  }
+  if (get('sh-tips-off') === '1') return;
   var i = parseInt(get('sh-tip-i') || '0', 10) || 0, tip = null;
   function pick() {
     for (var n = 0; n < L.length; n++) {
@@ -58,7 +91,6 @@
   }
   tip = pick();
   if (!tip) return;
-  function track(name, data) { try { if (window.umami && window.umami.track) window.umami.track(name, data); } catch (e) {} }
   var css = '#sh-tip{position:fixed;right:16px;bottom:16px;z-index:50;max-width:340px;width:calc(100% - 32px);box-sizing:border-box;' +
     'background:var(--surface,#fff);color:var(--ink,#222);border:1px solid var(--rule,#ccd);border-left:4px solid var(--accent,#5b5bd6);' +
     'border-radius:12px;padding:.75rem 2.2rem .75rem .9rem;font:inherit;font-size:.9rem;line-height:1.45;box-shadow:0 6px 24px rgba(0,0,0,.12);' +
@@ -67,7 +99,7 @@
     '#sh-tip .x{position:absolute;top:.35rem;right:.4rem;border:0;background:none;color:inherit;font-size:1.25rem;line-height:1;cursor:pointer;padding:.2rem .4rem;opacity:.6}' +
     '#sh-tip .x:hover{opacity:1}#sh-tip .b{display:flex;gap:.5rem;margin-top:.55rem;flex-wrap:wrap}' +
     '#sh-tip .b button{font:inherit;font-size:.85rem;font-weight:600;padding:.3rem .9rem;border-radius:999px;border:1px solid var(--accent,#5b5bd6);background:none;color:var(--accent,#5b5bd6);cursor:pointer}' +
-    '#sh-tip .b button.y{background:var(--accent,#5b5bd6);color:#fff}#sh-tip .f{display:flex;justify-content:space-between;align-items:center;margin-top:.55rem}#sh-tip .nx{font:inherit;font-size:.8rem;font-weight:600;color:var(--accent,#5b5bd6);background:none;border:0;padding:0;cursor:pointer}#sh-tip .off{font:inherit;font-size:.72rem;color:var(--muted,#777);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}' +
+    '#sh-tip .b button.y{background:var(--accent,#5b5bd6);color:#fff}#sh-tip .f{display:flex;justify-content:space-between;align-items:center;margin-top:.55rem}#sh-tip .nx{font:inherit;font-size:.8rem;font-weight:600;color:var(--accent,#5b5bd6);background:none;border:0;padding:0;cursor:pointer}#sh-tip .all{font-size:.8rem;font-weight:600;color:var(--accent,#5b5bd6)}#sh-tip .off{font:inherit;font-size:.72rem;color:var(--muted,#777);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}' +
     '@media print{#sh-tip{display:none}}';
   function show() {
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
@@ -79,7 +111,7 @@
       var html = '<div class="k">' + head + '</div><div class="t">' + (tip.q || tip.t) + '</div>';
       if (tip.q) html += '<div class="b"><button class="y" data-a="yes">' + (de ? 'Ja' : 'Yes') + '</button><button data-a="no">' + (de ? 'Eher nicht' : 'Not really') + '</button></div>';
       html += '<button class="x" aria-label="' + (de ? 'Schliessen' : 'Close') + '">×</button>' +
-        '<div class="f"><button class="nx">' + (de ? 'Nächster Tipp ›' : 'Next tip ›') + '</button><button class="off">' + (de ? 'Keine Tipps mehr' : 'Don’t show tips') + '</button></div>';
+        '<div class="f"><span><button class="nx">' + (de ? 'Nächster Tipp ›' : 'Next tip ›') + '</button> · <a class="all" href="tips.html">' + (de ? 'Alle Tipps' : 'All tips') + '</a></span><button class="off">' + (de ? 'Keine Tipps mehr' : 'Don’t show tips') + '</button></div>';
       box.innerHTML = html;
       box.querySelector('.x').onclick = function () { track('tip-close', { i: i }); close(); };
       box.querySelector('.off').onclick = function () { set('sh-tips-off', '1'); track('tips-off', { i: i }); close(); };
