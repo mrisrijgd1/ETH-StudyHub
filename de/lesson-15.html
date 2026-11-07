@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="../assets/umami-kit.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Lehrlinge des Kartografen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<p style="text-align:right;margin:0"><a class="lang-switch" href="../lesson-15.html" lang="en">English</a></p>
+<nav class="site" aria-label="Website">
+<a href="index.html">Start</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Lernkarten</a>
+<a href="moves.html">Kniffe</a>
+<a href="exam-map.html">Prüfungslandkarte</a>
+<a href="skipped.html">Ausgelassen</a>
+<a href="../script.html">Skript</a>
+<a href="docs.html">Prüfungen</a>
+<a href="lesson-14.html">← Lektion 14</a>
+<a href="lesson-16.html">Lektion 16 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lektion 15 von 26</span>
+  <h1>Die Lehrlinge des Kartografen</h1>
+  <p class="lead">Abschnitt 7.3: Folgen von <em>Funktionen</em>. Was es heisst, dass Funktionen $f_n$ gegen eine Funktion $f$ konvergieren, warum die naheliegende Bedeutung («punktweise») Stetigkeit und Integrale kaputt macht, und warum die stärkere Bedeutung («gleichmässig») beides erhält. Zwei ihrer Sätze sind Prüfungsbeweise. Sie bereitet auch <a class="xl" href="lesson-16.html#s3-power-series-and-the-radius">Lektion 16</a> vor, denn eine Potenzreihe ist ein Grenzwert von Polynomen.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-14-5">Rückblick auf Lektion 14 (5 Min.)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</a>
+</li>
+<li><a href="#s1-the-story-the-mapmaker-s">1. Die Geschichte: die Lehrlinge des Kartografen</a>
+</li>
+<li><a href="#s2-pointwise-convergence-and-what-goes">2. Punktweise Konvergenz, und was schiefgeht</a>
+<ol>
+<li><a href="#we-1">Musterbeispiel 1: $f_n(x)=x^n$ auf $[0,1]$ (Beispiel 7.42, S. 313)</a></li>
+<li><a href="#we-2">Musterbeispiel 2: die Zelte (Beispiel 7.43, S. 314)</a></li>
+</ol></li>
+<li><a href="#s3-uniform-convergence">3. Gleichmässige Konvergenz</a>
+<ol>
+<li><a href="#proof-a">Beweis A: der Sup-Test (Übung 7.46 (i), S. 315)</a></li>
+<li><a href="#the-recipe-for-does-converge">Das Rezept für «konvergiert $f_n$ gleichmässig?»</a></li>
+<li><a href="#we-3">Musterbeispiel 3: $x^n$ auf $[0,a]$ für ein festes $a&lt;1$</a></li>
+</ol></li>
+<li><a href="#s4-uniform-limits-of-continuous-functions">4. Gleichmässige Grenzwerte stetiger Funktionen sind stetig</a>
+<ol>
+<li><a href="#proof-b">Beweis B: Der gleichmässige Grenzwert stetiger Funktionen ist stetig (Satz 7.48, S. 316)</a></li>
+</ol></li>
+<li><a href="#s5-uniform-limits-of-integrable-functions">5. Gleichmässige Grenzwerte integrierbarer Funktionen sind integrierbar</a>
+<ol>
+<li><a href="#proof-c">Beweis C: Integral und gleichmässiger Grenzwert dürfen vertauscht werden (Satz 7.49, S. 317)</a></li>
+</ol></li>
+<li><a href="#s6-series-of-functions-and-the">6. Funktionenreihen und das Majorantenkriterium von Weierstrass</a>
+<ol>
+<li><a href="#proof-d">Beweis D: das Majorantenkriterium von Weierstrass</a></li>
+</ol></li>
+<li><a href="#s7-five-useful-facts">7. Fünf nützliche Tatsachen</a>
+</li>
+<li><a href="#s8-worked-examples">8. Musterbeispiele</a>
+<ol>
+<li><a href="#we-4">Musterbeispiel 4: $f_n(x)=\dfrac{nx}{1+n^2x^2}$ auf $[0,1]$</a></li>
+<li><a href="#we-5">Musterbeispiel 5: $f_n(x)=\sqrt{x^2+\frac1{n^2}}$ auf $\mathbb R$</a></li>
+<li><a href="#we-6">Musterbeispiel 6: der wandernde Buckel $f_n(x)=\dfrac1{1+(x-n)^2}$ auf $\mathbb R$</a></li>
+</ol></li>
+<li><a href="#s9-exercises">9. Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Kobel-Keller HS24, Frage 7, 2 Punkte)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Kobel-Keller HS24, Frage 18 (b) und (c), 5 Punkte)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Prüfung im Einsiedler-Stil, Winter 2012, Frage 5, hier 3 Punkte)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Felder HS22, Frage 2.A1, 7 Punkte)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Einsiedler HS21, Frage 12, 7 Punkte)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (kurze Theoriefragen, ältere Einsiedler-Prüfungen)</a></li>
+<li><a href="#bonus">Bonus (Figalli FS26, Frage A2, 7 Punkte)</a></li>
+</ol></li>
+<li><a href="#s10-for-wonder-optional-5-min">10. Zum Staunen</a>
+</li>
+<li><a href="#s11-what-we-skipped">11. Was wir auslassen</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) <strong>punktweise und gleichmässige Konvergenz definieren</strong> und sagen kannst, wo der Unterschied liegt (hängt $N$ von $x$ ab?), (2) <strong>gleichmässige Konvergenz prüfen</strong> kannst, indem du $\sup_x|f_n(x)-f(x)|$ abschätzt, (3) sie mit einem schlechten Punkt $x_n$ oder mit einem unstetigen Grenzwert <strong>widerlegen</strong> kannst, (4) <strong>formulieren und beweisen</strong> kannst, dass ein gleichmässiger Grenzwert stetiger Funktionen stetig ist (ein Prüfungsbeweis), (5) <strong>formulieren und beweisen</strong> kannst, dass ein gleichmässiger Grenzwert integrierbarer Funktionen integrierbar ist, mit $\int f_n\to\int f$ (ein Prüfungsbeweis), und (6) das <strong>Majorantenkriterium von Weierstrass</strong> für Funktionenreihen anwenden kannst.</dd></div>
+  <div><dt>Skript (deutsch, gedruckte Seiten)</dt><dd>Du musst es nicht öffnen. Nur falls du das Original willst:
+    <ul>
+      <li><strong><a class="pl" href="../script.html#p313">S. 313–315</a>, Abschnitt 7.3.1, Definition 7.40 bis Beispiel 7.44:</strong> Funktionenfolgen, punktweise Konvergenz und drei Beispiele, bei denen es schiefgeht.</li>
+      <li><strong><a class="pl" href="../script.html#p315">S. 315–318</a>, Abschnitt 7.3.2, Definition 7.45 bis Übung 7.53:</strong> gleichmässige Konvergenz, das Sup-Kriterium, der $\varepsilon$-Schlauch, Stetigkeit (Satz 7.48), Integrale (Satz 7.49) und fünf kurze Übungen.</li>
+      <li><strong><a class="pl" href="../script.html#p319">S. 319–320</a>, im Beweis von Satz 7.56:</strong> das Argument des Majorantenkriteriums für Potenzreihen (<a class="xl" href="lesson-16.html#proof-a">Lektion 16</a>).</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum das für die Prüfung zählt</span>
+Gleichmässige Konvergenz kommt in 6 der 9 neueren Prüfungen vor, und in den meisten älteren. Als <strong>zu beweisender Satz</strong>: «Ein gleichmässiger Grenzwert integrierbarer Funktionen ist integrierbar, und die Integrale konvergieren» (Einsiedler Probeprüfung HS21, 7 Punkte; PVK-Probeprüfung HS25 B1; Winter 2018) und «ein gleichmässiger Grenzwert stetiger Funktionen ist stetig» (Felder HS22, 5 Punkte plus ein 2-Punkte-Beispiel; Sommer 2018). Als <strong>Beweis in Teil 4</strong>: Einsiedler HS21 Frage 12 (7 Punkte, deine Aufgabe 5) und Figalli FS26 A2 (7 Punkte, dein Bonus). Im <strong>Multiple Choice</strong> und bei <strong>Rechnungen</strong>: «Konvergiert $f_n$ gleichmässig?» (Kobel-Keller HS24, die Winterprüfung 2012, Felder FS23).</div>
+
+<div class="box"><h3 id="recap-of-lesson-14-5">Rückblick auf <a class="xl" href="lesson-14.html">Lektion 14</a> (5 Min.)</h3>
+<ul>
+  <li><strong>Eine Reihe ist ihre Partialsummen:</strong> $\sum a_k$ konvergiert heisst, $s_n=\sum_{k=1}^na_k$ konvergiert.</li>
+  <li><strong>Nullfolgen-Kriterium:</strong> Wenn $a_n\not\to0$, divergiert die Reihe. Die Umkehrung ist falsch (harmonische Reihe).</li>
+  <li><strong>Vergleichssatz und $p$-Test:</strong> $0\le a_n\le b_n$ und $\sum b_n$ konvergiert ⇒ $\sum a_n$ konvergiert. $\sum\frac1{n^p}$ konvergiert ⇔ $p&gt;1$.</li>
+  <li><strong>Absolute Konvergenz</strong> impliziert Konvergenz. <strong>Leibniz:</strong> positiv, fallend, $\to0$ ⇒ die alternierende Reihe konvergiert.</li>
+  <li><strong>Das Endstück geht gegen $0$:</strong> Wenn $\sum M_k$ konvergiert, dann <span class="math-display" style="display:block">$$\sum_{k&gt;n}M_k=\sum_{k=1}^\infty M_k-\sum_{k=1}^nM_k\to0.$$</span>Das brauchst du heute.</li>
+</ul>
+<ol class="gq">
+  <li><p>Konvergiert $\sum_{k=1}^\infty\frac1{k^2+k}$?</p>
+  <details><summary>Antwort</summary><div><p>Ja: $0&lt;\frac1{k^2+k}\le\frac1{k^2}$ und $\sum\frac1{k^2}$ konvergiert (Vergleichssatz). Ihr Wert ist $1$, durch Teleskopieren (<a class="xl" href="lesson-14.html#worked-example-a-telescoping-series">Lektion 14</a>).</p></div></details></li>
+  <li><p>Konvergent oder divergent: $\sum\frac{(-1)^k}{k}$, $\sum\frac{(-1)^k k}{k+1}$?</p>
+  <details><summary>Antwort</summary><div><p>Die erste konvergiert (Leibniz). Die zweite divergiert: Ihre Glieder gehen nicht gegen $0$.</p></div></details></li>
+  <li><p>Warum gilt $\sum_{k&gt;n}\frac1{k^2}\to0$ für $n\to\infty$?</p>
+  <details><summary>Antwort</summary><div><p>Es ist gleich $S-s_n$, wobei $S=\sum_{k=1}^\infty\frac1{k^2}$ und $s_n\to S$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>English</th></tr></thead>
+  <tbody>
+    <tr><td>Funktionenfolge</td><td>sequence of functions</td></tr>
+    <tr><td>punktweise Konvergenz</td><td>pointwise convergence</td></tr>
+    <tr><td>gleichmässige Konvergenz</td><td>uniform convergence</td></tr>
+    <tr><td>Grenzfunktion, Limesfunktion</td><td>limit function</td></tr>
+    <tr><td>Supremumsnorm</td><td>supremum norm</td></tr>
+    <tr><td>ε-Schlauch</td><td>ε-tube</td></tr>
+    <tr><td>Funktionenreihe</td><td>series of functions</td></tr>
+    <tr><td>Majorantenkriterium von Weierstrass</td><td>Weierstrass M-test</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-mapmaker-s">1. Die Geschichte: die Lehrlinge des Kartografen</h2>
+<div class="story">
+<p>Die Königin will eine perfekte Karte ihrer Küste. Jede Nacht zeichnen die Lehrlinge des Kartografen eine neue Version, und jede Version ist ein wenig besser als die letzte. Karte Nummer $n$ zeigt die Küste als Kurve $f_n$; die wahre Küste ist $f$.</p>
+<p>Nach einem Monat melden die Lehrlinge: «Bei jedem Dorf sind unsere Karten irgendwann richtig. Nenn irgendein Dorf, und ab einer bestimmten Nacht setzen unsere Karten es haargenau an die richtige Stelle.» Die Königin ist nicht zufrieden. «Dorf für Dorf reicht nicht. Bei den Klippen im Norden habt ihr tausend Nächte gebraucht, bei der nächsten Klippe eine Million, und bei manchen Klippen werdet ihr vielleicht nie fertig. Ich will eine Nacht, nach der <em>die ganze Karte</em> haargenau stimmt, überall gleichzeitig.»</p>
+<p>Das erste Versprechen ist <strong>punktweise Konvergenz</strong>: Für jeden Ort $x$ gibt es eine Nacht $N$, und $N$ darf von $x$ abhängen. Die Forderung der Königin ist <strong>gleichmässige Konvergenz</strong>: eine Nacht $N$, die für alle Orte funktioniert. Zeichne ein dünnes Band von einer Haaresbreite um die wahre Küste. Gleichmässig heisst: Ab Nacht $N$ liegt jede Karte ganz innerhalb des Bandes.</p>
+<p>Warum ist das der Königin wichtig? Ein Seefahrer, der der Karte entlang der Küste folgt, braucht die <em>ganze</em> Karte richtig. Die Karten guter Lehrlinge haben keine Lücken (stetig), und die Königin will, dass auch die wahre Küste keine Lücken hat. Mit Dorf-für-Dorf-Karten kann im Grenzwert eine Lücke entstehen. Mit bandgenauen Karten nicht. Das ist der erste Prüfungssatz von heute.</p>
+</div>
+
+<h2 id="s2-pointwise-convergence-and-what-goes">2. Punktweise Konvergenz, und was schiefgeht</h2>
+<div class="box">
+<p><strong>Definition 7.40 (<a class="pl" href="../script.html#p313">S. 313</a>).</strong> Eine <strong>Funktionenfolge</strong> auf einer Menge $X$ ist eine Folge $(f_n)_n$ von Funktionen $f_n:X\to\mathbb R$ (oder $\mathbb C$). Sie <strong>konvergiert punktweise</strong> gegen $f:X\to\mathbb R$, wenn $f_n(x)\to f(x)$ für jedes $x\in X$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall x\in X\ \ \forall\varepsilon&amp;&gt;0\ \ \exists N\in\mathbb N\ \ \forall n\\&amp;\ge  N:\ |f_n(x)-f(x)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+<p>Die Funktion $f$ ist der <strong>punktweise Grenzwert</strong>. Er ist eindeutig, weil jeder Grenzwert $\lim_nf_n(x)$ einer Zahlenfolge eindeutig ist.</p>
+</div>
+<p><strong>Die Idee in einem Satz:</strong> Friere $x$ ein, und du hast eine gewöhnliche Zahlenfolge $f_1(x),f_2(x),\dots$. Punktweise Konvergenz verlangt nichts weiter, als dass jede dieser Zahlenfolgen konvergiert. Alles aus den <a class="xl" href="lesson-10.html">Lektionen 10</a>–<a class="xl" href="lesson-12.html">12</a> gilt, ein $x$ nach dem anderen.</p>
+
+<div class="box">
+<h3 id="we-1">Musterbeispiel 1: $f_n(x)=x^n$ auf $[0,1]$ (Beispiel 7.42, <a class="pl" href="../script.html#p313">S. 313</a>)</h3>
+<p>Versuch jeden Schritt zuerst im Kopf, dann öffne die Antwort.</p>
+<ol class="gq">
+  <li><p>Fixiere $x\in[0,1)$. Was ist $\lim_nx^n$?</p>
+  <details><summary>Antwort</summary><div><p>$0$, da $0\le x&lt;1$ (<a class="xl" href="lesson-10.html">Lektion 10</a>).</p></div></details></li>
+  <li><p>Und bei $x=1$?</p>
+  <details><summary>Antwort</summary><div><p>$1^n=1$ für alle $n$, also ist der Grenzwert $1$.</p></div></details></li>
+  <li><p>Schreib den punktweisen Grenzwert $f$ hin. Ist er stetig?</p>
+  <details><summary>Antwort</summary><div><p>$f(x)=0$ für $x&lt;1$ und $f(1)=1$. Er springt bei $x=1$, ist also nicht stetig, obwohl jedes $f_n$ stetig ist (sogar ein Polynom).</p></div></details></li>
+  <li><p>Für $\varepsilon=\frac12$ und $x=0.99$: Ab welchem $n$ ist $x^n&lt;\frac12$? Was passiert, wenn $x$ näher an $1$ rückt?</p>
+  <details><summary>Antwort</summary><div><p>$0.99^{69}\approx0.4998$, also ab $n=69$. Für $x=0.999$ brauchst du $n\ge693$, für $x=0.9999$ etwa $6932$. Das $N$ wächst für $x\to1$ unbeschränkt: Kein einzelnes $N$ funktioniert für alle $x$. Das sind die Lehrlinge bei der Klippe.</p></div></details></li>
+</ol>
+<figure style="margin:.6rem 0 0" aria-label="Graphen von x hoch n auf dem Intervall von 0 bis 1 für n gleich 1, 2, 4, 10 und 30. Mit wachsendem n schmiegen sich die Kurven länger an die x-Achse und schiessen dann steil zum Punkt (1,1) hinauf. Die Grenzfunktion ist als dicke Strecke entlang der x-Achse von 0 bis kurz vor 1 gezeichnet, mit einem offenen Punkt bei (1,0) und einem gefüllten Punkt bei (1,1).">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30" y1="240" x2="620" y2="240" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50" y1="20" x2="50" y2="250" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 50.0 240.0 L 52.8 238.9 L 55.6 237.9 L 58.4 236.8 L 61.2 235.8 L 64.0 234.8 L 66.8 233.7 L 69.6 232.7 L 72.4 231.6 L 75.2 230.6 L 78.0 229.5 L 80.8 228.4 L 83.6 227.4 L 86.4 226.3 L 89.2 225.3 L 92.0 224.2 L 94.8 223.2 L 97.6 222.2 L 100.4 221.1 L 103.2 220.1 L 106.0 219.0 L 108.8 217.9 L 111.6 216.9 L 114.4 215.8 L 117.2 214.8 L 120.0 213.8 L 122.8 212.7 L 125.6 211.7 L 128.4 210.6 L 131.2 209.6 L 134.0 208.5 L 136.8 207.4 L 139.6 206.4 L 142.4 205.3 L 145.2 204.3 L 148.0 203.2 L 150.8 202.2 L 153.6 201.2 L 156.4 200.1 L 159.2 199.1 L 162.0 198.0 L 164.8 196.9 L 167.6 195.9 L 170.4 194.8 L 173.2 193.8 L 176.0 192.8 L 178.8 191.7 L 181.6 190.7 L 184.4 189.6 L 187.2 188.6 L 190.0 187.5 L 192.8 186.4 L 195.6 185.4 L 198.4 184.3 L 201.2 183.3 L 204.0 182.2 L 206.8 181.2 L 209.6 180.2 L 212.4 179.1 L 215.2 178.1 L 218.0 177.0 L 220.8 175.9 L 223.6 174.9 L 226.4 173.8 L 229.2 172.8 L 232.0 171.8 L 234.8 170.7 L 237.6 169.6 L 240.4 168.6 L 243.2 167.6 L 246.0 166.5 L 248.8 165.4 L 251.6 164.4 L 254.4 163.4 L 257.2 162.3 L 260.0 161.2 L 262.8 160.2 L 265.6 159.1 L 268.4 158.1 L 271.2 157.1 L 274.0 156.0 L 276.8 154.9 L 279.6 153.9 L 282.4 152.9 L 285.2 151.8 L 288.0 150.8 L 290.8 149.7 L 293.6 148.7 L 296.4 147.6 L 299.2 146.6 L 302.0 145.5 L 304.8 144.4 L 307.6 143.4 L 310.4 142.3 L 313.2 141.3 L 316.0 140.2 L 318.8 139.2 L 321.6 138.2 L 324.4 137.1 L 327.2 136.1 L 330.0 135.0 L 332.8 133.9 L 335.6 132.9 L 338.4 131.8 L 341.2 130.8 L 344.0 129.8 L 346.8 128.7 L 349.6 127.6 L 352.4 126.6 L 355.2 125.5 L 358.0 124.5 L 360.8 123.4 L 363.6 122.4 L 366.4 121.4 L 369.2 120.3 L 372.0 119.3 L 374.8 118.2 L 377.6 117.2 L 380.4 116.1 L 383.2 115.1 L 386.0 114.0 L 388.8 113.0 L 391.6 111.9 L 394.4 110.8 L 397.2 109.8 L 400.0 108.8 L 402.8 107.7 L 405.6 106.7 L 408.4 105.6 L 411.2 104.5 L 414.0 103.5 L 416.8 102.4 L 419.6 101.4 L 422.4 100.3 L 425.2 99.3 L 428.0 98.2 L 430.8 97.2 L 433.6 96.1 L 436.4 95.1 L 439.2 94.1 L 442.0 93.0 L 444.8 92.0 L 447.6 90.9 L 450.4 89.8 L 453.2 88.8 L 456.0 87.8 L 458.8 86.7 L 461.6 85.7 L 464.4 84.6 L 467.2 83.6 L 470.0 82.5 L 472.8 81.4 L 475.6 80.4 L 478.4 79.3 L 481.2 78.3 L 484.0 77.2 L 486.8 76.2 L 489.6 75.2 L 492.4 74.1 L 495.2 73.0 L 498.0 72.0 L 500.8 70.9 L 503.6 69.9 L 506.4 68.9 L 509.2 67.8 L 512.0 66.8 L 514.8 65.7 L 517.6 64.7 L 520.4 63.6 L 523.2 62.6 L 526.0 61.5 L 528.8 60.5 L 531.6 59.4 L 534.4 58.3 L 537.2 57.3 L 540.0 56.2 L 542.8 55.2 L 545.6 54.2 L 548.4 53.1 L 551.2 52.0 L 554.0 51.0 L 556.8 49.9 L 559.6 48.9 L 562.4 47.8 L 565.2 46.8 L 568.0 45.8 L 570.8 44.7 L 573.6 43.6 L 576.4 42.6 L 579.2 41.6 L 582.0 40.5 L 584.8 39.5 L 587.6 38.4 L 590.4 37.3 L 593.2 36.3 L 596.0 35.2 L 598.8 34.2 L 601.6 33.2 L 604.4 32.1 L 607.2 31.1 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.35" stroke-width="2.2"/><text x="372.0" y="108.0" text-anchor="end" style="fill:var(--accent);font-size:13px">n=1</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 239.9 L 64.0 239.9 L 66.8 239.8 L 69.6 239.7 L 72.4 239.7 L 75.2 239.6 L 78.0 239.5 L 80.8 239.4 L 83.6 239.2 L 86.4 239.1 L 89.2 239.0 L 92.0 238.8 L 94.8 238.7 L 97.6 238.5 L 100.4 238.3 L 103.2 238.1 L 106.0 237.9 L 108.8 237.7 L 111.6 237.5 L 114.4 237.2 L 117.2 237.0 L 120.0 236.7 L 122.8 236.5 L 125.6 236.2 L 128.4 235.9 L 131.2 235.6 L 134.0 235.3 L 136.8 235.0 L 139.6 234.6 L 142.4 234.3 L 145.2 233.9 L 148.0 233.6 L 150.8 233.2 L 153.6 232.8 L 156.4 232.4 L 159.2 232.0 L 162.0 231.6 L 164.8 231.2 L 167.6 230.7 L 170.4 230.3 L 173.2 229.8 L 176.0 229.4 L 178.8 228.9 L 181.6 228.4 L 184.4 227.9 L 187.2 227.4 L 190.0 226.9 L 192.8 226.3 L 195.6 225.8 L 198.4 225.3 L 201.2 224.7 L 204.0 224.1 L 206.8 223.5 L 209.6 222.9 L 212.4 222.3 L 215.2 221.7 L 218.0 221.1 L 220.8 220.5 L 223.6 219.8 L 226.4 219.2 L 229.2 218.5 L 232.0 217.8 L 234.8 217.1 L 237.6 216.4 L 240.4 215.7 L 243.2 215.0 L 246.0 214.3 L 248.8 213.5 L 251.6 212.8 L 254.4 212.0 L 257.2 211.3 L 260.0 210.5 L 262.8 209.7 L 265.6 208.9 L 268.4 208.1 L 271.2 207.2 L 274.0 206.4 L 276.8 205.6 L 279.6 204.7 L 282.4 203.8 L 285.2 203.0 L 288.0 202.1 L 290.8 201.2 L 293.6 200.3 L 296.4 199.3 L 299.2 198.4 L 302.0 197.5 L 304.8 196.5 L 307.6 195.6 L 310.4 194.6 L 313.2 193.6 L 316.0 192.6 L 318.8 191.6 L 321.6 190.6 L 324.4 189.6 L 327.2 188.5 L 330.0 187.5 L 332.8 186.4 L 335.6 185.4 L 338.4 184.3 L 341.2 183.2 L 344.0 182.1 L 346.8 181.0 L 349.6 179.9 L 352.4 178.8 L 355.2 177.6 L 358.0 176.5 L 360.8 175.3 L 363.6 174.1 L 366.4 173.0 L 369.2 171.8 L 372.0 170.6 L 374.8 169.4 L 377.6 168.1 L 380.4 166.9 L 383.2 165.7 L 386.0 164.4 L 388.8 163.1 L 391.6 161.9 L 394.4 160.6 L 397.2 159.3 L 400.0 158.0 L 402.8 156.7 L 405.6 155.3 L 408.4 154.0 L 411.2 152.6 L 414.0 151.3 L 416.8 149.9 L 419.6 148.5 L 422.4 147.1 L 425.2 145.7 L 428.0 144.3 L 430.8 142.9 L 433.6 141.5 L 436.4 140.0 L 439.2 138.6 L 442.0 137.1 L 444.8 135.6 L 447.6 134.1 L 450.4 132.6 L 453.2 131.1 L 456.0 129.6 L 458.8 128.1 L 461.6 126.6 L 464.4 125.0 L 467.2 123.4 L 470.0 121.9 L 472.8 120.3 L 475.6 118.7 L 478.4 117.1 L 481.2 115.5 L 484.0 113.9 L 486.8 112.2 L 489.6 110.6 L 492.4 108.9 L 495.2 107.3 L 498.0 105.6 L 500.8 103.9 L 503.6 102.2 L 506.4 100.5 L 509.2 98.8 L 512.0 97.1 L 514.8 95.3 L 517.6 93.6 L 520.4 91.8 L 523.2 90.1 L 526.0 88.3 L 528.8 86.5 L 531.6 84.7 L 534.4 82.9 L 537.2 81.1 L 540.0 79.2 L 542.8 77.4 L 545.6 75.5 L 548.4 73.7 L 551.2 71.8 L 554.0 69.9 L 556.8 68.0 L 559.6 66.1 L 562.4 64.2 L 565.2 62.3 L 568.0 60.3 L 570.8 58.4 L 573.6 56.4 L 576.4 54.4 L 579.2 52.5 L 582.0 50.5 L 584.8 48.5 L 587.6 46.5 L 590.4 44.4 L 593.2 42.4 L 596.0 40.4 L 598.8 38.3 L 601.6 36.3 L 604.4 34.2 L 607.2 32.1 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.5" stroke-width="2.2"/><text x="439.2" y="125.1" text-anchor="end" style="fill:var(--accent);font-size:13px">n=2</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 240.0 L 64.0 240.0 L 66.8 240.0 L 69.6 240.0 L 72.4 240.0 L 75.2 240.0 L 78.0 240.0 L 80.8 240.0 L 83.6 240.0 L 86.4 240.0 L 89.2 240.0 L 92.0 240.0 L 94.8 240.0 L 97.6 240.0 L 100.4 240.0 L 103.2 240.0 L 106.0 240.0 L 108.8 240.0 L 111.6 240.0 L 114.4 240.0 L 117.2 240.0 L 120.0 239.9 L 122.8 239.9 L 125.6 239.9 L 128.4 239.9 L 131.2 239.9 L 134.0 239.9 L 136.8 239.9 L 139.6 239.9 L 142.4 239.8 L 145.2 239.8 L 148.0 239.8 L 150.8 239.8 L 153.6 239.8 L 156.4 239.7 L 159.2 239.7 L 162.0 239.7 L 164.8 239.6 L 167.6 239.6 L 170.4 239.6 L 173.2 239.5 L 176.0 239.5 L 178.8 239.4 L 181.6 239.4 L 184.4 239.3 L 187.2 239.2 L 190.0 239.2 L 192.8 239.1 L 195.6 239.0 L 198.4 239.0 L 201.2 238.9 L 204.0 238.8 L 206.8 238.7 L 209.6 238.6 L 212.4 238.5 L 215.2 238.4 L 218.0 238.3 L 220.8 238.2 L 223.6 238.1 L 226.4 237.9 L 229.2 237.8 L 232.0 237.7 L 234.8 237.5 L 237.6 237.4 L 240.4 237.2 L 243.2 237.0 L 246.0 236.8 L 248.8 236.7 L 251.6 236.5 L 254.4 236.3 L 257.2 236.1 L 260.0 235.8 L 262.8 235.6 L 265.6 235.4 L 268.4 235.1 L 271.2 234.9 L 274.0 234.6 L 276.8 234.4 L 279.6 234.1 L 282.4 233.8 L 285.2 233.5 L 288.0 233.1 L 290.8 232.8 L 293.6 232.5 L 296.4 232.1 L 299.2 231.8 L 302.0 231.4 L 304.8 231.0 L 307.6 230.6 L 310.4 230.2 L 313.2 229.8 L 316.0 229.3 L 318.8 228.9 L 321.6 228.4 L 324.4 227.9 L 327.2 227.4 L 330.0 226.9 L 332.8 226.3 L 335.6 225.8 L 338.4 225.2 L 341.2 224.6 L 344.0 224.0 L 346.8 223.4 L 349.6 222.8 L 352.4 222.1 L 355.2 221.5 L 358.0 220.8 L 360.8 220.1 L 363.6 219.3 L 366.4 218.6 L 369.2 217.8 L 372.0 217.0 L 374.8 216.2 L 377.6 215.4 L 380.4 214.6 L 383.2 213.7 L 386.0 212.8 L 388.8 211.9 L 391.6 210.9 L 394.4 210.0 L 397.2 209.0 L 400.0 208.0 L 402.8 206.9 L 405.6 205.9 L 408.4 204.8 L 411.2 203.7 L 414.0 202.5 L 416.8 201.3 L 419.6 200.2 L 422.4 198.9 L 425.2 197.7 L 428.0 196.4 L 430.8 195.1 L 433.6 193.8 L 436.4 192.4 L 439.2 191.0 L 442.0 189.6 L 444.8 188.1 L 447.6 186.6 L 450.4 185.1 L 453.2 183.6 L 456.0 182.0 L 458.8 180.4 L 461.6 178.7 L 464.4 177.0 L 467.2 175.3 L 470.0 173.6 L 472.8 171.8 L 475.6 169.9 L 478.4 168.1 L 481.2 166.2 L 484.0 164.2 L 486.8 162.3 L 489.6 160.3 L 492.4 158.2 L 495.2 156.1 L 498.0 154.0 L 500.8 151.8 L 503.6 149.6 L 506.4 147.3 L 509.2 145.1 L 512.0 142.7 L 514.8 140.3 L 517.6 137.9 L 520.4 135.4 L 523.2 132.9 L 526.0 130.4 L 528.8 127.8 L 531.6 125.1 L 534.4 122.4 L 537.2 119.7 L 540.0 116.9 L 542.8 114.1 L 545.6 111.2 L 548.4 108.2 L 551.2 105.3 L 554.0 102.2 L 556.8 99.1 L 559.6 96.0 L 562.4 92.8 L 565.2 89.6 L 568.0 86.3 L 570.8 82.9 L 573.6 79.5 L 576.4 76.0 L 579.2 72.5 L 582.0 69.0 L 584.8 65.3 L 587.6 61.6 L 590.4 57.9 L 593.2 54.1 L 596.0 50.2 L 598.8 46.3 L 601.6 42.3 L 604.4 38.3 L 607.2 34.2 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.65" stroke-width="2.2"/><text x="495.2" y="139.1" text-anchor="end" style="fill:var(--accent);font-size:13px">n=4</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 240.0 L 64.0 240.0 L 66.8 240.0 L 69.6 240.0 L 72.4 240.0 L 75.2 240.0 L 78.0 240.0 L 80.8 240.0 L 83.6 240.0 L 86.4 240.0 L 89.2 240.0 L 92.0 240.0 L 94.8 240.0 L 97.6 240.0 L 100.4 240.0 L 103.2 240.0 L 106.0 240.0 L 108.8 240.0 L 111.6 240.0 L 114.4 240.0 L 117.2 240.0 L 120.0 240.0 L 122.8 240.0 L 125.6 240.0 L 128.4 240.0 L 131.2 240.0 L 134.0 240.0 L 136.8 240.0 L 139.6 240.0 L 142.4 240.0 L 145.2 240.0 L 148.0 240.0 L 150.8 240.0 L 153.6 240.0 L 156.4 240.0 L 159.2 240.0 L 162.0 240.0 L 164.8 240.0 L 167.6 240.0 L 170.4 240.0 L 173.2 240.0 L 176.0 240.0 L 178.8 240.0 L 181.6 240.0 L 184.4 240.0 L 187.2 240.0 L 190.0 240.0 L 192.8 240.0 L 195.6 240.0 L 198.4 240.0 L 201.2 240.0 L 204.0 240.0 L 206.8 240.0 L 209.6 240.0 L 212.4 240.0 L 215.2 240.0 L 218.0 240.0 L 220.8 240.0 L 223.6 240.0 L 226.4 240.0 L 229.2 240.0 L 232.0 240.0 L 234.8 240.0 L 237.6 240.0 L 240.4 240.0 L 243.2 240.0 L 246.0 240.0 L 248.8 240.0 L 251.6 240.0 L 254.4 240.0 L 257.2 240.0 L 260.0 240.0 L 262.8 240.0 L 265.6 240.0 L 268.4 240.0 L 271.2 240.0 L 274.0 240.0 L 276.8 240.0 L 279.6 240.0 L 282.4 240.0 L 285.2 240.0 L 288.0 240.0 L 290.8 240.0 L 293.6 239.9 L 296.4 239.9 L 299.2 239.9 L 302.0 239.9 L 304.8 239.9 L 307.6 239.9 L 310.4 239.9 L 313.2 239.9 L 316.0 239.9 L 318.8 239.9 L 321.6 239.8 L 324.4 239.8 L 327.2 239.8 L 330.0 239.8 L 332.8 239.8 L 335.6 239.8 L 338.4 239.7 L 341.2 239.7 L 344.0 239.7 L 346.8 239.6 L 349.6 239.6 L 352.4 239.6 L 355.2 239.5 L 358.0 239.5 L 360.8 239.4 L 363.6 239.4 L 366.4 239.3 L 369.2 239.2 L 372.0 239.2 L 374.8 239.1 L 377.6 239.0 L 380.4 238.9 L 383.2 238.8 L 386.0 238.7 L 388.8 238.6 L 391.6 238.5 L 394.4 238.4 L 397.2 238.2 L 400.0 238.1 L 402.8 237.9 L 405.6 237.8 L 408.4 237.6 L 411.2 237.4 L 414.0 237.2 L 416.8 236.9 L 419.6 236.7 L 422.4 236.4 L 425.2 236.2 L 428.0 235.9 L 430.8 235.6 L 433.6 235.2 L 436.4 234.9 L 439.2 234.5 L 442.0 234.1 L 444.8 233.6 L 447.6 233.2 L 450.4 232.7 L 453.2 232.1 L 456.0 231.6 L 458.8 231.0 L 461.6 230.3 L 464.4 229.7 L 467.2 228.9 L 470.0 228.2 L 472.8 227.4 L 475.6 226.5 L 478.4 225.6 L 481.2 224.6 L 484.0 223.6 L 486.8 222.5 L 489.6 221.3 L 492.4 220.1 L 495.2 218.8 L 498.0 217.5 L 500.8 216.0 L 503.6 214.5 L 506.4 212.8 L 509.2 211.1 L 512.0 209.3 L 514.8 207.4 L 517.6 205.4 L 520.4 203.3 L 523.2 201.0 L 526.0 198.7 L 528.8 196.2 L 531.6 193.5 L 534.4 190.8 L 537.2 187.8 L 540.0 184.8 L 542.8 181.5 L 545.6 178.1 L 548.4 174.5 L 551.2 170.7 L 554.0 166.8 L 556.8 162.6 L 559.6 158.2 L 562.4 153.6 L 565.2 148.8 L 568.0 143.7 L 570.8 138.4 L 573.6 132.8 L 576.4 126.9 L 579.2 120.7 L 582.0 114.3 L 584.8 107.5 L 587.6 100.4 L 590.4 92.9 L 593.2 85.1 L 596.0 77.0 L 598.8 68.4 L 601.6 59.5 L 604.4 50.1 L 607.2 40.3 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.8" stroke-width="2.2"/><text x="540.0" y="160.8" text-anchor="end" style="fill:var(--accent);font-size:13px">n=10</text><path d="M 50.0 240.0 L 52.8 240.0 L 55.6 240.0 L 58.4 240.0 L 61.2 240.0 L 64.0 240.0 L 66.8 240.0 L 69.6 240.0 L 72.4 240.0 L 75.2 240.0 L 78.0 240.0 L 80.8 240.0 L 83.6 240.0 L 86.4 240.0 L 89.2 240.0 L 92.0 240.0 L 94.8 240.0 L 97.6 240.0 L 100.4 240.0 L 103.2 240.0 L 106.0 240.0 L 108.8 240.0 L 111.6 240.0 L 114.4 240.0 L 117.2 240.0 L 120.0 240.0 L 122.8 240.0 L 125.6 240.0 L 128.4 240.0 L 131.2 240.0 L 134.0 240.0 L 136.8 240.0 L 139.6 240.0 L 142.4 240.0 L 145.2 240.0 L 148.0 240.0 L 150.8 240.0 L 153.6 240.0 L 156.4 240.0 L 159.2 240.0 L 162.0 240.0 L 164.8 240.0 L 167.6 240.0 L 170.4 240.0 L 173.2 240.0 L 176.0 240.0 L 178.8 240.0 L 181.6 240.0 L 184.4 240.0 L 187.2 240.0 L 190.0 240.0 L 192.8 240.0 L 195.6 240.0 L 198.4 240.0 L 201.2 240.0 L 204.0 240.0 L 206.8 240.0 L 209.6 240.0 L 212.4 240.0 L 215.2 240.0 L 218.0 240.0 L 220.8 240.0 L 223.6 240.0 L 226.4 240.0 L 229.2 240.0 L 232.0 240.0 L 234.8 240.0 L 237.6 240.0 L 240.4 240.0 L 243.2 240.0 L 246.0 240.0 L 248.8 240.0 L 251.6 240.0 L 254.4 240.0 L 257.2 240.0 L 260.0 240.0 L 262.8 240.0 L 265.6 240.0 L 268.4 240.0 L 271.2 240.0 L 274.0 240.0 L 276.8 240.0 L 279.6 240.0 L 282.4 240.0 L 285.2 240.0 L 288.0 240.0 L 290.8 240.0 L 293.6 240.0 L 296.4 240.0 L 299.2 240.0 L 302.0 240.0 L 304.8 240.0 L 307.6 240.0 L 310.4 240.0 L 313.2 240.0 L 316.0 240.0 L 318.8 240.0 L 321.6 240.0 L 324.4 240.0 L 327.2 240.0 L 330.0 240.0 L 332.8 240.0 L 335.6 240.0 L 338.4 240.0 L 341.2 240.0 L 344.0 240.0 L 346.8 240.0 L 349.6 240.0 L 352.4 240.0 L 355.2 240.0 L 358.0 240.0 L 360.8 240.0 L 363.6 240.0 L 366.4 240.0 L 369.2 240.0 L 372.0 240.0 L 374.8 240.0 L 377.6 240.0 L 380.4 240.0 L 383.2 240.0 L 386.0 240.0 L 388.8 240.0 L 391.6 240.0 L 394.4 240.0 L 397.2 240.0 L 400.0 240.0 L 402.8 240.0 L 405.6 240.0 L 408.4 240.0 L 411.2 240.0 L 414.0 240.0 L 416.8 240.0 L 419.6 240.0 L 422.4 240.0 L 425.2 240.0 L 428.0 240.0 L 430.8 240.0 L 433.6 240.0 L 436.4 240.0 L 439.2 240.0 L 442.0 240.0 L 444.8 240.0 L 447.6 240.0 L 450.4 240.0 L 453.2 240.0 L 456.0 240.0 L 458.8 240.0 L 461.6 240.0 L 464.4 240.0 L 467.2 240.0 L 470.0 240.0 L 472.8 240.0 L 475.6 239.9 L 478.4 239.9 L 481.2 239.9 L 484.0 239.9 L 486.8 239.9 L 489.6 239.9 L 492.4 239.8 L 495.2 239.8 L 498.0 239.7 L 500.8 239.7 L 503.6 239.6 L 506.4 239.5 L 509.2 239.5 L 512.0 239.3 L 514.8 239.2 L 517.6 239.1 L 520.4 238.9 L 523.2 238.7 L 526.0 238.4 L 528.8 238.1 L 531.6 237.7 L 534.4 237.3 L 537.2 236.8 L 540.0 236.2 L 542.8 235.5 L 545.6 234.6 L 548.4 233.6 L 551.2 232.5 L 554.0 231.1 L 556.8 229.5 L 559.6 227.6 L 562.4 225.4 L 565.2 222.8 L 568.0 219.7 L 570.8 216.2 L 573.6 212.0 L 576.4 207.2 L 579.2 201.5 L 582.0 194.9 L 584.8 187.2 L 587.6 178.3 L 590.4 167.9 L 593.2 155.8 L 596.0 141.7 L 598.8 125.4 L 601.6 106.6 L 604.4 84.7 L 607.2 59.3 L 610.0 30.0" style="fill:none;stroke:var(--accent);stroke-opacity:1" stroke-width="2.2"/><path d="M 50.0 240.0 L 604.0 240.0" style="fill:none;stroke:var(--k-c)" stroke-width="4"/><circle cx="610.0" cy="240.0" r="5.5" style="fill:var(--surface);stroke:var(--k-c);stroke-width:2.2"/><circle cx="610.0" cy="30.0" r="5.5" style="fill:var(--k-c)"/><text x="610.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">1</text><text x="50.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">0</text><text x="38.0" y="35.0" text-anchor="end" style="fill:var(--muted);font-size:14px">1</text><text x="302.0" y="264.0" text-anchor="middle" style="fill:var(--k-c);font-size:15px">Grenzwert f = 0 auf [0,1), f(1) = 1</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">$x^n$ für $n=1,2,4,10,30$. Jede Kurve ist stetig, aber der Grenzwert (dick) ist $0$ auf $[0,1)$ und springt bei $x=1$ auf $1$.</figcaption>
+</figure>
+</div>
+
+<div class="box">
+
+<h3 id="we-2">Musterbeispiel 2: die Zelte (Beispiel 7.43, <a class="pl" href="../script.html#p314">S. 314</a>)</h3>
+<p>Auf $[0,1]$ sei $f_n$ das Zelt mit Spitze $\frac n2$ bei $\frac1{2n}$ und Grundseite $\left[0,\frac1n\right]$, und $f_n=0$ auf $\left[\frac1n,1\right]$. Als Formel: $f_n(x)=n^2x$ auf $\left[0,\frac1{2n}\right]$, $f_n(x)=n^2\left(\frac1n-x\right)$ auf $\left[\frac1{2n},\frac1n\right]$, und danach $0$.</p>
+<ol class="gq">
+  <li><p>Was ist $\int_0^1f_n\,dx$?</p>
+  <details><summary>Antwort</summary><div><p>Die Fläche eines Dreiecks mit Grundseite $\frac1n$ und Höhe $\frac n2$: $\frac12\cdot\frac1n\cdot\frac n2=\frac14$, für jedes $n$.</p></div></details></li>
+  <li><p>Fixiere $x&gt;0$. Was ist $f_n(x)$, sobald $\frac1n&lt;x$? Und $f_n(0)$?</p>
+  <details><summary>Antwort</summary><div><p>$0$, da $x$ rechts vom Zelt liegt. Und $f_n(0)=0$ für alle $n$. Also gilt $f_n\to0$ punktweise auf $[0,1]$.</p></div></details></li>
+  <li><p>Vergleiche $\lim_n\int_0^1f_n$ mit $\int_0^1\lim_nf_n$.</p>
+  <details><summary>Antwort</summary><div><p>$\lim_n\int_0^1f_n=\frac14$, aber $\int_0^1 0\,dx=0$. Grenzwert und Integral lassen sich nicht vertauschen, obwohl alle beteiligten Funktionen stetig sind.</p></div></details></li>
+</ol>
+<figure style="margin:.6rem 0 0" aria-label="Drei zeltförmige Graphen auf dem Intervall von 0 bis 1, für n gleich 2, 4 und 8. Jedes Zelt beginnt bei 0, steigt zu einer Spitze der Höhe n halbe bei x gleich 1 durch 2n und fällt bei x gleich 1 durch n wieder auf 0. Die Zelte werden höher und schmaler und drängen sich an den linken Rand.">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30" y1="240" x2="620" y2="240" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50" y1="20" x2="50" y2="250" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 50.0 240.0 L 190.0 192.3 L 330.0 240.0 L 610.0 240.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.45" stroke-width="2.2"/><text x="198.0" y="188.3" text-anchor="start" style="fill:var(--accent);font-size:13px">n=2</text><path d="M 50.0 240.0 L 120.0 144.5 L 190.0 240.0 L 610.0 240.0" style="fill:none;stroke:var(--accent);stroke-opacity:0.7" stroke-width="2.2"/><text x="128.0" y="140.5" text-anchor="start" style="fill:var(--accent);font-size:13px">n=4</text><path d="M 50.0 240.0 L 85.0 49.1 L 120.0 240.0 L 610.0 240.0" style="fill:none;stroke:var(--accent);stroke-opacity:1" stroke-width="2.2"/><text x="93.0" y="45.1" text-anchor="start" style="fill:var(--accent);font-size:13px">n=8</text><text x="610.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">1</text><text x="50.0" y="262.0" text-anchor="middle" style="fill:var(--muted);font-size:14px">0</text><text x="397.2" y="135.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">Spitze n/2 bei 1/(2n), Fläche immer 1/4</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Die Zelte für $n=2,4,8$: höher und schmaler, an $x=0$ gedrängt. Jeder Punkt liegt irgendwann ausserhalb des Zelts, aber die Fläche bleibt $\frac14$.</figcaption>
+</figure>
+</div>
+<p><strong>Eine dritte Warnung</strong> (Beispiel 7.44, <a class="pl" href="../script.html#p314">S. 314–315</a>). Zähle die rationalen Zahlen in $[0,1]$ als $q_1,q_2,\dots$ auf (sie sind abzählbar, <a class="xl" href="lesson-03.html#s4-finite-and-countable-sets">Lektion 3</a>), und sei $f_n=1$ bei $q_1,\dots,q_n$ und sonst $0$. Jedes $f_n$ ist integrierbar mit Integral $0$ (endlich viele Sprünge). Aber der punktweise Grenzwert ist die Dirichlet-Funktion $1_{\mathbb Q\cap[0,1]}$, die nicht integrierbar ist (<a class="xl" href="lesson-09.html#proof-c">Lektion 9</a>).</p>
+<p><strong>Zusammenfassung:</strong> Punktweise Grenzwerte können die Stetigkeit zerstören (Musterbeispiel 1), das Integral verändern (Musterbeispiel 2) und die Integrierbarkeit ganz zerstören (die dritte Warnung). Wir brauchen einen stärkeren Begriff.</p>
+
+<h2 id="s3-uniform-convergence">3. Gleichmässige Konvergenz</h2>
+<div class="box">
+<p><strong>Definition 7.45 (<a class="pl" href="../script.html#p315">S. 315</a>).</strong> $(f_n)_n$ <strong>konvergiert gleichmässig</strong> gegen $f$ auf $X$, wenn es für jedes $\varepsilon&gt;0$ ein $N\in\mathbb N$ gibt, sodass $|f_n(x)-f(x)|&lt;\varepsilon$ für <em>alle</em> $n\ge N$ und <em>alle</em> $x\in X$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \ \exists N\in\mathbb N\ \ \forall n\\&amp;\ge  N\ \ \forall x\in X:\ |f_n(x)-f(x)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+</div>
+<p><strong>Die Idee.</strong> Vergleiche die beiden Quantorenzeilen. Das Einzige, was sich ändert, ist, <em>wo</em> «$\forall x$» steht:</p>
+<div class="table-wrap"><table>
+<tr><th></th><th>Reihenfolge</th><th>Wovon $N$ abhängen darf</th></tr>
+<tr><td>punktweise</td><td>$\forall x\ \forall\varepsilon\ \exists N\ \forall n\ge N$</td><td>$\varepsilon$ <strong>und</strong> $x$</td></tr>
+<tr><td>gleichmässig</td><td>$\forall\varepsilon\ \exists N\ \forall n\ge N\ \forall x$</td><td>nur $\varepsilon$</td></tr>
+</table></div>
+<p>Es ist dasselbe Muster wie Stetigkeit gegenüber gleichmässiger Stetigkeit in <a class="xl" href="lesson-08.html#s6-heine-s-theorem-and-its">Lektion 8</a>, wo $\delta$ vom Punkt abhängen durfte oder nicht. «Gleichmässig» heisst immer: eine Zahl für alle Punkte. In Musterbeispiel 1 wuchs das $N$ für $\varepsilon=\frac12$ für $x\to1$ unbeschränkt, also konvergiert $x^n$ auf $[0,1]$ nicht gleichmässig.</p>
+<p><strong>Das Bild: der $\varepsilon$-Schlauch.</strong> Für reelle Funktionen heisst $|f_n(x)-f(x)|&lt;\varepsilon$, dass $f(x)-\varepsilon&lt;f_n(x)&lt;f(x)+\varepsilon$. Gleichmässige Konvergenz sagt also: Für jedes $\varepsilon&gt;0$ liegt ab einem $N$ der <em>ganze Graph</em> von $f_n$ im Band zwischen $f-\varepsilon$ und $f+\varepsilon$.</p>
+<figure style="margin:0" aria-label="Eine glatte Kurve f mit einem schattierten Band darum, begrenzt von zwei gestrichelten Kurven mit den Beschriftungen f plus epsilon und f minus epsilon. Eine wellige Kurve f n verläuft ganz innerhalb des Bandes.">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30" y1="240" x2="620" y2="240" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50" y1="20" x2="50" y2="250" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 50.0 129.8 L 55.6 126.4 L 61.2 123.2 L 66.8 119.9 L 72.4 116.7 L 78.0 113.5 L 83.6 110.4 L 89.2 107.3 L 94.8 104.3 L 100.4 101.5 L 106.0 98.7 L 111.6 96.1 L 117.2 93.6 L 122.8 91.2 L 128.4 89.0 L 134.0 86.9 L 139.6 85.0 L 145.2 83.2 L 150.8 81.6 L 156.4 80.2 L 162.0 79.0 L 167.6 77.9 L 173.2 77.1 L 178.8 76.4 L 184.4 75.9 L 190.0 75.6 L 195.6 75.5 L 201.2 75.6 L 206.8 75.9 L 212.4 76.4 L 218.0 77.0 L 223.6 77.8 L 229.2 78.8 L 234.8 80.0 L 240.4 81.3 L 246.0 82.7 L 251.6 84.3 L 257.2 86.0 L 262.8 87.9 L 268.4 89.8 L 274.0 91.9 L 279.6 94.1 L 285.2 96.3 L 290.8 98.6 L 296.4 101.0 L 302.0 103.4 L 307.6 105.8 L 313.2 108.3 L 318.8 110.7 L 324.4 113.2 L 330.0 115.7 L 335.6 118.1 L 341.2 120.4 L 346.8 122.8 L 352.4 125.0 L 358.0 127.2 L 363.6 129.3 L 369.2 131.2 L 374.8 133.1 L 380.4 134.9 L 386.0 136.5 L 391.6 138.0 L 397.2 139.3 L 402.8 140.5 L 408.4 141.5 L 414.0 142.4 L 419.6 143.0 L 425.2 143.5 L 430.8 143.8 L 436.4 144.0 L 442.0 143.9 L 447.6 143.7 L 453.2 143.2 L 458.8 142.6 L 464.4 141.8 L 470.0 140.8 L 475.6 139.6 L 481.2 138.2 L 486.8 136.7 L 492.4 134.9 L 498.0 133.0 L 503.6 131.0 L 509.2 128.8 L 514.8 126.4 L 520.4 123.9 L 526.0 121.3 L 531.6 118.6 L 537.2 115.7 L 542.8 112.8 L 548.4 109.8 L 554.0 106.7 L 559.6 103.5 L 565.2 100.3 L 570.8 97.0 L 576.4 93.7 L 582.0 90.4 L 587.6 87.1 L 593.2 83.8 L 598.8 80.6 L 604.4 77.3 L 610.0 74.1 L 610.0 119.6 L 604.4 122.8 L 598.8 126.1 L 593.2 129.3 L 587.6 132.6 L 582.0 135.9 L 576.4 139.2 L 570.8 142.5 L 565.2 145.8 L 559.6 149.0 L 554.0 152.2 L 548.4 155.3 L 542.8 158.3 L 537.2 161.2 L 531.6 164.1 L 526.0 166.8 L 520.4 169.4 L 514.8 171.9 L 509.2 174.3 L 503.6 176.5 L 498.0 178.5 L 492.4 180.4 L 486.8 182.2 L 481.2 183.7 L 475.6 185.1 L 470.0 186.3 L 464.4 187.3 L 458.8 188.1 L 453.2 188.7 L 447.6 189.2 L 442.0 189.4 L 436.4 189.5 L 430.8 189.3 L 425.2 189.0 L 419.6 188.5 L 414.0 187.9 L 408.4 187.0 L 402.8 186.0 L 397.2 184.8 L 391.6 183.5 L 386.0 182.0 L 380.4 180.4 L 374.8 178.6 L 369.2 176.7 L 363.6 174.8 L 358.0 172.7 L 352.4 170.5 L 346.8 168.3 L 341.2 165.9 L 335.6 163.6 L 330.0 161.2 L 324.4 158.7 L 318.8 156.2 L 313.2 153.8 L 307.6 151.3 L 302.0 148.9 L 296.4 146.5 L 290.8 144.1 L 285.2 141.8 L 279.6 139.6 L 274.0 137.4 L 268.4 135.3 L 262.8 133.4 L 257.2 131.5 L 251.6 129.8 L 246.0 128.2 L 240.4 126.8 L 234.8 125.5 L 229.2 124.3 L 223.6 123.3 L 218.0 122.5 L 212.4 121.9 L 206.8 121.4 L 201.2 121.1 L 195.6 121.0 L 190.0 121.1 L 184.4 121.4 L 178.8 121.9 L 173.2 122.6 L 167.6 123.4 L 162.0 124.5 L 156.4 125.7 L 150.8 127.1 L 145.2 128.7 L 139.6 130.5 L 134.0 132.4 L 128.4 134.5 L 122.8 136.7 L 117.2 139.1 L 111.6 141.6 L 106.0 144.2 L 100.4 147.0 L 94.8 149.8 L 89.2 152.8 L 83.6 155.9 L 78.0 159.0 L 72.4 162.2 L 66.8 165.4 L 61.2 168.7 L 55.6 171.9 L 50.0 175.2 Z" style="fill:var(--k-eps);fill-opacity:0.22;stroke:none"/><path d="M 50.0 129.8 L 55.6 126.4 L 61.2 123.2 L 66.8 119.9 L 72.4 116.7 L 78.0 113.5 L 83.6 110.4 L 89.2 107.3 L 94.8 104.3 L 100.4 101.5 L 106.0 98.7 L 111.6 96.1 L 117.2 93.6 L 122.8 91.2 L 128.4 89.0 L 134.0 86.9 L 139.6 85.0 L 145.2 83.2 L 150.8 81.6 L 156.4 80.2 L 162.0 79.0 L 167.6 77.9 L 173.2 77.1 L 178.8 76.4 L 184.4 75.9 L 190.0 75.6 L 195.6 75.5 L 201.2 75.6 L 206.8 75.9 L 212.4 76.4 L 218.0 77.0 L 223.6 77.8 L 229.2 78.8 L 234.8 80.0 L 240.4 81.3 L 246.0 82.7 L 251.6 84.3 L 257.2 86.0 L 262.8 87.9 L 268.4 89.8 L 274.0 91.9 L 279.6 94.1 L 285.2 96.3 L 290.8 98.6 L 296.4 101.0 L 302.0 103.4 L 307.6 105.8 L 313.2 108.3 L 318.8 110.7 L 324.4 113.2 L 330.0 115.7 L 335.6 118.1 L 341.2 120.4 L 346.8 122.8 L 352.4 125.0 L 358.0 127.2 L 363.6 129.3 L 369.2 131.2 L 374.8 133.1 L 380.4 134.9 L 386.0 136.5 L 391.6 138.0 L 397.2 139.3 L 402.8 140.5 L 408.4 141.5 L 414.0 142.4 L 419.6 143.0 L 425.2 143.5 L 430.8 143.8 L 436.4 144.0 L 442.0 143.9 L 447.6 143.7 L 453.2 143.2 L 458.8 142.6 L 464.4 141.8 L 470.0 140.8 L 475.6 139.6 L 481.2 138.2 L 486.8 136.7 L 492.4 134.9 L 498.0 133.0 L 503.6 131.0 L 509.2 128.8 L 514.8 126.4 L 520.4 123.9 L 526.0 121.3 L 531.6 118.6 L 537.2 115.7 L 542.8 112.8 L 548.4 109.8 L 554.0 106.7 L 559.6 103.5 L 565.2 100.3 L 570.8 97.0 L 576.4 93.7 L 582.0 90.4 L 587.6 87.1 L 593.2 83.8 L 598.8 80.6 L 604.4 77.3 L 610.0 74.1" style="fill:none;stroke:var(--k-eps);stroke-dasharray:5 4" stroke-width="1.3"/><path d="M 50.0 175.2 L 55.6 171.9 L 61.2 168.7 L 66.8 165.4 L 72.4 162.2 L 78.0 159.0 L 83.6 155.9 L 89.2 152.8 L 94.8 149.8 L 100.4 147.0 L 106.0 144.2 L 111.6 141.6 L 117.2 139.1 L 122.8 136.7 L 128.4 134.5 L 134.0 132.4 L 139.6 130.5 L 145.2 128.7 L 150.8 127.1 L 156.4 125.7 L 162.0 124.5 L 167.6 123.4 L 173.2 122.6 L 178.8 121.9 L 184.4 121.4 L 190.0 121.1 L 195.6 121.0 L 201.2 121.1 L 206.8 121.4 L 212.4 121.9 L 218.0 122.5 L 223.6 123.3 L 229.2 124.3 L 234.8 125.5 L 240.4 126.8 L 246.0 128.2 L 251.6 129.8 L 257.2 131.5 L 262.8 133.4 L 268.4 135.3 L 274.0 137.4 L 279.6 139.6 L 285.2 141.8 L 290.8 144.1 L 296.4 146.5 L 302.0 148.9 L 307.6 151.3 L 313.2 153.8 L 318.8 156.2 L 324.4 158.7 L 330.0 161.2 L 335.6 163.6 L 341.2 165.9 L 346.8 168.3 L 352.4 170.5 L 358.0 172.7 L 363.6 174.8 L 369.2 176.7 L 374.8 178.6 L 380.4 180.4 L 386.0 182.0 L 391.6 183.5 L 397.2 184.8 L 402.8 186.0 L 408.4 187.0 L 414.0 187.9 L 419.6 188.5 L 425.2 189.0 L 430.8 189.3 L 436.4 189.5 L 442.0 189.4 L 447.6 189.2 L 453.2 188.7 L 458.8 188.1 L 464.4 187.3 L 470.0 186.3 L 475.6 185.1 L 481.2 183.7 L 486.8 182.2 L 492.4 180.4 L 498.0 178.5 L 503.6 176.5 L 509.2 174.3 L 514.8 171.9 L 520.4 169.4 L 526.0 166.8 L 531.6 164.1 L 537.2 161.2 L 542.8 158.3 L 548.4 155.3 L 554.0 152.2 L 559.6 149.0 L 565.2 145.8 L 570.8 142.5 L 576.4 139.2 L 582.0 135.9 L 587.6 132.6 L 593.2 129.3 L 598.8 126.1 L 604.4 122.8 L 610.0 119.6" style="fill:none;stroke:var(--k-eps);stroke-dasharray:5 4" stroke-width="1.3"/><path d="M 50.0 152.5 L 55.6 149.2 L 61.2 145.9 L 66.8 142.6 L 72.4 139.4 L 78.0 136.2 L 83.6 133.1 L 89.2 130.1 L 94.8 127.1 L 100.4 124.2 L 106.0 121.5 L 111.6 118.8 L 117.2 116.3 L 122.8 113.9 L 128.4 111.7 L 134.0 109.6 L 139.6 107.7 L 145.2 105.9 L 150.8 104.4 L 156.4 102.9 L 162.0 101.7 L 167.6 100.7 L 173.2 99.8 L 178.8 99.2 L 184.4 98.7 L 190.0 98.4 L 195.6 98.3 L 201.2 98.4 L 206.8 98.7 L 212.4 99.1 L 218.0 99.8 L 223.6 100.6 L 229.2 101.6 L 234.8 102.7 L 240.4 104.0 L 246.0 105.5 L 251.6 107.1 L 257.2 108.8 L 262.8 110.6 L 268.4 112.6 L 274.0 114.7 L 279.6 116.8 L 285.2 119.1 L 290.8 121.4 L 296.4 123.7 L 302.0 126.1 L 307.6 128.6 L 313.2 131.0 L 318.8 133.5 L 324.4 136.0 L 330.0 138.4 L 335.6 140.8 L 341.2 143.2 L 346.8 145.5 L 352.4 147.8 L 358.0 149.9 L 363.6 152.0 L 369.2 154.0 L 374.8 155.9 L 380.4 157.6 L 386.0 159.2 L 391.6 160.7 L 397.2 162.1 L 402.8 163.2 L 408.4 164.3 L 414.0 165.1 L 419.6 165.8 L 425.2 166.3 L 430.8 166.6 L 436.4 166.7 L 442.0 166.7 L 447.6 166.4 L 453.2 166.0 L 458.8 165.3 L 464.4 164.5 L 470.0 163.5 L 475.6 162.3 L 481.2 161.0 L 486.8 159.4 L 492.4 157.7 L 498.0 155.8 L 503.6 153.7 L 509.2 151.5 L 514.8 149.2 L 520.4 146.7 L 526.0 144.1 L 531.6 141.3 L 537.2 138.5 L 542.8 135.6 L 548.4 132.5 L 554.0 129.4 L 559.6 126.3 L 565.2 123.0 L 570.8 119.8 L 576.4 116.5 L 582.0 113.2 L 587.6 109.9 L 593.2 106.6 L 598.8 103.3 L 604.4 100.1 L 610.0 96.9" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><path d="M 50.0 145.9 L 52.8 142.7 L 55.6 139.6 L 58.4 136.7 L 61.2 133.8 L 64.0 131.0 L 66.8 128.4 L 69.6 125.9 L 72.4 123.6 L 75.2 121.5 L 78.0 119.5 L 80.8 117.7 L 83.6 116.0 L 86.4 114.6 L 89.2 113.3 L 92.0 112.2 L 94.8 111.3 L 97.6 110.6 L 100.4 110.0 L 103.2 109.6 L 106.0 109.3 L 108.8 109.2 L 111.6 109.2 L 114.4 109.4 L 117.2 109.7 L 120.0 110.0 L 122.8 110.4 L 125.6 110.9 L 128.4 111.5 L 131.2 112.1 L 134.0 112.7 L 136.8 113.4 L 139.6 114.0 L 142.4 114.6 L 145.2 115.2 L 148.0 115.7 L 150.8 116.2 L 153.6 116.6 L 156.4 117.0 L 159.2 117.2 L 162.0 117.4 L 164.8 117.4 L 167.6 117.3 L 170.4 117.2 L 173.2 116.9 L 176.0 116.5 L 178.8 116.0 L 181.6 115.3 L 184.4 114.6 L 187.2 113.8 L 190.0 112.8 L 192.8 111.8 L 195.6 110.7 L 198.4 109.5 L 201.2 108.3 L 204.0 107.0 L 206.8 105.7 L 209.6 104.3 L 212.4 103.0 L 215.2 101.6 L 218.0 100.3 L 220.8 99.1 L 223.6 97.8 L 226.4 96.7 L 229.2 95.6 L 232.0 94.6 L 234.8 93.8 L 237.6 93.0 L 240.4 92.4 L 243.2 92.0 L 246.0 91.7 L 248.8 91.5 L 251.6 91.6 L 254.4 91.8 L 257.2 92.2 L 260.0 92.8 L 262.8 93.6 L 265.6 94.6 L 268.4 95.7 L 271.2 97.1 L 274.0 98.6 L 276.8 100.3 L 279.6 102.2 L 282.4 104.2 L 285.2 106.4 L 288.0 108.7 L 290.8 111.2 L 293.6 113.7 L 296.4 116.4 L 299.2 119.1 L 302.0 121.9 L 304.8 124.8 L 307.6 127.6 L 310.4 130.5 L 313.2 133.4 L 316.0 136.3 L 318.8 139.1 L 321.6 141.9 L 324.4 144.6 L 327.2 147.2 L 330.0 149.7 L 332.8 152.1 L 335.6 154.4 L 338.4 156.5 L 341.2 158.5 L 344.0 160.3 L 346.8 162.0 L 349.6 163.5 L 352.4 164.8 L 355.2 165.9 L 358.0 166.8 L 360.8 167.6 L 363.6 168.2 L 366.4 168.6 L 369.2 168.8 L 372.0 168.9 L 374.8 168.8 L 377.6 168.5 L 380.4 168.1 L 383.2 167.6 L 386.0 166.9 L 388.8 166.2 L 391.6 165.3 L 394.4 164.4 L 397.2 163.4 L 400.0 162.3 L 402.8 161.2 L 405.6 160.1 L 408.4 159.0 L 411.2 157.9 L 414.0 156.8 L 416.8 155.7 L 419.6 154.7 L 422.4 153.8 L 425.2 152.9 L 428.0 152.1 L 430.8 151.4 L 433.6 150.8 L 436.4 150.3 L 439.2 149.9 L 442.0 149.7 L 444.8 149.5 L 447.6 149.5 L 450.4 149.5 L 453.2 149.7 L 456.0 150.0 L 458.8 150.4 L 461.6 150.8 L 464.4 151.4 L 467.2 152.0 L 470.0 152.8 L 472.8 153.5 L 475.6 154.3 L 478.4 155.2 L 481.2 156.0 L 484.0 156.9 L 486.8 157.7 L 489.6 158.6 L 492.4 159.3 L 495.2 160.1 L 498.0 160.7 L 500.8 161.3 L 503.6 161.7 L 506.4 162.1 L 509.2 162.3 L 512.0 162.4 L 514.8 162.3 L 517.6 162.1 L 520.4 161.7 L 523.2 161.1 L 526.0 160.4 L 528.8 159.4 L 531.6 158.3 L 534.4 157.0 L 537.2 155.5 L 540.0 153.8 L 542.8 151.9 L 545.6 149.9 L 548.4 147.7 L 551.2 145.3 L 554.0 142.8 L 556.8 140.1 L 559.6 137.3 L 562.4 134.4 L 565.2 131.4 L 568.0 128.2 L 570.8 125.0 L 573.6 121.8 L 576.4 118.5 L 579.2 115.2 L 582.0 111.9 L 584.8 108.6 L 587.6 105.3 L 590.4 102.1 L 593.2 98.9 L 596.0 95.8 L 598.8 92.8 L 601.6 89.9 L 604.4 87.2 L 607.2 84.6 L 610.0 82.1" style="fill:none;stroke:var(--accent)" stroke-width="2.2"/><text x="614.0" y="101.9" text-anchor="start" style="fill:var(--ink);font-size:15px">f</text><text x="423.3" y="133.4" text-anchor="middle" style="fill:var(--k-eps);font-size:15px">f + ε</text><text x="423.3" y="210.9" text-anchor="middle" style="fill:var(--k-eps);font-size:15px">f − ε</text><text x="339.3" y="143.2" text-anchor="middle" style="fill:var(--accent);font-size:15px">fₙ</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Vergleiche Figur 7.3 (<a class="pl" href="../script.html#p316">S. 316</a>). Der $\varepsilon$-Schlauch um $f$ (schattiert). Gleichmässige Konvergenz: Für jedes $\varepsilon$ bleibt ab einem $N$ jedes $f_n$ ganz darin. Punktweise Konvergenz erlaubt, dass $f_n$ irgendwo aus dem Schlauch herausragt, solange jeder einzelne Punkt irgendwann drin ist.</figcaption>
+</figure>
+<p><strong>Gleichmässig impliziert punktweise</strong> (Übung 7.46 (ii)): Wenn ein $N$ für alle $x$ funktioniert, funktioniert es für jedes $x$. Ein gleichmässiger Grenzwert ist also immer der punktweise Grenzwert, und in Prüfungen <em>beginnst</em> du immer damit, den punktweisen Grenzwert $f$ zu berechnen. Er ist der einzige Kandidat.</p>
+
+<h3 id="proof-a">Beweis A: der Sup-Test (Übung 7.46 (i), <a class="pl" href="../script.html#p315">S. 315</a>)</h3>
+<div class="box">
+<p><strong>Der Sup-Test.</strong> Sei $d_n=\sup_{x\in X}|f_n(x)-f(x)|$ (eine Zahl $\ge0$, oder $+\infty$). Dann gilt</p>
+<span class="math-display" style="display:block">$$f_n\to f\ \text{gleichmässig auf }X\quad\Longleftrightarrow\quad d_n\to0.$$</span>
+<p>In Worten: Der grösste Abstand zwischen den Graphen von $f_n$ und $f$ geht gegen $0$. (Das Skript schreibt auch $d_n=\|f_n-f\|_\infty$, die <strong>Supremumsnorm</strong>.)</p>
+</div>
+<p><strong>Die Idee.</strong> «$|f_n(x)-f(x)|&lt;\varepsilon$ für alle $x$» sagt, dass $\varepsilon$ eine obere Schranke aller Abstände ist, also ist das Supremum höchstens $\varepsilon$. Umgekehrt ist jeder einzelne Abstand höchstens das Supremum. Einzige Vorsicht: «$\sup\le\varepsilon$» ist nicht «$\sup&lt;\varepsilon$», also ziele auf $\frac\varepsilon2$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>«⇒»</strong> beginnt mit «Sei $\varepsilon&gt;0$.» und muss mit «$d_n&lt;\varepsilon$ für alle $n\ge N$.» enden.</li>
+  <li><strong>«⇐»</strong> beginnt mit «Sei $\varepsilon&gt;0$.» und muss mit «$|f_n(x)-f(x)|&lt;\varepsilon$ für alle $n\ge N$ und alle $x\in X$.» enden.</li>
+  <li><strong>Die Lücke, die du füllst:</strong> zwischen «für alle $x$» und «dem Supremum» übersetzen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Liegt jede Karte ab Nacht $N$ in einem Band von einer halben Haaresbreite, dann ist ihr schlimmster Fehler höchstens eine halbe Haaresbreite.</p></div><div class="sp-formal"><p>«⇒»: Sei $\varepsilon&gt;0$. Nach gleichmässiger Konvergenz (mit $\frac\varepsilon2$) gibt es $N$ mit $|f_n(x)-f(x)|&lt;\frac\varepsilon2$ für alle $n\ge N$ und $x\in X$. Also ist $\frac\varepsilon2$ eine obere Schranke von $\{|f_n(x)-f(x)|:x\in X\}$, und $d_n\le\frac\varepsilon2&lt;\varepsilon$ für $n\ge N$. Da $d_n\ge0$, heisst das $d_n\to0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Ist der schlimmste Fehler unter einer Haaresbreite, ist jeder einzelne Fehler unter einer Haaresbreite.</p></div><div class="sp-formal"><p>«⇐»: Sei $\varepsilon&gt;0$. Da $d_n\to0$, gibt es $N$ mit $d_n&lt;\varepsilon$ für $n\ge N$. Dann gilt für alle $n\ge N$ und alle $x\in X$: $|f_n(x)-f(x)|\le d_n&lt;\varepsilon$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-ub">sup ≤ eine obere Schranke</a> <a class="mvl" href="moves.html#m-half">Zweimal ε/2</a> <a class="mvl" href="moves.html#m-supx">Unabhängig von x abschätzen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>«⇒»: Zu $\varepsilon&gt;0$ wähle $N$ mit $|f_n(x)-f(x)|&lt;\frac\varepsilon2$ für alle $n\ge N$, $x\in X$. Dann $0\le d_n\le\frac\varepsilon2&lt;\varepsilon$ für $n\ge N$, also $d_n\to0$. «⇐»: Zu $\varepsilon&gt;0$ wähle $N$ mit $d_n&lt;\varepsilon$ für $n\ge N$. Dann $|f_n(x)-f(x)|\le d_n&lt;\varepsilon$ für alle $n\ge N$, $x\in X$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum verwendet der Beweis in «⇒» $\frac\varepsilon2$ und nicht $\varepsilon$?</p>
+  <details><summary>Antwort</summary><div><p>Aus «$&lt;\varepsilon$ für alle $x$» folgt nur $\sup\le\varepsilon$. Beispiel: $|f_n(x)-f(x)|=\varepsilon(1-x)$ auf $(0,1)$ ist überall $&lt;\varepsilon$, mit Supremum genau $\varepsilon$. Mit $\frac\varepsilon2$ erhalten wir $\sup\le\frac\varepsilon2&lt;\varepsilon$.</p></div></details></li>
+  <li><p><strong>Stufe 2 (1 Min.).</strong> Berechne $d_n$ für $x^n$ auf $[0,1]$ mit $f$ aus Musterbeispiel 1. Was sagt der Sup-Test?</p>
+  <details><summary>Antwort</summary><div><p>$|x^n-f(x)|=x^n$ für $x&lt;1$ und $0$ bei $x=1$, also $d_n=\sup_{x&lt;1}x^n=1$ (nimm $x$ nahe bei $1$). $d_n=1\not\to0$, die Konvergenz ist also nicht gleichmässig.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib beide Richtungen nur anhand des Rahmens.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-recipe-for-does-converge">Das Rezept für «konvergiert $f_n$ gleichmässig?»</h3>
+<ol>
+  <li><strong>Zuerst der punktweise Grenzwert.</strong> Fixiere $x$ und berechne $f(x)=\lim_nf_n(x)$. Existiert er irgendwo nicht, gibt es auch keine gleichmässige Konvergenz.</li>
+  <li><strong>Ja:</strong> Finde eine Schranke $|f_n(x)-f(x)|\le r_n$, <em>die kein $x$ enthält</em>, mit $r_n\to0$. Dann $d_n\le r_n\to0$, die Konvergenz ist also gleichmässig. (Das exakte Supremum brauchst du nicht.)</li>
+  <li><strong>Nein:</strong> Finde Punkte $x_n$ mit $|f_n(x_n)-f(x_n)|\ge c$ für ein festes $c&gt;0$. Dann $d_n\ge c$, also $d_n\not\to0$. Der schlechte Punkt $x_n$ wandert meist mit $n$. Oder: Sind alle $f_n$ stetig und $f$ nicht, verwende Beweis B unten.</li>
+</ol>
+<p class="legend">Typische Abschätzungen für Schritt 2: Terme aus einem Nenner weglassen ($\frac1{x^2+n}\le\frac1n$), oder $a^2+b^2\ge2ab$ verwenden ($1+nx^2\ge2\sqrt n\,|x|$).</p>
+</div>
+
+<div class="box">
+<h3 id="we-3">Musterbeispiel 3: $x^n$ auf $[0,a]$ für ein festes $a&lt;1$</h3>
+<ol class="gq">
+  <li><p>Was ist der punktweise Grenzwert auf $[0,a]$?</p>
+  <details><summary>Antwort</summary><div><p>$f=0$, da jedes $x\in[0,a]$ kleiner als $1$ ist.</p></div></details></li>
+  <li><p>Finde eine Schranke für $|x^n-0|$, die kein $x$ enthält.</p>
+  <details><summary>Antwort</summary><div><p>Für $0\le x\le a$: $x^n\le a^n$. Und $a^n\to0$.</p></div></details></li>
+  <li><p>Schliesse. Warum ist das kein Widerspruch zu Stufe 2 oben?</p>
+  <details><summary>Antwort</summary><div><p>$d_n\le a^n\to0$, also $x^n\to0$ gleichmässig auf $[0,a]$. Auf $[0,1]$ (und sogar auf $[0,1)$) sitzt das Problem beliebig nahe bei $1$. Ein Stück $(a,1]$ abzuschneiden entfernt alle schlechten Punkte. Ob Konvergenz gleichmässig ist, hängt von der Menge $X$ ab.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s4-uniform-limits-of-continuous-functions">4. Gleichmässige Grenzwerte stetiger Funktionen sind stetig</h2>
+<h3 id="proof-b">Beweis B: Der gleichmässige Grenzwert stetiger Funktionen ist stetig (Satz 7.48, <a class="pl" href="../script.html#p316">S. 316</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Sei $D\subseteq\mathbb R$ (oder $\mathbb C$), und seien $f_n:D\to\mathbb R$ (oder $\mathbb C$) stetig. Wenn $f_n\to f$ gleichmässig auf $D$, dann ist $f$ stetig.</p>
+</div>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="lesson-07.html#s2-the-definition">Lektionen 7</a> und <a class="xl" href="lesson-10.html">10</a>)</span>
+<ul>
+  <li><strong>Stetigkeit in $x_0$:</strong> Für jedes $\eta&gt;0$ gibt es $\delta&gt;0$ mit $|g(x)-g(x_0)|&lt;\eta$ für alle $x\in D$ mit $|x-x_0|&lt;\delta$.</li>
+  <li><strong>Dreiecksungleichung</strong> mit zwei Zwischenpunkten: $|a-d|\le|a-b|+|b-c|+|c-d|$.</li>
+</ul></div>
+<p><strong>Die Idee.</strong> Wir wollen $f(x)$ nahe bei $f(x_0)$. Über $f$ selbst wissen wir nichts, aber wir kennen ein stetiges $f_N$, das gleichmässig nahe bei $f$ liegt. Also gehen wir in drei Sprüngen: von $f(x)$ zu $f_N(x)$ (klein, wegen gleichmässiger Konvergenz), von $f_N(x)$ zu $f_N(x_0)$ (klein, wegen Stetigkeit von $f_N$), von $f_N(x_0)$ zurück zu $f(x_0)$ (klein, wieder wegen gleichmässiger Konvergenz). Gib jedem Sprung $\frac\varepsilon3$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeilen:</strong> «Sei $x_0\in D$ und $\varepsilon&gt;0$.» <strong>Letzte Zeile:</strong> «also $|f(x)-f(x_0)|&lt;\varepsilon$ für alle $x\in D$ mit $|x-x_0|&lt;\delta$. Folglich ist $f$ stetig in $x_0$, und $x_0$ war beliebig.»</li>
+  <li><strong>Die Lücke, die du füllst:</strong> $\delta$ finden. Es kann nur aus der Stetigkeit eines $f_n$ kommen, also zuerst ein gutes $n$ festlegen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Wähle einen Ort $x_0$ an der Küste und eine Haaresbreite $\varepsilon$.</p></div><div class="sp-formal"><p>Sei $x_0\in D$ und $\varepsilon&gt;0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wähle die Karte einer Nacht, die entlang der ganzen Küste weniger als ein Drittel einer Haaresbreite von der Wahrheit abweicht.</p></div><div class="sp-formal"><p>Nach gleichmässiger Konvergenz gibt es $N$ mit $|f_N(x)-f(x)|&lt;\frac\varepsilon3$ für <em>alle</em> $x\in D$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Diese Karte hat keine Lücken: Nahe bei $x_0$ ändert sie sich kaum.</p></div><div class="sp-formal"><p>$f_N$ ist stetig in $x_0$, also gibt es $\delta&gt;0$ mit $|f_N(x)-f_N(x_0)|&lt;\frac\varepsilon3$ für alle $x\in D$ mit $|x-x_0|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Drei Sprünge: von der wahren Küste bei $x$ zur Karte bei $x$, der Karte entlang zu $x_0$, zurück zur wahren Küste bei $x_0$. Jeder Sprung ist kleiner als ein Drittel einer Haaresbreite.</p></div><div class="sp-formal"><p>Für $x\in D$ mit $|x-x_0|&lt;\delta$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;\le |f(x)-f_N(x)|+|f_N(x)-f_N(x_0)|+|f_N(x_0)-f(x_0)|\\&amp;&lt;\tfrac\varepsilon3+\tfrac\varepsilon3+\tfrac\varepsilon3\\&amp;=\varepsilon\end{aligned}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Also hat auch die wahre Küste bei $x_0$ keine Lücke, und $x_0$ war ein beliebiger Ort.</p></div><div class="sp-formal"><p>Also ist $f$ stetig in $x_0$. Da $x_0\in D$ beliebig war, ist $f$ stetig. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-eps3">Dreimal ε/3</a> <a class="mvl" href="moves.html#m-tri">Einen Zwischenpunkt einfügen</a> <a class="mvl" href="moves.html#m-eps">Stetigkeit mit einem gewählten ε</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Sei $x_0\in D$ und $\varepsilon&gt;0$. Nach gleichmässiger Konvergenz gibt es $N$ mit $|f_N(x)-f(x)|&lt;\frac\varepsilon3$ für alle $x\in D$. Da $f_N$ stetig in $x_0$ ist, gibt es $\delta&gt;0$ mit $|f_N(x)-f_N(x_0)|&lt;\frac\varepsilon3$ für alle $x\in D$ mit $|x-x_0|&lt;\delta$. Für solche $x$ gilt</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;\le |f(x)-f_N(x)|+|f_N(x)-f_N(x_0)|+|f_N(x_0)-f(x_0)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+<p>Also ist $f$ stetig in $x_0$, und da $x_0$ beliebig war, ist $f$ stetig. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Fixiere</strong> $x_0$ und $\varepsilon$.</li>
+  <li><strong>Ein $N$</strong> mit $|f_N-f|&lt;\frac\varepsilon3$ <em>überall</em> (gleichmässige Konvergenz).</li>
+  <li><strong>Ein $\delta$</strong> aus der Stetigkeit dieses $f_N$ in $x_0$.</li>
+  <li><strong>Drei Sprünge</strong> mit der Dreiecksungleichung: $f(x)\to f_N(x)\to f_N(x_0)\to f(x_0)$.</li>
+</ol>
+<p>Kurz gesagt: «zuerst $N$, dann $\delta$, dann drei Drittel». Sag in Schritt 2 klar, dass die Abschätzung für alle $x$ gilt: Genau dort wird «gleichmässig» verwendet.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Der erste und der dritte Sprung werden an zwei <em>verschiedenen</em> Punkten abgeschätzt, $x$ und $x_0$. Warum reicht punktweise Konvergenz dafür nicht?</p>
+  <details><summary>Antwort</summary><div><p>Bei punktweiser Konvergenz hängt $N$ vom Punkt ab. Wir brauchen $|f(x)-f_N(x)|&lt;\frac\varepsilon3$ für jedes $x$ nahe bei $x_0$, aber $\delta$ (und damit die Menge dieser $x$) kommt von $f_N$, das zuerst $N$ braucht. Punktweise würde $N$ von $x$ abhängen, $x$ von $\delta$ und $\delta$ von $N$: ein Zirkel. Gleichmässige Konvergenz liefert ein $N$ für alle $x$, bevor $\delta$ gewählt wird.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Zeige mit Beweis B in einer Zeile, dass $x^n$ auf $[0,1]$ nicht gleichmässig konvergiert.</p>
+  <details><summary>Antwort</summary><div><p>Täte sie es, wäre der Grenzwert nach Beweis B stetig, da alle $x^n$ stetig sind. Aber der Grenzwert ist $1_{\{1\}}$, der bei $1$ springt. Die Konvergenz ist also nicht gleichmässig.</p></div></details></li>
+  <li><p><strong>Stufe 3 (5 Min.).</strong> Schreib den ganzen Beweis nur anhand der Prüfungsbox. Dann mach Aufgabe 4, die Prüfungsversion.</p></li>
+</ol></div>
+<p><strong>Warum das cool ist.</strong> Beweis B ist ein Gratis-Test gegen gleichmässige Konvergenz: Stetige Funktionen mit einem unstetigen Grenzwert können nie gleichmässig konvergieren. Die Umkehrung gilt aber nicht. Auf $[0,1)$ gilt $x^n\to0$, ein stetiger Grenzwert, und trotzdem ist die Konvergenz nicht gleichmässig (Stufe 2 von Beweis A: Das Supremum ist immer noch $1$). Ein stetiger Grenzwert beweist nichts; du brauchst trotzdem das Supremum.</p>
+
+<h2 id="s5-uniform-limits-of-integrable-functions">5. Gleichmässige Grenzwerte integrierbarer Funktionen sind integrierbar</h2>
+<h3 id="proof-c">Beweis C: Integral und gleichmässiger Grenzwert dürfen vertauscht werden (Satz 7.49, <a class="pl" href="../script.html#p317">S. 317</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Seien $f_n:[a,b]\to\mathbb R$ Riemann-integrierbar, und $f_n\to f$ gleichmässig auf $[a,b]$. Dann ist $f$ Riemann-integrierbar, und</p>
+<span class="math-display" style="display:block">$$\lim_{n\to\infty}\int_a^bf_n\,dx=\int_a^b\lim_{n\to\infty}f_n\,dx=\int_a^bf\,dx.$$</span>
+</div>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="lesson-09.html#proof-a">Lektion 9</a>)</span>
+<ul>
+  <li><strong>Das $\varepsilon$-Kriterium:</strong> $f$ ist integrierbar ⇔ für jedes $\varepsilon&gt;0$ gibt es Treppenfunktionen $u\le f\le o$ mit $\int_a^b(o-u)\,dx&lt;\varepsilon$.</li>
+  <li><strong>Monotonie:</strong> $g\le h$ ⇒ $\int_a^bg\le\int_a^bh$. <strong>Konstanten:</strong> $\int_a^bc\,dx=c\,(b-a)$. Eine Treppenfunktion plus eine Konstante ist eine Treppenfunktion.</li>
+</ul></div>
+<p><strong>Die Idee.</strong> Integrierbarkeit: $f_N$ ist integrierbar, also zwischen Treppenfunktionen $u$ und $o$ eingeklemmt, die nahe beieinander liegen. Und $f$ liegt im $\varepsilon$-Schlauch um $f_N$. Also schiebe die untere Treppenfunktion um $\varepsilon$ nach unten und die obere um $\varepsilon$ nach oben: Jetzt klemmen sie $f$ ein, und ihr Abstand ist nur um $2\varepsilon(b-a)$ gewachsen. Die Integrale: $f-\varepsilon\le f_n\le f+\varepsilon$, also unterscheiden sich die Integrale um höchstens $\varepsilon(b-a)$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Teil 1</strong> muss mit «also ist $f$ nach dem $\varepsilon$-Kriterium integrierbar.» enden. Also: Für jedes $\varepsilon&gt;0$ Treppenfunktionen $u'\le f\le o'$ mit kleinem $\int(o'-u')$ liefern.</li>
+  <li><strong>Teil 2</strong> muss mit «$\left|\int_a^bf_n-\int_a^bf\right|\le\dots$ für alle $n\ge N$, also $\int f_n\to\int f$.» enden.</li>
+  <li><strong>Die Lücke, die du füllst:</strong> Die Treppenfunktionen für $f$ müssen von denen eines $f_N$ kommen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Wähle die Karte einer Nacht, die überall weniger als eine Haaresbreite von der wahren Küste abweicht.</p></div><div class="sp-formal"><p><strong>Teil 1.</strong> Sei $\varepsilon&gt;0$. Nach gleichmässiger Konvergenz gibt es $N$ mit $|f_N(x)-f(x)|&lt;\varepsilon$ für alle $x\in[a,b]$, also $f_N-\varepsilon\le f\le f_N+\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Diese Karte ist zwischen zwei Treppenumrissen eingeklemmt, die nahe beieinander liegen.</p></div><div class="sp-formal"><p>Da $f_N$ integrierbar ist, gibt es Treppenfunktionen $u\le f_N\le o$ mit $\int_a^b(o-u)\,dx&lt;\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Senke die eine Treppe um eine Haaresbreite und hebe die andere um eine Haaresbreite: Jetzt klemmen sie die wahre Küste ein.</p></div><div class="sp-formal"><p>Sei $u'=u-\varepsilon$ und $o'=o+\varepsilon$. Das sind Treppenfunktionen, und</p>
+<span class="math-display" style="display:block">$$u'=u-\varepsilon\le f_N-\varepsilon\le f\le f_N+\varepsilon\le o+\varepsilon=o'.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Abstand zwischen ihnen ist nur um zwei Haaresbreiten mal die Länge der Küste gewachsen.</p></div><div class="sp-formal"><span class="math-display" style="display:block">$$\begin{aligned}\int_a^b(o'-u')\,dx&amp;=\int_a^b(o-u)\,dx+2\varepsilon(b-a)\\&amp;&lt;\varepsilon\,(1+2(b-a))\end{aligned}.$$</span><p>Da $\varepsilon&gt;0$ beliebig war, lässt sich $\varepsilon(1+2(b-a))$ so klein machen, wie wir wollen, also ist $f$ nach dem $\varepsilon$-Kriterium integrierbar.</p><p>(Warum «$&lt;\varepsilon$ mal eine Konstante» reicht: Das Kriterium verlangt einen Abstand unter einem gegebenen $\delta&gt;0$. Führe das Argument mit $\varepsilon=\frac{\delta}{1+2(b-a)}$ durch; dann ist der Abstand $&lt;\varepsilon(1+2(b-a))=\delta$. Die Konstante $1+2(b-a)$ hängt nicht von $\varepsilon$ ab, also kann man sie immer so herausdividieren. Wenn du willst, beginne mit $\varepsilon$ und verwende von Anfang an den Schlauch $\frac{\varepsilon}{1+2(b-a)}$; dann kommt der Abstand genau $&lt;\varepsilon$ heraus.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Fläche der wahren Küste und die Fläche der Karte unterscheiden sich um höchstens eine Haaresbreite mal die Länge der Küste.</p></div><div class="sp-formal"><p><strong>Teil 2.</strong> Sei $\varepsilon&gt;0$ und $N$ mit $f-\varepsilon\le f_n\le f+\varepsilon$ auf $[a,b]$ für alle $n\ge N$. Nach Monotonie gilt für $n\ge N$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\int_a^bf\,dx-\varepsilon(b-a)&amp;\le \int_a^bf_n\,dx\\&amp;\le \int_a^bf\,dx+\varepsilon(b-a)\end{aligned},$$</span>
+<p>das heisst $\left|\int_a^bf_n\,dx-\int_a^bf\,dx\right|\le\varepsilon(b-a)$. Da $\varepsilon&gt;0$ beliebig war, gilt $\int_a^bf_n\,dx\to\int_a^bf\,dx$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-squeeze">Das ε-Kriterium (Einschachteln)</a> <a class="mvl" href="moves.html#m-supx">Unabhängig von x abschätzen</a> <a class="mvl" href="moves.html#m-alleps">Kleiner als jedes ε</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p><strong>Integrierbarkeit.</strong> Sei $\varepsilon&gt;0$. Wähle $N$ mit $|f_N(x)-f(x)|&lt;\varepsilon$ für alle $x\in[a,b]$ und Treppenfunktionen $u\le f_N\le o$ mit $\int_a^b(o-u)\,dx&lt;\varepsilon$. Dann sind $u-\varepsilon$ und $o+\varepsilon$ Treppenfunktionen mit $u-\varepsilon\le f\le o+\varepsilon$ und <span class="math-display" style="display:block">$$\int_a^b\big((o+\varepsilon)-(u-\varepsilon)\big)dx&lt;\varepsilon(1+2(b-a)).$$</span>Da $\varepsilon$ beliebig ist, ist $f$ nach dem $\varepsilon$-Kriterium integrierbar.</p>
+<p><strong>Integrale.</strong> Zu $\varepsilon&gt;0$ wähle $N$ mit $f-\varepsilon\le f_n\le f+\varepsilon$ für $n\ge N$. Die Monotonie des Integrals gibt $\left|\int_a^bf_n-\int_a^bf\right|\le\varepsilon(b-a)$ für $n\ge N$. Folglich $\int_a^bf_n\to\int_a^bf$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Schlauch:</strong> ein $N$ mit $f_N-\varepsilon\le f\le f_N+\varepsilon$ auf ganz $[a,b]$.</li>
+  <li><strong>$f_N$ einklemmen:</strong> Treppenfunktionen $u\le f_N\le o$ mit $\int(o-u)&lt;\varepsilon$.</li>
+  <li><strong>Verschieben:</strong> $u-\varepsilon\le f\le o+\varepsilon$, Abstand $&lt;\varepsilon(1+2(b-a))$. Das $\varepsilon$-Kriterium liefert Integrierbarkeit.</li>
+  <li><strong>Integrale:</strong> Die Monotonie des Integrals macht aus $f-\varepsilon\le f_n\le f+\varepsilon$ die Abschätzung $\left|\int f_n-\int f\right|\le\varepsilon(b-a)$.</li>
+</ol>
+<p>Kurz gesagt: «Schlauch, $f_N$ einklemmen, um $\varepsilon$ verschieben, dann den Schlauch integrieren». Vergisst du Schritt 3, schreib wenigstens Schritt 4: Er allein bringt oft die halbe Punktzahl.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum ist $u-\varepsilon$ eine Treppenfunktion?</p>
+  <details><summary>Antwort</summary><div><p>$u$ ist auf jedem Stück einer Zerlegung konstant, also ist $u-\varepsilon$ auf denselben Stücken konstant.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Warum kannst du Teil 1 nicht weglassen und nur Teil 2 machen?</p>
+  <details><summary>Antwort</summary><div><p>Teil 2 verwendet $\int_a^bf\,dx$ und dessen Monotonie. Das ergibt erst Sinn, wenn wir wissen, dass $f$ integrierbar ist. Die dritte Warnung in <a class="xl" href="#s2-pointwise-convergence-and-what-goes">Abschnitt 2</a> zeigt, dass ein punktweiser Grenzwert integrierbarer Funktionen nicht integrierbar sein muss.</p></div></details></li>
+  <li><p><strong>Stufe 3 (6 Min.).</strong> Schreib den ganzen Beweis nur anhand der Prüfungsbox. Das ist die 7-Punkte-Frage der Einsiedler-Probeprüfung HS21.</p></li>
+</ol></div>
+<p>Die Zelte aus Musterbeispiel 2 zeigen, warum man «gleichmässig» nicht weglassen kann: Dort gilt $f_n\to0$ punktweise, aber $\int f_n=\frac14$. Und die Konvergenz ist nicht gleichmässig, da die Spitze $\frac n2\to\infty$ den Wert $d_n=\frac n2$ gibt.</p>
+
+<h2 id="s6-series-of-functions-and-the">6. Funktionenreihen und das Majorantenkriterium von Weierstrass</h2>
+<p>Eine <strong>Funktionenreihe</strong> $\sum_{k=1}^\infty g_k$ ist, wie in <a class="xl" href="lesson-14.html#s2-series-and-partial-sums">Lektion 14</a>, die Folge ihrer Partialsummen $s_n(x)=\sum_{k=1}^ng_k(x)$. «Konvergiert gleichmässig» heisst: $s_n\to s$ gleichmässig. Die Potenzreihen $\sum a_kx^k$ der nächsten Lektion sind genau solche Reihen, und mit diesem Kriterium beweist das Skript, dass sie stetig sind (<a class="pl" href="../script.html#p319">S. 319–320</a>).</p>
+<h3 id="proof-d">Beweis D: das Majorantenkriterium von Weierstrass</h3>
+<div class="box">
+<p><strong>Weierstrass-Kriterium.</strong> Seien $g_k:X\to\mathbb R$ (oder $\mathbb C$), und es gebe Zahlen $M_k$ mit $|g_k(x)|\le M_k$ für alle $x\in X$ und $\sum_{k=1}^\infty M_k&lt;\infty$. Dann konvergiert $\sum_kg_k(x)$ für jedes $x$ absolut, und die Partialsummen konvergieren <strong>gleichmässig</strong> auf $X$ gegen $s(x)=\sum_{k=1}^\infty g_k(x)$.</p>
+</div>
+<p><strong>Die Idee.</strong> Das Majorantenkriterium aus <a class="xl" href="lesson-14.html#s5-the-cauchy-criterion-and-absolute">Lektion 14</a> liefert Konvergenz bei jedem $x$. Für die Gleichmässigkeit schau den Fehler nach $n$ Gliedern an: Er ist das Endstück $\sum_{k&gt;n}g_k(x)$, und dieses ist höchstens $\sum_{k&gt;n}M_k$, das Endstück einer konvergenten Zahlenreihe. Diese Schranke enthält kein $x$ und geht gegen $0$. Der Sup-Test erledigt den Rest.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> «Für jedes $x$ konvergiert $\sum|g_k(x)|\le\sum M_k$, also existiert $s(x)$.» <strong>Letzte Zeile:</strong> «also $\sup_x|s(x)-s_n(x)|\to0$, und nach dem Sup-Test ist die Konvergenz gleichmässig.»</li>
+  <li><strong>Die Lücke, die du füllst:</strong> $|s(x)-s_n(x)|$ durch etwas ohne $x$ abschätzen, das gegen $0$ geht.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Korrektur jeder Nacht an der Karte ist überall an der Küste höchstens $M_k$, und diese maximalen Korrekturen ergeben zusammen eine endliche Summe.</p></div><div class="sp-formal"><p>Fixiere $x\in X$. Da $|g_k(x)|\le M_k$ und $\sum M_k$ konvergiert, liefert das Majorantenkriterium absolute Konvergenz von $\sum_kg_k(x)$. Sei $s(x)$ ihr Wert.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Was nach Nacht $n$ noch fehlt, sind alle späteren Korrekturen, und diese sind höchstens der Rest der Summe.</p></div><div class="sp-formal"><p>Für jedes $n$ und $x$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}|s(x)-s_n(x)|&amp;=\Bigl|\sum_{k=n+1}^\infty g_k(x)\Bigr|\\&amp;\le \sum_{k=n+1}^\infty|g_k(x)|\\&amp;\le \sum_{k=n+1}^\infty M_k\\&amp;=:r_n\end{aligned}.$$</span>
+<p>(Der mittlere Schritt ist die Dreiecksungleichung für endliche Summen, dann der Grenzwert.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Rest einer endlichen Summe schrumpft auf nichts, und diese Schranke ist entlang der ganzen Küste dieselbe.</p></div><div class="sp-formal"><p>$r_n=\sum_{k=1}^\infty M_k-\sum_{k=1}^nM_k\to0$. Also $\sup_{x\in X}|s(x)-s_n(x)|\le r_n\to0$, und nach dem Sup-Test (Beweis A) gilt $s_n\to s$ gleichmässig auf $X$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-major">Eine Majorante (oder Minorante) finden</a> <a class="mvl" href="moves.html#m-supx">Unabhängig von x abschätzen</a> <a class="mvl" href="moves.html#m-partial">Zu den Partialsummen übergehen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Für jedes $x$ gilt $\sum|g_k(x)|\le\sum M_k&lt;\infty$, also existiert $s(x)=\sum_kg_k(x)$. Für alle $n$ und $x$ ist $|s(x)-s_n(x)|=\left|\sum_{k&gt;n}g_k(x)\right|$, und das ist $\le\sum_{k&gt;n}M_k=r_n$, und $r_n\to0$ als Endstück einer konvergenten Reihe. Also $\sup_x|s(x)-s_n(x)|\le r_n\to0$, und die Konvergenz ist nach dem Sup-Test gleichmässig. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Zeige, dass $\sum_{k=1}^\infty\frac{\sin(kx)}{k^2}$ auf $\mathbb R$ gleichmässig konvergiert und dass ihre Summe stetig ist.</p>
+  <details><summary>Antwort</summary><div><p>$\left|\frac{\sin(kx)}{k^2}\right|\le\frac1{k^2}=M_k$ für alle $x$, und $\sum\frac1{k^2}$ konvergiert. Nach dem Weierstrass-Kriterium konvergiert die Reihe gleichmässig. Ihre Partialsummen sind stetig (endliche Summen stetiger Funktionen), also ist die Summe nach Beweis B stetig.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Greift das Weierstrass-Kriterium bei $\sum_{k=0}^\infty x^k$ auf $[-a,a]$ für $0&lt;a&lt;1$? Auf $(-1,1)$?</p>
+  <details><summary>Antwort</summary><div><p>Auf $[-a,a]$: $|x^k|\le a^k=M_k$, und $\sum a^k$ konvergiert, also ja: gleichmässige Konvergenz. Auf $(-1,1)$ ist die beste Schranke $\sup_{|x|&lt;1}|x^k|=1$, und $\sum1$ divergiert, also greift das Kriterium nicht. (Tatsächlich ist die Konvergenz dort nicht gleichmässig; <a class="xl" href="lesson-16.html">Lektion 16</a> zeigt, warum.)</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den Beweis nur anhand des Rahmens.</p></li>
+</ol></div>
+
+<h2 id="s7-five-useful-facts">7. Fünf nützliche Tatsachen</h2>
+<p>Das sind kurze Übungen im Skript (<a class="pl" href="../script.html#p318">S. 318</a>). Jede hat eine zweizeilige Begründung, und zwei davon wurden schon in Prüfungen gefragt.</p>
+<ul>
+  <li><strong>Endliche Vereinigungen (Übung 7.50).</strong> Wenn $f_n\to f$ gleichmässig auf $X_1$ und auf $X_2$, dann auch auf $X_1\cup X_2$: Nimm das grössere der beiden $N$. Für unendlich viele Stücke scheitert das: $x^n$ konvergiert gleichmässig auf jedem $[0,1-\frac1m]$, aber nicht auf ihrer Vereinigung $[0,1)$.</li>
+  <li><strong>Beschränktheit (Übung 7.51).</strong> Ein gleichmässiger Grenzwert beschränkter Funktionen ist beschränkt: Ist $|f_N-f|&lt;1$ überall und $|f_N|\le B$, dann $|f|\le B+1$. Für punktweise Grenzwerte scheitert das (Aufgabe 6).</li>
+  <li><strong>Wandernde Punkte (Übung 7.52).</strong> Wenn stetige $f_n\to f$ gleichmässig und $z_n\to z_0$, dann $f_n(z_n)\to f(z_0)$. Schieb einen Zwischenpunkt ein:<span class="math-display" style="display:block">$$\begin{aligned}|f_n(z_n)-f(z_0)|&amp;\le |f_n(z_n)-f(z_n)|+|f(z_n)-f(z_0)|\end{aligned}.$$</span>Der erste Term ist höchstens $d_n$, und der zweite geht gegen $0$, weil $f$ stetig ist (Beweis B). Punktweise scheitert das: $x^n$ bei $z_n=1-\frac1n$ gibt $\left(1-\frac1n\right)^n\to\frac1e\neq0$.</li>
+  <li><strong>Gleichmässige Stetigkeit (Übung 7.53).</strong> Ein gleichmässiger Grenzwert <em>gleichmässig</em> stetiger Funktionen ist gleichmässig stetig. Gleicher Beweis wie Beweis B, mit $\delta$ unabhängig von $x_0$. Auf $[a,b]$ bekommst du das gratis: Der Grenzwert ist stetig (Beweis B), also gleichmässig stetig (Satz von Heine, <a class="xl" href="lesson-08.html#proof-e">Lektion 8</a>). Das war die 1-Punkt-Folgefrage der Sommerprüfung 2018.</li>
+  <li><strong>Ableitungen sind nicht sicher.</strong> $f_n(x)=\frac{\sin(nx)}n$ konvergiert auf $\mathbb R$ gleichmässig gegen $0$ (da $|f_n|\le\frac1n$), aber $f_n'(x)=\cos(nx)$ konvergiert überhaupt nicht (versuch $x=\pi$: $(-1)^n$). Gleichmässige Konvergenz schützt Stetigkeit und Integrale, nicht Ableitungen. Musterbeispiel 5 unten geht weiter: Ein gleichmässiger Grenzwert glatter Funktionen kann einen Knick haben. Ableitungen kommen in <a class="xl" href="lesson-17.html#s2-the-derivative">Lektion 17</a> zurück.</li>
+</ul>
+
+<h2 id="s8-worked-examples">8. Musterbeispiele</h2>
+<p>Die Musterbeispiele sind Fragen: Versuch jede zuerst im Kopf, dann öffne die Antwort. Deine Antworten, der Reihe nach, sind die Lösung.</p>
+<div class="box">
+<h3 id="we-4">Musterbeispiel 4: $f_n(x)=\dfrac{nx}{1+n^2x^2}$ auf $[0,1]$</h3>
+<ol class="gq">
+  <li><p>Punktweiser Grenzwert? Behandle $x=0$ und $x&gt;0$ getrennt.</p>
+  <details><summary>Antwort</summary><div><p>$f_n(0)=0$. Für $x&gt;0$: $0\le f_n(x)\le\frac{nx}{n^2x^2}=\frac1{nx}\to0$. Also $f=0$.</p></div></details></li>
+  <li><p>Gibt es einen schlechten Punkt? Versuch $x_n=\frac1n$.</p>
+  <details><summary>Antwort</summary><div><p>$f_n\left(\frac1n\right)=\frac{1}{1+1}=\frac12$. Also $d_n\ge\frac12$ für alle $n$, und die Konvergenz ist auf $[0,1]$ nicht gleichmässig. (Der Buckel der Höhe $\frac12$ rutscht gegen $0$.)</p></div></details></li>
+  <li><p>Ist sie auf $[a,1]$ für ein festes $a&gt;0$ gleichmässig?</p>
+  <details><summary>Antwort</summary><div><p>Ja: Für $x\ge a$ gilt $0\le f_n(x)\le\frac1{nx}\le\frac1{na}\to0$, eine Schranke ohne $x$. Die schlechten Punkte $\frac1n$ verlassen $[a,1]$ irgendwann.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-5">Musterbeispiel 5: $f_n(x)=\sqrt{x^2+\frac1{n^2}}$ auf $\mathbb R$</h3>
+<ol class="gq">
+  <li><p>Punktweiser Grenzwert?</p>
+  <details><summary>Antwort</summary><div><p>$\sqrt{x^2+\frac1{n^2}}\to\sqrt{x^2}=|x|$, wegen der Stetigkeit der Wurzel.</p></div></details></li>
+  <li><p>Schätze $f_n(x)-|x|$ ohne $x$ ab. (Erweitere oben und unten mit $\sqrt{x^2+\frac1{n^2}}+|x|$.)</p>
+  <details><summary>Antwort</summary><div><p>$$0\le\sqrt{x^2+\tfrac1{n^2}}-|x|=\frac{\frac1{n^2}}{\sqrt{x^2+\frac1{n^2}}+|x|}\le\frac{\frac1{n^2}}{\frac1n}=\frac1n,$$ da der Nenner mindestens $\sqrt{\frac1{n^2}}=\frac1n$ ist.</p></div></details></li>
+  <li><p>Schliesse. Was ist überraschend?</p>
+  <details><summary>Antwort</summary><div><p>$d_n\le\frac1n\to0$: gleichmässige Konvergenz gegen $|x|$. Jedes $f_n$ ist überall differenzierbar (eine glatte Kurve), aber der Grenzwert $|x|$ hat bei $0$ einen Knick. Gleichmässige Konvergenz erhält Stetigkeit, aber nicht Differenzierbarkeit.</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-6">Musterbeispiel 6: der wandernde Buckel $f_n(x)=\dfrac1{1+(x-n)^2}$ auf $\mathbb R$</h3>
+<ol class="gq">
+  <li><p>Punktweiser Grenzwert?</p>
+  <details><summary>Antwort</summary><div><p>Für festes $x$ gilt $(x-n)^2\to\infty$, also $f_n(x)\to0$.</p></div></details></li>
+  <li><p>Gleichmässig auf $\mathbb R$?</p>
+  <details><summary>Antwort</summary><div><p>Nein: Der schlechte Punkt ist $x_n=n$, wo $f_n(n)=1$. Also $d_n=1$. Der Buckel schrumpft nie; er wandert nur nach rechts davon.</p></div></details></li>
+  <li><p>Gleichmässig auf $(-\infty,R]$ für festes $R$?</p>
+  <details><summary>Antwort</summary><div><p>Ja. Für $n&gt;R$ und $x\le R$: $n-x\ge n-R&gt;0$, also $f_n(x)\le\frac1{1+(n-R)^2}\to0$, eine Schranke ohne $x$.</p></div></details></li>
+</ol>
+<p class="legend">Die drei Arten, wie Konvergenz nicht gleichmässig ist, alle mit einem wandernden schlechten Punkt: Der Buckel wird höher (die Zelte), er rutscht in eine Ecke (Musterbeispiel 4), oder er wandert ins Unendliche ab (dieses hier).</p>
+</div>
+<h2 id="s9-exercises">9. Aufgaben</h2>
+<p>Jede Lösung ist unter ihrer Aufgabe eingeklappt. Die Aufgaben 1–3 sind Prüfungsfragen und zählen für die Bewertung.</p>
+<div class="box"><h3 id="ex-1">Aufgabe 1 (Kobel-Keller HS24, Frage 7, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">Prüfung HS24</a></p>
+  <p>Seien $f_n:[a,b]\to\mathbb R$ ($n\ge1$) stetige Funktionen auf einem kompakten Intervall. Welche Aussage ist richtig? (A) Wenn $\sup_{x\in[a,b]}|f_n(x)|\ge\frac1{2n}$, kann die Folge nicht gleichmässig gegen $0$ konvergieren. (B) Wenn das Maximum jedes $f_n$ an einem anderen Punkt $x_n$ angenommen wird, kann die Folge nicht gleichmässig gegen $0$ konvergieren. (C) Wenn $f_n\to f$ punktweise, dann ist $f$ stetig. (D) Wenn $f_n\to f$ gleichmässig, dann ist $f$ Riemann-integrierbar.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>Antwort (D).</strong> Jedes $f_n$ ist stetig auf $[a,b]$, also integrierbar (<a class="xl" href="lesson-09.html#we-2">Lektion 9</a>). Nach Beweis C ist der gleichmässige Grenzwert $f$ integrierbar. (Oder: $f$ ist nach Beweis B stetig, also integrierbar.)</p>
+  <ul>
+    <li>(A) Falsch. Die Konstanten $f_n=\frac1{2n}$ haben $\sup|f_n|=\frac1{2n}$ und konvergieren gleichmässig gegen $0$, da $d_n=\frac1{2n}\to0$. Eine untere Schranke schliesst gleichmässige Konvergenz nur aus, wenn sie nicht gegen $0$ geht.</li>
+    <li>(B) Falsch. Nimm $[a,b]=[0,1]$, $x_n=\frac1{n+1}$ (alle verschieden) und $f_n(x)=\frac1n\bigl(1-|x-x_n|\bigr)$. Das Maximum $\frac1n$ wird nur bei $x_n$ angenommen, und $|f_n|\le\frac1n\to0$ gleichmässig.</li>
+    <li>(C) Falsch. $x^n$ auf $[0,1]$ (Musterbeispiel 1).</li>
+  </ul>
+  <p><em>Kniffe:</em> <a class="mvl" href="moves.html#m-counter">Ein kleines Gegenbeispiel</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Aufgabe 2 (Kobel-Keller HS24, Frage 18 (b) und (c), 5 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2025-02-kobel-keller-hs24-exam.pdf&amp;t=2025-02%20Kobel-Keller%20-%20HS24%20exam">Prüfung HS24</a></p>
+  <p>Sei $f_n(x)=\dfrac x{1+nx^2}$ auf $\mathbb R$, $n\ge1$. (b) Bestimme den punktweisen Grenzwert. (c) Konvergiert $(f_n)_n$ gleichmässig? Begründe deine Antwort.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> das Rezept: zuerst der punktweise Grenzwert, dann eine Schranke ohne $x$. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-supx">Unabhängig von x abschätzen</a>.</p>
+  <p><strong>(b) (2 Punkte).</strong> $f_n(0)=0$ für alle $n$. Für $x\neq0$: $|f_n(x)|=\frac{|x|}{1+nx^2}\le\frac{|x|}{nx^2}=\frac1{n|x|}\to0$. Der punktweise Grenzwert ist also $f=0$.</p>
+  <p><strong>(c) (3 Punkte). Ja.</strong> Für alle $x\in\mathbb R$: $(1-\sqrt n\,|x|)^2\ge0$ gibt $1+nx^2\ge2\sqrt n\,|x|$. Also gilt für $x\neq0$</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f_n(x)-0|&amp;=\frac{|x|}{1+nx^2}\\&amp;\le \frac{|x|}{2\sqrt n\,|x|}\\&amp;=\frac1{2\sqrt n}\end{aligned},$$</span>
+  <p>und bei $x=0$ gilt das auch. Die Schranke enthält kein $x$, also $\sup_{x\in\mathbb R}|f_n(x)|\le\frac1{2\sqrt n}\to0$, und nach dem Sup-Test gilt $f_n\to0$ gleichmässig. (Die Schranke wird bei $x=\frac1{\sqrt n}$ angenommen: $f_n\left(\frac1{\sqrt n}\right)=\frac{1/\sqrt n}{2}$.) <span class="qed">∎</span></p>
+  <p class="legend">Teil (a) der Prüfungsfrage fragt, ob jedes $f_n$ gleichmässig stetig ist. Die Antwort ist ja, über die Ableitung: $|f_n'|\le1$ macht $f_n$ Lipschitz-stetig. Dafür brauchst du <a class="xl" href="lesson-17.html#ex-2">Lektion 17</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Aufgabe 3 (Prüfung im Einsiedler-Stil, Winter 2012, Frage 5, hier 3 Punkte)</h3>
+  <p>Sei $f_n:(0,\infty)\to\mathbb R$, $f_n(x)=\dfrac{x^k}{x^2+n}$. Für welche $k\in\{0,1,2\}$ konvergiert $(f_n)_n$ gleichmässig auf $(0,\infty)$?</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>Antwort: für $k=0$ und $k=1$.</strong> In allen drei Fällen ist der punktweise Grenzwert $0$: Für festes $x$ ist der Zähler fest, und der Nenner geht gegen $\infty$.</p>
+  <ul>
+    <li><strong>$k=0$ (1 Punkt).</strong> $0&lt;\frac1{x^2+n}&lt;\frac1n$ für alle $x$. Also $d_n\le\frac1n\to0$: gleichmässig.</li>
+    <li><strong>$k=1$ (1 Punkt).</strong> $x^2+n\ge2\sqrt n\,x$ (aus $(x-\sqrt n)^2\ge0$), also $0&lt;\frac x{x^2+n}\le\frac1{2\sqrt n}$. Also $d_n\le\frac1{2\sqrt n}\to0$: gleichmässig.</li>
+    <li><strong>$k=2$ (1 Punkt).</strong> Der schlechte Punkt ist $x_n=\sqrt n$: $f_n(\sqrt n)=\frac n{n+n}=\frac12$. Also $d_n\ge\frac12$ für alle $n$: nicht gleichmässig.</li>
+  </ul>
+  <p><em>Kniffe:</em> <a class="mvl" href="moves.html#m-supx">Unabhängig von x abschätzen</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Aufgabe 4 (Felder HS22, Frage 2.A1, 7 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">Prüfung HS22</a></p>
+  <p>(a) Beweise: Sei $(f_n)_n$ eine Folge stetiger komplexwertiger Funktionen auf $D\subseteq\mathbb R$, die gleichmässig gegen eine Funktion $f$ konvergiert. Dann ist $f$ stetig. <span class="muted">(Wie in der Originalprüfung: Die Argumente sind reell, $D\subseteq\mathbb R$, und nur die Werte sind komplex, $f_n:D\to\mathbb C$. Der Beweis ist für $D\subseteq\mathbb C$ wortwörtlich derselbe.)</span> (b) Gib ein Beispiel einer Folge stetiger Funktionen, die punktweise gegen eine Funktion konvergiert, die nicht stetig ist.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(a) (5 Punkte)</strong> <em>Rahmen:</em> Beweis B. Der Betrag komplexer Zahlen erfüllt dieselbe Dreiecksungleichung, also ändert sich nichts. Sei $x_0\in D$ und $\varepsilon&gt;0$. Wähle $N$ mit $|f_N(x)-f(x)|&lt;\frac\varepsilon3$ für alle $x\in D$. Da $f_N$ stetig in $x_0$ ist, wähle $\delta&gt;0$ mit $|f_N(x)-f_N(x_0)|&lt;\frac\varepsilon3$ für $x\in D$, $|x-x_0|&lt;\delta$. Für diese $x$:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f(x)-f(x_0)|&amp;\le |f(x)-f_N(x)|+|f_N(x)-f_N(x_0)|+|f_N(x_0)-f(x_0)|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+  <p>Also ist $f$ stetig in $x_0$. Da $x_0$ beliebig war, ist $f$ stetig. <span class="qed">∎</span></p>
+  <p><strong>(b) (2 Punkte)</strong> $f_n(x)=x^n$ auf $[0,1]$. Jedes $f_n$ ist stetig, und $f_n\to f$ punktweise mit $f(x)=0$ für $x&lt;1$ und $f(1)=1$, was bei $1$ nicht stetig ist. (Schreib beide Grenzwerte hin: $x^n\to0$ für $0\le x&lt;1$, und $1^n=1$.) <em>Kniffe:</em> <a class="mvl" href="moves.html#m-eps3">Dreimal ε/3</a> <a class="mvl" href="moves.html#m-counter">Ein kleines Gegenbeispiel</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Aufgabe 5 (Einsiedler HS21, Frage 12, 7 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2022-01-einsiedler-hs21-exam.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam">Prüfung HS21</a> · <a href="../pdf.html?f=docs/2022-01-einsiedler-hs21-exam-solutions.pdf&amp;t=2022-01%20Einsiedler%20-%20HS21%20exam%20SOLUTIONS">Lösungen</a></p>
+  <p>Sei $I=[a,b]$ mit $a&lt;b$, und seien $f_n:I\to\mathbb R$ stetige Funktionen, die punktweise gegen $f=0$ konvergieren. Es gelte für alle $x\in I$: $n\ge m\Rightarrow f_n(x)\le f_m(x)$. Zeige, dass $f_n\to0$ gleichmässig. <em>Hinweis: Argumentiere indirekt.</em></p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> Annehmen, dass die Konvergenz nicht gleichmässig ist. Die Definition verneinen, um schlechte Punkte $x_k$ zu bekommen, auf sie Bolzano-Weierstrass anwenden (<a class="xl" href="lesson-12.html#s2-subsequences-and-bolzano-weierstrass">Lektion 12</a>) und beim Häufungspunkt einen Widerspruch erhalten. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-neg">Das Negationsrezept</a> <a class="mvl" href="moves.html#m-contra">Das Gegenteil annehmen</a> <a class="mvl" href="moves.html#m-bw">Bolzano–Weierstrass für einen Kandidaten</a>.</p>
+  <p><strong>Schritt 0: $f_n\ge0$.</strong> Für festes $x$ ist $(f_n(x))_n$ fallend mit Grenzwert $0$, also $f_n(x)\ge0$ für alle $n$ (eine fallende Folge bleibt über ihrem Grenzwert). Also $|f_n(x)-0|=f_n(x)$.</p>
+  <p><strong>Schritt 1: Verneinung (1 Punkt).</strong> Angenommen, die Konvergenz ist nicht gleichmässig. Dann gibt es $\varepsilon&gt;0$, sodass es für jedes $N$ ein $n\ge N$ und ein $x\in I$ mit $f_n(x)\ge\varepsilon$ gibt. Wenden wir das mit $N=1$ an, dann mit $N=n_1+1$, und so weiter, erhalten wir Indizes $n_1&lt;n_2&lt;\dots$ und Punkte $x_k\in I$ mit $f_{n_k}(x_k)\ge\varepsilon$.</p>
+  <p><strong>Schritt 2: ein Häufungspunkt (2 Punkte).</strong> $(x_k)_k$ ist beschränkt (sie liegt in $[a,b]$), hat also nach Bolzano-Weierstrass eine konvergente Teilfolge $x_{k_j}\to x^*$. Da $a\le x_{k_j}\le b$, ist auch $x^*\in[a,b]$.</p>
+  <p><strong>Schritt 3: Monotonie (2 Punkte).</strong> Fixiere $m\in\mathbb N$. Für alle $j$ mit $n_{k_j}\ge m$ (alle bis auf endlich viele $j$) gibt die Monotonie</p>
+  <span class="math-display" style="display:block">$$f_m(x_{k_j})\ge f_{n_{k_j}}(x_{k_j})\ge\varepsilon.$$</span>
+  <p><strong>Schritt 4: Stetigkeit und Widerspruch (2 Punkte).</strong> $f_m$ ist stetig in $x^*$ und $x_{k_j}\to x^*$, also $f_m(x^*)=\lim_jf_m(x_{k_j})\ge\varepsilon$ (Grenzwerte erhalten $\ge$). Das gilt für jedes $m$, also $f_m(x^*)\not\to0$, im Widerspruch zur punktweisen Konvergenz bei $x^*$. Folglich ist die Konvergenz gleichmässig. <span class="qed">∎</span></p>
+  <p class="legend">Das ist der Satz von Dini. Jede Voraussetzung wird gebraucht: Ohne Kompaktheit ist $x^n$ auf $[0,1)$ ein Gegenbeispiel. Ohne Monotonie sind es die Zelte aus Musterbeispiel 2. Ohne Stetigkeit des Grenzwerts ist es $x^n$ auf $[0,1]$ (dort ist $f\neq0$).</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Aufgabe 6 (kurze Theoriefragen, ältere Einsiedler-Prüfungen)</h3>
+  <p>(a) Gib eine Folge stetiger Funktionen an, die punktweise, aber nicht gleichmässig konvergiert (Sommer 2017, 1 Punkt). (b) Stetige $f_n:[a,b]\to\mathbb R$ konvergieren gleichmässig gegen $f$. Ist $f$ gleichmässig stetig? Antworte mit ja oder nein, mit kurzer Begründung (Sommer 2018, 1 Punkt). (c) Zeige, dass ein gleichmässiger Grenzwert beschränkter Funktionen beschränkt ist, und finde beschränkte Funktionen mit einem unbeschränkten punktweisen Grenzwert (Übung 7.51).</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(a)</strong> $x^n$ auf $[0,1]$: Der Grenzwert $1_{\{1\}}$ ist nicht stetig, also kann die Konvergenz nach Beweis B nicht gleichmässig sein. (Oder $x^n$ auf $[0,1)$, wo $d_n=1$.)</p>
+  <p><strong>(b) Ja.</strong> $f$ ist nach Beweis B stetig, und eine stetige Funktion auf einem kompakten Intervall ist gleichmässig stetig (Satz von Heine).</p>
+  <p><strong>(c)</strong> Wähle $N$ mit $|f_N(x)-f(x)|&lt;1$ für alle $x$, und $B$ mit $|f_N|\le B$. Dann <span class="math-display" style="display:block">$$\begin{aligned}|f(x)|&amp;\le |f(x)-f_N(x)|+|f_N(x)|\\&amp;&lt;1+B\end{aligned}$$</span>für alle $x$. Gegenbeispiel: auf $(0,1]$ sei $f_n(x)=\min\left\{n,\frac1x\right\}$. Jedes $f_n$ ist durch $n$ beschränkt, und $f_n(x)=\frac1x$, sobald $n\ge\frac1x$, also ist der punktweise Grenzwert $\frac1x$, und der ist unbeschränkt. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-tri">Einen Zwischenpunkt einfügen</a> <a class="mvl" href="moves.html#m-counter">Ein kleines Gegenbeispiel</a>.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (Figalli FS26, Frage A2, 7 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">Prüfung FS26</a></p>
+  <p>Seien $f_n:[0,1]\to\mathbb R$ $1$-Lipschitz, also $|f_n(x)-f_n(y)|\le|x-y|$ für alle $x,y$, und es gelte $f_n\to f$ punktweise auf $[0,1]$. (a) Zeige, dass $f$ $1$-Lipschitz ist. (b) Zeige, dass $f_n\to f$ gleichmässig.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> Punktweise Konvergenz kontrolliert endlich viele Punkte gleichzeitig (nimm das grösste $N$). Die Lipschitz-Bedingung kontrolliert alles dazwischen. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-grid">Endlich viele Punkte, dann die Lücken füllen</a> <a class="mvl" href="moves.html#m-maxN">Das grössere N nehmen</a> <a class="mvl" href="moves.html#m-eps3">Dreimal ε/3</a>.</p>
+  <p><strong>(a) (2 Punkte).</strong> Für feste $x,y$: $|f_n(x)-f_n(y)|\le|x-y|$ für alle $n$, und $f_n(x)-f_n(y)\to f(x)-f(y)$. Grenzwerte erhalten $\le$, und $|\cdot|$ ist stetig, also $|f(x)-f(y)|\le|x-y|$.</p>
+  <p><strong>(b) (5 Punkte).</strong> Sei $\varepsilon&gt;0$. Wähle $M\in\mathbb N$ mit $\frac1M&lt;\frac\varepsilon3$ und die Gitterpunkte $x_i=\frac iM$, $i=0,1,\dots,M$. Für jeden dieser endlich vielen Punkte gibt es $N_i$ mit $|f_n(x_i)-f(x_i)|&lt;\frac\varepsilon3$ für $n\ge N_i$. Sei $N=\max\{N_0,\dots,N_M\}$. Sei nun $x\in[0,1]$ und $n\ge N$. Wähle einen Gitterpunkt mit $|x-x_i|\le\frac1{2M}&lt;\frac\varepsilon3$. Dann</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}|f_n(x)-f(x)|&amp;\le \underbrace{|f_n(x)-f_n(x_i)|}_{\le|x-x_i|}+\underbrace{|f_n(x_i)-f(x_i)|}_{&lt;\varepsilon/3}+\underbrace{|f(x_i)-f(x)|}_{\le|x-x_i|\text{ nach (a)}}\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+  <p>$N$ hängt nicht von $x$ ab, also gilt $f_n\to f$ gleichmässig. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Selbstbewertung:</strong> Aufgabe 1 (2 Punkte), Aufgabe 2 (5) und Aufgabe 3 (3) ergeben 10. Hast du 7 von 10, bist du fertig. Die Aufgaben 4–6 und der Bonus sind Beweisübung und zählen nicht gegen dich. Aufgabe 4 (a) ist Beweis B, also ein guter Test der Prüfungsbox.</p>
+</div>
+
+<h2 id="s10-for-wonder-optional-5-min">10. Zum Staunen <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 Min.)</span></h2>
+<p><strong>Ein Monster, gebaut mit dem Weierstrass-Kriterium.</strong> 1872 schockierte Weierstrass Berlin mit der Funktion $W(x)=\sum_{k=0}^\infty\frac{\cos(13^k\pi x)}{2^k}$. Das Weierstrass-Kriterium (mit $M_k=\frac1{2^k}$) macht sie zu einem gleichmässigen Grenzwert stetiger Funktionen, also ist sie nach Beweis B stetig. Aber sie hat an <em>jedem</em> Punkt einen Knick: Sie ist nirgends differenzierbar. Ihr Graph ist eine Küstenlinie, die unter jeder Lupe gleich zerklüftet aussieht. Die Mathematiker jener Zeit nannten solche Funktionen «Monster». Heute sind sie der Anfang der fraktalen Geometrie.</p>
+<p><strong>Und in die andere Richtung.</strong> Weierstrass bewies auch (1885), dass jede stetige Funktion auf $[a,b]$ ein gleichmässiger Grenzwert von <em>Polynomen</em> ist. Wie wild eine stetige Küste auch ist, eine Polynomkarte passt in jeden $\varepsilon$-Schlauch, den du willst. Also ist sogar das Monster ein gleichmässiger Grenzwert der einfachsten Funktionen, die es gibt.</p>
+
+<h2 id="s11-what-we-skipped">11. Was wir auslassen</h2>
+<p>All das steht auch auf der Auslassliste.</p>
+<ul>
+  <li><strong>Übung 7.41 (<a class="pl" href="../script.html#p313">S. 313</a>):</strong> Eindeutigkeit des punktweisen Grenzwerts. Niedrig; eine Zeile in <a class="xl" href="#s2-pointwise-convergence-and-what-goes">Abschnitt 2</a>.</li>
+  <li><strong>Übung 7.46 (iii) (<a class="pl" href="../script.html#p315">S. 315</a>):</strong> Die Beispiele 7.43 und 7.44 konvergieren nicht gleichmässig. Niedrig; für die Zelte haben wir es gezeigt (Ende von <a class="xl" href="#s5-uniform-limits-of-integrable-functions">Abschnitt 5</a>). Für 7.44 verwende Beweis C: Der Grenzwert ist nicht integrierbar.</li>
+  <li><strong>Die Bemerkung zur Supremumsnorm (<a class="pl" href="../script.html#p316">S. 316</a>):</strong> $\|\cdot\|_\infty$ ist eine Norm auf beschränkten Funktionen, und keine Norm liefert punktweise Konvergenz. Optional.</li>
+  <li><strong>Applet 7.47 (<a class="pl" href="../script.html#p316">S. 316</a>):</strong> $x^n$ auf kleineren Intervallen. Abgedeckt durch Musterbeispiel 3.</li>
+  <li><strong>Beweise der Übungen 7.50 (ii), 7.52 (ii) und 7.53 (<a class="pl" href="../script.html#p318">S. 318</a>).</strong> Niedrig; Aussagen und Begründungen stehen in <a class="xl" href="#s7-five-useful-facts">Abschnitt 7</a>.</li>
+  <li><strong>Komplexwertige Funktionen.</strong> Das Skript erlaubt durchgehend $f_n:D\to\mathbb C$. Niedrig; jeder Beweis ist mit dem komplexen Betrag wortwörtlich derselbe.</li>
+  <li><strong>Einsiedler FS22, Frage 12</strong> (gleichmässige Konvergenz aus $|f_n'|\le1$). Später: Sie braucht den Mittelwertsatz, <a class="xl" href="lesson-17.html#ex-4">Lektion 17</a>.</li>
+</ul>
+<p><strong>Als Nächstes:</strong> <a class="xl" href="lesson-16.html">Lektion 16</a>, Potenzreihen (Abschnitt 7.4): der Konvergenzradius, der in jeder Prüfung vorkommt, und die Exponentialfunktion.</p>
+
+<nav class="site foot" aria-label="Navigation der Lektion">
+<a href="lesson-14.html">← Lektion 14: Der Turm über dem See</a>
+<a href="analysis.html">Analysis-Start</a>
+<a href="lesson-16.html">Lektion 16: Der Zauberspruch mit endlos vielen Wörtern →</a>
+<a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Feedback geben</a>
+</nav>
+</main>
+
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.lang-switch{margin-left:auto;font-weight:600;font-size:.85em}nav.site .lang-switch{border:1px solid currentColor;border-radius:999px;padding:0 .6em}</style><style>.fb-line{margin-top:2.5rem;font-size:.9em;opacity:.8}</style>
+</body>
+</html>

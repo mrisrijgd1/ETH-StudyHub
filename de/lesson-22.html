@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="../assets/umami-kit.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Schienen der Ebene</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<p style="text-align:right;margin:0"><a class="lang-switch" href="../lesson-22.html" lang="en">English</a></p>
+<nav class="site" aria-label="Website">
+<a href="index.html">Start</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Lernkarten</a>
+<a href="moves.html">Kniffe</a>
+<a href="exam-map.html">Prüfungslandkarte</a>
+<a href="skipped.html">Ausgelassen</a>
+<a href="../script.html">Skript</a>
+<a href="docs.html">Prüfungen</a>
+<a href="lesson-21.html">← Lektion 21</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lektion 22 von 26</span>
+  <h1>Die Schienen der Ebene</h1>
+  <p class="lead"><strong>Differentialgleichungen</strong>: Gleichungen für eine unbekannte Funktion, in denen ihre Ableitung vorkommt. Drei Typen kommen in jeder Prüfung: <strong>separierbare</strong> Gleichungen $y'=f(x)g(y)$, <strong>lineare Gleichungen erster Ordnung</strong> $y'+f(x)y=g(x)$ und <strong>lineare Gleichungen zweiter Ordnung mit konstanten Koeffizienten</strong> $y''+a_1y'+a_0y=g(x)$. Für jeden Typ: ein Rezept, warum es alle Lösungen liefert und wie man die Anfangswerte einpasst. Skript Abschnitt 8.5.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-21-5">Rückblick auf Lektion 21 (5 Min.)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</a>
+</li>
+<li><a href="#s1-the-story-the-rails-of">1. Die Geschichte: die Schienen der Ebene</a>
+</li>
+<li><a href="#s2-what-a-differential-equation-is">2. Was eine Differentialgleichung ist</a>
+<ol>
+<li><a href="#we-1">Musterbeispiel 1: Lösungen, und wie viele</a></li>
+</ol></li>
+<li><a href="#s3-separable-equations">3. Separierbare Gleichungen</a>
+<ol>
+<li><a href="#proof-a">Beweis A: Trennung der Variablen</a></li>
+<li><a href="#the-recipe-for-a-separable">Das Rezept für ein separierbares Anfangswertproblem $y&#x27;=f(x)g(y)$, $y(x_0)=y_0$</a></li>
+<li><a href="#we-2">Musterbeispiel 2: separierbare Gleichungen aus den Prüfungen</a></li>
+</ol></li>
+<li><a href="#s4-linear-equations-of-first-order">4. Lineare Gleichungen erster Ordnung</a>
+<ol>
+<li><a href="#proof-b">Beweis B: alle Lösungen einer linearen Gleichung erster Ordnung (Lemma 8.60, S. 398, und Variation der Konstanten, S. 398–399)</a></li>
+<li><a href="#the-recipe-for-the-script">Das Rezept für $y&#x27;+f(x)y=g(x)$, $y(x_0)=y_0$ (das «Kochrezept» des Skripts)</a></li>
+<li><a href="#we-3">Musterbeispiel 3: lineare Gleichungen erster Ordnung</a></li>
+</ol></li>
+<li><a href="#s5-second-order-with-constant-coefficients">5. Zweite Ordnung mit konstanten Koeffizienten: die homogene Gleichung</a>
+<ol>
+<li><a href="#proof-c">Beweis C: Superposition (Wichtige Übung 8.66 (i) und Übung 8.62)</a></li>
+<li><a href="#proof-d">Beweis D: alle Lösungen von $y&#x27;&#x27;+a_1y&#x27;+a_0y=0$ (Abschnitt 8.5.4, S. 401–402, und Wichtige Übung 8.66)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: homogene Gleichungen zweiter Ordnung</a></li>
+</ol></li>
+<li><a href="#s6-second-order-finding-a-particular">6. Zweite Ordnung: eine partikuläre Lösung finden</a>
+<ol>
+<li><a href="#the-ansatz-table-script-p">Die Ansatz-Tabelle (Skript S. 405)</a></li>
+<li><a href="#we-5">Musterbeispiel 5: partikuläre Lösungen und Anfangswerte</a></li>
+</ol></li>
+<li><a href="#s7-worked-examples-which-type">7. Musterbeispiele: welcher Typ?</a>
+<ol>
+<li><a href="#the-decision-list-for-solve">Die Entscheidungsliste für «Löse diese Differentialgleichung»</a></li>
+<li><a href="#we-6">Musterbeispiel 6: erkennen, dann lösen</a></li>
+</ol></li>
+<li><a href="#s8-exercises">8. Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (PVK-Probeprüfung HS25, MC6, 2 Punkte)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Figalli FS26, MC12, 4 Punkte)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (PVK-Probeprüfung HS25, MC7, 2 Punkte)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Felder FS23, 1.A7, 4 Punkte)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Figalli HS23, MC11 und MC12, je 4 Punkte)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (Figalli FS26, MC13, 4 Punkte)</a></li>
+<li><a href="#ex-7">Aufgabe 7 (Felder HS22, 3.MC6, 2 Punkte)</a></li>
+<li><a href="#ex-8">Aufgabe 8 (Sommerprüfung 2018, Aufgabe 2, 3 Punkte)</a></li>
+<li><a href="#ex-9">Aufgabe 9 (Übung 8.64, das Skript)</a></li>
+<li><a href="#bonus">Bonus: Resonanz (das Beispiel des Skripts)</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. Zum Staunen</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. Was wir auslassen</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) erkennst, welcher der drei Typen eine Gleichung ist, (2) ein <strong>separierbares</strong> Anfangswertproblem lösen und sein maximales Intervall finden kannst, (3) eine <strong>lineare Gleichung erster Ordnung</strong> löst, indem du die homogene Gleichung löst und die Konstante variierst, (4) $y''+a_1y'+a_0y=0$ aus den Nullstellen von $T^2+a_1T+a_0$ löst, in allen drei Fällen, (5) mit dem richtigen Ansatz eine <strong>partikuläre Lösung</strong> findest, auch im Resonanzfall, und (6) die Konstanten an die Anfangswerte anpasst. Alles schnell genug für eine Multiple-Choice-Frage mit 2–4 Punkten.</dd></div>
+  <div><dt>Skript (Deutsch, gedruckte Seiten)</dt><dd>Du musst es nicht öffnen. Nur falls du das Original willst:
+    <ul>
+      <li><strong><a class="pl" href="../script.html#p393">S. 393–396</a>, Abschnitt 8.5 und 8.5.1:</strong> was eine Differentialgleichung ist, Richtungsfelder, Differenzengleichungen.</li>
+      <li><strong><a class="pl" href="../script.html#p396">S. 396–397</a>, Abschnitt 8.5.2:</strong> $y'=f(x)$, Stammfunktionen (behandelt in <a class="xl" href="lesson-19.html#proof-b">Lektion 19</a>).</li>
+      <li><strong><a class="pl" href="../script.html#p397">S. 397–400</a>, Abschnitt 8.5.3:</strong> lineare Gleichungen erster Ordnung, Variation der Konstanten, das Kochrezept mit Trennung der Variablen.</li>
+      <li><strong><a class="pl" href="../script.html#p400">S. 400–409</a>, Abschnitt 8.5.4:</strong> zweite Ordnung mit konstanten Koeffizienten, das charakteristische Polynom, der gedämpfte Oszillator, partikuläre Lösungen, Resonanz.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung zählt</span>
+Eine DGL kommt in 8 der 9 Prüfungen vor, die wir haben, und in der PVK-Probeprüfung. In Figallis Prüfungen sind es zwei Multiple-Choice-Fragen mit je 2–4 Punkten: eine erster Ordnung (HS23 MC11, FS24 MC6, FS26 MC12, PVK MC6) und eine zweiter Ordnung (HS23 MC12, FS24 MC7, FS26 MC13, PVK MC7), die jeweils nach $u$ an einer Stelle fragen. Die Prüfungen von Einsiedler und Felder verlangen eine vollständige Lösung für 4 Punkte (HS21 Aufgabe 3, FS22 Aufgabe 3, FS23 1.A7, HS22 1.A8), und Kobel-Keller HS24 Aufgabe 13 fragt nach einer allgemeinen Lösung (3 Punkte). Das ist reine Technik: die verlässlichsten Punkte der Prüfung.</div>
+
+<div class="box"><h3 id="recap-of-lesson-21-5">Rückblick auf <a class="xl" href="lesson-21.html">Lektion 21</a> (5 Min.)</h3>
+<ul>
+  <li><strong>Taylor:</strong> <span class="math-display" style="display:block">$$f(x)=\sum_{k\le n}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k+R_n(x),$$</span>mit $|R_n(x)|\le\frac{M_{n+1}|x-x_0|^{n+1}}{(n+1)!}$. Entwicklungen baut man aus bekannten zusammen.</li>
+  <li>Aus den <a class="xl" href="lesson-16.html#we-6">Lektionen 16</a>, <a class="xl" href="lesson-17.html#proof-h">17</a> und <a class="xl" href="lesson-19.html#proof-b">19</a>: $(e^{\alpha x})'=\alpha e^{\alpha x}$ auch für komplexes $\alpha$, und $e^{i\gamma x}=\cos(\gamma x)+i\sin(\gamma x)$; eine Funktion mit Ableitung $0$ auf einem Intervall ist konstant; $\int f=F+C$.</li>
+</ul>
+<ol class="gq">
+  <li><p>Welche Funktionen $y$ erfüllen $y'=0$ auf einem Intervall? Und $y'=2x$?</p>
+  <details><summary>Antwort</summary><div><p>Die Konstanten (Mittelwertsatz, <a class="xl" href="lesson-17.html#proof-g">Lektion 17</a>). Und $y=x^2+C$: Zwei Lösungen unterscheiden sich um eine Konstante (<a class="xl" href="lesson-19.html#proof-b">Lektion 19</a>, Beweis B). Die ganze heutige Lektion ist diese Idee, nur grösser.</p></div></details></li>
+  <li><p>Leite $e^{-x^2}$ und $x e^{3x}$ ab.</p>
+  <details><summary>Antwort</summary><div><p>$-2xe^{-x^2}$ und $(1+3x)e^{3x}$.</p></div></details></li>
+  <li><p>Löse $T^2+2T+5=0$.</p>
+  <details><summary>Antwort</summary><div><p>$T=-1\pm\sqrt{1-5}=-1\pm2i$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>English</th></tr></thead>
+  <tbody>
+    <tr><td>(gewöhnliche) Differentialgleichung, DGL</td><td>(ordinary) differential equation, ODE</td></tr>
+    <tr><td>Anfangswertproblem</td><td>initial value problem</td></tr>
+    <tr><td>Richtungsfeld</td><td>direction field</td></tr>
+    <tr><td>Trennung der Variablen</td><td>separation of variables</td></tr>
+    <tr><td>linear, homogen / inhomogen</td><td>linear, homogeneous / inhomogeneous</td></tr>
+    <tr><td>Störfunktion, Störglied</td><td>forcing term (inhomogeneity)</td></tr>
+    <tr><td>partikuläre Lösung</td><td>particular solution</td></tr>
+    <tr><td>Variation der Konstanten</td><td>variation of constants</td></tr>
+    <tr><td>charakteristisches Polynom</td><td>characteristic polynomial</td></tr>
+    <tr><td>Ansatz</td><td>trial solution</td></tr>
+    <tr><td>gedämpfte Schwingung, Resonanz</td><td>damped oscillation, resonance</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-rails-of">1. Die Geschichte: die Schienen der Ebene</h2>
+<div class="story">
+<p>Auf der grossen Ebene hat der Schienengeist an jedem einzelnen Punkt ein winziges Stück Schiene verlegt, jedes in seinem eigenen Winkel geneigt. Niemand hat ganze Gleise verlegt; es gibt nur diese kurzen Stücke, unendlich viele, dicht an dicht. Stell irgendwo einen Wagen hin, und er rollt die Stücke entlang, immer in Richtung der Schiene unter seinen Rädern, und zeichnet so eine lange, gekrümmte Reise.</p>
+<p>Die Reisenden stellen zwei Fragen. Wenn ich weiss, wo ich starte: Wo bin ich später? Und: Können zwei Wagen, die am selben Punkt starten, jemals verschiedene Wege gehen? Die Landvermesser der Ebene können das nicht für jede Ebene beantworten. Aber für drei Arten von Ebenen, die der Schienengeist am liebsten mag, haben sie exakte Rezepte, und genau diese Ebenen kommen in jeder Prüfung.</p>
+</div>
+<p>In der Mathematik: Die Schienen sind ein <strong>Richtungsfeld</strong>: An jedem Punkt $(x,y)$ schreibt die Gleichung $y'=f(x,y)$ eine Steigung vor. Eine <strong>Lösung</strong> ist eine Funktion, deren Graph in jedem seiner Punkte die vorgeschriebene Steigung hat; der Startpunkt ist der <strong>Anfangswert</strong> $y(x_0)=y_0$. Die drei freundlichen Arten sind separierbar, linear erster Ordnung und linear zweiter Ordnung mit konstanten Koeffizienten.</p>
+
+<h2 id="s2-what-a-differential-equation-is">2. Was eine Differentialgleichung ist</h2>
+<div class="box">
+<p><strong>Definitionen.</strong> Eine (gewöhnliche) <strong>Differentialgleichung</strong> erster Ordnung ist eine Gleichung $y'=f(x,y)$ für eine unbekannte differenzierbare Funktion $y:I\to\mathbb R$ auf einem Intervall $I$: Eine <strong>Lösung</strong> erfüllt $y'(x)=f(x,y(x))$ für alle $x\in I$. Zusammen mit einer Bedingung $y(x_0)=y_0$ ist es ein <strong>Anfangswertproblem</strong>. Eine Gleichung zweiter Ordnung enthält zusätzlich $y''$, und dann schreibt man üblicherweise $y(x_0)$ und $y'(x_0)$ vor.</p>
+</div>
+<figure style="margin:.4rem 0" aria-label="Das Richtungsfeld von y Strich gleich x minus y: kurze Strecken auf einem Gitter, jede mit Steigung x minus y geneigt. Vier Lösungskurven folgen den Strecken; eine davon startet im Punkt (0, 1). Alle Kurven nähern sich für wachsendes x der Geraden y gleich x minus 1.">
+<svg viewBox="0 0 640 360" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="20" y1="208.7" x2="620" y2="208.7" style="stroke:var(--muted)" stroke-width="1.2"/><line x1="240.9" y1="15" x2="240.9" y2="345" style="stroke:var(--muted)" stroke-width="1.2"/><text x="135.5" y="228.7" text-anchor="middle" font-size="15" style="fill:var(--muted)">-1</text><text x="346.4" y="228.7" text-anchor="middle" font-size="15" style="fill:var(--muted)">1</text><text x="451.8" y="228.7" text-anchor="middle" font-size="15" style="fill:var(--muted)">2</text><text x="557.3" y="228.7" text-anchor="middle" font-size="15" style="fill:var(--muted)">3</text><text x="232.9" y="271.1" text-anchor="end" font-size="15" style="fill:var(--muted)">-1</text><text x="232.9" y="156.3" text-anchor="end" font-size="15" style="fill:var(--muted)">1</text><text x="232.9" y="98.9" text-anchor="end" font-size="15" style="fill:var(--muted)">2</text><text x="232.9" y="41.5" text-anchor="end" font-size="15" style="fill:var(--muted)">3</text><line x1="45.5" y1="325.0" x2="67.3" y2="322.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="45.4" y1="298.4" x2="67.3" y2="300.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="45.9" y1="271.9" x2="66.8" y2="278.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="46.7" y1="245.9" x2="66.0" y2="256.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="47.7" y1="220.3" x2="65.0" y2="233.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="48.6" y1="195.2" x2="64.1" y2="210.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="49.4" y1="170.3" x2="63.3" y2="187.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="50.2" y1="145.7" x2="62.6" y2="163.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="50.8" y1="121.2" x2="62.0" y2="140.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="51.3" y1="96.8" x2="61.4" y2="116.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="51.7" y1="72.4" x2="61.0" y2="92.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="52.1" y1="48.2" x2="60.6" y2="68.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="52.4" y1="23.9" x2="60.3" y2="44.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="90.3" y1="327.3" x2="111.0" y2="319.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="89.8" y1="300.9" x2="111.6" y2="297.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="89.7" y1="274.3" x2="111.6" y2="276.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="90.2" y1="247.8" x2="111.1" y2="254.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="91.0" y1="221.8" x2="110.3" y2="232.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="92.0" y1="196.2" x2="109.3" y2="209.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="92.9" y1="171.0" x2="108.4" y2="186.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="93.7" y1="146.2" x2="107.6" y2="163.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="94.5" y1="121.5" x2="106.9" y2="139.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="95.1" y1="97.0" x2="106.2" y2="116.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="95.6" y1="72.6" x2="105.7" y2="92.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="96.0" y1="48.3" x2="105.3" y2="68.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="96.4" y1="24.0" x2="104.9" y2="44.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="135.5" y1="329.1" x2="154.4" y2="317.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="134.6" y1="303.2" x2="155.3" y2="295.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="134.0" y1="276.8" x2="155.8" y2="273.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="134.0" y1="250.2" x2="155.9" y2="252.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="134.5" y1="223.7" x2="155.4" y2="230.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="135.3" y1="197.7" x2="154.6" y2="208.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="136.3" y1="172.1" x2="153.6" y2="185.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="137.2" y1="146.9" x2="152.7" y2="162.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="138.0" y1="122.1" x2="151.9" y2="139.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="138.7" y1="97.4" x2="151.1" y2="115.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="139.4" y1="72.9" x2="150.5" y2="91.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="139.9" y1="48.5" x2="150.0" y2="68.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="140.3" y1="24.2" x2="149.6" y2="44.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="180.7" y1="330.5" x2="197.7" y2="316.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="179.8" y1="305.0" x2="198.7" y2="293.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="178.9" y1="279.1" x2="199.6" y2="271.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="178.3" y1="252.7" x2="200.1" y2="249.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="178.3" y1="226.1" x2="200.2" y2="228.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="178.8" y1="199.6" x2="199.7" y2="206.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="179.6" y1="173.6" x2="198.9" y2="184.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="180.6" y1="148.0" x2="197.9" y2="161.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="181.5" y1="122.8" x2="197.0" y2="138.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="182.3" y1="98.0" x2="196.2" y2="115.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="183.0" y1="73.3" x2="195.4" y2="91.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="183.6" y1="48.8" x2="194.8" y2="67.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="184.2" y1="24.4" x2="194.3" y2="43.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="225.9" y1="331.5" x2="241.1" y2="315.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="225.0" y1="306.4" x2="242.0" y2="292.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="224.1" y1="280.9" x2="243.0" y2="269.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="223.2" y1="255.0" x2="243.9" y2="247.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="222.6" y1="228.6" x2="244.4" y2="225.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="222.6" y1="201.9" x2="244.5" y2="204.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="223.1" y1="175.5" x2="244.0" y2="182.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="223.9" y1="149.4" x2="243.2" y2="160.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="224.8" y1="123.9" x2="242.2" y2="137.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="225.8" y1="98.7" x2="241.3" y2="114.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="226.6" y1="73.9" x2="240.4" y2="91.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="227.3" y1="49.2" x2="239.7" y2="67.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="227.9" y1="24.7" x2="239.1" y2="43.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="271.0" y1="332.2" x2="284.6" y2="314.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="270.2" y1="307.4" x2="285.4" y2="291.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="269.3" y1="282.3" x2="286.3" y2="268.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="268.4" y1="256.8" x2="287.3" y2="245.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="267.5" y1="230.8" x2="288.2" y2="223.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="266.9" y1="204.4" x2="288.7" y2="201.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="266.9" y1="177.8" x2="288.8" y2="179.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="267.3" y1="151.4" x2="288.3" y2="158.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="268.2" y1="125.3" x2="287.5" y2="135.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="269.1" y1="99.8" x2="286.5" y2="113.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="270.1" y1="74.6" x2="285.6" y2="90.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="270.9" y1="49.7" x2="284.7" y2="66.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="271.6" y1="25.1" x2="284.0" y2="43.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="316.0" y1="332.7" x2="328.2" y2="314.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="315.3" y1="308.1" x2="328.9" y2="290.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="314.5" y1="283.3" x2="329.7" y2="267.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="313.6" y1="258.2" x2="330.6" y2="244.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="312.6" y1="232.7" x2="331.6" y2="221.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="311.8" y1="206.7" x2="332.4" y2="199.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="311.2" y1="180.3" x2="333.0" y2="177.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="311.2" y1="153.7" x2="333.1" y2="155.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="311.6" y1="127.3" x2="332.6" y2="134.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="312.5" y1="101.2" x2="331.7" y2="111.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="313.4" y1="75.7" x2="330.8" y2="89.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="314.4" y1="50.5" x2="329.9" y2="66.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="315.2" y1="25.6" x2="329.0" y2="42.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="360.9" y1="333.1" x2="371.9" y2="314.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="360.3" y1="308.6" x2="372.5" y2="290.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="359.6" y1="284.0" x2="373.2" y2="266.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="358.8" y1="259.2" x2="374.0" y2="243.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="357.9" y1="234.1" x2="374.9" y2="220.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="356.9" y1="208.6" x2="375.9" y2="197.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="356.1" y1="182.6" x2="376.7" y2="175.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="355.5" y1="156.2" x2="377.3" y2="153.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="355.4" y1="129.6" x2="377.4" y2="131.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="355.9" y1="103.2" x2="376.9" y2="109.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="356.8" y1="77.1" x2="376.0" y2="87.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="357.7" y1="51.5" x2="375.1" y2="65.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="358.6" y1="26.4" x2="374.2" y2="42.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="405.7" y1="333.3" x2="415.7" y2="313.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="405.2" y1="308.9" x2="416.2" y2="289.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="404.6" y1="284.5" x2="416.8" y2="266.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="403.9" y1="259.9" x2="417.5" y2="242.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="403.1" y1="235.0" x2="418.3" y2="219.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="402.2" y1="209.9" x2="419.2" y2="196.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="401.2" y1="184.5" x2="420.2" y2="173.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="400.4" y1="158.5" x2="421.0" y2="151.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="399.8" y1="132.1" x2="421.6" y2="129.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="399.7" y1="105.5" x2="421.6" y2="107.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="400.2" y1="79.0" x2="421.2" y2="85.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="401.1" y1="53.0" x2="420.3" y2="63.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="402.0" y1="27.4" x2="419.4" y2="40.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="450.4" y1="333.5" x2="459.5" y2="313.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="450.0" y1="309.2" x2="460.0" y2="289.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="449.5" y1="284.8" x2="460.5" y2="265.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="448.9" y1="260.4" x2="461.1" y2="242.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="448.2" y1="235.7" x2="461.8" y2="218.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="447.4" y1="210.9" x2="462.6" y2="195.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="446.5" y1="185.8" x2="463.5" y2="171.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="445.5" y1="160.4" x2="464.4" y2="149.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="444.6" y1="134.4" x2="465.3" y2="126.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="444.1" y1="108.0" x2="465.9" y2="105.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="444.0" y1="81.4" x2="465.9" y2="83.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="444.5" y1="54.9" x2="465.5" y2="61.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="445.3" y1="28.9" x2="464.6" y2="39.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="495.1" y1="333.7" x2="503.5" y2="313.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="494.7" y1="309.4" x2="503.8" y2="289.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="494.3" y1="285.1" x2="504.3" y2="265.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="493.8" y1="260.7" x2="504.8" y2="241.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="493.2" y1="236.2" x2="505.4" y2="217.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="492.5" y1="211.6" x2="506.0" y2="194.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="491.7" y1="186.8" x2="506.9" y2="170.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="490.8" y1="161.7" x2="507.8" y2="147.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="489.8" y1="136.2" x2="508.7" y2="125.0" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="488.9" y1="110.3" x2="509.6" y2="102.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="488.4" y1="83.9" x2="510.2" y2="80.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="488.3" y1="57.3" x2="510.2" y2="59.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="488.8" y1="30.8" x2="509.7" y2="37.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="539.7" y1="333.8" x2="547.4" y2="313.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="539.4" y1="309.6" x2="547.8" y2="289.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="539.0" y1="285.3" x2="548.1" y2="265.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="538.6" y1="261.0" x2="548.6" y2="241.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="538.1" y1="236.6" x2="549.1" y2="217.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="537.5" y1="212.1" x2="549.6" y2="193.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="536.8" y1="187.5" x2="550.3" y2="170.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="536.0" y1="162.7" x2="551.1" y2="146.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="535.1" y1="137.6" x2="552.1" y2="123.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="534.1" y1="112.1" x2="553.0" y2="100.9" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="533.2" y1="86.2" x2="553.9" y2="78.6" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="532.7" y1="59.8" x2="554.5" y2="56.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="532.6" y1="33.2" x2="554.5" y2="35.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="584.2" y1="333.9" x2="591.5" y2="313.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="584.0" y1="309.7" x2="591.7" y2="289.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="583.7" y1="285.5" x2="592.1" y2="265.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="583.3" y1="261.2" x2="592.4" y2="241.2" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="582.9" y1="236.9" x2="592.8" y2="217.3" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="582.4" y1="212.5" x2="593.3" y2="193.4" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="581.8" y1="188.0" x2="593.9" y2="169.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="581.1" y1="163.4" x2="594.6" y2="146.1" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="580.3" y1="138.6" x2="595.4" y2="122.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="579.4" y1="113.5" x2="596.4" y2="99.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="578.4" y1="88.0" x2="597.3" y2="76.8" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="577.5" y1="62.1" x2="598.2" y2="54.5" style="stroke:var(--story-edge)" stroke-width="1.6"/><line x1="577.0" y1="35.7" x2="598.8" y2="32.7" style="stroke:var(--story-edge)" stroke-width="1.6"/><path d="M231.1 334.5 L233.0 332.3 L234.9 330.1 L236.9 328.0 L238.8 325.8 L240.7 323.7 L242.7 321.6 L244.6 319.5 L246.5 317.5 L248.5 315.4 L250.4 313.4 L252.3 311.4 L254.3 309.4 L256.2 307.4 L258.1 305.5 L260.1 303.6 L262.0 301.6 L263.9 299.7 L265.9 297.8 L267.8 296.0 L269.7 294.1 L271.7 292.3 L273.6 290.4 L275.5 288.6 L277.5 286.8 L279.4 285.0 L281.3 283.2 L283.3 281.5 L285.2 279.7 L287.1 278.0 L289.1 276.3 L291.0 274.5 L292.9 272.8 L294.9 271.2 L296.8 269.5 L298.7 267.8 L300.7 266.2 L302.6 264.5 L304.5 262.9 L306.5 261.3 L308.4 259.6 L310.3 258.0 L312.3 256.4 L314.2 254.9 L316.1 253.3 L318.1 251.7 L320.0 250.2 L321.9 248.6 L323.9 247.1 L325.8 245.6 L327.7 244.0 L329.7 242.5 L331.6 241.0 L333.5 239.5 L335.5 238.1 L337.4 236.6 L339.3 235.1 L341.3 233.6 L343.2 232.2 L345.1 230.7 L347.1 229.3 L349.0 227.9 L350.9 226.4 L352.9 225.0 L354.8 223.6 L356.7 222.2 L358.7 220.8 L360.6 219.4 L362.5 218.0 L364.5 216.6 L366.4 215.3 L368.3 213.9 L370.3 212.5 L372.2 211.2 L374.1 209.8 L376.1 208.5 L378.0 207.1 L379.9 205.8 L381.9 204.5 L383.8 203.1 L385.7 201.8 L387.7 200.5 L389.6 199.2 L391.5 197.9 L393.5 196.6 L395.4 195.3 L397.3 194.0 L399.3 192.7 L401.2 191.4 L403.1 190.1 L405.1 188.9 L407.0 187.6 L408.9 186.3 L410.9 185.0 L412.8 183.8 L414.7 182.5 L416.7 181.3 L418.6 180.0 L420.5 178.8 L422.5 177.5 L424.4 176.3 L426.3 175.1 L428.3 173.8 L430.2 172.6 L432.1 171.4 L434.1 170.2 L436.0 168.9 L437.9 167.7 L439.9 166.5 L441.8 165.3 L443.7 164.1 L445.7 162.9 L447.6 161.7 L449.5 160.5 L451.5 159.3 L453.4 158.1 L455.3 156.9 L457.3 155.7 L459.2 154.5 L461.1 153.3 L463.1 152.2 L465.0 151.0 L466.9 149.8 L468.9 148.6 L470.8 147.5 L472.7 146.3 L474.7 145.1 L476.6 143.9 L478.5 142.8 L480.5 141.6 L482.4 140.5 L484.3 139.3 L486.3 138.1 L488.2 137.0 L490.1 135.8 L492.1 134.7 L494.0 133.5 L495.9 132.4 L497.9 131.2 L499.8 130.1 L501.7 129.0 L503.7 127.8 L505.6 126.7 L507.5 125.5 L509.5 124.4 L511.4 123.3 L513.3 122.1 L515.3 121.0 L517.2 119.9 L519.1 118.8 L521.1 117.6 L523.0 116.5 L524.9 115.4 L526.9 114.3 L528.8 113.1 L530.7 112.0 L532.7 110.9 L534.6 109.8 L536.5 108.7 L538.5 107.5 L540.4 106.4 L542.3 105.3 L544.3 104.2 L546.2 103.1 L548.1 102.0 L550.1 100.9 L552.0 99.8 L553.9 98.7 L555.9 97.6 L557.8 96.4 L559.7 95.3 L561.7 94.2 L563.6 93.1 L565.5 92.0 L567.5 90.9 L569.4 89.8 L571.3 88.7 L573.3 87.6 L575.2 86.5 L577.1 85.4 L579.1 84.3 L581.0 83.3 L582.9 82.2 L584.9 81.1 L586.8 80.0 L588.7 78.9 L590.7 77.8 L592.6 76.7 L594.5 75.6 L596.5 74.5 L598.4 73.4 L600.3 72.3 L602.3 71.3 L604.2 70.2 L606.1 69.1 L608.1 68.0 L610.0 66.9« style=»fill:none;stroke:var(--accent)« stroke-width=»2.6"/><path d="M115.1 334.6 L117.0 333.6 L118.9 332.5 L120.9 331.5 L122.8 330.4 L124.7 329.4 L126.7 328.3 L128.6 327.2 L130.5 326.2 L132.5 325.1 L134.4 324.1 L136.3 323.0 L138.3 322.0 L140.2 320.9 L142.1 319.9 L144.1 318.8 L146.0 317.8 L147.9 316.7 L149.9 315.7 L151.8 314.6 L153.7 313.6 L155.7 312.5 L157.6 311.5 L159.5 310.4 L161.5 309.4 L163.4 308.3 L165.3 307.3 L167.3 306.2 L169.2 305.1 L171.1 304.1 L173.1 303.0 L175.0 302.0 L176.9 300.9 L178.9 299.9 L180.8 298.8 L182.7 297.8 L184.7 296.7 L186.6 295.7 L188.5 294.6 L190.5 293.6 L192.4 292.5 L194.3 291.5 L196.3 290.4 L198.2 289.4 L200.1 288.3 L202.1 287.3 L204.0 286.2 L205.9 285.2 L207.9 284.1 L209.8 283.0 L211.7 282.0 L213.7 280.9 L215.6 279.9 L217.5 278.8 L219.5 277.8 L221.4 276.7 L223.3 275.7 L225.3 274.6 L227.2 273.6 L229.1 272.5 L231.1 271.5 L233.0 270.4 L234.9 269.4 L236.9 268.3 L238.8 267.3 L240.7 266.2 L242.7 265.2 L244.6 264.1 L246.5 263.0 L248.5 262.0 L250.4 260.9 L252.3 259.9 L254.3 258.8 L256.2 257.8 L258.1 256.7 L260.1 255.7 L262.0 254.6 L263.9 253.6 L265.9 252.5 L267.8 251.5 L269.7 250.4 L271.7 249.4 L273.6 248.3 L275.5 247.3 L277.5 246.2 L279.4 245.2 L281.3 244.1 L283.3 243.1 L285.2 242.0 L287.1 240.9 L289.1 239.9 L291.0 238.8 L292.9 237.8 L294.9 236.7 L296.8 235.7 L298.7 234.6 L300.7 233.6 L302.6 232.5 L304.5 231.5 L306.5 230.4 L308.4 229.4 L310.3 228.3 L312.3 227.3 L314.2 226.2 L316.1 225.2 L318.1 224.1 L320.0 223.1 L321.9 222.0 L323.9 221.0 L325.8 219.9 L327.7 218.8 L329.7 217.8 L331.6 216.7 L333.5 215.7 L335.5 214.6 L337.4 213.6 L339.3 212.5 L341.3 211.5 L343.2 210.4 L345.1 209.4 L347.1 208.3 L349.0 207.3 L350.9 206.2 L352.9 205.2 L354.8 204.1 L356.7 203.1 L358.7 202.0 L360.6 201.0 L362.5 199.9 L364.5 198.8 L366.4 197.8 L368.3 196.7 L370.3 195.7 L372.2 194.6 L374.1 193.6 L376.1 192.5 L378.0 191.5 L379.9 190.4 L381.9 189.4 L383.8 188.3 L385.7 187.3 L387.7 186.2 L389.6 185.2 L391.5 184.1 L393.5 183.1 L395.4 182.0 L397.3 181.0 L399.3 179.9 L401.2 178.9 L403.1 177.8 L405.1 176.7 L407.0 175.7 L408.9 174.6 L410.9 173.6 L412.8 172.5 L414.7 171.5 L416.7 170.4 L418.6 169.4 L420.5 168.3 L422.5 167.3 L424.4 166.2 L426.3 165.2 L428.3 164.1 L430.2 163.1 L432.1 162.0 L434.1 161.0 L436.0 159.9 L437.9 158.9 L439.9 157.8 L441.8 156.8 L443.7 155.7 L445.7 154.6 L447.6 153.6 L449.5 152.5 L451.5 151.5 L453.4 150.4 L455.3 149.4 L457.3 148.3 L459.2 147.3 L461.1 146.2 L463.1 145.2 L465.0 144.1 L466.9 143.1 L468.9 142.0 L470.8 141.0 L472.7 139.9 L474.7 138.9 L476.6 137.8 L478.5 136.8 L480.5 135.7 L482.4 134.6 L484.3 133.6 L486.3 132.5 L488.2 131.5 L490.1 130.4 L492.1 129.4 L494.0 128.3 L495.9 127.3 L497.9 126.2 L499.8 125.2 L501.7 124.1 L503.7 123.1 L505.6 122.0 L507.5 121.0 L509.5 119.9 L511.4 118.9 L513.3 117.8 L515.3 116.8 L517.2 115.7 L519.1 114.7 L521.1 113.6 L523.0 112.5 L524.9 111.5 L526.9 110.4 L528.8 109.4 L530.7 108.3 L532.7 107.3 L534.6 106.2 L536.5 105.2 L538.5 104.1 L540.4 103.1 L542.3 102.0 L544.3 101.0 L546.2 99.9 L548.1 98.9 L550.1 97.8 L552.0 96.8 L553.9 95.7 L555.9 94.7 L557.8 93.6 L559.7 92.5 L561.7 91.5 L563.6 90.4 L565.5 89.4 L567.5 88.3 L569.4 87.3 L571.3 86.2 L573.3 85.2 L575.2 84.1 L577.1 83.1 L579.1 82.0 L581.0 81.0 L582.9 79.9 L584.9 78.9 L586.8 77.8 L588.7 76.8 L590.7 75.7 L592.6 74.7 L594.5 73.6 L596.5 72.6 L598.4 71.5 L600.3 70.4 L602.3 69.4 L604.2 68.3 L606.1 67.3 L608.1 66.2 L610.0 65.2" style="fill:none;stroke:var(--accent)" stroke-width="2.6"/><path d="M142.1 26.9 L144.1 31.2 L146.0 35.4 L147.9 39.5 L149.9 43.4 L151.8 47.3 L153.7 51.1 L155.7 54.9 L157.6 58.5 L159.5 62.0 L161.5 65.5 L163.4 68.9 L165.3 72.2 L167.3 75.4 L169.2 78.5 L171.1 81.6 L173.1 84.6 L175.0 87.5 L176.9 90.3 L178.9 93.1 L180.8 95.8 L182.7 98.4 L184.7 101.0 L186.6 103.5 L188.5 106.0 L190.5 108.3 L192.4 110.6 L194.3 112.9 L196.3 115.1 L198.2 117.2 L200.1 119.3 L202.1 121.3 L204.0 123.3 L205.9 125.2 L207.9 127.0 L209.8 128.8 L211.7 130.6 L213.7 132.3 L215.6 133.9 L217.5 135.5 L219.5 137.1 L221.4 138.6 L223.3 140.0 L225.3 141.5 L227.2 142.8 L229.1 144.1 L231.1 145.4 L233.0 146.7 L234.9 147.9 L236.9 149.0 L238.8 150.1 L240.7 151.2 L242.7 152.2 L244.6 153.2 L246.5 154.2 L248.5 155.1 L250.4 156.0 L252.3 156.9 L254.3 157.7 L256.2 158.5 L258.1 159.2 L260.1 159.9 L262.0 160.6 L263.9 161.3 L265.9 161.9 L267.8 162.5 L269.7 163.1 L271.7 163.6 L273.6 164.1 L275.5 164.6 L277.5 165.0 L279.4 165.5 L281.3 165.8 L283.3 166.2 L285.2 166.6 L287.1 166.9 L289.1 167.2 L291.0 167.4 L292.9 167.7 L294.9 167.9 L296.8 168.1 L298.7 168.3 L300.7 168.4 L302.6 168.6 L304.5 168.7 L306.5 168.8 L308.4 168.8 L310.3 168.9 L312.3 168.9 L314.2 168.9 L316.1 168.9 L318.1 168.9 L320.0 168.8 L321.9 168.8 L323.9 168.7 L325.8 168.6 L327.7 168.4 L329.7 168.3 L331.6 168.2 L333.5 168.0 L335.5 167.8 L337.4 167.6 L339.3 167.4 L341.3 167.1 L343.2 166.9 L345.1 166.6 L347.1 166.4 L349.0 166.1 L350.9 165.8 L352.9 165.5 L354.8 165.1 L356.7 164.8 L358.7 164.4 L360.6 164.0 L362.5 163.7 L364.5 163.3 L366.4 162.9 L368.3 162.4 L370.3 162.0 L372.2 161.6 L374.1 161.1 L376.1 160.7 L378.0 160.2 L379.9 159.7 L381.9 159.2 L383.8 158.7 L385.7 158.2 L387.7 157.7 L389.6 157.1 L391.5 156.6 L393.5 156.0 L395.4 155.5 L397.3 154.9 L399.3 154.3 L401.2 153.7 L403.1 153.1 L405.1 152.5 L407.0 151.9 L408.9 151.3 L410.9 150.7 L412.8 150.0 L414.7 149.4 L416.7 148.7 L418.6 148.1 L420.5 147.4 L422.5 146.7 L424.4 146.1 L426.3 145.4 L428.3 144.7 L430.2 144.0 L432.1 143.3 L434.1 142.6 L436.0 141.9 L437.9 141.1 L439.9 140.4 L441.8 139.7 L443.7 138.9 L445.7 138.2 L447.6 137.4 L449.5 136.7 L451.5 135.9 L453.4 135.1 L455.3 134.4 L457.3 133.6 L459.2 132.8 L461.1 132.0 L463.1 131.2 L465.0 130.4 L466.9 129.6 L468.9 128.8 L470.8 128.0 L472.7 127.2 L474.7 126.3 L476.6 125.5 L478.5 124.7 L480.5 123.9 L482.4 123.0 L484.3 122.2 L486.3 121.3 L488.2 120.5 L490.1 119.6 L492.1 118.8 L494.0 117.9 L495.9 117.1 L497.9 116.2 L499.8 115.3 L501.7 114.4 L503.7 113.6 L505.6 112.7 L507.5 111.8 L509.5 110.9 L511.4 110.0 L513.3 109.1 L515.3 108.2 L517.2 107.3 L519.1 106.4 L521.1 105.5 L523.0 104.6 L524.9 103.7 L526.9 102.8 L528.8 101.9 L530.7 101.0 L532.7 100.1 L534.6 99.1 L536.5 98.2 L538.5 97.3 L540.4 96.4 L542.3 95.4 L544.3 94.5 L546.2 93.6 L548.1 92.6 L550.1 91.7 L552.0 90.7 L553.9 89.8 L555.9 88.9 L557.8 87.9 L559.7 87.0 L561.7 86.0 L563.6 85.1 L565.5 84.1 L567.5 83.1 L569.4 82.2 L571.3 81.2 L573.3 80.3 L575.2 79.3 L577.1 78.3 L579.1 77.4 L581.0 76.4 L582.9 75.4 L584.9 74.5 L586.8 73.5 L588.7 72.5 L590.7 71.5 L592.6 70.6 L594.5 69.6 L596.5 68.6 L598.4 67.6 L600.3 66.6 L602.3 65.7 L604.2 64.7 L606.1 63.7 L608.1 62.7 L610.0 61.7" style="fill:none;stroke:var(--accent)" stroke-width="2.6"/><path d="M234.9 26.3 L236.9 29.7 L238.8 33.0 L240.7 36.2 L242.7 39.3 L244.6 42.4 L246.5 45.3 L248.5 48.2 L250.4 51.1 L252.3 53.8 L254.3 56.5 L256.2 59.2 L258.1 61.7 L260.1 64.2 L262.0 66.6 L263.9 69.0 L265.9 71.3 L267.8 73.5 L269.7 75.7 L271.7 77.8 L273.6 79.9 L275.5 81.9 L277.5 83.9 L279.4 85.7 L281.3 87.6 L283.3 89.4 L285.2 91.1 L287.1 92.8 L289.1 94.4 L291.0 96.0 L292.9 97.6 L294.9 99.1 L296.8 100.5 L298.7 101.9 L300.7 103.3 L302.6 104.6 L304.5 105.9 L306.5 107.1 L308.4 108.3 L310.3 109.4 L312.3 110.5 L314.2 111.6 L316.1 112.6 L318.1 113.6 L320.0 114.6 L321.9 115.5 L323.9 116.4 L325.8 117.2 L327.7 118.0 L329.7 118.8 L331.6 119.6 L333.5 120.3 L335.5 121.0 L337.4 121.6 L339.3 122.2 L341.3 122.8 L343.2 123.4 L345.1 123.9 L347.1 124.4 L349.0 124.9 L350.9 125.3 L352.9 125.7 L354.8 126.1 L356.7 126.5 L358.7 126.8 L360.6 127.1 L362.5 127.4 L364.5 127.7 L366.4 127.9 L368.3 128.2 L370.3 128.3 L372.2 128.5 L374.1 128.7 L376.1 128.8 L378.0 128.9 L379.9 129.0 L381.9 129.0 L383.8 129.1 L385.7 129.1 L387.7 129.1 L389.6 129.1 L391.5 129.1 L393.5 129.0 L395.4 128.9 L397.3 128.9 L399.3 128.8 L401.2 128.6 L403.1 128.5 L405.1 128.3 L407.0 128.2 L408.9 128.0 L410.9 127.8 L412.8 127.5 L414.7 127.3 L416.7 127.1 L418.6 126.8 L420.5 126.5 L422.5 126.2 L424.4 125.9 L426.3 125.6 L428.3 125.3 L430.2 124.9 L432.1 124.6 L434.1 124.2 L436.0 123.8 L437.9 123.4 L439.9 123.0 L441.8 122.6 L443.7 122.1 L445.7 121.7 L447.6 121.2 L449.5 120.8 L451.5 120.3 L453.4 119.8 L455.3 119.3 L457.3 118.8 L459.2 118.3 L461.1 117.8 L463.1 117.2 L465.0 116.7 L466.9 116.1 L468.9 115.6 L470.8 115.0 L472.7 114.4 L474.7 113.8 L476.6 113.2 L478.5 112.6 L480.5 112.0 L482.4 111.4 L484.3 110.8 L486.3 110.1 L488.2 109.5 L490.1 108.8 L492.1 108.2 L494.0 107.5 L495.9 106.8 L497.9 106.1 L499.8 105.5 L501.7 104.8 L503.7 104.1 L505.6 103.4 L507.5 102.6 L509.5 101.9 L511.4 101.2 L513.3 100.5 L515.3 99.7 L517.2 99.0 L519.1 98.2 L521.1 97.5 L523.0 96.7 L524.9 96.0 L526.9 95.2 L528.8 94.4 L530.7 93.6 L532.7 92.8 L534.6 92.1 L536.5 91.3 L538.5 90.5 L540.4 89.7 L542.3 88.8 L544.3 88.0 L546.2 87.2 L548.1 86.4 L550.1 85.6 L552.0 84.7 L553.9 83.9 L555.9 83.1 L557.8 82.2 L559.7 81.4 L561.7 80.5 L563.6 79.7 L565.5 78.8 L567.5 78.0 L569.4 77.1 L571.3 76.2 L573.3 75.4 L575.2 74.5 L577.1 73.6 L579.1 72.7 L581.0 71.8 L582.9 71.0 L584.9 70.1 L586.8 69.2 L588.7 68.3 L590.7 67.4 L592.6 66.5 L594.5 65.6 L596.5 64.7 L598.4 63.8 L600.3 62.8 L602.3 61.9 L604.2 61.0 L606.1 60.1 L608.1 59.2 L610.0 58.3" style="fill:none;stroke:var(--accent)" stroke-width="2.6"/><circle cx="240.9" cy="151.3" r="5" style="fill:var(--ink)"/><text x="250.9" y="141.3" font-size="15" style="fill:var(--ink)">Start (0, 1)</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Die Schienen von $y'=x-y$: an jedem Punkt eine kurze Strecke mit Steigung $x-y$. Die Kurven sind Lösungen $y=x-1+Ce^{-x}$; die durch den Start $(0,1)$ hat $C=2$. Alle nähern sich der Geraden $y=x-1$.</figcaption>
+</figure>
+<p>Lösungen zu finden kann schwierig sein, aber eine zu <strong>prüfen</strong> ist immer leicht: ableiten und einsetzen. Mach das am Ende jeder Aufgabe zur Gewohnheit.</p>
+
+<div class="box">
+<h3 id="we-1">Musterbeispiel 1: Lösungen, und wie viele</h3>
+<p>Die Musterbeispiele sind Fragen: Versuch jede im Kopf, dann öffne die Antwort. Deine Antworten, der Reihe nach, sind die Lösung.</p>
+<ol class="gq">
+  <li><p>Prüfe, dass $y=x-1+Ce^{-x}$ für jedes $C\in\mathbb R$ die Gleichung $y'=x-y$ löst. Welches $C$ liefert $y(0)=1$?</p>
+  <details><summary>Antwort</summary><div><p>$y'=1-Ce^{-x}$ und <span class="math-display" style="display:block">$$\begin{aligned}x-y&amp;=x-x+1-Ce^{-x}\\&amp;=1-Ce^{-x}\end{aligned}.$$</span>Gleich. $y(0)=-1+C=1$ liefert $C=2$, die Kurve durch den Punkt in der Abbildung.</p></div></details></li>
+  <li><p>Finde zwei verschiedene Lösungen von $y'=2\sqrt{|y|}$ mit $y(0)=0$. (Winterprüfung 2019, 10c, 1 Punkt: «Gib ein Anfangswertproblem ohne eindeutige Lösung an.»)</p>
+  <details><summary>Antwort</summary><div><p>$y=0$, und $y(x)=x^2$ für $x\ge0$, $y(x)=0$ für $x&lt;0$ (Probe: $y'=2x=2\sqrt{x^2}$ für $x\ge0$, und $0$ für $x&lt;0$). Zwei Wagen vom selben Punkt können verschiedene Wege gehen! Darum braucht «finde <em>alle</em> Lösungen» einen Beweis, und unsere drei Rezepte kommen mit einem. (Eindeutigkeit im Allgemeinen ist ein Satz aus dem zweiten Semester.)</p></div></details></li>
+  <li><p>Welche Gleichung hat die Lösungen $y=Ce^{3x}$, und wie viele Lösungen hat $y'=3y$, $y(0)=5$?</p>
+  <details><summary>Antwort</summary><div><p>$y'=3y$. Genau eine: $y=5e^{3x}$. Ist $y$ irgendeine Lösung, dann gilt $(ye^{-3x})'=(y'-3y)e^{-3x}=0$, also ist $ye^{-3x}$ konstant, gleich seinem Wert $5$ bei $0$. Dieser Trick ist Beweis B weiter unten.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s3-separable-equations">3. Separierbare Gleichungen</h2>
+<p>Eine Gleichung $y'=f(x)\,g(y)$ ist <strong>separierbar</strong>: Die rechte Seite zerfällt in einen Faktor, der nur von $x$ abhängt, und einen, der nur von $y$ abhängt. Beispiele: $y'=x(y^2+1)$, $y'=e^{x-y}=e^xe^{-y}$, $y'=\frac{y^2}{x^2}$. Das Kochrezept schreibt $\frac{dy}{g(y)}=f(x)\,dx$ und integriert beide Seiten. Hier ist, warum das korrekt ist.</p>
+
+<h3 id="proof-a">Beweis A: Trennung der Variablen</h3>
+<div class="box">
+<p><strong>Satz.</strong> Seien $f:I\to\mathbb R$ und $g:J\to\mathbb R$ stetig auf offenen Intervallen $I,J$, mit $g(y)\neq0$ für alle $y\in J$. Sei $F$ eine Stammfunktion von $f$ und $H$ eine von $\frac1g$. Eine differenzierbare Funktion $y:I'\to J$ auf einem Intervall $I'\subseteq I$ löst $y'=f(x)g(y)$ genau dann, wenn es eine Konstante $C$ gibt mit</p>
+<span class="math-display" style="display:block">$$H\bigl(y(x)\bigr)=F(x)+C\qquad\text{für alle }x\in I'.$$</span>
+<p>$H$ ist streng monoton, also kann man nach $y$ auflösen: $y(x)=H^{-1}\bigl(F(x)+C\bigr)$. Zusätzlich liefert jede Nullstelle $c$ von $g$ die <strong>konstante Lösung</strong> $y\equiv c$.</p>
+</div>
+<p><strong>Die Idee.</strong> $\frac{dy}{g(y)}=f(x)\,dx$ ist eine Kurzschrift für eine Aussage der Kettenregel: $\frac d{dx}H(y(x))=\frac{y'(x)}{g(y(x))}$, und die Gleichung sagt, dass das gleich $f(x)=F'(x)$ ist. Zwei Funktionen mit derselben Ableitung auf einem Intervall unterscheiden sich um eine Konstante.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>«⇒»:</strong> Aus $y'=f(x)g(y)$ zeige, dass $H(y(x))-F(x)$ konstant ist: Seine Ableitung ist $0$ auf einem Intervall.</li>
+  <li><strong>«⇐»:</strong> Leite $H(y(x))=F(x)+C$ ab.</li>
+  <li><strong>Monoton:</strong> $H'=\frac1g$ wechselt nie das Vorzeichen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Miss die Höhe des Wagens mit einem gebogenen Lineal $H$; die Biegung hebt den $y$-Teil der Schienen genau auf.</p></div><div class="sp-formal"><p><strong>«⇒».</strong> Sei $y$ eine Lösung. Nach der Kettenregel gilt für $x\in I'$</p>
+<span class="math-display" style="display:block">$$\frac d{dx}H\bigl(y(x)\bigr)=\frac{y'(x)}{g\bigl(y(x)\bigr)}=f(x)=F'(x).$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Überall dieselbe Änderungsrate: Die Differenz ändert sich nie.</p></div><div class="sp-formal"><p>Also ist $\bigl(H\circ y-F\bigr)'=0$ auf dem Intervall $I'$, und nach dem Mittelwertsatz ist $H\circ y-F$ eine Konstante $C$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Rückwärts dieselbe Rechnung.</p></div><div class="sp-formal"><p><strong>«⇐».</strong> Gilt $H(y(x))=F(x)+C$, leite ab: $\frac{y'(x)}{g(y(x))}=f(x)$, also $y'(x)=f(x)g(y(x))$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Das Lineal faltet sich nie zurück, also gibt eine Ablesung genau eine Höhe zurück.</p></div><div class="sp-formal"><p>$g$ ist stetig ohne Nullstellen auf dem Intervall $J$, also hat es nach dem Zwischenwertsatz ein festes Vorzeichen, und ebenso $H'=\frac1g$. Daher ist $H$ streng monoton und injektiv, und $y(x)=H^{-1}(F(x)+C)$. Schliesslich: Ist $g(c)=0$, dann hat $y\equiv c$ die Ableitung $y'=0=f(x)g(c)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-const">Die Konstante benennen, dann einen Punkt einsetzen</a> <a class="mvl" href="moves.html#m-check">Durch Ableiten prüfen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Sei $y:I'\to J$ differenzierbar. Gilt $y'=f(x)g(y)$, dann ist nach der Kettenregel $(H\circ y)'(x)=\frac{y'(x)}{g(y(x))}=f(x)=F'(x)$ für alle $x\in I'$; also ist $(H\circ y-F)'=0$ auf dem Intervall $I'$, und $H\circ y-F$ ist nach dem Mittelwertsatz konstant. Umgekehrt liefert Ableiten von $H(y(x))=F(x)+C$ die Gleichung $\frac{y'(x)}{g(y(x))}=f(x)$, d.h. $y'=f(x)g(y)$. Da $g$ stetig ist und auf dem Intervall $J$ keine Nullstellen hat, hat es nach dem Zwischenwertsatz ein konstantes Vorzeichen; also hat $H'=\frac1g$ ein konstantes Vorzeichen, $H$ ist streng monoton, und $y=H^{-1}(F+C)$. Ist $g(c)=0$, so ist die konstante Funktion $c$ eine Lösung, da beide Seiten verschwinden. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Schreib $y'=y^2$ in dieser Form. Was sind $f$, $g$, $F$, $H$ und die nicht konstanten Lösungen?</p>
+  <details><summary>Antwort</summary><div><p>$f=1$, $g(y)=y^2$ auf $J=(0,\infty)$ oder $(-\infty,0)$, $F=x$, $H(y)=-\frac1y$. Also $-\frac1y=x+C$, $y=-\frac1{x+C}$, auf einem Intervall, das $-C$ nicht enthält. Dazu die konstante Lösung $y\equiv0$.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Warum braucht der Satz, dass $J$ die Nullstellen von $g$ vermeidet, und warum ist das in Prüfungsaufgaben harmlos?</p>
+  <details><summary>Antwort</summary><div><p>Durch $g(y)$ teilen braucht $g(y)\neq0$. In Prüfungsaufgaben hat der Anfangswert meist $g(y_0)\neq0$; dann bleibt $y$ in einem Intervall $J$ ohne Nullstellen von $g$, zumindest nahe $x_0$, und die Formel gilt dort. (Beispiel 2 von Musterbeispiel 1 zeigt, was passieren kann, wenn $g(y_0)=0$ und $g$ nicht differenzierbar ist: mehrere Lösungen.)</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den ganzen Beweis nur aus dem Rahmen.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-recipe-for-a-separable">Das Rezept für ein separierbares Anfangswertproblem $y'=f(x)g(y)$, $y(x_0)=y_0$</h3>
+<ol>
+  <li><strong>Faktorisiere</strong> die rechte Seite als $f(x)\,g(y)$. (In Einsiedlers Korrektur HS21 gab es dafür allein schon den ersten Punkt.)</li>
+  <li><strong>Trennen und integrieren:</strong> $\int\frac{dy}{g(y)}=\int f(x)\,dx$, ergibt $H(y)=F(x)+C$.</li>
+  <li><strong>Konstante:</strong> Setze $x_0,y_0$ ein, um $C$ zu finden (vor dem Auflösen nach $y$ ist das oft einfacher).</li>
+  <li><strong>Löse nach $y$ auf</strong> und gib das <strong>maximale Intervall</strong> an: das grösste Intervall, das $x_0$ enthält, auf dem die Formel Sinn ergibt und in $J$ bleibt.</li>
+  <li><strong>Prüfe</strong> durch Ableiten. Vergiss die konstanten Lösungen nicht, wenn nach <em>allen</em> Lösungen gefragt ist.</li>
+</ol>
+</div>
+
+<div class="box">
+
+<h3 id="we-2">Musterbeispiel 2: separierbare Gleichungen aus den Prüfungen</h3>
+<ol class="gq">
+  <li><p>Löse $y'=xy^2+x$, $y(0)=1$. (Einsiedler HS21, Aufgabe 3, 4 Punkte.)</p>
+  <details><summary>Antwort</summary><div><p>Faktorisieren: $y'=x(y^2+1)$; $g(y)=y^2+1$ hat keine Nullstellen. Trennen: $\int\frac{dy}{1+y^2}=\int x\,dx$, also $\arctan y=\frac{x^2}2+C$. Bei $x=0$: $\arctan1=\frac\pi4=C$. Also</p>
+  <span class="math-display" style="display:block">$$y(x)=\tan\left(\frac{x^2}2+\frac\pi4\right),$$</span>
+  <p>gültig, solange $\frac{x^2}2+\frac\pi4&lt;\frac\pi2$, d.h. für $|x|&lt;\sqrt{\pi/2}$. (Ein häufiger Fehler laut Korrekturnotizen: Man behandelt sie als linear, indem man das $+x$ weglässt. Wegen $y^2$ ist sie nicht linear.)</p></div></details></li>
+  <li><p>Finde alle Lösungen $y:\mathbb R\to\mathbb R$ von $y'=e^{x-y}$, die auf ganz $\mathbb R$ definiert sind. (Felder HS22, 1.A8, 4 Punkte.)</p>
+  <details><summary>Antwort</summary><div><p>$y'=e^xe^{-y}$, und $g(y)=e^{-y}$ hat keine Nullstellen. Trennen: $\int e^y\,dy=\int e^x\,dx$, also $e^y=e^x+C$ und $y=\log(e^x+C)$. Das ist genau dann auf ganz $\mathbb R$ definiert, wenn $e^x+C&gt;0$ für jedes $x$. Da $e^x\to0$ für $x\to-\infty$, heisst das $C\ge0$. Antwort: $y(x)=\log(e^x+C)$ mit $C\ge0$.</p></div></details></li>
+  <li><p>Löse $y'=y(1-y)$ mit $y(0)=\frac12$.</p>
+  <details><summary>Antwort</summary><div><p>Partialbrüche: $\frac1{y(1-y)}=\frac1y+\frac1{1-y}$, also $\log\frac y{1-y}=x+C$ für $0&lt;y&lt;1$. Bei $0$: $\log1=0=C$. Also $\frac y{1-y}=e^x$ und $y=\frac{e^x}{1+e^x}$, definiert auf ganz $\mathbb R$. (Die konstanten Lösungen $y\equiv0$ und $y\equiv1$ sind die Nullstellen von $g$. Das ist die logistische Gleichung des Populationswachstums.)</p></div></details></li>
+</ol>
+</div>
+
+
+<h2 id="s4-linear-equations-of-first-order">4. Lineare Gleichungen erster Ordnung</h2>
+<div class="box">
+<p><strong>Definition.</strong> Eine <strong>lineare Differentialgleichung erster Ordnung</strong> ist $y'+f(x)\,y=g(x)$ mit gegebenen stetigen $f,g:I\to\mathbb R$ auf einem Intervall $I$. Sie ist <strong>homogen</strong>, wenn $g=0$, sonst <strong>inhomogen</strong>; $g$ ist die Störfunktion.</p>
+</div>
+<p>«Linear» heisst: $y$ und $y'$ kommen nur in der ersten Potenz vor, multipliziert mit Funktionen von $x$. $y'=x^2y+\sin x$ ist linear; $y'=y^2$ und $y'=\sin y$ sind es nicht. Manche Gleichungen sind sowohl linear als auch separierbar, etwa $y'=\sin(x)\,y$; dann funktioniert jede der beiden Methoden.</p>
+
+<h3 id="proof-b">Beweis B: alle Lösungen einer linearen Gleichung erster Ordnung (Lemma 8.60, <a class="pl" href="../script.html#p398">S. 398</a>, und Variation der Konstanten, <a class="pl" href="../script.html#p398">S. 398–399</a>)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Seien $f,g:I\to\mathbb R$ stetig auf einem Intervall $I$, $F$ eine Stammfunktion von $f$ und $G$ eine Stammfunktion von $g\,e^{F}$. Dann sind die Lösungen $y:I\to\mathbb R$ von $y'+f(x)y=g(x)$ genau</p>
+<span class="math-display" style="display:block">$$y(x)=e^{-F(x)}\bigl(G(x)+C\bigr),\qquad C\in\mathbb R.$$</span>
+<p>Insbesondere (mit $g=0$, $G=0$) sind die Lösungen der homogenen Gleichung $y'+f(x)y=0$ genau die Vielfachen $Ce^{-F(x)}$. Für jedes $x_0\in I$ und $y_0\in\mathbb R$ gibt es <strong>genau eine</strong> Lösung mit $y(x_0)=y_0$.</p>
+</div>
+<p><strong>Die Idee.</strong> Der Weg des Skripts, in zwei Schritten. Löse zuerst die Gleichung ohne Störfunktion: Die homogenen Lösungen sind $Ae^{-F(x)}$. Dann <strong>variiere die Konstante</strong>: Versuch $y=A(x)e^{-F(x)}$ mit einer Funktion $A$ statt einer Zahl. Beim Einsetzen kürzt sich alles ausser $A'$ weg, und die Gleichung wird zu $A'=ge^F$, was <a class="xl" href="lesson-19.html#proof-a">Lektion 19</a> durch Integrieren löst. Schliesslich sind alle Lösungen eine partikuläre Lösung plus alle homogenen.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Zwei Richtungen:</strong> Jede Funktion der Form $e^{-F}(G+C)$ ist eine Lösung, und jede Lösung hat diese Form.</li>
+  <li><strong>Eindeutigkeit zum Anfangswert:</strong> Genau ein $C$ passt zu $y(x_0)=y_0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Zuerst die Schienen ohne jeden Schub: ein Wagen, sich selbst überlassen.</p></div><div class="sp-formal"><p><strong>Homogene Gleichung.</strong> Für differenzierbares $y:I\to\mathbb R$ liefern die Produktregel und $F'=f$: $\bigl(ye^{F}\bigr)'=\bigl(y'+fy\bigr)e^{F}$. Also gilt $y'+fy=0$ genau dann, wenn $\bigl(ye^F\bigr)'=0$, was auf dem Intervall $I$ genau dann gilt, wenn $ye^F$ eine Konstante $A$ ist, d.h. $y=Ae^{-F}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jetzt der Schub: Lass die Konstante mit dem Wagen mitreisen.</p></div><div class="sp-formal"><p><strong>Variation der Konstanten.</strong> Setze $y_p=A(x)e^{-F}$ mit differenzierbarem $A$. Dann <span class="math-display" style="display:block">$$y_p'+fy_p=A'e^{-F}-Afe^{-F}+fAe^{-F}=A'e^{-F},$$</span>also löst $y_p$ die Gleichung $y'+fy=g$, wenn $A'=ge^{F}$. Nimm $A=G$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Reisen unter demselben Schub unterscheiden sich um eine Reise ohne Schub.</p></div><div class="sp-formal"><p><strong>Alle Lösungen.</strong> Löst $y$ die Gleichung $y'+fy=g$, dann gilt $(y-y_p)'+f(y-y_p)=g-g=0$, also $y-y_p=Ce^{-F}$ nach dem ersten Schritt. Umgekehrt ist $y_p+Ce^{-F}$ eine Lösung. Daher sind die Lösungen genau $y=e^{-F}(G+C)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Startpunkt entscheidet über die Konstante.</p></div><div class="sp-formal"><p>$y(x_0)=y_0$ heisst $e^{-F(x_0)}(G(x_0)+C)=y_0$, was genau eine Lösung $C=y_0e^{F(x_0)}-G(x_0)$ hat. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-helper">Eine Hilfsfunktion</a> <a class="mvl" href="moves.html#m-const">Die Konstante benennen, dann einen Punkt einsetzen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Für differenzierbares $y:I\to\mathbb R$ liefert die Produktregel $(ye^F)'=(y'+fy)e^F$. Daher gilt $y'+fy=0$ genau dann, wenn $ye^F$ auf dem Intervall $I$ konstant ist, d.h. die homogenen Lösungen sind $Ae^{-F}$, $A\in\mathbb R$. Für $y_p=Ge^{-F}$ erhalten wir $y_p'+fy_p=G'e^{-F}=ge^Fe^{-F}=g$, also ist $y_p$ eine partikuläre Lösung (Variation der Konstanten). Ist $y$ irgendeine Lösung, so löst $y-y_p$ die homogene Gleichung, also $y-y_p=Ce^{-F}$; umgekehrt ist $y_p+Ce^{-F}$ eine Lösung. Also sind die Lösungen genau $e^{-F}(G+C)$, und $y(x_0)=y_0$ bestimmt $C=y_0e^{F(x_0)}-G(x_0)$ eindeutig. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Homogen:</strong> $(ye^F)'=(y'+fy)e^F$, also $y_{\text{hom}}=Ae^{-F}$.</li>
+  <li><strong>Variiere die Konstante:</strong> $y_p=A(x)e^{-F}$ liefert $A'=ge^F$.</li>
+  <li><strong>Alle Lösungen:</strong> Die Differenz zweier Lösungen ist homogen, also $y=y_p+Ae^{-F}$; passe $A$ an.</li>
+</ol>
+<p><em>Kurz gesagt:</em> «Löse ohne $g$, dann lass die Konstante variieren.» In Multiple Choice mit $f=\frac kx$ ist die homogene Lösung $Ax^{-k}$, und die ganze Frage dauert zwei Minuten (Aufgaben 1 und 2).</p>
+<p><em>Eine Abkürzung, die dir anderswo begegnen kann:</em> der <strong>integrierende Faktor</strong>. Multipliziere die Gleichung mit $e^F$; die linke Seite wird $(ye^F)'$, also $(ye^F)'=ge^F$. Das ist dieselbe Rechnung, denn für $y=A(x)e^{-F}$ ist $ye^F=A$, aber schreib in der Prüfung die Schritte des Skripts.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum liefert die Abkürzung mit dem integrierenden Faktor dieselbe Antwort wie die Variation der Konstanten?</p>
+  <details><summary>Antwort</summary><div><p>Mit $y=A(x)e^{-F}$ ist $ye^F=A$, also sagt $(ye^F)'=ge^F$ genau $A'=ge^F$. Die beiden Methoden schreiben dieselbe Gleichung mit anderen Buchstaben.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Wo wurde benutzt, dass $I$ ein Intervall ist? Gib ein Beispiel, bei dem die Folgerung auf einer Vereinigung zweier Intervalle scheitert.</p>
+  <details><summary>Antwort</summary><div><p>«Ableitung $0$ ⇒ konstant» braucht ein Intervall. Auf $(-\infty,0)\cup(0,\infty)$ hat die Gleichung $y'=\frac yx$ die Lösungen $y=C_1x$ für $x&lt;0$ und $y=C_2x$ für $x&gt;0$ mit <em>unabhängigen</em> Konstanten.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den ganzen Beweis nur aus dem Rahmen.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="the-recipe-for-the-script">Das Rezept für $y'+f(x)y=g(x)$, $y(x_0)=y_0$ (das «Kochrezept» des Skripts)</h3>
+<ol>
+  <li><strong>Normalform:</strong> Bring sie auf $y'+f(x)y=g(x)$ (achte auf das Vorzeichen von $f$: $y'=2y+\sin x$ hat $f=-2$).</li>
+  <li><strong>Homogene Gleichung durch Trennung der Variablen:</strong> $\frac{dy}{y}=-f(x)\,dx$, also $\log|y|=-F(x)+c$ und $y_{\text{hom}}=Ae^{-F(x)}$. Oft ist das einfach: $f=\frac kx$ liefert $y_{\text{hom}}=Ax^{-k}$.</li>
+  <li><strong>Variation der Konstanten:</strong> Setze $y_p=A(x)e^{-F(x)}$ in die Gleichung ein. Alles ausser $A'$ kürzt sich weg: $A'(x)=g(x)e^{F(x)}$. Integriere (jede Stammfunktion tut es).</li>
+  <li><strong>Konstante:</strong> $y=y_p+y_{\text{hom}}$; bestimme $A$ aus $y(x_0)=y_0$, dann <strong>prüfe</strong>.</li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="we-3">Musterbeispiel 3: lineare Gleichungen erster Ordnung</h3>
+<ol class="gq">
+  <li><p>Die allgemeine Lösung von $y'=\sin(x)\,y$ (Sommerprüfung 2017, 1e, 1 Punkt).</p>
+  <details><summary>Antwort</summary><div><p>Normalform $y'-\sin(x)y=0$, also $f=-\sin x$, $F=\cos x$, und $y=Ce^{-\cos x}$, $C\in\mathbb R$. (Auch separierbar: $\log|y|=-\cos x+c$.)</p></div></details></li>
+  <li><p>Löse $y'-2xy=e^{x^2}$, $y(0)=1$ (das Beispiel des Skripts).</p>
+  <details><summary>Antwort</summary><div><p>$f=-2x$, $F=-x^2$, also $y_{\text{hom}}=Ae^{x^2}$. Variiere die Konstante: $y=A(x)e^{x^2}$ liefert $A'e^{x^2}=e^{x^2}$, also $A'=1$ und $A(x)=x$. Daher $y=(x+A)e^{x^2}$, und $y(0)=1$ liefert $A=1$:</p>
+  <span class="math-display" style="display:block">$$y(x)=(x+1)e^{x^2}.$$</span>
+  <p>Probe: <span class="math-display" style="display:block">$$y'=e^{x^2}+2x(x+1)e^{x^2}=e^{x^2}+2xy.$$</span>✓</p></div></details></li>
+  <li><p>$u'=-\frac1xu+x^2$, $u(1)=\frac54$. Finde $u(2)$. (Figalli FS24, MC6, 2 Punkte.)</p>
+  <details><summary>Antwort</summary><div><p>Normalform $u'+\frac1xu=x^2$ auf $(0,\infty)$; $F=\log x$, also $u_{\text{hom}}=\frac Ax$. Variiere die Konstante: $u=\frac{A(x)}x$ liefert $\frac{A'}x=x^2$, also $A'=x^3$ und $A(x)=\frac{x^4}4$. Daher $u=\frac1x\left(\frac{x^4}4+A\right)$. Bei $x=1$: $\frac54=\frac14+A$, $A=1$. Also $u=\frac{x^3}4+\frac1x$ und $u(2)=2+\frac12=\frac52$.</p></div></details></li>
+</ol>
+</div>
+
+<h2 id="s5-second-order-with-constant-coefficients">5. Zweite Ordnung mit konstanten Koeffizienten: die homogene Gleichung</h2>
+<div class="box">
+<p><strong>Definition.</strong> Für Konstanten $a_0,a_1$ (reell oder komplex) ist $y''+a_1y'+a_0y=0$ eine <strong>homogene lineare Gleichung zweiter Ordnung mit konstanten Koeffizienten</strong>. Ihr <strong>charakteristisches Polynom</strong> ist $p(T)=T^2+a_1T+a_0$. Mit einer Störfunktion ist $y''+a_1y'+a_0y=g(x)$ inhomogen.</p>
+</div>
+<p>Der Ansatz: Versuch $y=e^{\alpha x}$. Dann $y'=\alpha y$ und $y''=\alpha^2y$, also $y''+a_1y'+a_0y=p(\alpha)\,e^{\alpha x}$. Die Exponentialfunktion löst die Gleichung genau dann, wenn $\alpha$ eine Nullstelle von $p$ ist. Alles andere ist Buchhaltung, und zwei Beweise machen es wasserdicht.</p>
+
+<h3 id="proof-c">Beweis C: Superposition (Wichtige Übung 8.66 (i) und Übung 8.62)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Sei $L(y)=y''+a_1y'+a_0y$ (oder $L(y)=y'+f(x)y$).</p>
+<ol>
+  <li>Lösen $y_1,y_2$ die Gleichung $L(y)=0$, dann auch $c_1y_1+c_2y_2$ für alle Konstanten $c_1,c_2$: Die Lösungen bilden einen <strong>Vektorraum</strong>.</li>
+  <li>Ist $y_p$ eine Lösung von $L(y)=g$, dann sind die Lösungen von $L(y)=g$ genau $y=y_p+y_h$ mit $y_h$ einer Lösung von $L(y)=0$. In Worten: <strong>allgemein = partikulär + homogen</strong>.</li>
+  <li>Gilt $L(y_1)=g_1$ und $L(y_2)=g_2$, dann gilt $L(y_1+y_2)=g_1+g_2$.</li>
+</ol>
+</div>
+<p><strong>Die Idee.</strong> $L$ ist linear: $L(c_1y_1+c_2y_2)=c_1L(y_1)+c_2L(y_2)$, weil Ableiten linear ist. Alles folgt daraus, genau wie in der linearen Algebra: Die Lösungen von $Av=w$ sind eine partikuläre Lösung plus der Kern von $A$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>1 und 3:</strong> Berechne $L$ der Kombination.</li>
+  <li><strong>2:</strong> zwei Inklusionen: $y_p+y_h$ ist eine Lösung; und für jede Lösung $y$ ist $y-y_p$ homogen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Regel der Schienen verträgt das Addieren und Skalieren von Reisen.</p></div><div class="sp-formal"><p>Wegen der Linearität der Ableitung gilt $L(c_1y_1+c_2y_2)=c_1L(y_1)+c_2L(y_2)$ für zweimal differenzierbare $y_1,y_2$. Das liefert 1 (mit $L(y_i)=0$) und 3.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine bekannte Reise plus eine freie Reise ist eine Reise.</p></div><div class="sp-formal"><p><strong>2.</strong> Gilt $L(y_h)=0$, dann $L(y_p+y_h)=g+0=g$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Reisen unter demselben Zug unterscheiden sich um eine freie Reise.</p></div><div class="sp-formal"><p>Umgekehrt: Gilt $L(y)=g$, dann $L(y-y_p)=g-g=0$, also ist $y_h:=y-y_p$ homogen und $y=y_p+y_h$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-subset">Mengengleichheit durch zwei Inklusionen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Ableiten ist linear, also $L(c_1y_1+c_2y_2)=c_1L(y_1)+c_2L(y_2)$; das beweist 1 und 3. Zu 2: Gilt $L(y_h)=0$, dann $L(y_p+y_h)=L(y_p)+L(y_h)=g$; und gilt $L(y)=g$, dann $L(y-y_p)=0$, also hat $y=y_p+(y-y_p)$ die behauptete Form. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum ist die Lösungsmenge von $y''+a_1y'+a_0y=g$ für $g\neq0$ <em>kein</em> Vektorraum?</p>
+  <details><summary>Antwort</summary><div><p>$0$ ist keine Lösung ($L(0)=0\neq g$). Sie ist ein affiner Raum: ein um $y_p$ verschobener Vektorraum.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Funktioniert Superposition für $y'=y^2$?</p>
+  <details><summary>Antwort</summary><div><p>Nein: $y'=y^2$ ist nicht linear. $y=-\frac1x$ ist eine Lösung auf $(0,\infty)$, aber $2y=-\frac2x$ hat $(2y)'=\frac2{x^2}\neq(2y)^2=\frac4{x^2}$.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den ganzen Beweis nur aus dem Rahmen.</p></li>
+</ol></div>
+
+<h3 id="proof-d">Beweis D: alle Lösungen von $y''+a_1y'+a_0y=0$ (Abschnitt 8.5.4, <a class="pl" href="../script.html#p401">S. 401–402</a>, und Wichtige Übung 8.66)</h3>
+<div class="box">
+<p><strong>Satz.</strong> Sei <span class="math-display" style="display:block">$$p(T)=T^2+a_1T+a_0=(T-\alpha_1)(T-\alpha_2)$$</span>mit $\alpha_1,\alpha_2\in\mathbb C$. Die Lösungen $y:\mathbb R\to\mathbb C$ von $y''+a_1y'+a_0y=0$ sind genau</p>
+<ul>
+  <li>$y=C_1e^{\alpha_1x}+C_2e^{\alpha_2x}$, falls $\alpha_1\neq\alpha_2$,</li>
+  <li>$y=(C_1+C_2x)e^{\alpha x}$, falls $\alpha_1=\alpha_2=\alpha$ (doppelte Nullstelle),</li>
+</ul>
+<p>mit Konstanten $C_1,C_2\in\mathbb C$. Sind $a_0,a_1$ reell und $\alpha_{1,2}=\beta\pm i\gamma$ mit $\gamma\neq0$, so sind die <strong>reellen</strong> Lösungen genau $y=e^{\beta x}\bigl(C_1\cos(\gamma x)+C_2\sin(\gamma x)\bigr)$, $C_1,C_2\in\mathbb R$.</p>
+</div>
+<div class="need"><span class="label">Das brauchst du</span>
+<ul>
+  <li><strong>Beweis B mit komplexen Konstanten:</strong> Für $\alpha\in\mathbb C$ findet man die Lösungen von $z'=\alpha z+h(x)$ genauso, mit homogenen Lösungen $Ae^{\alpha x}$ und dann Variation der Konstanten: $z=A(x)e^{\alpha x}$ liefert $A'(x)=h(x)e^{-\alpha x}$. (Eine komplexe Funktion mit Ableitung $0$ auf einem Intervall ist konstant: Wende das reelle Resultat auf Real- und Imaginärteil an.)</li>
+</ul></div>
+<p><strong>Die Idee.</strong> Faktorisiere die Gleichung wie das Polynom. Mit $a_1=-(\alpha_1+\alpha_2)$ und $a_0=\alpha_1\alpha_2$ setze $z=y'-\alpha_2y$. Dann gilt $z'-\alpha_1z=y''+a_1y'+a_0y$. Eine Gleichung zweiter Ordnung ist also zwei Gleichungen erster Ordnung hintereinander, und Beweis B löst jede: zuerst $z$, dann $y$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Zwei Inklusionen:</strong> Die gegebenen Funktionen sind Lösungen; jede Lösung hat diese Form.</li>
+  <li><strong>Fälle:</strong> $\alpha_1\neq\alpha_2$ und $\alpha_1=\alpha_2$; dann die reelle Form.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Zerlege die Schienen zweiter Ordnung in zwei Schienen erster Ordnung.</p></div><div class="sp-formal"><p>Sei $y$ eine Lösung und $z=y'-\alpha_2y$. Mit $a_1=-(\alpha_1+\alpha_2)$, $a_0=\alpha_1\alpha_2$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}z'-\alpha_1z&amp;=y''-\alpha_2y'-\alpha_1y'+\alpha_1\alpha_2y\\&amp;=y''+a_1y'+a_0y=0.\end{aligned}$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die erste Schiene ist einfach.</p></div><div class="sp-formal"><p>Nach Beweis B (mit $f=-\alpha_1$) ist $z=Ae^{\alpha_1x}$ für eine Konstante $A$. Also $y'-\alpha_2y=Ae^{\alpha_1x}$, d.h. $\bigl(ye^{-\alpha_2x}\bigr)'=Ae^{(\alpha_1-\alpha_2)x}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die zweite Schiene hängt davon ab, ob die beiden Nullstellen verschieden sind.</p></div><div class="sp-formal"><p>Falls $\alpha_1\neq\alpha_2$: $ye^{-\alpha_2x}=\frac A{\alpha_1-\alpha_2}e^{(\alpha_1-\alpha_2)x}+C_2$, also $y=C_1e^{\alpha_1x}+C_2e^{\alpha_2x}$ mit $C_1=\frac A{\alpha_1-\alpha_2}$. Falls $\alpha_1=\alpha_2=\alpha$: $(ye^{-\alpha x})'=A$, also $ye^{-\alpha x}=Ax+C_1$ und $y=(C_1+C_2x)e^{\alpha x}$ mit $C_2=A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Und jede solche Reise folgt wirklich den Schienen.</p></div><div class="sp-formal"><p>Umgekehrt löst $e^{\alpha_ix}$ die Gleichung, da $p(\alpha_i)=0$. Bei einer doppelten Nullstelle hat $y=xe^{\alpha x}$ <span class="math-display" style="display:block">$$y''+a_1y'+a_0y=\bigl(p(\alpha)x+p'(\alpha)\bigr)e^{\alpha x}=0,$$</span>da $p(\alpha)=p'(\alpha)=0$. Nach Beweis C lösen alle Kombinationen die Gleichung.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Für reelle Schienen nimm Real- und Imaginärteil.</p></div><div class="sp-formal"><p>Reelle Form: $e^{(\beta\pm i\gamma)x}=e^{\beta x}(\cos\gamma x\pm i\sin\gamma x)$, also ist der Spann von $e^{\alpha_1x},e^{\alpha_2x}$ gleich dem Spann von $e^{\beta x}\cos\gamma x$ und $e^{\beta x}\sin\gamma x$. Sind $a_0,a_1$ reell und ist $y$ eine reelle Lösung, so ist sie eine komplexe Kombination dieser beiden, und der Realteil von $y=C_1e^{\beta x}\cos\gamma x+C_2e^{\beta x}\sin\gamma x$ zeigt, dass reelle $C_1,C_2$ genügen. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-cases">Fallunterscheidung</a> <a class="mvl" href="moves.html#m-subset">Mengengleichheit durch zwei Inklusionen</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Schreibe $a_1=-(\alpha_1+\alpha_2)$, $a_0=\alpha_1\alpha_2$. Sei $y$ eine Lösung und $z=y'-\alpha_2y$; dann gilt $z'-\alpha_1z=y''+a_1y'+a_0y=0$, also $z=Ae^{\alpha_1x}$ nach Beweis B. Daher $(ye^{-\alpha_2x})'=(y'-\alpha_2y)e^{-\alpha_2x}=Ae^{(\alpha_1-\alpha_2)x}$. Falls $\alpha_1\neq\alpha_2$, liefert Integrieren $ye^{-\alpha_2x}=\frac A{\alpha_1-\alpha_2}e^{(\alpha_1-\alpha_2)x}+C_2$, also $y=C_1e^{\alpha_1x}+C_2e^{\alpha_2x}$. Falls $\alpha_1=\alpha_2=\alpha$, dann $ye^{-\alpha x}=Ax+C_1$, also $y=(C_1+C_2x)e^{\alpha x}$. Umgekehrt zeigen $L(e^{\alpha x})=p(\alpha)e^{\alpha x}$ und $L(xe^{\alpha x})=(p(\alpha)x+p'(\alpha))e^{\alpha x}$, dass diese Funktionen Lösungen sind, wenn $\alpha$ eine Nullstelle ist (eine doppelte, für $xe^{\alpha x}$), und nach dem Superpositionsprinzip auch ihre Kombinationen. Für reelle Koeffizienten und $\alpha_{1,2}=\beta\pm i\gamma$ zeigt die Eulersche Formel, dass $e^{\alpha_1x},e^{\alpha_2x}$ und $e^{\beta x}\cos\gamma x,e^{\beta x}\sin\gamma x$ denselben Raum aufspannen; eine reelle Lösung ist gleich ihrem eigenen Realteil, also eine reelle Kombination der letzteren. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Prüfe $L(xe^{\alpha x})=\bigl(p(\alpha)x+p'(\alpha)\bigr)e^{\alpha x}$.</p>
+  <details><summary>Antwort</summary><div><p>$y=xe^{\alpha x}$: $y'=(1+\alpha x)e^{\alpha x}$, $y''=(2\alpha+\alpha^2x)e^{\alpha x}$. Summe: <span class="math-display" style="display:block">$$\bigl((\alpha^2+a_1\alpha+a_0)x+(2\alpha+a_1)\bigr)e^{\alpha x},$$</span>und $p'(\alpha)=2\alpha+a_1$.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Folgere: Ein Anfangswertproblem $y(x_0)=y_0$, $y'(x_0)=y_1$ hat genau eine Lösung.</p>
+  <details><summary>Antwort</summary><div><p>Bei verschiedenen Nullstellen liefern die Bedingungen das lineare Gleichungssystem $C_1e^{\alpha_1x_0}+C_2e^{\alpha_2x_0}=y_0$, $\alpha_1C_1e^{\alpha_1x_0}+\alpha_2C_2e^{\alpha_2x_0}=y_1$, mit Determinante $(\alpha_2-\alpha_1)e^{(\alpha_1+\alpha_2)x_0}\neq0$; analog bei einer doppelten Nullstelle. Also genau ein $(C_1,C_2)$.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib den ganzen Beweis nur aus dem Rahmen.</p></li>
+</ol></div>
+
+<div class="box">
+<h3 id="we-4">Musterbeispiel 4: homogene Gleichungen zweiter Ordnung</h3>
+<ol class="gq">
+  <li><p>$y''-y'=0$ und $y''=0$.</p>
+  <details><summary>Antwort</summary><div><p>$p(T)=T^2-T=T(T-1)$, Nullstellen $0,1$: $y=C_1+C_2e^x$. Und $p(T)=T^2$, doppelte Nullstelle $0$: $y=C_1+C_2x$ (wie erwartet).</p></div></details></li>
+  <li><p>$y''+y=0$ mit $y(0)=0$, $y'(0)=1$.</p>
+  <details><summary>Antwort</summary><div><p>Nullstellen $\pm i$ ($\beta=0$, $\gamma=1$): $y=C_1\cos x+C_2\sin x$. $y(0)=C_1=0$, $y'(0)=C_2=1$: $y=\sin x$.</p></div></details></li>
+  <li><p>$y''-2y'+y=0$.</p>
+  <details><summary>Antwort</summary><div><p>$p(T)=(T-1)^2$, doppelte Nullstelle $1$: $y=(C_1+C_2x)e^x$.</p></div></details></li>
+  <li><p>$y''+2y'+5y=0$.</p>
+  <details><summary>Antwort</summary><div><p>Nullstellen $-1\pm2i$ (der Rückblick): $y=e^{-x}\bigl(C_1\cos2x+C_2\sin2x\bigr)$. Eine gedämpfte Schwingung.</p></div></details></li>
+  <li><p>Die Feder $\ddot y+d\dot y+ky=0$ ($d\ge0$ Reibung, $k&gt;0$ Steifigkeit): Was bedeuten die drei Fälle?</p>
+  <details><summary>Antwort</summary><div><p>Nullstellen $-\frac d2\pm\sqrt{\frac{d^2}4-k}$. Schwache Reibung ($\frac{d^2}4&lt;k$): komplexe Nullstellen, $e^{-dt/2}(C_1\cos\gamma t+C_2\sin\gamma t)$, eine abklingende Schwingung. Starke Reibung ($\frac{d^2}4&gt;k$): zwei negative reelle Nullstellen, die Feder kriecht ohne Schwingen zurück, wie ein Türschliesser. Der Grenzfall ist die doppelte Nullstelle $-\frac d2$: $(C_1+C_2t)e^{-dt/2}$.</p></div></details></li>
+</ol>
+</div>
+
+<p><strong>Warum das cool ist.</strong> Dieselbe Gleichung $\ddot y+d\dot y+ky=0$ beschreibt ein Gewicht an einer Feder, ein schwingendes Pendel (bei kleinen Ausschlägen), den Strom in einem Schaltkreis mit Spule, Widerstand und Kondensator und das Schwanken eines Hochhauses im Wind. Ob die Bewegung schwingt, langsam abklingt oder zurückkriecht, entscheidet eine einzige Sache: ob ein quadratisches Polynom reelle oder komplexe Nullstellen hat. Die komplexen Zahlen, die wie ein Algebra-Trick aussahen, sind genau die Schwingungen der realen Welt.</p>
+
+<h2 id="s6-second-order-finding-a-particular">6. Zweite Ordnung: eine partikuläre Lösung finden</h2>
+<p>Nach Beweis C braucht die inhomogene Gleichung $y''+a_1y'+a_0y=g$ <strong>eine</strong> Lösung $y_p$; dann addiere die homogenen Lösungen aus Beweis D. Für die Störfunktionen in Prüfungen (Polynome, Exponentialfunktionen, $\sin$, $\cos$ und Produkte davon) rätst du die Form und passt die Koeffizienten an.</p>
+<div class="box">
+<h3 id="the-ansatz-table-script-p">Die Ansatz-Tabelle (Skript <a class="pl" href="../script.html#p405">S. 405</a>)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Störfunktion $g(x)$</th><th>Ansatz für $y_p$</th></tr></thead>
+  <tbody>
+    <tr><td>Polynom $q(x)$ vom Grad $n$</td><td>Polynom $Q(x)$ vom Grad $n$</td></tr>
+    <tr><td>$q(x)e^{\alpha x}$</td><td>$Q(x)e^{\alpha x}$</td></tr>
+    <tr><td>$q(x)\cos(\gamma x)$ oder $q(x)\sin(\gamma x)$</td><td>$Q_1(x)\cos(\gamma x)+Q_2(x)\sin(\gamma x)$</td></tr>
+    <tr><td>eine Summe davon</td><td>die Summe der Ansätze (Beweis C, Teil 3)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Resonanzregel:</strong> Ist der Exponent ($0$ bei einem Polynom, $\alpha$ oder $i\gamma$) eine Nullstelle von $p$ der Vielfachheit $\ell$, multipliziere den Ansatz mit $x^\ell$. Dann setze den Ansatz in die Gleichung ein und mache einen Koeffizientenvergleich.</p>
+</div>
+
+<div class="box">
+<h3 id="we-5">Musterbeispiel 5: partikuläre Lösungen und Anfangswerte</h3>
+<ol class="gq">
+  <li><p>Die allgemeine Lösung von $y''-y=e^x$ (Kobel-Keller HS24, Aufgabe 13, 3 Punkte).</p>
+  <details><summary>Antwort</summary><div><p>Homogen: Nullstellen $\pm1$, $C_1e^x+C_2e^{-x}$. Die Störfunktion $e^x$ hat $\alpha=1$, eine einfache Nullstelle: Resonanz, Ansatz $y_p=Axe^x$. Dann $y_p'=A(1+x)e^x$, $y_p''=A(2+x)e^x$, und $y_p''-y_p=2Ae^x=e^x$, also $A=\frac12$:</p>
+  <span class="math-display" style="display:block">$$y=C_1e^x+C_2e^{-x}+\frac x2e^x.$$</span>
+  <p>(Mit $y_p=Ae^x$ bekämst du $0=e^x$: Das ist das Zeichen, dass du die Resonanzregel vergessen hast.)</p></div></details></li>
+  <li><p>Löse $y''-y=-x$, $y(0)=y'(0)=0$ (Winterprüfung 2019, Aufgabe 2, 3 Punkte).</p>
+  <details><summary>Antwort</summary><div><p>$0$ ist keine Nullstelle, also ist der Ansatz $y_p=ax+b$: $-(ax+b)=-x$ liefert $a=1$, $b=0$. Allgemein: $y=x+C_1e^x+C_2e^{-x}$. Bedingungen: $C_1+C_2=0$ und $1+C_1-C_2=0$, also $C_1=-\frac12$, $C_2=\frac12$, und $y=x-\frac{e^x-e^{-x}}2=x-\sinh x$.</p></div></details></li>
+  <li><p>$u''+4u=1+4x$, $u(0)=0$, $u'(0)=1$. Finde $u(\pi)$. (Figalli FS24, MC7, 2 Punkte.)</p>
+  <details><summary>Antwort</summary><div><p>Homogen: Nullstellen $\pm2i$, $A\sin2x+B\cos2x$. Partikulär: $u_p=ax+b$, $4(ax+b)=1+4x$, also $u_p=x+\frac14$. Dann $u(0)=B+\frac14=0$ und $u'(0)=2A+1=1$, also $A=0$, $B=-\frac14$:</p>
+  <span class="math-display" style="display:block">$$u=x+\frac14-\frac14\cos2x,\qquad u(\pi)=\pi.$$</span></div></details></li>
+  <li><p>Welcher Ansatz für $y''+y=x\sin x$? (Beispiel des Skripts.)</p>
+  <details><summary>Antwort</summary><div><p>$i$ ist eine einfache Nullstelle von $T^2+1$, und der Polynomfaktor hat Grad 1: <span class="math-display" style="display:block">$$\begin{aligned}y_p&amp;=x\bigl((ax+b)\cos x+(cx+d)\sin x\bigr)\end{aligned},$$</span>vier Koeffizienten anzupassen.</p></div></details></li>
+</ol>
+</div>
+
+
+<h2 id="s7-worked-examples-which-type">7. Musterbeispiele: welcher Typ?</h2>
+<p>Eine gemischte Auswahl, um vor den Aufgaben die ganze Lektion zu repetieren. In der Prüfung ist der erste und wichtigste Schritt, den Typ zu erkennen.</p>
+<div class="box">
+<h3 id="the-decision-list-for-solve">Die Entscheidungsliste für «Löse diese Differentialgleichung»</h3>
+<ol>
+  <li><strong>Zweite Ordnung</strong> mit Konstanten vor $y'',y',y$? Charakteristisches Polynom (Beweis D), Ansatz für die Störfunktion (<a class="xl" href="#s6-second-order-finding-a-particular">Abschnitt 6</a>), dann Anfangswerte.</li>
+  <li><strong>Erste Ordnung, linear</strong> ($y$ und $y'$ nur in der ersten Potenz)? Normalform $y'+f(x)y=g(x)$, löse die homogene Gleichung, dann variiere die Konstante (Beweis B).</li>
+  <li><strong>Erste Ordnung, rechte Seite zerfällt</strong> in $f(x)g(y)$? Trennen (Beweis A); finde das maximale Intervall.</li>
+  <li><strong>Nichts davon?</strong> Die Aufgabe gibt einen Hinweis, meist eine Substitution wie $u=\frac yx$, die sie auf einen dieser Typen zurückführt.</li>
+  <li><strong>Multiple Choice?</strong> Oft sparst du Zeit: Prüfe jede Option an der Gleichung und den Anfangswerten.</li>
+</ol>
+</div>
+<div class="box">
+<h3 id="we-6">Musterbeispiel 6: erkennen, dann lösen</h3>
+<ol class="gq">
+  <li><p>Die allgemeine Lösung von $(x^2+1)y'=y$ (Winterprüfung 2019, 1d, 1 Punkt).</p>
+  <details><summary>Antwort</summary><div><p>Linear (und separierbar): $y'-\frac1{1+x^2}y=0$, $f=-\frac1{1+x^2}$, $F=-\arctan x$. Also $y=Ce^{\arctan x}$.</p></div></details></li>
+  <li><p>Löse $y'=2y+\sin x$, $y(0)=\frac12$ (Winterprüfung 2018, Aufgabe 3, 3 Punkte).</p>
+  <details><summary>Antwort</summary><div><p>Linear mit konstantem Koeffizienten: homogen $Ce^{2x}$. Partikulär: Ansatz $a\sin x+b\cos x$ (die Methode aus <a class="xl" href="#s6-second-order-finding-a-particular">Abschnitt 6</a> funktioniert auch für erste Ordnung): <span class="math-display" style="display:block">$$\begin{aligned}&amp;a\cos x-b\sin x\\&amp;\quad=2a\sin x+2b\cos x+\sin x,\end{aligned}$$</span>also $a=2b$ und $-b=2a+1$, was $b=-\frac15$, $a=-\frac25$ liefert. Dann $y(0)=C-\frac15=\frac12$, $C=\frac7{10}$:</p>
+  <span class="math-display" style="display:block">$$y=\frac7{10}e^{2x}-\frac{2\sin x+\cos x}5.$$</span></div></details></li>
+  <li><p>Löse $y''+y'-6y=1$, $y(0)=y'(0)=0$ (Sommerprüfung 2017, Aufgabe 3, 3 Punkte).</p>
+  <details><summary>Antwort</summary><div><p><span class="math-display" style="display:block">$$p(T)=T^2+T-6=(T+3)(T-2).$$</span>Partikulär: konstant $y_p=-\frac16$. Also $y=C_1e^{2x}+C_2e^{-3x}-\frac16$, mit $C_1+C_2=\frac16$ und $2C_1-3C_2=0$: $C_1=\frac1{10}$, $C_2=\frac1{15}$.</p>
+  <span class="math-display" style="display:block">$$y=\frac{e^{2x}}{10}+\frac{e^{-3x}}{15}-\frac16.$$</span></div></details></li>
+  <li><p>Finde die allgemeine Lösung von $y'=\frac{y+\sqrt{x^2+y^2}}x$ für $x&gt;0$ mit $u=\frac yx$ (Einsiedler FS22, Aufgabe 3, 4 Punkte).</p>
+  <details><summary>Antwort</summary><div><p>$y=xu$, $y'=u+xu'$, und die rechte Seite ist $u+\sqrt{1+u^2}$ (da $x&gt;0$). Also $xu'=\sqrt{1+u^2}$: separierbar. $\int\frac{du}{\sqrt{1+u^2}}=\int\frac{dx}x$ liefert $\operatorname{arsinh}u=\log x+c$, also <span class="math-display" style="display:block">$$u=\sinh(\log x+c)=\frac12\left(Ax-\frac1{Ax}\right)$$</span>mit $A=e^c&gt;0$. Daher</p>
+  <span class="math-display" style="display:block">$$y=xu=\frac12\left(Ax^2-\frac1A\right),\qquad A&gt;0.$$</span></div></details></li>
+  <li><p>$y''+4y'+4y=0$, $y(0)=1$, $y'(0)=0$.</p>
+  <details><summary>Antwort</summary><div><p>Doppelte Nullstelle $-2$: $y=(C_1+C_2x)e^{-2x}$. $C_1=1$, und $y'(0)=C_2-2C_1=0$ liefert $C_2=2$: $y=(1+2x)e^{-2x}$.</p></div></details></li>
+</ol>
+</div>
+<h2 id="s8-exercises">8. Aufgaben</h2>
+<p>Jede Lösung ist unter ihrer Aufgabe eingeklappt. Die Aufgaben 1–4 zählen für die Bewertung. Die Aufgaben 5–9 sind weitere Prüfungsfragen beider Arten, und der Bonus ist Resonanz.</p>
+<div class="box"><h3 id="ex-1">Aufgabe 1 (PVK-Probeprüfung HS25, MC6, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK-Probeprüfung</a> · <a href="../pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">Lösungen</a></p>
+  <p>$u'(x)=\frac2xu(x)+x$, $u(1)=0$. Finde $u(2)$. (A) $4\log2$ (B) $2\log2$ (C) $2$ (D) $\log2$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(A).</strong> Normalform $u'-\frac2xu=x$ auf $(0,\infty)$: $F=-2\log x$, also $u_{\text{hom}}=Ax^2$. Variiere die Konstante: $u=A(x)x^2$ liefert $A'x^2=x$, also $A'=\frac1x$ und $A(x)=\log x$. Daher $u=x^2(\log x+A)$, und $u(1)=0$ liefert $A=0$. Also $u=x^2\log x$ und $u(2)=4\log2$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Aufgabe 2 (Figalli FS26, MC12, 4 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">Prüfung FS26</a></p>
+  <p>$u'=-\frac2xu+x$, $u(1)=\frac14$. Finde $u(2)$. (A) $1$ (B) $\frac12$ (C) $\frac14$ (D) $2$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(A).</strong> $u'+\frac2xu=x$; $F=2\log x$, also $u_{\text{hom}}=\frac A{x^2}$. Variiere die Konstante: $u=\frac{A(x)}{x^2}$ liefert $\frac{A'}{x^2}=x$, also $A'=x^3$ und $A(x)=\frac{x^4}4$. Daher $u=\frac1{x^2}\left(\frac{x^4}4+A\right)$, und $u(1)=\frac14$ liefert $A=0$, $u=\frac{x^2}4$, $u(2)=1$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Aufgabe 3 (PVK-Probeprüfung HS25, MC7, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/pvk-hs25-mock-exam.pdf&amp;t=PVK%20HS25%20Mock%20Exam">PVK-Probeprüfung</a> · <a href="../pdf.html?f=docs/pvk-hs25-mock-exam-solutions.pdf&amp;t=PVK%20HS25%20Mock%20Exam%20Solutions">Lösungen</a></p>
+  <p>$u''-u=e^x$, $u(0)=0$, $u'(0)=1$. Finde $u(1)$. (A) $\frac{3e^2-1}{4e}$ (B) $\frac{3e}4$ (C) $\frac{4e}3$ (D) $4e$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(A).</strong> Nach Musterbeispiel 5 ist $u=C_1e^x+C_2e^{-x}+\frac x2e^x$. $u(0)=C_1+C_2=0$, $u'(0)=C_1-C_2+\frac12=1$. Also $C_1=\frac14$, $C_2=-\frac14$, und</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}u(1)&amp;=\frac e4-\frac1{4e}+\frac e2\\&amp;=\frac{3e}4-\frac1{4e}=\frac{3e^2-1}{4e}.\end{aligned}$$</span>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Aufgabe 4 (Felder FS23, 1.A7, 4 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">Prüfung FS23 mit Lösungen</a></p>
+  <p>Finde die Lösung $y:I\to\mathbb R$ des Anfangswertproblems $x^2y'=y^2$, $y(1)=2$ (2 Punkte), und bestimme das maximale Intervall $I$, auf dem sie definiert ist (2 Punkte).</p><details class="sol"><summary>Lösung</summary><div>
+  <p>Nahe $x=1$ gilt $x\neq0$ und $y\neq0$, also trennen: $\int\frac{dy}{y^2}=\int\frac{dx}{x^2}$, d.h. $-\frac1y=-\frac1x+C$. Bei $x=1$: $-\frac12=-1+C$, also $C=\frac12$ und</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}&amp;\frac1y=\frac1x-\frac12=\frac{2-x}{2x}\\&amp;y(x)=\frac{2x}{2-x}\end{aligned}.$$</span>
+  <p>Probe: $y'=\frac{2(2-x)+2x}{(2-x)^2}=\frac4{(2-x)^2}$, also $x^2y'=\frac{4x^2}{(2-x)^2}=y^2$ für jedes $x\neq2$, auch für $x=0$. Bei $x=2$ ist die Formel nicht definiert (die Lösung ist dort in der Nähe unbeschränkt), also ist das maximale Intervall, das $1$ enthält, $I=(-\infty,2)$ (die offizielle Antwort).</p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Selbst bewerten:</strong> Die Aufgaben 1–3 geben je 2 Punkte und Aufgabe 4 gibt 4 Punkte: total 10. (Figalli FS26 gab für seine Frage 4 Punkte; hier zählt sie 2.) Wenn du 7 von 10 hast, bist du fertig. Die Aufgaben 5–9 und der Bonus sind zusätzliche Übung und zählen nicht gegen dich.</p>
+</div>
+<div class="box"><h3 id="ex-5">Aufgabe 5 (Figalli HS23, MC11 und MC12, je 4 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2024-02-figalli-hs23-exam-with-solutions.pdf&amp;t=2024-02%20Figalli%20-%20HS23%20exam%20%28with%20solutions%29">Prüfung HS23 mit Lösungen</a></p>
+  <p>(a) $u'=-\sin(x)u+\sin(x)$, $u(0)=0$. Finde $u(\pi)$. (A) $1-e$ (B) $1+e^{-1}$ (C) $1-e^{-2}$ (D) $e^{-1}$</p>
+  <p>(b) $u''+u'-2u=-2x$, $u(0)=\frac32$, $u'(0)=2$. Finde $u(1)$. (A) $e+\frac32$ (B) $e+2$ (C) $e^{-2}$ (D) $e^{-2}+1$</p><details class="sol"><summary>Lösung</summary><div>
+  <p>(a) <strong>(C).</strong> Separierbar: $u'=\sin(x)(1-u)$. Mit $u&lt;1$: $\int\frac{du}{1-u}=\int\sin x\,dx$, also $-\log(1-u)=-\cos x+c$, d.h. $1-u=Ke^{\cos x}$. $u(0)=0$ liefert $1=Ke$, $K=e^{-1}$. Also $u=1-e^{\cos x-1}$ und $u(\pi)=1-e^{-2}$.</p>
+  <p>(b) <strong>(A).</strong> <span class="math-display" style="display:block">$$p(T)=T^2+T-2=(T+2)(T-1).$$</span>Partikulär: $u_p=ax+b$, $a-2ax-2b=-2x$, also $a=1$, $b=\frac12$. Allgemein: $u=C_1e^x+C_2e^{-2x}+x+\frac12$. $u(0)=C_1+C_2+\frac12=\frac32$ und $u'(0)=C_1-2C_2+1=2$ liefern $C_1=1$, $C_2=0$. Also $u=e^x+x+\frac12$ und $u(1)=e+\frac32$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Aufgabe 6 (Figalli FS26, MC13, 4 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">Prüfung FS26</a></p>
+  <p>$u''+9u=1+3x$, $u(0)=0$, $u'(0)=0$. Finde $u(\pi)$. (A) $\frac\pi3+\frac29$ (B) $\pi+\frac19$ (C) $\frac\pi9+\frac23$ (D) $\frac\pi3-\frac29$</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(A).</strong> Homogen: $A\sin3x+B\cos3x$. Partikulär: $9(ax+b)=1+3x$, $u_p=\frac x3+\frac19$. $u(0)=B+\frac19=0$, $u'(0)=3A+\frac13=0$: $A=B=-\frac19$. Also</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}u(\pi)&amp;=\frac\pi3+\frac19-\frac19\sin3\pi-\frac19\cos3\pi\\&amp;=\frac\pi3+\frac19+\frac19=\frac\pi3+\frac29.\end{aligned}$$</span>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-7">Aufgabe 7 (Felder HS22, 3.MC6, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2023-01-felder-hs22-exam.pdf&amp;t=2023-01%20Felder%20-%20HS22%20exam">Prüfung HS22</a></p>
+  <p>Die Differentialgleichung $y'=y\cos(x^2)+x$ für $y:\mathbb R\to\mathbb R$ hat (A) genau eine Lösung (B) überabzählbar viele Lösungen (C) genau zwei Lösungen (D) abzählbar unendlich viele Lösungen.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(B).</strong> Sie ist linear mit stetigen Koeffizienten: $y'-\cos(x^2)y=x$. Nach Beweis B sind die Lösungen $e^{-F}(G+C)$, eine für jedes $C\in\mathbb R$ (gleichwertig: eine für jeden Anfangswert $y(0)\in\mathbb R$), und verschiedene $C$ liefern verschiedene Funktionen. Es gibt also so viele wie reelle Zahlen. (Niemand kann $F=-\int\cos(x^2)$ geschlossen hinschreiben, und niemand muss es.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-8">Aufgabe 8 (Sommerprüfung 2018, Aufgabe 2, 3 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2018-summer-einsiedler-style-practice.pdf&amp;t=2018%20summer%20%28Einsiedler-style%20practice%29">Sommerprüfung 2018</a></p>
+  <p>Löse $y'=\sin^2(x)\,(y^2+1)$, $y(0)=1$.</p><details class="sol"><summary>Lösung</summary><div>
+  <p>Separierbar mit $g(y)=y^2+1\neq0$: <span class="math-display" style="display:block">$$\begin{aligned}\arctan y&amp;=\int\sin^2x\,dx\\&amp;=\frac x2-\frac{\sin2x}4+C\end{aligned}$$</span>(wegen $\sin^2x=\frac{1-\cos2x}2$). Bei $0$: $\frac\pi4=C$. Also</p>
+  <span class="math-display" style="display:block">$$y(x)=\tan\left(\frac x2-\frac{\sin2x}4+\frac\pi4\right),$$</span>
+  <p>auf dem Intervall um $0$, auf dem das Argument in $\left(-\frac\pi2,\frac\pi2\right)$ bleibt. (Das Argument ist wachsend in $x$, da seine Ableitung $\sin^2x\ge0$ ist.)</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-9">Aufgabe 9 (Übung 8.64, das Skript)</h3>
+  <p>Löse $y'-\left(\frac4x+1\right)y=x^4$, $y(1)=1$, auf $(0,\infty)$.</p><details class="sol"><summary>Lösung</summary><div>
+  <p>$f=-\frac4x-1$, $F=-4\log x-x$, also $y_{\text{hom}}=Ax^4e^x$. Variiere die Konstante: $y=A(x)x^4e^x$ liefert $A'x^4e^x=x^4$, also $A'=e^{-x}$ und $A(x)=-e^{-x}$. Daher $y=x^4e^x\left(A-e^{-x}\right)=x^4\left(Ae^x-1\right)$, und $y(1)=Ae-1=1$ liefert $A=\frac2e$:</p>
+  <span class="math-display" style="display:block">$$y(x)=x^4\left(2e^{x-1}-1\right).$$</span>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus: Resonanz (das Beispiel des Skripts)</h3>
+  <p>Löse $\ddot y+y=\sin t$, $y(0)=\dot y(0)=0$: eine Feder ohne Reibung, genau in ihrem eigenen Rhythmus angestossen. Ist die Lösung beschränkt?</p><details class="sol"><summary>Lösung</summary><div>
+  <p>Homogen: $A\sin t+B\cos t$. Die Störfunktion hat $i$, eine einfache Nullstelle von $T^2+1$: Resonanz, Ansatz $y_p=t(a\cos t+b\sin t)$. Dann $\ddot y_p+y_p=-2a\sin t+2b\cos t$, also $a=-\frac12$, $b=0$: $y_p=-\frac t2\cos t$. Mit den Anfangswerten ($B=0$, $A-\frac12=0$):</p>
+  <span class="math-display" style="display:block">$$y(t)=\frac12\sin t-\frac t2\cos t.$$</span>
+  <p>Unbeschränkt: Bei $t=2\pi n$ ist sie $-\pi n$. Ein winziger Anstoss im richtigen Rhythmus lässt die Schwingung grenzenlos wachsen. Das ist Resonanz: der Grund, warum Soldaten auf Brücken nicht im Gleichschritt marschieren, und warum eine Gitarrensaite eine andere zum Klingen bringen kann.</p>
+</div></details>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. Zum Staunen <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 Min.)</span></h2>
+<p><strong>Eulers Schienen.</strong> Wie folgt ein Computer den Schienen, wenn es keine Formel gibt? Er macht kleine Schritte: Von $(x,y)$ aus geht er eine Strecke $h$ entlang der aktuellen Schiene, $y_{\text{neu}}=y+h\,f(x,y)$. Das macht aus der Differentialgleichung eine Differenzengleichung, die diskrete Version in Abschnitt 8.5.1 des Skripts. Für $y'=y$, $y(0)=1$ liefern $n$ Schritte der Grösse $\frac1n$ den Wert $\left(1+\frac1n\right)^n$ bei $x=1$: die Folge aus <a class="xl" href="lesson-16.html#ex-5">Lektion 16</a>, die gegen $e$ konvergiert. Die älteste Formel für $e$ ist also das Euler-Verfahren für die einfachste Differentialgleichung.</p>
+<p><strong>Können Wagen verschiedene Wege gehen?</strong> Musterbeispiel 1 hat gezeigt, dass sie es können, für $y'=2\sqrt{|y|}$. Schuld ist der unendlich steile Anfang der Wurzel bei $0$. Im zweiten Semester zeigt der Satz von Picard–Lindelöf: Ist $f(x,y)$ etwas netter (Lipschitz in $y$), dann ist die Reise des Wagens durch seinen Start eindeutig bestimmt. Sein Beweis ist ein Fixpunktargument: Die Sommerprüfung 2017 fragt bereits danach.</p>
+
+<h2 id="s10-what-we-skipped">10. Was wir auslassen</h2>
+<p>All das steht auch auf der Auslassliste.</p>
+<ul>
+  <li><strong>Abschnitt 8.5.1, Differenzengleichungen, Übung 8.58 (<a class="pl" href="../script.html#p394">S. 394–396</a>).</strong> Niedrig; Zum Staunen.</li>
+  <li><strong>Abschnitt 8.5.2 (<a class="pl" href="../script.html#p396">S. 396–397</a>):</strong> $y'=f(x)$ und Stammfunktionen. Behandelt in <a class="xl" href="lesson-19.html#proof-b">Lektion 19</a>.</li>
+  <li><strong>Der Vergleich mit der linearen Algebra in Übung 8.62 (<a class="pl" href="../script.html#p398">S. 398</a>).</strong> Erledigt: Beweis C.</li>
+  <li><strong>Beispiel 8.69 allgemein (<a class="pl" href="../script.html#p406">S. 406–409</a>):</strong> der gedämpfte Oszillator mit periodischer Anregung, seine Amplitudenformel, Schwebungen. Niedrig; der Fall $d=0$, $k=1$ ist der Bonus.</li>
+  <li><strong>Abschnitt 8.6 (<a class="pl" href="../script.html#p410">S. 410–416</a>):</strong> weitere Aufgaben zu Kapitel 8. Für die Repetitionsphase.</li>
+  <li><strong>Systeme von Differentialgleichungen und der Satz von Picard–Lindelöf</strong> (in den älteren Prüfungen). Zweites Semester.</li>
+</ul>
+<p><strong>Als Nächstes:</strong> Das war die letzte neue Lektion. Als Nächstes kommen die Wiederholung aller Lektionen und die Repetitionsphase mit Übung im Beweisschreiben, und dann die Probeprüfungen (Lektionen 23–26).</p>
+
+<nav class="site foot" aria-label="Lektionsnavigation">
+<a href="lesson-21.html">← Lektion 21: Der Seher der Wagen</a>
+<a href="analysis.html">Analysis-Start</a>
+<a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Feedback geben</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.lang-switch{margin-left:auto;font-weight:600;font-size:.85em}nav.site .lang-switch{border:1px solid currentColor;border-radius:999px;padding:0 .6em}</style><style>.fb-line{margin-top:2.5rem;font-size:.9em;opacity:.8}</style>
+</body>
+</html>

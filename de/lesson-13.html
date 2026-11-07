@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="../assets/umami-kit.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Annäherung ans Tor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6675;
+  --rule: #d5dbe3;
+  --accent: #1f5f6b;
+  --accent-soft: #e2eef0;
+  --story: #f6f1e7;
+  --story-edge: #b08a3e;
+  --exam: #eef0fa;
+  --exam-edge: #4b56a8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Literata", Georgia, "Times New Roman", serif;
+  --font-util: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+    --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+    --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --ink: #e4e9ef; --muted: #9aa6b4; --rule: #2e3844;
+  --accent: #7cc4cf; --accent-soft: #1d3338; --story: #241f17; --story-edge: #c9a45a;
+  --exam: #1c2036; --exam-edge: #8f98e0; color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+:root { --k-x0: var(--story-edge); --k-eps: var(--exam-edge); --k-del: #2f7d4a; --k-c: #b4475f; --k-X: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-del: #72c98e; --k-c: #ec8ea4; } }
+:root[data-theme="dark"] { --k-del: #72c98e; --k-c: #ec8ea4; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+</head>
+<body>
+<main>
+<p style="text-align:right;margin:0"><a class="lang-switch" href="../lesson-13.html" lang="en">English</a></p>
+<nav class="site" aria-label="Website">
+<a href="index.html">Start</a>
+<a href="analysis.html">Analysis</a>
+<a href="flashcards.html">Lernkarten</a>
+<a href="moves.html">Kniffe</a>
+<a href="exam-map.html">Prüfungslandkarte</a>
+<a href="skipped.html">Ausgelassen</a>
+<a href="../script.html">Skript</a>
+<a href="docs.html">Prüfungen</a>
+<a href="lesson-12.html">← Lektion 12</a>
+<a href="lesson-14.html">Lektion 14 →</a>
+</nav>
+<header>
+  <span class="eyebrow">Analysis 1 · Lektion 13 von 26</span>
+  <h1>Die Annäherung ans Tor</h1>
+  <p class="lead">Der Rest von Kapitel 6: Grenzwerte von Funktionen ($\lim_{x\to x_0}f(x)$, einseitige Grenzwerte, Grenzwerte bei $\infty$), das Integral als Grenzwert von Riemann-Summen und Landaus $O$ und $o$. Nach dieser Lektion bist du auf dem Stand der Vorlesung (Montag, 2. November).</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-12-5">Rückblick auf Lektion 12 (5 Min.)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</a>
+</li>
+<li><a href="#s1-the-story-approaching-the-gate">1. Die Geschichte: die Annäherung ans Tor</a>
+</li>
+<li><a href="#s2-limits-of-functions">2. Grenzwerte von Funktionen</a>
+<ol>
+<li><a href="#proof-a">Beweis A: Grenzwerte über Folgen (Lemma 6.40, S. 275)</a></li>
+</ol></li>
+<li><a href="#s3-one-sided-limits-one-sided">3. Einseitige Grenzwerte, einseitige Stetigkeit, Sprünge</a>
+</li>
+<li><a href="#s4-limits-at-infinity">4. Grenzwerte bei unendlich</a>
+<ol>
+<li><a href="#worked-example">Musterbeispiel: $\lim_{x\to\infty}\frac1x=0$</a></li>
+</ol></li>
+<li><a href="#s5-riemann-sums">5. Riemann-Summen</a>
+<ol>
+<li><a href="#proof-b">Beweis B: Riemann-Summen konvergieren, für stetige $f$ (Satz 6.47)</a></li>
+</ol></li>
+<li><a href="#s6-landau-notation-and">6. Landau-Notation: $O$ und $o$</a>
+<ol>
+<li><a href="#worked-example-compare-and">Musterbeispiel: $x^2$ und $x$ vergleichen</a></li>
+<li><a href="#worked-example-and">Musterbeispiel: $O(1)$ und $o(1)$</a></li>
+<li><a href="#worked-example-a-main-part">Musterbeispiel: ein Hauptteil plus ein Fehler</a></li>
+</ol></li>
+<li><a href="#s7-worked-examples">7. Musterbeispiele</a>
+<ol>
+<li><a href="#we-1">Musterbeispiel 1: $\displaystyle\lim_{x\to0}\frac{\sqrt{1+x}-1}x$</a></li>
+<li><a href="#we-2">Musterbeispiel 2: ein Grenzwert von Summen als Integral</a></li>
+<li><a href="#we-3">Musterbeispiel 3: Gross-O und Klein-o</a></li>
+</ol></li>
+<li><a href="#s8-exercises">8. Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Einsiedler HS21 Probeprüfung, Frage 10, wahr oder falsch)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Figalli FS26, MC11)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Felder FS23, 1.A5, 2 Punkte)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Grenzwerte berechnen)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Sandwich für Funktionen, Übung 6.38 (iii))</a></li>
+<li><a href="#ex-6">Aufgabe 6 (Riemann-Summen)</a></li>
+<li><a href="#bonus">Bonus (Übung 6.38 (i))</a></li>
+</ol></li>
+<li><a href="#s9-for-wonder-optional-5-min">9. Zum Staunen</a>
+</li>
+<li><a href="#s10-what-we-skipped">10. Was wir auslassen</a>
+</li>
+</ol></details>
+
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) <strong>$\lim_{x\to x_0}f(x)=A$ definieren</strong> kannst, mit einer punktierten Umgebung, und solche Grenzwerte berechnen kannst, (2) die Folgencharakterisierung von Funktionsgrenzwerten beweisen kannst, (3) mit einseitigen Grenzwerten hebbare Unstetigkeitsstellen und Sprungstellen erkennen und Wahr/Falsch-Fragen zur einseitigen Stetigkeit beantworten kannst, (4) formulieren kannst, dass Riemann-Summen gegen das Integral konvergieren, <strong>es für stetige Funktionen beweisen</strong> und eine Summe wie $\frac1n\sum_{k=1}^n f\left(\frac kn\right)$ in ein Integral umwandeln kannst und (5) $f=O(g)$ und $f=o(g)$ lesen und anwenden kannst.</dd></div>
+  <div><dt>Skript (deutsch, gedruckte Seiten)</dt><dd>Du musst es nicht öffnen. Nur falls du das Original willst:
+    <ul>
+      <li><strong><a class="pl" href="../script.html#p274">S. 274–276</a>, Abschnitt 6.4.1, Lemmas 6.39–6.40, Proposition 6.41:</strong> Grenzwerte von Funktionen, Stetigkeit, Folgen, Verknüpfung.</li>
+      <li><strong><a class="pl" href="../script.html#p276">S. 276–278</a>, Abschnitte 6.4.2–6.4.4:</strong> einseitige Grenzwerte, einseitige Stetigkeit, Sprünge, Grenzwerte bei $\infty$.</li>
+      <li><strong><a class="pl" href="../script.html#p278">S. 278–279</a>, Abschnitt 6.4.5, Übung 6.45:</strong> Grenzwerte berechnen.</li>
+      <li><strong><a class="pl" href="../script.html#p280">S. 280–281</a>, Abschnitt 6.5, Definition 6.46, Satz 6.47:</strong> Riemann-Summen.</li>
+      <li><strong><a class="pl" href="../script.html#p284">S. 284–286</a>, Abschnitt 6.6:</strong> Landau-Notation.</li>
+    </ul></dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum das für die Prüfung zählt</span>
+Grenzwerte von Funktionen kommen in jedem Rechenteil vor (zum Beispiel $\lim_{x\to0}x\tan\left(x+\frac\pi2\right)$ in Einsiedlers Probeprüfung HS21). Einseitige Stetigkeit war in der Probeprüfung HS21 ein Wahr/Falsch-Block mit 3 Punkten (deine Aufgabe 1). «Berechne den Grenzwert der Riemann-Summen» war Felder FS23 1.A5 (deine Aufgabe 3). Landau-Notation wird direkt in Figalli FS26 MC11 geprüft (deine Aufgabe 2) und ist die Sprache der Taylor-Entwicklungen, die Figallis Prüfungen in fast jeder Grenzwertberechnung verwenden («gib den Rest mit Gross-O an», HS23).</div>
+
+
+<div class="box"><h3 id="recap-of-lesson-12-5">Rückblick auf <a class="xl" href="lesson-12.html">Lektion 12</a> (5 Min.)</h3>
+<ul>
+  <li><strong>Bolzano–Weierstrass:</strong> Jede beschränkte reelle Folge hat eine konvergente Teilfolge; $\limsup$ und $\liminf$ sind ihr grösster und kleinster Häufungspunkt.</li>
+  <li><strong>$a_n\to\infty$:</strong> Für jedes $K&gt;0$ gibt es $N$ mit $a_n\ge K$ für $n\ge N$. Monoton wachsend und unbeschränkt ⇒ $a_n\to\infty$.</li>
+  <li><strong>Cauchy-Folge:</strong> <span class="math-display" style="display:block">$$\forall\varepsilon&gt;0\ \exists N\ \forall m,n\ge N:\ |a_m-a_n|&lt;\varepsilon.$$</span></li>
+  <li><strong>Cauchy-Kriterium:</strong> Eine reelle Folge konvergiert ⇔ sie ist eine Cauchy-Folge. «⇐»: beschränkt, Bolzano–Weierstrass, die ganze Folge folgt ihrer Teilfolge (zweimal ε/2 und $k=\max\{N,K\}$).</li>
+</ul>
+<ol class="gq">
+  <li><p>Ist jede beschränkte Folge konvergent? Hat sie eine konvergente Teilfolge?</p>
+  <details><summary>Antwort</summary><div><p>Nicht konvergent: $(-1)^n$. Aber sie hat immer eine konvergente Teilfolge (Bolzano–Weierstrass).</p></div></details></li>
+  <li><p>Für $a_n=\sqrt n$ gilt $|a_{n+1}-a_n|\to0$. Warum ist das keine Cauchy-Folge?</p>
+  <details><summary>Antwort</summary><div><p>Die Cauchy-Bedingung verlangt, dass <em>alle</em> Paare $m,n\ge N$ nahe beieinander liegen, nicht nur Nachbarn. $\sqrt{4N}-\sqrt N=\sqrt N\ge1$, also funktioniert mit $\varepsilon=1$ kein $N$.</p></div></details></li>
+  <li><p>Warum gilt im Cauchy-Kriterium $n_k\ge N$ für $k=\max\{N,K\}$?</p>
+  <details><summary>Antwort</summary><div><p>Indizes von Teilfolgen erfüllen $n_k\ge k$, und $k\ge N$.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Begriffe dieser Lektion · English terms</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>English</th></tr></thead>
+  <tbody>
+    <tr><td>Grenzwert von $f(x)$ für $x\to x_0$</td><td>limit of a function at $x_0$</td></tr>
+    <tr><td>punktierte Umgebung</td><td>punctured neighbourhood</td></tr>
+    <tr><td>hebbare Unstetigkeitsstelle</td><td>removable discontinuity</td></tr>
+    <tr><td>links-/rechtsseitiger Grenzwert</td><td>left-/right-sided limit</td></tr>
+    <tr><td>links-/rechtsseitiger Häufungspunkt</td><td>left-/right-sided accumulation point</td></tr>
+    <tr><td>linksseitig/rechtsseitig stetig</td><td>left-/right-continuous</td></tr>
+    <tr><td>Sprungstelle</td><td>jump (discontinuity)</td></tr>
+    <tr><td>Riemann-Summe, Zerlegung, Maschenweite, Zwischenpunkte</td><td>Riemann sum, partition, mesh, tags</td></tr>
+    <tr><td>Landau-Notation, Gross-O, Klein-o</td><td>Landau notation, big O, little o</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-approaching-the-gate">1. Die Geschichte: die Annäherung ans Tor</h2>
+<div class="story">
+<p>Das Burgtor ist verzaubert: Was <em>im</em> Torbogen steht, kann eine Täuschung sein, oder es steht dort gar nichts. Die Landvermesser des Königs kümmert das nicht. Sie stellen eine andere Frage: Wenn sich ein Reisender dem Tor immer weiter nähert, <em>ohne es je zu betreten</em>, auf welcher Höhe pendelt sich die Strasse ein? Das ist der <strong>Grenzwert</strong> am Tor. Stimmt die Höhe der Strasse im Tor selbst mit der Höhe überein, auf der sie sich einpendelt, ist die Strasse dort stetig. Pendelt sich die Strasse auf einer Höhe ein, aber das Tor zeigt eine andere, lässt sich die Täuschung beheben: Man streicht einfach das Tor neu. Und manchmal pendelt sich die Strasse von Westen auf einer Höhe ein und die Strasse von Osten auf einer anderen: ein <strong>Sprung</strong>, und kein Neuanstrich kann ihn beheben.</p>
+<p>Die Steuereintreiber des Königs vermessen ein Feld anders als die Fliesenleger aus <a class="xl" href="lesson-09.html#s1-the-story-tiles-and-canopies">Lektion 9</a>. Sie schneiden das Feld in Streifen, gehen in jeden Streifen hinein, wählen <em>irgendeine</em> Stelle, die ihnen gefällt, messen dort die Höhe und multiplizieren mit der Breite des Streifens. Ihre Summe ist eine <strong>Riemann-Summe</strong>. Schummeln ist sinnlos: Sobald die Streifen schmal genug sind, liefert jede mögliche Wahl der Stellen fast die wahre Fläche.</p>
+<p>Und der königliche Astronom, der mit riesigen und winzigen Zahlen zu tun hat, sagt nie genau, wie gross etwas ist, sondern nur «von der Grössenordnung». Das ist Landaus Notation.</p>
+</div>
+<p>In Mathe: Das Tor ist der Punkt $x_0$, die Höhe der Strasse ist $f(x)$, «ohne es je zu betreten» ist die punktierte Umgebung $0&lt;|x-x_0|&lt;\delta$, die Streifen sind eine Zerlegung, die Stellen sind Zwischenpunkte $z_k$, und «von der Grössenordnung» ist $O(\cdot)$.</p>
+
+<h2 id="s2-limits-of-functions">2. Grenzwerte von Funktionen</h2>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="../script.html#p274">S. 274</a>).</strong> Sei $D\subseteq\mathbb R$, $f:D\to\mathbb R$ und $x_0\in\mathbb R$ ein <strong>Häufungspunkt von $D$</strong> (jedes punktierte Intervall $(x_0-\delta,x_0+\delta)\setminus\{x_0\}$ enthält Punkte von $D$). Dann bedeutet $\lim_{x\to x_0}f(x)=A$</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists\delta\\&amp;&gt;0\ \forall x\in D:\ 0\\&amp;&lt;|x-x_0|\\&amp;&lt;\delta\Rightarrow|f(x)-A|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+</div>
+<ul>
+  <li><strong>$x_0$ selbst ist ausgeschlossen</strong> ($0&lt;|x-x_0|$). Der Wert $f(x_0)$ spielt keine Rolle, und $f$ muss in $x_0$ nicht einmal definiert sein. Die Menge $(x_0-\delta,x_0+\delta)\setminus\{x_0\}$ ist die <strong>punktierte δ-Umgebung</strong>.</li>
+  <li><strong>Warum ein Häufungspunkt:</strong> damit es Punkte gibt, mit denen man sich nähern kann. Dann ist der Grenzwert eindeutig, falls er existiert (Übung 6.38 (i), der Bonus).</li>
+  <li><strong>Regeln</strong> (wie für Folgen): Grenzwerte von Summen, Vielfachen und Produkten sind die Summen, Vielfachen und Produkte der Grenzwerte; $f\le g$ liefert $\lim f\le\lim g$; und es gibt ein Sandwich-Lemma (Aufgabe 5).</li>
+</ul>
+<div class="box">
+<p><strong>Lemma 6.39 (<a class="pl" href="../script.html#p275">S. 275</a>).</strong> Für $x_0\in D$, ein Häufungspunkt von $D$: $f$ ist stetig in $x_0$ ⇔ $\lim_{x\to x_0}f(x)=f(x_0)$.</p>
+</div>
+<p>Existiert $\lim_{x\to x_0}f(x)$, ist aber verschieden von $f(x_0)$, dann ist $x_0$ eine <strong>hebbare Unstetigkeitsstelle</strong>: Definiert man $f(x_0)$ als den Grenzwert neu, wird $f$ dort stetig. Ist $x_0\notin D$ und existiert der Grenzwert, dann setzt $f(x_0)=\lim_{x\to x_0}f(x)$ die Funktion $f$ stetig fort.</p>
+<p><strong>Beispiel.</strong> $f(x)=\frac{x^2-4}{x-2}$ auf $D=\mathbb R\setminus\{2\}$. Für $x\neq2$ gilt $f(x)=x+2$, also $\lim_{x\to2}f(x)=4$: Mit $\delta=\varepsilon$ liefert $0&lt;|x-2|&lt;\delta$ die Abschätzung $|f(x)-4|=|x-2|&lt;\varepsilon$. Mit $f(2)=4$ wird $f$ stetig fortgesetzt.</p>
+
+<h3 id="proof-a">Beweis A: Grenzwerte über Folgen (Lemma 6.40, <a class="pl" href="../script.html#p275">S. 275</a>)</h3>
+<div class="box">
+<p><strong>Lemma 6.40.</strong> Sei $x_0$ ein Häufungspunkt von $D$. Dann gilt $\lim_{x\to x_0}f(x)=A$ ⇔ für jede Folge $(a_n)_n$ in $D\setminus\{x_0\}$ mit $a_n\to x_0$ gilt $f(a_n)\to A$.</p>
+</div>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="lesson-10.html#proof-e">Lektion 10</a>)</span>
+<ul>
+  <li><strong>Beweis E aus <a class="xl" href="lesson-10.html#proof-e">Lektion 10</a></strong> (ε-δ-Stetigkeit ⇔ Folgenstetigkeit). Dieser Beweis ist derselbe, mit $A$ anstelle von $f(x_0)$ und mit ausgeschlossenem $x_0$.</li>
+  <li><strong>Die Verneinung</strong> der Grenzwertaussage: <span class="math-display" style="display:block">$$\begin{aligned}\exists\varepsilon&amp;&gt;0\ \forall\delta\\&amp;&gt;0\ \exists x\in D:\ 0\\&amp;&lt;|x-x_0|\\&amp;&lt;\delta\ \text{und}\ |f(x)-A|\\&amp;\ge \varepsilon\end{aligned}.$$</span></li>
+</ul></div>
+<p><strong>Die Idee.</strong> (⇒) Liegt $f$ auf einer ganzen punktierten Umgebung innerhalb von $\varepsilon$ um $A$, dann hat jede Folge, die schliesslich in die Umgebung eintritt (und $x_0$ nie trifft), Bilder, die schliesslich innerhalb von $\varepsilon$ um $A$ liegen. (⇐) Kontraposition: Wenn der Grenzwert nicht gilt, enthält für ein schlechtes $\varepsilon$ jede punktierte Umgebung einen schlechten Punkt; wähle für jedes $n$ einen im Radius $\frac1n$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>«⇒» beginnt</strong> mit «Sei $(a_n)_n$ in $D\setminus\{x_0\}$ mit $a_n\to x_0$, und sei $\varepsilon&gt;0$» und endet mit «$|f(a_n)-A|&lt;\varepsilon$ für $n\ge N$».</li>
+  <li><strong>«⇐» per Kontraposition:</strong> Nimm an, die Grenzwertaussage gilt nicht, und <em>konstruiere</em> eine Folge, für die $f(a_n)\not\to A$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>«⇒» Nahe beim Tor liegt die Strasse innerhalb von $\varepsilon$ um ihre Einpendelhöhe.</p></div><div class="sp-formal"><p>Sei $\lim_{x\to x_0}f(x)=A$, sei $(a_n)_n$ in $D\setminus\{x_0\}$ mit $a_n\to x_0$, und sei $\varepsilon&gt;0$. Wähle $\delta&gt;0$ mit $|f(x)-A|&lt;\varepsilon$ für alle $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Reisende kommt schliesslich so nahe heran und steht nie im Tor.</p></div><div class="sp-formal"><p>Da $a_n\to x_0$, gibt es $N$ mit $|a_n-x_0|&lt;\delta$ für $n\ge N$; und $a_n\neq x_0$. Also gilt für $n\ge N$: $0&lt;|a_n-x_0|&lt;\delta$, folglich $|f(a_n)-A|&lt;\varepsilon$. Also $f(a_n)\to A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>«⇐» Angenommen, die Strasse pendelt sich nicht bei $A$ ein: Für eine Toleranz gibt es schlechte Stellen beliebig nahe beim Tor.</p></div><div class="sp-formal"><p>Angenommen, $\lim_{x\to x_0}f(x)=A$ gilt nicht. Dann gibt es $\varepsilon&gt;0$, sodass es für jedes $\delta&gt;0$ ein $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$ und $|f(x)-A|\ge\varepsilon$ gibt.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wähle eine schlechte Stelle innerhalb von $1$, eine innerhalb von $\frac12$, eine innerhalb von $\frac13$…</p></div><div class="sp-formal"><p>Wähle für jedes $n$, mit $\delta=\frac1n$, ein $a_n\in D$ mit $0&lt;|a_n-x_0|&lt;\frac1n$ und $|f(a_n)-A|\ge\varepsilon$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Dieser Reisende nähert sich dem Tor, aber die Strasse unter ihm kommt nie in die Nähe von $A$.</p></div><div class="sp-formal"><p>Dann liegt $(a_n)_n$ in $D\setminus\{x_0\}$, $a_n\to x_0$, aber $f(a_n)\not\to A$. Das widerspricht der Folgenbedingung, und das beweist «⇐». <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-eps">Stetigkeit mit einem gewählten ε</a> <a class="mvl" href="moves.html#m-neg">Das Negationsrezept</a> <a class="mvl" href="moves.html#m-seq">δ = 1/n baut eine Folge</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>«⇒»: Sei $(a_n)_n$ in $D\setminus\{x_0\}$ mit $a_n\to x_0$, und $\varepsilon&gt;0$. Wähle $\delta&gt;0$ mit $|f(x)-A|&lt;\varepsilon$, sobald $x\in D$, $0&lt;|x-x_0|&lt;\delta$, und $N$ mit $|a_n-x_0|&lt;\delta$ für $n\ge N$. Da $a_n\neq x_0$, gilt $|f(a_n)-A|&lt;\varepsilon$ für $n\ge N$.</p>
+<p>«⇐»: Wenn $\lim_{x\to x_0}f(x)=A$ nicht gilt, gibt es $\varepsilon&gt;0$, sodass für jedes $n$ ein $a_n\in D$ die Bedingungen $0&lt;|a_n-x_0|&lt;\frac1n$ und $|f(a_n)-A|\ge\varepsilon$ erfüllt. Dann gilt $a_n\to x_0$ in $D\setminus\{x_0\}$, aber $f(a_n)\not\to A$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Wo in «⇒» verwenden wir, dass $a_n\neq x_0$?</p>
+  <details><summary>Antwort</summary><div><p>Die δ-Aussage deckt nur $0&lt;|x-x_0|&lt;\delta$ ab. Ohne $a_n\neq x_0$ könnten wir sie nicht auf $a_n=x_0$ anwenden, wo $f$ einen beliebigen Wert (oder keinen) haben kann.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Was ist anders als in Beweis E aus <a class="xl" href="lesson-10.html#proof-e">Lektion 10</a>? Nenne zwei Änderungen.</p>
+  <details><summary>Antwort</summary><div><p>$A$ ersetzt $f(x_0)$, und $x_0$ ist ausgeschlossen: Die Folgen liegen in $D\setminus\{x_0\}$, und die schlechten Punkte erfüllen $0&lt;|a_n-x_0|$.</p></div></details></li>
+  <li><p><strong>Stufe 3 (4 Min.).</strong> Schreib beide Richtungen nur anhand des Rahmens.</p></li>
+</ol></div>
+<p><strong>Damit zeigst du, dass ein Grenzwert nicht existiert:</strong> Finde zwei Folgen $a_n,b_n\to x_0$ (die $x_0$ meiden) mit verschiedenen Grenzwerten von $f(a_n)$ und $f(b_n)$. Für die Vorzeichenfunktion bei $0$: $f\left(\frac1n\right)=1$, aber $f\left(-\frac1n\right)=-1$, also existiert $\lim_{x\to0}\operatorname{sgn}(x)$ nicht.</p>
+<div class="box">
+<p><strong>Proposition 6.41 (<a class="pl" href="../script.html#p276">S. 276</a>), Verknüpfung.</strong> Wenn $\lim_{x\to x_0}f(x)=y_0$ und $g$ stetig in $y_0$ ist, dann gilt $\lim_{x\to x_0}g(f(x))=g(y_0)$. <em>Warum:</em> Für $a_n\to x_0$ in $D\setminus\{x_0\}$ liefert Lemma 6.40 $f(a_n)\to y_0$, die Stetigkeit liefert $g(f(a_n))\to g(y_0)$, und Lemma 6.40 liefert erneut die Behauptung.</p>
+<p><strong>Uneigentliche Grenzwerte.</strong> $\lim_{x\to x_0}f(x)=+\infty$ bedeutet: Für jedes $\varepsilon&gt;0$ gibt es $\delta&gt;0$ mit $f(x)&gt;\frac1\varepsilon$ für alle $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$. Analog für $-\infty$.</p>
+</div>
+
+<h2 id="s3-one-sided-limits-one-sided">3. Einseitige Grenzwerte, einseitige Stetigkeit, Sprünge</h2>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="../script.html#p276">S. 276</a>).</strong> $x_0$ ist ein <strong>rechtsseitiger Häufungspunkt</strong> von $D$, wenn $D\cap(x_0,x_0+\delta)\neq\emptyset$ für jedes $\delta&gt;0$. Dann bedeutet der <strong>rechtsseitige Grenzwert</strong> $\lim_{x\searrow x_0}f(x)=A$ (auch geschrieben $\lim_{x\to x_0^+}f(x)$)</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists\delta\\&amp;&gt;0\ \forall x\in D\cap(x_0,x_0+\delta):\ |f(x)-A|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+<p>Der linksseitige Grenzwert $\lim_{x\nearrow x_0}f(x)$ verwendet stattdessen $D\cap(x_0-\delta,x_0)$.</p>
+<p>Für $x_0\in D$: $f$ ist <strong>rechtsseitig stetig</strong> in $x_0$, wenn $\lim_{x\searrow x_0}f(x)=f(x_0)$, und <strong>linksseitig stetig</strong>, wenn $\lim_{x\nearrow x_0}f(x)=f(x_0)$. Existieren beide einseitigen Grenzwerte, sind aber verschieden, dann ist $x_0$ eine <strong>Sprungstelle</strong>.</p>
+</div>
+<ul>
+  <li><strong>Beide Seiten stimmen überein ⇔ der Grenzwert existiert.</strong> Ist $x_0$ ein links- und rechtsseitiger Häufungspunkt, dann existiert $\lim_{x\to x_0}f(x)$ ⇔ beide einseitigen Grenzwerte existieren und sind gleich. Also gilt für $x_0\in D$: stetig in $x_0$ ⇔ dort linksseitig und rechtsseitig stetig.</li>
+  <li><strong>Nur eine Seite verfügbar.</strong> Hat $D$ keine Punkte direkt rechts von $x_0$ (zum Beispiel $x_0=b$ für $D=[a,b]$), ist der rechtsseitige Grenzwert nicht definiert, und der linksseitige Grenzwert allein entscheidet: $\lim_{x\to b}f(x)=\lim_{x\nearrow b}f(x)$.</li>
+  <li><strong>Beispiele.</strong> $\lim_{x\searrow0}\frac1x=+\infty$ und $\lim_{x\nearrow0}\frac1x=-\infty$. $\lim_{x\searrow0}\sqrt x=\lim_{x\to0}\sqrt x=0$ (auf $D=[0,\infty)$ existiert nur die rechte Seite). Die Vorzeichenfunktion hat bei $0$ eine Sprungstelle: linksseitiger Grenzwert $-1$, rechtsseitiger Grenzwert $1$.</li>
+</ul>
+<figure style="margin:0" aria-label="Graph einer Funktion mit drei besonderen Punkten. Bei x1 hat der Graph ein Loch, und der Funktionswert ist ein separater Punkt darüber: eine hebbare Unstetigkeitsstelle. Bei x2 springt der Graph nach oben; der gefüllte Punkt liegt auf dem linken Stück, also ist die Funktion dort linksseitig stetig. Bei x3 springt der Graph nach unten; der gefüllte Punkt liegt auf dem rechten Stück, also ist sie dort rechtsseitig stetig.">
+<svg viewBox="0 0 640 290" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="230.0" x2="620.0" y2="230.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="40.0" y1="30.0" x2="40.0" y2="240.0" style="stroke:var(--muted)" stroke-width="1.5"/><path d="M 40.0 160.0 L 43.3 159.2 L 46.6 158.5 L 49.9 157.7 L 53.2 156.9 L 56.5 156.2 L 59.8 155.4 L 63.1 154.6 L 66.4 153.8 L 69.7 153.1 L 73.0 152.3 L 76.3 151.5 L 79.6 150.8 L 82.9 150.0 L 86.2 149.2 L 89.5 148.4 L 92.8 147.7 L 96.1 146.9 L 99.4 146.1 L 102.7 145.4 L 106.0 144.6 L 109.3 143.8 L 112.6 143.1 L 115.9 142.3 L 119.2 141.5 L 122.5 140.8 L 125.8 140.0 L 129.1 139.2 L 132.4 138.4 L 135.7 137.7 L 139.0 136.9 L 142.3 136.1 L 145.6 135.4 L 148.9 134.6 L 152.2 133.8 L 155.5 133.1 L 158.8 132.3 L 162.1 131.5 L 165.4 130.7 L 168.7 130.0 L 172.0 129.2 L 175.3 128.4 L 178.6 127.7 L 181.9 126.9 L 185.2 126.1 L 188.5 125.3 L 191.8 124.6 L 195.1 123.8 L 198.4 123.0 L 201.7 122.3 L 205.0 121.5 L 208.3 120.7 L 211.6 120.0 L 214.9 119.2 L 218.2 118.4 L 221.5 117.7 L 224.8 116.9 L 228.1 116.1 L 231.4 115.3 L 234.7 114.6 L 238.0 113.8 L 241.3 113.0 L 244.6 112.3 L 247.9 111.5 L 251.2 110.7 L 254.5 109.9 L 257.8 109.2 L 261.1 108.4 L 264.4 107.6 L 267.7 106.9 L 271.0 106.1 L 274.3 105.3 L 277.6 104.6 L 280.9 103.8 L 284.2 103.0 L 287.5 102.2 L 290.8 101.5 L 294.1 100.7 L 297.4 99.9 L 300.7 99.2 L 304.0 98.4" style="fill:none;stroke:var(--accent)" stroke-width="3"/><path d="M 304.0 188.0 L 305.8 187.7 L 307.6 187.4 L 309.4 187.1 L 311.2 186.7 L 313.0 186.4 L 314.8 186.1 L 316.6 185.8 L 318.4 185.5 L 320.2 185.2 L 322.0 184.9 L 323.8 184.5 L 325.6 184.2 L 327.4 183.9 L 329.2 183.6 L 331.0 183.3 L 332.8 183.0 L 334.6 182.6 L 336.4 182.3 L 338.2 182.0 L 340.0 181.7 L 341.8 181.4 L 343.6 181.1 L 345.4 180.8 L 347.2 180.4 L 349.0 180.1 L 350.8 179.8 L 352.6 179.5 L 354.4 179.2 L 356.2 178.9 L 358.0 178.6 L 359.8 178.2 L 361.6 177.9 L 363.4 177.6 L 365.2 177.3 L 367.0 177.0 L 368.8 176.7 L 370.6 176.3 L 372.4 176.0 L 374.2 175.7 L 376.0 175.4 L 377.8 175.1 L 379.6 174.8 L 381.4 174.5 L 383.2 174.1 L 385.0 173.8 L 386.8 173.5 L 388.6 173.2 L 390.4 172.9 L 392.2 172.6 L 394.0 172.2 L 395.8 171.9 L 397.6 171.6 L 399.4 171.3 L 401.2 171.0 L 403.0 170.7 L 404.8 170.4 L 406.6 170.0 L 408.4 169.7 L 410.2 169.4 L 412.0 169.1 L 413.8 168.8 L 415.6 168.5 L 417.4 168.2 L 419.2 167.8 L 421.0 167.5 L 422.8 167.2 L 424.6 166.9 L 426.4 166.6 L 428.2 166.3 L 430.0 165.9 L 431.8 165.6 L 433.6 165.3 L 435.4 165.0 L 437.2 164.7 L 439.0 164.4 L 440.8 164.1 L 442.6 163.7 L 444.4 163.4 L 446.2 163.1 L 448.0 162.8" style="fill:none;stroke:var(--accent)" stroke-width="3"/><path d="M 448.0 90.0 L 449.8 90.2 L 451.6 90.4 L 453.4 90.6 L 455.2 90.8 L 457.0 91.1 L 458.8 91.3 L 460.6 91.5 L 462.4 91.7 L 464.2 91.9 L 466.0 92.1 L 467.8 92.3 L 469.6 92.5 L 471.4 92.7 L 473.2 92.9 L 475.0 93.2 L 476.8 93.4 L 478.6 93.6 L 480.4 93.8 L 482.2 94.0 L 484.0 94.2 L 485.8 94.4 L 487.6 94.6 L 489.4 94.8 L 491.2 95.0 L 493.0 95.2 L 494.8 95.5 L 496.6 95.7 L 498.4 95.9 L 500.2 96.1 L 502.0 96.3 L 503.8 96.5 L 505.6 96.7 L 507.4 96.9 L 509.2 97.1 L 511.0 97.3 L 512.8 97.6 L 514.6 97.8 L 516.4 98.0 L 518.2 98.2 L 520.0 98.4 L 521.8 98.6 L 523.6 98.8 L 525.4 99.0 L 527.2 99.2 L 529.0 99.4 L 530.8 99.7 L 532.6 99.9 L 534.4 100.1 L 536.2 100.3 L 538.0 100.5 L 539.8 100.7 L 541.6 100.9 L 543.4 101.1 L 545.2 101.3 L 547.0 101.6 L 548.8 101.8 L 550.6 102.0 L 552.4 102.2 L 554.2 102.4 L 556.0 102.6 L 557.8 102.8 L 559.6 103.0 L 561.4 103.2 L 563.2 103.4 L 565.0 103.7 L 566.8 103.9 L 568.6 104.1 L 570.4 104.3 L 572.2 104.5 L 574.0 104.7 L 575.8 104.9 L 577.6 105.1 L 579.4 105.3 L 581.2 105.5 L 583.0 105.7 L 584.8 106.0 L 586.6 106.2 L 588.4 106.4 L 590.2 106.6 L 592.0 106.8" style="fill:none;stroke:var(--accent)" stroke-width="3"/><circle cx="160.0" cy="132.0" r="5.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="160.0" cy="62.0" r="5.5" style="fill:var(--accent)"/><line x1="160.0" y1="68.0" x2="160.0" y2="126.0" style="stroke:var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><circle cx="304.0" cy="98.4" r="5.5" style="fill:var(--accent)"/><circle cx="304.0" cy="188.0" r="5.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="448.0" cy="162.8" r="5.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:2.2"/><circle cx="448.0" cy="90.0" r="5.5" style="fill:var(--accent)"/><line x1="160.0" y1="225.0" x2="160.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><text x="160.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">x₁</text><line x1="304.0" y1="225.0" x2="304.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><text x="304.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">x₂</text><line x1="448.0" y1="225.0" x2="448.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><text x="448.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:15px">x₃</text><text x="170.0" y="54.0" text-anchor="start" style="fill:var(--k-c);font-size:14px">f(x₁)</text><text x="160.0" y="270.0" text-anchor="middle" style="fill:var(--k-c);font-size:13px">hebbar</text><text x="304.0" y="270.0" text-anchor="middle" style="fill:var(--k-c);font-size:13px">Sprung, linksst.</text><text x="468.0" y="270.0" text-anchor="middle" style="fill:var(--k-c);font-size:13px">Sprung, rechtsst.</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Vergleiche Figur 6.5 (<a class="pl" href="../script.html#p277">S. 277</a>). Bei $x_1$: Der Grenzwert existiert, ist aber verschieden von $f(x_1)$, eine hebbare Unstetigkeitsstelle. Bei $x_2$: eine Sprungstelle, linksseitig stetig. Bei $x_3$: eine Sprungstelle, rechtsseitig stetig. Gefüllte Punkte sind Funktionswerte, offene nicht.</figcaption>
+</figure>
+
+<h2 id="s4-limits-at-infinity">4. Grenzwerte bei unendlich</h2>
+<p><strong>Die Idee.</strong> $\lim_{x\to\infty}f(x)=A$ besagt: Weit genug rechts bleibt der Graph so nahe an der Höhe $A$, wie du willst. Zeichne ein waagrechtes Band der halben Breite $\varepsilon$ um die Gerade $y=A$. Wie schmal das Band auch ist, es gibt einen Punkt $R$, ab dem der Graph es nie mehr verlässt. Das ist die Definition von $a_n\to A$ für Folgen mit einem Tausch: Aus den ganzen Zahlen $n\ge N$ werden die reellen Zahlen $x&gt;R$.</p>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="../script.html#p278">S. 278</a>).</strong> Sei $D$ nicht nach oben beschränkt.</p>
+<ul>
+  <li>$\lim_{x\to\infty}f(x)=A$ bedeutet: Für jedes $\varepsilon&gt;0$ gibt es $R$ mit $|f(x)-A|&lt;\varepsilon$ für alle $x\in D$ mit $x&gt;R$.</li>
+  <li>$\lim_{x\to\infty}f(x)=\infty$ bedeutet: Für jedes $K$ gibt es $R$ mit $f(x)&gt;K$ für alle $x\in D$ mit $x&gt;R$.</li>
+</ul>
+<p>(Das Skript schreibt $R=\frac1\delta$, was daraus eine «$\delta$»-Definition macht. Es sagt dasselbe.) $x\to-\infty$ funktioniert genauso mit «$x&lt;-R$».</p>
+</div>
+<div class="frame"><span class="label">Was die Definition erzwingt</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> «Sei $\varepsilon&gt;0$.» <strong>Dann:</strong> «Sei $R=\dots$» (noch zu finden). <strong>Letzte Zeile:</strong> «also $|f(x)-A|&lt;\varepsilon$ für alle $x&gt;R$.»</li>
+  <li><strong>Die Lücke:</strong> $|f(x)-A|$ durch etwas abschätzen, das kleiner wird, wenn $x$ wächst, und dann $R$ gross genug wählen.</li>
+</ul></div>
+<div class="box">
+<h3 id="worked-example">Musterbeispiel: $\lim_{x\to\infty}\frac1x=0$</h3>
+<ol class="gq">
+  <li><p>Was muss klein werden?</p>
+  <details><summary>Antwort</summary><div><p>$\left|\frac1x-0\right|=\frac1x$ (für $x&gt;0$).</p></div></details></li>
+  <li><p>Für welche $x$ ist $\frac1x&lt;\varepsilon$? Welches $R$ legt das nahe?</p>
+  <details><summary>Antwort</summary><div><p>Genau für $x&gt;\frac1\varepsilon$. Also funktioniert $R=\frac1\varepsilon$.</p></div></details></li>
+  <li><p>Schreib den Beweis auf.</p>
+  <details><summary>Antwort</summary><div><p>Sei $\varepsilon&gt;0$ und $R=\frac1\varepsilon$. Für alle $x&gt;R$: $\left|\frac1x-0\right|=\frac1x&lt;\frac1R=\varepsilon$. Folglich $\lim_{x\to\infty}\frac1x=0$. Genauso gilt $\frac c{x^m}\to0$ für jede Konstante $c$ und jedes $m\ge1$.</p></div></details></li>
+</ol>
+</div>
+<p><strong>Rationale Funktionen bei $\infty$ (Übung 6.45).</strong> Der Trick: Teile Zähler und Nenner durch die höchste Potenz von $x$ im <em>Nenner</em>. Dann geht jeder Term der Form $\frac c{x^m}$ gegen $0$ (Musterbeispiel oben), und der Grenzwert lässt sich mit den Grenzwertregeln ablesen.</p>
+<div class="box">
+<p><strong>Die drei Fälle, je ein Beispiel.</strong></p>
+<ul>
+  <li><strong>Gleicher Grad:</strong> $\frac{3x^2+x}{x^2-5}=\frac{3+\frac1x}{1-\frac5{x^2}}\to\frac{3+0}{1-0}=3$. Der Grenzwert ist das Verhältnis der Leitkoeffizienten.</li>
+  <li><strong>Der Nenner hat den höheren Grad:</strong> $\frac{x}{x^2+1}=\frac{\frac1x}{1+\frac1{x^2}}\to\frac01=0$.</li>
+  <li><strong>Der Zähler hat den höheren Grad:</strong> $\frac{x^2}{x+1}=\frac{x}{1+\frac1x}$. Der Nenner geht gegen $1$ und der Zähler gegen $\infty$, also geht der Quotient gegen $\infty$.</li>
+</ul>
+<p>Allgemein gilt für Polynome $p,q$ mit Leittermen $a_kx^k$ und $b_\ell x^\ell$: $\lim_{x\to\infty}\frac{p(x)}{q(x)}$ ist $\frac{a_k}{b_\ell}$, falls $k=\ell$, ist $0$, falls $k&lt;\ell$, und ist $\pm\infty$ (das Vorzeichen von $\frac{a_k}{b_\ell}$), falls $k&gt;\ell$. Ausserdem gilt $\lim_{x\to\infty}p(x)=\pm\infty$ (das Vorzeichen von $a_k$) für $k\ge1$.</p>
+</div>
+
+<h2 id="s5-riemann-sums">5. Riemann-Summen</h2>
+<div class="box">
+<p><strong>Definition 6.46 (<a class="pl" href="../script.html#p280">S. 280</a>).</strong> Für eine Zerlegung $Z=\{a=x_0&lt;x_1&lt;\dots&lt;x_n=b\}$ von $[a,b]$ ist die <strong>Maschenweite</strong> $|Z|=\max_k(x_k-x_{k-1})$, die Breite des breitesten Stücks. <strong>Zwischenpunkte</strong> sind Punkte $z_k\in[x_{k-1},x_k]$, einer pro Stück. Die <strong>Riemann-Summe</strong> ist</p>
+<span class="math-display" style="display:block">$$R(f,Z,z)=\sum_{k=1}^nf(z_k)\,(x_k-x_{k-1}).$$</span>
+<p><strong>Satz 6.47 (<a class="pl" href="../script.html#p280">S. 280</a>).</strong> Ist $f$ Riemann-integrierbar auf $[a,b]$, dann konvergieren die Riemann-Summen gegen das Integral, wenn die Maschenweite gegen $0$ geht:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall\varepsilon&amp;&gt;0\ \exists\delta\\&amp;&gt;0\ \forall Z,z:\ |Z|\\&amp;&lt;\delta\Rightarrow\left|R(f,Z,z)-\int_a^bf\,dx\right|\\&amp;&lt;\varepsilon\end{aligned}.$$</span>
+</div>
+<figure style="margin:0" aria-label="Eine Kurve über einem Intervall von a bis b, in fünf Stücke verschiedener Breite geschnitten. Über jedem Stück ist ein Rechteck gezeichnet, dessen Höhe der Funktionswert an einem gewählten Zwischenpunkt ist, markiert mit einem Punkt auf der Kurve.">
+<svg viewBox="0 0 640 275" width="100%" role="img" style="max-width:640px;display:block;font-family:var(--font-util)"><line x1="30.0" y1="235.0" x2="620.0" y2="235.0" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="50.0" y1="20.0" x2="50.0" y2="245.0" style="stroke:var(--muted)" stroke-width="1.5"/><rect x="50.0" y="112.6" width="91.0" height="122.4" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="141.0" y="58.2" width="117.0" height="176.8" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="258.0" y="64.8" width="78.0" height="170.2" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="336.0" y="118.4" width="117.0" height="116.6" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><rect x="453.0" y="129.8" width="117.0" height="105.2" style="fill:var(--k-eps);fill-opacity:0.22;stroke:var(--k-eps)" stroke-width="1.2"/><path d="M 50.0 140.0 L 56.5 135.3 L 63.0 130.7 L 69.5 126.1 L 76.0 121.5 L 82.5 117.0 L 89.0 112.6 L 95.5 108.3 L 102.0 104.1 L 108.5 100.0 L 115.0 96.0 L 121.5 92.2 L 128.0 88.5 L 134.5 85.0 L 141.0 81.7 L 147.5 78.6 L 154.0 75.6 L 160.5 72.9 L 167.0 70.4 L 173.5 68.1 L 180.0 66.1 L 186.5 64.3 L 193.0 62.7 L 199.5 61.3 L 206.0 60.2 L 212.5 59.3 L 219.0 58.7 L 225.5 58.3 L 232.0 58.2 L 238.5 58.2 L 245.0 58.5 L 251.5 59.1 L 258.0 59.8 L 264.5 60.8 L 271.0 62.0 L 277.5 63.3 L 284.0 64.8 L 290.5 66.6 L 297.0 68.4 L 303.5 70.5 L 310.0 72.6 L 316.5 74.9 L 323.0 77.3 L 329.5 79.8 L 336.0 82.4 L 342.5 85.0 L 349.0 87.7 L 355.5 90.4 L 362.0 93.2 L 368.5 95.9 L 375.0 98.7 L 381.5 101.4 L 388.0 104.1 L 394.5 106.7 L 401.0 109.2 L 407.5 111.7 L 414.0 114.0 L 420.5 116.3 L 427.0 118.4 L 433.5 120.4 L 440.0 122.2 L 446.5 123.9 L 453.0 125.3 L 459.5 126.6 L 466.0 127.7 L 472.5 128.6 L 479.0 129.3 L 485.5 129.7 L 492.0 130.0 L 498.5 130.0 L 505.0 129.8 L 511.5 129.3 L 518.0 128.6 L 524.5 127.6 L 531.0 126.4 L 537.5 125.0 L 544.0 123.3 L 550.5 121.4 L 557.0 119.3 L 563.5 116.9 L 570.0 114.4" style="fill:none;stroke:var(--ink)" stroke-width="2.5"/><line x1="89.0" y1="235.0" x2="89.0" y2="112.6" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="89.0" cy="112.6" r="5.5" style="fill:var(--k-c)"/><text x="89.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₁</text><line x1="232.0" y1="235.0" x2="232.0" y2="58.2" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="232.0" cy="58.2" r="5.5" style="fill:var(--k-c)"/><text x="232.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₂</text><line x1="284.0" y1="235.0" x2="284.0" y2="64.8" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="284.0" cy="64.8" r="5.5" style="fill:var(--k-c)"/><text x="284.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₃</text><line x1="427.0" y1="235.0" x2="427.0" y2="118.4" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="427.0" cy="118.4" r="5.5" style="fill:var(--k-c)"/><text x="427.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₄</text><line x1="505.0" y1="235.0" x2="505.0" y2="129.8" style="stroke:var(--k-c)" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="505.0" cy="129.8" r="5.5" style="fill:var(--k-c)"/><text x="505.0" y="269.0" text-anchor="middle" style="fill:var(--k-c);font-size:14px">z₅</text><text x="50.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₀</text><text x="141.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₁</text><text x="258.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₂</text><text x="336.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₃</text><text x="453.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₄</text><text x="570.0" y="252.0" text-anchor="middle" style="fill:var(--muted);font-size:13px">x₅</text></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Eine Riemann-Summe: Auf jedem Stück ist die Höhe des Rechtecks $f(z_k)$ an einem frei gewählten Zwischenpunkt $z_k$ (die Punkte). Anders als bei den Treppenfunktionen $u\le f\le o$ aus <a class="xl" href="lesson-09.html#s2-step-functions-the-rectangles">Lektion 9</a> kann ein Riemann-Rechteck über oder unter den Graphen hinausragen.</figcaption>
+</figure>
+<p><strong>Die Alltagsform.</strong> Nimm $n$ gleiche Stücke der Breite $\frac{b-a}n$ und rechte Endpunkte als Zwischenpunkte: $z_k=a+k\frac{b-a}n$. Die Maschenweite ist $\frac{b-a}n\to0$, also gilt für integrierbares $f$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\lim_{n\to\infty}\frac{b-a}n\sum_{k=1}^nf\left(a+k\,\frac{b-a}n\right)=\int_a^bf(x)\,dx.\\&amp;\text{Auf }[0,1]:\ \lim_{n\to\infty}\frac1n\sum_{k=1}^nf\left(\frac kn\right)=\int_0^1f(x)\,dx\end{aligned}.$$</span>
+<p>So verwenden es Prüfungsaufgaben: Du <em>erkennst</em> eine Summe als Riemann-Summe und ersetzt ihren Grenzwert durch ein Integral.</p>
+
+<h3 id="proof-b">Beweis B: Riemann-Summen konvergieren, für stetige $f$ (Satz 6.47)</h3>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="lesson-08.html#s6-heine-s-theorem-and-its">Lektionen 8</a> und <a class="xl" href="lesson-09.html#we-2">9</a>)</span>
+<ul>
+  <li><strong>Heine:</strong> Eine stetige Funktion auf $[a,b]$ ist gleichmässig stetig: Für jedes $\eta&gt;0$ gibt es $\delta&gt;0$ mit $|f(x)-f(y)|&lt;\eta$, sobald $|x-y|&lt;\delta$.</li>
+  <li><strong>Additivität über Intervalle:</strong> $\int_a^bf=\sum_k\int_{x_{k-1}}^{x_k}f$. <strong>Konstanten:</strong> $\int_{x_{k-1}}^{x_k}c\,dx=c\,(x_k-x_{k-1})$.</li>
+  <li><strong>Dreiecksungleichung und Monotonie:</strong> $\left|\int g\right|\le\int|g|$, und $|g|\le c$ liefert $\int_{x_{k-1}}^{x_k}|g|\le c\,(x_k-x_{k-1})$.</li>
+</ul></div>
+<p><strong>Die Idee.</strong> Auf einem schmalen Stück ändert sich eine stetige Funktion kaum (Heine), also liegt $f(x)$ überall auf dem Stück nahe am Wert $f(z_k)$ im Zwischenpunkt. Dann unterscheiden sich die wahre Fläche des Streifens und das Rechteck höchstens um «kleine Höhe × Breite». Summiere über die Streifen: Der Gesamtfehler ist höchstens «kleine Höhe × $(b-a)$».</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> «Sei $\varepsilon&gt;0$.» Dann müssen wir $\delta$ liefern, und erst danach eine beliebige Zerlegung $Z$ mit $|Z|&lt;\delta$ und beliebige Zwischenpunkte $z$ nehmen.</li>
+  <li><strong>Letzte Zeile:</strong> «also $\left|\int_a^bf-R(f,Z,z)\right|&lt;\varepsilon$.»</li>
+  <li><strong>Die Lücke:</strong> Stück für Stück vergleichen: $\int_{x_{k-1}}^{x_k}f$ gegen $f(z_k)(x_k-x_{k-1})$. Ziel ist ein Fehler von $\eta\cdot$Breite pro Stück mit $\eta(b-a)&lt;\varepsilon$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Leg eine Toleranz fest und mach die Streifen so schmal, dass sich die Höhe innerhalb eines Streifens kaum ändert.</p></div><div class="sp-formal"><p>Sei $\varepsilon&gt;0$ und $\eta=\frac\varepsilon{2(b-a)}$. Nach Heine ist $f$ gleichmässig stetig, also gibt es $\delta&gt;0$ mit $|f(x)-f(y)|&lt;\eta$ für alle $x,y\in[a,b]$ mit $|x-y|&lt;\delta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jetzt irgendeine Zerlegung in schmale Streifen und irgendeine Wahl der Stellen.</p></div><div class="sp-formal"><p>Sei $Z$ eine Zerlegung mit $|Z|&lt;\delta$ und $z$ Zwischenpunkte. Für $x\in[x_{k-1},x_k]$ gilt $|x-z_k|\le x_k-x_{k-1}&lt;\delta$, also $|f(x)-f(z_k)|&lt;\eta$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Auf einem Streifen unterscheiden sich die wahre Fläche und das Rechteck höchstens um «kleine Höhe × Breite».</p></div><div class="sp-formal"><p><span class="math-display" style="display:block">$$\begin{aligned}\left|\int_{x_{k-1}}^{x_k}f\,dx-f(z_k)(x_k-x_{k-1})\right|&amp;=\left|\int_{x_{k-1}}^{x_k}\bigl(f(x)-f(z_k)\bigr)dx\right|\\&amp;\le\int_{x_{k-1}}^{x_k}|f(x)-f(z_k)|\,dx\le\eta\,(x_k-x_{k-1}).\end{aligned}$$</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Summiere über die Streifen; die Breiten ergeben zusammen das ganze Feld.</p></div><div class="sp-formal"><p>Nach Additivität und Dreiecksungleichung gilt <span class="math-display" style="display:block">$$\begin{aligned}\left|\int_a^bf\,dx-R(f,Z,z)\right|&amp;\le \sum_{k=1}^n\eta\,(x_k-x_{k-1})\\&amp;=\eta\,(b-a)\\&amp;=\tfrac\varepsilon2\\&amp;&lt;\varepsilon\end{aligned}.$$</span> <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-eps">Stetigkeit mit einem gewählten ε</a> <a class="mvl" href="moves.html#m-piece">Stück für Stück abschätzen</a> <a class="mvl" href="moves.html#m-tele">Teleskopsumme</a></p>
+<details><summary>Der Beweis am Stück</summary><div>
+<p>Sei $f$ stetig auf $[a,b]$ und $\varepsilon&gt;0$. Nach Heine gibt es $\delta&gt;0$ mit $|f(x)-f(y)|&lt;\eta=\frac\varepsilon{2(b-a)}$, sobald $|x-y|&lt;\delta$. Sei $|Z|&lt;\delta$, und seien $z$ Zwischenpunkte. Für $x\in[x_{k-1},x_k]$ gilt $|x-z_k|&lt;\delta$, also $|f(x)-f(z_k)|&lt;\eta$, und daher <span class="math-display" style="display:block">$$\begin{aligned}&amp;\left|\int_{x_{k-1}}^{x_k}f\,dx-f(z_k)(x_k-x_{k-1})\right|\\&amp;\quad\le\int_{x_{k-1}}^{x_k}|f(x)-f(z_k)|\,dx\le\eta(x_k-x_{k-1}).\end{aligned}$$</span> Summieren über $k$ und Additivität liefern: <span class="math-display" style="display:block">$$\left|\int_a^bf\,dx-R(f,Z,z)\right|\le\eta(b-a)=\frac\varepsilon2&lt;\varepsilon.$$</span><span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Heine</strong> mit $\eta=\frac\varepsilon{2(b-a)}$ liefert $\delta$.</li>
+  <li><strong>$|Z|&lt;\delta$</strong> ⇒ $|f(x)-f(z_k)|&lt;\eta$ auf jedem Stück.</li>
+  <li><strong>Pro Stück:</strong> $\left|\int_{x_{k-1}}^{x_k}(f(x)-f(z_k))\,dx\right|\le\eta\,\Delta x_k$.</li>
+  <li><strong>Summe:</strong> Gesamtfehler $\le\eta(b-a)&lt;\varepsilon$.</li>
+</ol>
+<p>Kurz gesagt: «Heine, Fehler pro Stück η·Breite, die Breiten summieren sich zu b − a». Das ist die Abschätzung «stetig ⇒ integrierbar» aus <a class="xl" href="lesson-09.html#we-2">Lektion 9</a> in neuen Kleidern.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum brauchen wir <em>gleichmässige</em> Stetigkeit und nicht nur Stetigkeit in jedem Punkt?</p>
+  <details><summary>Antwort</summary><div><p>Ein einziges $\delta$ muss für jedes Stück jeder Zerlegung mit $|Z|&lt;\delta$ funktionieren, wo immer es in $[a,b]$ liegt. Punktweise Stetigkeit liefert ein $\delta$, das vom Punkt abhängt.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Schreib die Abschätzung pro Stück und nenne jede Tatsache, die du verwendest.</p>
+  <details><summary>Antwort</summary><div><p><span class="math-display" style="display:block">$$\begin{aligned}\int_{x_{k-1}}^{x_k}f\,dx-f(z_k)\Delta x_k&amp;=\int_{x_{k-1}}^{x_k}(f(x)-f(z_k))\,dx\end{aligned}$$</span> (Linearität und das Integral einer Konstanten); sein Betrag ist $\le\int|f(x)-f(z_k)|\,dx$ (Dreiecksungleichung) $\le\eta\,\Delta x_k$ (Monotonie, da der Integrand $&lt;\eta$ ist).</p></div></details></li>
+  <li><p><strong>Stufe 3 (4 Min.).</strong> Schreib den ganzen Beweis nur anhand des Rahmens.</p></li>
+</ol></div>
+<p class="legend">Für ein allgemeines integrierbares $f$ klemmt das Skript $f$ zwischen stetige Funktionen $f_-\le f\le f_+$ mit $\int(f_+-f_-)&lt;\frac\varepsilon2$ ein (Proposition 4.44) und wendet den stetigen Fall auf beide an. Dieser Teil steht auf der Auslassliste.</p>
+
+<h2 id="s6-landau-notation-and">6. Landau-Notation: $O$ und $o$</h2>
+<p><strong>Die Idee.</strong> Oft ist uns egal, was eine Funktion genau ist, nur wie gross sie <em>im Vergleich zu</em> einer einfacheren Funktion $g$ ist, in der Nähe eines Punktes $x_0$ (oft $0$ oder $\infty$). Die Landau-Notation (wie das «von der Grössenordnung» des königlichen Astronomen) hat dafür zwei Wörter:</p>
+<ul>
+  <li><strong>$f=O(g)$, «Gross-O»:</strong> $f$ ist <em>höchstens ungefähr so gross wie</em> $g$. In der Nähe von $x_0$ ist $|f|$ höchstens ein festes Vielfaches $M$ von $|g|$.</li>
+  <li><strong>$f=o(g)$, «Klein-o»:</strong> $f$ ist <em>vernachlässigbar im Vergleich zu</em> $g$. In der Nähe von $x_0$ ist $|f|$ kleiner als <em>jeder</em> noch so winzige Bruchteil $\varepsilon$ von $|g|$.</li>
+</ul>
+<p><strong>Der praktische Test: Betrachte den Quotienten $\frac{f(x)}{g(x)}$</strong> für $x\to x_0$ (wenn $g\neq0$ in der Nähe von $x_0$).</p>
+<ul>
+  <li>Der Quotient bleibt <strong>beschränkt</strong> ⇔ $f=O(g)$.</li>
+  <li>Der Quotient <strong>geht gegen $0$</strong> ⇔ $f=o(g)$.</li>
+  <li>Der Quotient geht gegen eine Zahl $c\neq0$: dann $f=O(g)$, aber nicht $o(g)$ (gleiche Ordnung).</li>
+  <li>Der Quotient ist <strong>unbeschränkt</strong>: $f$ ist weder $O(g)$ noch $o(g)$.</li>
+</ul>
+<p>Da «geht gegen $0$» «beschränkt in der Nähe von $x_0$» impliziert, ist jedes $o(g)$ auch $O(g)$.</p>
+<div class="box">
+<p><strong>Definition (<a class="pl" href="../script.html#p284">S. 284</a>).</strong> Sei $x_0$ ein Häufungspunkt von $D$ (oder $x_0=\pm\infty$), und $f,g:D\to\mathbb R$.</p>
+<ul>
+  <li>$f(x)=O(g(x))$ für $x\to x_0$, wenn es $\delta&gt;0$ und $M&gt;0$ gibt mit $|f(x)|\le M|g(x)|$ für alle $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$.</li>
+  <li>$f(x)=o(g(x))$ für $x\to x_0$, wenn es für jedes $\varepsilon&gt;0$ ein $\delta&gt;0$ gibt mit $|f(x)|\le\varepsilon|g(x)|$ für alle $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$.</li>
+</ul>
+<p>Für $x_0=\infty$ ersetze «$0&lt;|x-x_0|&lt;\delta$» durch «$x&gt;R$». Der Unterschied zwischen den beiden: Bei $O$ genügt eine Konstante $M$; bei $o$ muss es für <em>jedes</em> $\varepsilon&gt;0$ funktionieren.</p>
+</div>
+<p><strong>Vorsicht mit «=».</strong> «$f=O(g)$» ist keine Gleichung; lies es als «$f$ liegt in der Klasse $O(g)$». Es geht nur in eine Richtung: $x=O(x^2)$ für $x\to\infty$ stimmt, aber «$O(x^2)=x$» bedeutet nichts.</p>
+<div class="box">
+<h3 id="worked-example-compare-and">Musterbeispiel: $x^2$ und $x$ vergleichen</h3>
+<ol class="gq">
+  <li><p>Berechne den Quotienten $\frac{x^2}{x}$. Ist $x^2=o(x)$ für $x\to0$?</p>
+  <details><summary>Antwort</summary><div><p>$\frac{x^2}x=x\to0$ für $x\to0$. Also ja: $x^2=o(x)$, und folglich auch $x^2=O(x)$ für $x\to0$. In der Nähe von $0$ ist $x^2$ viel kleiner als $x$ (für $x=0.01$: $0.0001$ gegen $0.01$).</p></div></details></li>
+  <li><p>Und für $x\to\infty$?</p>
+  <details><summary>Antwort</summary><div><p>$\frac{x^2}x=x\to\infty$ ist unbeschränkt. Also $x^2\neq O(x)$ für $x\to\infty$. Umgekehrt gilt $\frac{x}{x^2}=\frac1x\to0$, also $x=o(x^2)$ für $x\to\infty$.</p></div></details></li>
+  <li><p>Was lehrt dieses Beispiel?</p>
+  <details><summary>Antwort</summary><div><p><strong>Der Punkt $x_0$ zählt.</strong> In der Nähe von $0$ sind höhere Potenzen kleiner; in der Nähe von $\infty$ sind höhere Potenzen grösser. Sag immer «für $x\to x_0$».</p></div></details></li>
+</ol>
+</div>
+<div class="box">
+<h3 id="worked-example-and">Musterbeispiel: $O(1)$ und $o(1)$</h3>
+<ol class="gq">
+  <li><p>Nimm $g=1$. Was bedeuten $f=O(1)$ und $f=o(1)$?</p>
+  <details><summary>Antwort</summary><div><p>Der Quotient ist $\frac f1=f$ selbst. Also bedeutet $f=O(1)$, dass $f$ in der Nähe von $x_0$ <strong>beschränkt</strong> ist, und $f=o(1)$ bedeutet $f(x)\to0$.</p></div></details></li>
+  <li><p>Ist $\frac x{x+1}=O(1)$ für $x\to\infty$? Ist es $o(1)$?</p>
+  <details><summary>Antwort</summary><div><p>$\frac x{x+1}=\frac1{1+\frac1x}\to1$. Es ist beschränkt (zwischen $0$ und $1$ für $x&gt;0$), also $O(1)$. Es geht nicht gegen $0$, ist also nicht $o(1)$.</p></div></details></li>
+</ol>
+</div>
+<p><strong>Als Platzhalter.</strong> $o(g)$ und $O(g)$ werden auch innerhalb von Formeln verwendet, für «irgendeine Funktion dieser Grösse, die wir nicht ausschreiben». So bedeutet $f(x)=h(x)+o(g(x))$, dass $f(x)-h(x)=o(g(x))$: $h$ ist der Hauptteil, und der Fehler ist im Vergleich zu $g$ vernachlässigbar.</p>
+<div class="box">
+<h3 id="worked-example-a-main-part">Musterbeispiel: ein Hauptteil plus ein Fehler</h3>
+<ol class="gq">
+  <li><p>Polynomdivision liefert $\frac{x^2+1}{x-1}=x+1+\frac2{x-1}$. Wie gross ist der Rest $\frac2{x-1}$ für $x\to\infty$?</p>
+  <details><summary>Antwort</summary><div><p>$\frac2{x-1}\to0$, also ist er $o(1)$.</p></div></details></li>
+  <li><p>Schreib das Ergebnis in Landau-Notation und sag, was es bedeutet.</p>
+  <details><summary>Antwort</summary><div><p>$\frac{x^2+1}{x-1}=x+1+o(1)$ für $x\to\infty$: Für grosse $x$ ist die Funktion $x+1$ bis auf einen Fehler, der gegen $0$ geht. (Ihr Graph nähert sich der Geraden $y=x+1$.)</p></div></details></li>
+</ol>
+</div>
+<p><strong>Regeln (Übung 6.53).</strong> $o(g)+o(g)=o(g)$ und $\alpha\,o(g)=o(g)$ für eine Konstante $\alpha$, und dasselbe für $O$. (Grund: Wenn $\frac{f_1}g\to0$ und $\frac{f_2}g\to0$, dann $\frac{f_1+f_2}g\to0$ und $\frac{\alpha f_1}g\to0$.) <strong>Warum du das brauchen wirst:</strong> Taylor-Entwicklungen werden später so geschrieben, zum Beispiel $\sqrt{1+s}=1+\frac s2+O(s^2)$ für $s\to0$. In dieser Lektion kommt es in den Musterbeispielen (<a class="xl" href="#s7-worked-examples">Abschnitt 7</a>) und in einer Multiple-Choice-Prüfungsfrage (Aufgabe 2) vor.</p>
+
+<h2 id="s7-worked-examples">7. Musterbeispiele</h2>
+<p>Die Musterbeispiele sind Fragen: Versuche jede im Kopf und öffne dann die Antwort. Deine Antworten ergeben der Reihe nach die Lösung.</p>
+<div class="box">
+<h3 id="we-1">Musterbeispiel 1: $\displaystyle\lim_{x\to0}\frac{\sqrt{1+x}-1}x$</h3>
+<ol class="gq">
+  <li><p>Was passiert, wenn du $x=0$ einsetzt? Ist das erlaubt?</p>
+  <details><summary>Antwort</summary><div><p>Du bekommst $\frac00$, was sinnlos ist, und $x=0$ liegt ohnehin nicht im Definitionsbereich. Der Grenzwert betrachtet nur $x\neq0$ nahe bei $0$ (hier $x\ge-1$), also dürfen wir den Ausdruck für $x\neq0$ umformen.</p></div></details></li>
+  <li><p>Erweitere Zähler und Nenner mit $\sqrt{1+x}+1$. Was erhältst du für $x\neq0$?</p>
+  <details><summary>Antwort</summary><div><p>$\frac{(1+x)-1}{x\left(\sqrt{1+x}+1\right)}=\frac1{\sqrt{1+x}+1}$.</p></div></details></li>
+  <li><p>Beende die Rechnung und nenne die Tatsachen, die du verwendest.</p>
+  <details><summary>Antwort</summary><div><p>$x\mapsto\frac1{\sqrt{1+x}+1}$ ist stetig in $0$ (die Wurzel ist stetig nach <a class="xl" href="lesson-08.html#the-payoff-th-roots-beispiel">Lektion 8</a>, dann Summen und Quotienten mit Nenner ungleich null), also ist nach Lemma 6.39 ihr Grenzwert bei $0$ ihr Wert $\frac12$. Da die beiden Funktionen für $x\neq0$ übereinstimmen, gilt $\lim_{x\to0}\frac{\sqrt{1+x}-1}x=\frac12$.</p></div></details></li>
+  <li><p>Schreib das Ergebnis in Landau-Notation um.</p>
+  <details><summary>Antwort</summary><div><p>$\frac{\sqrt{1+x}-1}x-\frac12\to0$, d. h. $\sqrt{1+x}-1-\frac x2=o(x)$, d. h. $\sqrt{1+x}=1+\frac x2+o(x)$ für $x\to0$.</p></div></details></li>
+</ol>
+</div>
+
+<div class="box">
+<h3 id="we-2">Musterbeispiel 2: ein Grenzwert von Summen als Integral</h3>
+<p>Berechne $\displaystyle\lim_{n\to\infty}\sum_{k=1}^n\frac{k^2}{n^3}$.</p>
+<ol class="gq">
+  <li><p>Schreib die Summe in der Form $\frac1n\sum_{k=1}^nf\left(\frac kn\right)$.</p>
+  <details><summary>Antwort</summary><div><p>$\frac{k^2}{n^3}=\frac1n\left(\frac kn\right)^2$, also $f(x)=x^2$ auf $[0,1]$.</p></div></details></li>
+  <li><p>Warum ist Satz 6.47 anwendbar, und was ist der Grenzwert?</p>
+  <details><summary>Antwort</summary><div><p>$f(x)=x^2$ ist stetig, also integrierbar, und die Summe ist die Riemann-Summe für $n$ gleiche Stücke mit rechten Endpunkten als Zwischenpunkte; die Maschenweite $\frac1n\to0$. Also ist der Grenzwert $\int_0^1x^2\,dx=\frac13$ (<a class="xl" href="lesson-09.html#ex-3">Lektion 9</a>, Aufgabe 3).</p></div></details></li>
+</ol>
+<p class="legend">Probe ohne Integrale: $\sum_{k=1}^nk^2=\frac{n(n+1)(2n+1)}6$, also ist die Summe $\frac{(n+1)(2n+1)}{6n^2}\to\frac26=\frac13$. Die Sicht als Riemann-Summe ist schneller und funktioniert auch, wenn es keine Formel gibt.</p>
+</div>
+
+<div class="box">
+<h3 id="we-3">Musterbeispiel 3: Gross-O und Klein-o</h3>
+<p>Sei $f(x)=3x+x^2$.</p>
+<ul>
+  <li><strong>Für $x\to0$:</strong> $f(x)=O(x)$, da $|3x+x^2|\le|x|(3+|x|)\le4|x|$ für $0&lt;|x|&lt;1$ ($M=4$, $\delta=1$). Genauer: $f(x)=3x+o(x)$, da $\frac{x^2}x=x\to0$.</li>
+  <li><strong>Für $x\to\infty$:</strong> $f(x)=O(x^2)$, da $\frac{3x+x^2}{x^2}=\frac3x+1\le4$ für $x&gt;1$. Aber $f(x)\neq o(x^2)$, da $\frac{f(x)}{x^2}\to1\neq0$; und $f(x)\neq O(x)$, da $\frac{f(x)}x=3+x$ unbeschränkt ist.</li>
+</ul>
+</div>
+
+<p><strong>Warum das cool ist.</strong> Riemann-Summen verwandeln schwierige Grenzwerte von Summen in einfache Integrale (Musterbeispiel 2), und mit $O$ und $o$ berechnest du Grenzwerte, indem du den Hauptterm behältst und den Rest wegwirfst. Diese Buchhaltung ist die ganze Idee hinter Taylor-Entwicklungen (<a class="xl" href="lesson-21.html#the-decision-list-for-compute">Lektion 21</a>).</p>
+
+<h2 id="s8-exercises">8. Aufgaben</h2>
+<p>Jede Lösung ist unter ihrer Aufgabe eingeklappt. Die Aufgaben 1, 2 und 3 sind im Prüfungsstil und zählen für die Bewertung.</p>
+<div class="box"><h3 id="ex-1">Aufgabe 1 (Einsiedler HS21 Probeprüfung, Frage 10, wahr oder falsch)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2021-12-einsiedler-mock-exam-hs21.pdf&amp;t=2021-12%20Einsiedler%20-%20mock%20exam%20HS21">Probeprüfung HS21</a></p>
+  <p>Sei $D\subseteq\mathbb R$, $x_0\in D$ ein Häufungspunkt von $D$ und $f:D\to\mathbb R$. In welchen Fällen folgt, dass $f$ stetig in $x_0$ ist?</p>
+  <ul>
+    <li>(a) Wenn $\lim_{x\to x_0}f(x)$ existiert, dann ist $f$ stetig in $x_0$.</li>
+    <li>(b) Wenn $x_0$ ein links- und rechtsseitiger Häufungspunkt von $D$ ist und $f$ in $x_0$ linksseitig und rechtsseitig stetig ist, dann ist $f$ stetig in $x_0$.</li>
+    <li>(c) Wenn $x_0$ kein rechtsseitiger Häufungspunkt von $D$ ist und $\lim_{x\nearrow x_0}f(x)=f(x_0)$, dann ist $f$ stetig in $x_0$.</li>
+    <li>(d) Wenn es eine Folge $x_n\in D$ mit $x_n\to x_0$ und $f(x_n)\to f(x_0)$ gibt, dann ist $f$ stetig in $x_0$.</li>
+  </ul><details class="sol"><summary>Lösung</summary><div>
+  <ul>
+    <li><strong>(a) Falsch.</strong> $f(x)=0$ für $x\neq0$ und $f(0)=1$ auf $D=\mathbb R$: $\lim_{x\to0}f(x)=0$ existiert, ist aber verschieden von $f(0)$ (eine hebbare Unstetigkeitsstelle). Stetigkeit in einem Häufungspunkt bedeutet genau, dass der Grenzwert existiert <em>und gleich</em> $f(x_0)$ ist.</li>
+    <li><strong>(b) Wahr.</strong> Beide einseitigen Grenzwerte existieren und sind gleich $f(x_0)$, also $\lim_{x\to x_0}f(x)=f(x_0)$, und $f$ ist stetig in $x_0$ (Stetigkeit in einem Häufungspunkt bedeutet $\lim_{x\to x_0}f(x)=f(x_0)$).</li>
+    <li><strong>(c) Wahr.</strong> Da $x_0$ kein rechtsseitiger Häufungspunkt ist, gibt es $\delta_0&gt;0$ mit $D\cap(x_0,x_0+\delta_0)=\emptyset$. Für $\delta\le\delta_0$ liegen die Punkte $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$ alle links von $x_0$. Also ist der linksseitige Grenzwert der Grenzwert: $\lim_{x\to x_0}f(x)=f(x_0)$, und $f$ ist stetig in $x_0$.</li>
+    <li><strong>(d) Falsch.</strong> Eine Folge reicht nicht; Stetigkeit verlangt <em>jede</em> Folge. Beispiel: $f(x)=0$ für $x\le0$, $f(x)=1$ für $x&gt;0$, $x_0=0$, $x_n=-\frac1n$: $f(x_n)=0=f(0)$, aber $f\left(\frac1n\right)=1\not\to0$, also ist $f$ nicht stetig in $0$.</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-2">Aufgabe 2 (Figalli FS26, MC11)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2026-08-figalli-fs26-repeat-exam.pdf&amp;t=2026-08%20Figalli%20-%20FS26%20repeat%20exam">Prüfung FS26</a></p>
+  <p>Welche asymptotische Aussage ist für $x\to\infty$ wahr? (A) $x^2\cos x=O(x)$. (B) $\frac{\sin x}x=o\left(\frac1{x^2}\right)$. (C) $\sin x=o\left(\frac1{\log x}\right)$. (D) $\cos x=O\left((\log x)^2\right)$.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>Antwort (D).</strong> $|\cos x|\le1\le(\log x)^2$ für $x\ge e$, also funktionieren $M=1$ und $R=e$.</p>
+  <ul>
+    <li>(A) Falsch: $\frac{x^2\cos x}x=x\cos x$ ist unbeschränkt (bei $x=2\pi m$ ist es gleich $2\pi m$).</li>
+    <li>(B) Falsch: $\frac{\sin x/x}{1/x^2}=x\sin x$ geht nicht gegen $0$ (bei $x=\frac\pi2+2\pi m$ ist es gleich $x$).</li>
+    <li>(C) Falsch: $\frac{\sin x}{1/\log x}=\sin x\log x$ geht nicht gegen $0$ (bei $x=\frac\pi2+2\pi m$ ist es gleich $\log x\to\infty$).</li>
+  </ul>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-3">Aufgabe 3 (Felder FS23, 1.A5, 2 Punkte)</h3>
+<p class="examsrc">Original öffnen: <a href="../pdf.html?f=docs/2023-08-felder-fs23-repeat-exam-with-solutions.pdf&amp;t=2023-08%20Felder%20-%20FS23%20repeat%20exam%20%28with%20solutions%29">Prüfung FS23 mit Lösungen</a></p>
+  <p>Berechne den Grenzwert der Riemann-Summen $\displaystyle\lim_{n\to\infty}\frac1n\sum_{k=1}^n\sin\left(\frac kn\right)$. (Schreib ihn als Integral. Um es auszuwerten, verwende, dass $-\cos$ eine Stammfunktion von $\sin$ ist, was du aus der Schule kennst; <a class="xl" href="lesson-19.html">Lektion 19</a> begründet es.)</p><details class="sol"><summary>Lösung</summary><div>
+  <p>Die Summe ist die Riemann-Summe von $f(x)=\sin x$ auf $[0,1]$ mit $n$ gleichen Stücken und rechten Endpunkten $z_k=\frac kn$ als Zwischenpunkte. Die Maschenweite ist $\frac1n\to0$, und $\sin$ ist stetig, also konvergieren die Riemann-Summen gegen das Integral:</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\lim_{n\to\infty}\frac1n\sum_{k=1}^n\sin\left(\frac kn\right)&amp;=\int_0^1\sin x\,dx\\&amp;=\bigl[-\cos x\bigr]_0^1\\&amp;=1-\cos1\end{aligned}.$$</span>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-4">Aufgabe 4 (Grenzwerte berechnen)</h3>
+  <p>(a) $\displaystyle\lim_{x\to2}\frac{x^3-x^2-x-2}{x-2}$ (Übung 6.45). (b) $\displaystyle\lim_{x\to\infty}\frac{2x^2-x}{5x^2+3}$. (c) Die einseitigen Grenzwerte von $\frac{|x|}x$ bei $0$; existiert $\lim_{x\to0}\frac{|x|}x$? (d) $\displaystyle\lim_{x\searrow0}\left(\frac1x-\frac1{x^2}\right)$.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>(a) $7$.</strong> $x=2$ ist eine Nullstelle des Zählers ($8-4-2-2=0$), und Polynomdivision liefert <span class="math-display" style="display:block">$$x^3-x^2-x-2=(x-2)(x^2+x+1).$$</span>Für $x\neq2$ ist der Quotient $x^2+x+1$, was stetig ist, also ist der Grenzwert $4+2+1=7$.</p>
+  <p><strong>(b) $\frac25$.</strong> $\frac{2x^2-x}{5x^2+3}=\frac{2-\frac1x}{5+\frac3{x^2}}\to\frac25$.</p>
+  <p><strong>(c)</strong> Für $x&gt;0$ ist $\frac{|x|}x=1$; für $x&lt;0$ ist es $-1$. Also $\lim_{x\searrow0}=1$ und $\lim_{x\nearrow0}=-1$. Sie sind verschieden, also existiert $\lim_{x\to0}\frac{|x|}x$ nicht (eine Sprungstelle, wenn wir bei $0$ einen Wert definieren).</p>
+  <p><strong>(d) $-\infty$.</strong> <em>Rahmen:</em> «$\to-\infty$» heisst «Sei $K&gt;0$ … also ist der Ausdruck $&lt;-K$ für $0&lt;x&lt;\delta$». $\frac1x-\frac1{x^2}=\frac{x-1}{x^2}$. Für $0&lt;x&lt;\frac12$: $x-1&lt;-\frac12$, also ist der Ausdruck $&lt;-\frac1{2x^2}$. Zu gegebenem $K&gt;0$ nimm $\delta=\min\left\{\frac12,\frac1{\sqrt{2K}}\right\}$; für $0&lt;x&lt;\delta$ gilt $\frac1{2x^2}&gt;K$, also ist der Ausdruck $&lt;-K$.</p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-5">Aufgabe 5 (Sandwich für Funktionen, Übung 6.38 (iii))</h3>
+  <p>Sei $x_0$ ein Häufungspunkt von $D$ und $f\le g\le h$ auf $D$, mit $\lim_{x\to x_0}f(x)=\lim_{x\to x_0}h(x)=A$. Beweise, dass $\lim_{x\to x_0}g(x)=A$.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> «Sei $\varepsilon&gt;0$ … also $|g(x)-A|&lt;\varepsilon$ für $x\in D$, $0&lt;|x-x_0|&lt;\delta$». Die Lücke: ein $\delta$, das für $f$ und $h$ gleichzeitig funktioniert, dann $g$ einklemmen.</p>
+  <p>Sei $\varepsilon&gt;0$. Wähle $\delta_1,\delta_2&gt;0$ mit $|f(x)-A|&lt;\varepsilon$ für $x\in D$, $0&lt;|x-x_0|&lt;\delta_1$, und $|h(x)-A|&lt;\varepsilon$ für $x\in D$, $0&lt;|x-x_0|&lt;\delta_2$. Sei $\delta=\min\{\delta_1,\delta_2\}$. Für $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$:</p>
+  <span class="math-display" style="display:block">$$A-\varepsilon&lt;f(x)\le g(x)\le h(x)&lt;A+\varepsilon,$$</span>
+  <p>also $|g(x)-A|&lt;\varepsilon$. Folglich $\lim_{x\to x_0}g(x)=A$. <span class="qed">∎</span></p>
+  <p class="moves">Verwendete Kniffe: <a class="mvl" href="moves.html#m-min">Minimum zweier δs</a> <a class="mvl" href="moves.html#m-sandwich">Sandwich</a></p>
+</div></details>
+</div>
+<div class="box"><h3 id="ex-6">Aufgabe 6 (Riemann-Summen)</h3>
+  <p>Berechne $\displaystyle\lim_{n\to\infty}\frac1n\sum_{k=1}^n\left(1+\frac kn\right)$ auf zwei Arten: als Integral und direkt.</p><details class="sol"><summary>Lösung</summary><div>
+  <p><strong>Als Integral:</strong> Es ist die Riemann-Summe mit rechten Endpunkten von $f(x)=1+x$ auf $[0,1]$, also ist der Grenzwert $\int_0^1(1+x)\,dx=1+\frac12=\frac32$ (Linearität und $\int_0^1x\,dx=\frac12$ aus <a class="xl" href="lesson-09.html#we-1">Lektion 9</a>).</p>
+  <p><strong>Direkt:</strong> <span class="math-display" style="display:block">$$\begin{aligned}\frac1n\sum_{k=1}^n\left(1+\frac kn\right)&amp;=1+\frac1{n^2}\cdot\frac{n(n+1)}2\\&amp;=1+\frac{n+1}{2n}\to\frac32.\end{aligned}$$</span></p>
+</div></details>
+</div>
+<div class="box"><h3 id="bonus">Bonus (Übung 6.38 (i))</h3>
+  <p>Beweise, dass $\lim_{x\to x_0}f(x)$ eindeutig ist, falls er existiert. Wo verwendest du, dass $x_0$ ein Häufungspunkt von $D$ ist?</p><details class="sol"><summary>Lösung</summary><div>
+  <p><em>Rahmen:</em> Eindeutigkeit per Widerspruch: «Angenommen, die Grenzwerte sind $A\neq B$», nimm $\varepsilon$ = halber Abstand und finde ein $x$, das nahe bei beiden liegt. <em>Kniffe:</em> <a class="mvl" href="moves.html#m-contra">Das Gegenteil annehmen</a>, <a class="mvl" href="moves.html#m-min">Minimum zweier δs</a>.</p>
+  <p>Angenommen, $f(x)\to A$ und $f(x)\to B$ mit $A\neq B$, und sei $\varepsilon=\frac{|A-B|}2$. Wähle $\delta_1,\delta_2$ für $A$ und $B$, und $\delta=\min\{\delta_1,\delta_2\}$. Da $x_0$ ein Häufungspunkt von $D$ ist, gibt es $x\in D$ mit $0&lt;|x-x_0|&lt;\delta$. <em>(Hier verwenden wir es: Sonst gäbe es vielleicht kein solches $x$, und jede Zahl wäre ein «Grenzwert».)</em> Dann gilt <span class="math-display" style="display:block">$$\begin{aligned}|A-B|&amp;\le |A-f(x)|+|f(x)-B|\\&amp;&lt;2\varepsilon\\&amp;=|A-B|\end{aligned},$$</span> ein Widerspruch. <span class="qed">∎</span></p>
+</div></details>
+</div>
+<div class="check">
+  <p><strong>Selbstbewertung:</strong> Aufgabe 1 (4, einer pro Teil), Aufgabe 2 (2) und Aufgabe 3 (2) ergeben 8. Wenn du 6 von 8 hast, bist du fertig. Die Aufgaben 4–6 und der Bonus sind Übung und zählen nicht gegen dich.</p>
+</div>
+
+<h2 id="s9-for-wonder-optional-5-min">9. Zum Staunen <span style="font-family:var(--font-util);font-size:.75rem;color:var(--muted)">(optional, 5 Min.)</span></h2>
+<p><strong>Warum die Mathematik 150 Jahre brauchte, um einen Grenzwert zu definieren.</strong> Newton und Leibniz (um 1680) rechneten mit «unendlich kleinen» Grössen und erhielten richtige Ergebnisse, konnten aber nicht sagen, was diese Grössen waren. Bischof Berkeley verspottete sie als «die Geister verstorbener Grössen». Die ε-δ-Definition, die du heute verwendet hast, wurde schliesslich von Bolzano (1817), Cauchy (1821) und, in der heutigen präzisen Form, Weierstrass (1860er-Jahre) aufgeschrieben. Der Trick, der das Problem löste, ist genau die punktierte Umgebung: Schau nie <em>auf</em> den Punkt, nur in seine Nähe.</p>
+<p><strong>Riemann-Summen berechnen die Integrale deines Computers.</strong> Wenn Software eine Fläche numerisch berechnet, addiert sie Riemann-Summen mit einer geschickten Wahl der Zwischenpunkte. Nimmt man den <em>Mittelpunkt</em> jedes Stücks statt eines Endpunkts, schrumpft der Fehler für glatte Funktionen wie $O\left(\frac1{n^2}\right)$ statt wie $O\left(\frac1n\right)$; die Simpson-Regel (Gewichte $\frac16,\frac46,\frac16$ auf jedem Stück) erreicht $O\left(\frac1{n^4}\right)$. Mit Landaus Notation vergleicht man diese Geschwindigkeiten.</p>
+<p><strong>Eine Summe, die du bald auswerten kannst.</strong> <span class="math-display" style="display:block">$$\begin{aligned}\sum_{k=1}^n\frac1{n+k}&amp;=\frac1n\sum_{k=1}^n\frac1{1+k/n}\to\int_0^1\frac{dx}{1+x}\\&amp;=\log2\approx0.693\end{aligned}.$$</span> Mit Logarithmen (<a class="xl" href="lesson-16.html#we-1">Lektion 16</a>) und dem Hauptsatz (<a class="xl" href="lesson-19.html#s2-the-fundamental-theorem">Lektion 19</a>) wird das eine Rechnung von zwei Zeilen.</p>
+
+<h2 id="s10-what-we-skipped">10. Was wir auslassen</h2>
+<p>All das steht auch auf der Auslassliste.</p>
+<ul>
+  <li><strong>Satz 6.47 für allgemeine integrierbare $f$</strong>, über stetige Funktionen oberhalb und unterhalb (Proposition 4.44, <a class="pl" href="../script.html#p281">S. 281</a>). Mittlere Priorität; der stetige Fall ist Beweis B.</li>
+  <li><strong>Übungen 6.49–6.50 (<a class="pl" href="../script.html#p281">S. 281</a>):</strong> Die Konvergenz der Riemann-Summen charakterisiert Integrierbarkeit. Niedrige Priorität.</li>
+  <li><strong>Vektorwertige und komplexe Integrale (Abschnitt 6.5.1, <a class="pl" href="../script.html#p282">S. 282–283</a>)</strong> und die Dreiecksungleichung für sie (Wichtige Übung 6.51). Jetzt niedrige Priorität; das kommt mit den Kurven zurück.</li>
+  <li><strong>Beispiel 6.44 ($\lim_{x\to0}x^x=1$, <a class="pl" href="../script.html#p278">S. 278</a>)</strong> und die Exponentialgrenzwerte in Übung 6.45 (<a class="pl" href="../script.html#p279">S. 279</a>) und Übung 6.52 (<a class="pl" href="../script.html#p285">S. 285</a>). Sie brauchen $\exp$ und $\log$; sie kommen in <a class="xl" href="lesson-16.html">Lektion 16</a> zurück.</li>
+  <li><strong>Übung 6.38 (ii):</strong> Beweise der Regeln für Funktionsgrenzwerte. Niedrige Priorität; gleich wie für Folgen oder über Lemma 6.40.</li>
+</ul>
+<p><strong>Als Nächstes:</strong> <a class="xl" href="lesson-14.html">Lektion 14</a>, Reihen (Kapitel 7), dort macht die Vorlesung am Donnerstag, 5. November, weiter. Mit dieser Lektion hast du die Vorlesung eingeholt.</p>
+
+<nav class="site foot" aria-label="Lektionsnavigation">
+<a href="lesson-12.html">← Lektion 12: Die Rückkehr des Wanderers</a>
+<a href="analysis.html">Analysis-Start</a>
+<a href="lesson-14.html">Lektion 14: Der Turm über dem See →</a>
+<a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Feedback geben</a>
+</nav>
+</main>
+
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+<style>.lang-switch{margin-left:auto;font-weight:600;font-size:.85em}nav.site .lang-switch{border:1px solid currentColor;border-radius:999px;padding:0 .6em}</style><style>.fb-line{margin-top:2.5rem;font-size:.9em;opacity:.8}</style>
+</body>
+</html>
