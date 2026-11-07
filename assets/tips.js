@@ -53,6 +53,27 @@
     { t: 'Hast du eine Idee für eine Funktion? Ich freue mich darauf: <a href="' + FORM + '" target="_blank" rel="noopener">Feedback senden</a>.' }
   ];
   var L = de ? DE : EN;
+  // What's new: newest first. Add an entry whenever a lesson or feature goes live (id must be unique).
+  // Shown once per visitor as a "New" card, only within 21 days of its date; all entries are listed on tips.html.
+  var NEWS = [
+    { id: 'listen', d: '2026-11-07', en: '<b>▶ Listen</b> next to each lesson’s story and For wonder heading reads it aloud.', de: '<b>▶ Anhören</b> neben der Geschichte und „Zum Staunen“ jeder Lektion liest sie dir vor.' },
+    { id: 'help', d: '2026-11-07', en: 'A <a href="help.html">Need help?</a> page with places to turn to when studying (or life) gets heavy.', de: 'Eine Seite <a href="help.html">Brauchst du Hilfe?</a> mit Anlaufstellen, wenn das Studium (oder das Leben) schwer wird.' },
+    { id: 'dense', d: '2026-11-07', en: '<a href="lesson-06.html">Lesson 6</a> now shows the three equivalent versions of “dense”, with proof.', de: '<a href="lesson-06.html">Lektion 6</a> zeigt jetzt die drei äquivalenten Versionen von „dicht“, mit Beweis.' },
+    { id: 'german', d: '2026-11-07', en: 'The whole StudyHub is now also in German: switch with <b>EN | DE</b> at the top.', de: 'Der ganze StudyHub ist jetzt auch auf Deutsch: Wechsle oben mit <b>EN | DE</b>.' }
+  ];
+  var newsSeen = {};
+  try { newsSeen = JSON.parse(get('sh-news-seen') || '{}') || {}; } catch (e) { newsSeen = {}; }
+  function freshNews() {
+    var now = Date.now();
+    for (var n = 0; n < NEWS.length; n++) {
+      var it = NEWS[n];
+      if (!newsSeen[it.id] && now - Date.parse(it.d + 'T00:00:00Z') < 21 * 864e5) {
+        newsSeen[it.id] = 1; set('sh-news-seen', JSON.stringify(newsSeen));
+        return { t: de ? it.de : it.en, news: it.id };
+      }
+    }
+    return null;
+  }
   var answered = {};
   try { answered = JSON.parse(get('sh-polls') || '{}') || {}; } catch (e) { answered = {}; }
   function track(name, data) { try { if (window.umami && window.umami.track) window.umami.track(name, data); } catch (e) {} }
@@ -67,6 +88,8 @@
       var off = get('sh-tips-off') === '1';
       var h = '<div class="tg"><strong>' + (de ? 'Tipp-Pop-up: ' : 'Tip pop-up: ') + '</strong>' + (off ? (de ? 'aus' : 'off') : (de ? 'an' : 'on')) +
         ' <button id="sh-tg">' + (off ? (de ? 'Wieder einschalten' : 'Turn back on') : (de ? 'Ausschalten' : 'Turn off')) + '</button></div>';
+      h += '<h2>' + (de ? 'Was ist neu?' : 'What’s new') + '</h2>';
+      NEWS.forEach(function (it) { h += '<div class="tp"><small style="opacity:.7">' + it.d.split('-').reverse().join('.') + '</small><br>' + (de ? it.de : it.en) + '</div>'; });
       h += '<h2>' + (de ? 'Wusstest du?' : 'Did you know?') + '</h2>';
       L.forEach(function (c) { if (c.t) h += '<div class="tp">' + c.t + '</div>'; });
       h += '<h2>' + (de ? 'Kurze Fragen' : 'Quick questions') + '</h2>';
@@ -88,7 +111,7 @@
     draw();
     return;
   }
-  if (get('sh-tips-off') === '1') return;
+  var tipsOff = get('sh-tips-off') === '1';
   // Random order, and each tip is shown at most once per browser (shared across EN/DE by position).
   var seen = {};
   try { seen = JSON.parse(get('sh-tips-seen') || '{}') || {}; } catch (e) { seen = {}; }
@@ -102,7 +125,7 @@
     seen[key(i)] = 1; set('sh-tips-seen', JSON.stringify(seen));
     return L[i];
   }
-  tip = pick();
+  tip = freshNews() || (tipsOff ? null : pick());
   if (!tip) return;
   var css = '#sh-tip{position:fixed;right:16px;bottom:16px;z-index:50;max-width:340px;width:calc(100% - 32px);box-sizing:border-box;' +
     'background:var(--surface,#fff);color:var(--ink,#222);border:1px solid var(--rule,#ccd);border-left:4px solid var(--accent,#5b5bd6);' +
@@ -120,7 +143,7 @@
     document.body.appendChild(box);
     function close() { box.classList.remove('on'); setTimeout(function () { box.remove(); }, 300); }
     function render() {
-      var head = tip.q ? (de ? 'Kurze Frage' : 'Quick question') : (de ? 'Wusstest du?' : 'Did you know?');
+      var head = tip.news ? (de ? 'Neu' : 'New') : tip.q ? (de ? 'Kurze Frage' : 'Quick question') : (de ? 'Wusstest du?' : 'Did you know?');
       var html = '<div class="k">' + head + '</div><div class="t">' + (tip.q || tip.t) + '</div>';
       if (tip.q) html += '<div class="b"><button class="y" data-a="yes">' + (de ? 'Ja' : 'Yes') + '</button><button data-a="no">' + (de ? 'Eher nicht' : 'Not really') + '</button></div>';
       html += '<button class="x" aria-label="' + (de ? 'Schliessen' : 'Close') + '">×</button>' +
@@ -128,7 +151,7 @@
       box.innerHTML = html;
       box.querySelector('.x').onclick = function () { track('tip-close', { i: i }); close(); };
       box.querySelector('.off').onclick = function () { set('sh-tips-off', '1'); track('tips-off', { i: i }); close(); };
-      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); var t = pick(); if (t) { tip = t; render(); } else close(); };
+      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); var t = freshNews() || (tipsOff ? null : pick()); if (t) { tip = t; render(); } else close(); };
       var links = box.querySelectorAll('.t a');
       for (var k = 0; k < links.length; k++) links[k].addEventListener('click', function () { track('tip-click', { i: i, href: this.getAttribute('href') }); });
       if (tip.q) {
