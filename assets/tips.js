@@ -10,6 +10,7 @@
     { t: 'Every lesson ends with an optional <b>For wonder</b> section: five minutes of the beautiful side of the topic, no exam pressure.' },
     { t: 'Low-energy day? Every lesson and refresher unit has a <b>bad-day version</b> at the top: a small minimum that still counts.' },
     { q: 'Did this page help you today?', id: 'helped:' + location.pathname.split('/').pop() },
+    { t: 'Having a hard time, not just with the material? <a href="help.html">Here is where to find help</a>, at ETH and beyond. You are not alone.' },
     { t: 'Stuck in a proof? The <a href="moves.html">moves library</a> lists the tricks proofs keep reusing, and when to reach for each one.' },
     { t: 'Ten minutes of <a href="flashcards.html">flashcards</a> a day keeps definitions exam-exact.' },
     { q: 'Would you like timed mock exams?', id: 'mocks' },
@@ -23,13 +24,13 @@
     { t: 'Nothing important is missing: every lesson says what is safe to skip, and the <a href="skipped.html">skip list</a> keeps all of it.' },
     { q: 'Would you like lesson stories retold in a world you love (music, sport, games…)?', id: 'own-world' },
     { t: 'Every exam question in the lessons links to the original exam, so you can see it exactly as it was asked.' },
-    { t: 'Having a hard time, not just with the material? <a href="help.html">Here is where to find help</a>, at ETH and beyond. You are not alone.' },
     { t: 'Thought of a feature? I’d love to hear it: <a href="' + FORM + '" target="_blank" rel="noopener">send feedback</a>.' }
   ];
   var DE = [
     { t: 'Jede Lektion endet mit einem optionalen Abschnitt <b>Zum Staunen</b>: fünf Minuten für die schöne Seite des Themas, ohne Prüfungsdruck.' },
     { t: 'Wenig Energie heute? Jede Lektion und jede Repetitionseinheit hat oben eine <b>Version für schlechte Tage</b>: ein kleines Minimum, das trotzdem zählt.' },
     { q: 'Hat dir diese Seite heute geholfen?', id: 'helped:' + location.pathname.split('/').pop() },
+    { t: 'Geht es dir gerade nicht gut, nicht nur wegen des Stoffs? <a href="help.html">Hier findest du Hilfe</a>, an der ETH und darüber hinaus. Du bist nicht allein.' },
     { t: 'Hängst du in einem Beweis? Die <a href="moves.html">Kniff-Sammlung</a> zeigt die Tricks, die Beweise immer wieder verwenden, und wann du welchen brauchst.' },
     { t: 'Zehn Minuten <a href="flashcards.html">Lernkarten</a> pro Tag, und die Definitionen sitzen prüfungsgenau.' },
     { q: 'Hättest du gern Probeprüfungen mit Zeitlimit?', id: 'mocks' },
@@ -43,7 +44,6 @@
     { t: 'Nichts Wichtiges fehlt: Jede Lektion sagt, was du auslassen kannst, und die <a href="skipped.html">Auslassliste</a> hält alles davon fest.' },
     { q: 'Hättest du gern die Geschichten in einer Welt, die du liebst (Musik, Sport, Games …)?', id: 'own-world' },
     { t: 'Jede Prüfungsaufgabe in den Lektionen verlinkt auf die Originalprüfung, damit du sie genau so siehst, wie sie gestellt wurde.' },
-    { t: 'Geht es dir gerade nicht gut, nicht nur wegen des Stoffs? <a href="help.html">Hier findest du Hilfe</a>, an der ETH und darüber hinaus. Du bist nicht allein.' },
     { t: 'Hast du eine Idee für eine Funktion? Ich freue mich darauf: <a href="' + FORM + '" target="_blank" rel="noopener">Feedback senden</a>.' }
   ];
   var L = de ? DE : EN;
