@@ -56,7 +56,8 @@
   // What's new: newest first. Add an entry whenever a lesson or feature goes live (id must be unique).
   // Shown once per visitor as a "New" card, only within 21 days of its date; all entries are listed on tips.html.
   var NEWS = [
-    { id: 'phys-02', d: '2026-11-09', en: 'Physics <a href="phys-02.html">lesson 2</a> is out: Newton’s laws, momentum and the rocket, with graphs you can drag and play with.', de: 'Physik-<a href="phys-02.html">Lektion 2</a> ist da: Newton’sche Axiome, Impuls und Rakete, mit Grafiken zum Ziehen und Ausprobieren.' },
+  { id: 'phys-03', d: '2026-11-09', en: 'Physics <a href="phys-03.html">lesson 3</a> is out: friction, ramps, ropes, drag and the scale in a lift, with three interactive graphs.', de: 'Physik-<a href="phys-03.html">Lektion 3</a> ist da: Reibung, Rampen, Seile, Luftwiderstand und die Waage im Lift, mit drei interaktiven Grafiken.' },
+  { id: 'phys-02', d: '2026-11-09', en: 'Physics <a href="phys-02.html">lesson 2</a> is out: Newton’s laws, momentum and the rocket, with graphs you can drag and play with.', de: 'Physik-<a href="phys-02.html">Lektion 2</a> ist da: Newton’sche Axiome, Impuls und Rakete, mit Grafiken zum Ziehen und Ausprobieren.' },
     { id: 'listen', d: '2026-11-07', en: '<b>▶ Listen</b> next to each lesson’s story and For wonder heading reads it aloud.', de: '<b>▶ Anhören</b> neben der Geschichte und „Zum Staunen“ jeder Lektion liest sie dir vor.' },
     { id: 'help', d: '2026-11-07', en: 'A <a href="help.html">Need help?</a> page with places to turn to when studying (or life) gets heavy.', de: 'Eine Seite <a href="help.html">Brauchst du Hilfe?</a> mit Anlaufstellen, wenn das Studium (oder das Leben) schwer wird.' },
     { id: 'dense', d: '2026-11-07', en: '<a href="lesson-06.html">Lesson 6</a> now shows the three equivalent versions of “dense”, with proof.', de: '<a href="lesson-06.html">Lektion 6</a> zeigt jetzt die drei äquivalenten Versionen von „dicht“, mit Beweis.' },
