@@ -35,7 +35,7 @@
       return sb.auth.getSession();
     }).then(function (r) {
       user = r && r.data && r.data.session ? r.data.session.user : null;
-      sb.auth.onAuthStateChange(function (ev, session) { var u = session ? session.user : null; if ((u && u.id) !== (user && user.id)) { user = u; afterAuth(); } });
+      sb.auth.onAuthStateChange(function (ev, session) { var u = session ? session.user : null; if ((u && u.id) !== (user && user.id)) { user = u; setTimeout(afterAuth, 0); } }); // setTimeout: never call Supabase inside this callback (it can deadlock)
       return afterAuth();
     });
     return ready;
