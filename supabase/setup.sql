@@ -61,30 +61,48 @@ create policy "own posts: create"   on public.forum_posts for insert to authenti
 create policy "own posts: delete"   on public.forum_posts for delete to authenticated using (user_id = auth.uid());
 grant select, insert, delete on public.forum_threads, public.forum_posts to authenticated;
 
--- Public reading views (everyone, also guests): show nickname or 'anonymous', never the account.
-create or replace view public.forum_threads_public as
+-- Public reading (everyone, also guests): functions that show nickname or "anonymous", never the account.
+create or replace function public.forum_threads_list(p_topic text default null)
+returns table (id bigint, topic text, title text, body text, created_at timestamptz, author text, mine boolean, replies bigint)
+language sql stable security definer set search_path = '' as $$
   select t.id, t.topic, t.title, t.body, t.created_at,
-         case when t.anonymous or p.nickname is null then 'anonymous' else p.nickname end as author,
-         (t.user_id = auth.uid()) as mine,
-         (select count(*) from public.forum_posts r where r.thread_id = t.id) as replies
-  from public.forum_threads t left join public.profiles p on p.id = t.user_id;
-create or replace view public.forum_posts_public as
-  select r.id, r.thread_id, r.body, r.created_at,
-         case when r.anonymous or p.nickname is null then 'anonymous' else p.nickname end as author,
-         (r.user_id = auth.uid()) as mine
-  from public.forum_posts r left join public.profiles p on p.id = r.user_id;
-grant select on public.forum_threads_public, public.forum_posts_public to anon, authenticated;
+         case when t.anonymous or p.nickname is null then 'anonymous' else p.nickname end,
+         t.user_id = auth.uid(),
+         (select count(*) from public.forum_posts r where r.thread_id = t.id)
+  from public.forum_threads t left join public.profiles p on p.id = t.user_id
+  where p_topic is null or t.topic = p_topic
+  order by t.created_at desc
+  limit 200;
+$$;
 
--- 4. Leaderboard (opt-in only): consistency, not speed ---------------------
-create or replace view public.leaderboard as
+create or replace function public.forum_posts_list(p_thread bigint)
+returns table (id bigint, thread_id bigint, body text, created_at timestamptz, author text, mine boolean)
+language sql stable security definer set search_path = '' as $$
+  select r.id, r.thread_id, r.body, r.created_at,
+         case when r.anonymous or p.nickname is null then 'anonymous' else p.nickname end,
+         r.user_id = auth.uid()
+  from public.forum_posts r left join public.profiles p on p.id = r.user_id
+  where r.thread_id = p_thread
+  order by r.created_at;
+$$;
+
+create or replace function public.leaderboard_list()
+returns table (nickname text, pages_done bigint, active_days_30 bigint)
+language sql stable security definer set search_path = '' as $$
   select p.nickname,
-         count(*) filter (where g.done) as pages_done,
-         count(distinct g.updated_at::date) filter (where g.updated_at > now() - interval '30 days') as active_days_30
+         count(*) filter (where g.done),
+         count(distinct (g.updated_at at time zone 'UTC')::date) filter (where g.updated_at > now() - interval '30 days')
   from public.profiles p join public.progress g on g.user_id = p.id
   where p.leaderboard and p.nickname is not null
-  group by p.nickname;
-grant select on public.leaderboard to anon, authenticated;
+  group by p.nickname
+  order by 3 desc, 2 desc
+  limit 100;
+$$;
 
+revoke all on function public.forum_threads_list(text), public.forum_posts_list(bigint), public.leaderboard_list() from public;
+grant execute on function public.forum_threads_list(text), public.forum_posts_list(bigint), public.leaderboard_list() to anon, authenticated;
+
+-- 4. (leaderboard_list above)
 -- 5. Delete my account (removes profile, progress and forum posts) -----------
 create or replace function public.delete_my_account() returns void
 language sql security definer set search_path = '' as $$
