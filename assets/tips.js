@@ -56,6 +56,7 @@
   // What's new: newest first. Add an entry whenever a lesson or feature goes live (id must be unique).
   // Shown once per visitor as a "New" card, only within 21 days of its date; all entries are listed on tips.html.
   var NEWS = [
+  { id: 'menu', d: '2026-11-09', en: 'The site has a new menu on every page (Start, Analysis, Physics, Practice, More) and a clearer <a href="index.html">home page</a>.', de: 'Die Seite hat ein neues Menü auf jeder Seite (Start, Analysis, Physik, Üben, Mehr) und eine übersichtlichere <a href="index.html">Startseite</a>.' },
   { id: 'phys-04', d: '2026-11-09', en: 'Physics <a href="phys-04.html">lesson 4</a> is out: rotating frames, the Coriolis force and the Foucault pendulum, with an animated carousel.', de: 'Physik-<a href="phys-04.html">Lektion 4</a> ist da: rotierende Bezugssysteme, die Corioliskraft und das Foucault-Pendel, mit animiertem Karussell.' },
   { id: 'phys-03', d: '2026-11-09', en: 'Physics <a href="phys-03.html">lesson 3</a> is out: friction, ramps, ropes, drag and the scale in a lift, with three interactive graphs.', de: 'Physik-<a href="phys-03.html">Lektion 3</a> ist da: Reibung, Rampen, Seile, Luftwiderstand und die Waage im Lift, mit drei interaktiven Grafiken.' },
   { id: 'phys-02', d: '2026-11-09', en: 'Physics <a href="phys-02.html">lesson 2</a> is out: Newton’s laws, momentum and the rocket, with graphs you can drag and play with.', de: 'Physik-<a href="phys-02.html">Lektion 2</a> ist da: Newton’sche Axiome, Impuls und Rakete, mit Grafiken zum Ziehen und Ausprobieren.' },
@@ -80,6 +81,12 @@
   var answered = {};
   try { answered = JSON.parse(get('sh-polls') || '{}') || {}; } catch (e) { answered = {}; }
   function track(name, data) { try { if (window.umami && window.umami.track) window.umami.track(name, data); } catch (e) {} }
+  var newsBox = document.getElementById('sh-news');
+  if (newsBox) {
+    var nh = '';
+    NEWS.slice(0, 2).forEach(function (it) { nh += '<li><small style="opacity:.7">' + it.d.split('-').reverse().join('.') + '</small> ' + (de ? it.de : it.en) + '</li>'; });
+    newsBox.innerHTML = '<ul style="padding-left:1.1rem;margin:.4rem 0">' + nh + '</ul><p style="margin:.3rem 0 0"><a href="tips.html">' + (de ? 'Alle Neuigkeiten und Tipps' : 'All updates and tips') + '</a></p>';
+  }
   var page = document.getElementById('sh-tips-page');
   if (page) {
     var css2 = '#sh-tips-page .tp{border:1px solid var(--rule,#ccd);border-left:4px solid var(--accent,#5b5bd6);border-radius:10px;padding:.7rem .9rem;margin:.6rem 0}' +
