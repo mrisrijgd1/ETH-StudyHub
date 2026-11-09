@@ -86,7 +86,7 @@
     var s = panel && panel.querySelector('.shp-status'); if (!s) return;
     s.innerHTML = msg ? esc(msg) : (user
       ? L('Synced to your account', 'Mit deinem Konto synchronisiert') + (profile && profile.nickname ? ' (' + esc(profile.nickname) + ')' : '') + '.'
-      : L('Saved in this browser. ', 'In diesem Browser gespeichert. ') + '<a href="' + ROOT + 'account.html">' + L('Sign in to sync across devices (optional)', 'Anmelden, um auf allen Geräten zu synchronisieren (optional)') + '</a>.');
+      : L('Saved in this browser. ', 'In diesem Browser gespeichert. ') + '<a href="account.html">' + L('Sign in to sync across devices (optional)', 'Anmelden, um auf allen Geräten zu synchronisieren (optional)') + '</a>.');
   }
   function buildPanel() {
     if (!isLesson || panel) return;
@@ -103,6 +103,9 @@
       '<p class="shp-status"></p>';
     var foot = main.querySelector('nav.site.foot');
     foot ? main.insertBefore(panel, foot) : main.appendChild(panel);
+    var cm = document.createElement('section'); cm.className = 'sh-comments'; cm.innerHTML = '<h2 id="comments">' + L('Comments and questions', 'Kommentare und Fragen') + '</h2><div id="sh-forum" data-topic="' + page.replace('.html', '') + '"><p class="soon">' + L('Loading comments…', 'Kommentare werden geladen …') + '</p></div>';
+    panel.parentNode.insertBefore(cm, panel.nextSibling);
+    if ('IntersectionObserver' in window) { var io2 = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io2.disconnect(); sdk().catch(function () {}); } }, { rootMargin: '400px' }); io2.observe(cm); } else sdk();
     var cb = panel.querySelector('input'), ta = panel.querySelector('textarea');
     cb.checked = !!e.done; ta.value = e.note || ''; paintRate(e.rating || 0);
     cb.onchange = function () { save(page, { done: cb.checked }); track('progress', { p: page, done: cb.checked }); };
@@ -196,7 +199,91 @@
     }
   }
 
-  function render() { banner(); refreshPanel(); ticks(); accountPage(); }
+
+  /* ---------- community: forum + leaderboard ---------- */
+  var openThread = null;
+  function topicName(t) {
+    if (!t || t === 'general') return L('General', 'Allgemein');
+    var m = t.match(/^(lesson|phys|refresher)-(\d+)$/);
+    if (!m) return esc(t);
+    return ({ lesson: L('Analysis lesson ', 'Analysis-Lektion '), phys: L('Physics lesson ', 'Physik-Lektion '), refresher: L('Refresher unit ', 'Repetitionseinheit ') })[m[1]] + (+m[2]);
+  }
+  function when(d) { try { return new Date(d).toLocaleDateString(DE ? 'de-CH' : 'en-GB', { day: 'numeric', month: 'short' }); } catch (e) { return ''; } }
+  function txt(s) { return esc(s).replace(/\n/g, '<br>'); }
+  function qTopic() { var m = location.search.match(/[?&]topic=([\w-]{1,40})/); return m ? m[1] : null; }
+  function forumPage() {
+    var box = document.getElementById('sh-forum'); if (!box || !sb) return;
+    var inLesson = !!box.dataset.topic, topic = box.dataset.topic || qTopic();
+    if (openThread) return threadView(box, openThread);
+    var can = !!user;
+    box.innerHTML = (inLesson ? '<p class="soon">' + L('Shared by the English and German version of this lesson. Also listed in the ', 'Gemeinsam für die englische und deutsche Version dieser Lektion. Auch im ') + '<a href="community.html?topic=' + esc(topic) + '">' + L('forum', 'Forum') + '</a>' + L('.', ' aufgeführt.') + '</p>'
+        : '<p class="sh-filter"><label>' + L('Show: ', 'Anzeigen: ') + '<select class="f-topic"><option value="">' + L('All discussions', 'Alle Diskussionen') + '</option><option value="general"' + (topic === 'general' ? ' selected' : '') + '>' + L('General', 'Allgemein') + '</option>' + (topic && topic !== 'general' ? '<option value="' + esc(topic) + '" selected>' + topicName(topic) + '</option>' : '') + '</select></label></p>') +
+      (can ? '<details class="box sh-new"><summary>' + (inLesson ? L('Write a comment or question', 'Kommentar oder Frage schreiben') : L('Start a new discussion', 'Neue Diskussion starten')) + '</summary>' +
+        (inLesson ? '<input type="hidden" class="f-title" value="">' : '<label class="sh-field"><span>' + L('Title', 'Titel') + '</span><input type="text" class="f-title" maxlength="150"></label>') +
+        '<label class="sh-field"><span>' + L('Your message', 'Deine Nachricht') + '</span><textarea class="f-body" rows="5" maxlength="5000"></textarea></label>' +
+        '<label class="sh-field sh-check"><input type="checkbox" class="f-anon"> ' + L('Post anonymously', 'Anonym posten') + '</label>' +
+        '<p><button type="button" class="start-btn f-send">' + L('Post', 'Posten') + '</button> <span class="sh-msg"></span></p></details>'
+        : '<p>' + L('Everyone can read. To write, ', 'Lesen kann jede und jeder. Zum Schreiben ') + '<a href="account.html">' + L('sign in (free, optional, you can stay anonymous)', 'melde dich an (gratis, optional, du kannst anonym bleiben)') + '</a>.</p>') +
+      '<div class="sh-threads"><p>' + L('Loading…', 'Wird geladen …') + '</p></div>';
+    var tsel = box.querySelector('.f-topic'); if (tsel) tsel.onchange = function () { history.replaceState(null, '', tsel.value ? '?topic=' + tsel.value : location.pathname); openThread = null; forumPage(); };
+    if (can) box.querySelector('.f-send').onclick = function () {
+      var t = box.querySelector('.f-title').value.trim(), b = box.querySelector('.f-body').value.trim(), msg = box.querySelector('.sh-msg');
+      if (inLesson) t = (b.split('\n')[0] || '').slice(0, 140) + ((b.split('\n')[0] || '').length > 140 ? '…' : ''); if (inLesson && t.length < 3) t = (t + '   ').slice(0, 3);
+      if (t.length < 3 || !b) { msg.textContent = L('Please write a title (3+ characters) and a message.', 'Bitte Titel (mind. 3 Zeichen) und Nachricht schreiben.'); return; }
+      sb.from('forum_threads').insert({ topic: topic || 'general', title: t, body: b, anonymous: box.querySelector('.f-anon').checked }).then(function (r) {
+        if (r.error) { msg.textContent = r.error.message; return; } track('forum', { a: 'thread' }); forumPage();
+      });
+    };
+    sb.rpc('forum_threads_list', { p_topic: topic }).then(function (r) {
+      var list = box.querySelector('.sh-threads');
+      if (r.error) { list.innerHTML = '<p>' + L('The forum is not available right now.', 'Das Forum ist gerade nicht verfügbar.') + '</p>'; return; }
+      var d = r.data || [], sel = box.querySelector('.f-topic');
+      if (sel && !topic) { var seen = {}; d.forEach(function (x) { if (x.topic && x.topic !== 'general' && !seen[x.topic]) { seen[x.topic] = 1; var o = document.createElement('option'); o.value = x.topic; o.textContent = topicName(x.topic); sel.appendChild(o); } }); }
+      list.innerHTML = d.length ? d.map(function (t) {
+        return '<a class="box sh-thread" href="#t' + t.id + '" data-id="' + t.id + '"><strong>' + esc(t.title) + '</strong><span>' + topicName(t.topic) + ' · ' + esc(t.author) + ' · ' + when(t.created_at) + ' · ' + t.replies + ' ' + L(t.replies == 1 ? 'reply' : 'replies', t.replies == 1 ? 'Antwort' : 'Antworten') + '</span></a>';
+      }).join('') : '<p>' + (inLesson ? L('No comments yet.', 'Noch keine Kommentare.') : L('No discussions here yet. Be the first!', 'Hier gibt es noch keine Diskussionen. Sei die erste Person!')) + '</p>';
+      list.querySelectorAll('.sh-thread').forEach(function (a) { a.onclick = function (e) { e.preventDefault(); openThread = d.filter(function (x) { return x.id == a.dataset.id; })[0]; forumPage(); window.scrollTo(0, box.offsetTop - 80); }; });
+    });
+  }
+  function threadView(box, t) {
+    box.innerHTML = '<p><a href="#" class="f-back">← ' + (box.dataset.topic ? L('All comments', 'Alle Kommentare') : L('All discussions', 'Alle Diskussionen')) + '</a></p>' +
+      '<article class="box sh-post"><h3>' + esc(t.title) + '</h3><p class="sh-meta">' + topicName(t.topic) + ' · ' + esc(t.author) + ' · ' + when(t.created_at) +
+      (t.mine ? ' · <button type="button" class="sh-plain f-delt">' + L('delete', 'löschen') + '</button>' : '') + '</p><p>' + txt(t.body) + '</p></article>' +
+      '<div class="sh-replies"><p>' + L('Loading…', 'Wird geladen …') + '</p></div>' +
+      (user ? '<div class="box"><label class="sh-field"><span>' + L('Your reply', 'Deine Antwort') + '</span><textarea class="f-body" rows="4" maxlength="5000"></textarea></label>' +
+        '<label class="sh-field sh-check"><input type="checkbox" class="f-anon"> ' + L('Reply anonymously', 'Anonym antworten') + '</label>' +
+        '<p><button type="button" class="start-btn f-send">' + L('Reply', 'Antworten') + '</button> <span class="sh-msg"></span></p></div>'
+        : '<p>' + L('To reply, ', 'Zum Antworten ') + '<a href="account.html">' + L('sign in', 'melde dich an') + '</a>.</p>');
+    box.querySelector('.f-back').onclick = function (e) { e.preventDefault(); openThread = null; forumPage(); };
+    var dt = box.querySelector('.f-delt');
+    if (dt) dt.onclick = function () { if (confirm(L('Delete this question and all replies?', 'Diese Frage und alle Antworten löschen?'))) sb.from('forum_threads').delete().eq('id', t.id).then(function () { openThread = null; forumPage(); }); };
+    var send = box.querySelector('.f-send');
+    if (send) send.onclick = function () {
+      var b = box.querySelector('.f-body').value.trim(), msg = box.querySelector('.sh-msg'); if (!b) return;
+      sb.from('forum_posts').insert({ thread_id: t.id, body: b, anonymous: box.querySelector('.f-anon').checked }).then(function (r) {
+        if (r.error) { msg.textContent = r.error.message; return; } track('forum', { a: 'reply' }); threadView(box, t);
+      });
+    };
+    sb.rpc('forum_posts_list', { p_thread: t.id }).then(function (r) {
+      var d = r.data || [], el = box.querySelector('.sh-replies');
+      el.innerHTML = d.map(function (p) {
+        return '<div class="box sh-post"><p class="sh-meta">' + esc(p.author) + ' · ' + when(p.created_at) + (p.mine ? ' · <button type="button" class="sh-plain f-delp" data-id="' + p.id + '">' + L('delete', 'löschen') + '</button>' : '') + '</p><p>' + txt(p.body) + '</p></div>';
+      }).join('');
+      el.querySelectorAll('.f-delp').forEach(function (b) { b.onclick = function () { if (confirm(L('Delete this reply?', 'Diese Antwort löschen?'))) sb.from('forum_posts').delete().eq('id', b.dataset.id).then(function () { threadView(box, t); }); }; });
+    });
+  }
+  function leaderboardPage() {
+    var box = document.getElementById('sh-board'); if (!box || !sb) return;
+    sb.rpc('leaderboard_list').then(function (r) {
+      var d = r.data || [];
+      box.innerHTML = (d.length ? '<table class="sh-lb"><thead><tr><th>#</th><th>' + L('Nickname', 'Spitzname') + '</th><th>' + L('Active days (last 30)', 'Aktive Tage (letzte 30)') + '</th><th>' + L('Lessons finished', 'Lektionen abgeschlossen') + '</th></tr></thead><tbody>' +
+        d.map(function (x, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(x.nickname) + '</td><td>' + x.active_days_30 + '</td><td>' + x.pages_done + '</td></tr>'; }).join('') + '</tbody></table>'
+        : '<p>' + L('Nobody has joined the leaderboard yet.', 'Noch niemand ist in der Bestenliste.') + '</p>') +
+        '<p class="soon">' + L('Only people who turn it on appear here (in ', 'Hier erscheint nur, wer es einschaltet (unter ') + '<a href="account.html">' + L('Your progress', 'Dein Fortschritt') + '</a>' + L('). Ranked by steady work, not speed: every day you tick, rate or note something counts.', '). Sortiert nach Regelmässigkeit, nicht Tempo: Jeder Tag, an dem du etwas abhakst, bewertest oder notierst, zählt.') + '</p>';
+    });
+  }
+
+  function render() { banner(); refreshPanel(); ticks(); accountPage(); forumPage(); leaderboardPage(); }
 
   /* ---------- styles ---------- */
   var css = document.createElement('style');
@@ -208,9 +295,11 @@
     '.shp-note{display:block}.shp-note span,.sh-field span{display:block;margin-bottom:.3rem}.shp-note textarea,.sh-field input[type=text]{width:100%;box-sizing:border-box;font:inherit;padding:.5rem;border:1px solid var(--rule,#ccd);border-radius:8px;background:var(--surface,#fff);color:inherit}' +
     '.shp-status{font-size:.88rem;opacity:.8;margin-bottom:0}.sh-tick{color:var(--accent,#5b5bd6);font-weight:800;margin-right:.35rem}' +
     '.sh-field{display:block;margin:1rem 0}.sh-check{display:flex;gap:.5rem;align-items:flex-start}.sh-plain{font:inherit;background:none;border:0;color:var(--accent,#5b5bd6);text-decoration:underline;cursor:pointer;padding:0}' +
+    '.sh-filter select{font:inherit;padding:.3rem;border-radius:8px;border:1px solid var(--rule,#ccd);background:var(--surface,#fff);color:inherit}.sh-new summary{cursor:pointer;font-weight:700}.sh-thread{display:block;text-decoration:none;color:inherit;margin:.6rem 0}.sh-thread strong{display:block;color:var(--accent,#5b5bd6)}.sh-thread span,.sh-meta{font-size:.85rem;opacity:.75}.sh-post h3{margin-top:0}.sh-replies .sh-post{margin:.6rem 0 .6rem 1rem}' +
+    '.sh-lb{width:100%;border-collapse:collapse}.sh-lb th,.sh-lb td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--rule,#ccd)}' +
     'button.start-btn,.start-btn{display:inline-block;border:0;cursor:pointer;font:inherit;font-weight:700;padding:.55rem 1.2rem;border-radius:999px;background:var(--accent,#5b5bd6);color:#fff!important;text-decoration:none}';
   document.head.appendChild(css);
 
-  function init() { buildPanel(); render(); if (wantSdk() || document.getElementById('sh-account')) sdk().catch(function () { status(L('Sync is unavailable right now; your progress is saved in this browser.', 'Synchronisation gerade nicht verfügbar; dein Fortschritt ist im Browser gespeichert.')); }); }
+  function init() { buildPanel(); render(); if (wantSdk() || document.getElementById('sh-account') || document.getElementById('sh-forum')) sdk().catch(function () { status(L('Sync is unavailable right now; your progress is saved in this browser.', 'Synchronisation gerade nicht verfügbar; dein Fortschritt ist im Browser gespeichert.')); }); }
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 })();
