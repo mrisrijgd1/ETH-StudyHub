@@ -74,9 +74,15 @@
 
   /* ---------- banner link ---------- */
   function banner() {
-    var a = document.querySelector('.sh-acct');
-    if (!a) return;
-    a.textContent = user ? (profile && profile.nickname ? profile.nickname : L('Account', 'Konto')) : L('Sign in', 'Anmelden');
+    var all = document.querySelectorAll('.sh-acct');
+    for (var i = 0; i < all.length; i++) bannerOne(all[i]);
+  }
+  function bannerOne(a) {
+    var nm = user ? (profile && profile.nickname ? profile.nickname : L('Account', 'Konto')) : L('Sign in', 'Anmelden');
+    var ico = user ? esc((nm.trim()[0] || '?').toUpperCase())
+      : '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.2" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2.3 14.5c.7-3 3-4.6 5.7-4.6s5 1.6 5.7 4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    a.innerHTML = '<span class="acct-full">' + esc(nm) + '</span><span class="acct-ico" aria-hidden="true">' + ico + '</span>';
+    a.setAttribute('aria-label', nm);
     a.title = user ? L('Your account', 'Dein Konto') : L('Optional: sync your progress across devices', 'Optional: Fortschritt auf allen Geräten');
   }
 
@@ -287,7 +293,7 @@
 
   /* ---------- styles ---------- */
   var css = document.createElement('style');
-  css.textContent = '@media (min-width:1100px){.sh-menu .sh-acct{margin-left:auto}.sh-menu .lang-switch{margin-left:.9rem!important}}.sh-acct{order:4;font-weight:600;text-decoration:none;font-size:.92rem;white-space:nowrap;max-width:9rem;overflow:hidden;text-overflow:ellipsis}' +
+  css.textContent = '.acct-ico{display:none}.sh-acct{order:4;font-weight:600;text-decoration:none;font-size:.92rem;white-space:nowrap;max-width:9rem;overflow:hidden;text-overflow:ellipsis}' +
     '.sh-progress{margin:2rem 0 1rem}.sh-progress .shp-h{margin-top:0}.shp-done{display:flex;gap:.5rem;align-items:center;font-weight:600;cursor:pointer}' +
     '.shp-done input{width:1.2rem;height:1.2rem}.shp-rate{margin:.8rem 0;display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center}' +
     '.shp-stars{display:flex;gap:.3rem}.shp-stars button{font:inherit;width:2.2rem;height:2.2rem;border-radius:50%;border:1px solid var(--rule,#ccd);background:none;color:inherit;cursor:pointer}' +
