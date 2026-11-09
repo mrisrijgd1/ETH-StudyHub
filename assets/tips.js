@@ -9,46 +9,34 @@
   var EN = [
     { t: 'Every lesson ends with an optional <b>For wonder</b> section: five minutes of the beautiful side of the topic, no exam pressure.' },
     { t: 'Low-energy day? Every lesson and refresher unit has a <b>bad-day version</b> at the top: a small minimum that still counts.' },
-    { q: 'Did this page help you today?', id: 'helped:' + location.pathname.split('/').pop() },
     { t: 'Having a hard time, not just with the material? <a href="help.html">Here is where to find help</a>, at ETH and beyond. You are not alone.' },
     { t: 'Stuck in a proof? The <a href="moves.html">moves library</a> lists the tricks proofs keep reusing, and when to reach for each one.' },
     { t: 'Ten minutes of <a href="flashcards.html">flashcards</a> a day keeps definitions exam-exact.' },
-    { q: 'Would you like timed mock exams?', id: 'mocks' },
     { t: 'Not sure where to start? <a href="path.html">Find your path</a> in five quick questions.' },
     { t: 'You can <a href="download.html">download everything</a> and make your own version with Claude, tuned to how you learn.' },
-    { q: 'Would you like a progress system (tick off lessons, see how far you are)?', id: 'progress' },
     { t: 'Every story has a formal twin: read the picture first, then the exact version right next to it.' },
     { t: 'The <a href="exam-map.html">exam map</a> shows what the old exams actually ask, so you know what matters most.' },
     { t: 'Does the <b>▶ Listen</b> voice sound robotic? Download a better one for free. iPhone: Settings → Accessibility → Read &amp; Speak → Voices, pick one marked Enhanced or Premium. Android: Settings → Accessibility → Text-to-speech output.' },
     { t: 'Tired eyes? Press <b>▶ Listen</b> next to a lesson’s story or For wonder heading, and your device reads it aloud.' },
-    { q: 'Would you like a forum to ask questions about each lesson?', id: 'forum' },
-    { q: 'Would you like the stories and ideas read by a proper AI voice, to listen to on the go?', id: 'audio' },
     { t: 'Feeling behind? You’re not alone. This hub was built by a student who fell behind too, and caught up in two weeks.' },
     { t: 'Nothing important is missing: every lesson says what is safe to skip, and the <a href="skipped.html">skip list</a> keeps all of it.' },
-    { q: 'Would you like lesson stories retold in a world you love (music, sport, games…)?', id: 'own-world' },
     { t: 'Every exam question in the lessons links to the original exam, so you can see it exactly as it was asked.' },
     { t: 'Thought of a feature? I’d love to hear it: <a href="' + FORM + '" target="_blank" rel="noopener">send feedback</a>.' }
   ];
   var DE = [
     { t: 'Jede Lektion endet mit einem optionalen Abschnitt <b>Zum Staunen</b>: fünf Minuten für die schöne Seite des Themas, ohne Prüfungsdruck.' },
     { t: 'Wenig Energie heute? Jede Lektion und jede Repetitionseinheit hat oben eine <b>Version für schlechte Tage</b>: ein kleines Minimum, das trotzdem zählt.' },
-    { q: 'Hat dir diese Seite heute geholfen?', id: 'helped:' + location.pathname.split('/').pop() },
     { t: 'Geht es dir gerade nicht gut, nicht nur wegen des Stoffs? <a href="help.html">Hier findest du Hilfe</a>, an der ETH und darüber hinaus. Du bist nicht allein.' },
     { t: 'Hängst du in einem Beweis? Die <a href="moves.html">Kniff-Sammlung</a> zeigt die Tricks, die Beweise immer wieder verwenden, und wann du welchen brauchst.' },
     { t: 'Zehn Minuten <a href="flashcards.html">Lernkarten</a> pro Tag, und die Definitionen sitzen prüfungsgenau.' },
-    { q: 'Hättest du gern Probeprüfungen mit Zeitlimit?', id: 'mocks' },
     { t: 'Unsicher, wo du anfangen sollst? <a href="path.html">Finde deinen Weg</a> mit fünf kurzen Fragen.' },
     { t: 'Du kannst <a href="download.html">alles herunterladen</a> und mit Claude deine eigene Version machen, passend zu deiner Art zu lernen.' },
-    { q: 'Hättest du gern ein Fortschrittssystem (Lektionen abhaken, sehen, wie weit du bist)?', id: 'progress' },
     { t: 'Jede Geschichte hat einen formalen Zwilling: zuerst das Bild, direkt daneben die exakte Version.' },
     { t: 'Die <a href="exam-map.html">Prüfungslandkarte</a> zeigt, was die alten Prüfungen wirklich fragen, damit du weisst, was am meisten zählt.' },
     { t: 'Klingt die Stimme bei <b>▶ Anhören</b> blechern? Lade gratis eine bessere herunter. iPhone: Einstellungen → Bedienungshilfen → Vorlesen &amp; Sprechen → Stimmen, eine mit „Erweitert“ oder „Premium“ wählen. Android: Einstellungen → Bedienungshilfen → Sprachausgabe.' },
     { t: 'Müde Augen? Drück <b>▶ Anhören</b> neben der Überschrift der Geschichte oder von „Zum Staunen“, und dein Gerät liest sie dir vor.' },
-    { q: 'Hättest du gern ein Forum, um Fragen zu jeder Lektion zu stellen?', id: 'forum' },
-    { q: 'Hättest du gern die Geschichten und Ideen mit einer richtigen KI-Stimme vorgelesen, zum Anhören unterwegs?', id: 'audio' },
     { t: 'Fühlst du dich im Rückstand? Du bist nicht allein. Dieser Hub wurde von jemandem gebaut, der auch zurückgefallen war und in zwei Wochen aufgeholt hat.' },
     { t: 'Nichts Wichtiges fehlt: Jede Lektion sagt, was du auslassen kannst, und die <a href="skipped.html">Auslassliste</a> hält alles davon fest.' },
-    { q: 'Hättest du gern die Geschichten in einer Welt, die du liebst (Musik, Sport, Games …)?', id: 'own-world' },
     { t: 'Jede Prüfungsaufgabe in den Lektionen verlinkt auf die Originalprüfung, damit du sie genau so siehst, wie sie gestellt wurde.' },
     { t: 'Hast du eine Idee für eine Funktion? Ich freue mich darauf: <a href="' + FORM + '" target="_blank" rel="noopener">Feedback senden</a>.' }
   ];
@@ -104,7 +92,7 @@
       NEWS.forEach(function (it) { h += '<div class="tp"><small style="opacity:.7">' + it.d.split('-').reverse().join('.') + '</small><br>' + (de ? it.de : it.en) + '</div>'; });
       h += '<h2>' + (de ? 'Wusstest du?' : 'Did you know?') + '</h2>';
       L.forEach(function (c) { if (c.t) h += '<div class="tp">' + c.t + '</div>'; });
-      h += '<h2>' + (de ? 'Kurze Fragen' : 'Quick questions') + '</h2>';
+      if (L.some(function (c) { return c.q && c.id.indexOf('helped:') !== 0; })) h += '<h2>' + (de ? 'Kurze Fragen' : 'Quick questions') + '</h2>';
       L.forEach(function (c, n) {
         if (!c.q || c.id.indexOf('helped:') === 0) return;
         var a = answered[c.id];
