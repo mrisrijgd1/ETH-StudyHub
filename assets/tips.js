@@ -56,6 +56,7 @@
   // What's new: newest first. Add an entry whenever a lesson or feature goes live (id must be unique).
   // Shown once per visitor as a "New" card, only within 21 days of its date; all entries are listed on tips.html.
   var NEWS = [
+  { id: 'phys-04', d: '2026-11-09', en: 'Physics <a href="phys-04.html">lesson 4</a> is out: rotating frames, the Coriolis force and the Foucault pendulum, with an animated carousel.', de: 'Physik-<a href="phys-04.html">Lektion 4</a> ist da: rotierende Bezugssysteme, die Corioliskraft und das Foucault-Pendel, mit animiertem Karussell.' },
   { id: 'phys-03', d: '2026-11-09', en: 'Physics <a href="phys-03.html">lesson 3</a> is out: friction, ramps, ropes, drag and the scale in a lift, with three interactive graphs.', de: 'Physik-<a href="phys-03.html">Lektion 3</a> ist da: Reibung, Rampen, Seile, Luftwiderstand und die Waage im Lift, mit drei interaktiven Grafiken.' },
   { id: 'phys-02', d: '2026-11-09', en: 'Physics <a href="phys-02.html">lesson 2</a> is out: Newton’s laws, momentum and the rocket, with graphs you can drag and play with.', de: 'Physik-<a href="phys-02.html">Lektion 2</a> ist da: Newton’sche Axiome, Impuls und Rakete, mit Grafiken zum Ziehen und Ausprobieren.' },
     { id: 'listen', d: '2026-11-07', en: '<b>▶ Listen</b> next to each lesson’s story and For wonder heading reads it aloud.', de: '<b>▶ Anhören</b> neben der Geschichte und „Zum Staunen“ jeder Lektion liest sie dir vor.' },
