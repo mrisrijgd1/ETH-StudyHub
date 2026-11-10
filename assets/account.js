@@ -220,7 +220,6 @@
   function forumPage() {
     var box = document.getElementById('sh-forum'); if (!box || !sb) return;
     var inLesson = !!box.dataset.topic, topic = box.dataset.topic || qTopic();
-    if (inLesson) return ytComments(box, topic);
     if (openThread) return threadView(box, openThread);
     var can = !!user;
     box.innerHTML = (inLesson ? '<p class="soon">' + L('Shared by the English and German version of this lesson. Also listed in the ', 'Gemeinsam für die englische und deutsche Version dieser Lektion. Auch im ') + '<a href="community.html?topic=' + esc(topic) + '">' + L('forum', 'Forum') + '</a>' + L('.', ' aufgeführt.') + '</p>'
@@ -250,67 +249,6 @@
         return '<a class="box sh-thread" href="#t' + t.id + '" data-id="' + t.id + '"><strong>' + esc(t.title) + '</strong><span>' + topicName(t.topic) + ' · ' + esc(t.author) + ' · ' + when(t.created_at) + ' · ' + t.replies + ' ' + L(t.replies == 1 ? 'reply' : 'replies', t.replies == 1 ? 'Antwort' : 'Antworten') + '</span></a>';
       }).join('') : '<p>' + (inLesson ? L('No comments yet.', 'Noch keine Kommentare.') : L('No discussions here yet. Be the first!', 'Hier gibt es noch keine Diskussionen. Sei die erste Person!')) + '</p>';
       list.querySelectorAll('.sh-thread').forEach(function (a) { a.onclick = function (e) { e.preventDefault(); openThread = d.filter(function (x) { return x.id == a.dataset.id; })[0]; forumPage(); window.scrollTo(0, box.offsetTop - 80); }; });
-    });
-  }
-
-  /* ---------- lesson comments, video-site style (Srish 2026-11-10) ---------- */
-  function initial(n) { return esc(((n || '?').trim()[0] || '?').toUpperCase()); }
-  function myName() { return profile && profile.nickname ? profile.nickname : L('You', 'Du'); }
-  function av(n, anon) { return '<span class="yt-av' + (anon ? ' yt-anon' : '') + '" aria-hidden="true">' + (anon ? '?' : initial(n)) + '</span>'; }
-  function composer(ph, btn, small) {
-    if (!user) return '<div class="yt-new' + (small ? ' yt-small' : '') + '">' + av('', true) + '<a class="yt-fake" href="account.html">' + L('Sign in to comment (you can stay anonymous)', 'Zum Kommentieren anmelden (auch anonym möglich)') + '</a></div>';
-    return '<div class="yt-new' + (small ? ' yt-small' : '') + '">' + av(myName()) + '<div class="yt-in"><textarea class="yt-ta" rows="1" maxlength="5000" placeholder="' + ph + '"></textarea>' +
-      '<div class="yt-bar" hidden><label class="yt-anonl"><input type="checkbox" class="yt-anoncb"> ' + L('Anonymous', 'Anonym') + '</label><span class="yt-msg"></span>' +
-      '<button type="button" class="yt-btn yt-cancel">' + L('Cancel', 'Abbrechen') + '</button><button type="button" class="yt-btn yt-go" disabled>' + btn + '</button></div></div></div>';
-  }
-  function wireComposer(root, onSend) {
-    var ta = root.querySelector('.yt-ta'); if (!ta) return;
-    var bar = root.querySelector('.yt-bar'), go = root.querySelector('.yt-go');
-    function grow() { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; go.disabled = !ta.value.trim(); }
-    ta.addEventListener('focus', function () { bar.hidden = false; });
-    ta.addEventListener('input', grow);
-    root.querySelector('.yt-cancel').onclick = function () { ta.value = ''; grow(); bar.hidden = true; ta.blur(); if (root.dataset.temp) root.remove(); };
-    go.onclick = function () { var b = ta.value.trim(); if (!b) return; go.disabled = true; onSend(b, root.querySelector('.yt-anoncb').checked, function (err) { root.querySelector('.yt-msg').textContent = err || ''; go.disabled = false; }); };
-  }
-  function cmt(c, isReply) {
-    var anon = c.author === 'anonymous';
-    return '<div class="yt-c' + (isReply ? ' yt-r' : '') + '" data-id="' + c.id + '">' + av(c.author, anon) + '<div class="yt-body"><div class="yt-head"><strong>' + (anon ? L('anonymous', 'anonym') : esc(c.author)) + '</strong> <span>' + when(c.created_at) + '</span></div>' +
-      '<div class="yt-text">' + txt(c.body) + '</div><div class="yt-acts">' + (isReply ? '' : '<button type="button" class="yt-link yt-reply">' + L('Reply', 'Antworten') + '</button>') +
-      (c.mine ? '<button type="button" class="yt-link yt-del">' + L('Delete', 'Löschen') + '</button>' : '') + '</div>' +
-      (isReply ? '' : '<div class="yt-replies"></div>' + (+c.replies ? '<button type="button" class="yt-link yt-more">▾ ' + c.replies + ' ' + L(c.replies == 1 ? 'reply' : 'replies', c.replies == 1 ? 'Antwort' : 'Antworten') + '</button>' : '')) + '</div></div>';
-  }
-  function ytComments(box, topic) {
-    box.innerHTML = '<p class="yt-count">' + L('Loading…', 'Wird geladen …') + '</p>' + composer(L('Add a comment or question…', 'Kommentar oder Frage hinzufügen …'), L('Comment', 'Kommentieren')) + '<div class="yt-list"></div>' +
-      '<p class="yt-note">' + L('Shared by the English and German version of this lesson. Also in the ', 'Gemeinsam für die englische und deutsche Version. Auch im ') + '<a href="community.html?topic=' + esc(topic) + '">' + L('forum', 'Forum') + '</a>.</p>';
-    wireComposer(box.querySelector('.yt-new'), function (b, anon, done) {
-      var t = (b.split('\n')[0] || '').slice(0, 140); if (t.length < 3) t = (t + '   ').slice(0, 3);
-      sb.from('forum_threads').insert({ topic: topic, title: t, body: b, anonymous: anon }).then(function (r) { if (r.error) return done(r.error.message); track('forum', { a: 'thread' }); ytComments(box, topic); });
-    });
-    sb.rpc('forum_threads_list', { p_topic: topic }).then(function (r) {
-      var cnt = box.querySelector('.yt-count'), list = box.querySelector('.yt-list');
-      if (r.error) { cnt.textContent = L('Comments are not available right now.', 'Kommentare sind gerade nicht verfügbar.'); return; }
-      var d = r.data || [];
-      cnt.textContent = d.length ? d.length + ' ' + L(d.length == 1 ? 'comment' : 'comments', d.length == 1 ? 'Kommentar' : 'Kommentare') : L('No comments yet. Questions are welcome!', 'Noch keine Kommentare. Fragen sind willkommen!');
-      list.innerHTML = d.map(function (c) { return cmt(c); }).join('');
-      list.querySelectorAll('.yt-c').forEach(function (el) {
-        var id = +el.dataset.id, c = d.filter(function (x) { return x.id == id; })[0], rep = el.querySelector('.yt-replies'), more = el.querySelector('.yt-more');
-        function loadReplies() {
-          sb.rpc('forum_posts_list', { p_thread: id }).then(function (q) {
-            rep.innerHTML = (q.data || []).map(function (p) { return cmt(p, true); }).join(''); if (more) more.hidden = true;
-            rep.querySelectorAll('.yt-del').forEach(function (b) { b.onclick = function () { var pid = b.closest('.yt-c').dataset.id; if (confirm(L('Delete this reply?', 'Diese Antwort löschen?'))) sb.from('forum_posts').delete().eq('id', pid).then(loadReplies); }; });
-          });
-        }
-        if (more) more.onclick = loadReplies;
-        var del = el.querySelector(':scope > .yt-body > .yt-acts .yt-del');
-        if (del) del.onclick = function () { if (confirm(L('Delete this comment and its replies?', 'Diesen Kommentar und seine Antworten löschen?'))) sb.from('forum_threads').delete().eq('id', id).then(function () { ytComments(box, topic); }); };
-        el.querySelector('.yt-reply').onclick = function () {
-          if (el.querySelector('.yt-new')) return el.querySelector('.yt-ta') && el.querySelector('.yt-ta').focus();
-          var w = document.createElement('div'); w.innerHTML = composer(L('Add a reply…', 'Antwort hinzufügen …'), L('Reply', 'Antworten'), true);
-          var n = w.firstChild; n.dataset.temp = 1; rep.parentNode.insertBefore(n, rep);
-          wireComposer(n, function (b, anon, done) { sb.from('forum_posts').insert({ thread_id: id, body: b, anonymous: anon }).then(function (q) { if (q.error) return done(q.error.message); track('forum', { a: 'reply' }); n.remove(); loadReplies(); }); });
-          var ta = n.querySelector('.yt-ta'); if (ta) ta.focus();
-        };
-      });
     });
   }
   function threadView(box, t) {
@@ -364,7 +302,6 @@
     '.shp-status{font-size:.88rem;opacity:.8;margin-bottom:0}.sh-tick{color:var(--accent,#5b5bd6);font-weight:800;margin-right:.35rem}' +
     '.sh-field{display:block;margin:1rem 0}.sh-check{display:flex;gap:.5rem;align-items:flex-start}.sh-plain{font:inherit;background:none;border:0;color:var(--accent,#5b5bd6);text-decoration:underline;cursor:pointer;padding:0}' +
     '.sh-filter select{font:inherit;padding:.3rem;border-radius:8px;border:1px solid var(--rule,#ccd);background:var(--surface,#fff);color:inherit}.sh-new summary{cursor:pointer;font-weight:700}.sh-thread{display:block;text-decoration:none;color:inherit;margin:.6rem 0}.sh-thread strong{display:block;color:var(--accent,#5b5bd6)}.sh-thread span,.sh-meta{font-size:.85rem;opacity:.75}.sh-post h3{margin-top:0}.sh-replies .sh-post{margin:.6rem 0 .6rem 1rem}' +
-'.sh-comments{margin-top:2.5rem}.yt-count{font-weight:600;margin:.4rem 0 1rem}.yt-new{display:flex;gap:.8rem;align-items:flex-start;margin:0 0 1.6rem}.yt-in{flex:1;min-width:0}.yt-ta{display:block;width:100%;box-sizing:border-box;font:inherit;color:inherit;background:none;border:0;border-bottom:1px solid var(--rule,#ccd);padding:.35rem 0;resize:none;overflow:hidden;outline:none;min-height:2rem}.yt-ta:focus{border-bottom:2px solid var(--ink,#222);padding-bottom:calc(.35rem - 1px)}.yt-fake{flex:1;display:block;border-bottom:1px solid var(--rule,#ccd);padding:.35rem 0;color:var(--muted,#777);text-decoration:none}.yt-fake:hover{color:var(--accent)}.yt-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:.5rem;margin-top:.6rem}.yt-bar[hidden]{display:none}.yt-anonl{margin-right:auto;font-size:.9rem;display:flex;gap:.4rem;align-items:center;color:var(--muted)}.yt-msg{font-size:.85rem;color:var(--k-c,#b4475f)}.yt-btn{font:inherit;font-weight:600;font-size:.92rem;border:0;border-radius:999px;padding:.45rem 1rem;cursor:pointer;background:none;color:inherit}.yt-btn:hover{background:var(--accent-soft)}.yt-go{background:var(--accent);color:var(--on,#fff)}.yt-go:hover{background:var(--accent);filter:brightness(1.08)}.yt-go:disabled{background:var(--accent-soft);color:var(--muted);cursor:default;filter:none}.yt-av{flex:none;width:2.4rem;height:2.4rem;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-family:var(--font-display);font-weight:700;font-size:1.1rem}.yt-anon{color:var(--muted)}.yt-small .yt-av,.yt-r .yt-av{width:1.8rem;height:1.8rem;font-size:.9rem}.yt-small{margin:.6rem 0 .4rem}.yt-c{display:flex;gap:.8rem;margin:0 0 1.3rem}.yt-body{flex:1;min-width:0}.yt-head{font-size:.9rem}.yt-head span{color:var(--muted);font-size:.85rem;margin-left:.3rem}.yt-text{margin:.15rem 0 .2rem;overflow-wrap:anywhere}.yt-acts{display:flex;gap:1rem}.yt-link{font:inherit;font-size:.85rem;font-weight:600;background:none;border:0;padding:.2rem 0;cursor:pointer;color:var(--muted)}.yt-link:hover{color:var(--ink)}.yt-more{color:var(--accent);margin-top:.2rem}.yt-replies .yt-c{margin:.8rem 0 0}.yt-note{font-size:.85rem;color:var(--muted);margin-top:1.5rem}' +
     '.sh-lb{width:100%;border-collapse:collapse}.sh-lb th,.sh-lb td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--rule,#ccd)}' +
     'button.start-btn,.start-btn{display:inline-block;border:0;cursor:pointer;font:inherit;font-weight:700;padding:.55rem 1.2rem;border-radius:999px;background:var(--accent,#5b5bd6);color:#fff!important;text-decoration:none}';
   document.head.appendChild(css);
