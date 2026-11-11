@@ -6,7 +6,7 @@ class UmamiTracker {
     constructor(options = {}) {
         this.options = {
             // Scroll tracking options
-            scrollDepthThresholds: [25, 50, 75, 90],
+            scrollDepthThresholds: [50, 90], // fewer events (free plan: 100k/month)
             scrollDebounceMs: 100,
 
             // Time tracking options
@@ -131,9 +131,6 @@ class UmamiTracker {
             this.state.lastActivity = Date.now();
             if (this.state.isIdle) {
                 this.state.isIdle = false;
-                this.track('user-active', {
-                    idleDuration: Math.round((Date.now() - this.state.lastActivity) / 1000)
-                });
             }
         };
 
@@ -141,9 +138,6 @@ class UmamiTracker {
             const timeSinceActivity = Date.now() - this.state.lastActivity;
             if (timeSinceActivity > this.options.idleTimeout && !this.state.isIdle) {
                 this.state.isIdle = true;
-                this.track('user-idle', {
-                    timeBeforeIdle: Math.round(timeSinceActivity / 1000)
-                });
             }
         };
 
@@ -269,7 +263,10 @@ class UmamiTracker {
 
     // Page Exit Tracking
     setupPageExitTracking() {
+        let exitSent = false;
         const trackPageExit = () => {
+            if (exitSent) return; // once per page view, not on every tab switch
+            exitSent = true;
             const totalTime = Math.round((Date.now() - this.state.startTime) / 1000);
             const maxScroll = Math.max(...this.state.scrollDepthTracked, 0);
 
@@ -415,4 +412,4 @@ if (typeof define === 'function' && define.amd) {
 // Global export
 window.UmamiTracker = UmamiTracker;
 // StudyHub: start the tracker on every page (time on page every 30 s while visible, idle after 5 min without input, scroll depth, clicks, page exit).
-window.umamiTracker = window.umamiTracker || new UmamiTracker({ heartbeatInterval: 30000, idleTimeout: 300000 });
+window.umamiTracker = window.umamiTracker || new UmamiTracker({ heartbeatInterval: 300000, idleTimeout: 300000 });
