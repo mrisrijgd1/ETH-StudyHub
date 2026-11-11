@@ -6,7 +6,7 @@ class UmamiTracker {
     constructor(options = {}) {
         this.options = {
             // Scroll tracking options
-            scrollDepthThresholds: [50, 90], // fewer events (free plan: 100k/month)
+            scrollDepthThresholds: [], // scroll tracking off (Srish 2026-11-11: only visitors and time matter)
             scrollDebounceMs: 100,
 
             // Time tracking options
