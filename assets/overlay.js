@@ -71,3 +71,41 @@
     });
   });
 })();
+
+/* "Save as PDF" button on lessons, refresher units and exercise sheets: prints a clean, light version
+   with every solution and hint unfolded (the browser's print dialog offers "Save as PDF"). */
+(function () {
+  var page = (location.pathname.split('/').pop() || '');
+  if (!/^(lesson|phys|refresher|serie)-[a-z0-9]+\.html$/.test(page) || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html') return;
+  var DE = document.documentElement.lang === 'de';
+  function go() {
+    var main = document.querySelector('main'); if (!main) return;
+    var h1 = main.querySelector('h1'); if (!h1) return;
+    var css = document.createElement('style');
+    css.textContent = '.sh-pdf{font:inherit;font-size:.88rem;padding:.3rem .9rem;border-radius:999px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;margin:.3rem 0 .6rem}' +
+      '@media print{.sh-bar,.sh-side,#sh-tip,.sh-listen,.sh-comments,.sh-progress,.sh-pdf,.badday,footer,nav.toc,iframe{display:none!important}' +
+      'body,main{background:#fff!important;color:#000!important}main{max-width:none!important;margin:0!important;padding:0!important}' +
+      'details{border:none!important}details>summary{list-style:none;font-weight:600}details>summary::-webkit-details-marker{display:none}' +
+      '.box,.exam,.story,details{break-inside:auto}h2,h3{break-after:avoid}mjx-container[display="true"]{overflow:visible!important}a{color:inherit!important;text-decoration:none!important}}';
+    document.head.appendChild(css);
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'sh-pdf';
+    b.textContent = DE ? 'Als PDF speichern (mit allen Lösungen)' : 'Save as PDF (with all solutions)';
+    b.title = DE ? 'Öffnet den Druckdialog; wähle dort „Als PDF speichern“.' : 'Opens the print dialog; choose “Save as PDF” there.';
+    h1.insertAdjacentElement('afterend', b);
+    var closed = [], theme = null, on = false;
+    function before() {
+      if (on) return; on = true;
+      closed = [].filter.call(document.querySelectorAll('details'), function (d) { return !d.open; });
+      closed.forEach(function (d) { d.open = true; });
+      theme = document.documentElement.getAttribute('data-theme'); document.documentElement.setAttribute('data-theme', 'light');
+    }
+    function after() {
+      if (!on) return; on = false;
+      closed.forEach(function (d) { d.open = false; }); closed = [];
+      if (theme == null) document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', theme);
+    }
+    window.addEventListener('beforeprint', before); window.addEventListener('afterprint', after);
+    b.onclick = function () { before(); setTimeout(function () { window.print(); }, 300); };
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+})();
