@@ -24,7 +24,7 @@ jobs:
         env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
         run: |
           curl -sf -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" "https://api.supabase.com/v1/projects/$REF/api-keys?reveal=true" > /tmp/keys.json
-          K=$(python3 -c "import json;ks=json.load(open('/tmp/keys.json'));c=[k['api_key'] for k in ks if k.get('type')=='secret' and k.get('api_key')]+[k['api_key'] for k in ks if k.get('name')=='service_role']; print(c[0])")
+          K=$(python3 -c "import json;ks=json.load(open('/tmp/keys.json'));c=[k['api_key'] for k in ks if k.get('name')=='service_role' and k.get('api_key')]+[k['api_key'] for k in ks if k.get('type')=='secret' and k.get('api_key')]; print(c[0])")
           rm /tmp/keys.json
           echo "::add-mask::$K"
           echo "SB_KEY=$K" >> "$GITHUB_ENV"

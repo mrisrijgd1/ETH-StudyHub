@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 OUT, BUCKET = sys.argv[1], sys.argv[2]
 URL, KEY = os.environ['SUPABASE_URL'].rstrip('/'), os.environ['SB_KEY']
-H = {'apikey': KEY, 'Authorization': 'Bearer ' + KEY}
+H = {'apikey': KEY, **({'Authorization': 'Bearer ' + KEY} if KEY.startswith('eyJ') else {})}  # new sb_secret_ keys go in apikey only
 
 def req(method, path, data=None, ctype='application/octet-stream', extra=None):
     r = urllib.request.Request(URL + path, data=data, method=method, headers={**H, 'Content-Type': ctype, **(extra or {})})
