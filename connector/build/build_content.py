@@ -15,7 +15,7 @@ SITE = 'https://mrisrijgd1.github.io/ETH-StudyHub/'
 os.makedirs(OUT, exist_ok=True)
 
 LOCK_SUMMARY = re.compile(r"^(solution|lösung|the proof and the grader|the proof in one piece|the mistake|full solution|musterlösung)", re.I)
-SKIP_PAGES = {'design-previews.html', 'final-preview.html', 'pdf.html', 'script.html', 'phys-script.html', 'account.html',
+SKIP_PAGES = {'mock.html', 'design-previews.html', 'final-preview.html', 'pdf.html', 'script.html', 'phys-script.html', 'account.html',
               'community.html', 'download.html', 'help.html', 'tips.html', 'path.html', 'index.html', 'more.html', 'my.html', 'connect.html'}
 
 def page_kind(f):
