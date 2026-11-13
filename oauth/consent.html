@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Connect your AI</title>
+<style>
+:root{--bg:#15120f;--surface:#1e1a15;--ink:#e6ddcd;--head:#e0c48e;--muted:#a89c89;--rule:#36302a;--accent:#86b394;--on:#10150f;color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--bg:#ebe2d4;--surface:#f5efe5;--ink:#2c251c;--head:#263a2e;--muted:#6f6350;--rule:#d6c8b2;--accent:#2f5a42;--on:#f8f4ea;color-scheme:light}}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 "EB Garamond",Georgia,serif;display:flex;justify-content:center}
+main{max-width:34rem;width:100%;padding:3rem 16px;box-sizing:border-box}
+h1{color:var(--head);font-size:2rem;margin:.2rem 0 1rem;line-height:1.2}.eyebrow{font:600 .8rem Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:1rem 1.2rem;margin:1rem 0}
+ul{padding-left:1.2rem}button{font:600 1rem Inter,system-ui,sans-serif;padding:.65rem 1.4rem;border-radius:999px;border:1px solid var(--accent);cursor:pointer;margin:.3rem .5rem .3rem 0}
+.yes{background:var(--accent);color:var(--on)}.no{background:none;color:var(--accent)}.muted{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<main id="c">
+<span class="eyebrow">StudyHub</span>
+<h1 id="t">Connect your AI</h1>
+<p id="m">Loading…</p>
+</main>
+<script src="../assets/supabase-2.118.js"></script>
+<script>
+(function () {
+  var DE = /^de/i.test(navigator.language || '');
+  function L(en, de) { return DE ? de : en; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var main = document.getElementById('c');
+  function show(title, html) { main.innerHTML = '<span class="eyebrow">StudyHub</span><h1>' + title + '</h1>' + html; }
+  var params = new URLSearchParams(location.search);
+  var id = params.get('authorization_id');
+  if (id) { try { sessionStorage.setItem('sh-oauth-id', id); } catch (e) {} }
+  else { try { id = sessionStorage.getItem('sh-oauth-id'); } catch (e) {} }
+  if (!id) { show(L('Nothing to connect', 'Nichts zu verbinden'), '<p>' + L('This page opens when you add the StudyHub connector in your AI. ', 'Diese Seite öffnet sich, wenn du den StudyHub-Connector in deiner KI hinzufügst. ') + '<a href="../connect.html">' + L('How to add it', 'So fügst du ihn hinzu') + '</a>.</p>'); return; }
+  var sb = supabase.createClient('https://qgntwqqmpdiwexnwsmnm.supabase.co', 'sb_publishable_Kox04-HlRIieoQbhDlqSuw_ko2783NR',
+    { auth: { persistSession: true, detectSessionInUrl: true, storageKey: 'sb-qgntwqqmpdiwexnwsmnm-auth-token' } });
+  function signInBox() {
+    show(L('Sign in to StudyHub', 'Bei StudyHub anmelden'), '<p>' + L('Your AI wants to connect to your StudyHub account. Sign in first (free, with Google). You can stay anonymous on the site.', 'Deine KI möchte sich mit deinem StudyHub-Konto verbinden. Melde dich zuerst an (gratis, mit Google). Auf der Seite kannst du anonym bleiben.') + '</p>' +
+      '<button class="yes" id="g">' + L('Sign in with Google', 'Mit Google anmelden') + '</button>');
+    document.getElementById('g').onclick = function () {
+      sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname + '?authorization_id=' + encodeURIComponent(id) } });
+    };
+  }
+  sb.auth.getSession().then(function (r) {
+    if (!r.data || !r.data.session) return signInBox();
+    return sb.auth.oauth.getAuthorizationDetails(id).then(function (d) {
+      if (d.error) {
+        show(L('Something went wrong', 'Etwas ist schiefgelaufen'), '<p>' + esc(d.error.message) + '</p><p class="muted">' + L('The request may have expired (10 minutes). Go back to your AI and connect again.', 'Die Anfrage ist vielleicht abgelaufen (10 Minuten). Geh zurück zu deiner KI und verbinde neu.') + '</p>');
+        return;
+      }
+      var x = d.data;
+      if (x.redirect_url && !x.authorization_id) { location.assign(x.redirect_url); return; }
+      var name = (x.client && (x.client.name || x.client.client_name)) || L('Your AI', 'Deine KI');
+      show(L('Connect ', 'Verbinde ') + esc(name) + L(' to StudyHub?', ' mit StudyHub?'),
+        '<div class="box"><p><strong>' + esc(name) + '</strong> ' + L('will be able to:', 'kann dann:') + '</p><ul>' +
+        '<li>' + L('read StudyHub lessons, exercises, old exams, the scripts and the private library', 'StudyHub-Lektionen, Übungen, alte Prüfungen, die Skripte und die private Bibliothek lesen') + '</li>' +
+        '<li>' + L('give you hints one at a time, and solutions only after your attempt', 'dir Tipps einzeln geben, und Lösungen erst nach deinem Versuch') + '</li>' +
+        '<li>' + L('read and change your own data: progress, My StudyHub (plan, notes, questions, flashcards), marks, mocks and design', 'deine eigenen Daten lesen und ändern: Fortschritt, Mein StudyHub (Plan, Notizen, Fragen, Lernkarten), Resultate, Probeprüfungen und Design') + '</li></ul>' +
+        '<p class="muted">' + L('Every change is versioned and can be undone on ', 'Jede Änderung wird versioniert und kann rückgängig gemacht werden auf ') + '<a href="../my.html">' + L('My StudyHub', 'Mein StudyHub') + '</a>. ' + L('The shared lessons can never be changed by your AI. Signed in as ', 'Die gemeinsamen Lektionen kann deine KI nie ändern. Angemeldet als ') + esc(x.user && x.user.email) + '.</p></div>' +
+        '<button class="yes" id="ok">' + L('Allow', 'Erlauben') + '</button><button class="no" id="no">' + L('Deny', 'Ablehnen') + '</button>');
+      document.getElementById('ok').onclick = function () { this.disabled = true; sb.auth.oauth.approveAuthorization(id).then(done); };
+      document.getElementById('no').onclick = function () { this.disabled = true; sb.auth.oauth.denyAuthorization(id).then(done); };
+    });
+  }).catch(function (e) { show(L('Something went wrong', 'Etwas ist schiefgelaufen'), '<p>' + esc(e && e.message) + '</p>'); });
+  function done(r) {
+    try { sessionStorage.removeItem('sh-oauth-id'); } catch (e) {}
+    if (r && r.error) { show(L('Something went wrong', 'Etwas ist schiefgelaufen'), '<p>' + esc(r.error.message) + '</p>'); return; }
+    show(L('Done', 'Fertig'), '<p>' + L('Going back to your AI…', 'Zurück zu deiner KI …') + '</p>');
+  }
+})();
+</script>
+</body>
+</html>

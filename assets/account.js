@@ -10,6 +10,7 @@
   var BASE = (function () { var s = document.querySelector('script[src*="assets/account.js"]'); return s ? s.getAttribute('src').replace(/account\.js.*$/, '') : 'assets/'; })();
   var ROOT = BASE.replace(/assets\/$/, '');           // '' or '../'
   function L(en, de) { return DE ? de : en; }
+  (function () { var o = document.createElement('script'); o.src = BASE + 'overlay.js'; document.head.appendChild(o); })(); // personal design overlay
   function track(n, d) { try { window.umami && umami.track(n, d || {}); } catch (e) {} }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
@@ -351,7 +352,8 @@
     });
   }
 
-  function render() { banner(); refreshPanel(); ticks(); accountPage(); forumPage(); leaderboardPage(); }
+  function render() { banner(); refreshPanel(); ticks(); accountPage(); forumPage(); leaderboardPage();
+    window.SH = { sb: sb, user: user, signIn: signIn, sdk: sdk, L: L, esc: esc }; try { document.dispatchEvent(new Event('sh-auth')); } catch (e) {} }
 
   /* ---------- styles ---------- */
   var css = document.createElement('style');
@@ -369,6 +371,6 @@
     'button.start-btn,.start-btn{display:inline-block;border:0;cursor:pointer;font:inherit;font-weight:700;padding:.55rem 1.2rem;border-radius:999px;background:var(--accent,#5b5bd6);color:#fff!important;text-decoration:none}';
   document.head.appendChild(css);
 
-  function init() { buildPanel(); render(); if (wantSdk() || document.getElementById('sh-account') || document.getElementById('sh-forum')) sdk().catch(function () { status(L('Sync is unavailable right now; your progress is saved in this browser.', 'Synchronisation gerade nicht verfügbar; dein Fortschritt ist im Browser gespeichert.')); }); }
+  function init() { buildPanel(); render(); if (wantSdk() || document.getElementById('sh-account') || document.getElementById('sh-forum') || document.getElementById('sh-my') || document.getElementById('sh-consent')) sdk().catch(function () { status(L('Sync is unavailable right now; your progress is saved in this browser.', 'Synchronisation gerade nicht verfügbar; dein Fortschritt ist im Browser gespeichert.')); }); }
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 })();
