@@ -1,0 +1,61 @@
+# Deploys the StudyHub connector (MCP server) to Supabase and refreshes its content index.
+# Needs ONE repository secret: SUPABASE_ACCESS_TOKEN (a Supabase personal access token; never paste it anywhere else).
+# Runs on every push to main (so new lessons reach the connector) and by hand (Actions -> Connector deploy -> Run workflow).
+name: Connector deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency: { group: connector-deploy, cancel-in-progress: false }
+permissions: { contents: read }
+env:
+  REF: qgntwqqmpdiwexnwsmnm
+  SUPABASE_URL: https://qgntwqqmpdiwexnwsmnm.supabase.co
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the secret
+        env: { T: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+        run: test -n "$T" || { echo "::error::Add the repository secret SUPABASE_ACCESS_TOKEN first."; exit 1; }
+      - name: Get the project's server key (masked)
+        env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+        run: |
+          curl -sf -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" "https://api.supabase.com/v1/projects/$REF/api-keys?reveal=true" > /tmp/keys.json
+          K=$(python3 -c "import json;ks=json.load(open('/tmp/keys.json'));c=[k['api_key'] for k in ks if k.get('type')=='secret' and k.get('api_key')]+[k['api_key'] for k in ks if k.get('name')=='service_role']; print(c[0])")
+          rm /tmp/keys.json
+          echo "::add-mask::$K"
+          echo "SB_KEY=$K" >> "$GITHUB_ENV"
+      - name: Database (tables, history, private buckets)
+        env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+        run: |
+          for f in connector/sql/*.sql; do
+            echo "running $f"
+            python3 -c "import json,sys;print(json.dumps({'query':open(sys.argv[1]).read()}))" "$f" > /tmp/q.json
+            code=$(curl -s -o /tmp/r.txt -w '%{http_code}' -X POST -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" --data @/tmp/q.json "https://api.supabase.com/v1/projects/$REF/database/query")
+            echo "status $code"; head -c 600 /tmp/r.txt; echo
+            test "$code" -lt 300
+          done
+      - name: Check the OAuth server settings (prints only the OAuth switches)
+        env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+        run: |
+          curl -sf -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" "https://api.supabase.com/v1/projects/$REF/config/auth" \
+            | python3 -c "import json,sys;d=json.load(sys.stdin);print({k:v for k,v in d.items() if k.startswith('oauth_server') or k in ('site_url','uri_allow_list','jwt_exp')})" || echo "could not read auth config"
+      - name: Deploy the server
+        env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+        run: npx -y supabase@2.122.1 functions deploy studyhub-mcp --project-ref "$REF" --no-verify-jwt --use-api --workdir connector
+      - name: Build the content index
+        run: |
+          sudo apt-get -qq update && sudo apt-get -qq install -y poppler-utils >/dev/null
+          pip install -q beautifulsoup4==4.12.3
+          python3 connector/build/build_content.py . /tmp/connector-out --images
+      - name: Upload the content (only changed files)
+        run: python3 connector/build/upload.py /tmp/connector-out connector
+      - name: Smoke test
+        run: |
+          curl -s "$SUPABASE_URL/functions/v1/studyhub-mcp/.well-known/oauth-protected-resource"; echo
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' "$SUPABASE_URL/functions/v1/studyhub-mcp")
+          echo "unauthenticated call -> $code (401 expected)"; test "$code" = 401
+          curl -s "$SUPABASE_URL/.well-known/oauth-authorization-server/auth/v1" | head -c 800; echo
