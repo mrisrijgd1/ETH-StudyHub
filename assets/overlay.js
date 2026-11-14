@@ -86,7 +86,7 @@
       '@media print{.sh-bar,.sh-side,#sh-tip,.sh-listen,.sh-comments,.sh-progress,.sh-pdf,.badday,footer,nav.toc,iframe{display:none!important}' +
       'body,main{background:#fff!important;color:#000!important}main{max-width:none!important;margin:0!important;padding:0!important}' +
       'details{border:none!important}details>summary{list-style:none;font-weight:600}details>summary::-webkit-details-marker{display:none}' +
-      '.box,.exam,.story,details{break-inside:auto}h2,h3{break-after:avoid}mjx-container[display="true"]{overflow:visible!important}a{color:inherit!important;text-decoration:none!important}}';
+      '.box,.exam,.story,details{break-inside:auto}h2,h3{break-after:avoid}mjx-container[display="true"]{overflow:visible!important}mjx-container svg g[stroke]{stroke:none!important}a{color:inherit!important;text-decoration:none!important}}';
     document.head.appendChild(css);
     var b = document.createElement('button'); b.type = 'button'; b.className = 'sh-pdf';
     b.textContent = DE ? 'Als PDF speichern (mit allen Lösungen)' : 'Save as PDF (with all solutions)';
