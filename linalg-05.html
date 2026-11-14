@@ -6,7 +6,7 @@
 <meta property="og:title" content="Lin Alg 5: Vector spaces">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
 <script defer src="assets/umami-kit.js?v=79d39d59"></script>
-<script defer src="assets/tips.js?v=7a6bbbc5"></script>
+<script defer src="assets/tips.js?v=89594c5a"></script>
 <script defer src="assets/listen.js?v=427792c7"></script>
 <script defer src="assets/account.js?v=e8f9a658"></script>
 <script>try{var t=localStorage.getItem("sh-theme");document.documentElement.setAttribute("data-theme",t||"dark");if(localStorage.getItem("sh-side")==="0")document.documentElement.classList.add("sh-noside")}catch(e){}</script>
@@ -239,68 +239,191 @@ a.subject:hover strong { text-decoration: underline; }
 
 <style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}</style>
 <header>
-<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 5 (draft)</span>
-<h1>Vector spaces: the axioms and a zoo of examples</h1>
-<p class="lead">Halbeisen's §3 (notes pp. 14–17). A vector space is a field acting on an abelian group. You'll learn the four axioms, the first consequences (Lemma 3.0), why $\mathbb Q(\sqrt2)$ is a field, and the standard examples: $K^n$, matrices $M_{m\times n}(K)$ and the sequence space $S(K)$.</p>
+<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 5</span>
+<h1>The realm of arrows: vector spaces</h1>
+<p class="lead">A vector space is an abelian group that a field can act on. You'll learn the eight axioms, prove the arithmetic rules that follow from them, and meet the standard examples: $K^n$, functions, sequences, polynomials, matrices, and even a power set. Serie 2 and Quiz 2 are exactly this lesson.</p>
 </header>
-<details class="toc" open><summary>Contents</summary><div><p><a href="#words">Words</a> · <a href="#s1">1 Definition</a> · <a href="#s2">2 Lemma 3.0</a> · <a href="#s3">3 Fields</a> · <a href="#s4">4 Vector spaces</a> · <a href="#ex">Exercises</a> · <a href="#done">You're done when</a></p></div></details>
-<div class="box"><p><strong>Script.</strong> Halbeisen's notes Part II “Vektorräume”, §3 “Definitionen und Beispiele”, pages 14–17 (typed copy by the Linear Algebra group). Previous: <a href="linalg-04.html">Lesson 4</a>. Group and field: <a href="linalg-01.html">Lesson 1</a>.</p></div>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+<dt>Covers</dt><dd>Script EN 2023, start of Chapter 2 (pp. 33–34: Definition 2.0.1, Lemma 2.0.2, Example 2.0.3, Note 2.0.4) and the example zoo of §2.1 (pp. 37–41: sequence spaces, Example 2.1.12, function spaces $K^S$, polynomial spaces, matrices, Example 2.1.23).</dd>
+<dt>Time</dt><dd>About 75 minutes.</dd>
+<dt>You're done when</dt><dd>you can (1) list the axioms V1–V8 and say which addition and which multiplication each symbol means, (2) prove Lemma 2.0.2 (c), (e), (g) from the exam boxes (Serie 2, Aufgabe 10), (3) show that a set of functions, sequences or polynomials is a vector space by checking the axioms pointwise (Serie 2, Aufgaben 11, 12, 14; exam HS18), and (4) decide for a group $V$ and a field $K$ whether $V$ is a vector space over $K$ (Quiz 2).</dd>
+<dt>Script</dt><dd>Main: Script EN 2023 (pages as above). Lecture: Halbeisen's notes Part II, §3 “Definitionen und Beispiele” (pp. 14–17), where the rules of Lemma 2.0.2 are Lemma 3.0 and the axioms are labelled differently (see section 1).</dd>
+</dl>
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Every later topic (span, bases, dimension, linear maps) lives inside a vector space, and “show that $V$ is a $K$-vector space” is a classic first exam part: HS18, Aufgabe 2(a) gives 6 points for showing that all maps $M\to K$ form a $K$-vector space. It is Exercise 2 below. Quiz 2 (four pairs $V,K$: vector space or not?) is Exercise 1, with the official reasoning.</p></div>
+
+<h2 id="recap">Recap of lesson 4 (5 min)</h2>
+<p>In a ring, $0\cdot a=0$, because $0\cdot a=(0+0)\cdot a=0\cdot a+0\cdot a$, and then you cancel. Check: which axiom lets you “cancel” $0\cdot a$ from $0\cdot a=0\cdot a+0\cdot a$?</p>
+<details><summary>Answer</summary><div><p>Add the additive inverse $-(0\cdot a)$ on both sides and use associativity of $+$: $0=0\cdot a-0\cdot a=(0\cdot a+0\cdot a)-0\cdot a=0\cdot a+(0\cdot a-0\cdot a)=0\cdot a$. Section 2 does the same thing for vectors.</p></div></details>
 
 <h2 id="words">Words for this lesson · Fachbegriffe</h2>
-<table><tr><th>English</th><th>German</th></tr>
-<tr><td>vector space over $K$</td><td>Vektorraum (VR) über $K$, $K$-Vektorraum</td></tr><tr><td>scalar multiplication</td><td>Skalarmultiplikation</td></tr>
-<tr><td>vector / scalar</td><td>Vektor / Skalar</td></tr><tr><td>zero space</td><td>Nullraum</td></tr>
-<tr><td>subfield</td><td>Unterkörper</td></tr><tr><td>coordinate space $K^n$</td><td>Koordinatenraum</td></tr>
-<tr><td>row / column vector</td><td>Zeilenvektor / Spaltenvektor</td></tr><tr><td>sequence space</td><td>Folgenraum</td></tr></table>
+<div class="table-wrap"><table>
+<tr><th>English</th><th>Deutsch</th></tr>
+<tr><td>vector space over $K$, $K$-vector space</td><td>Vektorraum (VR) über $K$, $K$-Vektorraum</td></tr>
+<tr><td>vector, scalar</td><td>Vektor, Skalar</td></tr>
+<tr><td>scalar multiplication</td><td>Skalarmultiplikation</td></tr>
+<tr><td>zero vector, zero space</td><td>Nullvektor, Nullraum</td></tr>
+<tr><td>coordinate space $K^n$</td><td>Koordinatenraum</td></tr>
+<tr><td>row vector, column vector</td><td>Zeilenvektor, Spaltenvektor</td></tr>
+<tr><td>sequence space, function space</td><td>Folgenraum, Funktionenraum</td></tr>
+<tr><td>pointwise, componentwise</td><td>punktweise, komponentenweise</td></tr>
+<tr><td>subfield</td><td>Unterkörper, Teilkörper</td></tr>
+</table></div>
+<details class="toc" open><summary>Contents</summary><div><p><a href="#story">The story</a> · <a href="#s1">1 The axioms</a> · <a href="#s2">2 Arithmetic rules</a> · <a href="#s3">3 $K^n$</a> · <a href="#s4">4 The zoo</a> · <a href="#s5">5 Fields over fields</a> · <a href="#we">Worked examples</a> · <a href="#ex">Exercises</a> · <a href="#skip">What we skipped</a></p></div></details>
 
-<h2 id="s1">1. The definition</h2>
-<div class="box"><p><strong>Definition (vector space, p. 14).</strong> Let $(V,\circ)$ be an abelian group and $(K,+,\cdot,0,1)$ a field, and let $*:K\times V\to V$, $(\lambda,x)\mapsto\lambda*x$ satisfy, for all $\lambda,\mu\in K$ and $x,y\in V$:</p>
-<ol type="a"><li>$1*x=x$</li><li>$(\lambda+\mu)*x=(\lambda*x)\circ(\mu*x)$</li><li>$(\lambda\cdot\mu)*x=\lambda*(\mu*x)$</li><li>$\lambda*(x\circ y)=(\lambda*x)\circ(\lambda*y)$</li></ol>
-<p>Then $V$ is a <strong>vector space over $K$</strong> (a $K$-vector space; for $K=\mathbb R$ a real vector space).</p></div>
-<p><strong>In words:</strong> algebraically, a vector space is a field acting on an abelian group. Elements of $V$ are <em>vectors</em> (Latin letters), elements of $K$ are <em>scalars</em> (Greek letters). Usually $\circ$ is written $+$ with neutral element $0$; at the start Halbeisen writes $+_V$ and $0_V$ to keep them apart from $+$ and $0$ in $K$. The action $*$ is usually written $\cdot$ too, so $\lambda\cdot\mu\cdot x$ means $(\lambda\cdot\mu)*x=\lambda*(\mu*x)$, by axiom (c).</p>
-<p><strong>Check yourself.</strong> In (b), which “$+$” lives where? On the left, $\lambda+\mu$ is addition in $K$; on the right, $\circ$ is addition in $V$. Reading the two different additions correctly is the first exam skill here.</p>
+<h2 id="story">The story: the realm of arrows</h2>
+<div class="story"><p>Beyond Numeria lies the realm of arrows. Arrows can be laid end to end (that is their guild ritual, an abelian group), and the wizards of a field can stretch any arrow by a number. The realm has a charter of eight rules saying how stretching and laying end to end get along. Arrows need not look like arrows: in this realm a function, a sequence, a polynomial or even a set of numbers can be an arrow, as long as the charter holds.</p></div>
 
-<h2 id="s2">2. First consequences (Lemma 3.0)</h2>
-<div class="box"><p><strong>Lemma 3.0 (p. 15).</strong> In a vector space $(V,+_V,0_V)$ over $(K,+,\cdot,0,1)$:</p>
-<ol type="a"><li>$0\cdot x=0_V$ for all $x\in V$</li><li>$\lambda\cdot0_V=0_V$ for all $\lambda\in K$</li><li>$(-1)\cdot x=-x$ for all $x\in V$</li><li>$\lambda\cdot x=0_V\to(\lambda=0\vee x=0_V)$</li></ol>
-<p>In the notes this is Aufgabe 10. Here are proofs in the style of lesson 4 (Satz 2.2).</p></div>
-<details class="sol"><summary>Proofs</summary><div>
-<p><strong>(a)</strong> $0\cdot x=(0+0)\cdot x=0\cdot x+_V0\cdot x$ by axiom (b). Add $-(0\cdot x)$ (the inverse in $V$) on both sides: $0_V=0\cdot x$.</p>
-<p><strong>(b)</strong> $\lambda\cdot0_V=\lambda\cdot(0_V+_V0_V)=\lambda\cdot0_V+_V\lambda\cdot0_V$ by axiom (d); cancel as in (a): $0_V=\lambda\cdot0_V$.</p>
-<p><strong>(c)</strong> $x+_V(-1)\cdot x=1\cdot x+_V(-1)\cdot x=(1+(-1))\cdot x=0\cdot x=0_V$ by axioms (a), (b) and part (a). So $(-1)\cdot x$ is the inverse of $x$ in $V$; inverses are unique (lesson 4), so $(-1)\cdot x=-x$.</p>
-<p><strong>(d)</strong> Suppose $\lambda\cdot x=0_V$ and $\lambda\ne0$. Then $\lambda^{-1}$ exists in $K$ and $x=1\cdot x=(\lambda^{-1}\cdot\lambda)\cdot x=\lambda^{-1}\cdot(\lambda\cdot x)=\lambda^{-1}\cdot0_V=0_V$ by axioms (a), (c) and part (b). ∎</p></div></details>
+<h2 id="s1">1. The axioms</h2>
+<div class="box"><p><strong>Definition 2.0.1 (vector space, p. 33).</strong> A <strong>vector space over a field $K$</strong> is a set $V$ with two operations</p>
+<p>$+:V\times V\to V$, $(v_1,v_2)\mapsto v_1+v_2$ and $\cdot:K\times V\to V$, $(a,v)\mapsto a\cdot v=av$,</p>
+<p>such that for all $a,b\in K$ and $v,v_1,v_2,v_3\in V$:</p>
+<div class="table-wrap"><table>
+<tr><th>Script</th><th>Axiom</th><th>Lecture</th></tr>
+<tr><td>V1</td><td>$v_1+(v_2+v_3)=(v_1+v_2)+v_3$</td><td rowspan="4">$(V,+)$ abelian group</td></tr>
+<tr><td>V2</td><td>there is $0=0_V\in V$ with $0+v=v$</td></tr>
+<tr><td>V3</td><td>for every $v$ there is $v'$ with $v+v'=0$</td></tr>
+<tr><td>V4</td><td>$v_1+v_2=v_2+v_1$</td></tr>
+<tr><td>V5</td><td>$a\cdot(b\cdot v)=(a\cdot b)\cdot v$</td><td>(c)</td></tr>
+<tr><td>V6</td><td>$1\cdot v=v$</td><td>(a)</td></tr>
+<tr><td>V7</td><td>$a\cdot(v_1+v_2)=a\cdot v_1+a\cdot v_2$</td><td>(d)</td></tr>
+<tr><td>V8</td><td>$(a_1+a_2)\cdot v=a_1\cdot v+a_2\cdot v$</td><td>(b)</td></tr>
+</table></div>
+<p>Elements of $V$ are <strong>vectors</strong>, elements of $K$ are <strong>scalars</strong>. For $K=\mathbb R$ (or $\mathbb C$) we say real (or complex) vector space.</p></div>
+<p><strong>Two additions, two multiplications.</strong> In V8, the $+$ on the left is addition in $K$; the $+$ on the right is addition in $V$. In V5, $a\cdot b$ is multiplication in $K$, while $b\cdot v$ is scalar multiplication (footnote 1, p. 33). Reading these correctly is the first exam skill here. When in doubt, write $+_K$, $+_V$, $0_K$, $0_V$.</p>
+<p class="small"><strong>In the lecture.</strong> Halbeisen states the definition as “$(V,\circ)$ an abelian group, $(K,+,\cdot,0,1)$ a field, and $*:K\times V\to V$ with (a) $1*x=x$, (b) $(\lambda+\mu)*x=(\lambda*x)\circ(\mu*x)$, (c) $(\lambda\cdot\mu)*x=\lambda*(\mu*x)$, (d) $\lambda*(x\circ y)=(\lambda*x)\circ(\lambda*y)$” (p. 14). The Serie 2 solutions label these four as (V1)–(V4) in yet another order: (V1) $=$ script V7, (V2) $=$ V8, (V3) $=$ V5, (V4) $=$ V6. When you read a Musterlösung, check which numbering it uses.</p>
 
-<h2 id="s3">3. Examples of fields</h2>
-<ul><li>$\mathbb Q,\mathbb R,\mathbb C$.</li>
-<li>For every prime $p$, $(\mathbb Z_p,+_p,\cdot_p,\bar0,\bar1)$ is a field, written $\mathbb F_p$ (Aufgabe 8; the inverses come from the pigeonhole proof in <a href="linalg-03.html#s7">lesson 3</a>).</li>
-<li>A field $\mathbb F_4$ with 4 elements (Aufgabe 9). Every finite field has $p^n$ elements for a prime $p$ and $n\ge1$.</li>
-<li>Fields between $\mathbb Q$ and $\mathbb R$, such as $\mathbb Q(\sqrt2)$.</li></ul>
-<div class="box"><p><strong>Claim (p. 15–16).</strong> $\mathbb Q(\sqrt2):=\{a+b\sqrt2:a,b\in\mathbb Q\}$ with the addition and multiplication of $\mathbb R$ is a field, with $0=0+0\sqrt2$ and $1=1+0\sqrt2$.</p>
-<p><strong>The idea.</strong> $\mathbb R$ is already a field, so associativity, commutativity and distributivity come for free. Only <em>closure</em> needs checking: sums, products and inverses must stay inside $\mathbb Q(\sqrt2)$.</p>
-<p><strong>Proof.</strong> Addition: $(a_1+b_1\sqrt2)+(a_2+b_2\sqrt2)=(a_1+a_2)+(b_1+b_2)\sqrt2$. Multiplication: $(a_1+b_1\sqrt2)(a_2+b_2\sqrt2)=(a_1a_2+2b_1b_2)+(a_1b_2+b_1a_2)\sqrt2$, both coefficients in $\mathbb Q$. Additive inverse: $(-a)+(-b)\sqrt2$. Multiplicative inverse: if $(a,b)\ne(0,0)$ then $a^2-2b^2\ne0$ (otherwise $b\ne0$ and $\left(\frac ab\right)^2=2$, contradicting $\sqrt2\notin\mathbb Q$ from lesson 3), and
-$$(a+b\sqrt2)\cdot\left(\frac a{a^2-2b^2}+\frac{-b}{a^2-2b^2}\sqrt2\right)=\frac{a^2-2b^2}{a^2-2b^2}=1.$$
-So $\mathbb Q(\sqrt2)$ is a field. ∎ Similarly $\mathbb Q(\sqrt n)$ is a field for $n\in\mathbb N$.</p></div>
+<h2 id="s2">2. Arithmetic rules (Lemma 2.0.2)</h2>
+<div class="box"><p><strong>Lemma 2.0.2 (properties of vector spaces, p. 33).</strong> Let $V$ be a vector space over $K$. Then:</p>
+<ol type="a"><li>the zero vector in V2 is unique;</li><li>the additive inverse in V3 is unique, written $-v$, and $w-v:=w+(-v)$;</li><li>$0_K\cdot v=0_V$ for all $v\in V$;</li><li>$a\cdot0_V=0_V$ for all $a\in K$;</li><li>$(-1)\cdot v=-v$ for all $v\in V$;</li><li>$-(-v)=v$ for all $v\in V$;</li><li>if $a\cdot v=0_V$, then $a=0$ or $v=0_V$;</li><li>associativity also holds for sums of $n$ vectors.</li></ol></div>
+<p>The script states these without proof. Serie 2, Aufgabe 10 asks for (c), (d), (e), (g), and its official solution is the model for the proofs below. Parts (a), (b), (f) are lesson 1's Proofs A and B and lesson 4's “inverse of the inverse”, applied to the group $(V,+)$.</p>
 
-<h2 id="s4">4. Examples of vector spaces</h2>
-<ol start="0">
-<li><strong>The zero space</strong> $V=\{0_V\}$ is a vector space over every field.</li>
-<li><strong>Field extensions.</strong> If $K\subseteq L$ is a subfield, $L$ is a vector space over $K$ with $\lambda*x:=\lambda\cdot x$ (multiplication in $L$). Examples: $\mathbb Q(\sqrt2)$ over $\mathbb Q$; $\mathbb R$ over $\mathbb Q$; $K$ over $K$.</li>
-<li><strong>The coordinate space</strong> $K^n=\{(a_1,\dots,a_n):a_i\in K\}$ with componentwise addition $(a_1,\dots,a_n)+(b_1,\dots,b_n)=(a_1+b_1,\dots,a_n+b_n)$ and $\lambda\cdot(a_1,\dots,a_n)=(\lambda a_1,\dots,\lambda a_n)$. For $n=0$ it is the zero space, for $n=1$ it is $K$ over $K$. Later its vectors are written as columns.</li>
-<li><strong>Matrices</strong> $M_{m\times n}(K)$: all $m\times n$ matrices with entries in $K$, added and scaled entrywise. Halbeisen writes the entry in row $i$, column $j$ as $a^j_i$ (upper index = column); the other common notation is $a_{ij}$.</li>
-<li><strong>The sequence space</strong> $S(K)$: all infinite sequences $(a_0,a_1,\dots)$ in $K$, added and scaled termwise (Aufgaben 3, 11).</li></ol>
-<p><strong>Why it's cool.</strong> $\mathbb R$ as a vector space over $\mathbb Q$ is a strange, infinite-dimensional world, while $\mathbb Q(\sqrt2)$ over $\mathbb Q$ is a tiny 2-dimensional one with basis $\{1,\sqrt2\}$. The same four axioms cover both, and also the finite worlds $\mathbb F_2^n$ used in coding theory.</p>
+<h3 id="proof-a">Proof A: $0_K\cdot v=0_V$ and $a\cdot0_V=0_V$ (parts (c), (d))</h3>
+<div class="box"><p><strong>Helper (from the Serie 2 solution).</strong> If $u\in V$ satisfies $u+u=u$, then $u=0_V$.</p>
+<p><strong>Claim.</strong> $0_K\cdot v=0_V$ for all $v$, and $a\cdot0_V=0_V$ for all $a$.</p></div>
+<p><strong>The idea.</strong> Zero is the only vector that doesn't change when you add it to itself. And $0_K\cdot v$ has that property, because $0_K=0_K+0_K$ and V8 splits it.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>To show:</strong> an equation $u=0_V$ for the specific vector $u=0_K\cdot v$.</li>
+<li><strong>Tools:</strong> V8 (split a sum of scalars), V7 (split a sum of vectors), and the group $(V,+)$ to cancel.</li>
+<li><strong>The gap:</strong> produce an equation $u+u=u$, then cancel.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>First the helper: an arrow that, laid end to end with itself, gives itself back.</p></div><div class="sp-formal"><p><strong>Helper.</strong> Let $u+u=u$. Then $0_V=u+(-u)=(u+u)+(-u)=u+(u+(-u))=u+0_V=u$, using V3, the assumption, V1, V3 and V2.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Stretch any arrow by zero. Zero is zero plus zero, so the stretched arrow equals itself plus itself.</p></div><div class="sp-formal"><p><strong>(c)</strong> Since $0_K+0_K=0_K$ in $K$, V8 gives $0_K\cdot v=(0_K+0_K)\cdot v=0_K\cdot v+0_K\cdot v$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>By the helper, it must be the zero arrow.</p></div><div class="sp-formal"><p>The helper with $u:=0_K\cdot v$ gives $0_K\cdot v=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The same trick works for stretching the zero arrow, splitting the arrow instead of the number.</p></div><div class="sp-formal"><p><strong>(d)</strong> Since $0_V+0_V=0_V$, V7 gives $a\cdot0_V=a\cdot(0_V+0_V)=a\cdot0_V+a\cdot0_V$, and the helper with $u:=a\cdot0_V$ gives $a\cdot0_V=0_V$. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: write $0=0+0$ and distribute; cancel with the helper “$u+u=u\Rightarrow u=0$”.</p>
+<details><summary>The proof in one piece</summary><div><p>Helper: if $u+u=u$, then $0_V=u+(-u)=(u+u)+(-u)=u+(u+(-u))=u+0_V=u$. (c) By V8, $0_K\cdot v=(0_K+0_K)\cdot v=0_K\cdot v+0_K\cdot v$, so $0_K\cdot v=0_V$ by the helper. (d) By V7, $a\cdot0_V=a\cdot(0_V+0_V)=a\cdot0_V+a\cdot0_V$, so $a\cdot0_V=0_V$ by the helper. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> In (c), which “$+$” is used in $0_K+0_K=0_K$, and which in $0_K\cdot v+0_K\cdot v$?</p><details><summary>Answer</summary><div><p>The first is addition in $K$, the second is addition in $V$. V8 is the bridge between them.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Compare with lesson 4: which ring proof is this, almost word for word?</p><details><summary>Answer</summary><div><p>Lemma 1.3.4, $0\cdot a=0$ in a ring: $0\cdot a=(0+0)\cdot a=0\cdot a+0\cdot a$, then cancel.</p></div></details></li>
+<li><p><strong>Rung 3.</strong> Write the helper and (c) from the frame alone.</p></li></ol></div>
+
+<h3 id="proof-b">Proof B: $(-1)\cdot v=-v$ (part (e))</h3>
+<div class="box"><p><strong>Claim.</strong> For all $v\in V$, $(-1)\cdot v=-v$.</p></div>
+<p><strong>The idea.</strong> $-v$ is <em>the</em> vector that gives $0_V$ when added to $v$. So show that $(-1)\cdot v$ does that, and let uniqueness of inverses finish.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>To show:</strong> $(-1)\cdot v$ is an additive inverse of $v$, i.e. $v+(-1)\cdot v=0_V$.</li>
+<li><strong>Then:</strong> inverses in a group are unique (lesson 1, Proof B), so it equals $-v$.</li>
+<li><strong>The gap:</strong> turn $v$ into a scalar multiple ($v=1\cdot v$) so V8 can combine the two terms.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Write the arrow as “stretched by one”, so both arrows are stretchings of the same arrow.</p></div><div class="sp-formal"><p>$v+(-1)\cdot v=1\cdot v+(-1)\cdot v$ (V6)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Combine the stretchings: one plus minus one is zero.</p></div><div class="sp-formal"><p>$\phantom{v+(-1)\cdot v}=(1+(-1))\cdot v=0_K\cdot v$ (V8)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Stretching by zero gives the zero arrow, so $(-1)\cdot v$ undoes $v$. There is only one undoer.</p></div><div class="sp-formal"><p>$\phantom{v+(-1)\cdot v}=0_V$ (part (c)). So $(-1)\cdot v$ is an additive inverse of $v$; by uniqueness of inverses, $(-1)\cdot v=-v$. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: <a href="moves.html#m-tri">insert a middle point</a> (here $v=1\cdot v$); “is an inverse” + uniqueness.</p>
+<details><summary>The proof in one piece</summary><div><p>Let $v\in V$. By V6, V8 and (c), $v+(-1)\cdot v=1\cdot v+(-1)\cdot v=(1+(-1))\cdot v=0_K\cdot v=0_V$. So $(-1)\cdot v$ is an additive inverse of $v$. Since inverses in the group $(V,+)$ are unique, $(-1)\cdot v=-v$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Why can't we just “cancel $v$”?</p><details><summary>Answer</summary><div><p>There is no division by vectors. The only tools are the axioms, and uniqueness of inverses is how we identify $-v$.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write the chain of equalities with the reason for each step.</p></li>
+<li><p><strong>Rung 3.</strong> Write Proof B from the frame alone.</p></li></ol></div>
+
+<h3 id="proof-c">Proof C: $a\cdot v=0_V$ forces $a=0$ or $v=0_V$ (part (g))</h3>
+<div class="box"><p><strong>Claim.</strong> For all $a\in K$ and $v\in V$: if $a\cdot v=0_V$, then $a=0$ or $v=0_V$.</p></div>
+<p><strong>The idea.</strong> An “or” conclusion: assume the first part fails ($a\ne0$) and prove the second. Then $a$ has an inverse in the field, and we can undo the stretching.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>First line:</strong> “Let $a\cdot v=0_V$. If $a=0$ we are done; so let $a\ne0$.”</li>
+<li><strong>Last line:</strong> “Hence $v=0_V$.”</li>
+<li><strong>The gap:</strong> use $a^{-1}$ (it exists because $K$ is a field) and V5, V6.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A wizard stretched an arrow and got the zero arrow. Either the wizard used zero, or…</p></div><div class="sp-formal"><p>Let $a\cdot v=0_V$. If $a=0$, done. Otherwise $a\ne0$, so $a^{-1}\in K$ exists (field).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>…the wizard can shrink it back. Shrinking the zero arrow gives zero.</p></div><div class="sp-formal"><p>$v=1\cdot v=(a^{-1}a)\cdot v=a^{-1}\cdot(a\cdot v)=a^{-1}\cdot0_V=0_V$, by V6, V5 and part (d). <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: case split for an “or” goal; multiply by the inverse.</p>
+<details><summary>The proof in one piece</summary><div><p>Let $a\in K$, $v\in V$ with $a\cdot v=0_V$. If $a=0$ the claim holds. Let $a\ne0$. Since $K$ is a field, $a^{-1}$ exists, and by V6, V5 and (d), $v=1\cdot v=(a^{-1}a)\cdot v=a^{-1}\cdot(a\cdot v)=a^{-1}\cdot0_V=0_V$. In each case $a=0$ or $v=0_V$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Where is it used that $K$ is a field and not just a ring?</p><details><summary>Answer</summary><div><p>In “$a^{-1}$ exists for $a\ne0$”. Over a ring like $\mathbb Z/6\mathbb Z$, “$\bar2\cdot\bar3=\bar0$” shows the analogue fails.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write the contrapositive form: if $a\ne0$ and $v\ne0_V$, then …?</p><details><summary>Answer</summary><div><p>… $a\cdot v\ne0_V$.</p></div></details></li>
+<li><p><strong>Rung 3.</strong> Write Proof C from the frame alone.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce Lemma 2.0.2 under exam pressure</span>
+<ol><li>(c), (d): write $0=0+0$ (in $K$ or in $V$), distribute with V8 or V7, cancel with “$u+u=u\Rightarrow u=0_V$”.</li>
+<li>(e): $v+(-1)v=1v+(-1)v=(1-1)v=0v=0_V$, then uniqueness of inverses.</li>
+<li>(g): if $a\ne0$, $v=1v=(a^{-1}a)v=a^{-1}(av)=a^{-1}0_V=0_V$.</li></ol>
+<p><strong>In short:</strong> “zero splits, minus one undoes, a nonzero scalar can be undone.” Name the axiom at every equals sign: that is where the points are.</p></div>
+
+<h2 id="s3">3. The coordinate space $K^n$</h2>
+<div class="box"><p><strong>Example 2.0.3 (p. 34).</strong> For a field $K$ and $n\in\mathbb N$, $K^n=\{(a_1,\dots,a_n):a_i\in K\}$ with componentwise operations</p>
+<p>$(a_1,\dots,a_n)+(b_1,\dots,b_n):=(a_1+b_1,\dots,a_n+b_n)$, $\quad a\cdot(a_1,\dots,a_n):=(aa_1,\dots,aa_n)$.</p>
+<p>All axioms follow from the field axioms of $K$, one component at a time. The zero vector is $(0,\dots,0)$.</p></div>
+<p><strong>Note 2.0.4 (p. 34).</strong> Rows $(x_1,\dots,x_n)$ and columns $\begin{pmatrix}x_1\\ \vdots\\ x_n\end{pmatrix}$ are strictly different sets, but we usually don't care and write rows because they're shorter. Columns matter once we multiply matrices by vectors.</p>
+<p><strong>Finite example (Serie 2, Aufgabe 13).</strong> Over $\mathbb F_p$, each of the $n$ components takes one of $p$ values, so $|\mathbb F_p^n|=p^n$. In $\mathbb F_2^3$ there are $8$ vectors, and $v+v=(1+1)v=0\cdot v=0_V$ for each: every vector is its own inverse.</p>
+<p><strong>Why it's cool.</strong> The script promises (p. 34) that every $n$-dimensional vector space over $K$ “is” $K^n$ (isomorphic to it). So this plain example is, in a precise sense, all finite-dimensional vector spaces at once. That will be proved in Chapter 3.</p>
+
+<h2 id="s4">4. The zoo: functions, sequences, polynomials, matrices, sets</h2>
+<div class="box"><p><strong>Function spaces (p. 38).</strong> For a nonempty set $S$, $K^S=\{f:S\to K\}$ with pointwise operations $(f+g)(x):=f(x)+g(x)$ and $(a\cdot f)(x):=a\cdot f(x)$ is a vector space over $K$. The zero vector is the zero function.</p></div>
+<p>Every other example in this section is secretly a function space:</p>
+<ul><li><strong>Sequences (p. 37).</strong> $K^\infty=\{(a_1,a_2,\dots):a_i\in K\}$, added and scaled termwise. A sequence is a function $\mathbb N\to K$ (Note 2.1.19, p. 39).</li>
+<li><strong>Fibonacci sequences (Example 2.1.12, p. 38).</strong> $\mathrm{Fib}=\{(a_i):a_n=a_{n-1}+a_{n-2}\text{ for all }n\ge3\}$ is a vector space inside $K^\infty$, since sums and multiples of solutions are solutions. This is how the script opens the whole course (Chapter 0).</li>
+<li><strong>Polynomials (p. 40).</strong> $K[x]$ with $a\cdot(a_0+a_1x+\dots+a_nx^n):=aa_0+aa_1x+\dots+aa_nx^n$. Also $K[x]_h$, the polynomials of degree at most $h$ (Example 2.1.21).</li>
+<li><strong>Matrices (p. 40).</strong> $M_{m\times n}(K)$, added and scaled entry by entry. This is $K^{mn}$ written as a rectangle.</li>
+<li><strong>The power set (Example 2.1.23, p. 41).</strong> $\mathcal P(X)$ over $\mathbb F_2$ with symmetric difference $\triangle$ as addition, $\emptyset$ as zero vector, $1\cdot A=A$ and $0\cdot A=\emptyset$. Worked example 3 checks it.</li></ul>
+<p class="small"><strong>In the lecture.</strong> Halbeisen calls $K^\infty$ the sequence space $S(K)$ and starts sequences at $a_0$. Matrices are written with the column as upper index, $a^j_i$ for row $i$, column $j$; the script writes $a_{ij}$.</p>
+
+<h2 id="s5">5. Fields as vector spaces over smaller fields</h2>
+<p>The lecture (pp. 15–16) adds one more family, and Quiz 2 tests it: if $K\subseteq L$ are fields with the same operations, then $L$ is a vector space over $K$, with scalar multiplication the multiplication in $L$. All eight axioms are field axioms of $L$. Examples: $\mathbb R$ over $\mathbb Q$, $\mathbb C$ over $\mathbb R$, $K$ over $K$ (that is $K^1$), and $\mathbb Q(\sqrt2)$ over $\mathbb Q$.</p>
+<div class="box"><p><strong>Claim (lecture, pp. 15–16).</strong> $\mathbb Q(\sqrt2):=\{a+b\sqrt2:a,b\in\mathbb Q\}$, with the operations of $\mathbb R$, is a field.</p></div>
+<details><summary>Proof (only closure needs checking)</summary><div><p>$\mathbb R$ is a field, so associativity, commutativity and distributivity hold automatically. Sums: $(a_1+b_1\sqrt2)+(a_2+b_2\sqrt2)=(a_1+a_2)+(b_1+b_2)\sqrt2$. Products: $(a_1+b_1\sqrt2)(a_2+b_2\sqrt2)=(a_1a_2+2b_1b_2)+(a_1b_2+a_2b_1)\sqrt2$. $0=0+0\sqrt2$, $1=1+0\sqrt2$, $-(a+b\sqrt2)=(-a)+(-b)\sqrt2$. Inverses: if $(a,b)\ne(0,0)$ then $a^2-2b^2\ne0$ (otherwise $b\ne0$ and $(a/b)^2=2$, contradicting $\sqrt2\notin\mathbb Q$ from lesson 3), and
+$$(a+b\sqrt2)\left(\tfrac{a}{a^2-2b^2}-\tfrac{b}{a^2-2b^2}\sqrt2\right)=\tfrac{a^2-2b^2}{a^2-2b^2}=1.$$ <span class="qed">∎</span></p></div></details>
+<p><strong>Why it's cool.</strong> $\mathbb Q(\sqrt2)$ over $\mathbb Q$ is a tiny two-dimensional world with “basis” $1,\sqrt2$, while $\mathbb R$ over $\mathbb Q$ is infinite-dimensional and strange. One charter covers both, and also the finite worlds $\mathbb F_2^n$ used in error-correcting codes.</p>
+
+<h2 id="we">Worked examples</h2>
+<p>Try each step in your head before opening the answer.</p>
+<div class="box"><h3 id="we-1">Worked example 1: all functions $\mathbb R\to\mathbb R$ form a real vector space (Serie 2, Aufgabe 14)</h3>
+<ol class="gq"><li><p>What must you check first, before any axiom?</p><details><summary>Answer</summary><div><p>That the operations land in $V$: $f+g$ and $a\cdot f$ are again functions $\mathbb R\to\mathbb R$, since $f(x)+g(x)\in\mathbb R$ and $a\cdot f(x)\in\mathbb R$ for every $x$.</p></div></details></li>
+<li><p>When are two functions equal, and why does that make every axiom easy?</p><details><summary>Answer</summary><div><p>$f=g$ iff $f(x)=g(x)$ for all $x$. So each axiom only has to hold at each point $x$, where it is an axiom of the field $\mathbb R$. Example V7: $(a\cdot(f+g))(x)=a(f(x)+g(x))=af(x)+ag(x)=(a\cdot f+a\cdot g)(x)$.</p></div></details></li>
+<li><p>Name the zero vector and the inverse of $f$.</p><details><summary>Answer</summary><div><p>The zero function $x\mapsto0$, and $-f:x\mapsto-f(x)$. With these, V1–V4 hold pointwise, and V5–V8 hold pointwise by associativity and distributivity in $\mathbb R$ and $1\cdot f(x)=f(x)$.</p></div></details></li></ol></div>
+<div class="box"><h3 id="we-2">Worked example 2: a scalar multiple in $\mathbb F_{11}^{11}$ (Serie 2, Aufgabe 13(b))</h3>
+<p>Compute $\bar7\cdot(\bar0,\bar1,\bar2,\bar3,\bar4,\bar5,\bar6,\bar7,\bar8,\bar9,\overline{10})$.</p>
+<ol class="gq"><li><p>What does the scalar multiplication do?</p><details><summary>Answer</summary><div><p>It multiplies each component by $\bar7$ in $\mathbb F_{11}$: compute $7k$ and take the remainder mod $11$.</p></div></details></li>
+<li><p>The result?</p><details><summary>Answer</summary><div><p>$7k$ for $k=0,\dots,10$: $0,7,14,21,28,35,42,49,56,63,70$, remainders $0,7,3,10,6,2,9,5,1,8,4$. So the result is $(\bar0,\bar7,\bar3,\overline{10},\bar6,\bar2,\bar9,\bar5,\bar1,\bar8,\bar4)$. Every class appears exactly once: multiplication by $\bar7$ is the bijection $m_{\bar7}$ from lesson 3, Proof D.</p></div></details></li></ol></div>
+<div class="box"><h3 id="we-3">Worked example 3: $\mathcal P(X)$ is a vector space over $\mathbb F_2$ (Example 2.1.23; Quiz 2, part 4)</h3>
+<ol class="gq"><li><p>Addition is $\triangle$. What are the zero vector and $-A$?</p><details><summary>Answer</summary><div><p>$\emptyset$, and $-A=A$, since $A\triangle A=\emptyset$ (lesson 1, worked example 2).</p></div></details></li>
+<li><p>Why are $1\cdot A=A$ and $0\cdot A=\emptyset$ forced?</p><details><summary>Answer</summary><div><p>V6 forces $1\cdot A=A$; Lemma 2.0.2 (c) forces $0\cdot A=0_V=\emptyset$.</p></div></details></li>
+<li><p>Check V8 for $a_1=a_2=1$.</p><details><summary>Answer</summary><div><p>Left: $(1+1)\cdot A=0\cdot A=\emptyset$. Right: $1\cdot A\triangle1\cdot A=A\triangle A=\emptyset$. ✓ The other cases ($a_i\in\{0,1\}$) are just as short.</p></div></details></li></ol></div>
 
 <h2 id="ex">Exercises</h2>
-<div class="box"><h3 id="ex-1">Exercise 1</h3><p>On $V=\mathbb R^2$ with the usual addition, define $\lambda*(x_1,x_2):=(\lambda x_1,0)$. Which vector space axiom fails?</p>
-<details class="sol"><summary>Solution</summary><div><p>Axiom (a): $1*(x_1,x_2)=(x_1,0)\ne(x_1,x_2)$ whenever $x_2\ne0$, e.g. $1*(0,1)=(0,0)$. Axioms (b), (c), (d) all hold (check: both sides only involve the first coordinate, scaled linearly). So $(\mathbb R^2,+,*)$ is not a vector space, and (a) is the only axiom that fails.</p></div></details></div>
-<div class="box"><h3 id="ex-2">Exercise 2</h3><p>Compute the inverse of $1+\sqrt2$ in $\mathbb Q(\sqrt2)$ with the formula from §3, and check it.</p>
-<details class="sol"><summary>Solution</summary><div><p>$a=b=1$, $a^2-2b^2=-1$. Inverse: $\frac1{-1}+\frac{-1}{-1}\sqrt2=-1+\sqrt2$. Check: $(1+\sqrt2)(-1+\sqrt2)=-1+\sqrt2-\sqrt2+2=1$. ✓</p></div></details></div>
-<div class="box"><h3 id="ex-3">Exercise 3</h3><p>How many vectors does $\mathbb F_2^3$ have? Show that $x+x=0$ for every $x\in\mathbb F_2^3$.</p>
-<details class="sol"><summary>Solution</summary><div><p>Each of the 3 coordinates is $\bar0$ or $\bar1$: $2^3=8$ vectors. For $x=(a_1,a_2,a_3)$: $x+x=(a_1+a_1,a_2+a_2,a_3+a_3)$, and in $\mathbb F_2$, $\bar0+\bar0=\bar0$ and $\bar1+\bar1=\bar0$. So $x+x=0$; every vector is its own inverse. (With Lemma 3.0: $x+x=(1+1)\cdot x=0\cdot x=0_V$.)</p></div></details></div>
+<div class="box"><h3 id="ex-1">Exercise 1 (Quiz 2, with the official solution)</h3>
+<p>For which pairs is $V$ a vector space over $K$ (with the natural scalar multiplication)? (1) $(\mathbb R,+)$ over $\mathbb Q$. (2) $(\mathbb Q,+)$ over $\mathbb R$. (3) $(\mathbb R\setminus\{0\},\cdot)$ over $\mathbb Q$. (4) $(\mathcal P(\mathbb N),\triangle)$ over $\mathbb F_2$.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>1 yes, 2 no, 3 no, 4 yes.</strong></p>
+<p>(1) $\mathbb Q\subseteq\mathbb R$ is a subfield, so $\mathbb R$ is a $\mathbb Q$-vector space (section 5). (2) The natural multiplication leaves $\mathbb Q$: $\sqrt2\cdot1=\sqrt2\notin\mathbb Q$. The official solution even shows <em>no</em> scalar multiplication works: $\lambda\mapsto\lambda\cdot1$ would be an injective map $\mathbb R\to\mathbb Q$ (by Lemma 2.0.2 (g)), impossible since $\mathbb Q$ is countable and $\mathbb R$ is not (lesson 3). (3) Here “vector addition” is multiplication and $0_V=1$. Take $x=-1$: $2\cdot x=x+_Vx=(-1)(-1)=1=0_V$, but $2\ne0$ and $x\ne0_V$, contradicting Lemma 2.0.2 (g). (4) Worked example 3.</p></div></details></div>
+<div class="box"><h3 id="ex-2">Exercise 2 (LinAlg I exam HS18, Aufgabe 2(a), 6 points)</h3>
+<p>Let $M$ be a finite set and $V:=\{f:M\to K\}$. Show that $V$ with $(f+g)(x):=f(x)+g(x)$ and $(af)(x):=af(x)$ is a $K$-vector space.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>Frame:</strong> operations land in $V$; two functions are equal iff equal at every point; then every axiom is a field axiom at each point.</p>
+<p>For $f,g\in V$, $a\in K$, the rules $x\mapsto f(x)+g(x)$ and $x\mapsto af(x)$ assign to each $x\in M$ one element of $K$, so $f+g,af\in V$. For all $x\in M$: V1 and V4 hold since $(f+(g+h))(x)=f(x)+(g(x)+h(x))=(f(x)+g(x))+h(x)$ and $f(x)+g(x)=g(x)+f(x)$ in $K$. V2: the zero map $0_V(x)=0$ satisfies $(0_V+f)(x)=f(x)$. V3: $-f:x\mapsto-f(x)$ satisfies $(f+(-f))(x)=0$. V5–V8: $a(bf(x))=(ab)f(x)$, $1f(x)=f(x)$, $a(f(x)+g(x))=af(x)+ag(x)$, $(a+b)f(x)=af(x)+bf(x)$, by the field axioms of $K$. Since all these hold at every $x$, they hold as equalities of functions. So $V$ is a $K$-vector space. <span class="qed">∎</span> (Finiteness of $M$ is not needed here; it matters in part (b), the dimension.)</p></div></details></div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Serie 2, Aufgabe 11)</h3>
+<p>Show that $\mathrm{Fib}=\{(f_n)_{n\in\mathbb N}:f_{i+2}=f_{i+1}+f_i\text{ for all }i\}$, with termwise addition, is a vector space over $\mathbb R$. (Lesson 1, Exercise 5 showed it is an abelian group.)</p>
+<details class="sol"><summary>Solution</summary><div><p>Define $\lambda\cdot(f_n):=(\lambda f_n)$. It lands in $\mathrm{Fib}$: $\lambda f_{i+2}=\lambda(f_{i+1}+f_i)=\lambda f_{i+1}+\lambda f_i$. Two sequences are equal iff equal in every term, and termwise V5–V8 are associativity of multiplication, $1\cdot f_n=f_n$ and the two distributive laws in $\mathbb R$. So $\mathrm{Fib}$ is a real vector space. (Same calculation for all sequences $K^\infty$; $\mathrm{Fib}$ is closed under both operations inside it.)</p></div></details></div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Serie 2, Aufgabe 12)</h3>
+<p>Show that $\mathbb Q[X]$ with coefficientwise addition and $\lambda\cdot\sum a_iX^i:=\sum(\lambda a_i)X^i$ is a vector space over $\mathbb Q$.</p>
+<details class="sol"><summary>Solution</summary><div><p>Closure: if $a_i=0$ for $i&gt;n$, then $\lambda a_i=\lambda\cdot0=0$ for $i&gt;n$, so $\lambda p$ is again a polynomial with rational coefficients. Two polynomials are equal iff all coefficients agree, so the axioms can be checked coefficient by coefficient, where they are field axioms of $\mathbb Q$. ($\lambda\cdot p$ is also just the ring product of the constant polynomial $\lambda$ with $p$; that makes $\mathbb Q[X]$ an <em>algebra</em> over $\mathbb Q$.)</p></div></details></div>
+<div class="box"><h3 id="ex-5">Exercise 5 (find the broken axiom)</h3>
+<p>On $\mathbb R^2$ with the usual addition, define $a*(x_1,x_2):=(ax_1,0)$. Which axiom fails?</p>
+<details class="sol"><summary>Solution</summary><div><p>V6: $1*(0,1)=(0,0)\ne(0,1)$. V5, V7 and V8 all hold, because both sides only involve the first coordinate, scaled as usual. So V6 is the only axiom that fails, which shows it can't be dropped.</p></div></details></div>
+<div class="box"><h3 id="ex-6">Exercise 6 (an inverse in $\mathbb Q(\sqrt2)$)</h3>
+<p>Compute $(1+\sqrt2)^{-1}$ in $\mathbb Q(\sqrt2)$ with the formula of section 5, and check it.</p>
+<details class="sol"><summary>Solution</summary><div><p>$a=b=1$, $a^2-2b^2=-1$, so the inverse is $\frac1{-1}-\frac1{-1}\sqrt2=-1+\sqrt2$. Check: $(1+\sqrt2)(-1+\sqrt2)=-1+\sqrt2-\sqrt2+2=1$. ✓</p></div></details></div>
 
-<h2 id="done">You're done when</h2>
-<p>You can state the four axioms and say which addition each “$+$” is. You can prove Lemma 3.0 (a)–(d) and the field property of $\mathbb Q(\sqrt2)$, and list the five standard examples. Safe to skip: the classification of finite fields $\mathbb F_{p^n}$ (only mentioned).</p>
-<p class="small">Draft lesson. Next: lesson 6, span and linear independence (§4). Full format in the next pass.</p>
+<h2 id="skip">What we skipped</h2>
+<p>From the script: subspaces (Definition 2.0.5, p. 34, and the rest of §2.1) come with span in the next lesson; Lemma 2.0.2 (h) (general associativity) is only stated. The finite field $\mathbb F_4$ and the fact that every finite field has $p^n$ elements are mentioned in the lecture without proof. Previous: <a href="linalg-04.html">Lesson 4</a>. Lessons 6 and later are being written.</p>
 
 <p class="fb-line"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a> · <a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Lin Alg) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></p>
 </main>

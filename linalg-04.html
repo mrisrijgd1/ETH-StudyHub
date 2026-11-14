@@ -6,7 +6,7 @@
 <meta property="og:title" content="Lin Alg 4: First proofs from axioms">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
 <script defer src="assets/umami-kit.js?v=79d39d59"></script>
-<script defer src="assets/tips.js?v=7a6bbbc5"></script>
+<script defer src="assets/tips.js?v=89594c5a"></script>
 <script defer src="assets/listen.js?v=427792c7"></script>
 <script defer src="assets/account.js?v=e8f9a658"></script>
 <script>try{var t=localStorage.getItem("sh-theme");document.documentElement.setAttribute("data-theme",t||"dark");if(localStorage.getItem("sh-side")==="0")document.documentElement.classList.add("sh-noside")}catch(e){}</script>
@@ -239,66 +239,147 @@ a.subject:hover strong { text-decoration: underline; }
 
 <style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}</style>
 <header>
-<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 4 (draft)</span>
-<h1>First proofs from axioms: groups, fields, rings</h1>
-<p class="lead">Halbeisen's §2 “Einfache Beweise” (notes pp. 11–13). Three short theorems that are classic exam material: a left identity and left inverses are enough for a group (Satz 2.0), fields have no zero divisors (Satz 2.1), and $0\cdot x=0$, $(-1)\cdot x=-x$ in every ring (Satz 2.2).</p>
+<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 4</span>
+<h1>The clerk's first verdicts: proofs from the axioms</h1>
+<p class="lead">Halbeisen's §2 proves three small theorems that are classic exam material: a left neutral element and left inverses already make a group (the lecture's Satz 2.0), fields have no zero divisors (Lemma 1.3.10), and in every ring $0\cdot x=0$, $(-1)\cdot x=-x$ and $(-x)(-y)=xy$ (Satz 2.2). Each proof is a short chain where every step is one axiom.</p>
 </header>
-<details class="toc" open><summary>Contents</summary><div><p><a href="#words">Words</a> · <a href="#s1">1 Three axioms suffice</a> · <a href="#s2">2 Double inverse, notation</a> · <a href="#s3">3 A warning non-example</a> · <a href="#s4">4 Fields</a> · <a href="#s5">5 Rings</a> · <a href="#ex">Exercises</a> · <a href="#done">You're done when</a></p></div></details>
-<div class="box"><p><strong>Script.</strong> Halbeisen's notes §2, pages 11–13 (typed copy by the Linear Algebra group). Previous: <a href="linalg-03.html">Lesson 3</a> · Next: <a href="linalg-05.html">Lesson 5</a>. Definitions of group, ring, field: <a href="linalg-01.html">Lesson 1</a>.</p></div>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+<dt>Covers</dt><dd>Script EN 2023, §1.3 (pp. 17–20): Lemma 1.3.4 (multiplication by $0$), Lemma 1.3.10 (properties of a field) and Exercise 1.3.17 (one-sided inverses), plus the lecture's §2 “Einfache Beweise” (Halbeisen's notes, pp. 11–13): Satz 2.0, the inverse of the inverse, the notation $-x$, $x^{-1}$, $x-y$, $x:y$, the non-example $a*b:=a$.</dd>
+<dt>Time</dt><dd>About 70 minutes.</dd>
+<dt>You're done when</dt><dd>you can (1) prove Satz 2.0 (a) from the exam box, (2) prove $0\cdot x=0$, $(-1)\cdot x=-x$, $(-x)(-y)=xy$ in a ring, (3) explain why $a*b:=a$ is not a group, and (4) use Lemma 1.3.10 (c) to show a ring is no field.</dd>
+<dt>Script</dt><dd>Main: Script EN 2023, §1.3 (pp. 17–20). Lecture: Halbeisen's notes W3a, pages 11–13, where these results are Satz 2.0, Satz 2.1 and Satz 2.2.</dd>
+</dl>
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>The exam comes from the lecture, and these are the first full proofs in them: expect “prove that in a group every left inverse is a right inverse” or “prove $0\cdot x=0$ from the ring axioms”. Old exams ask the consequences as true/false: “In every group, $b=c\iff a\circ b=a\circ c$” (FS17) is Exercise 1. And Lemma 2.0.2 in lesson 5 (rules for vector spaces) is proved exactly like the ring rules here.</p></div>
+
+<h2 id="recap">Recap of lesson 3 (5 min)</h2>
+<p>A proof is a finite chain of statements, each an axiom or following from earlier ones by a rule (modus ponens, contrapositive, contradiction). Check: in Proof D of lesson 3, why could we not simply divide by $\bar a^s$?</p>
+<details><summary>Answer</summary><div><p>Because we didn't know yet that inverses exist in $\mathbb Z_p$; that is what was being proved. We used “no zero divisors mod a prime” instead.</p></div></details>
 
 <h2 id="words">Words for this lesson · Fachbegriffe</h2>
-<table><tr><th>English</th><th>German</th></tr>
-<tr><td>group axioms</td><td>Gruppenaxiome</td></tr><tr><td>left identity / left inverse</td><td>Linksneutralelement / Linksinverses</td></tr>
-<tr><td>claim</td><td>Behauptung</td></tr><tr><td>zero ring</td><td>Nullring</td></tr>
-<tr><td>consequences of the distributive laws</td><td>Folgerungen aus den Distributivgesetzen</td></tr></table>
+<div class="table-wrap"><table>
+<tr><th>English</th><th>Deutsch</th></tr>
+<tr><td>group axioms</td><td>Gruppenaxiome</td></tr>
+<tr><td>left neutral element / left inverse</td><td>Linksneutralelement / Linksinverses</td></tr>
+<tr><td>claim</td><td>Behauptung</td></tr>
+<tr><td>additive / multiplicative group</td><td>additive / multiplikative Gruppe</td></tr>
+<tr><td>zero ring</td><td>Nullring</td></tr>
+<tr><td>zero divisor</td><td>Nullteiler</td></tr>
+<tr><td>consequences of the distributive laws</td><td>Folgerungen aus den Distributivgesetzen</td></tr>
+</table></div>
+<details class="toc" open><summary>Contents</summary><div><p><a href="#story">Story</a> · <a href="#s1">1 Three axioms suffice</a> · <a href="#s2">2 Inverse of the inverse</a> · <a href="#s3">3 A warning</a> · <a href="#s4">4 Field facts</a> · <a href="#s5">5 Ring rules</a> · <a href="#we">Worked examples</a> · <a href="#ex">Exercises</a> · <a href="#skip">What we skipped</a></p></div></details>
 
-<h2 id="s1">1. Three axioms are enough for a group (Satz 2.0)</h2>
-<div class="box"><p><strong>Theorem (Satz 2.0, p. 11).</strong> Let $M$ be a set with a binary operation $\circ$ and $e\in M$. Then $(M,\circ,e)$ is a group if and only if</p>
-<ul><li>$G_0$: $\forall x\forall y\forall z\ \ x\circ(y\circ z)=(x\circ y)\circ z$ (associative)</li>
-<li>$G_1$: $\forall x\ \ e\circ x=x$ ($e$ is a left identity)</li>
-<li>$G_2$: $\forall x\ \exists\bar x\ \ \bar x\circ x=e$ (every $x$ has a left inverse)</li></ul></div>
-<p><strong>The idea.</strong> “$\Rightarrow$” is free: a group has all of this. For “$\Leftarrow$” the work is to upgrade “left” to “two-sided”, and then to get uniqueness. The trick in (a) is to multiply by the left inverse <em>of the left inverse</em>.</p>
-<div class="box"><p><strong>Proof of “$\Leftarrow$”.</strong> We show (a) every left inverse is a right inverse, (b) $e$ is a right identity, (c) the identity is unique, (d) inverses are unique.</p>
-<p><strong>(a)</strong> Let $\bar x$ be a left inverse of $x$ and $\bar{\bar x}$ a left inverse of $\bar x$ ($G_2$). By $G_2$ and $G_1$: $(\bar x\circ x)\circ\bar x=e\circ\bar x=\bar x$, so by $G_0$: $\bar x\circ(x\circ\bar x)=\bar x$. Multiply from the left by $\bar{\bar x}$:
-$$\bar{\bar x}\circ\big(\bar x\circ(x\circ\bar x)\big)=\bar{\bar x}\circ\bar x=e.$$
-By $G_0$ the left side is $(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)=e\circ(x\circ\bar x)=x\circ\bar x$ (using $G_1$). Hence $x\circ\bar x=e$.</p>
-<p><strong>(b)</strong> For every $x$: $x\circ e=x\circ(\bar x\circ x)=(x\circ\bar x)\circ x=e\circ x=x$, using $G_2$, $G_0$, (a) and $G_1$.</p>
-<p><strong>(c)</strong> If $e,e'$ are identities: $e\circ e'=e'$ ($e$ left identity) and $e\circ e'=e$ ($e'$ right identity), so $e=e'$.</p>
-<p><strong>(d)</strong> If $\bar x$ and $\tilde x$ are inverses of $x$: $\bar x=\bar x\circ e=\bar x\circ(x\circ\tilde x)=(\bar x\circ x)\circ\tilde x=e\circ\tilde x=\tilde x$. ∎</p></div>
-<div class="box exam"><p><strong>How to reproduce Satz 2.0 (a) under exam pressure.</strong> 1. Start from $\bar x\circ x=e$ and write $e\circ\bar x=\bar x$ as $(\bar x\circ x)\circ\bar x=\bar x$. 2. Rebracket: $\bar x\circ(x\circ\bar x)=\bar x$. 3. Hit both sides from the left with $\bar{\bar x}$. 4. Left: rebracket to $e\circ(x\circ\bar x)=x\circ\bar x$. Right: $e$. <em>In short: build $\bar x=\bar x(x\bar x)$, then cancel $\bar x$ with its own left inverse.</em></p></div>
+<h2 id="story">The story: the clerk's first verdicts</h2>
+<div class="story"><p>The Group guild's charter is long: brackets don't matter, a quiet member exists on both sides, and every member can be undone from both sides. A thrifty clerk notices they only ever need half of it: brackets, a quiet member <em>on the left</em>, and an undoer <em>on the left</em>. The other half follows. Then they turn to the great houses and shows that some rules people think are conventions, like “minus times minus is plus”, are forced by the charter.</p></div>
+
+<h2 id="s1">1. Three axioms are enough for a group</h2>
+<p>The script defines a group with four two-sided axioms (lesson 1). The lecture shows that half of them suffice. The script has no lemma for this, but its Exercise 1.3.17 (p. 20) asks for the key step: a one-sided inverse is also an inverse from the other side.</p>
+<div class="box"><p><strong>Satz 2.0 (lecture, Halbeisen's notes p. 11).</strong> Let $M$ be a set with a binary operation $\circ$ and let $e\in M$. Then $(M,\circ,e)$ is a group if and only if it satisfies the three <strong>group axioms</strong>:</p>
+<ul><li>$G_0$: $\forall x\forall y\forall z\ \big(x\circ(y\circ z)=(x\circ y)\circ z\big)$ ($\circ$ is associative)</li>
+<li>$G_1$: $\forall x\ (e\circ x=x)$ ($e$ is a left neutral element)</li>
+<li>$G_2$: $\forall x\ \exists\bar x\ (\bar x\circ x=e)$ (every $x$ has a left inverse)</li></ul></div>
+<p><strong>The idea.</strong> “$\Rightarrow$” is immediate: a group has an associative operation, a neutral element and inverses. For “$\Leftarrow$” we must show four things: (a) every left inverse is also a right inverse; (b) $e$ is also right neutral; (c) the neutral element is unique; (d) inverses are unique. The trick in (a): multiply by the left inverse <em>of the left inverse</em>, $\bar{\bar x}$.</p>
+<h3 id="proof-a">Proof A: every left inverse is a right inverse (Satz 2.0 (a))</h3>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>Given:</strong> $G_0$, $G_1$, $G_2$; a left inverse $\bar x$ of $x$, i.e. $\bar x\circ x=e$.</li><li><strong>To show:</strong> $x\circ\bar x=e$.</li><li><strong>The gap:</strong> we may only cancel from the left, and only with left inverses. So we need an equation of the form $\bar x\circ(\text{something})=\bar x$ and a left inverse of $\bar x$.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The undoer $\bar x$ itself has an undoer, $\bar{\bar x}$ (the charter guarantees one for everybody).</p></div><div class="sp-formal"><p>Let $\bar{\bar x}$ be a left inverse of $\bar x$ ($G_2$): $\bar{\bar x}\circ\bar x=e$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Undoing $x$ and then letting the quiet member act on $\bar x$ changes nothing.</p></div><div class="sp-formal"><p>$(\bar x\circ x)\circ\bar x=e\circ\bar x=\bar x$ (by $\bar x\circ x=e$ and $G_1$), so by $G_0$: $\bar x\circ(x\circ\bar x)=\bar x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Hit both sides from the left with $\bar{\bar x}$. On the right, $\bar{\bar x}$ undoes $\bar x$.</p></div><div class="sp-formal"><p>$\bar{\bar x}\circ\big(\bar x\circ(x\circ\bar x)\big)=\bar{\bar x}\circ\bar x=e$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>On the left, rebracket: $\bar{\bar x}$ undoes $\bar x$ there too, and the quiet member leaves $x\circ\bar x$ alone. So $x\circ\bar x$ is the quiet member.</p></div><div class="sp-formal"><p>By $G_0$ the left side is $(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)=e\circ(x\circ\bar x)=x\circ\bar x$ (by $G_1$). Hence $x\circ\bar x=e$. <span class="qed">∎</span></p></div></div></div>
+<details><summary>The proof in one piece</summary><div><p>Let $\bar x\circ x=e$ and let $\bar{\bar x}$ be a left inverse of $\bar x$. By $G_1$, $(\bar x\circ x)\circ\bar x=e\circ\bar x=\bar x$, so by $G_0$, $\bar x\circ(x\circ\bar x)=\bar x$. Multiplying from the left by $\bar{\bar x}$: $\bar{\bar x}\circ(\bar x\circ(x\circ\bar x))=\bar{\bar x}\circ\bar x=e$. By $G_0$ and $G_1$ the left side equals $(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)=e\circ(x\circ\bar x)=x\circ\bar x$. So $x\circ\bar x=e$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Which equation do you multiply by $\bar{\bar x}$, and from which side?</p><details><summary>Answer</summary><div><p>$\bar x\circ(x\circ\bar x)=\bar x$, from the left.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write the two lines that compute the left side after multiplying.</p></li>
+<li><p><strong>Rung 3.</strong> Write Proof A from the frame alone.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce Satz 2.0 (a) under exam pressure</span>
+<ol><li>Write $\bar x=e\circ\bar x=(\bar x\circ x)\circ\bar x=\bar x\circ(x\circ\bar x)$.</li><li>Multiply from the left by $\bar{\bar x}$ (a left inverse of $\bar x$).</li><li>Right side: $\bar{\bar x}\circ\bar x=e$.</li><li>Left side: rebracket to $(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)=x\circ\bar x$.</li></ol>
+<p><strong>In short:</strong> build $\bar x=\bar x(x\bar x)$, then cancel $\bar x$ with its own left inverse.</p></div>
+
+<h3 id="proof-b">Proof B: the rest of Satz 2.0, parts (b), (c), (d)</h3>
+<p><strong>The idea.</strong> Now that left inverses work on both sides, each remaining part is a one-line chain.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>(b)</strong> To show $x\circ e=x$: write $e=\bar x\circ x$ and rebracket. <strong>(c)</strong> Two neutral elements $e,e'$: compute $e\circ e'$. <strong>(d)</strong> Two inverses $\bar x,\tilde x$: sneak in $e$.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The quiet member is quiet on the right too: replace it by “undo then do”.</p></div><div class="sp-formal"><p><strong>(b)</strong> $x\circ e=x\circ(\bar x\circ x)=(x\circ\bar x)\circ x=e\circ x=x$, by $G_2$, $G_0$, (a), $G_1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two quiet members performing together give each of them (lesson 1, Proof A).</p></div><div class="sp-formal"><p><strong>(c)</strong> If $e,e'$ are neutral: $e\circ e'=e'$ ($e$ left neutral) and $e\circ e'=e$ ($e'$ right neutral), so $e=e'$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two undoers of the same member are the same undoer (lesson 1, Proof B).</p></div><div class="sp-formal"><p><strong>(d)</strong> If $\bar x,\tilde x$ are inverses of $x$: $\bar x=\bar x\circ e=\bar x\circ(x\circ\tilde x)=(\bar x\circ x)\circ\tilde x=e\circ\tilde x=\tilde x$. <span class="qed">∎</span></p></div></div></div>
+<details><summary>The proof in one piece</summary><div><p>(b) $x\circ e=x\circ(\bar x\circ x)=(x\circ\bar x)\circ x=e\circ x=x$. (c) For neutral $e,e'$: $e=e\circ e'=e'$. (d) For inverses $\bar x,\tilde x$ of $x$: $\bar x=\bar x\circ(x\circ\tilde x)=(\bar x\circ x)\circ\tilde x=\tilde x$. Together with (a), $(M,\circ,e)$ is a group. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> In (b), where is part (a) used?</p><details><summary>Answer</summary><div><p>In $(x\circ\bar x)\circ x=e\circ x$: we need $x\circ\bar x=e$, i.e. that the left inverse is also a right inverse.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write (b), (c), (d) from the frame alone.</p></li></ol></div>
 
 <h2 id="s2">2. The inverse of the inverse, and notation</h2>
-<div class="box"><p><strong>Claim (p. 12).</strong> In a group, if $\bar x$ is the inverse of $x$ and $\bar{\bar x}$ the inverse of $\bar x$, then $\bar{\bar x}=x$.</p>
-<p><strong>Proof.</strong> By associativity the same element can be bracketed two ways: $(\bar{\bar x}\circ\bar x)\circ x=e\circ x=x$ and $\bar{\bar x}\circ(\bar x\circ x)=\bar{\bar x}\circ e=\bar{\bar x}$. So $x=\bar{\bar x}$. ∎</p></div>
-<p><strong>Notation.</strong> In additive groups the inverse of $x$ is $-x$ and $x-y:=x+(-y)$; in multiplicative groups it is $x^{-1}$ and $x:y:=x\cdot y^{-1}$. The claim says $-(-x)=x$ and $(x^{-1})^{-1}=x$.</p>
+<div class="box"><p><strong>Claim (p. 12).</strong> If $(M,\circ)$ is a group, $\bar x$ the inverse of $x$, and $\bar{\bar x}$ the inverse of $\bar x$, then $\bar{\bar x}=x$.</p>
+<p><strong>Proof.</strong> By associativity the same element can be bracketed in two ways: $(\bar{\bar x}\circ\bar x)\circ x=e\circ x=x$ and $\bar{\bar x}\circ(\bar x\circ x)=\bar{\bar x}\circ e=\bar{\bar x}$. So $x=\bar{\bar x}$. <span class="qed">∎</span></p></div>
+<div class="box"><p><strong>Notation (p. 12).</strong> If the group operation is written as addition $+$, the inverse of $x$ is written $-x$; in multiplicative groups it is written $x^{-1}$. By the claim, $-(-x)=x$ and $(x^{-1})^{-1}=x$. In additive groups $x-y:=x+(-y)$; in multiplicative groups $x:y:=x\cdot y^{-1}$.</p></div>
 
-<h2 id="s3">3. A warning non-example: the sides must match</h2>
-<div class="box"><p>On a set $M$ with $|M|\ge2$ define $a*b:=a$. Then $*$ is associative ($(a*b)*c=a=a*(b*c)$), <em>every</em> element is a <strong>right</strong> identity ($x*e=x$), and every $x$ has a left inverse with respect to a fixed $e$ (take $\bar x=e$: $e*x=e$). But $(M,*)$ is not a group: a group has a unique identity, and here every element is a right identity. So “right identity + left inverses” is <em>not</em> enough; Satz 2.0 needs both on the <strong>same</strong> side.</p></div>
+<h2 id="s3">3. A warning non-example: the sides must match (p. 12)</h2>
+<div class="box"><p>Let $M$ be a nonempty set and $a*b:=a$ for all $a,b\in M$. Then $*$ is associative ($(a*b)*c=a=a*(b*c)$), <em>every</em> element is <strong>right</strong> neutral ($x*e=x$), and every element has a <strong>left</strong> inverse with respect to any fixed $e$ (take $\bar x=e$: $e*x=e$). But for $|M|\ge2$, $(M,*)$ is no group: in a group the neutral element is unique, and here every element is right neutral.</p>
+<p><strong>Lesson:</strong> Satz 2.0 needs the neutral element and the inverses on the <em>same</em> side. “Right neutral + left inverses” is not enough.</p></div>
 
-<h2 id="s4">4. Fields have no zero divisors (Satz 2.1)</h2>
-<div class="box"><p><strong>Theorem (Satz 2.1, p. 12).</strong> In every field $(K,+,\cdot,0,1)$: (a) $0\ne1$; (b) $\forall x\forall y\ \big(x\cdot y=0\to(x=0\vee y=0)\big)$.</p>
-<p><strong>Proof.</strong> (a) By definition $(K\setminus\{0\},\cdot)$ is a group with identity $1$. If $0=1$, then $1\notin K\setminus\{0\}$, so it can't be a group with identity $1$. (b) Contrapositive: if $x\ne0$ and $y\ne0$, then $x^{-1},y^{-1}$ exist, and $(x\cdot y)\cdot(y^{-1}\cdot x^{-1})=1$, so $x\cdot y$ is invertible in $(K\setminus\{0\},\cdot)$; in particular $x\cdot y\ne0$ (equivalently: $K\setminus\{0\}$ is closed under $\cdot$, because it is a group). ∎</p></div>
-<p><strong>Remark.</strong> In the zero ring $(\{0\},+,\cdot)$ we have $0=1$. That's why (a) is part of being a field.</p>
+<h2 id="s4">4. Fields: $0\ne1$ and no zero divisors (Lemma 1.3.10)</h2>
+<div class="box"><p><strong>Lemma 1.3.10 (a), (c) (Script EN 2023, p. 19).</strong> In every field $(K,+,\cdot,0,1)$: (a) $0\ne1$; (c) $\forall x\forall y\ \big(x\cdot y=0\to(x=0\vee y=0)\big)$.</p></div>
+<h3 id="proof-c">Proof C: Lemma 1.3.10 (a), (c)</h3>
+<p><strong>The idea.</strong> Both parts are hidden inside the demand “$(K\setminus\{0\},\cdot)$ is a group with neutral element $1$”: a group contains its neutral element, and a group is closed under its operation.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>(a)</strong> By contradiction: assume $0=1$. <strong>(c)</strong> By contrapositive: assume $x\ne0$ and $y\ne0$, show $x\cdot y\ne0$.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The multiplication guild of a field consists of everyone except zero, and its quiet member is $1$. If $1$ were $0$, the guild would have expelled its own quiet member.</p></div><div class="sp-formal"><p><strong>(a)</strong> By definition $(K\setminus\{0\},\cdot)$ is an abelian group with neutral element $1$. If $0=1$, then $1\notin K\setminus\{0\}$, so it can't be a group with neutral element $1$. Hence $0\ne1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two guild members combine into a guild member, never into the expelled zero.</p></div><div class="sp-formal"><p><strong>(c)</strong> Contrapositive: let $x\ne0$ and $y\ne0$. Then $x^{-1},y^{-1}$ exist, and $(x\cdot y)^{-1}=x^{-1}\cdot y^{-1}$ (as $\cdot$ is commutative). So $x\cdot y$ has an inverse, hence $x\cdot y\ne0$ (equivalently: $x,y\in K\setminus\{0\}$ and this group is closed under $\cdot$). <span class="qed">∎</span></p></div></div></div>
+<details><summary>The proof in one piece</summary><div><p>(a) $(K\setminus\{0\},\cdot)$ is a group with neutral element $1$, so $1\in K\setminus\{0\}$, i.e. $0\ne1$. (c) If $x\ne0\ne y$, then $x,y$ lie in the group $(K\setminus\{0\},\cdot)$, which is closed under $\cdot$, so $x\cdot y\in K\setminus\{0\}$, i.e. $x\cdot y\ne0$. By contraposition, $x\cdot y=0\to(x=0\vee y=0)$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Which ring has $0=1$? Is it a field?</p><details><summary>Answer</summary><div><p>The zero ring $(\{0\},+,\cdot)$ with $0_R=1_R=0$. Not a field, by (a).</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write (c) as a contrapositive from the frame.</p></li></ol></div>
 
-<h2 id="s5">5. Consequences of the distributive laws (Satz 2.2)</h2>
-<div class="box"><p><strong>Theorem (Satz 2.2, p. 13).</strong> In every ring $(R,+,\cdot,0,1)$: (a) $0\cdot x=0=x\cdot0$; (b) $(-1)\cdot x=-x=x\cdot(-1)$; (c) $(-x)\cdot(-y)=x\cdot y$.</p>
-<p><strong>Proof.</strong> (a) $x=1\cdot x=(1+0)\cdot x=1\cdot x+0\cdot x=x+0\cdot x$. Add $-x$ on the left: $0=(-x)+x=(-x)+(x+0\cdot x)=\big((-x)+x\big)+0\cdot x=0+0\cdot x=0\cdot x$. Analogously $x\cdot0=0$.</p>
-<p>(b) $0=0\cdot x=\big((-1)+1\big)\cdot x=(-1)\cdot x+1\cdot x=(-1)\cdot x+x$, so $(-1)\cdot x$ is the additive inverse of $x$: $(-1)\cdot x=-x$ (inverses are unique). Analogously $x\cdot(-1)=-x$.</p>
-<p>(c) Using (b) twice and associativity: $(-x)\cdot(-y)=\big(x\cdot(-1)\big)\cdot\big((-1)\cdot y\big)=x\cdot\big((-1)\cdot(-1)\big)\cdot y$. By (b), $(-1)\cdot(-1)=-(-1)=1$ (inverse of the inverse, §2). So $(-x)\cdot(-y)=x\cdot1\cdot y=x\cdot y$. ∎</p></div>
-<div class="box exam"><p><strong>How to reproduce Satz 2.2 (a) under exam pressure.</strong> 1. Write $x=(1+0)\cdot x$. 2. Distribute: $x=x+0\cdot x$. 3. Add $-x$ on the left and rebracket. <em>In short: “$1+0$ distributed, then cancel $x$”.</em></p></div>
-<p><strong>Why it's cool.</strong> “Minus times minus is plus” is not a convention: it is forced by the distributive law. Any number system that wants distributivity has to accept it.</p>
+<h2 id="s5">5. Consequences of the distributive laws (Lemma 1.3.4, Lemma 1.3.10 (d))</h2>
+<div class="box"><p><strong>Ring rules (Script EN 2023: (a) is Lemma 1.3.4, p. 17; (b), (c) are Lemma 1.3.10 (d), p. 19, stated there for fields, but the proof only uses ring axioms).</strong> Let $(R,+,\cdot,0,1)$ be a ring. Then: (a) $\forall x\,(0\cdot x=0\wedge x\cdot0=0)$; (b) $\forall x\,\big((-1)\cdot x=-x\wedge x\cdot(-1)=-x\big)$; (c) $\forall x\forall y\,\big((-x)\cdot(-y)=x\cdot y\big)$.</p></div>
+<h3 id="proof-d">Proof D: the ring rules</h3>
+<p><strong>The idea.</strong> The distributive law is the only axiom connecting $+$ and $\cdot$, so every step must go through it. For (a), write $x=(1+0)\cdot x$ and distribute; for (b), write $0=((-1)+1)\cdot x$; (c) is (b) twice.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>(a)</strong> To show $0\cdot x=0$, i.e. that $0\cdot x$ is the neutral element of $+$. <strong>(b)</strong> To show $(-1)\cdot x$ is <em>the</em> additive inverse of $x$: show $(-1)\cdot x+x=0$ and use uniqueness.</li><li><strong>The gap:</strong> where does a “$+$” come from inside a product? From $1=1+0$ or $0=(-1)+1$.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Split $x$ as “$x$ plus nothing” and let the multiplication spread over the plus.</p></div><div class="sp-formal"><p><strong>(a)</strong> $x=1\cdot x=(1+0)\cdot x=1\cdot x+0\cdot x=x+0\cdot x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Undo $x$ on both sides: what remains is “$0\cdot x$ equals nothing”.</p></div><div class="sp-formal"><p>Add $-x$ from the left: $0=(-x)+x=(-x)+(x+0\cdot x)=((-x)+x)+0\cdot x=0+0\cdot x=0\cdot x$. Analogously $x\cdot0=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zero is “minus one plus one”; spread it over $x$.</p></div><div class="sp-formal"><p><strong>(b)</strong> $0=0\cdot x=((-1)+1)\cdot x=(-1)\cdot x+1\cdot x=(-1)\cdot x+x$. So $(-1)\cdot x$ is an additive inverse of $x$; inverses are unique, so $(-1)\cdot x=-x$. Analogously $x\cdot(-1)=-x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two minus signs: pull both out as $-1$ factors, and $(-1)(-1)$ is the inverse of the inverse of $1$.</p></div><div class="sp-formal"><p><strong>(c)</strong> $(-x)\cdot(-y)=(x\cdot(-1))\cdot((-1)\cdot y)=x\cdot((-1)\cdot(-1))\cdot y$. By (b), $(-1)\cdot(-1)=-(-1)=1$ (inverse of the inverse, §2). So $(-x)\cdot(-y)=x\cdot1\cdot y=x\cdot y$. <span class="qed">∎</span></p></div></div></div>
+<details><summary>The proof in one piece</summary><div><p>(a) $x=(1+0)x=x+0\cdot x$; adding $-x$ gives $0=0\cdot x$; similarly $x\cdot0=0$. (b) $0=0\cdot x=((-1)+1)x=(-1)x+x$, so $(-1)x=-x$ by uniqueness of inverses; similarly $x(-1)=-x$. (c) $(-x)(-y)=x(-1)(-1)y=x\cdot(-(-1))\cdot y=x\cdot1\cdot y=xy$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> In (a), which axiom justifies $(1+0)\cdot x=1\cdot x+0\cdot x$?</p><details><summary>Answer</summary><div><p>The distributive law $(x+y)\cdot z=x\cdot z+y\cdot z$.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write (b) from the frame alone.</p></li>
+<li><p><strong>Rung 3.</strong> Write (a), (b) and (c) without looking.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce the ring rules under exam pressure</span>
+<ol><li>(a) $x=(1+0)x=x+0x$, then add $-x$.</li><li>(b) $0=0x=((-1)+1)x=(-1)x+x$, then uniqueness of inverses.</li><li>(c) $(-x)(-y)=x(-1)(-1)y$ and $(-1)(-1)=1$.</li></ol>
+<p><strong>In short:</strong> sneak in $1+0$ or $(-1)+1$, distribute, cancel.</p></div>
+<p><strong>Why it's cool.</strong> “Minus times minus is plus” is not a school convention: any number system with the distributive law is forced into it. Lemma 3.0 in lesson 5 repeats this proof word for word for vectors.</p>
+
+<h2 id="we">Worked examples</h2>
+<div class="box"><h3 id="we-1">Worked example 1: $\mathbb Z_6$ is no field</h3>
+<ol class="gq"><li><p>Find two nonzero elements with product $\bar0$.</p><details><summary>Answer</summary><div><p>$\bar2\cdot\bar3=\bar6=\bar0$.</p></div></details></li>
+<li><p>Which theorem finishes the argument?</p><details><summary>Answer</summary><div><p>Lemma 1.3.10 (c): in a field, $x\cdot y=0$ forces $x=0$ or $y=0$. Here neither holds, so $\mathbb Z_6$ is no field (although it is a commutative ring, Serie 1, Aufgabe 8(b)).</p></div></details></li></ol></div>
+<div class="box"><h3 id="we-2">Worked example 2: the inverse of a product</h3>
+<p>In a group, show $(x\circ y)^{-1}=y^{-1}\circ x^{-1}$.</p>
+<ol class="gq"><li><p>What must you check, by Satz 2.0?</p><details><summary>Answer</summary><div><p>Only that $y^{-1}\circ x^{-1}$ is a <em>left</em> inverse of $x\circ y$: then by (a) it's an inverse, and by (d) it's <em>the</em> inverse.</p></div></details></li>
+<li><p>Check it.</p><details><summary>Answer</summary><div><p>$(y^{-1}\circ x^{-1})\circ(x\circ y)=y^{-1}\circ(x^{-1}\circ x)\circ y=y^{-1}\circ e\circ y=y^{-1}\circ y=e$, using associativity.</p></div></details></li></ol></div>
 
 <h2 id="ex">Exercises</h2>
-<div class="box"><h3 id="ex-1">Exercise 1</h3><p>Let $(G,\circ)$ be a group. Show the cancellation law: $a\circ x=a\circ y\Rightarrow x=y$.</p>
-<details class="sol"><summary>Solution</summary><div><p>Let $\bar a$ be the inverse of $a$. Multiply from the left: $\bar a\circ(a\circ x)=\bar a\circ(a\circ y)$. Associativity gives $(\bar a\circ a)\circ x=(\bar a\circ a)\circ y$, i.e. $e\circ x=e\circ y$, so $x=y$. ∎</p></div></details></div>
-<div class="box"><h3 id="ex-2">Exercise 2</h3><p>Show that in a group $\overline{x\circ y}=\bar y\circ\bar x$ (in multiplicative notation $(xy)^{-1}=y^{-1}x^{-1}$).</p>
-<details class="sol"><summary>Solution</summary><div><p>$(\bar y\circ\bar x)\circ(x\circ y)=\bar y\circ(\bar x\circ x)\circ y=\bar y\circ e\circ y=\bar y\circ y=e$ (associativity throughout). So $\bar y\circ\bar x$ is a left inverse of $x\circ y$, hence by Satz 2.0 (a) and uniqueness (d) it is <em>the</em> inverse. ∎</p></div></details></div>
-<div class="box"><h3 id="ex-3">Exercise 3</h3><p>$\mathbb Z_6$ is a commutative ring. Is it a field? Use Satz 2.1.</p>
-<details class="sol"><summary>Solution</summary><div><p>No: $\bar2\cdot\bar3=\bar6=\bar0$ with $\bar2\ne\bar0$ and $\bar3\ne\bar0$. By Satz 2.1 (b), a field has no such pair, so $\mathbb Z_6$ is not a field. (In general $\mathbb Z_n$ is a field exactly when $n$ is prime; compare lesson 3, §7.)</p></div></details></div>
+<div class="box"><h3 id="ex-1">Exercise 1 (exam FS17, true/false iv)</h3>
+<p>True or false: in every group $(G,\circ,e)$, $\forall a,b,c\in G:\ b=c\iff a\circ b=a\circ c$.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>True.</strong> “$\Rightarrow$”: equal elements give equal products. “$\Leftarrow$”: multiply $a\circ b=a\circ c$ from the left by $a^{-1}$ and rebracket: $(a^{-1}\circ a)\circ b=(a^{-1}\circ a)\circ c$, so $e\circ b=e\circ c$, so $b=c$ (cancellation law).</p></div></details></div>
+<div class="box"><h3 id="ex-2">Exercise 2 (Satz 2.0 in action)</h3>
+<p>On $\mathbb R$ define $a\circ b:=a+b-1$. Using Satz 2.0, show $(\mathbb R,\circ)$ is a group. (Find $e$ and left inverses.)</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>Frame:</strong> check only $G_0$, $G_1$, $G_2$.</p><p>$G_0$: $(a\circ b)\circ c=(a+b-1)+c-1=a+b+c-2=a\circ(b\circ c)$. $G_1$: $e=1$, since $1\circ x=1+x-1=x$. $G_2$: for $x$ take $\bar x=2-x$: $\bar x\circ x=2-x+x-1=1=e$. By Satz 2.0, $(\mathbb R,\circ,1)$ is a group (abelian, as $\circ$ is commutative).</p></div></details></div>
+<div class="box"><h3 id="ex-3">Exercise 3 (the ring rules)</h3>
+<p>In a ring, show $(-x)\cdot y=-(x\cdot y)$.</p>
+<details class="sol"><summary>Solution</summary><div><p>By rule (b), $-x=(-1)\cdot x$, so $(-x)\cdot y=((-1)\cdot x)\cdot y=(-1)\cdot(x\cdot y)=-(x\cdot y)$, using associativity of $\cdot$ and rule (b) again.</p></div></details></div>
+<div class="box"><h3 id="ex-4">Exercise 4 (from the non-example)</h3>
+<p>Let $|M|\ge2$ and $a*b:=a$. Which of $G_0$, $G_1$, $G_2$ fail?</p>
+<details class="sol"><summary>Solution</summary><div><p>$G_0$ holds. $G_1$ fails for every candidate $e$: $e*x=e\ne x$ for any $x\ne e$. So there is no left neutral element, and $G_2$ doesn't even make sense. The structure has right neutral elements and “left inverses” only in the twisted sense of §3; Satz 2.0 needs left neutral <em>and</em> left inverses.</p></div></details></div>
 
-<h2 id="done">You're done when</h2>
-<p>You can write the proof of Satz 2.0 (a) from the exam box, and Satz 2.2 (a)–(c) without looking. You can also explain why $a*b:=a$ is not a group. All of §2 is exam-relevant; nothing to skip.</p>
-<p class="small">Draft lesson. Full format in the next pass.</p>
+<h2 id="skip">What we skipped</h2>
+<p>Nothing from §2. Non-commutative fields (skew fields) are not in this course. Next: <a href="linalg-05.html">Lesson 5, vector spaces</a>.</p>
 
 <p class="fb-line"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a> · <a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Lin Alg) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></p>
 </main>
