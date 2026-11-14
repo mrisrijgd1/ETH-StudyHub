@@ -40,12 +40,12 @@
     if (!S || !S.user) return drawGuest();
     load().then(function () {
       root.innerHTML =
-        '<p class="toc"><a href="#my-plan">' + L('Plan', 'Plan') + '</a><a href="#my-notes">' + L('Notes', 'Notizen') + '</a><a href="#my-questions">' + L('Questions', 'Fragen') + '</a><a href="#my-cards">' + L('Flashcards', 'Lernkarten') + '</a><a href="#performance">' + L('Performance', 'Leistung') + '</a><a href="#my-design">' + L('Design', 'Design') + '</a><a href="#my-history">' + L('History', 'Verlauf') + '</a></p>' +
+        '<p class="toc"><a href="#my-plan">' + L('Plan', 'Plan') + '</a><a href="#my-notes">' + L('Notes', 'Notizen') + '</a><a href="#my-questions">' + L('Questions', 'Fragen') + '</a><a href="#my-cards">' + L('Flashcards', 'Lernkarten') + '</a><a href="#performance">' + L('Performance', 'Leistung') + '</a><a href="#my-suggestions">' + L('Suggestions', 'Vorschläge') + '</a><a href="#my-design">' + L('Design', 'Design') + '</a><a href="#my-history">' + L('History', 'Verlauf') + '</a></p>' +
         '<div class="box"><strong>' + L('What should I do today?', 'Was mache ich heute?') + '</strong> ' + L('Ask your own AI this question once the ', 'Frag das deine eigene KI, sobald der ') + '<a href="connect.html">' + L('connector', 'Connector') + '</a>' + L(' is added. It looks at your progress, marks and mistakes and suggests at most three small tasks.', ' eingerichtet ist. Sie schaut auf Fortschritt, Resultate und Fehler und schlägt höchstens drei kleine Aufgaben vor.') + '</div>' +
         secPlan() + secList('notes', L('Notes', 'Notizen'), L('Anything you want to keep: a trick, a summary, a reminder.', 'Alles, was du behalten willst: ein Trick, eine Zusammenfassung, eine Erinnerung.')) +
         secList('questions', L('Questions', 'Fragen'), L('Questions to ask in the exercise class, the forum or your AI. Tick them off when answered.', 'Fragen für die Übungsstunde, das Forum oder deine KI. Abhaken, wenn beantwortet.')) +
-        secCards() + '<section id="performance"><h2>' + L('Performance', 'Leistung') + '</h2><div id="my-perf">' + L('Loading…', 'Wird geladen …') + '</div></section>' + secDesign() + secHistory();
-      wire(); perf();
+        secCards() + '<section id="performance"><h2>' + L('Performance', 'Leistung') + '</h2><div id="my-perf">' + L('Loading…', 'Wird geladen …') + '</div></section>' + '<section id="my-suggestions"><h2>' + L('Your suggestions', 'Deine Vorschläge') + '</h2><div id="my-sug">' + L('Loading…', 'Wird geladen …') + '</div></section>' + secDesign() + secHistory();
+      wire(); perf(); sug();
     });
   }
   function drawGuest() {
@@ -108,6 +108,39 @@
         '<h3>' + L('Mistake fingerprint', 'Fehler-Fingerabdruck') + '</h3>' + (tl.length ? '<p>' + tl.map(function (t) { return esc(t) + ' <strong>' + types[t] + '×</strong>'; }).join(' · ') + '</p>' : '<p class="meta">' + L('Appears once your AI has marked some of your work.', 'Erscheint, sobald deine KI einige Arbeiten korrigiert hat.') + '</p>') +
         (mocks.length ? '<h3>' + L('Mocks', 'Probeprüfungen') + '</h3><table><tr><th>' + L('Exam', 'Prüfung') + '</th><th>' + L('Date', 'Datum') + '</th><th>' + L('Score', 'Punkte') + '</th></tr>' + mocks.map(function (m) { return '<tr><td>' + esc(m.exam_id) + '</td><td>' + new Date(m.started_at).toLocaleDateString() + '</td><td>' + (m.max_score ? m.score + ' / ' + m.max_score : (m.submitted_at ? L('not marked yet', 'noch nicht korrigiert') : L('running', 'läuft'))) + '</td></tr>'; }).join('') + '</table>' : '') +
         (res.length ? '<h3>' + L('Latest marks', 'Neueste Resultate') + '</h3><table><tr><th>' + L('What', 'Was') + '</th><th>' + L('Score', 'Punkte') + '</th><th>' + L('Feedback', 'Rückmeldung') + '</th></tr>' + res.slice(0, 20).map(function (x) { return '<tr><td>' + esc(x.item_id) + '<div class="meta">' + new Date(x.created_at).toLocaleDateString() + '</div></td><td>' + (x.max_score ? x.score + ' / ' + x.max_score : '–') + '</td><td>' + esc((x.summary || '').slice(0, 220)) + '</td></tr>'; }).join('') + '</table>' : '');
+    });
+  }
+  // ---------- suggestions (curated data pool; suggest.js files them) ----------
+  var SUGST = { 'new': L('waiting for review', 'wartet auf Prüfung'), accepted: L('accepted, coming in the next update', 'angenommen, kommt mit dem nächsten Update'), rejected: L('not taken', 'nicht übernommen'), done: L('live on the site', 'auf der Seite umgesetzt') };
+  var KIND = { mistake: L('Mistake', 'Fehler'), unclear: L('Unclear', 'Unklar'), addition: L('Addition', 'Ergänzung'), other: L('Other', 'Anderes') };
+  function sugItem(x, admin) {
+    return '<li><div class="meta">' + esc(KIND[x.kind] || x.kind) + ' · <a href="' + esc(x.page) + '.html">' + esc(x.page) + '</a>' + (x.section ? ' · ' + esc(x.section) : '') + ' · ' + new Date(x.created_at).toLocaleDateString() + (admin ? ' · ' + esc(x.author) : '') + '</div>' +
+      (x.quote ? '<div class="meta">“' + esc(x.quote) + '”</div>' : '') + '<div>' + esc(x.body) + '</div>' + (x.reason ? '<div class="meta">' + L('Why: ', 'Warum: ') + esc(x.reason) + '</div>' : '') +
+      '<div class="meta"><strong>' + esc(SUGST[x.status] || x.status) + '</strong>' + (x.review_note ? ' · ' + esc(x.review_note) : '') + '</div>' +
+      (admin ? '<div class="btns"><input type="text" placeholder="' + L('Note (optional)', 'Notiz (optional)') + '" data-sn="' + x.id + '" value="' + esc(x.review_note || '') + '">' +
+        ['accepted', 'rejected', 'done', 'new'].map(function (st) { return '<button data-sset="' + x.id + ':' + st + '">' + esc({ accepted: L('Accept', 'Annehmen'), rejected: L('Reject', 'Ablehnen'), done: L('Mark live', 'Als umgesetzt'), 'new': L('Back to new', 'Zurück auf neu') }[st]) + '</button>'; }).join('') + '</div>'
+        : (x.status === 'new' ? '<div class="btns"><button data-sdel="' + x.id + '">' + L('Withdraw', 'Zurückziehen') + '</button></div>' : '')) + '</li>';
+  }
+  function sug() {
+    var el = document.getElementById('my-sug'); if (!el) return;
+    Promise.all([S.sb.from('suggestions').select('id,page,section,quote,kind,body,reason,status,review_note,created_at').order('created_at', { ascending: false }).limit(100), S.sb.rpc('is_admin')]).then(function (r) {
+      var mine = r[0].data || [], admin = !!(r[1] && r[1].data);
+      el.innerHTML = '<p>' + L('On every lesson, Serie and Toolbox page there is a box “Suggest a fix or addition”. What you send appears here with its status.', 'Auf jeder Lektions-, Serien- und Werkzeugkasten-Seite gibt es das Feld „Korrektur oder Ergänzung vorschlagen“. Was du sendest, erscheint hier mit seinem Stand.') + '</p>' +
+        (mine.length ? '<ul class="it">' + mine.map(function (x) { return sugItem(x, false); }).join('') + '</ul>' : '<p class="meta">' + L('None yet.', 'Noch keine.') + '</p>') +
+        (admin ? '<h3>' + L('Review (only you see this)', 'Prüfen (nur du siehst das)') + '</h3><div class="row"><select id="my-sugf"><option value="new">' + L('Waiting', 'Wartend') + '</option><option value="accepted">' + L('Accepted', 'Angenommen') + '</option><option value="">' + L('All', 'Alle') + '</option></select></div><div id="my-sugadm"></div><p class="st" id="my-sug-st"></p>' : '');
+      el.querySelectorAll('[data-sdel]').forEach(function (b) { b.onclick = function () { S.sb.from('suggestions').delete().eq('id', Number(b.getAttribute('data-sdel'))).then(sug); }; });
+      if (admin) { document.getElementById('my-sugf').onchange = sugAdmin; sugAdmin(); }
+    });
+  }
+  function sugAdmin() {
+    var f = document.getElementById('my-sugf').value || null, el = document.getElementById('my-sugadm');
+    S.sb.rpc('suggestions_admin_list', { p_status: f }).then(function (r) {
+      var v = r.data || [];
+      el.innerHTML = r.error ? '<p class="meta">' + esc(r.error.message) + '</p>' : v.length ? '<ul class="it">' + v.map(function (x) { return sugItem(x, true); }).join('') + '</ul>' : '<p class="meta">' + L('Nothing here.', 'Nichts da.') + '</p>';
+      el.querySelectorAll('[data-sset]').forEach(function (b) {
+        b.onclick = function () { var p = b.getAttribute('data-sset').split(':'), n = el.querySelector('[data-sn="' + p[0] + '"]');
+          S.sb.rpc('suggestions_admin_set', { p_id: Number(p[0]), p_status: p[1], p_note: n && n.value.trim() || null }).then(function (x) { status('my-sug-st', x.error ? x.error.message : L('Saved.', 'Gespeichert.')); sugAdmin(); }); };
+      });
     });
   }
   // ---------- design ----------
