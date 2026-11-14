@@ -89,6 +89,8 @@ for f in sorted(os.listdir(ROOT)):
         eid = f'{pid}/ex{n_ex}'
         src = cont if cont is not None else cont_text_src
         head = src.find(['h2', 'h3', 'h4']) if src is not None else None
+        if head is None and cont is not None:
+            head = cont.find_previous(['h2', 'h3', 'h4'])  # a box without its own heading: use the section's
         etitle = head.get_text(' ', strip=True) if head else f'{title}: exercise {n_ex}'
         sol_text = text_of(d)
         sol_text = re.sub(r'^▸ [^\n]*\n', '', sol_text)
