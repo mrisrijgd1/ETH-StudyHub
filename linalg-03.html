@@ -6,7 +6,7 @@
 <meta property="og:title" content="Lin Alg 3: Proof methods">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
 <script defer src="assets/umami-kit.js?v=79d39d59"></script>
-<script defer src="assets/tips.js?v=7a6bbbc5"></script>
+<script defer src="assets/tips.js?v=89594c5a"></script>
 <script defer src="assets/listen.js?v=427792c7"></script>
 <script defer src="assets/account.js?v=e8f9a658"></script>
 <script>try{var t=localStorage.getItem("sh-theme");document.documentElement.setAttribute("data-theme",t||"dark");if(localStorage.getItem("sh-side")==="0")document.documentElement.classList.add("sh-noside")}catch(e){}</script>
@@ -239,80 +239,181 @@ a.subject:hover strong { text-decoration: underline; }
 
 <style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}</style>
 <header>
-<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 3 (draft)</span>
-<h1>Proof methods: direct, contrapositive, contradiction, induction, pigeonhole</h1>
-<p class="lead">Halbeisen's §1, second half (notes pp. 7–10). What a proof is, three rules of inference, and five model proofs: no largest prime, $\sqrt2\notin\mathbb Q$, $|\mathcal P(M)|=2^n$, Cantor's theorem, and inverses in $\mathbb Z_p$ by the pigeonhole principle.</p>
+<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 3</span>
+<h1>The court of Numeria: how proofs are built</h1>
+<p class="lead">What a proof <em>is</em>, the three rules of inference the lecture uses, and five model proofs you should be able to reproduce: no largest prime (direct), $\sqrt2\notin\mathbb Q$ (contrapositive), $|\mathcal P(M)|=2^n$ (induction), Cantor's theorem (contradiction) and inverses in $\mathbb Z_p$ (pigeonhole).</p>
 </header>
-<details class="toc" open><summary>Contents</summary><div><p><a href="#words">Words</a> · <a href="#s1">1 Rules of inference</a> · <a href="#s2">2 Direct proof</a> · <a href="#s3">3 Contrapositive</a> · <a href="#s4">4 Induction</a> · <a href="#s5">5 Contradiction: Cantor</a> · <a href="#s6">6 Countable</a> · <a href="#s7">7 Pigeonhole</a> · <a href="#ex">Exercises</a> · <a href="#done">You're done when</a></p></div></details>
-<div class="box"><p><strong>Script.</strong> Halbeisen's notes §1 “Beweismethoden”, pages 7–10 (typed copy by the Linear Algebra group). Previous: <a href="linalg-02.html">Lesson 2</a> · Next: <a href="linalg-04.html">Lesson 4</a>. The moves here are the same as in Analysis: <a href="moves.html#m-contrapos">contrapositive</a>, <a href="moves.html#m-contra">assume the opposite</a>, <a href="moves.html#m-induct">induction</a>, <a href="moves.html#m-diag">the diagonal argument</a>.</p></div>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+<dt>Covers</dt><dd>Proof methods from the lecture (Halbeisen's notes, §1 “Beweismethoden”, pp. 7–10: rules of inference, five model proofs, countable sets), and from Script EN 2023: the exercise “Cardinality of a power set” (p. 8), Definition 1.3.5, Lemma 1.3.12, Lemma 1.3.14 and Corollary 1.3.15 (pp. 17–20: zero divisors and why $\mathbb Z/p\mathbb Z$ is a field).</dd>
+<dt>Time</dt><dd>About 75 minutes.</dd>
+<dt>You're done when</dt><dd>you can (1) name the three rules of inference, (2) write the proofs of $\sqrt2\notin\mathbb Q$, $|\mathcal P(M)|=2^n$ and Cantor's theorem from the exam boxes, and (3) prove Lemma 1.3.14 and explain why $\mathbb Z/p\mathbb Z$ is a field when $p$ is prime (Serie 1, Aufgabe 8).</dd>
+<dt>Script</dt><dd>Main: Script EN 2023 where it covers the topic (pages above). It has no chapter on proof methods, so sections 1–6 follow the lecture: Halbeisen's notes W2b, pages 7–10.</dd>
+</dl>
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Serie 1, Aufgabe 8(d) (“$\mathbb Z_p$ is a field for $p$ prime”) is exactly Proof D below. Old exams ask computations in $\mathbb F_p$ as multiple choice (“In $\mathbb F_{23}$, $8\cdot9=$?” FS19; “In $\mathbb F_{17}$, $x\cdot7=1$ for $x=$?” HS18) and true/false on primes (FS17). And every later proof (bases, dimension, quotient spaces) uses contrapositive, contradiction and induction exactly as here.</p></div>
+
+<h2 id="recap">Recap of lesson 2 (5 min)</h2>
+<p>$A\to B\iff\neg A\vee B\iff\neg B\to\neg A$; $\neg(A\to B)\iff A\wedge\neg B$; a negation moving inward flips each quantifier. Check: negate $\forall p\in P\ \exists q\in P\ (q&gt;p)$.</p>
+<details><summary>Answer</summary><div><p>$\exists p\in P\ \forall q\in P\ (q\le p)$: “there is a largest element”.</p></div></details>
 
 <h2 id="words">Words for this lesson · Fachbegriffe</h2>
-<table><tr><th>English</th><th>German</th></tr>
-<tr><td>proof method</td><td>Beweismethode</td></tr><tr><td>rule of inference</td><td>Schlussregel</td></tr>
-<tr><td>contrapositive rule</td><td>Kontrapositionsregel</td></tr><tr><td>rule of contradiction</td><td>Widerspruchsregel</td></tr>
+<div class="table-wrap"><table>
+<tr><th>English</th><th>Deutsch</th></tr>
+<tr><td>proof method</td><td>Beweismethode</td></tr>
+<tr><td>rule of inference</td><td>Schlussregel</td></tr>
+<tr><td>modus ponens</td><td>Modus Ponens</td></tr>
+<tr><td>contrapositive rule</td><td>Kontrapositionsregel</td></tr>
+<tr><td>rule of contradiction</td><td>Widerspruchsregel</td></tr>
+<tr><td>direct proof</td><td>direkter Beweis</td></tr>
 <tr><td>induction axiom; base case; induction step</td><td>Induktionsaxiom; Induktionsverankerung; Induktionsschritt</td></tr>
-<tr><td>power set</td><td>Potenzmenge</td></tr><tr><td>countable / uncountable</td><td>abzählbar / überabzählbar</td></tr>
-<tr><td>pigeonhole principle</td><td>Schubfachprinzip</td></tr><tr><td>without loss of generality</td><td>ohne Beschränkung der Allgemeinheit (o.B.d.A.)</td></tr></table>
+<tr><td>power set</td><td>Potenzmenge</td></tr>
+<tr><td>countable / uncountable</td><td>abzählbar / überabzählbar</td></tr>
+<tr><td>pigeonhole principle</td><td>Schubfachprinzip</td></tr>
+<tr><td>without loss of generality</td><td>ohne Beschränkung der Allgemeinheit (o.B.d.A.)</td></tr>
+</table></div>
+<details class="toc" open><summary>Contents</summary><div><p><a href="#story">Story</a> · <a href="#s1">1 Rules of inference</a> · <a href="#s2">2 Direct</a> · <a href="#s3">3 Contrapositive</a> · <a href="#s4">4 Induction</a> · <a href="#s5">5 Contradiction</a> · <a href="#s6">6 Countable</a> · <a href="#s7">7 Pigeonhole</a> · <a href="#we">Worked examples</a> · <a href="#ex">Exercises</a> · <a href="#skip">What we skipped</a></p></div></details>
+
+<h2 id="story">The story: the court of Numeria</h2>
+<div class="story"><p>In Numeria's court, a claim is accepted only with a <em>chain of testimony</em>: a finite list of statements, each either a law of the city (an axiom) or forced by earlier testimony through one of the court's three rules. Lawyers have favourite strategies: march straight to the verdict, attack from the back gate, climb a ladder rung by rung, trap the opponent in a contradiction, or count the drawers and show two letters must share one.</p></div>
 
 <h2 id="s1">1. What a proof is: rules of inference</h2>
-<div class="box"><p><strong>Definition.</strong> A mathematical proof is a <em>finite sequence of statements</em>, each of which is an axiom or follows from earlier statements of the sequence.</p>
-<p><strong>Modus ponens:</strong> from $A$ and $A\to B$ conclude $B$. (This rule alone suffices to prove everything.)<br>
-<strong>Contrapositive rule:</strong> from $A$ and $\neg B\to\neg A$ conclude $B$ (since $A\to B\iff\neg B\to\neg A$, lesson 2).<br>
-<strong>Rule of contradiction:</strong> from $\neg A\to(C\wedge\neg C)$ conclude $A$, for any statement $C$.<br>
-Further rules: from $A\to B$ and $B\to C$ conclude $A\to C$; from $A\to B$ and $A\to C$ conclude $A\to(B\wedge C)$; from $A\to C$ and $B\to C$ conclude $(A\vee B)\to C$.</p></div>
+<div class="box"><p><strong>Definition (p. 7).</strong> A mathematical proof is a <strong>finite sequence of statements</strong> such that each statement is either an axiom or can be concluded from earlier statements of the sequence.</p>
+<ul><li><strong>Modus ponens:</strong> from $A$ and $A\to B$ conclude $B$. (This rule alone suffices to prove everything.)</li>
+<li><strong>Contrapositive rule:</strong> from $A$ and $\neg B\to\neg A$ conclude $B$. (Because $A\to B\iff\neg B\to\neg A$, lesson 2, Proof A.)</li>
+<li><strong>Rule of contradiction:</strong> from $\neg A\to(C\wedge\neg C)$ conclude $A$, for any statement $C$.</li>
+<li>Further rules, e.g.: from $A\to B$ and $B\to C$ conclude $A\to C$; from $A\to B$ and $A\to C$ conclude $A\to(B\wedge C)$; from $A\to C$ and $B\to C$ conclude $(A\vee B)\to C$.</li></ul></div>
 
 <h2 id="s2">2. A direct proof: there is no largest prime</h2>
-<p>Let $P\subseteq\mathbb N$ be the set of primes. Claim $A$: $\neg\exists p\in P\ \forall q\in P\ (q\le p)$.</p>
-<div class="box"><p><strong>Proof.</strong> Let $p\in P$ be any prime and $r:=q_0\cdot q_1\cdots q_n$ the product of all primes $q_i\le p$. Then $r+1$ is not divisible by any $q_i$ (it leaves remainder $1$). So the prime factorisation of $r+1$ contains a prime $p'&gt;p$. As $p$ was arbitrary, we showed
-$$\forall p\in P\ \exists p'\in P\ (p'&gt;p)\iff\neg\exists p\in P\ \neg\exists p'\in P\ (p'&gt;p)\iff\neg\exists p\in P\ \forall q\in P\ (q\le p),$$
-which is $A$ (renaming $p'$ to $q$). ∎</p></div>
-<p>The quantifier gymnastics at the end is Halbeisen's style: he shows that what you proved <em>is</em> the claim, using the negation rules from lesson 2.</p>
+<div class="box"><p>Let $P\subseteq\mathbb N$ be the set of primes and $A$ the statement $\neg\exists p\in P\ \forall q\in P\ (q\le p)$ (“there is no largest prime”).</p>
+<p><strong>Proof (p. 7).</strong> Let $p\in P$ be any prime, and $r:=q_0\cdot q_1\cdots q_n$ the product of all primes $q_i\le p$. Then $r+1$ is not divisible by any $q_i$ (it leaves remainder $1$). So the prime factorisation of $r+1$ contains a prime $p'&gt;p$. Since $p$ was arbitrary we have shown
+$$\begin{aligned}&amp;\forall p\in P\ \exists p'\in P\ (p'&gt;p)\\ \iff&amp;\neg\exists p\in P\ \neg\exists p'\in P\ (p'&gt;p)\\ \iff&amp;\neg\exists p\in P\ \forall q\in P\ (q\le p),\end{aligned}$$
+which is $A$ (renaming $p'$ to $q$ in the last step). <span class="qed">∎</span></p></div>
+<p>The lecture's style shows up at the end: it translates what was proved, with the rules of lesson 2, until it is literally the claim.</p>
 
-<h2 id="s3">3. Contrapositive: $\sqrt2\notin\mathbb Q$</h2>
-<div class="box"><p>Let $B$: “$\sqrt2\notin\mathbb Q$” and $A$: “$(\sqrt2)^2=2$”. $A$ is true by definition of $\sqrt2$, so by modus ponens it suffices to show $A\to B$. Instead we show the contrapositive $\neg B\to\neg A$, i.e. $\sqrt2\in\mathbb Q\to(\sqrt2)^2\ne2$:</p>
-<p>If $\sqrt2\in\mathbb Q$, write $\sqrt2=\frac mn$ with $m,n\ge1$ and $\gcd(m,n)=1$. Then $\gcd(m^2,n^2)=1$, so $\frac{m^2}{n^2}$ is in lowest terms; it equals the integer $2$ only if $n^2=1$, i.e. $m^2=2$, which no integer satisfies. So $\frac{m^2}{n^2}\ne2$, i.e. $(\sqrt2)^2\ne2$. By the contrapositive rule, $B$ holds. ∎</p>
-<p class="small">Usually one doesn't mention modus ponens and just shows $A\to B$.</p></div>
+<h2 id="s3">3. Contrapositive</h2>
+<h3 id="proof-a">Proof A: $\sqrt2\notin\mathbb Q$</h3>
+<div class="box"><p><strong>Claim (p. 7–8).</strong> $\sqrt2\notin\mathbb Q$.</p></div>
+<p><strong>The idea.</strong> Let $B$ be “$\sqrt2\notin\mathbb Q$” and $A$ be “$(\sqrt2)^2=2$”. $A$ is true by definition, so by modus ponens it suffices to show $A\to B$. Show its contrapositive instead: if $\sqrt2$ were a fraction in lowest terms, its square would still be a fraction in lowest terms with denominator $\ne1$, so not $2$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>First line:</strong> “Suppose $\sqrt2\in\mathbb Q$” ($=\neg B$).</li><li><strong>Last line:</strong> “so $(\sqrt2)^2\ne2$” ($=\neg A$), then the contrapositive rule gives $B$.</li><li><strong>The gap:</strong> from $\sqrt2=\frac mn$ (lowest terms) to $\frac{m^2}{n^2}\ne2$.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The lawyer attacks through the back gate: assume the opposite of the verdict…</p></div><div class="sp-formal"><p>Suppose $\sqrt2\in\mathbb Q$. Then $\sqrt2=\frac mn$ with $m,n\ge1$ and $\gcd(m,n)=1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>…squaring keeps the fraction fully reduced…</p></div><div class="sp-formal"><p>Then $\gcd(m^2,n^2)=1$ (a prime dividing $m^2$ and $n^2$ would divide $m$ and $n$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>…and a fully reduced fraction can only be the whole number $2$ if its denominator is $1$, which would need $m^2=2$.</p></div><div class="sp-formal"><p>If $\frac{m^2}{n^2}=2$, then $n^2\mid m^2$, so $n^2=1$ and $m^2=2$, impossible in $\mathbb Z$. So $(\sqrt2)^2=\frac{m^2}{n^2}\ne2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>But the square root of $2$ squares to $2$ by its very definition: the back gate is shut.</p></div><div class="sp-formal"><p>We showed $\neg B\to\neg A$. Since $A$: $(\sqrt2)^2=2$ holds, the contrapositive rule gives $B$: $\sqrt2\notin\mathbb Q$. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: <a href="moves.html#m-contrapos">go through the back gate (contrapositive)</a></p>
+<details><summary>The proof in one piece</summary><div><p>We show $\sqrt2\in\mathbb Q\to(\sqrt2)^2\ne2$. Let $\sqrt2=\frac mn$ with $m,n\ge1$, $\gcd(m,n)=1$. Then $\gcd(m^2,n^2)=1$, so $\frac{m^2}{n^2}=2$ would force $n^2=1$ and $m^2=2$, impossible. Hence $(\sqrt2)^2\ne2$. Since $(\sqrt2)^2=2$ by definition, the contrapositive rule gives $\sqrt2\notin\mathbb Q$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Which statements play the roles of $A$ and $B$?</p><details><summary>Answer</summary><div><p>$A$: $(\sqrt2)^2=2$ (true by definition). $B$: $\sqrt2\notin\mathbb Q$ (the claim).</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Adapt the proof to $\sqrt3\notin\mathbb Q$. Where does it change?</p><details><summary>Answer</summary><div><p>Only the end: $\frac{m^2}{n^2}=3$ forces $n^2=1$, $m^2=3$, impossible in $\mathbb Z$.</p></div></details></li>
+<li><p><strong>Rung 3.</strong> Write Proof A from the frame alone.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol><li>Name $A$: $(\sqrt2)^2=2$ and $B$: $\sqrt2\notin\mathbb Q$; show $\neg B\to\neg A$.</li><li>$\sqrt2=\frac mn$ in lowest terms.</li><li>$\gcd(m^2,n^2)=1$, so $\frac{m^2}{n^2}=2$ forces $n=1$, $m^2=2$: impossible.</li><li>Contrapositive rule.</li></ol><p><strong>In short:</strong> lowest terms stay lowest terms when squared.</p></div>
 
-<h2 id="s4">4. Induction: the power set of an $n$-element set</h2>
-<div class="box"><p><strong>Induction axiom.</strong> If $A(n)$ is a statement about $n\in\mathbb N$ and $A(0)\wedge\forall n\,\big(A(n)\to A(n+1)\big)$ holds, then $\forall n\,A(n)$. (Base case $A(0)$; induction step $A(n)\to A(n+1)$. Note: Halbeisen starts at $0$.)</p></div>
-<div class="box"><p><strong>Claim.</strong> If $|M|=n$, then $|\mathcal P(M)|=2^n$. Let $A(n)$: “$|M|=n\to|\mathcal P(M)|=2^n$”.</p>
-<p><strong>Base case.</strong> $|M|=0$ means $M=\emptyset$, and $\mathcal P(\emptyset)=\{\emptyset\}$ has $1=2^0$ element.</p>
-<p><strong>Step.</strong> Assume $A(n)$. A set with $n+1$ elements has the form $\tilde M=M\cup\{a\}$ with $|M|=n$, $a\notin M$. Every subset of $\tilde M$ either avoids $a$ or contains it:
-$$\mathcal P(\tilde M)=\mathcal P(M)\cup\{x\cup\{a\}:x\in\mathcal P(M)\},$$
-two disjoint parts with $|\mathcal P(M)|$ elements each. So $|\mathcal P(\tilde M)|=2\cdot2^n=2^{n+1}$. By the induction axiom, $\forall n\,A(n)$. ∎</p></div>
+<h2 id="s4">4. Induction</h2>
+<div class="box"><p><strong>The induction axiom (p. 8).</strong> If $A(n)$ is a statement about the natural number $n$ and
+$$A(0)\wedge\forall n\,\big(A(n)\to A(n+1)\big)$$
+holds (base case and induction step), then $\forall n\,A(n)$. Note that Halbeisen starts at $0$.</p></div>
+<h3 id="proof-b">Proof B: a set with $n$ elements has $2^n$ subsets</h3>
+<div class="box"><p><strong>Claim (lecture pp. 8–9; Script EN 2023, exercise “Cardinality of a power set”, p. 8).</strong> If $|M|=n$, then $|\mathcal P(M)|=2^n$.</p></div>
+<p><strong>The idea.</strong> Adding one new element $a$ doubles the number of subsets: each old subset $x$ stays, and gets a twin $x\cup\{a\}$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>Name the statement:</strong> $A(n)$: “$|M|=n\to|\mathcal P(M)|=2^n$”.</li><li><strong>Base case:</strong> $|M|=0$. <strong>Step:</strong> assume $A(n)$, take $|\tilde M|=n+1$.</li><li><strong>The gap:</strong> describe $\mathcal P(\tilde M)$ through $\mathcal P(M)$.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A guild with no members can form only one committee: the empty one.</p></div><div class="sp-formal"><p><strong>Base case.</strong> If $|M|=0$, then $M=\emptyset$ and $\mathcal P(M)=\{\emptyset\}$, so $|\mathcal P(M)|=1=2^0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A new member $a$ joins a guild of $n$.</p></div><div class="sp-formal"><p><strong>Step.</strong> Assume $A(n)$. Let $\tilde M=M\cup\{a\}$ with $|M|=n$ and $a\notin M$, so $|\tilde M|=n+1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Every committee either leaves $a$ out (an old committee) or includes $a$ (an old committee plus $a$), never both.</p></div><div class="sp-formal"><p>$\mathcal P(\tilde M)=\mathcal P(M)\cup\{x\cup\{a\}:x\in\mathcal P(M)\}$, a disjoint union of two sets with $|\mathcal P(M)|$ elements each.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the number of committees doubles.</p></div><div class="sp-formal"><p>$|\mathcal P(\tilde M)|=2\cdot|\mathcal P(M)|=2\cdot2^n=2^{n+1}$. So $\forall n\,(A(n)\to A(n+1))$, and by the induction axiom $\forall n\,A(n)$. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: <a href="moves.html#m-induct">induction with labelled parts</a></p>
+<details><summary>The proof in one piece</summary><div><p>Let $A(n)$ be “$|M|=n\to|\mathcal P(M)|=2^n$”. Base: $|M|=0$ gives $M=\emptyset$, $\mathcal P(M)=\{\emptyset\}$, $|\mathcal P(M)|=1=2^0$. Step: assume $A(n)$ and let $\tilde M=M\cup\{a\}$, $|M|=n$, $a\notin M$. Then $\mathcal P(\tilde M)=\mathcal P(M)\cup\{x\cup\{a\}:x\in\mathcal P(M)\}$, disjointly, both parts of size $2^n$, so $|\mathcal P(\tilde M)|=2^{n+1}$. By the induction axiom, $\forall n\,A(n)$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Why is the union disjoint, and why does the second part have exactly $|\mathcal P(M)|$ elements?</p><details><summary>Answer</summary><div><p>Sets in the first part don't contain $a$, sets in the second do. And $x\mapsto x\cup\{a\}$ is injective on $\mathcal P(M)$ (remove $a$ again to get $x$ back, since $a\notin x$).</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write the base case and the step's first sentence.</p></li>
+<li><p><strong>Rung 3.</strong> Write Proof B from the frame alone.</p></li></ol></div>
 
 <h2 id="s5">5. Contradiction: Cantor's theorem</h2>
-<div class="box"><p><strong>Theorem (Cantor).</strong> For every set $M$ (finite or infinite) and every function $g:M\to\mathcal P(M)$, $g$ is not surjective: $\exists x\in\mathcal P(M)\ \forall a\in M\ (g(a)\ne x)$.</p>
-<p><strong>Proof.</strong> Define $Y:=\{a\in M: a\notin g(a)\}$. Then $Y\subseteq M$, so $Y\in\mathcal P(M)$. Let $A$ be the statement $\neg\exists a\in M\,(g(a)=Y)$. Suppose $\neg A$: there is $a_0\in M$ with $g(a_0)=Y$. Then
-$$a_0\in Y\iff a_0\notin g(a_0)\iff a_0\notin Y.$$
-So $\neg A\to(a_0\in Y\wedge a_0\notin Y)$, and by the rule of contradiction $A$ holds: no $a$ is mapped to $Y$, so $g$ is not surjective. ∎</p></div>
-<div class="box exam"><p><strong>How to reproduce Cantor under exam pressure.</strong> 1. Take any $g:M\to\mathcal P(M)$. 2. Define the “diagonal” set $Y=\{a\in M:a\notin g(a)\}$. 3. Suppose $g(a_0)=Y$. 4. Ask “is $a_0\in Y$?” and unfold the definition: both answers contradict. <em>In short: collect everyone not in their own image, nobody can be mapped there.</em></p></div>
+<h3 id="proof-c">Proof C: there is no surjection $M\to\mathcal P(M)$</h3>
+<div class="box"><p><strong>Theorem (Cantor, p. 9).</strong> Let $M$ be any set (finite or infinite) and $g:M\to\mathcal P(M)$ any function. Then $g$ is not surjective: $\exists x\in\mathcal P(M)\ \forall a\in M\ (g(a)\ne x)$.</p></div>
+<p><strong>The idea.</strong> Build a subset $Y$ that differs from every $g(a)$ at the element $a$ itself: put $a$ into $Y$ exactly when $a$ is <em>not</em> in $g(a)$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>To show:</strong> some $Y\in\mathcal P(M)$ is not a value of $g$.</li><li><strong>By contradiction:</strong> assume $g(a_0)=Y$ for some $a_0$ and derive $C\wedge\neg C$.</li><li><strong>The gap:</strong> the definition of $Y$, and the right question to ask about $a_0$.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Each citizen $a$ is assigned a committee $g(a)$. Form the “rebels' committee” of all citizens who are not on their own committee.</p></div><div class="sp-formal"><p>Let $Y:=\{a\in M:a\notin g(a)\}$. Then $Y\subseteq M$, so $Y\in\mathcal P(M)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Suppose some citizen $a_0$ has the rebels' committee as their own.</p></div><div class="sp-formal"><p>Let $A$ be $\neg\exists a\in M\,(g(a)=Y)$. Assume $\neg A$: there is $a_0\in M$ with $g(a_0)=Y$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Is $a_0$ a rebel? Only if $a_0$ is not on their own committee, which <em>is</em> the rebels' committee. Both answers are impossible.</p></div><div class="sp-formal"><p>$a_0\in Y\iff a_0\notin g(a_0)\iff a_0\notin Y$. So $\neg A\to(a_0\in Y\wedge a_0\notin Y)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The court rejects the assumption: nobody owns the rebels' committee.</p></div><div class="sp-formal"><p>By the rule of contradiction, $A$ holds: no $a$ has $g(a)=Y$, so $g$ is not surjective. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: <a href="moves.html#m-diag">the diagonal argument</a>, <a href="moves.html#m-contra">assume the opposite</a></p>
+<details><summary>The proof in one piece</summary><div><p>Let $g:M\to\mathcal P(M)$ and $Y:=\{a\in M:a\notin g(a)\}\in\mathcal P(M)$. Suppose $g(a_0)=Y$ for some $a_0\in M$. Then $a_0\in Y\iff a_0\notin g(a_0)\iff a_0\notin Y$, a contradiction. So no $a\in M$ has $g(a)=Y$, and $g$ is not surjective. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Fill in: $a_0\in Y\iff a_0\notin\_\_\_\iff a_0\notin\_\_\_$.</p><details><summary>Answer</summary><div><p>$g(a_0)$ (definition of $Y$), then $Y$ (since $g(a_0)=Y$).</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Where exactly does $Y$ differ from $g(a)$?</p><details><summary>Answer</summary><div><p>At the element $a$: $a\in Y\iff a\notin g(a)$.</p></div></details></li>
+<li><p><strong>Rung 3.</strong> Write Proof C from the frame alone.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce Cantor under exam pressure</span>
+<ol><li>Take any $g:M\to\mathcal P(M)$.</li><li>Define $Y=\{a\in M:a\notin g(a)\}$.</li><li>Suppose $g(a_0)=Y$.</li><li>Ask “is $a_0\in Y$?” and unfold: contradiction.</li></ol><p><strong>In short:</strong> collect everyone not in their own image; nobody can be mapped there.</p></div>
 
 <h2 id="s6">6. Countable and uncountable</h2>
-<div class="box"><p><strong>Definition.</strong> $M$ is <strong>countable</strong> if it is finite or there is a bijection $f:\mathbb N\to M$; otherwise <strong>uncountable</strong>.</p></div>
-<p>Countably infinite: $\mathbb N,\mathbb Z,\mathbb Q$, the primes, $2\mathbb Z$. One can show there is a bijection between $\mathbb R$ and $\mathcal P(\mathbb N)$; by Cantor there is no surjection $\mathbb N\to\mathcal P(\mathbb N)$, so $\mathcal P(\mathbb N)$ and hence $\mathbb R$ are uncountable.</p>
+<div class="box"><p><strong>Definition (p. 9).</strong> A set $M$ is <strong>countable</strong> if it is finite or can be enumerated by $\mathbb N$, i.e. there is a bijection $f:\mathbb N\to M$; otherwise $M$ is <strong>uncountable</strong>.</p></div>
+<p>Countably infinite: $\mathbb N$, $\mathbb Z$, $\mathbb Q$, the primes, $2\mathbb Z$. One can show there is a bijection between $\mathbb R$ and $\mathcal P(\mathbb N)$. By Cantor there is no surjection $\mathbb N\to\mathcal P(\mathbb N)$, so $\mathcal P(\mathbb N)$ is uncountable, and hence so is $\mathbb R$.</p>
 
-<h2 id="s7">7. Pigeonhole: inverses in $\mathbb Z_p$</h2>
-<div class="box"><p><strong>Pigeonhole principle.</strong> If $m+1$ objects are put into $m$ drawers, some drawer contains at least two objects.</p>
-<p><strong>Theorem.</strong> Let $p\ge3$ be prime and $1\le a\le p-1$. Then there is $k$ with $0\le k\le p-1$ such that $\bar a\cdot\bar a^k=\bar1$ in $\mathbb Z_p$. (So every nonzero $\bar a$ has a multiplicative inverse, namely $\bar a^k$.)</p>
-<p><strong>Proof.</strong> Consider the $p$ objects $a^0,a^1,\dots,a^{p-1}$ and put $a^n$ into the drawer $\overline{a^n}\in\{\bar1,\dots,\overline{p-1}\}$: since $p$ is prime and $p\nmid a$, $\overline{a^n}\ne\bar0$. There are only $p-1$ drawers, so there are $0\le s&lt;t\le p-1$ with $\overline{a^s}=\overline{a^t}$. Write $t=s+(k+1)$ with $k\ge0$. Then
-$$\overline{a^s}\cdot\big(\overline{a^{k+1}}-\bar1\big)=\overline{a^t}-\overline{a^s}=\bar0.$$
-Since $\overline{a^s}\ne\bar0$ and $\mathbb Z_p$ has no zero divisors ($p$ prime), $\overline{a^{k+1}}=\bar1$, i.e. $\bar a\cdot\bar a^k=\bar1$. ∎</p></div>
-<p><strong>Why it's cool.</strong> This is the reason $\mathbb F_p=\mathbb Z_p$ is a field (lesson 5): a counting argument produces inverses without ever computing one.</p>
+<h2 id="s7">7. The pigeonhole principle and inverses in $\mathbb Z/p\mathbb Z$</h2>
+<div class="box"><p><strong>Pigeonhole principle (“drawer principle”).</strong> If $m+1$ objects are put into $m$ drawers, at least one drawer contains at least two objects. Equivalently: a map between two finite sets of the <em>same size</em> that is injective is also surjective.</p></div>
+<p>Lesson 1 showed $\bar2\cdot\bar2=\bar0$ in $\mathbb Z/4\mathbb Z$. The script gives this a name.</p>
+<div class="box"><p><strong>Definition (zero divisor free, Definition 1.3.5, p. 17).</strong> A ring $R$ is <strong>free of zero divisors</strong> if $\forall a,b\in R:\ ab=0\Rightarrow(a=0\vee b=0)$. Contrapositive (Note 1.3.6): $(a\ne0\wedge b\ne0)\Rightarrow ab\ne0$.</p>
+<p><strong>Lemma 1.3.12 (p. 19).</strong> $\mathbb Z/n\mathbb Z$ is free of zero divisors if and only if $n$ is prime.</p></div>
+<p>“$\Rightarrow$” is by contrapositive: if $n=kl$ with $1&lt;k,l&lt;n$, then $\bar k\cdot\bar l=\bar n=\bar0$ with $\bar k,\bar l\ne\bar0$ (worked example 1 below). “$\Leftarrow$”: if $\bar k\cdot\bar l=\bar0$, the prime $n$ divides $kl$, so $n\mid k$ or $n\mid l$, i.e. $\bar k=\bar0$ or $\bar l=\bar0$.</p>
+
+<h3 id="proof-d">Proof D: a finite ring without zero divisors is a field (Lemma 1.3.14, p. 20)</h3>
+<div class="box"><p><strong>Lemma 1.3.14.</strong> Let $R$ be a commutative ring with $1\ne0$, free of zero divisors and finite. Then $R$ is a field.</p>
+<p><strong>Corollary 1.3.15.</strong> For $p$ prime, $\mathbb Z/p\mathbb Z$ is a field with $p$ elements (Lemma 1.3.12 + Lemma 1.3.14). It is written $\mathbb F_p$.</p></div>
+<p><strong>The idea.</strong> Fix $a\ne0$ and look at the “multiply by $a$” map on the nonzero elements. No zero divisors makes it injective. A finite set and an injective map to itself: pigeonhole makes it surjective. So something maps to $1$, and that is $a^{-1}$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>To show:</strong> every $a\in R\setminus\{0\}$ has $b$ with $ab=1$. (Everything else in the field definition is assumed.)</li><li><strong>Tools:</strong> no zero divisors; $|R|&lt;\infty$; pigeonhole.</li><li><strong>The gap:</strong> we may <em>not</em> divide by $a$: inverses are what we are proving.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Member $a$ shakes hands with every nonzero member and the clerk records where each handshake lands.</p></div><div class="sp-formal"><p>Let $a\in R\setminus\{0\}$. Define $m_a:R\setminus\{0\}\to R\setminus\{0\}$, $b\mapsto ab$. This lands in $R\setminus\{0\}$ because $R$ is free of zero divisors ($a\ne0$, $b\ne0\Rightarrow ab\ne0$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>No two handshakes land on the same member.</p></div><div class="sp-formal"><p>$m_a$ is injective: if $ab=ab'$, then $a(b-b')=0$ by distributivity; since $a\ne0$ and there are no zero divisors, $b-b'=0$, so $b=b'$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Finitely many members, no collisions: every member is hit, including $1$.</p></div><div class="sp-formal"><p>$R\setminus\{0\}$ is finite and $m_a$ is injective, so by the pigeonhole principle $m_a$ is surjective. Since $1\ne0$, $1\in R\setminus\{0\}$, so there is $b$ with $ab=m_a(b)=1$. By commutativity also $ba=1$. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: define a helpful map; injective + finite ⇒ surjective (pigeonhole)</p>
+<details><summary>The proof in one piece</summary><div><p>It suffices to show that every $a\ne0$ has a multiplicative inverse. Fix $a\ne0$ and let $m_a:R\setminus\{0\}\to R\setminus\{0\}$, $m_a(b)=ab$; it is well defined since $R$ has no zero divisors. If $m_a(b)=m_a(b')$, then $a(b-b')=0$, hence $b-b'=0$; so $m_a$ is injective. As $R\setminus\{0\}$ is finite, $m_a$ is surjective by the pigeonhole principle. Since $1\ne0$, there is $b$ with $ab=1$, and $ba=1$ by commutativity. So $R$ is a field. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Where is “no zero divisors” used? (Two places.)</p><details><summary>Answer</summary><div><p>To see that $m_a$ lands in $R\setminus\{0\}$, and to get $b-b'=0$ from $a(b-b')=0$.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Why does the proof fail for $\mathbb Z/6\mathbb Z$, $a=\bar2$?</p><details><summary>Answer</summary><div><p>$\bar2\cdot\bar3=\bar0$, so $m_{\bar2}$ does not even land in the nonzero elements, and it is not injective: $\bar2\cdot\bar1=\bar2=\bar2\cdot\bar4$. Indeed $\bar2$ has no inverse in $\mathbb Z/6\mathbb Z$.</p></div></details></li>
+<li><p><strong>Rung 3.</strong> Where is “finite” used? Give a ring where the conclusion fails without it.</p><details><summary>Answer</summary><div><p>Only for “injective ⇒ surjective”. $\mathbb Z$ is commutative, $1\ne0$, free of zero divisors, but infinite, and $2$ has no inverse: $m_2$ is injective but misses $1$.</p></div></details></li>
+<li><p><strong>Rung 4.</strong> Write Proof D from the frame alone.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol><li>Fix $a\ne0$, define $m_a(b)=ab$ on $R\setminus\{0\}$.</li><li>Well defined and injective: both by “no zero divisors”.</li><li>Finite + injective ⇒ surjective; hit $1$.</li></ol>
+<p><strong>In short:</strong> “multiply by $a$, no collisions, so $1$ is hit.”</p></div>
+<p class="small"><strong>In the lecture.</strong> Halbeisen's notes (pp. 9–10) prove the same for $\mathbb Z_p$ with powers instead: the $p$ powers $\bar a^0,\dots,\bar a^{p-1}$ fall into $p-1$ nonzero drawers, so $\bar a^s=\bar a^t$ for some $s&lt;t$, and cancelling gives $\bar a\cdot\bar a^{t-s-1}=\bar1$. Same drawer idea, different map.</p>
+<p><strong>Why it's cool.</strong> Proof D never computes an inverse, it only counts drawers. That is exactly what Serie 1, Aufgabe 8(d) asks: with it, $\mathbb F_p$ is a field for every prime $p$, and lesson 5 builds vector spaces over these finite fields.</p>
+
+<h2 id="we">Worked examples</h2>
+<div class="box"><h3 id="we-1">Worked example 1: $\mathbb Z/m\mathbb Z$ is no field when $m$ is not prime (Serie 1, Aufgabe 8(c); Lemma 1.3.12 “$\Rightarrow$”)</h3>
+<ol class="gq"><li><p>If $m=1$, what goes wrong?</p><details><summary>Answer</summary><div><p>$\mathbb Z/1\mathbb Z=\{\bar0\}$, so $\bar0=\bar1$; a field needs $1\ne0$ (Definition 1.3.9, axiom 9).</p></div></details></li>
+<li><p>If $m=k\cdot l$ with $1&lt;k,l&lt;m$?</p><details><summary>Answer</summary><div><p>$\bar k\cdot\bar l=\bar m=\bar0$ with $\bar k,\bar l\ne\bar0$. In a field, the nonzero elements are closed under multiplication (they form a group), so this is impossible. Hence $\mathbb Z/m\mathbb Z$ is no field.</p></div></details></li></ol></div>
+<div class="box"><h3 id="we-2">Worked example 2: an inverse in $\mathbb F_7$ by Proof D</h3>
+<ol class="gq"><li><p>Write down the map $m_{\bar3}$ on $\{\bar1,\dots,\bar6\}$.</p><details><summary>Answer</summary><div><p>$\bar1\mapsto\bar3$, $\bar2\mapsto\bar6$, $\bar3\mapsto\bar2$, $\bar4\mapsto\bar5$, $\bar5\mapsto\bar1$, $\bar6\mapsto\bar4$. All six values are different (injective), so every class is hit (surjective).</p></div></details></li>
+<li><p>Read off the inverse.</p><details><summary>Answer</summary><div><p>$\bar5\mapsto\bar1$, so $\bar3^{-1}=\bar5$. Check: $3\cdot5=15=2\cdot7+1$. ✓</p></div></details></li></ol></div>
 
 <h2 id="ex">Exercises</h2>
-<div class="box"><h3 id="ex-1">Exercise 1</h3><p>Prove by contrapositive: for $n\in\mathbb Z$, if $n^2$ is even then $n$ is even.</p>
-<details class="sol"><summary>Solution</summary><div><p>Contrapositive: if $n$ is odd then $n^2$ is odd. Let $n=2k+1$ with $k\in\mathbb Z$. Then $n^2=4k^2+4k+1=2(2k^2+2k)+1$, which is odd. Since $A\to B\iff\neg B\to\neg A$, the claim follows. ∎</p></div></details></div>
-<div class="box"><h3 id="ex-2">Exercise 2</h3><p>Prove by induction: $\sum_{i=0}^{n}2^i=2^{n+1}-1$ for all $n\in\mathbb N$.</p>
-<details class="sol"><summary>Solution</summary><div><p><strong>Base</strong> $n=0$: $2^0=1=2^1-1$. <strong>Step:</strong> assume $\sum_{i=0}^n2^i=2^{n+1}-1$. Then $\sum_{i=0}^{n+1}2^i=(2^{n+1}-1)+2^{n+1}=2^{n+2}-1$. By the induction axiom the formula holds for all $n$. ∎</p></div></details></div>
-<div class="box"><h3 id="ex-3">Exercise 3</h3><p>In $\mathbb Z_7$, use the idea of the pigeonhole proof to find the inverse of $\bar3$: compute powers of $\bar3$ until you hit $\bar1$.</p>
-<details class="sol"><summary>Solution</summary><div><p>$\bar3^1=\bar3$, $\bar3^2=\bar2$, $\bar3^3=\bar6$, $\bar3^4=\bar4$, $\bar3^5=\bar5$, $\bar3^6=\bar1$. So $k+1=6$, $k=5$: $\bar3\cdot\bar3^5=\bar1$, and $\bar3^{-1}=\bar3^5=\bar5$. Check: $3\cdot5=15=2\cdot7+1$. ✓</p></div></details></div>
-<div class="box"><h3 id="ex-4">Exercise 4</h3><p>Let $M=\{1,2,3\}$ and $g(1)=\{1,2\}$, $g(2)=\emptyset$, $g(3)=\{1,3\}$. Compute Cantor's set $Y$ and check that it is not in the image of $g$.</p>
-<details class="sol"><summary>Solution</summary><div><p>$1\in g(1)$, so $1\notin Y$. $2\notin g(2)=\emptyset$, so $2\in Y$. $3\in g(3)$, so $3\notin Y$. Hence $Y=\{2\}$. The images are $\{1,2\},\emptyset,\{1,3\}$, none equal to $\{2\}$. ✓ (Each $g(a)$ differs from $Y$ exactly at $a$.)</p></div></details></div>
+<div class="box"><h3 id="ex-1">Exercise 1 (exams FS19 MC IV and HS18 MC I)</h3>
+<p>(a) In $\mathbb F_{23}$, $8\cdot9$ equals: $3$, $20$, $22$ or $8$? (b) In $\mathbb F_{17}$, $x\cdot7=1$ holds for $x=15$, $9$, $3$ or $5$?</p>
+<details class="sol"><summary>Solution</summary><div><p>(a) $72=3\cdot23+3$, so $\overline{72}=\bar3$: answer $3$. (b) Test: $7\cdot5=35=2\cdot17+1$, so $x=5$. (Fast check of the others: $7\cdot15=105=6\cdot17+3$, $7\cdot9=63=3\cdot17+12$, $7\cdot3=21=17+4$.)</p></div></details></div>
+<div class="box"><h3 id="ex-2">Exercise 2 (exam FS17, true/false i)</h3>
+<p>Let $P=\{p\in\mathbb N\mid\forall m\in\mathbb N:(m\text{ divides }p\Rightarrow(m=1\vee m=p))\}$. True or false: $|P|&lt;\infty$?</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>False.</strong> Every prime is in $P$ (its only divisors are $1$ and itself), and there are infinitely many primes (§2). (Careful with small cases: $1\in P$; $0\notin P$ since every $m$ divides $0$. Neither changes the answer.)</p></div></details></div>
+<div class="box"><h3 id="ex-3">Exercise 3 (induction)</h3>
+<p>Prove by induction that $\sum_{i=0}^{n}2^i=2^{n+1}-1$ for all $n\in\mathbb N$.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>Frame:</strong> $A(n)$: “$\sum_{i=0}^n2^i=2^{n+1}-1$”. Base: $n=0$: $2^0=1=2^1-1$. Step: assume $A(n)$; then $\sum_{i=0}^{n+1}2^i=(2^{n+1}-1)+2^{n+1}=2^{n+2}-1$, which is $A(n+1)$. By the induction axiom $\forall n\,A(n)$. <span class="qed">∎</span> (Compare Proof B: both count subsets, $\sum_{i\le n}2^i$ counts nonempty subsets of an $(n+1)$-element set, ordered by their largest element.)</p></div></details></div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Cantor by hand)</h3>
+<p>$M=\{1,2,3\}$ and $g(1)=\{1,2\}$, $g(2)=\emptyset$, $g(3)=\{1,3\}$. Compute $Y$ from Proof C and check it is not a value of $g$.</p>
+<details class="sol"><summary>Solution</summary><div><p>$1\in g(1)$, so $1\notin Y$; $2\notin g(2)$, so $2\in Y$; $3\in g(3)$, so $3\notin Y$. $Y=\{2\}$, and none of $\{1,2\},\emptyset,\{1,3\}$ equals $\{2\}$. Each $g(a)$ differs from $Y$ exactly at $a$.</p></div></details></div>
+<div class="box"><h3 id="ex-5">Exercise 5 (contrapositive)</h3>
+<p>Prove: for $n\in\mathbb Z$, if $n^2$ is even, then $n$ is even.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>Frame:</strong> contrapositive: if $n$ is odd, then $n^2$ is odd. Let $n=2k+1$. Then $n^2=4k^2+4k+1=2(2k^2+2k)+1$ is odd. By the contrapositive rule the claim holds. <span class="qed">∎</span></p></div></details></div>
 
-<h2 id="done">You're done when</h2>
-<p>You can name the three rules of inference, and reproduce from memory: $\sqrt2\notin\mathbb Q$, $|\mathcal P(M)|=2^n$ and Cantor's theorem. You can also explain why each nonzero element of $\mathbb Z_p$ has an inverse. Safe to skip: the bijection $\mathbb R\leftrightarrow\mathcal P(\mathbb N)$ (only quoted in the notes).</p>
-<p class="small">Draft lesson. Full format in the next pass.</p>
+<h2 id="skip">What we skipped</h2>
+<p>The bijection $\mathbb R\leftrightarrow\mathcal P(\mathbb N)$ (the lecture only quotes it), and the formal proof of the pigeonhole principle (it follows from properties of maps between finite sets), Note 1.3.13 on prime versus irreducible elements (p. 19), and the characteristic of a field (Definition 1.3.18, p. 21). Next: <a href="linalg-04.html">Lesson 4, first proofs from axioms</a>.</p>
 
 <p class="fb-line"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a> · <a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Lin Alg) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></p>
 </main>
