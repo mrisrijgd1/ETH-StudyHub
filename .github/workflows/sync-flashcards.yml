@@ -1,0 +1,49 @@
+name: Sync FlashcardsAnalysis designspace
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out destination repo
+        uses: actions/checkout@v4
+        with:
+          repository: mrisrijgd1/ETH-StudyHub
+          ref: main
+          path: destination
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out source repo
+        uses: actions/checkout@v4
+        with:
+          repository: random-1374/FlashcardsAnalysis_designspace
+          ref: main
+          path: source
+          token: ${{ secrets.FLASHCARDS_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      - name: Sync source contents into destination folder
+        run: |
+          rm -rf destination/FlashcardsAnalysis_designspace
+          mkdir -p destination/FlashcardsAnalysis_designspace
+          rsync -a --delete --exclude='.git' --exclude='.github' source/ destination/FlashcardsAnalysis_designspace/
+
+      - name: Commit and push updates
+        run: |
+          cd destination
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "No changes to sync."
+            exit 0
+          fi
+          git commit -m "Sync FlashcardsAnalysis_designspace"
+          git push origin main
