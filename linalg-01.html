@@ -6,7 +6,7 @@
 <meta property="og:title" content="Lin Alg 1: Families of structures">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
 <script defer src="assets/umami-kit.js?v=79d39d59"></script>
-<script defer src="assets/tips.js?v=7a6bbbc5"></script>
+<script defer src="assets/tips.js?v=89594c5a"></script>
 <script defer src="assets/listen.js?v=427792c7"></script>
 <script defer src="assets/account.js?v=e8f9a658"></script>
 <script>try{var t=localStorage.getItem("sh-theme");document.documentElement.setAttribute("data-theme",t||"dark");if(localStorage.getItem("sh-side")==="0")document.documentElement.classList.add("sh-noside")}catch(e){}</script>
@@ -239,75 +239,198 @@ a.subject:hover strong { text-decoration: underline; }
 
 <style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}</style>
 <header>
-<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 1 (draft)</span>
-<h1>Families of structures: semigroup, monoid, group, ring, field</h1>
-<p class="lead">Halbeisen's §0 (notes pp. 1–3): one set, one or two operations, and a ladder of properties. Each rung adds one rule. By the end you can say exactly why $(\mathbb Z,+)$ is a group, $(\mathbb Z,+,\cdot)$ a ring and $(\mathbb Q,+,\cdot)$ a field.</p>
+<span class="eyebrow">StudyHub · Linear Algebra I · Lesson 1</span>
+<h1>The guilds of Numeria: groups, residue classes, rings, fields</h1>
+<p class="lead">One set, one or two operations, and a short list of rules. By the end you can check in five lines whether something is a group, a ring or a field, and you can compute in $\mathbb Z/n\mathbb Z$. That is what Serie 0 and Serie 1 ask over and over.</p>
 </header>
-<details class="toc" open><summary>Contents</summary><div><p><a href="#words">Words</a> · <a href="#story">Story</a> · <a href="#s1">1 Semigroups</a> · <a href="#s2">2 Monoids</a> · <a href="#s3">3 Groups</a> · <a href="#s4">4 Rings and fields</a> · <a href="#ex">Exercises</a> · <a href="#done">You're done when</a></p></div></details>
-
-<div class="box"><p><strong>Script.</strong> Halbeisen's lecture notes, §0 “Bekannte Beispiele algebraischer Strukturen”, pages 1–3 (typed copy by the Linear Algebra group on Polybox). Next: <a href="linalg-02.html">Lesson 2</a>. Notation here follows those notes: $\mathbb N=\{0,1,2,\dots\}$ <em>includes</em> $0$, and $\mathbb N_{&gt;0}=\{1,2,3,\dots\}$.</p></div>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+<dt>Covers</dt><dd>Script EN 2023, §1.1.2 “remainder classes modulo $n$” and §1.1.3 “Subgroups” (pp. 8–12: Definition 1.1.11, Definition 1.1.12, Lemma 1.1.13, Theorem 1.1.14, the definition of a group, Definition 1.1.16, Example 1.1.17), and §1.3 “Rings and Fields” (pp. 16–18: Definition 1.3.1, Example 1.3.3, Definition 1.3.7, Definition 1.3.9).</dd>
+<dt>Time</dt><dd>About 70 minutes, with paper for the exercises.</dd>
+<dt>You're done when</dt><dd>you can (1) state the group, ring and field axioms as in the script, (2) check them for a given structure with the group checklist, (3) prove that the identity and inverses are unique and that addition in $\mathbb Z/n\mathbb Z$ is well defined, and (4) decide quickly whether a structure is a ring or a field (Serie 0, Serie 1, exam multiple choice).</dd>
+<dt>Script</dt><dd>Main: Script EN 2023 (pages as above). Lecture: Halbeisen's notes W1b, pages 1–3 (§0), which reach the same definitions in a different order; see the side notes.</dd>
+</dl>
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>The first three Serien are entirely “show that … is an abelian group / a ring / a field”, and the old LinAlg I exams ask it as multiple choice: “Which property does not hold in every group?” (FS19), “For which operation is $(\mathbb R,*,0)$ a group?” (HS18), “Is $M_{2\times2}(\mathbb R)$ a field?” (FS18). All three are exercises below. Computing in $\mathbb Z/n\mathbb Z$ comes back in every lesson until vector spaces.</p></div>
 
 <h2 id="words">Words for this lesson · Fachbegriffe</h2>
-<table><tr><th>English</th><th>German</th></tr>
-<tr><td>algebraic structure</td><td>algebraische Struktur</td></tr>
-<tr><td>(binary) operation</td><td>(zweistellige) Operation, Verknüpfung</td></tr>
-<tr><td>semigroup</td><td>Halbgruppe</td></tr>
-<tr><td>identity / neutral element (left, right)</td><td>Neutralelement (links-, rechtsneutral)</td></tr>
-<tr><td>monoid</td><td>Monoid</td></tr>
+<div class="table-wrap"><table>
+<tr><th>English</th><th>Deutsch</th></tr>
+<tr><td>binary operation</td><td>2-stellige Operation, Verknüpfung</td></tr>
+<tr><td>closure, associative, commutative</td><td>Abgeschlossenheit, assoziativ, kommutativ</td></tr>
+<tr><td>identity element, neutral element</td><td>Neutralelement</td></tr>
 <tr><td>inverse (left, right)</td><td>Inverses (Links-, Rechtsinverses)</td></tr>
-<tr><td>abelian group</td><td>abelsche Gruppe</td></tr>
-<tr><td>ring, field</td><td>Ring, Körper</td></tr>
+<tr><td>abelian group, subgroup</td><td>abelsche Gruppe, Untergruppe</td></tr>
+<tr><td>residue class modulo $n$</td><td>Restklasse modulo $n$</td></tr>
+<tr><td>well defined</td><td>wohldefiniert</td></tr>
 <tr><td>distributive laws</td><td>Distributivgesetze</td></tr>
-<tr><td>non-example</td><td>Unbeispiel</td></tr></table>
+<tr><td>ring (with one), field</td><td>Ring (mit Eins), Körper</td></tr>
+<tr><td>semigroup, monoid (lecture only)</td><td>Halbgruppe, Monoid</td></tr>
+</table></div>
+<details class="toc" open><summary>Contents</summary><div><p><a href="#story">The story</a> · <a href="#s1">1 Groups</a> · <a href="#s2">2 Residue classes</a> · <a href="#s3">3 Subgroups</a> · <a href="#s4">4 Rings</a> · <a href="#s5">5 Fields</a> · <a href="#we">Worked examples</a> · <a href="#ex">Exercises</a> · <a href="#skip">What we skipped</a></p></div></details>
 
-<h2 id="story">The story: the guilds of the city</h2>
-<p>In the city of Numeria, every guild is a set of members plus a way to combine two members into a third. The <em>Semigroup</em> guild only demands that combining is well-behaved in brackets. The <em>Monoid</em> guild also wants a member who changes nobody. The <em>Group</em> guild demands that every member can be undone. And the great houses, <em>Ring</em> and <em>Field</em>, run two guilds at once and make them cooperate. Climbing a rung means accepting one more rule.</p>
+<h2 id="story">The story: the guilds of Numeria</h2>
+<div class="story"><p>In the city of Numeria, every guild is a set of members plus a ritual that combines two members into a third. The <em>Group</em> guild has four rules: the ritual never leads outside the guild, it doesn't care about brackets, there is a quiet member who changes nobody, and every member can be undone by a partner. The great houses, <em>Ring</em> and <em>Field</em>, run two rituals at once and force them to cooperate. And on the city clock, the hours wrap around: that is the guild $\mathbb Z/n\mathbb Z$. The city clerk (you) checks each rule with a proof.</p></div>
 
-<h2 id="s1">1. Semigroups: one associative operation</h2>
-<p>An <strong>algebraic structure</strong> is a set $M$ together with one or more operations (and possibly relations like $&lt;$). A <strong>binary operation</strong> $\circ$ on $M$ must take two elements of $M$ and give an element <em>of $M$ again</em>. That closure condition is the first thing to check.</p>
-<div class="box"><p><strong>Definition (semigroup).</strong> If $M$ is a set with a binary operation $\circ$ that is <strong>associative</strong>, $(x\circ y)\circ z=x\circ(y\circ z)$ for all $x,y,z\in M$, then $(M,\circ)$ is a <strong>semigroup</strong>. If moreover $x\circ y=y\circ x$ for all $x,y$, it is a <strong>commutative</strong> semigroup.</p></div>
-<p><strong>Examples.</strong> $(\mathbb N_{&gt;0},+)$; $(2\cdot\mathbb N_{&gt;0},+)=(\{2,4,6,\dots\},+)$; more generally $(n\cdot\mathbb N_{&gt;0},+)$; $(\mathbb R,\cdot)$.</p>
-<p><strong>Non-example.</strong> $(-\mathbb N,\cdot)$ with $-\mathbb N=\{0,-1,-2,\dots\}$ is not a semigroup: $(-1)\cdot(-1)=1\notin-\mathbb N$, so $\cdot$ is not even an operation on $-\mathbb N$.</p>
+<h2 id="s1">1. Groups</h2>
+<p>A <strong>binary operation</strong> on a set $G$ is a map $\circ:G\times G\to G$, $(a,b)\mapsto a\circ b$. It takes two elements of $G$ and gives an element <em>of $G$ again</em>.</p>
+<div class="box"><p><strong>Definition (group, Script EN 2023, §1.1.3, p. 11).</strong> Let $G$ be a set and $\circ:G\times G\to G$. Then $(G,\circ)$ is a <strong>group</strong> if:</p>
+<ol><li><strong>Closure:</strong> for all $a,b\in G$, $a\circ b\in G$.</li>
+<li><strong>Associativity:</strong> for all $a,b,c\in G$, $(a\circ b)\circ c=a\circ(b\circ c)$.</li>
+<li><strong>Identity:</strong> there is $e\in G$ (the identity element) with $a\circ e=e\circ a=a$ for all $a\in G$.</li>
+<li><strong>Inverse:</strong> for every $a\in G$ there is $a^{-1}\in G$ (the inverse of $a$) with $a\circ a^{-1}=a^{-1}\circ a=e$.</li></ol>
+<p>If moreover $a\circ b=b\circ a$ for all $a,b$, the group is <strong>abelian</strong>. Abelian groups are usually written additively: $+$, identity $0$, inverse $-a$ (Note 1.1.21, p. 12).</p></div>
+<p><strong>Examples.</strong> $(\mathbb Z,+)$; $(\mathbb Q\setminus\{0\},\cdot)$ with $a^{-1}=\frac1a$. <strong>Non-examples.</strong> $(\mathbb N,+)$: $1$ has no inverse. $(\mathbb Z,\cdot)$: $2\cdot x=1$ has no solution in $\mathbb Z$.</p>
+<p><strong>Closure is the axiom people forget.</strong> If $\circ$ is really a map $G\times G\to G$, closure is automatic. But in an exercise you are often handed a formula, and the first thing to check is that it lands in $G$. Example: multiplication on $\{0,-1,-2,\dots\}$ gives $(-1)\cdot(-1)=1$, which is outside.</p>
+<p class="small"><strong>In the lecture.</strong> Halbeisen climbs to groups in steps (W1b, pp. 1–2): a <em>semigroup</em> (associative operation), a <em>monoid</em> (semigroup with a neutral element), then an <em>abelian group</em> (commutative monoid in which every element has exactly one inverse). Same end point. The lecture's words are in the glossary.</p>
+<p>The script says “<em>the</em> identity” and “<em>the</em> inverse”. Both are allowed because they are unique, and these two proofs are the first proofs of the course.</p>
+<h3 id="proof-a">Proof A: a left and a right neutral element coincide</h3>
+<div class="box"><p><strong>Claim.</strong> If $e_l$ is left neutral and $e_r$ is right neutral for an operation $\circ$ on a set $M$, then $e_l=e_r$. In particular, there is at most one neutral element. (Script EN 2023 says “the” identity element in the group definition, p. 10; this is why that is allowed.)</p></div>
+<p><strong>The idea.</strong> Combine the two candidates with each other, $e_l\circ e_r$, and read it in two ways: once using that $e_l$ changes nothing from the left, once using that $e_r$ changes nothing from the right.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>Given:</strong> $e_l\circ x=x$ for <em>every</em> $x$, and $x\circ e_r=x$ for <em>every</em> $x$.</li>
+<li><strong>To show:</strong> $e_l=e_r$, an equation between two specific elements.</li>
+<li><strong>The gap:</strong> choose the $x$ in each “for every” cleverly.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two members both claim to be the quiet one. The clerk makes them perform the ritual with each other.</p></div><div class="sp-formal"><p>Consider $e_l\circ e_r\in M$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The left one is quiet, so the result is simply the right one.</p></div><div class="sp-formal"><p>Since $e_l$ is left neutral, with $x=e_r$: $e_l\circ e_r=e_r$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The right one is quiet too, so the same result is the left one. So they were the same member all along.</p></div><div class="sp-formal"><p>Since $e_r$ is right neutral, with $x=e_l$: $e_l\circ e_r=e_l$. Hence $e_l=e_l\circ e_r=e_r$. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Move used: compute one element ($e_l\circ e_r$) in two ways.</p>
+<details><summary>The proof in one piece</summary><div><p>Let $e_l$ be left neutral and $e_r$ right neutral. Then $e_l=e_l\circ e_r$ because $e_r$ is right neutral, and $e_l\circ e_r=e_r$ because $e_l$ is left neutral. So $e_l=e_r$. If $e,e'$ are both neutral, apply this with $e_l=e$, $e_r=e'$. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Fill in: “$e_l\circ e_r=\_\_\_$ because $e_l$ is left neutral.”</p><details><summary>Answer</summary><div><p>$e_r$.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Where did we use associativity?</p><details><summary>Answer</summary><div><p>Nowhere. The claim holds for any binary operation, associative or not.</p></div></details></li>
+<li><p><strong>Rung 3.</strong> Write the whole proof from the frame alone.</p></li></ol></div>
 
-<h2 id="s2">2. Monoids: a neutral element</h2>
-<div class="box"><p><strong>Definition (neutral element).</strong> Let $(M,\circ)$ be a semigroup and $e\in M$. If $e\circ x=x$ for all $x\in M$, $e$ is <strong>left neutral</strong>; if $x\circ e=x$ for all $x$, <strong>right neutral</strong>; if both, $e$ is a <strong>neutral element</strong>.</p>
-<p><strong>Definition (monoid).</strong> A (commutative) semigroup with a neutral element $e$ is a (commutative) <strong>monoid</strong>, sometimes written $\langle M,\circ,e\rangle$.</p></div>
-<p><strong>Examples.</strong> $(\mathbb N,+)$ with $e=0$ (this is why $0\in\mathbb N$ matters: $(\mathbb N_{&gt;0},+)$ has no neutral element). $(\mathbb Z,\cdot)$ with $e=1$.</p>
-<p><strong>Non-example.</strong> $(2\mathbb Z,\cdot)$ is a semigroup but not a monoid: the only candidate is $1$, and $1\notin2\mathbb Z$.</p>
-<div class="box"><p><strong>Why “exactly one” comes for free.</strong> If $e$ and $e'$ are both neutral, then $e=e\circ e'=e'$. (First equality: $e'$ is right neutral. Second: $e$ is left neutral.) So a monoid has exactly one neutral element. Even more: one left-neutral and one right-neutral element must already be equal.</p></div>
+<h3 id="proof-b">Proof B: inverses are unique</h3>
+<div class="box"><p><strong>Claim.</strong> In a group $(G,\circ)$ with identity $e$, an element $x$ has at most one inverse. (The script uses this “uniqueness of the inverse” in Lemma 1.1.20 (b), p. 12, and Lemma 1.3.10 (d), p. 19, without proving it.)</p></div>
+<p><strong>The idea.</strong> Take two inverses $x'$ and $x''$. Start from $x'$, sneak in $e=x\circ x''$, rebracket, and the $x'\circ x$ collapses to $e$, leaving $x''$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>First line:</strong> “Let $x'$ and $x''$ be inverses of $x$.” So four equations: $x'\circ x=e=x\circ x'$ and $x''\circ x=e=x\circ x''$.</li>
+<li><strong>Last line:</strong> “Hence $x'=x''$.”</li>
+<li><strong>The gap:</strong> a chain of equalities from $x'$ to $x''$, each justified by one axiom.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two partners both claim to undo the same member. The clerk starts with the first one…</p></div><div class="sp-formal"><p>$x'=x'\circ e$ ($e$ is neutral)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>…and secretly replaces the quiet member by “member followed by the second partner”.</p></div><div class="sp-formal"><p>$\phantom{x'}=x'\circ(x\circ x'')$ ($x''$ is an inverse of $x$)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Brackets don't matter in a guild, so the first partner meets the member first, and they cancel.</p></div><div class="sp-formal"><p>$\phantom{x'}=(x'\circ x)\circ x''$ (associativity) $=e\circ x''$ ($x'$ is an inverse of $x$) $=x''$ ($e$ is neutral). <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Moves used: <a href="moves.html#m-tri">insert a middle point</a> (here: insert $e=x\circ x''$)</p>
+<details><summary>The proof in one piece</summary><div><p>Let $x',x''$ be inverses of $x$. Then $x'=x'\circ e=x'\circ(x\circ x'')=(x'\circ x)\circ x''=e\circ x''=x''$, using in turn: $e$ is neutral, $x''$ is a right inverse, associativity, $x'$ is a left inverse, $e$ is neutral. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Which two properties of $x'$ and $x''$ did the proof actually use?</p><details><summary>Answer</summary><div><p>Only that $x'$ is a <em>left</em> inverse and $x''$ a <em>right</em> inverse. So as soon as $\circ$ is associative with a neutral element, a left inverse and a right inverse of the same $x$ are always equal.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Write the chain of equalities and name the reason for each step.</p></li>
+<li><p><strong>Rung 3.</strong> Write the whole proof from the frame alone.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol><li>Name both inverses and write down the four equations.</li><li>Start with $x'=x'\circ e$.</li><li>Replace $e$ by $x\circ x''$.</li><li>Rebracket, then cancel $x'\circ x=e$.</li></ol>
+<p><strong>In short:</strong> “sneak in $e$, rebracket, collapse.”</p></div>
+<div class="exam"><span class="label">The group checklist (use it for every “show that … is an abelian group”)</span>
+<ol><li><strong>Closure:</strong> $x\circ y\in M$ for all $x,y\in M$.</li><li><strong>Associativity.</strong></li><li><strong>Neutral element:</strong> name $e$ and check $e\circ x=x$ (and $x\circ e=x$).</li><li><strong>Inverses:</strong> for each $x$ name $x'$ and check $x'\circ x=e$.</li><li><strong>Commutativity</strong> (for abelian).</li></ol>
+<p><strong>In short:</strong> close, bracket, neutral, undo, swap.</p></div>
 
-<h2 id="s3">3. Groups: everything can be undone</h2>
-<div class="box"><p><strong>Definition (inverse).</strong> In a monoid $(M,\circ)$ with neutral element $e$: if $x'\circ x=e$, then $x'$ is a <strong>left inverse</strong> of $x$; if $x\circ x'=e$, a <strong>right inverse</strong>; if both, an <strong>inverse</strong>.</p>
-<p><strong>Definition (abelian group).</strong> A commutative monoid in which every $x$ has an inverse $x'$ is an <strong>abelian group</strong> (abelian = commutative).</p></div>
-<p><strong>Examples.</strong> $(\mathbb Z,+)$: the inverse of $x$ is $-x$. $(\mathbb Q\setminus\{0\},\cdot)$: the inverse of $x$ is $\frac1x$.</p>
-<p><strong>Non-example.</strong> $(\mathbb Z,\cdot)$ is a monoid but not a group: $2$ would need $x$ with $2x=1$, and no such integer exists.</p>
-<div class="box"><p><strong>Inverses are unique.</strong> If $x'$ and $x''$ are inverses of $x$, then, using associativity,
-$$x'=x'\circ e=x'\circ(x\circ x'')=(x'\circ x)\circ x''=e\circ x''=x''.$$
-This is the first proof of the kind Halbeisen loves: one line, each step justified by exactly one axiom. Lesson 4 (§2) shows that left inverses and a left neutral element are already enough.</p></div>
-<div class="box exam"><p><strong>How to reproduce this under exam pressure.</strong> To show “$(M,\circ)$ is a group”: 1. closure ($x\circ y\in M$); 2. associativity; 3. name $e$ and check $e\circ x=x=x\circ e$; 4. for each $x$ name $x'$ and check both sides; 5. (abelian) commutativity. <em>In short: close, bracket, neutral, undo, swap.</em></p></div>
 
-<h2 id="s4">4. Rings and fields: two operations that cooperate</h2>
-<p>On $\mathbb Z$ we have $+$ <em>and</em> $\cdot$: $(\mathbb Z,+,0)$ is an abelian group, $(\mathbb Z,\cdot,1)$ a commutative monoid, and the <strong>distributive laws</strong> hold: $x\cdot(y+z)=x\cdot y+x\cdot z$ and $(x+y)\cdot z=x\cdot z+y\cdot z$.</p>
-<div class="box"><p><strong>Definition (ring).</strong> $(M,\circ,*)$ with two binary operations is a (commutative) <strong>ring</strong> if $(M,\circ)$ is an abelian group, $(M,*)$ a (commutative) monoid, and $*$ distributes over $\circ$.</p>
-<p><strong>Definition (field).</strong> A commutative ring $(M,\circ,*)$ is a <strong>field</strong> if $(M\setminus\{e_\circ\},*)$ is an abelian group, where $e_\circ$ is the neutral element of $\circ$.</p></div>
-<p><strong>Examples.</strong> $(\mathbb Z,+,\cdot)$ is a commutative ring but not a field ($2$ has no multiplicative inverse). $(\mathbb Q,+,\cdot)$ is a field: $(\mathbb Q,+)$ is an abelian group with $0$, $(\mathbb Q\setminus\{0\},\cdot)$ is an abelian group with $1$, and the distributive laws hold. The same for $\mathbb R$.</p>
-<p><strong>Why remove $e_\circ$?</strong> $0$ can never have a multiplicative inverse in a ring with $0\ne1$: $0\cdot x=0$ for every $x$ (you'll prove this in lesson 4). So asking “everything except $0$ is invertible” is the strongest possible demand.</p>
-<p><strong>Why it's cool.</strong> Vector spaces (lesson 5) are built on a field $K$. Everything you'll prove there works the same for $\mathbb Q$, $\mathbb R$, $\mathbb C$ and finite fields like $\mathbb F_2=\{0,1\}$, where $1+1=0$. One list of axioms, many worlds.</p>
+<h2 id="s2">2. Residue classes: the clock of Numeria</h2>
+<p>The script calls this example “central to us” (p. 8): it is the first group, the first ring and, for prime $n$, the first finite field. Fix $n\in\mathbb N$, $n\ge1$. For $a,b\in\mathbb Z$ write $a\equiv b\pmod n$ if $n$ divides $b-a$, that is $b-a=ln$ for some $l\in\mathbb Z$. This is an equivalence relation (Exercise 1.1.7, p. 9).</p>
+<div class="box"><p><strong>Definition (residue classes, Definition 1.1.11, p. 10).</strong> The class of $a\in\mathbb Z$ is $\bar a=a+n\mathbb Z=\{a+nl:l\in\mathbb Z\}$, all integers with the same remainder as $a$ when dividing by $n$. The set of classes is
+$$\mathbb Z/n\mathbb Z=\{\bar0,\bar1,\dots,\overline{n-1}\}.$$</p>
+<p><strong>Definition (modular addition, Definition 1.1.12, p. 10).</strong> For $\bar a,\bar b\in\mathbb Z/n\mathbb Z$ let $\bar a+\bar b:=\overline{a+b}$.</p></div>
+<p><strong>Example 1.1.10 ($n=3$).</strong> $\bar1=\bar4=\overline{-2}=\overline{10}$ and $\bar2+\bar2=\bar4=\bar1$. Each class has many names. For $n=2$: $\bar0$ = even numbers, $\bar1$ = odd numbers, and “odd + odd = even” is $\bar1+\bar1=\bar0$.</p>
+<p>The definition picks a <em>name</em> $a$ for the class $\bar a$ and computes with it. If a different name gave a different answer, the definition would be meaningless. So it needs a proof.</p>
+
+<h3 id="proof-c">Proof C: addition in $\mathbb Z/n\mathbb Z$ is well defined (Lemma 1.1.13, p. 10)</h3>
+<div class="box"><p><strong>Claim.</strong> If $\bar a=\overline{a'}$ and $\bar b=\overline{b'}$, then $\overline{a+b}=\overline{a'+b'}$.</p></div>
+<p><strong>The idea.</strong> “Same class” means “difference is a multiple of $n$”. Subtract the two sums and regroup: the difference is a sum of two multiples of $n$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul><li><strong>Given:</strong> $a-a'=ln$ and $b-b'=kn$ for some $l,k\in\mathbb Z$.</li>
+<li><strong>To show:</strong> $(a+b)-(a'+b')$ is a multiple of $n$.</li>
+<li><strong>The gap:</strong> rewrite $(a+b)-(a'+b')$ using the two given differences.</li></ul></div>
+<div class="sp"><div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two travellers name the same hour differently, and so do two others. The clerk writes down what “same hour” means.</p></div><div class="sp-formal"><p>Let $\bar a=\overline{a'}$, $\bar b=\overline{b'}$. By definition there are $l,k\in\mathbb Z$ with $a-a'=ln$ and $b-b'=kn$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Then the clerk compares the two sums by subtracting them.</p></div><div class="sp-formal"><p>$(a+b)-(a'+b')=(a-a')+(b-b')=ln+kn=(l+k)n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The difference is a whole number of turns of the clock, so both sums name the same hour.</p></div><div class="sp-formal"><p>Since $l+k\in\mathbb Z$, $\overline{a+b}=\overline{a'+b'}$. The addition does not depend on the choice of representatives. <span class="qed">∎</span></p></div></div></div>
+<p class="moves">Move used: unfold the definition (“same class” = “difference is $ln$”), then regroup.</p>
+<details><summary>The proof in one piece</summary><div><p>Let $a,a',b,b'\in\mathbb Z$ with $\bar a=\overline{a'}$ and $\bar b=\overline{b'}$. Then there are $l,k\in\mathbb Z$ with $a-a'=ln$ and $b-b'=kn$. It follows that $(a+b)-(a'+b')=(a-a')+(b-b')=(l+k)n$, so $\overline{a+b}=\overline{a'+b'}$. Hence the addition is well defined. <span class="qed">∎</span></p></div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol><li><p><strong>Rung 1.</strong> Fill in: “$\bar a=\overline{a'}$ means there is $l\in\mathbb Z$ with ___.”</p><details><summary>Answer</summary><div><p>$a-a'=ln$.</p></div></details></li>
+<li><p><strong>Rung 2.</strong> Do the same for multiplication: show $\overline{ab}=\overline{a'b'}$ (Example 1.3.3, p. 16). Hint: $ab-a'b'=(a-a')b+a'(b-b')$.</p><details><summary>Answer</summary><div><p>$ab-a'b'=(a-a')b+a'(b-b')=lnb+a'kn=(lb+a'k)n$, so $\overline{ab}=\overline{a'b'}$.</p></div></details></li>
+<li><p><strong>Rung 3.</strong> Write the proof of Proof C from the frame alone.</p></li></ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol><li>Take two names for each class and write the two “difference $=$ multiple of $n$” equations.</li><li>Subtract the two results.</li><li>Regroup into the given differences; factor out $n$.</li></ol>
+<p><strong>In short:</strong> “two names, subtract, factor $n$.” Every “is it well defined?” question works like this.</p></div>
+<div class="box"><p><strong>Theorem 1.1.14 (p. 10).</strong> $(\mathbb Z/n\mathbb Z,+)$ is an abelian group: associativity and commutativity come from $\mathbb Z$ ($(\bar a+\bar b)+\bar c=\overline{a+b+c}=\bar a+(\bar b+\bar c)$), the identity is $\bar0$, and the inverse of $\bar a$ is $\overline{-a}$.</p></div>
+
+<h2 id="s3">3. Subgroups</h2>
+<div class="box"><p><strong>Definition (subgroup, Definition 1.1.16, p. 11).</strong> Let $(G,\circ)$ be a group. A subset $H\subseteq G$ is a <strong>subgroup</strong> if $H\ne\emptyset$, $h_1\circ h_2\in H$ for all $h_1,h_2\in H$, and $h^{-1}\in H$ for all $h\in H$.</p></div>
+<p><strong>Examples 1.1.17.</strong> $(\mathbb Z,+)$ in $(\mathbb Q,+)$; $m\mathbb Z=\{ml:l\in\mathbb Z\}$ in $\mathbb Z$; $\{e\}$ and $G$ in any $G$; $\{\bar0,\bar2\}$ in $\mathbb Z/4\mathbb Z$.</p>
+<p>A subgroup is a group with the same operation (Note 1.1.18, p. 12): associativity is inherited, and $e=h\circ h^{-1}\in H$ for any $h\in H$. This “three checks, the rest is inherited” pattern comes back for subspaces in lesson 5.</p>
+
+<h2 id="s4">4. Rings: two operations that cooperate</h2>
+<div class="box"><p><strong>Definition (ring, Definition 1.3.1, p. 16).</strong> A set $R$ with two operations $+:R\times R\to R$ and $\cdot:R\times R\to R$ is a <strong>ring</strong> if</p>
+<ul><li><strong>(R1)</strong> $(R,+)$ is an abelian group;</li>
+<li><strong>(R2)</strong> $\cdot$ is associative;</li>
+<li><strong>(R3)</strong> for all $a,b,c\in R$: $a\cdot(b+c)=a\cdot b+a\cdot c$ and $(a+b)\cdot c=a\cdot c+b\cdot c$ (distributive laws).</li></ul>
+<p>$R$ is <strong>commutative</strong> if $a\cdot b=b\cdot a$ for all $a,b$, and a <strong>ring with one</strong> if there is $1\in R$ with $1\cdot a=a\cdot1=a$ for all $a$.</p></div>
+<p><strong>Examples.</strong> $(\mathbb Z,+,\cdot)$ is a commutative ring with one (Example 1.3.2). $\mathbb Z/n\mathbb Z$ with $\bar a\cdot\bar b:=\overline{ab}$ is a finite commutative ring with one $\bar1$ (Example 1.3.3, p. 16; well defined by Rung 2 of Proof C). $(2\mathbb Z,+,\cdot)$ is a commutative ring <em>without</em> one.</p>
+<div class="table-wrap"><table>
+<tr><th>$\cdot$ in $\mathbb Z/4\mathbb Z$</th><th>$\bar0$</th><th>$\bar1$</th><th>$\bar2$</th><th>$\bar3$</th></tr>
+<tr><td>$\bar1$</td><td>$\bar0$</td><td>$\bar1$</td><td>$\bar2$</td><td>$\bar3$</td></tr>
+<tr><td>$\bar2$</td><td>$\bar0$</td><td>$\bar2$</td><td>$\bar0$</td><td>$\bar2$</td></tr>
+<tr><td>$\bar3$</td><td>$\bar0$</td><td>$\bar3$</td><td>$\bar2$</td><td>$\bar1$</td></tr>
+</table></div>
+<p>Look at $\bar2\cdot\bar2=\bar0$: two nonzero elements whose product is zero. That is why $\mathbb Z/4\mathbb Z$ will not be a field (lesson 3 proves exactly when $\mathbb Z/n\mathbb Z$ is one).</p>
+<p class="small"><strong>In the lecture.</strong> Halbeisen's ring (Def. 6, p. 2) always has a $1$: $(R,\cdot)$ must be a monoid. So in the lecture $(2\mathbb Z,+,\cdot)$ is <em>not</em> a ring. If an exam question uses “ring”, check which convention it means; for fields both agree.</p>
+
+<h2 id="s5">5. Fields: everything except zero can be divided by</h2>
+<div class="box"><p><strong>Definition (field, Definition 1.3.7, p. 18).</strong> A set $K$ with two operations $+$ and $\cdot$ is a <strong>field</strong> if</p>
+<ol><li>$(K,+)$ is an abelian group (identity $0$, inverse $-a$);</li>
+<li>$K^\times:=K\setminus\{0\}$ with $\cdot$ is an abelian group (identity $1$, inverse $a^{-1}=\frac1a$);</li>
+<li>the distributive laws hold.</li></ol>
+<p>In other words: a commutative ring with one in which every nonzero element has a multiplicative inverse.</p></div>
+<p>The script also gives the same definition as one flat list (Definition 1.3.9, p. 18), handy as a checklist: associativity, commutativity, $0$ and $-x$ for $+$; associativity, $1$ and $x^{-1}$ for $x\ne0$ for $\cdot$; distributivity; <strong>$1\ne0$</strong>; commutativity of $\cdot$. Ten axioms in all.</p>
+<p><strong>Examples.</strong> $\mathbb Q$, $\mathbb R$, $\mathbb C$ (Example 1.3.11). <strong>Non-examples.</strong> $\mathbb Z$ ($2$ has no inverse); $\mathbb Z/4\mathbb Z$ ($\bar2$ has no inverse: the row of $\bar2$ above never shows $\bar1$).</p>
+<p><strong>Why remove $0$?</strong> In any ring $0\cdot a=0$ (Lemma 1.3.4, lesson 4), so $0$ can never be inverted unless $0=1$. “Everything except $0$ is invertible” is the most one can ask. And “$K^\times$ is a group” hides two more facts: $1\ne0$ (the group $K^\times$ contains its identity $1$, but not $0$), and a product of nonzero elements is nonzero (closure of $K^\times$). That is Lemma 1.3.10 (a), (c), lesson 4.</p>
+<p class="small"><strong>In the lecture.</strong> Halbeisen's Def. 7 (p. 3) says the same as Definition 1.3.7: a commutative ring $(M,\circ,*)$ such that $M$ without the neutral element of $\circ$ is an abelian group under $*$.</p>
+<p><strong>Why it's cool.</strong> Vector spaces (lesson 5) are built over a field $K$. Everything you'll prove there works at once for $\mathbb Q$, $\mathbb R$, $\mathbb C$ and the finite fields $\mathbb F_p$ and $\mathbb F_4$, where $1+1=0$. One list of axioms, many worlds.</p>
+<details><summary>For wonder (optional, 5 min): a field with four elements</summary><div><p>Serie 1, Aufgabe 9 builds a field $K=\{0,1,a,b\}$. Addition: every element is its own inverse ($x+x=0$) and $1+a=b$. Multiplication: $a\cdot a=b$, $a\cdot b=1$, $b\cdot b=a$. So $(K\setminus\{0\},\cdot)$ “is” $\mathbb Z_3$ (with $1,a,b$ playing $\bar0,\bar1,\bar2$), and $(K,+)$ “is” $(\mathcal P(\{1,2\}),\triangle)$. It is <em>not</em> $\mathbb Z_4$: there $\bar2\cdot\bar2=\bar0$, which a field forbids.</p></div></details>
+
+<h2 id="we">Worked examples</h2>
+<p>Try each step in your head before opening the answer.</p>
+<div class="box"><h3 id="we-1">Worked example 1: $(\mathbb Q_{&gt;0},\cdot)$ is an abelian group (Serie 0, Aufgabe 1(a))</h3>
+<ol class="gq"><li><p>Closure: why is the product of two positive rationals a positive rational?</p><details><summary>Answer</summary><div><p>$\frac mn\cdot\frac kl=\frac{mk}{nl}$ with $mk\in\mathbb Z$, $nl\in\mathbb N_{&gt;0}$, and the product of two positive numbers is positive.</p></div></details></li>
+<li><p>Associativity and commutativity: do you need to prove them from scratch?</p><details><summary>Answer</summary><div><p>No: they hold for $\cdot$ on all of $\mathbb Q$ (or $\mathbb R$), hence in particular on the subset $\mathbb Q_{&gt;0}$. Say this explicitly.</p></div></details></li>
+<li><p>Neutral element and inverses?</p><details><summary>Answer</summary><div><p>$1\in\mathbb Q_{&gt;0}$ with $1\cdot q=q$. For $q=\frac mn&gt;0$ (so $m,n&gt;0$), $q'=\frac nm\in\mathbb Q_{&gt;0}$ and $q'\cdot q=1$. All five checklist items hold, so it is an abelian group.</p></div></details></li></ol></div>
+<div class="box"><h3 id="we-2">Worked example 2: $(\mathcal P(M),\triangle)$ is an abelian group (Serie 0, Aufgabe 4)</h3>
+<p>For a nonempty set $M$ and $x,y\subseteq M$ let $x\triangle y:=(x\setminus y)\cup(y\setminus x)$ (symmetric difference).</p>
+<ol class="gq"><li><p>Restate $t\in x\triangle y$ in words.</p><details><summary>Answer</summary><div><p>$t$ lies in <em>exactly one</em> of $x$ and $y$. This sentence, call it $(*)$, does all the work below.</p></div></details></li>
+<li><p>Closure, commutativity, neutral element, inverses?</p><details><summary>Answer</summary><div><p>Closure: $x\triangle y\subseteq x\cup y\subseteq M$. Commutative: $(*)$ is symmetric in $x,y$. Neutral: $\emptyset\triangle x=x$. Inverse: $x\triangle x=\emptyset$, so every element is its own inverse.</p></div></details></li>
+<li><p>Associativity: when is $t\in(x\triangle y)\triangle z$?</p><details><summary>Answer</summary><div><p>Case $t\in z$: then $t\in(x\triangle y)\triangle z$ iff $t\notin x\triangle y$, iff $t$ is in none or both of $x,y$; with $z$ that means in exactly one or all three of $x,y,z$. Case $t\notin z$: iff $t\in x\triangle y$, iff $t$ is in exactly one of $x,y,z$. Both cases: $t$ lies in an <strong>odd number</strong> of the sets $x,y,z$. That description is symmetric, so it also describes $x\triangle(y\triangle z)$. Hence associativity.</p></div></details></li></ol></div>
+<div class="box"><h3 id="we-3">Worked example 3: $(\mathcal P(M),\triangle,\cap)$ is a ring, but no field if $|M|&gt;1$ (Serie 1, Aufgabe 6)</h3>
+<ol class="gq"><li><p>What is the “1” of $\cap$?</p><details><summary>Answer</summary><div><p>$M$ itself: $M\cap x=x$ for all $x\subseteq M$. Associativity and commutativity of $\cap$ are immediate from “$t\in x$ and $t\in y$”.</p></div></details></li>
+<li><p>Distributivity $x\cap(y\triangle z)=(x\cap y)\triangle(x\cap z)$: which case split?</p><details><summary>Answer</summary><div><p>If $t\notin x$: $t$ is in neither side. If $t\in x$: $t\in x\cap y\iff t\in y$ and $t\in x\cap z\iff t\in z$, so both sides contain $t$ iff $t$ is in exactly one of $y,z$.</p></div></details></li>
+<li><p>Why no field when $M$ has two elements $p\ne q$?</p><details><summary>Answer</summary><div><p>$\{p\}\ne\emptyset$, but $\{p\}\cap y=M$ is impossible, since $\{p\}\cap y\subseteq\{p\}\ne M$ (because $q\notin\{p\}$). So $\{p\}$ has no inverse for $\cap$.</p></div></details></li></ol></div>
 
 <h2 id="ex">Exercises</h2>
-<div class="box"><h3 id="ex-1">Exercise 1</h3>
-<p>For each structure decide: semigroup, monoid, group (or none)? (a) $(\mathbb N,+)$ (b) $(\mathbb Z,-)$ (c) $(\mathbb Q_{&gt;0},\cdot)$ (d) $(\{-1,1\},\cdot)$ (e) $(\mathbb N_{&gt;0},\max)$.</p>
-<details class="sol"><summary>Solution</summary><div><p><strong>(a)</strong> Monoid ($e=0$), not a group: $1$ has no inverse in $\mathbb N$. <strong>(b)</strong> None: $-$ is an operation on $\mathbb Z$ but not associative, $(1-1)-1=-1\ne1=1-(1-1)$. <strong>(c)</strong> Abelian group: closed, associative, $e=1$, inverse $\frac1x&gt;0$. <strong>(d)</strong> Abelian group: closed ($\pm1\cdot\pm1=\pm1$), $e=1$, each element is its own inverse. <strong>(e)</strong> Commutative monoid with $e=1$ ($\max(1,x)=x$ for $x\ge1$); not a group: for $x=2$ there is no $y$ with $\max(2,y)=1$.</p></div></details></div>
-<div class="box"><h3 id="ex-2">Exercise 2</h3>
-<p>Let $(M,\circ)$ be a semigroup with a left-neutral element $e_l$ and a right-neutral element $e_r$. Show $e_l=e_r$.</p>
-<details class="sol"><summary>Solution</summary><div><p>Consider $e_l\circ e_r$. Since $e_l$ is left neutral, $e_l\circ x=x$ for every $x$, in particular $e_l\circ e_r=e_r$. Since $e_r$ is right neutral, $x\circ e_r=x$ for every $x$, in particular $e_l\circ e_r=e_l$. Hence $e_l=e_l\circ e_r=e_r$. ∎</p></div></details></div>
-<div class="box"><h3 id="ex-3">Exercise 3</h3>
-<p>Is $(\mathbb Z,+,\cdot)$ a field? Is $(2\mathbb Z,+,\cdot)$ a ring?</p>
-<details class="sol"><summary>Solution</summary><div><p>$(\mathbb Z,+,\cdot)$ is a commutative ring, but $(\mathbb Z\setminus\{0\},\cdot)$ is not a group ($2x=1$ has no integer solution), so it is not a field. $(2\mathbb Z,+)$ is an abelian group and the distributive laws hold, but $(2\mathbb Z,\cdot)$ has no neutral element ($1\notin2\mathbb Z$), so with Halbeisen's definition (a ring needs a multiplicative monoid) it is <em>not</em> a ring.</p></div></details></div>
+<div class="box"><h3 id="ex-1">Exercise 1 (LinAlg I exam FS19, multiple choice III)</h3>
+<p>Which property does <em>not</em> hold in every group $(G,\circ,e)$? (a) $a\circ b=b\circ a$ for all $a,b$. (b) $a\circ e=e\circ a=a$ for all $a$. (c) For all $a$ there is $b$ with $a\circ b=b\circ a=e$. (d) $(a\circ b)\circ c=a\circ(b\circ c)$ for all $a,b,c$.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>(a).</strong> Commutativity is the extra rule that makes a group <em>abelian</em>; (b), (c), (d) are the group axioms themselves. A non-abelian example: the invertible $2\times2$ matrices under matrix multiplication.</p></div></details></div>
+<div class="box"><h3 id="ex-2">Exercise 2 (LinAlg I exam HS18, multiple choice VII)</h3>
+<p>For which operation $*:\mathbb R\times\mathbb R\to\mathbb R$ is $(\mathbb R,*,0)$ a group? (a) $a*b=ab^2+a^2b$ (b) $a*b=a+ab+b$ (c) $a*b=a+a^2b^2+b$ (d) $a*b=(a^3+b^3)^{1/3}$</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>Frame:</strong> test the cheapest axiom first: is $0$ neutral? Then inverses.</p>
+<p>(a) $0*b=0\ne b$ for $b\ne0$: $0$ isn't neutral. (b) $0$ is neutral, but $-1$ has no inverse: $(-1)*b=-1-b+b=-1\ne0$ for every $b$. (c) $0$ is neutral, but associativity fails: $(1*1)*(-1)=3*(-1)=3+9-1=11$, while $1*(1*(-1))=1*1=3$ (since $1*(-1)=1+1-1=1$). <strong>(d)</strong> works: with $\varphi(a)=a^3$ (a bijection of $\mathbb R$), $a*b=\varphi^{-1}(\varphi(a)+\varphi(b))$, so $*$ is “addition in disguise”: associative and commutative, $0*b=b$, and the inverse of $a$ is $-a$.</p></div></details></div>
+<div class="box"><h3 id="ex-3">Exercise 3 (Serie 0, Aufgabe 5(b), shortened)</h3>
+<p>For $m\ge1$ let $\mathbb Z_m$ (the script writes $\mathbb Z/m\mathbb Z$) $=\{\bar0,\dots,\overline{m-1}\}$ with $\bar k+_m\bar l:=\bar a$, where $a$ is the remainder of $k+l$ on division by $m$. Show that $(\mathbb Z_m,+_m)$ is an abelian group. (You may use that “remainder of a sum = remainder of the sum of remainders”.)</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>Frame:</strong> the group checklist.</p>
+<p>Closure: the remainder lies in $\{0,\dots,m-1\}$. Commutative: $k+l=l+k$. Associative: $(\bar k+_m\bar l)+_m\bar n$ and $\bar k+_m(\bar l+_m\bar n)$ are both the remainder of $k+l+n$ (by the given rule), so they agree. Neutral: $\bar0+_m\bar k=\bar k$ since $0+k=k$ has remainder $k$ for $0\le k&lt;m$. Inverse: for $\bar k\ne\bar0$ take $\overline{m-k}$: $k+(m-k)=m$ has remainder $0$; and $\bar0$ is its own inverse. So $(\mathbb Z_m,+_m)$ is an abelian group.</p></div></details></div>
+<div class="box"><h3 id="ex-4">Exercise 4 (Serie 1, Aufgabe 7(b), and exam FS18 MC iv)</h3>
+<p>(a) Show that the polynomial ring $\mathbb Q[X]$ is not a field. (b) True or false: the real $2\times2$ matrices $M_{2\times2}(\mathbb R)$ with matrix addition and multiplication form a field.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>(a)</strong> $X\ne0$, but there is no polynomial $p$ with $X\cdot p=1$: the product $X\cdot p$ has no constant term (its constant coefficient is $0$), while $1$ has constant coefficient $1$. So $X$ has no inverse and $(\mathbb Q[X]\setminus\{0\},\cdot)$ is not a group.</p>
+<p><strong>(b) False.</strong> Two independent reasons: multiplication is not commutative ($\begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}\begin{pmatrix}0&amp;0\\1&amp;0\end{pmatrix}=\begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}$, but the other order gives $\begin{pmatrix}0&amp;0\\0&amp;1\end{pmatrix}$), and the nonzero matrix $\begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}$ has no inverse.</p></div></details></div>
+<div class="box"><h3 id="ex-5">Exercise 5 (Serie 0, Aufgabe 3, the Fibonacci sequences)</h3>
+<p>Let $S$ be the set of real sequences $(a_0,a_1,\dots)$ with termwise addition, and $\mathrm{Fib}\subseteq S$ those with $f_{i+2}=f_{i+1}+f_i$ for all $i$. Given that $(S,+_S)$ is an abelian group, show that $(\mathrm{Fib},+_S)$ is one too.</p>
+<details class="sol"><summary>Solution</summary><div><p><strong>Frame:</strong> associativity and commutativity are inherited from $S$. Check closure, that the neutral element lies in $\mathrm{Fib}$, and that inverses stay in $\mathrm{Fib}$.</p>
+<p>Closure: if $f,g\in\mathrm{Fib}$, then $(f+g)_{i+2}=f_{i+2}+g_{i+2}=(f_{i+1}+f_i)+(g_{i+1}+g_i)=(f+g)_{i+1}+(f+g)_i$. Neutral: the zero sequence satisfies $0=0+0$. Inverse: $-f=(-f_0,-f_1,\dots)$ satisfies $-f_{i+2}=-f_{i+1}-f_i$. So $\mathrm{Fib}$ is an abelian group.</p></div></details></div>
 
-<h2 id="done">You're done when</h2>
-<p>You can state the five definitions in order (each adds one rule), give one example and one non-example for each rung, and write the two one-line proofs: the neutral element is unique, inverses are unique. Safe to skip: nothing in this lesson is beyond the exam.</p>
-<p class="small">Draft lesson, built quickly from Halbeisen's §0. The full lesson format (fantasy proof columns, ladders, more exercises from Serie 0 and Quiz 1) follows in the next pass.</p>
+<h2 id="skip">What we skipped</h2>
+<p>From the script: §1.1.1 set operations, power set and finite sets (p. 7, known from Analysis), the Russell paradox (p. 8), homomorphisms and isomorphisms (Definition 1.1.19, Lemma 1.1.20, p. 12; they return as linear maps), and §1.2 maps (pp. 13–15, known from Analysis). The semigroup and monoid steps of the lecture appear only as side notes. Next: <a href="linalg-02.html">Lesson 2, the language of mathematics</a>.</p>
 
 <p class="fb-line"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a> · <a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Lin Alg) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></p>
 </main>
