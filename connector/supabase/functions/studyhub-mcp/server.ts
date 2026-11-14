@@ -204,7 +204,7 @@ async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
       const ex = x.ex;
       const hs = hintsFor(ex);
       return text(J({ id: ex.id, title: ex.title, source: `StudyHub ${ex.kind} (${ex.page})`, url: ex.url, problem: ex.problem,
-        script: scriptExcerpt(C, ex.subject, ex.script_pages), related_official: relatedOfficial(C, ex.title + " " + ex.problem),
+        script: scriptExcerpt(C, ex.subject, ex.script_pages), related_official: relatedOfficial(C, ex.title + " " + ex.problem, ex.subject),
         hints_available: hs.length, hints_shown: st.hints_shown, attempted: !!st.attempted_at, has_grader_list: ex.grader,
         rules: "Solution locked until submit_attempt. Hints only via get_hint, one per request of the student." }));
     }
@@ -241,7 +241,7 @@ async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
           marking }));
       }
       const ex = x.ex;
-      return text(J({ id: ex.id, unlocked: true, related_official: relatedOfficial(C, ex.title + " " + ex.problem),
+      return text(J({ id: ex.id, unlocked: true, related_official: relatedOfficial(C, ex.title + " " + ex.problem, ex.subject),
         studyhub_solution: { source: "StudyHub-written (checked, but not official)", text: ex.solution, grader_list_included: ex.grader },
         script: scriptExcerpt(C, ex.subject, ex.script_pages), marking }));
     }

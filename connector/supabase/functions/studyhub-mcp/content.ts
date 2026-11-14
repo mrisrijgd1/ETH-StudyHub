@@ -184,11 +184,11 @@ export function scriptExcerpt(c: Content, subject: string, pages: number[]) {
 }
 
 // Map "HS23", "FS24 repeat", "Figalli", "2022-01" etc. in an exercise to the official exam files.
-export function relatedOfficial(c: Content, t: string) {
+export function relatedOfficial(c: Content, t: string, subject?: string) {
   const keys = new Set<string>();
   for (const m of t.matchAll(/\b(HS|FS)\s?(\d{2})\b/g)) keys.add(`${m[1].toLowerCase()}${m[2]}`);
   if (!keys.size) return [];
-  return Object.values(c.pdfs).filter((d: any) => !d.library && [...keys].some((k) => d.id.includes(k)) && d.type === "exam")
+  return Object.values(c.pdfs).filter((d: any) => !d.library && [...keys].some((k) => d.id.includes(k)) && d.type === "exam" && (!subject || !d.subject || d.subject === subject))
     .slice(0, 4).map((d: any) => ({ id: d.id, title: d.title, official_solutions: d.solution_doc ?? (d.inline_solutions ? d.id : null),
       how: `get_exercise('doc:${d.id}#<question label>')` }));
 }
