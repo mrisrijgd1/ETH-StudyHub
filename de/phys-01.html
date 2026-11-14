@@ -6,7 +6,7 @@
 <meta property="og:title" content="Die Bogenschützen des Turms">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
 <script defer src="../assets/umami-kit.js?v=79d39d59"></script>
-<script defer src="../assets/tips.js?v=89594c5a"></script>
+<script defer src="../assets/tips.js?v=c6f6d341"></script>
 <script defer src="../assets/listen.js?v=427792c7"></script>
 <script defer src="../assets/account.js?v=e8f9a658"></script>
 <script>try{var t=localStorage.getItem("sh-theme");document.documentElement.setAttribute("data-theme",t||"dark");if(localStorage.getItem("sh-side")==="0")document.documentElement.classList.add("sh-noside")}catch(e){}</script>
@@ -332,6 +332,12 @@ a.subject:hover strong { text-decoration: underline; }
 </div>
 
 <h2 id="s3-position-velocity-acceleration">3. Ort, Geschwindigkeit, Beschleunigung</h2>
+<div class="need"><span class="label">Das brauchst du (aus Analysis)</span>
+<ul>
+  <li><strong>Ableitungen</strong> von $t^n$, $\sin$, $\cos$ und die <strong>Kettenregel</strong> (Analysis-Lektion 17): $\frac d{dt}\cos(c_0t^2)=-2c_0t\sin(c_0t^2)$.</li>
+  <li><strong>Integrale</strong> als Stammfunktionen mit einer Konstante, die der Startwert festlegt (Analysis-Lektion 19): $\int_0^t(-g)\,dt'=-gt$.</li>
+  <li><strong>Trigonometrie:</strong> $\sin^2\alpha+\cos^2\alpha=1$ und $2\sin\alpha\cos\alpha=\sin2\alpha$.</li>
+</ul></div>
 <p>Wir beschreiben einen Massenpunkt durch seinen <strong>Ortsvektor</strong> $\vec r(t)=\begin{pmatrix}x(t)\\y(t)\\z(t)\end{pmatrix}$ bezüglich eines Ursprungs, den wir wählen (Skript, Abschnitt 2.3). Dann gilt (Abschnitte 2.4–2.5):</p>
 <ul>
   <li>mittlere Geschwindigkeit über $[t,t+\Delta t]$: $\langle\vec v\rangle=\dfrac{\Delta\vec r}{\Delta t}$; <strong>Momentangeschwindigkeit</strong> $\vec v(t)=\dot{\vec r}(t)=\dfrac{d\vec r}{dt}$;</li>
@@ -376,19 +382,47 @@ a.subject:hover strong { text-decoration: underline; }
 <div class="box">
 <h3 id="we-2">Beispiel 2: Höhe, Flugzeit und Wurfweite auf ebenem Boden</h3>
 <p>Ein Stein wird vom Boden ($x_0=y_0=0$) mit Geschwindigkeit $v_0$ unter dem Winkel $\alpha$ geworfen. Bestimme die Zeit bis zum höchsten Punkt, die Wurfhöhe $h$, die Flugzeit $T$ und die Wurfweite $w$. Welcher Winkel gibt die grösste Wurfweite?</p>
-<ol class="gq">
-  <li><p>Schreib die Komponenten und die vertikale Geschwindigkeit hin.</p>
-  <details><summary>Antwort</summary><div><p>$x(t)=v_0\cos\alpha\,t$, $y(t)=v_0\sin\alpha\,t-\frac12gt^2$, $v_y(t)=v_0\sin\alpha-gt$.</p></div></details></li>
-  <li><p>Höchster Punkt: welche Bedingung, und was sind $t_{\text{top}}$ und $h$?</p>
-  <details><summary>Antwort</summary><div><p>$v_y=0$ gibt $t_{\text{top}}=\frac{v_0\sin\alpha}g$. Eingesetzt in $y$:</p>
-  <span class="math-display" style="display:block">$$h=v_0\sin\alpha\cdot\frac{v_0\sin\alpha}g-\frac g2\cdot\frac{v_0^2\sin^2\alpha}{g^2}=\frac{v_0^2\sin^2\alpha}{2g}.$$</span></div></details></li>
-  <li><p>Landung: welche Bedingung, und was sind $T$ und $w$?</p>
-  <details><summary>Antwort</summary><div><p>$y(T)=0$ mit $T&gt;0$: $T\left(v_0\sin\alpha-\frac g2T\right)=0$, also $T=\frac{2v_0\sin\alpha}g=2t_{\text{top}}$ (der Flug ist symmetrisch). Dann</p>
-  <span class="math-display" style="display:block">$$w=x(T)=v_0\cos\alpha\cdot\frac{2v_0\sin\alpha}g=\frac{v_0^2\sin2\alpha}g,$$</span>
-  <p>mit $2\sin\alpha\cos\alpha=\sin2\alpha$.</p></div></details></li>
-  <li><p>Welcher Winkel maximiert $w$?</p>
-  <details><summary>Antwort</summary><div><p>$\sin2\alpha\le1$ mit Gleichheit für $2\alpha=90^\circ$, also $\alpha=45^\circ$ und $w_{\max}=\frac{v_0^2}g$. Die Winkel $\alpha$ und $90^\circ-\alpha$ geben dieselbe Wurfweite, da $\sin(180^\circ-2\alpha)=\sin2\alpha$.</p></div></details></li>
+<p><strong>Die Idee.</strong> Schreib die beiden Komponenten getrennt auf. Jede Frage („höchster Punkt“, „Landung“) ist eine Bedingung an <em>eine</em> Komponente; sie liefert eine Zeit, und diese Zeit setzt du in die andere Komponente ein.</p>
+<div class="frame"><span class="label">Was die Physik festlegt (vor jeder Rechnung)</span>
+<ul>
+  <li><strong>Gesucht:</strong> $t_{\text{top}}$, $h$, $T$, $w$ und der beste Winkel $\alpha$.</li>
+  <li><strong>Gegeben:</strong> die Anfangsbedingungen $x_0=y_0=0$, $v_{x0}=v_0\cos\alpha$, $v_{y0}=v_0\sin\alpha$ und die konstante Beschleunigung $\vec a=(0,-g)$.</li>
+  <li><strong>Das Gesetz:</strong> Bewegung mit konstanter Beschleunigung (Formelsammlung, Seite 1): $\vec r(t)=\vec r_0+\vec v_0t+\frac12\vec at^2$, in jeder Komponente.</li>
+  <li><strong>Die Lücke, die du füllst:</strong> Übersetze die Wörter in Bedingungen. Höchster Punkt $\Leftrightarrow v_y=0$. Landung $\Leftrightarrow y=0$ mit $t&gt;0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Hauptfrau zieht ihre zwei Linien: eine dem Boden entlang, eine nach oben, beide beim Bogenschützen beginnend.</p></div><div class="sp-formal"><p>Ursprung im Abwurfpunkt, $x$ waagrecht, $y$ nach oben. Anfangsbedingungen: $x_0=y_0=0$, $v_{x0}=v_0\cos\alpha$, $v_{y0}=v_0\sin\alpha$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Bodenlinie behält ihr Tempo für immer; die Höhenlinie wird jeden Moment stärker nach unten gezogen.</p></div><div class="sp-formal"><p>$x(t)=v_0\cos\alpha\,t$, $y(t)=v_0\sin\alpha\,t-\frac12gt^2$, $v_y(t)=v_0\sin\alpha-gt$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Im höchsten Punkt hört der Pfeil für einen Augenblick auf zu steigen.</p></div><div class="sp-formal"><p>Höchster Punkt: $v_y(t_{\text{top}})=0$, also $t_{\text{top}}=\dfrac{v_0\sin\alpha}g$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Lies die Höhenlinie in diesem Moment ab.</p></div><div class="sp-formal"><span class="math-display" style="display:block">$$h=y(t_{\text{top}})=\frac{v_0^2\sin^2\alpha}g-\frac{v_0^2\sin^2\alpha}{2g}=\frac{v_0^2\sin^2\alpha}{2g}.$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Landung: Die Höhenlinie zeigt wieder null (die Null am Start zählt nicht).</p></div><div class="sp-formal"><p>$y(T)=0$ mit $T&gt;0$: $T\left(v_0\sin\alpha-\frac g2T\right)=0$, also $T=\dfrac{2v_0\sin\alpha}g=2t_{\text{top}}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Lies die Bodenlinie zur Landezeit ab.</p></div><div class="sp-formal"><p>$w=x(T)=v_0\cos\alpha\cdot\dfrac{2v_0\sin\alpha}g$ $=\dfrac{v_0^2\sin2\alpha}g$, mit $2\sin\alpha\cos\alpha=\sin2\alpha$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der beste Winkel ist dort, wo $\sin2\alpha$ am grössten ist.</p></div><div class="sp-formal"><p>$\sin2\alpha\le1$ mit Gleichheit für $2\alpha=90^\circ$: $\alpha=45^\circ$ und $w_{\max}=\frac{v_0^2}g$. Wegen $\sin(180^\circ-2\alpha)=\sin2\alpha$ geben die Winkel $\alpha$ und $90^\circ-\alpha$ dieselbe Wurfweite.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Gratis-Kontrolle aus Abschnitt 2.</p></div><div class="sp-formal"><p>Einheiten: $[h]=[w]=\frac{\mathrm{m^2/s^2}}{\mathrm{m/s^2}}=\mathrm m$, $[T]=\frac{\mathrm{m/s}}{\mathrm{m/s^2}}=\mathrm s$. ✓</p></div></div>
+</div>
+<details><summary>Die Lösung am Stück</summary><div>
+<p>Ursprung im Abwurfpunkt, $y$ nach oben. Mit $v_{x0}=v_0\cos\alpha$ und $v_{y0}=v_0\sin\alpha$: $x(t)=v_0\cos\alpha\,t$, $y(t)=v_0\sin\alpha\,t-\frac12gt^2$, $v_y(t)=v_0\sin\alpha-gt$. Im höchsten Punkt ist $v_y=0$, also $t_{\text{top}}=\frac{v_0\sin\alpha}g$ und $h=y(t_{\text{top}})=\frac{v_0^2\sin^2\alpha}{2g}$. Landung: $y(T)=0$, $T&gt;0$, ergibt $T=\frac{2v_0\sin\alpha}g$ und $w=x(T)=\frac{v_0^2\sin2\alpha}g$. Das ist am grössten für $\sin2\alpha=1$, also $\alpha=45^\circ$, mit $w_{\max}=\frac{v_0^2}g$.</p>
+</div></details>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Achsen und Anfangsbedingungen</strong>, als Komponenten.</li>
+  <li><strong>Die Komponentengleichungen</strong> $x(t)$, $y(t)$ (und $v_y(t)$, wenn ein höchster Punkt vorkommt).</li>
+  <li><strong>Bedingung → Zeit:</strong> höchster Punkt $v_y=0$, Landung $y=0$ mit $t&gt;0$.</li>
+  <li><strong>Einsetzen</strong> dieser Zeit in die andere Komponente.</li>
+  <li><strong>Einheiten</strong>, dann Zahlen.</li>
 </ol>
+<p><strong>Hier gehen Punkte verloren:</strong> die Lösung $T=0$ nehmen; $\sin$ und $\cos$ in $v_{x0}$ und $v_{y0}$ vertauschen (der senkrechte Teil gehört zu $\sin$, wenn $\alpha$ vom Boden aus gemessen wird); ein falsches Vorzeichen von $g$, wenn $y$ nach oben zeigt; Zahlen zu früh.</p>
+<p>Kurz gesagt: „zwei Linien, eine Bedingung, eine Zeit, einsetzen“.</p>
+</div>
+<div class="ladder"><span class="label">Du bist dran: die Lösungsleiter</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Warum kommt beim höchsten Punkt nur $v_y$ vor und nicht $v_x$?</p>
+  <details><summary>Antwort</summary><div><p>„Höchster Punkt“ heisst: Die Höhe wächst nicht mehr, $\dot y=v_y=0$. Die waagrechte Geschwindigkeit $v_x=v_0\cos\alpha$ ändert sich nie, sie verrät also nichts über den höchsten Punkt. Dort bewegt sich der Stein noch, mit der Geschwindigkeit $v_0\cos\alpha$.</p></div></details></li>
+  <li><p><strong>Stufe 2 (3 Min.).</strong> Eine Kugel rollt mit der waagrechten Geschwindigkeit $v_0$ von einem Tisch der Höhe $H$. Schreib den Rahmen auf und bestimme die Flugzeit und den Abstand vom Tisch, in dem sie landet.</p>
+  <details><summary>Antwort</summary><div><p>Ursprung am Boden unter der Kante, $y$ nach oben: $x_0=0$, $y_0=H$, $v_{x0}=v_0$, $v_{y0}=0$. Also $x(t)=v_0t$, $y(t)=H-\frac12gt^2$. Landung $y(T)=0$, $T&gt;0$: $T=\sqrt{\frac{2H}g}$ und $w=x(T)=v_0\sqrt{\frac{2H}g}$. Einheiten: $\sqrt{\mathrm m/(\mathrm{m/s^2})}=\mathrm s$ ✓.</p></div></details></li>
+  <li><p><strong>Stufe 3 (5 Min.).</strong> Schliess die Seite und schreib die ganze Lösung dieses Beispiels allein aus dem Rahmen: $t_{\text{top}}$, $h$, $T$, $w$ und den besten Winkel.</p></li>
+</ol></div>
 </div>
 
 <h2 id="s5-circular-motion">5. Kreisbewegung</h2>
@@ -426,14 +460,37 @@ a.subject:hover strong { text-decoration: underline; }
 <div class="box">
 <h3 id="we-3">Beispiel 3: ein immer schnellerer Kreis (HS25, Konzeptfrage 1.2(c))</h3>
 <p>Ein Massenpunkt bewegt sich auf $x(t)=R\cos(c_0t^2)$, $y(t)=R\sin(c_0t^2)$ mit Konstanten $R,c_0&gt;0$. Wie hängt der Betrag der Geschwindigkeit $|\vec v(t)|$ von $t$ ab, und wie sieht seine Beschleunigung aus?</p>
-<ol class="gq">
-  <li><p>Was ist $\varphi(t)$, und was ist $\omega(t)$?</p>
-  <details><summary>Antwort</summary><div><p>$\varphi(t)=c_0t^2$, also $\omega(t)=\dot\varphi=2c_0t$: Der Kreis wird immer schneller durchlaufen.</p></div></details></li>
-  <li><p>Der Betrag der Geschwindigkeit?</p>
-  <details><summary>Antwort</summary><div><p>$|\vec v(t)|=\omega(t)R=2Rc_0t$: eine Gerade durch den Ursprung in einem $|v|$–$t$-Diagramm. (Kontrolle durch Ableiten: $\dot x=-2Rc_0t\sin(c_0t^2)$, $\dot y=2Rc_0t\cos(c_0t^2)$, also $|\vec v|^2=4R^2c_0^2t^2$.)</p></div></details></li>
-  <li><p>Tangential- und Normalbeschleunigung?</p>
-  <details><summary>Antwort</summary><div><p>Tangential: $\dot v=2Rc_0$, konstant. Normal: $\frac{v^2}R=4Rc_0^2t^2$, zum Mittelpunkt hin, wächst mit $t^2$.</p></div></details></li>
+<p><strong>Die Idee.</strong> Erkenne einen Kreis mit Radius $R$ und Winkel $\varphi(t)=c_0t^2$. Dann folgt alles aus $\omega=\dot\varphi$: Die Geschwindigkeit ist $\omega R$, und die Beschleunigung zerfällt in einen tangentialen und einen normalen Teil.</p>
+<div class="frame"><span class="label">Was die Physik festlegt (vor jeder Rechnung)</span>
+<ul>
+  <li><strong>Gesucht:</strong> $|\vec v(t)|$ als Funktion von $t$; die Tangential- und die Normalbeschleunigung.</li>
+  <li><strong>Gegeben:</strong> $\vec r(t)=R\,(\cos\varphi(t),\sin\varphi(t))$ mit $\varphi(t)=c_0t^2$: ein Kreis mit Radius $R$.</li>
+  <li><strong>Die Gesetze:</strong> auf einem Kreis $v=\omega R$ mit $\omega=\dot\varphi$; auf jeder Bahn $\vec a=\dot v\,\vec e_\parallel+\frac{v^2}\rho\,\vec e_\perp$, mit $\rho=R$ auf einem Kreis.</li>
+  <li><strong>Die Lücke, die du füllst:</strong> berechne $\omega(t)$; der Rest ist Einsetzen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Der Schleuderer wirbelt immer schneller: Der Winkel wächst wie $t^2$.</p></div><div class="sp-formal"><p>$\varphi(t)=c_0t^2$, also $\omega(t)=\dot\varphi=2c_0t$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Auf dem Kreis ist die Geschwindigkeit Radius mal Drehrate.</p></div><div class="sp-formal"><p>$|\vec v(t)|=\omega(t)R=2Rc_0t$: eine Gerade durch den Ursprung im $|v|$–$t$-Diagramm.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Kontrolle auf dem langen Weg: jede Linie ableiten.</p></div><div class="sp-formal"><p>$\dot x=-2Rc_0t\sin(c_0t^2)$, $\dot y=2Rc_0t\cos(c_0t^2)$ (Kettenregel), also $|\vec v|^2=4R^2c_0^2t^2$. ✓</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Geschwindigkeit wächst gleichmässig, und der Zug zur Mitte wächst mit ihrem Quadrat.</p></div><div class="sp-formal"><p>Tangential: $\dot v=2Rc_0$, konstant. Normal: $\frac{v^2}R=4Rc_0^2t^2$, zur Mitte hin.</p></div></div>
+</div>
+<div class="exam"><span class="label">So schreibst du es unter Prüfungsdruck</span>
+<ol>
+  <li><strong>Den Kreis erkennen:</strong> $R\cos(\dots)$, $R\sin(\dots)$ mit demselben Argument $\varphi(t)$.</li>
+  <li><strong>$\omega=\dot\varphi$</strong>, dann $v=\omega R$.</li>
+  <li><strong>Die Beschleunigung aufteilen:</strong> $\dot v$ entlang der Bahn, $\frac{v^2}R$ zur Mitte.</li>
 </ol>
+<p><strong>Hier gehen Punkte verloren:</strong> in der Multiple-Choice-Aufgabe das Diagramm mit konstantem $|v|$ wählen, weil „es ja ein Kreis ist“. Konstante Geschwindigkeit braucht ein in $t$ lineares $\varphi$.</p>
+</div>
+<div class="ladder"><span class="label">Du bist dran: die Lösungsleiter</span>
+<ol>
+  <li><p><strong>Stufe 1 (1 Min.).</strong> Derselbe Kreis, aber mit $\varphi(t)=c_0t^3$. Wie wächst $|\vec v|$ jetzt?</p>
+  <details><summary>Antwort</summary><div><p>$\omega=3c_0t^2$, also $|\vec v|=3Rc_0t^2$: eine Parabel im $|v|$–$t$-Diagramm.</p></div></details></li>
+  <li><p><strong>Stufe 2 (2 Min.).</strong> Zu welcher Zeit sind bei der ursprünglichen Bewegung Tangential- und Normalbeschleunigung gleich gross?</p>
+  <details><summary>Antwort</summary><div><p>$4Rc_0^2t^2=2Rc_0$ $\iff t^2=\frac1{2c_0}$ $\iff t=\frac1{\sqrt{2c_0}}$. Vorher überwiegt der tangentiale Teil, danach der normale.</p></div></details></li>
+  <li><p><strong>Stufe 3 (3 Min.).</strong> Schreib die ganze Lösung allein aus dem Rahmen.</p></li>
+</ol></div>
 </div>
 
 <p><strong>Warum das cool ist.</strong> Der Zwei-Zeilen-Trick (Komponenten, die einander ignorieren und nur durch die Zeit verbunden sind) ist der Grund, warum eine fallen gelassene und eine abgefeuerte Kugel im selben Moment auf ebenem Boden aufschlagen, und warum es immer klappt, direkt auf ein fallendes Ziel zu zielen: Die Schwerkraft zieht Pfeil und Ziel um genau gleich viel nach unten. Übung 3 unten ist eine Prüfungsaufgabe, die darauf aufbaut.</p>
@@ -522,6 +579,18 @@ a.subject:hover strong { text-decoration: underline; }
 .sim svg{width:100%;height:auto;display:block}
 .sim svg text{font:14px system-ui,sans-serif;fill:currentColor}
 .sim-read{font-size:.85rem;margin:.3rem 0 0;font-variant-numeric:tabular-nums}
+.frame{background:var(--surface);border:1px dashed var(--exam-edge);border-radius:8px;padding:.8rem 1.1rem;display:flex;flex-direction:column;gap:.5rem;margin:.6rem 0}
+.sp{display:flex;flex-direction:column;gap:.5rem;margin:.6rem 0}
+.sp-head{display:none}
+.sp-row{display:grid;grid-template-columns:minmax(0,1fr);gap:.35rem}
+.sp-story,.sp-formal{padding:.55rem .85rem;border-radius:0 6px 6px 0;display:flex;flex-direction:column;gap:.4rem;min-width:0}
+.sp-story{background:var(--story);border-left:3px solid var(--story-edge);font-size:.95rem}
+.sp-formal{background:var(--exam);border-left:3px solid var(--exam-edge)}
+@media (min-width:620px){.sp-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:.5rem}.sp-row{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:.5rem}}
+@media (max-width:619px){.sp-row+.sp-row{margin-top:.4rem}}
+.ladder{background:var(--surface);border:1px dashed var(--story-edge);border-radius:8px;padding:.8rem 1.1rem;display:flex;flex-direction:column;gap:.5rem;margin:.6rem 0}
+.ladder ol{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:.6rem}
+.ladder details{margin-top:.35rem}
 </style>
 <script>
 (function () {
