@@ -2029,7 +2029,7 @@ window.FLASHCARDS_KAPITEL_5 = [
   sw.innerHTML = '<strong>Kartensatz:</strong> <button type="button" data-m="l" aria-pressed="true">Nach Lektion</button><button type="button" data-m="s" aria-pressed="false">Nach Skript-Kapitel (ausführlich)</button>';
   ctl.parentNode.insertBefore(sw, ctl);
   var panel = document.createElement('div'); panel.id = 'sd-panel'; panel.hidden = true;
-  panel.innerHTML = '<p>Ausführliche Karten von Rachel, Kapitel für Kapitel wie im Skript (mit den Nummern des Skripts): Definitionen, Sätze, Beweis-Baupläne und Übungen, jeweils mit Erklärung, Beispiel und Gegenbeispiel. Bisher Kapitel 1–5.</p>' +
+  panel.innerHTML = '<p>Ausführliche Karten einer Mitstudentin, Kapitel für Kapitel wie im Skript (mit den Nummern des Skripts): Definitionen, Sätze, Beweis-Baupläne und Übungen, jeweils mit Erklärung, Beispiel und Gegenbeispiel. Bisher Kapitel 1–5.</p>' +
     '<div class="row"><label>Kapitel <select id="sd-ch">' + CH.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
     '<label>Abschnitt <select id="sd-cat"></select></label> <button type="button" class="primary" id="sd-start">Start</button></div>' +
     '<p class="fc-meta" id="sd-count" aria-live="polite"></p><div id="sd-stage"><p>Wähle ein Kapitel und drück auf Start. „Nochmal“ legt eine Karte ein paar Plätze weiter hinten wieder ein; „Gewusst“ nimmt sie aus dieser Runde heraus.</p></div>' +
