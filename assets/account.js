@@ -215,7 +215,7 @@
         if (/^serie-a/.test(k)) return L('Übungsblatt ', 'Übungsblatt ') + n;
         if (/^phys-/.test(k)) return L('Physics lesson ', 'Physik-Lektion ') + n;
         if (/^serie-p/.test(k)) return L('Physics Serie ', 'Physik-Serie ') + n;
-        if (/^linalg-/.test(k)) return L('Lin Alg lesson ', 'Lin-Alg-Lektion ') + n;
+        if (/^linalg-/.test(k)) return L('Linear Algebra lesson ', 'Lineare Algebra, Lektion ') + n;
         return k.replace('.html', '');
       }
       var keys = Object.keys(p).filter(function (k) { return /^(lesson|phys|refresher|linalg)-\d+\.html$|^serie-[ap]\d+\.html$/.test(k); });
