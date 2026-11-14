@@ -80,7 +80,8 @@
     '#sh-tree .cols{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:1rem}@media(min-width:760px){#sh-tree .cols{grid-template-columns:1fr 1fr}}' +
     '#sh-tree ul{list-style:none;padding-left:1.1rem;margin:.2rem 0;border-left:2px solid var(--rule,#ccd)}#sh-tree .cols>div>ul{border-left:none;padding-left:0}#sh-tree li{margin:.3rem 0}' +
     '#sh-tree .les{font-size:.78rem;opacity:.7;margin-left:.35rem;white-space:nowrap}#sh-tree .me{font-weight:600;font-size:1.05rem}#sh-tree button.lk{font:inherit;color:var(--accent);background:none;border:none;padding:0;cursor:pointer;text-align:left;text-decoration:underline;text-decoration-thickness:1px}' +
-    '#sh-tree .seen{opacity:.6;font-size:.85rem}';
+    '#sh-tree .seen{opacity:.6;font-size:.85rem}#sh-tree li{line-height:1.4}#sh-tree a.les{display:inline-block;padding:.2rem .1rem}' +
+    '@media(max-width:600px){#sh-tree ul{padding-left:.55rem;border-left-width:2px}#sh-tree li{margin:.55rem 0}#sh-tree button.lk{padding:.15rem 0;overflow-wrap:anywhere}#sh-tree .les{white-space:normal}#sh-tree .cols h3{margin:.6rem 0 .2rem}}';
   document.head.appendChild(css);
   var keys = Object.keys(T).sort(function (a, b) { return T[a][0] - T[b][0]; });
   var opts = '', last = 0;
