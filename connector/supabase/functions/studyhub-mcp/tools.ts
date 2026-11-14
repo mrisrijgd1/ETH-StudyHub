@@ -31,7 +31,7 @@ export const TOOLS = [
     description: "Get the exact page image of an exam, PVK sheet, formula sheet, library file or the script (for formulas the text extraction garbles). Script pages use the PRINTED page number.",
     inputSchema: S("", { doc: str("Document id, e.g. 'script-analysis' or an exam id"), page: num("Page (printed page for scripts)") }, ["doc", "page"]) },
   { name: "get_exercise", title: "Open an exercise", annotations: RO,
-    description: "Open an exercise WITHOUT its solution: problem, script passages to quote, related official exam files, how many hints exist. Ids: StudyHub exercises like 'lesson-08/ex3', or an old-exam question 'doc:<exam id>#<label>' (e.g. 'doc:2024-02-figalli-hs23-exam-with-solutions#MC3', '#Aufgabe 2').",
+    description: "Open an exercise WITHOUT its solution: problem, script passages to quote, related official exam files, how many hints exist. Ids: StudyHub exercises like 'lesson-08/ex3' (read() of a page lists every id with its title; the page's own labels are aliases too, e.g. 'lesson-08/exercise-2' = the box titled "Exercise 2", 'lesson-08/proof-b'), or an old-exam question 'doc:<exam id>#<label>' (e.g. 'doc:2024-02-figalli-hs23-exam-with-solutions#MC3', '#Aufgabe 2').",
     inputSchema: S("", { id: str("Exercise id") }, ["id"]) },
   { name: "get_hint", title: "Next hint", annotations: W,
     description: "Reveal the NEXT hint (one at a time) for an exercise. Call only when the student asks for a hint.",

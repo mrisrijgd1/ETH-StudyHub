@@ -152,6 +152,7 @@
   }
   function history() {
     var key = (document.getElementById('my-hk2').value || '').trim() || document.getElementById('my-hk').value;
+    if (/^progress:/.test(key) && !/\.html$/.test(key)) key += '.html';  // progress rows use the page file name
     S.sb.from('my_versions').select('id,content,source,created_at').eq('key', key).order('id', { ascending: false }).limit(30).then(function (r) {
       var v = r.data || [];
       document.getElementById('my-hlist').innerHTML = v.length ? '<table><tr><th>' + L('When', 'Wann') + '</th><th>' + L('By', 'Von') + '</th><th>' + L('Content', 'Inhalt') + '</th><th></th></tr>' + v.map(function (x, i) {
