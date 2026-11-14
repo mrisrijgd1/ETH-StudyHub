@@ -1,5 +1,9 @@
 name: Sync FlashcardsAnalysis designspace
 
+# Copies Rachel's flashcards repo into FlashcardsAnalysis_designspace/ and
+# PROPOSES the update as a pull request (branch sync/flashcards). Nothing goes
+# public until the pull request is reviewed and merged.
+
 on:
   workflow_dispatch:
   schedule:
@@ -7,6 +11,11 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-flashcards
+  cancel-in-progress: false
 
 jobs:
   sync:
@@ -35,15 +44,25 @@ jobs:
           mkdir -p destination/FlashcardsAnalysis_designspace
           rsync -a --delete --exclude='.git' --exclude='.github' source/ destination/FlashcardsAnalysis_designspace/
 
-      - name: Commit and push updates
+      - name: Propose the update as a pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd destination
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add --all
           if git diff --cached --quiet; then
-            echo "No changes to sync."
+            echo "main already matches the flashcards repo. Nothing to propose."
             exit 0
           fi
-          git commit -m "Sync FlashcardsAnalysis_designspace"
-          git push origin main
+          git checkout -b sync/flashcards
+          git commit -m "Sync FlashcardsAnalysis_designspace from the flashcards repo"
+          git push --force origin sync/flashcards
+          if [ -z "$(gh pr list --head sync/flashcards --state open --json number --jq '.[].number')" ]; then
+            gh pr create --base main --head sync/flashcards \
+              --title "Flashcards update from Rachel's repo (please review)" \
+              --body "Automatic copy of random-1374/FlashcardsAnalysis_designspace into FlashcardsAnalysis_designspace/. This repo is public: check that every file may be published (no copyrighted PDFs) before merging."
+          else
+            echo "An open pull request already exists; its branch was updated."
+          fi
