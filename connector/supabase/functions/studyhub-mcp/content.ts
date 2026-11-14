@@ -114,7 +114,7 @@ export async function readDoc(c: Content, id: string, page: any, unlocked: Unloc
     const all = parts.map((p) => p.text).join("\n\n");
     const start = Math.max(0, (Number(page) || 1) - 1) * 24000;
     const more = all.length > start + 24000 ? `\n\n[continued: read('${id}', page=${(Number(page) || 1) + 1})]` : "";
-    return { text: `${d.title} (${d.label}) · ${d.url}\nExercises on this page: ${d.exercises ?? 0} (their solutions are locked; use get_exercise('${id}/ex<n>')).\n\n${all.slice(start, start + 24000)}${more}` };
+    return { text: `${d.title} (${d.label}) · ${d.url}\n${exIndex(c, id)}\n\n${all.slice(start, start + 24000)}${more}` };
   }
   return { error: `Nothing with id "${id}". Use search first.` };
 }
@@ -191,4 +191,12 @@ export function relatedOfficial(c: Content, t: string) {
   return Object.values(c.pdfs).filter((d: any) => !d.library && [...keys].some((k) => d.id.includes(k)) && d.type === "exam")
     .slice(0, 4).map((d: any) => ({ id: d.id, title: d.title, official_solutions: d.solution_doc ?? (d.inline_solutions ? d.id : null),
       how: `get_exercise('doc:${d.id}#<question label>')` }));
+}
+
+// Exercise index for a page: the ex<n> ids do NOT follow the page's own labels ("Exercise 2" may be ex7).
+function exIndex(c: Content, page: string): string {
+  const list = Object.values(c.exercises).filter((e: any) => e.page === page);
+  if (!list.length) return "No locked exercises on this page.";
+  return `Exercises on this page (solutions locked). Use EXACTLY these ids; the page's own labels like "Exercise 2" are not ex2:\n` +
+    list.map((e: any) => `- ${e.id} = ${String(e.title).slice(0, 90)}`).join("\n");
 }
