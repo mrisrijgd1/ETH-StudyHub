@@ -148,8 +148,29 @@ function exerciseOrDoc(ctx: Ctx, id: string) {
     if (!q) return { error: "Name the question too, e.g. doc:" + docId + "#MC3 or #Aufgabe 2." };
     return { doc: d, question: q };
   }
-  const ex = ctx.content.exercises[id];
-  return ex ? { ex } : { error: `Unknown exercise id ${id}. Use search with type "exercise" to find ids.` };
+  const ex = resolveExercise(ctx.content.exercises, id);
+  if (ex) return { ex };
+  const pg = id.split("/")[0];
+  const list = exerciseList(ctx.content.exercises, pg);
+  return { error: `Unknown exercise id ${id}.` + (list.length ? ` Exercises on ${pg}:\n${list.join("\n")}` : ` Use search with type "exercise" to find ids.`) };
+}
+
+// The page's own labels ("Exercise 2", "Proof B", "Worked example 1") are NOT the ex<n> numbers:
+// ex<n> counts every locked solution on the page in order. Accept the labels as aliases so that
+// "lesson-08/exercise-2" means the box titled "Exercise 2", never lesson-08/ex2 (which is Proof B).
+const LABELS: [RegExp, string][] = [[/^(?:exercise|aufgabe|übung)$/i, "(?:exercise|aufgabe|übung)"], [/^(?:proof|beweis)$/i, "(?:proof|beweis)"], [/^(?:worked|worked-example|example|beispiel)$/i, "(?:worked example|beispiel)"]];
+export function resolveExercise(all: Record<string, any>, id: string): any {
+  if (all[id]) return all[id];
+  const m = id.trim().match(/^([a-z0-9-]+?)\/(?:#)?([a-zäöü]+(?:-example)?)[\s_-]*([0-9]+|[a-z])$/i);
+  if (!m) return null;
+  const [, page, word, n] = m;
+  const pat = LABELS.find(([w]) => w.test(word));
+  if (!pat) return null;
+  const re = new RegExp(`^${pat[1]}\\s+${n}\\b`, "i");
+  return Object.values(all).find((e: any) => e.page === page && re.test(String(e.title).trim())) ?? null;
+}
+export function exerciseList(all: Record<string, any>, page: string): string[] {
+  return Object.values(all).filter((e: any) => e.page === page).map((e: any) => `${e.id} = ${String(e.title).slice(0, 90)}`);
 }
 
 async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
@@ -172,6 +193,7 @@ async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
     case "get_exercise": {
       const x: any = exerciseOrDoc(ctx, String(a.id ?? ""));
       if (x.error) return err(x.error);
+      if (x.ex) a.id = x.ex.id;
       const st = await getState(ctx, a.id);
       if (x.doc) {
         const seg = segmentFor(x.doc.questions_text ?? x.doc.page_text, x.question);
@@ -189,19 +211,21 @@ async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
     case "get_hint": {
       const x: any = exerciseOrDoc(ctx, String(a.id ?? ""));
       if (x.error) return err(x.error);
+      if (x.ex) a.id = x.ex.id;
       const st = await getState(ctx, a.id);
       if (x.doc) {
         await setState(ctx, a.id, { hints_shown: st.hints_shown + 1 });
         return text(`Hint ${st.hints_shown + 1} for ${a.id}: no stored hint exists for this official exam question. Give the student ONE short hint of your own (a direction, a definition or a theorem to look at), not a solution step. Ask them to try again before any further hint.`);
       }
       const hs = hintsFor(x.ex);
-      if (st.hints_shown >= hs.length) return text(`All ${hs.length} hints for this exercise have been shown. The next step is submit_attempt with what the student has written; then the solution unlocks.`);
+      if (st.hints_shown >= hs.length) return text(`All ${hs.length} hints for ${a.id} ("${x.ex.title}") have been shown. The next step is submit_attempt with what the student has written; then the solution unlocks.`);
       await setState(ctx, a.id, { hints_shown: st.hints_shown + 1 });
-      return text(`Hint ${st.hints_shown + 1} of ${hs.length} (${a.id}):\n${hs[st.hints_shown]}\n\n[Rule: give only this hint, in your own gentle words. Do not add further steps. The student asks for the next one if needed.]`);
+      return text(`Hint ${st.hints_shown + 1} of ${hs.length} for ${a.id} ("${x.ex.title}"):\n${hs[st.hints_shown]}\n\n[Rule: give only this hint, in your own gentle words. Do not add further steps. The student asks for the next one if needed.]`);
     }
     case "submit_attempt": {
       const x: any = exerciseOrDoc(ctx, String(a.id ?? ""));
       if (x.error) return err(x.error);
+      if (x.ex) a.id = x.ex.id;
       const attempt = String(a.attempt ?? "").trim();
       if (attempt.length < 3) return err("Send the student's attempt (typed, or your faithful transcription of their photo). An empty attempt doesn't unlock the solution.");
       await ctx.admin.from("attempts").insert({ user_id: ctx.user.id, item_id: a.id, kind: x.doc ? "exam" : "exercise", attempt: attempt.slice(0, 20000) });

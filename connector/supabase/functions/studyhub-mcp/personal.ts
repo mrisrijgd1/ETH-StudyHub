@@ -19,6 +19,12 @@ async function putItem(ctx: Ctx, key: string, content: unknown) {
 }
 const newId = () => crypto.randomUUID().slice(0, 8);
 
+// Progress rows use the SITE's page key, the file name ("lesson-08.html"), because the site's
+// "Your progress" box writes them. Tools accept "lesson-08" or "lesson-08.html" and show "lesson-08".
+const pageId = (p: unknown) => String(p ?? "").trim().replace(/^progress:/, "").replace(/\.html$/, "");
+const pageKey = (p: unknown) => pageId(p) + ".html";
+const histKey = (k: unknown) => String(k ?? "").startsWith("progress:") ? "progress:" + pageKey(k) : String(k ?? "");
+
 // ---- design overlay: only safe tokens, never code ----
 const FONTS = ["default", "serif", "sans", "readable", "mono"];
 const HIDE = ["badday", "listen", "tips", "comments", "progress", "wonder", "story"];
@@ -80,11 +86,13 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
       return err("action must be get, add, update or remove (plan: set or add).");
     }
     case "history": {
+      a.key = histKey(a.key);
       const { data } = await ctx.admin.from("my_versions").select("id, content, source, created_at").eq("user_id", uid).eq("key", a.key).order("id", { ascending: false }).limit(Math.min(Number(a.limit) || 10, 50));
       if (!data?.length) return text("No history for " + a.key);
       return text(J(data.map((v) => ({ version_id: v.id, at: v.created_at, by: v.source, preview: v.content === null ? "(deleted)" : JSON.stringify(v.content).slice(0, 200) }))));
     }
     case "undo": case "restore_version": case "reset": {
+      if (a.key !== undefined) a.key = histKey(a.key);
       let vid: number | null = null;
       if (name === "restore_version") vid = Number(a.version_id);
       if (name === "undo") {
@@ -112,16 +120,16 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
     case "progress": {
       if ((a.action ?? "get") === "get") {
         const { data } = await ctx.admin.from("progress").select("page, done, rating, note, updated_at").eq("user_id", uid).order("page");
-        return text(J(data ?? []));
+        return text(J((data ?? []).map((r) => ({ ...r, page: pageId(r.page) }))));
       }
-      const page = String(a.page ?? "");
-      if (!/^[a-z0-9-]{3,40}$/.test(page)) return err("page must be a page id like lesson-08, refresher-02 or phys-05.");
+      if (!/^[a-z0-9-]{3,40}$/.test(pageId(a.page))) return err("page must be a page id like lesson-08, refresher-02 or phys-05.");
+      const page = pageKey(a.page);
       const cur = (await ctx.admin.from("progress").select("*").eq("user_id", uid).eq("page", page).maybeSingle()).data ?? {};
       const row = { user_id: uid, page, done: a.done ?? cur.done ?? false, rating: a.rating ?? cur.rating ?? null, note: a.note ?? cur.note ?? null, updated_at: new Date().toISOString() };
       if (row.rating !== null && !(row.rating >= 1 && row.rating <= 5)) return err("rating is 1 (easy) to 5 (hard).");
       const { error } = await ctx.admin.from("progress").upsert(row);
       if (error) throw new Error(error.message);
-      return text(`Saved progress for ${page}. It shows on the site (ticks, Your progress box).`);
+      return text(`Saved progress for ${pageId(page)}. It shows on the site (ticks, Your progress box) after a reload; history('progress:${pageId(page)}') lists its versions.`);
     }
     case "save_result": {
       const mistakes = (Array.isArray(a.mistakes) ? a.mistakes : []).slice(0, 30).map((m: any) => ({
@@ -141,10 +149,10 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
         ctx.admin.from("results").select("item_id, kind, score, max_score, topics, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(200),
         ctx.admin.from("mocks").select("exam_id, minutes, started_at, submitted_at, score, max_score").eq("user_id", uid).order("started_at", { ascending: false }).limit(20),
       ]);
-      const done = (prog ?? []).filter((p) => p.done).map((p) => p.page);
+      const done = (prog ?? []).filter((p) => p.done).map((p) => pageId(p.page));
       const scored = (res ?? []).filter((r) => r.max_score > 0);
       const avg = scored.length ? Math.round(100 * scored.reduce((s, r) => s + r.score / r.max_score, 0) / scored.length) : null;
-      return text(J({ pages_done: done.length, done, hard_pages: (prog ?? []).filter((p) => (p.rating ?? 0) >= 4).map((p) => p.page),
+      return text(J({ pages_done: done.length, done, hard_pages: (prog ?? []).filter((p) => (p.rating ?? 0) >= 4).map((p) => pageId(p.page)),
         results: scored.length, average_percent: avg, recent: (res ?? []).slice(0, 10), mocks, fingerprint: await fingerprint(ctx),
         days_to_exam_session: Math.ceil((EXAM_DATE - Date.now()) / 86400000), page: "https://mrisrijgd1.github.io/ETH-StudyHub/my.html#performance" }));
     }
@@ -194,7 +202,7 @@ async function gapFinder(ctx: Ctx, minutes: number, subject?: string) {
   const { data: prog } = await ctx.admin.from("progress").select("page, done, rating, updated_at").eq("user_id", uid);
   const { data: states } = await ctx.admin.from("item_state").select("item_id, attempted_at").eq("user_id", uid);
   const { data: res } = await ctx.admin.from("results").select("item_id, score, max_score, topics, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(200);
-  const P = new Map((prog ?? []).map((p) => [p.page, p]));
+  const P = new Map((prog ?? []).map((p) => [pageId(p.page), p]));
   const attempted = new Set((states ?? []).filter((s) => s.attempted_at).map((s) => s.item_id));
   const pages = C.docs.filter((d: any) => (d.type === "lesson" || d.type === "refresher") && (!subject || d.subject === subject)).map((d: any) => d.id).sort();
   const fp = await fingerprint(ctx);
