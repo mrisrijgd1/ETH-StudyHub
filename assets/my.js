@@ -1,4 +1,4 @@
-/* My StudyHub page: plan, notes, questions, flashcards, performance, design, history.
+/* My StudyHub page: plan, notes, questions, flashcards, suggestions, design, history (progress and marks live on account.html).
    Data lives in Supabase (my_items, results, mocks, progress; every change versioned in my_versions).
    The same data is read and written by the student's own AI through the StudyHub connector. */
 (function () {
@@ -40,12 +40,12 @@
     if (!S || !S.user) return drawGuest();
     load().then(function () {
       root.innerHTML =
-        '<p class="toc"><a href="#my-plan">' + L('Plan', 'Plan') + '</a><a href="#my-notes">' + L('Notes', 'Notizen') + '</a><a href="#my-questions">' + L('Questions', 'Fragen') + '</a><a href="#my-cards">' + L('Flashcards', 'Lernkarten') + '</a><a href="#performance">' + L('Performance', 'Leistung') + '</a><a href="#my-suggestions">' + L('Suggestions', 'Vorschläge') + '</a><a href="#my-design">' + L('Design', 'Design') + '</a><a href="#my-history">' + L('History', 'Verlauf') + '</a></p>' +
+        '<p class="toc"><a href="#my-plan">' + L('Plan', 'Plan') + '</a><a href="#my-notes">' + L('Notes', 'Notizen') + '</a><a href="#my-questions">' + L('Questions', 'Fragen') + '</a><a href="#my-cards">' + L('Flashcards', 'Lernkarten') + '</a><a href="account.html">' + L('Your progress', 'Dein Fortschritt') + ' →</a><a href="#my-suggestions">' + L('Suggestions', 'Vorschläge') + '</a><a href="#my-design">' + L('Design', 'Design') + '</a><a href="#my-history">' + L('History', 'Verlauf') + '</a></p>' +
         '<div class="box"><strong>' + L('What should I do today?', 'Was mache ich heute?') + '</strong> ' + L('Ask your own AI this question once the ', 'Frag das deine eigene KI, sobald der ') + '<a href="connect.html">' + L('connector', 'Connector') + '</a>' + L(' is added. It looks at your progress, marks and mistakes and suggests at most three small tasks.', ' eingerichtet ist. Sie schaut auf Fortschritt, Resultate und Fehler und schlägt höchstens drei kleine Aufgaben vor.') + '</div>' +
         secPlan() + secList('notes', L('Notes', 'Notizen'), L('Anything you want to keep: a trick, a summary, a reminder.', 'Alles, was du behalten willst: ein Trick, eine Zusammenfassung, eine Erinnerung.')) +
         secList('questions', L('Questions', 'Fragen'), L('Questions to ask in the exercise class, the forum or your AI. Tick them off when answered.', 'Fragen für die Übungsstunde, das Forum oder deine KI. Abhaken, wenn beantwortet.')) +
-        secCards() + '<section id="performance"><h2>' + L('Performance', 'Leistung') + '</h2><div id="my-perf">' + L('Loading…', 'Wird geladen …') + '</div></section>' + '<section id="my-suggestions"><h2>' + L('Your suggestions', 'Deine Vorschläge') + '</h2><div id="my-sug">' + L('Loading…', 'Wird geladen …') + '</div></section>' + secDesign() + secHistory();
-      wire(); perf(); sug();
+        secCards() + '<section id="performance"><h2>' + L('Progress, marks and mocks', 'Fortschritt, Resultate und Probeprüfungen') + '</h2><p>' + L('They now have one home: ', 'Sie haben jetzt einen Ort: ') + '<a href="account.html">' + L('Your progress', 'Dein Fortschritt') + '</a>' + L(' shows what you finished in each subject, your difficulty ratings and notes, the marks from your AI, your mistake fingerprint and your timed mocks.', ' zeigt, was du in jedem Fach abgeschlossen hast, deine Schwierigkeitsbewertungen und Notizen, die Resultate deiner KI, deinen Fehler-Fingerabdruck und deine Probeprüfungen.') + '</p></section>' + '<section id="my-suggestions"><h2>' + L('Your suggestions', 'Deine Vorschläge') + '</h2><div id="my-sug">' + L('Loading…', 'Wird geladen …') + '</div></section>' + secDesign() + secHistory();
+      wire(); sug();
     });
   }
   function drawGuest() {
@@ -93,22 +93,6 @@
       document.getElementById('my-no').onclick = function () { c.box = 0; c.due = new Date().toISOString(); q.push(c); i++; show(); };
     }
     show();
-  }
-  // ---------- performance ----------
-  function perf() {
-    Promise.all([S.sb.from('progress').select('page,done,rating'), S.sb.from('results').select('item_id,kind,score,max_score,summary,mistakes,created_at').order('created_at', { ascending: false }).limit(100),
-      S.sb.from('mocks').select('exam_id,minutes,started_at,submitted_at,score,max_score').order('started_at', { ascending: false }).limit(20)]).then(function (r) {
-      var prog = r[0].data || [], res = r[1].data || [], mocks = r[2].data || [];
-      var done = prog.filter(function (p) { return p.done; }).length, scored = res.filter(function (x) { return x.max_score > 0; });
-      var avg = scored.length ? Math.round(100 * scored.reduce(function (s, x) { return s + x.score / x.max_score; }, 0) / scored.length) : null;
-      var types = {}; res.forEach(function (x) { (x.mistakes || []).forEach(function (m) { types[m.type] = (types[m.type] || 0) + 1; }); });
-      var tl = Object.keys(types).sort(function (a, b) { return types[b] - types[a]; });
-      document.getElementById('my-perf').innerHTML =
-        '<p><strong>' + done + '</strong> ' + L('pages ticked off', 'Seiten abgehakt') + ' · <strong>' + scored.length + '</strong> ' + L('marked attempts', 'korrigierte Versuche') + (avg !== null ? ' · ' + L('average ', 'Durchschnitt ') + '<strong>' + avg + '%</strong>' : '') + ' · <strong>' + mocks.length + '</strong> ' + L('mocks', 'Probeprüfungen') + '</p>' +
-        '<h3>' + L('Mistake fingerprint', 'Fehler-Fingerabdruck') + '</h3>' + (tl.length ? '<p>' + tl.map(function (t) { return esc(t) + ' <strong>' + types[t] + '×</strong>'; }).join(' · ') + '</p>' : '<p class="meta">' + L('Appears once your AI has marked some of your work.', 'Erscheint, sobald deine KI einige Arbeiten korrigiert hat.') + '</p>') +
-        (mocks.length ? '<h3>' + L('Mocks', 'Probeprüfungen') + '</h3><table><tr><th>' + L('Exam', 'Prüfung') + '</th><th>' + L('Date', 'Datum') + '</th><th>' + L('Score', 'Punkte') + '</th></tr>' + mocks.map(function (m) { return '<tr><td>' + esc(m.exam_id) + '</td><td>' + new Date(m.started_at).toLocaleDateString() + '</td><td>' + (m.max_score ? m.score + ' / ' + m.max_score : (m.submitted_at ? L('not marked yet', 'noch nicht korrigiert') : L('running', 'läuft'))) + '</td></tr>'; }).join('') + '</table>' : '') +
-        (res.length ? '<h3>' + L('Latest marks', 'Neueste Resultate') + '</h3><table><tr><th>' + L('What', 'Was') + '</th><th>' + L('Score', 'Punkte') + '</th><th>' + L('Feedback', 'Rückmeldung') + '</th></tr>' + res.slice(0, 20).map(function (x) { return '<tr><td>' + esc(x.item_id) + '<div class="meta">' + new Date(x.created_at).toLocaleDateString() + '</div></td><td>' + (x.max_score ? x.score + ' / ' + x.max_score : '–') + '</td><td>' + esc((x.summary || '').slice(0, 220)) + '</td></tr>'; }).join('') + '</table>' : '');
-    });
   }
   // ---------- suggestions (curated data pool; suggest.js files them) ----------
   var SUGST = { 'new': L('waiting for review', 'wartet auf Prüfung'), accepted: L('accepted, coming in the next update', 'angenommen, kommt mit dem nächsten Update'), rejected: L('not taken', 'nicht übernommen'), done: L('live on the site', 'auf der Seite umgesetzt') };

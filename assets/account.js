@@ -23,7 +23,7 @@
   function load() { try { return JSON.parse(localStorage.getItem('sh-progress') || '{}') || {}; } catch (e) { return {}; } }
   function store(p) { try { localStorage.setItem('sh-progress', JSON.stringify(p)); } catch (e) {} }
   var page = (location.pathname.split('/').pop() || 'index.html').replace(/\?.*$/, '');
-  var isLesson = /^(lesson|phys|refresher)-\d+\.html$/.test(page);
+  var isLesson = /^(lesson|phys|refresher|linalg)-\d+\.html$|^serie-[ap]\d+\.html$/.test(page), isSheet = /^serie-/.test(page);
 
   /* ---------- Supabase (lazy) ---------- */
   var sb = null, user = null, profile = null, ready;
@@ -108,7 +108,7 @@
     var stars = '';
     for (var i = 1; i <= 5; i++) stars += '<button type="button" data-r="' + i + '" aria-label="' + i + '">' + i + '</button>';
     panel.innerHTML = '<h2 class="shp-h">' + L('Your progress', 'Dein Fortschritt') + '</h2>' +
-      '<label class="shp-done"><input type="checkbox"> ' + L('I finished this lesson', 'Ich habe diese Lektion abgeschlossen') + '</label>' +
+      '<label class="shp-done"><input type="checkbox"> ' + (isSheet ? L('I worked through this sheet', 'Ich habe dieses Blatt durchgearbeitet') : L('I finished this lesson', 'Ich habe diese Lektion abgeschlossen')) + '</label>' +
       '<div class="shp-rate"><span>' + L('How hard was it? (1 easy, 5 very hard)', 'Wie schwer war es? (1 leicht, 5 sehr schwer)') + '</span><div class="shp-stars">' + stars + '</div></div>' +
       '<label class="shp-note"><span>' + L('Your notes (only you see them)', 'Deine Notizen (nur du siehst sie)') + '</span><textarea rows="3" maxlength="5000" placeholder="' +
       L('What to repeat, questions, page numbers…', 'Was du wiederholen willst, Fragen, Seitenzahlen …') + '"></textarea></label>' +
@@ -138,7 +138,7 @@
     var p = load();
     document.querySelectorAll('main a[href]').forEach(function (a) {
       var h = (a.getAttribute('href') || '').split('#')[0].split('/').pop();
-      if (!/^(lesson|phys|refresher)-\d+\.html$/.test(h) || a.closest('nav') || a.closest('.sh-progress')) return;
+      if (!/^(lesson|phys|refresher|linalg)-\d+\.html$|^serie-[ap]\d+\.html$/.test(h) || a.closest('nav') || a.closest('.sh-progress')) return;
       var done = p[h] && p[h].done, t = a.querySelector('.sh-tick');
       if (done && !t) { t = document.createElement('span'); t.className = 'sh-tick'; t.textContent = '✓'; t.title = L('Done', 'Erledigt'); a.insertBefore(t, a.firstChild); }
       else if (!done && t) t.remove();
@@ -203,11 +203,55 @@
     }
     var sum = document.getElementById('sh-summary');
     if (sum) {
-      var p = load(), ks = Object.keys(p).filter(function (k) { return p[k].done; }).sort();
-      sum.innerHTML = ks.length ? '<p>' + L('Finished: ', 'Abgeschlossen: ') + ks.length + '</p><ul>' + ks.map(function (k) {
-        return '<li><a href="' + k + '">' + esc(k.replace('.html', '').replace('lesson-', L('Analysis ', 'Analysis ')).replace('phys-', L('Physics ', 'Physik ')).replace('refresher-', L('Refresher ', 'Repetition '))) + '</a>' +
-          (p[k].rating ? ' · ' + L('difficulty ', 'Schwierigkeit ') + p[k].rating + '/5' : '') + (p[k].note ? ' · ' + L('note', 'Notiz') : '') + '</li>';
-      }).join('') + '</ul>' : '<p>' + L('Nothing ticked yet. At the end of each lesson there is a small “Your progress” box.', 'Noch nichts abgehakt. Am Ende jeder Lektion gibt es ein kleines Feld „Dein Fortschritt“.') + '</p>';
+      var p = load();
+      var GROUPS = [
+        [L('Analysis 1', 'Analysis 1'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
+        [L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
+        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 5, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
+      function nameOf(k) {
+        var n = (k.match(/(\d+)\.html$/) || [])[1]; n = n ? String(+n) : k;
+        if (/^lesson-/.test(k)) return L('Analysis lesson ', 'Analysis-Lektion ') + n;
+        if (/^refresher-/.test(k)) return L('Refresher unit ', 'Repetitionseinheit ') + n;
+        if (/^serie-a/.test(k)) return L('Übungsblatt ', 'Übungsblatt ') + n;
+        if (/^phys-/.test(k)) return L('Physics lesson ', 'Physik-Lektion ') + n;
+        if (/^serie-p/.test(k)) return L('Physics Serie ', 'Physik-Serie ') + n;
+        if (/^linalg-/.test(k)) return L('Lin Alg lesson ', 'Lin-Alg-Lektion ') + n;
+        return k.replace('.html', '');
+      }
+      var keys = Object.keys(p).filter(function (k) { return /^(lesson|phys|refresher|linalg)-\d+\.html$|^serie-[ap]\d+\.html$/.test(k); });
+      var any = keys.some(function (k) { return p[k].done; }), html = '';
+      GROUPS.forEach(function (g) {
+        var rows = '', fin = [];
+        g[2].forEach(function (t) {
+          var ks = keys.filter(function (k) { return k.indexOf(t[0]) === 0 && /\d+\.html$/.test(k); });
+          var d = ks.filter(function (k) { return p[k].done; }), rs = ks.map(function (k) { return p[k].rating; }).filter(function (r) { return r > 0; });
+          var pct = Math.min(100, Math.round(100 * d.length / t[1]));
+          rows += '<div class="shs-row"><span class="shs-lab">' + t[2] + '</span><span class="shs-bar" role="img" aria-label="' + d.length + ' / ' + t[1] + '"><i style="width:' + pct + '%"></i></span><span class="shs-num">' + d.length + ' / ' + t[1] +
+            (rs.length ? '<small> · ' + L('avg. difficulty ', 'Ø Schwierigkeit ') + (Math.round(10 * rs.reduce(function (a, b) { return a + b; }, 0) / rs.length) / 10) + '/5</small>' : '') + '</span></div>';
+          fin = fin.concat(ks.filter(function (k) { return p[k].done || p[k].rating || p[k].note; }).sort());
+        });
+        html += '<div class="box shs"><h3><a href="' + g[1] + '">' + g[0] + '</a></h3>' + rows +
+          (fin.length ? '<details><summary>' + L('Pages with ticks, ratings or notes', 'Seiten mit Häkchen, Bewertungen oder Notizen') + ' (' + fin.length + ')</summary><ul>' + fin.map(function (k) {
+            return '<li><a href="' + k + '">' + esc(nameOf(k)) + '</a>' + (p[k].done ? ' ✓' : '') + (p[k].rating ? ' · ' + L('difficulty ', 'Schwierigkeit ') + p[k].rating + '/5' : '') + (p[k].note ? ' · ' + L('note: ', 'Notiz: ') + '<em>' + esc(String(p[k].note).slice(0, 80)) + (String(p[k].note).length > 80 ? '…' : '') + '</em>' : '') + '</li>';
+          }).join('') + '</ul></details>' : '') + '</div>';
+      });
+      sum.innerHTML = (any ? '' : '<p>' + L('Nothing ticked yet. At the end of each lesson and each explained sheet there is a small “Your progress” box.', 'Noch nichts abgehakt. Am Ende jeder Lektion und jedes erklärten Blatts gibt es ein kleines Feld „Dein Fortschritt“.') + '</p>') + html;
+      if (!document.getElementById('shs-css')) { var c = document.createElement('style'); c.id = 'shs-css'; c.textContent = '.shs h3{margin:0 0 .5rem}.shs-row{display:grid;grid-template-columns:minmax(8rem,12rem) 1fr auto;gap:.6rem;align-items:center;margin:.35rem 0}.shs-bar{height:.55rem;border-radius:99px;background:color-mix(in srgb,currentColor 12%,transparent);overflow:hidden}.shs-bar i{display:block;height:100%;background:var(--accent,#5b5bd6);border-radius:99px}.shs-num{font-variant-numeric:tabular-nums;white-space:nowrap}.shs-num small{opacity:.75}@media(max-width:560px){.shs-row{grid-template-columns:1fr auto}.shs-bar{grid-column:1/-1;order:3}}.shs details{margin-top:.5rem}.shs-perf table{width:100%;border-collapse:collapse;font-size:.92rem}.shs-perf td,.shs-perf th{text-align:left;padding:.35rem .4rem;border-bottom:1px solid var(--rule,#ccd)}.shs-perf .meta{font-size:.82rem;opacity:.75}'; document.head.appendChild(c); }
+    }
+    var pf = document.getElementById('sh-perf');
+    if (pf) {
+      if (!(sb && user)) pf.innerHTML = '<p>' + L('Marks from your AI, timed mocks and your mistake fingerprint appear here once you sign in (above). They are saved in your account, not in the browser.', 'Resultate deiner KI, Probeprüfungen und dein Fehler-Fingerabdruck erscheinen hier, sobald du dich (oben) anmeldest. Sie werden in deinem Konto gespeichert, nicht im Browser.') + '</p>';
+      else Promise.all([sb.from('results').select('item_id,kind,score,max_score,summary,mistakes,created_at').order('created_at', { ascending: false }).limit(100),
+        sb.from('mocks').select('exam_id,minutes,started_at,submitted_at,score,max_score').order('started_at', { ascending: false }).limit(20)]).then(function (r) {
+        var res = r[0].data || [], mocks = r[1].data || [], scored = res.filter(function (x) { return x.max_score > 0; });
+        var avg = scored.length ? Math.round(100 * scored.reduce(function (s, x) { return s + x.score / x.max_score; }, 0) / scored.length) : null;
+        var types = {}; res.forEach(function (x) { (x.mistakes || []).forEach(function (m) { types[m.type] = (types[m.type] || 0) + 1; }); });
+        var tl = Object.keys(types).sort(function (a, b) { return types[b] - types[a]; });
+        pf.innerHTML = '<div class="shs-perf"><p><strong>' + scored.length + '</strong> ' + L('marked attempts', 'korrigierte Versuche') + (avg !== null ? ' · ' + L('average ', 'Durchschnitt ') + '<strong>' + avg + '%</strong>' : '') + ' · <strong>' + mocks.length + '</strong> ' + L('mocks', 'Probeprüfungen') + '</p>' +
+          '<h3>' + L('Mistake fingerprint', 'Fehler-Fingerabdruck') + '</h3>' + (tl.length ? '<p>' + tl.map(function (t) { return esc(t) + ' <strong>' + types[t] + '×</strong>'; }).join(' · ') + '</p>' : '<p class="meta">' + L('Appears once your AI has marked some of your work (through the StudyHub connector).', 'Erscheint, sobald deine KI einige Arbeiten korrigiert hat (über den StudyHub-Connector).') + '</p>') +
+          (mocks.length ? '<h3>' + L('Timed mocks', 'Probeprüfungen') + '</h3><table><tr><th>' + L('Exam', 'Prüfung') + '</th><th>' + L('Date', 'Datum') + '</th><th>' + L('Score', 'Punkte') + '</th></tr>' + mocks.map(function (m) { return '<tr><td>' + esc(m.exam_id) + '</td><td>' + new Date(m.started_at).toLocaleDateString() + '</td><td>' + (m.max_score ? m.score + ' / ' + m.max_score : (m.submitted_at ? L('not marked yet', 'noch nicht korrigiert') : L('running', 'läuft'))) + '</td></tr>'; }).join('') + '</table>' : '') +
+          (res.length ? '<h3>' + L('Latest marks', 'Neueste Resultate') + '</h3><table><tr><th>' + L('What', 'Was') + '</th><th>' + L('Score', 'Punkte') + '</th><th>' + L('Feedback', 'Rückmeldung') + '</th></tr>' + res.slice(0, 20).map(function (x) { return '<tr><td>' + esc(x.item_id) + '<div class="meta">' + new Date(x.created_at).toLocaleDateString() + '</div></td><td>' + (x.max_score ? x.score + ' / ' + x.max_score : '–') + '</td><td>' + esc((x.summary || '').slice(0, 220)) + '</td></tr>'; }).join('') + '</table>' : '') + '</div>';
+      });
     }
   }
 
