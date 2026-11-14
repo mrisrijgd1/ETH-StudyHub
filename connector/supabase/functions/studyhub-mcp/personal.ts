@@ -166,6 +166,40 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
       await putItem(ctx, "design", next);
       return text(`Design saved: ${JSON.stringify(next)}. It applies on every StudyHub page when the student is signed in (reload the page). Content updates keep this design.`);
     }
+    case "suggest": {
+      if ((a.action ?? "add") === "list") {
+        const { data } = await ctx.admin.from("suggestions").select("id, page, section, kind, body, status, review_note, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(50);
+        return text(J(data ?? []));
+      }
+      const pg = pageId(a.page);
+      const body = String(a.text ?? "").trim();
+      if (!/^[a-z0-9-]{2,60}$/.test(pg)) return err("page must be a page id like lesson-08 or serie-a03.");
+      if (body.length < 5) return err("Write the suggestion itself in text (at least a few words).");
+      const kind = ["mistake", "unclear", "addition", "other"].includes(a.kind) ? a.kind : "mistake";
+      const { error } = await ctx.admin.from("suggestions").insert({ user_id: uid, page: pg, section: a.section ? String(a.section).slice(0, 200) : null,
+        quote: a.quote ? String(a.quote).slice(0, 1000) : null, kind, body: body.slice(0, 4000), reason: a.reason ? String(a.reason).slice(0, 2000) : null, anonymous: !!a.anonymous });
+      if (error) return err(error.message);
+      return text("Suggestion filed. The site owner reviews it before anything changes; its status shows on My StudyHub (my.html#my-suggestions).");
+    }
+    case "review_suggestions": {
+      const { data: adm } = await ctx.admin.from("admins").select("user_id").eq("user_id", uid).maybeSingle();
+      if (!adm) return err("Only the site owner can review suggestions.");
+      if ((a.action ?? "list") === "set") {
+        const st = String(a.status ?? "");
+        if (!["new", "accepted", "rejected", "done"].includes(st)) return err("status must be new, accepted, rejected or done.");
+        const { error } = await ctx.admin.from("suggestions").update({ status: st, review_note: a.note ? String(a.note).slice(0, 2000) : null, reviewed_at: new Date().toISOString() }).eq("id", Number(a.id));
+        if (error) return err(error.message);
+        return text(`Suggestion ${a.id} marked ${st}.`);
+      }
+      let q = ctx.admin.from("suggestions").select("id, user_id, page, section, quote, kind, body, reason, anonymous, status, review_note, created_at").order("created_at", { ascending: false }).limit(200);
+      if (a.status) q = q.eq("status", a.status);
+      const { data } = await q;
+      const ids = [...new Set((data ?? []).filter((x) => !x.anonymous).map((x) => x.user_id))];
+      const { data: profs } = ids.length ? await ctx.admin.from("profiles").select("id, nickname").in("id", ids) : { data: [] as any[] };
+      const nick = new Map((profs ?? []).map((p: any) => [p.id, p.nickname]));
+      return text(J({ note: "Check each one against the official script / solutions first. Accepted ones still need a site update to go live.",
+        suggestions: (data ?? []).map(({ user_id, anonymous, ...x }) => ({ ...x, author: anonymous ? "anonymous" : (nick.get(user_id) ?? "anonymous") })) }));
+    }
     case "list_library": {
       const docs = ctx.content.docs.filter((d: any) => d.library).map((d: any) => ({ id: d.id, title: d.title, subject: d.subject, pages: d.pages }));
       return text(docs.length ? J({ note: "Private library: for study use by signed-in students only. Never paste whole files; quote short passages.", docs }) : "The private library is empty so far.");
