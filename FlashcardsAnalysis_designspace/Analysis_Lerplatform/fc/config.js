@@ -34,7 +34,9 @@ window.FC_CONFIG = {
   milestones: [7, 30, 100],  // celebrated once each
   rescueSize: 10,            // cards in "Streak retten"
   timeZone: "Europe/Zurich",
-  heatmapWeeks: 26,
+  // Activity heatmap: the exam season Nov–Feb (month numbers). Outside it (Mar–Oct) the last 4 months are shown.
+  heatmapFromMonth: 11,
+  heatmapToMonth: 2,
 
   /* Hub course progress (SH.saveCourseProgress). Off until the hub owner approves the keys. */
   reportCourseProgress: false,

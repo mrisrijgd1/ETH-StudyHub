@@ -27,7 +27,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_aussagenlogik",
     title: "1.3.1 Aussagenlogik: Junktoren und ihre Negation",
-    category: "1.3 Logik",
+    category: "1.3 Logische Begriffe",
     type: "definition",
     front: "Welche <b>logischen Verknüpfungen (Junktoren)</b> verwendet die Aussagenlogik, und wie negiert man sie (De Morgan, Implikation)?",
     back: "Für Aussagen $A, B$ (jede ist wahr oder falsch, nie beides):<br>&bull; $\\neg A$ (nicht), $A \\wedge B$ (und), $A \\vee B$ (oder, einschliessend), $A \\implies B$ (wenn-dann), $A \\iff B$ (genau dann, wenn).<br><br><b>Wichtige Äquivalenzen:</b><br>&bull; $A \\implies B \\iff (\\neg A) \\vee B \\iff (\\neg B \\implies \\neg A)$ (<b>Kontraposition</b>)<br>&bull; $\\neg(A \\wedge B) \\iff (\\neg A) \\vee (\\neg B)$, $\\quad \\neg(A \\vee B) \\iff (\\neg A) \\wedge (\\neg B)$ (<b>De Morgan</b>)<br>&bull; $\\neg(A \\implies B) \\iff A \\wedge (\\neg B)$<br>&bull; $\\neg(\\neg A) \\iff A$",
@@ -39,7 +39,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_quantoren",
     title: "1.3.2 Prädikatenlogik: Quantoren",
-    category: "1.3 Logik",
+    category: "1.3 Logische Begriffe",
     type: "definition",
     front: "Was bedeuten die Quantoren $\\forall$, $\\exists$ und $\\exists!$, und wie verhalten sie sich über der <b>leeren Menge</b>?",
     back: "Für eine Aussage $A(x)$ über Elemente $x$ einer Menge $X$:<br>&bull; $\\forall x \\in X: A(x)$ - für <b>alle</b> $x$ gilt $A(x)$.<br>&bull; $\\exists x \\in X: A(x)$ - es <b>gibt</b> (mindestens) ein $x$ mit $A(x)$.<br>&bull; $\\exists! x \\in X: A(x)$ - <b>eindeutige Existenz</b>, definiert als<br>$$(\\exists x \\in X: A(x)) \\wedge (\\forall x, y \\in X: (A(x) \\wedge A(y)) \\implies x = y)$$<br><b>Eigenheit der leeren Menge:</b> $\\forall x \\in \\emptyset: A(x)$ ist <i>immer wahr</i>; $\\exists x \\in \\emptyset: A(x)$ ist <i>immer falsch</i>.<br><br><i>Kurzformen:</i> $\\forall \\varepsilon > 0: A(\\varepsilon)$ steht für $\\forall \\varepsilon \\in \\mathbb{R}: (\\varepsilon > 0 \\implies A(\\varepsilon))$; $\\exists \\varepsilon > 0: A(\\varepsilon)$ für $\\exists \\varepsilon \\in \\mathbb{R}: \\varepsilon > 0 \\wedge A(\\varepsilon)$.",
@@ -51,7 +51,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_uebung_1_9_10",
     title: "Wichtige Übungen 1.9 & 1.10: Vertauschen und Negieren von Quantoren",
-    category: "1.3 Logik",
+    category: "1.3 Logische Begriffe",
     type: "lemma",
     front: "Welche Quantoren darf man <b>vertauschen</b> (Übung 1.9)? Wie <b>negiert</b> man quantifizierte Aussagen (Gl. 1.7, Übung 1.10)?",
     back: "<b>Vertauschbarkeit (Übung 1.9):</b> Gleichartige Quantoren dürfen vertauscht werden:<br>$$\\forall x \\forall y: A(x,y) \\iff \\forall y \\forall x: A(x,y), \\qquad \\exists x \\exists y: A(x,y) \\iff \\exists y \\exists x: A(x,y)$$<br>(deshalb die Kurzschreibweise $\\forall x, y \\in X$).<br><br><b>Negation (1.7):</b> Die Negation wandert wie ein Minuszeichen nach innen und <i>kippt jeden Quantor</i>:<br>$$\\neg(\\forall x \\in X: A(x)) \\iff \\exists x \\in X: \\neg A(x)$$<br>$$\\neg(\\exists x \\in X: A(x)) \\iff \\forall x \\in X: \\neg A(x)$$",
@@ -67,7 +67,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_14",
     title: "Definition 1.14: Teilmengen und Gleichheit von Mengen",
-    category: "1.4 Mengenlehre",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Wann ist $P$ eine <b>Teilmenge</b> bzw. <b>echte Teilmenge</b> von $Q$, und wie zeigt man die <b>Gleichheit</b> zweier Mengen?",
     back: "&bull; $P \\subseteq Q$ (<b>Teilmenge</b>): $\\forall x \\in P: x \\in Q$.<br>&bull; $P \\subsetneq Q$ (<b>echte Teilmenge</b>): $P \\subseteq Q$ und $P \\neq Q$.<br>&bull; $Q \\supseteq P$: '$Q$ ist Obermenge von $P$'.<br><br><b>Gleichheit:</b> Zwei Mengen sind genau dann gleich, wenn<br>$$P \\subseteq Q \\;\\wedge\\; Q \\subseteq P.$$<br><i>Aussonderung:</i> $\\{x \\in X \\mid A(x)\\}$ ist die Teilmenge aller $x \\in X$, die $A(x)$ erfüllen.",
@@ -79,7 +79,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_16",
     title: "Definition 1.16: Mengenoperationen",
-    category: "1.4 Mengenlehre",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Definiere <b>Durchschnitt, Vereinigung, relatives Komplement, symmetrische Differenz</b> und das <b>Komplement</b> bezüglich einer Grundmenge.",
     back: "Für Mengen $P, Q$:<br>$$P \\cap Q = \\{x \\mid x \\in P \\wedge x \\in Q\\}$$<br>$$P \\cup Q = \\{x \\mid x \\in P \\vee x \\in Q\\}$$<br>$$P \\setminus Q = \\{x \\mid x \\in P \\wedge x \\notin Q\\}$$<br>$$P \\triangle Q = (P \\setminus Q) \\cup (Q \\setminus P) \\quad (\\text{symmetrische Differenz, XOR})$$<br>Sind alle Mengen Teilmengen einer Grundmenge $X$: <b>Komplement</b> $P^c = X \\setminus P$.<br><br><i>Priorität:</i> Komplementbildung bindet am stärksten, Vereinigung am schwächsten: $A^c \\cup B \\setminus C \\cup D \\cap E = (A^c) \\cup (B \\setminus C) \\cup (D \\cap E)$.",
@@ -91,7 +91,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_19_demorgan",
     title: "Definition 1.19 & Übung 1.20: Beliebige Vereinigungen und De Morgan",
-    category: "1.4 Mengenlehre",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "satz",
     front: "Wie sind <b>Vereinigung und Durchschnitt über beliebige Kollektionen</b> definiert, und wie lauten die <b>allgemeinen De Morganschen Gesetze</b>?",
     back: "Für eine Kollektion $\\mathcal{A}$ von Mengen:<br>$$\\bigcup_{A \\in \\mathcal{A}} A = \\{x \\mid \\exists A \\in \\mathcal{A}: x \\in A\\}, \\qquad \\bigcap_{A \\in \\mathcal{A}} A = \\{x \\mid \\forall A \\in \\mathcal{A}: x \\in A\\} \\;\\; (\\mathcal{A} \\neq \\emptyset)$$<br><b>De Morgan (Wichtige Übung 1.20):</b> Für Teilmengen einer Grundmenge $X$:<br>$$\\Big(\\bigcup_{A \\in \\mathcal{A}} A\\Big)^c = \\bigcap_{A \\in \\mathcal{A}} A^c, \\qquad \\Big(\\bigcap_{A \\in \\mathcal{A}} A\\Big)^c = \\bigcup_{A \\in \\mathcal{A}} A^c$$",
@@ -103,7 +103,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_22_27",
     title: "Definitionen 1.22, 1.23 & 1.27: Disjunktheit, Produkt, Potenzmenge",
-    category: "1.4 Mengenlehre",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Definiere <b>disjunkte Mengen</b>, das <b>kartesische Produkt</b> und die <b>Potenzmenge</b>. Warum heisst die Mengenlehre des Skripts 'naiv'?",
     back: "&bull; <b>Disjunktheit (1.22):</b> $A, B$ heissen disjunkt, falls $A \\cap B = \\emptyset$; ihre Vereinigung heisst dann disjunkte Vereinigung $A \\sqcup B$. Eine Kollektion ist <i>paarweise disjunkt</i>, wenn je zwei verschiedene ihrer Mengen disjunkt sind.<br>&bull; <b>Kartesisches Produkt (1.23):</b> $X \\times Y = \\{(x,y) \\mid x \\in X, y \\in Y\\}$ (geordnete Paare!).<br>&bull; <b>Potenzmenge (1.27):</b> $\\mathcal{P}(X) = \\{Q \\mid Q \\subseteq X\\}$, die Menge aller Teilmengen.<br><br><b>'Naiv':</b> Uneingeschränkte Mengenbildung führt zu Widersprüchen - <b>Russell-Paradoxon</b> (Beispiel 1.29): $R = \\{M \\mid M \\notin M\\}$ liefert $R \\in R \\iff R \\notin R$. Die moderne Grundlage ist die axiomatische ZF(C)-Mengenlehre.",
@@ -115,7 +115,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_31",
     title: "Definition 1.31: Funktionen",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Was ist eine <b>Funktion</b> $f: X \\to Y$? Definiere <b>Definitionsbereich, Wertebereich, Bild</b> und <b>Einschränkung</b>. Wann sind zwei Funktionen gleich?",
     back: "Eine <b>Funktion</b> $f: X \\to Y$ ist eine Zuordnung, die jedem $x \\in X$ ein <i>eindeutig bestimmtes</i> $y = f(x) \\in Y$ zuweist. $X$ heisst <b>Definitionsbereich</b>, $Y$ <b>Wertebereich</b> (Zielbereich).<br><br>&bull; <b>Bild:</b> $f(X) = \\{y \\in Y \\mid \\exists x \\in X: y = f(x)\\}$; allgemeiner $f(A) = \\{f(x) \\mid x \\in A\\}$ für $A \\subseteq X$.<br>&bull; <b>Einschränkung:</b> $f|_A: A \\to Y$, $f|_A(x) = f(x)$; umgekehrt heisst $f$ Fortsetzung von $f|_A$.<br><br><b>Gleichheit:</b> $f_1 = f_2$ verlangt $X_1 = X_2$, $Y_1 = Y_2$ <i>und</i> $f_1(x) = f_2(x)$ für alle $x$.",
@@ -127,7 +127,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_33",
     title: "Definition 1.33: Injektiv, surjektiv, bijektiv",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Definiere <b>injektiv</b>, <b>surjektiv</b> und <b>bijektiv</b> für eine Funktion $f: X \\to Y$.",
     back: "&bull; <b>injektiv</b> (Injektion): $\\forall x_1, x_2 \\in X: f(x_1) = f(x_2) \\implies x_1 = x_2$<br>(verschiedene Argumente haben verschiedene Werte).<br>&bull; <b>surjektiv</b> (Surjektion, 'Funktion von $X$ <i>auf</i> $Y$'): Zu jedem $y \\in Y$ gibt es ein $x \\in X$ mit $f(x) = y$ - äquivalent: $f(X) = Y$.<br>&bull; <b>bijektiv</b> (Bijektion, 'eineindeutig'): injektiv <i>und</i> surjektiv.",
@@ -139,7 +139,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_36_37",
     title: "Definitionen 1.36 & 1.37: Umkehrabbildung und Verknüpfung",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Wie sind die <b>Umkehrabbildung</b> $f^{-1}$ und die <b>Verknüpfung</b> $g \\circ f$ definiert, und welche Identitäten verbinden sie?",
     back: "&bull; <b>Umkehrabbildung (1.36):</b> Ist $f: X \\to Y$ <i>bijektiv</i>, so weist $f^{-1}: Y \\to X$ jedem $y \\in Y$ das eindeutige $x \\in X$ mit $f(x) = y$ zu.<br>&bull; <b>Verknüpfung (1.37):</b> Für $f: X \\to Y$, $g: Y \\to Z$ ist $g \\circ f: X \\to Z$ ('$g$ nach $f$') definiert durch $(g \\circ f)(x) = g(f(x))$.<br><br><b>Identitäten:</b> $f \\circ f^{-1} = \\operatorname{id}_Y$ und $f^{-1} \\circ f = \\operatorname{id}_X$.<br><br><b>Übung 1.42 (Umkehrung):</b> Existiert ein $g: Y \\to X$ mit $g \\circ f = \\operatorname{id}_X$ und $f \\circ g = \\operatorname{id}_Y$, so ist $f$ bijektiv und $g = f^{-1}$ - die Existenz einer beidseitigen Inversen <i>charakterisiert</i> Bijektivität.",
@@ -151,7 +151,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_lemma_1_40",
     title: "Lemma 1.40 & Übung 1.41: Eigenschaften von Verknüpfungen",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "lemma",
     front: "Welche Eigenschaften vererben sich auf die Verknüpfung $g \\circ f$ (Lemma 1.40), und welche <b>Rückschlüsse</b> erlaubt $g \\circ f$ auf $f$ und $g$ (Übung 1.41)?",
     back: "<b>Lemma 1.40:</b> Seien $f: X \\to Y$, $g: Y \\to Z$.<br>(i) $f, g$ injektiv $\\implies g \\circ f$ injektiv.<br>(ii) $f, g$ surjektiv $\\implies g \\circ f$ surjektiv.<br>(iii) $f, g$ bijektiv $\\implies g \\circ f$ bijektiv mit $$(g \\circ f)^{-1} = f^{-1} \\circ g^{-1}.$$<br><b>Übung 1.41 (Rückschlüsse):</b><br>&bull; $g \\circ f$ surjektiv $\\implies g$ surjektiv (aber $f$ nicht unbedingt!).<br>&bull; $g \\circ f$ injektiv $\\implies f$ injektiv (aber $g$ nicht unbedingt!).<br>&bull; $g \\circ f$ surjektiv und $g$ injektiv $\\implies f$ surjektiv.<br>&bull; $g \\circ f$ injektiv und $f$ surjektiv $\\implies g$ injektiv.",
@@ -163,7 +163,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_44",
     title: "Definition 1.44: Der Graph einer Funktion",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Wie ist der <b>Graph</b> einer Funktion $f: X \\to Y$ definiert, und welche Teilmengen von $X \\times Y$ sind Graphen?",
     back: "$$\\operatorname{graph}(f) = \\{(x, y) \\in X \\times Y \\mid y = f(x)\\} \\subseteq X \\times Y$$<br>Eine Teilmenge $G \\subseteq X \\times Y$ ist genau dann der Graph einer Funktion, wenn es zu <b>jedem</b> $x \\in X$ <b>genau ein</b> $y \\in Y$ mit $(x, y) \\in G$ gibt ('Vertikalen-Test': jede vertikale Gerade trifft $G$ exakt einmal).",
@@ -175,7 +175,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_48",
     title: "Definition 1.48 & Übung 1.49: Urbilder",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Wie ist das <b>Urbild</b> $f^{-1}(B)$ definiert, und wie verhalten sich Bilder und Urbilder unter Mengenoperationen (Übung 1.49)?",
     back: "Für $f: X \\to Y$ und $B \\subseteq Y$:<br>$$f^{-1}(B) = \\{x \\in X \\mid f(x) \\in B\\}$$<br>(definiert für JEDE Funktion, keine Bijektivität nötig; $f^{-1}(\\emptyset) = \\emptyset$, $f^{-1}(Y) = X$).<br><br><b>Übung 1.49:</b><br>&bull; $f(f^{-1}(B)) \\subseteq B$ (Gleichheit, falls $f$ surjektiv)<br>&bull; $f^{-1}(f(A)) \\supseteq A$ (Gleichheit, falls $f$ injektiv)<br>&bull; $f(A \\cup A') = f(A) \\cup f(A')$ und $f^{-1}(B \\cup B') = f^{-1}(B) \\cup f^{-1}(B')$<br>&bull; Urbilder respektieren auch $\\cap$ und Komplemente - <b>Bilder im Allgemeinen nicht!</b>",
@@ -187,7 +187,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_51",
     title: "Definition 1.51 & Lemma 1.52: Partitionen und Fallunterscheidungen",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "lemma",
     front: "Was ist eine <b>Partition</b> einer Menge $X$, und was besagt das Lemma über <b>Funktionen durch Fallunterscheidungen</b>?",
     back: "<b>Definition 1.51:</b> Eine Partition von $X$ ist eine Familie $\\mathcal{P}$ von <i>nicht-leeren, paarweise disjunkten</i> Teilmengen von $X$ mit<br>$$X = \\bigsqcup_{P \\in \\mathcal{P}} P.$$<br><b>Lemma 1.52:</b> Ist $\\mathcal{P}$ eine Partition von $X$ und für jedes $P \\in \\mathcal{P}$ eine Funktion $f_P: P \\to Y$ gegeben, dann existiert <b>genau eine</b> Funktion $f: X \\to Y$ mit $f|_P = f_P$ für alle $P \\in \\mathcal{P}$.",
@@ -199,7 +199,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_54",
     title: "Definition 1.54: Iterationen einer Funktion",
-    category: "1.4 Abbildungen",
+    category: "1.4 Mengenlehre und Abbildungen",
     type: "definition",
     front: "Wie sind die <b>Iterationen</b> $f^{\\circ n}$ einer Funktion $f: X \\to X$ definiert?",
     back: "Für $f: X \\to X$ definiert man rekursiv:<br>$$f^{\\circ 1} = f, \\qquad f^{\\circ (n+1)} = f \\circ f^{\\circ n} \\quad (n \\in \\mathbb{N}), \\qquad f^{\\circ 0} = \\operatorname{id}_X.$$<br>Also $f^{\\circ 2} = f \\circ f$, $f^{\\circ 3} = f \\circ f \\circ f$, usw. (oft auch kurz $f^n$ geschrieben).",
@@ -267,7 +267,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_74_prop_1_75",
     title: "Definition 1.74 & Proposition 1.75: Kardinalität und Schubfachprinzip",
-    category: "1.7 Kardinalität",
+    category: "1.7 Endliche und abzählbare Mengen",
     type: "satz",
     front: "Wann hat eine Menge <b>Kardinalität $n$</b>, und was besagt das <b>Schubfachprinzip</b> (Proposition 1.75)?",
     back: "<b>Definition 1.74:</b> $|\\emptyset| = 0$; eine Menge $X$ hat <b>Kardinalität $n \\in \\mathbb{N}$</b>, falls eine Bijektion $\\{1, \\dots, n\\} \\to X$ existiert ($|X| = n$). $X$ ist <b>endlich</b> ($|X| < \\infty$), falls $|X| = n$ für ein $n \\in \\mathbb{N}_0$, sonst <b>unendlich</b> ($|X| = \\infty$).<br><br><b>Proposition 1.75 (Schubfachprinzip):</b> Sind $X, Y$ endlich mit $|X| = m > n = |Y|$, dann gibt es <b>keine injektive</b> Abbildung $X \\to Y$.<br><br><i>Insbesondere:</i> Die Kardinalität ist wohldefiniert (eindeutig), und für endliche Mengen existiert eine Bijektion $X \\to Y$ genau dann, wenn $|X| = |Y|$.",
@@ -279,7 +279,7 @@ window.FLASHCARDS_KAPITEL_1 = [
   {
     id: "k1_def_1_79",
     title: "Definition 1.79 & Lemma 1.80: Abzählbarkeit",
-    category: "1.7 Kardinalität",
+    category: "1.7 Endliche und abzählbare Mengen",
     type: "definition",
     front: "Wann heisst eine Menge <b>abzählbar unendlich</b> bzw. <b>überabzählbar</b>, und was besagt Lemma 1.80 über Teilmengen?",
     back: "<b>Definition 1.79:</b> $X$ heisst <b>abzählbar unendlich</b> (kurz: abzählbar), falls eine Bijektion $X \\to \\mathbb{N}$ existiert. Eine Menge, die weder endlich noch abzählbar unendlich ist, heisst <b>überabzählbar</b>.<br><br><b>Lemma 1.80:</b> Jede Teilmenge $Y \\subseteq X$ einer abzählbar unendlichen Menge ist <b>endlich oder selbst abzählbar unendlich</b>. ('Kleiner als abzählbar geht nicht ins Unendliche.')",
