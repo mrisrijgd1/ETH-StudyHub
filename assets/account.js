@@ -23,7 +23,7 @@
   function load() { try { return JSON.parse(localStorage.getItem('sh-progress') || '{}') || {}; } catch (e) { return {}; } }
   function store(p) { try { localStorage.setItem('sh-progress', JSON.stringify(p)); } catch (e) {} }
   var page = (location.pathname.split('/').pop() || 'index.html').replace(/\?.*$/, '');
-  var isLesson = /^(lesson|phys|refresher|linalg)-\d+\.html$|^serie-[ap]\d+\.html$/.test(page), isSheet = /^serie-/.test(page);
+  var isLesson = /^(lesson|phys|refresher|linalg|chemie)-\d+\.html$|^serie-[ap]\d+\.html$/.test(page), isSheet = /^serie-/.test(page);
 
   /* ---------- Supabase (lazy) ---------- */
   var sb = null, user = null, profile = null, ready;
@@ -138,7 +138,7 @@
     var p = load();
     document.querySelectorAll('main a[href]').forEach(function (a) {
       var h = (a.getAttribute('href') || '').split('#')[0].split('/').pop();
-      if (!/^(lesson|phys|refresher|linalg)-\d+\.html$|^serie-[ap]\d+\.html$/.test(h) || a.closest('nav') || a.closest('.sh-progress')) return;
+      if (!/^(lesson|phys|refresher|linalg|chemie)-\d+\.html$|^serie-[ap]\d+\.html$/.test(h) || a.closest('nav') || a.closest('.sh-progress')) return;
       var done = p[h] && p[h].done, t = a.querySelector('.sh-tick');
       if (done && !t) { t = document.createElement('span'); t.className = 'sh-tick'; t.textContent = '✓'; t.title = L('Done', 'Erledigt'); a.insertBefore(t, a.firstChild); }
       else if (!done && t) t.remove();
@@ -206,6 +206,7 @@
       var p = load();
       var GROUPS = [
         [L('Analysis 1', 'Analysis 1'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
+        ['Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
         [L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
         [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 5, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
       function nameOf(k) {
@@ -213,12 +214,13 @@
         if (/^lesson-/.test(k)) return L('Analysis lesson ', 'Analysis-Lektion ') + n;
         if (/^refresher-/.test(k)) return L('Refresher unit ', 'Repetitionseinheit ') + n;
         if (/^serie-a/.test(k)) return L('Übungsblatt ', 'Übungsblatt ') + n;
+        if (/^chemie-/.test(k)) return 'Chemie I (PC) · ' + L('Lesson ', 'Lektion ') + n;
         if (/^phys-/.test(k)) return L('Physics lesson ', 'Physik-Lektion ') + n;
         if (/^serie-p/.test(k)) return L('Physics Serie ', 'Physik-Serie ') + n;
         if (/^linalg-/.test(k)) return L('Linear Algebra lesson ', 'Lineare Algebra, Lektion ') + n;
         return k.replace('.html', '');
       }
-      var keys = Object.keys(p).filter(function (k) { return /^(lesson|phys|refresher|linalg)-\d+\.html$|^serie-[ap]\d+\.html$/.test(k); });
+      var keys = Object.keys(p).filter(function (k) { return /^(lesson|phys|refresher|linalg|chemie)-\d+\.html$|^serie-[ap]\d+\.html$/.test(k); });
       var any = keys.some(function (k) { return p[k].done; }), html = '';
       GROUPS.forEach(function (g) {
         var rows = '', fin = [];
@@ -232,7 +234,7 @@
         });
         html += '<div class="box shs"><h3><a href="' + g[1] + '">' + g[0] + '</a></h3>' + rows +
           (fin.length ? '<details><summary>' + L('Pages with ticks, ratings or notes', 'Seiten mit Häkchen, Bewertungen oder Notizen') + ' (' + fin.length + ')</summary><ul>' + fin.map(function (k) {
-            return '<li><a href="' + k + '">' + esc(nameOf(k)) + '</a>' + (p[k].done ? ' ✓' : '') + (p[k].rating ? ' · ' + L('difficulty ', 'Schwierigkeit ') + p[k].rating + '/5' : '') + (p[k].note ? ' · ' + L('note: ', 'Notiz: ') + '<em>' + esc(String(p[k].note).slice(0, 80)) + (String(p[k].note).length > 80 ? '…' : '') + '</em>' : '') + '</li>';
+            return '<li><a href="' + (/^chemie-/.test(k) ? ROOT + 'chemie/#lesson/' + parseInt(k.match(/\d+/)[0], 10) : k) + '">' + esc(nameOf(k)) + '</a>' + (p[k].done ? ' ✓' : '') + (p[k].rating ? ' · ' + L('difficulty ', 'Schwierigkeit ') + p[k].rating + '/5' : '') + (p[k].note ? ' · ' + L('note: ', 'Notiz: ') + '<em>' + esc(String(p[k].note).slice(0, 80)) + (String(p[k].note).length > 80 ? '…' : '') + '</em>' : '') + '</li>';
           }).join('') + '</ul></details>' : '') + '</div>';
       });
       sum.innerHTML = (any ? '' : '<p>' + L('Nothing ticked yet. At the end of each lesson and each explained sheet there is a small “Your progress” box.', 'Noch nichts abgehakt. Am Ende jeder Lektion und jedes erklärten Blatts gibt es ein kleines Feld „Dein Fortschritt“.') + '</p>') + html;
@@ -402,7 +404,10 @@
   }
 
   function render() { banner(); refreshPanel(); ticks(); accountPage(); forumPage(); leaderboardPage();
-    window.SH = { sb: sb, user: user, signIn: signIn, sdk: sdk, L: L, esc: esc }; try { document.dispatchEvent(new Event('sh-auth')); } catch (e) {} }
+    window.SH = { sb: sb, user: user, signIn: signIn, sdk: sdk, L: L, esc: esc, courseProgress: load, saveCourseProgress: function(entries) {
+      var p=load(), changed=[]; Object.keys(entries).forEach(function(k){if(!/^chemie-\d+\.html$/.test(k))return;var v=entries[k];if(!p[k] || !!p[k].done!==!!v.done){p[k]=Object.assign(p[k]||{},v,{t:Date.now()});changed.push(k)}});store(p);
+      if(sb&&user&&changed.length)sb.from('progress').upsert(changed.map(row)).then(function(r){if(r.error)status(L('Could not sync, saved in this browser.','Sync fehlgeschlagen, im Browser gespeichert.'))});
+    } }; try { document.dispatchEvent(new Event('sh-auth')); } catch (e) {} }
 
   /* ---------- styles ---------- */
   var css = document.createElement('style');
@@ -423,3 +428,5 @@
   function init() { buildPanel(); render(); if (wantSdk() || document.getElementById('sh-account') || document.getElementById('sh-forum') || document.getElementById('sh-my') || document.getElementById('sh-consent')) sdk().catch(function () { status(L('Sync is unavailable right now; your progress is saved in this browser.', 'Synchronisation gerade nicht verfügbar; dein Fortschritt ist im Browser gespeichert.')); }); }
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 })();
+
+(function(){var s=document.currentScript;var base=new URL('.',s.src);['learning-app.css','studyhub.css'].forEach(function(file){var l=document.createElement('link');l.rel='stylesheet';l.href=new URL(file,base);document.head.appendChild(l)});var j=document.createElement('script');j.src=new URL('studyhub.js',base);document.head.appendChild(j)})();
