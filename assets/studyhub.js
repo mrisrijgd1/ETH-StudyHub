@@ -85,6 +85,9 @@
   const base = new URL('../', source.src);
   const path = location.pathname.slice(base.pathname.length);
   const chemistry = path.startsWith('chemie/');
+  // Rachel's flashcards app (synced from her repo). The Analysis "Flashcards" tab opens it.
+  const fcAppPath = 'FlashcardsAnalysis_designspace/Analysis_Lerplatform/';
+  const fcApp = path.startsWith(fcAppPath);
   const de = chemistry || path.startsWith('de/') || new URLSearchParams(location.search).get('lang') === 'de';
   const prefix = de ? 'de/' : '';
   const file = path.split('/').pop() || 'index.html';
@@ -97,7 +100,8 @@
     { id: 'chemie', label: 'Chemie I (PC)', href: 'chemie/' },
     { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' }
   ];
-  const subject = chemistry ? 'chemie' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  const subject = chemistry ? 'chemie' : fcApp ? 'analysis' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  if (!fcApp && file === 'flashcards.html') { location.replace(new URL(fcAppPath + 'index.html' + (de ? '?lang=de' : '') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
   const modes = {
@@ -105,7 +109,7 @@
       ['lessons', L('Lektionen', 'Lessons'), prefix + 'analysis.html#lessons'],
       ['revision', L('Repetition', 'Revision'), prefix + 'analysis.html#refresher'],
       ['practice', L('Üben', 'Practice'), prefix + 'practice.html'],
-      ['cards', L('Lernkarten', 'Flashcards'), prefix + 'flashcards.html'],
+      ['cards', L('Lernkarten', 'Flashcards'), fcAppPath + 'index.html' + (de ? '?lang=de' : '')],
       ['plan', L('Prüfungsplan', 'Exam plan'), prefix + 'exam-map.html'],
       ['script', L('Skript', 'Script'), 'script.html'],
       ['exams', L('Prüfungen', 'Exams'), prefix + 'docs.html']
@@ -142,7 +146,7 @@
     if (/docs\.html$/.test(file)) return 'exams';
     if (/plan\.html$|exam-map\.html$/.test(file)) return 'plan';
     if (/board\.html$/.test(file)) return 'board';
-    if (/flashcards\.html$/.test(file)) return 'cards';
+    if (fcApp || /flashcards\.html$/.test(file)) return 'cards';
     if (/practice\.html$|mock\.html$|moves\.html$|tree\.html$|^serie-/.test(file)) return 'practice';
     return 'lessons';
   }
