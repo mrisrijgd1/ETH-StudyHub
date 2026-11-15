@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis I – Flashcards</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: { typeset: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --eth-blue: #1f407a;
+            --eth-blue-dark: #16305c;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #333;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --sidebar-w: 300px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* ---------------- SIDEBAR ---------------- */
+        #sidebar {
+            width: var(--sidebar-w);
+            background-color: var(--eth-blue);
+            color: white;
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 200;
+            transition: transform 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        #sidebar h2 {
+            padding: 22px 18px;
+            margin: 0;
+            font-size: 1.35rem;
+            background-color: var(--eth-blue-dark);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        #sidebar h2 small { display: block; font-size: 0.75rem; font-weight: normal; color: #b6c4de; margin-top: 4px; }
+
+        .chapter-btn {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 0.98rem;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.15s ease;
+            width: 100%;
+            font-family: inherit;
+            line-height: 1.35;
+        }
+        .chapter-btn:hover:not(:disabled) { background-color: rgba(255,255,255,0.08); color: white; }
+        .chapter-btn.active {
+            background-color: rgba(255,255,255,0.15);
+            color: white;
+            border-left-color: var(--green);
+            font-weight: bold;
+        }
+        .chapter-btn:disabled { color: #6b7fa3; cursor: default; }
+        .chapter-btn .soon {
+            display: inline-block; font-size: 0.68rem; background: rgba(255,255,255,0.12);
+            border-radius: 8px; padding: 1px 7px; margin-left: 6px; vertical-align: middle;
+        }
+        .chapter-btn .count {
+            display: inline-block; font-size: 0.72rem; color: #9fb3d4; margin-left: 6px;
+        }
+        #sidebar footer {
+            margin-top: auto; font-size: 0.72rem; color: #9fb3d4;
+            padding: 14px 18px; font-style: italic; line-height: 1.5;
+        }
+
+        /* ---------------- TOP BAR (mobile) ---------------- */
+        #menu-toggle {
+            display: none;
+            position: fixed; top: 12px; left: 12px; z-index: 300;
+            width: 42px; height: 42px; border-radius: 10px; border: none;
+            background: var(--eth-blue); color: white; font-size: 1.3rem; cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+        }
+        #sidebar-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 150;
+        }
+
+        /* ---------------- MAIN ---------------- */
+        #main-content {
+            margin-left: var(--sidebar-w);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 26px 16px 40px;
+            min-height: 100vh;
+        }
+
+        header.page-head { text-align: center; margin-bottom: 16px; max-width: 700px; }
+        h1 { margin: 0 0 4px 0; color: var(--eth-blue); font-size: 1.7rem; }
+        h2.subtitle { margin: 0; font-weight: normal; font-size: 0.95rem; color: var(--muted); }
+
+        /* Toolbar: filter + shuffle + reset */
+        #toolbar {
+            display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center;
+            margin-bottom: 14px; width: 100%; max-width: 700px;
+        }
+        #toolbar select {
+            padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+            font-size: 0.9rem; background: white; color: var(--text); max-width: 100%;
+            font-family: inherit;
+        }
+        .tool-btn {
+            padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+            background: white; color: var(--eth-blue); font-size: 0.9rem; cursor: pointer;
+            font-family: inherit; transition: background 0.15s;
+        }
+        .tool-btn:hover { background: #eef2f7; }
+        .tool-btn.on { background: var(--eth-blue); color: white; border-color: var(--eth-blue); }
+
+        /* Progress bar */
+        #progress-wrap { width: 100%; max-width: 700px; margin-bottom: 18px; }
+        #progress-label {
+            display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--muted); margin-bottom: 5px;
+        }
+        #progress-bar {
+            display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--border);
+        }
+        #progress-bar .seg-gotit { background: var(--green); transition: width 0.3s; }
+        #progress-bar .seg-repeat { background: var(--orange); transition: width 0.3s; }
+
+        /* ---------------- CARD ---------------- */
+        #card-container {
+            width: 100%; max-width: 700px; perspective: 1400px; margin-bottom: 20px;
+        }
+        #flashcard {
+            position: relative;
+            width: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.45s cubic-bezier(.2,.7,.3,1);
+            display: grid;
+        }
+        #flashcard.flipped { transform: rotateY(180deg); }
+        .card-face {
+            grid-area: 1 / 1;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            background: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            padding: 52px 30px 46px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            min-height: 340px;
+        }
+        .card-face.back { transform: rotateY(180deg); }
+
+        .card-badges { position: absolute; top: 14px; left: 16px; right: 16px; display: flex; gap: 6px; flex-wrap: wrap; }
+        .badge {
+            font-size: 0.72rem; font-weight: bold; padding: 2px 9px; border-radius: 10px;
+            background: #e8edf5; color: var(--eth-blue); text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .badge.type-definition { background: #e0ecff; color: #1d4ed8; }
+        .badge.type-satz, .badge.type-proposition { background: #ffe9d6; color: #c2570b; }
+        .badge.type-lemma { background: #e6f7ef; color: #047857; }
+        .badge.type-beispiel { background: #f3e8ff; color: #7c3aed; }
+        .badge.type-beweis { background: #fde8e8; color: #b91c1c; }
+        .badge.side { margin-left: auto; background: #f1f5f9; color: var(--muted); }
+
+        .card-title { font-size: 0.85rem; color: #888; font-weight: bold; margin-bottom: 14px; }
+        .card-content { font-size: 1.12rem; line-height: 1.6; width: 100%; overflow-x: auto; }
+        .card-content mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+        .card-meta { font-size: 0.75rem; color: #aaa; position: absolute; bottom: 12px; right: 18px; }
+        .card-hint { font-size: 0.75rem; color: #c0c8d4; position: absolute; bottom: 12px; left: 18px; }
+
+        /* Explanation accordion on the back */
+        #explain-toggle {
+            margin-top: 20px; padding: 9px 16px; font-size: 0.9rem; cursor: pointer;
+            border: 1px dashed var(--eth-blue); border-radius: 8px; background: #f8fafc;
+            color: var(--eth-blue); font-family: inherit;
+        }
+        #explain-toggle:hover { background: #eef2f7; }
+        #explain-panel { display: none; width: 100%; margin-top: 14px; text-align: left; }
+        #explain-panel.open { display: block; }
+        .explanation-block {
+            margin-top: 12px; font-size: 0.95rem; color: #444; background: #f8fafc;
+            padding: 13px 15px; border-left: 4px solid var(--eth-blue);
+            border-radius: 0 8px 8px 0; line-height: 1.55; overflow-x: auto;
+        }
+        .explanation-block.ex { border-left-color: var(--green); }
+        .explanation-block.cex { border-left-color: var(--red); }
+        .explanation-block b:first-child { color: var(--eth-blue); }
+
+        /* ---------------- CONTROLS ---------------- */
+        .controls {
+            display: flex; gap: 12px; margin-bottom: 26px; width: 100%; max-width: 700px; justify-content: center;
+            flex-wrap: wrap;
+        }
+        button.action-btn {
+            padding: 13px 18px; font-size: 1rem; cursor: pointer; border: none;
+            border-radius: 10px; color: white; font-weight: bold;
+            transition: filter 0.2s, transform 0.1s; font-family: inherit;
+            min-height: 48px;
+        }
+        button.action-btn:hover { filter: brightness(0.92); }
+        button.action-btn:active { transform: scale(0.97); }
+        button.action-btn:disabled { background-color: #cbd5e1 !important; color: #94a3b8; cursor: not-allowed; }
+        button.action-btn small { display: block; font-weight: normal; font-size: 0.68rem; opacity: 0.85; margin-top: 2px; }
+
+        .btn-blue { background-color: var(--eth-blue); }
+        .btn-green { background-color: var(--green); }
+        .btn-orange { background-color: var(--orange); }
+        .btn-ghost { background: white; color: var(--eth-blue); border: 1px solid var(--border) !important; }
+
+        /* ---------------- MODALS ---------------- */
+        .overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55); z-index: 1000; justify-content: center; align-items: center;
+            padding: 20px; backdrop-filter: blur(3px);
+        }
+        .modal-box {
+            background: #fff; padding: 28px; border-radius: 14px; max-width: 560px;
+            width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .modal-box h2, .modal-box h3 { margin-top: 0; color: var(--eth-blue); }
+        .stats-row { display: flex; gap: 14px; justify-content: center; margin: 18px 0; flex-wrap: wrap; }
+        .stat {
+            min-width: 100px; padding: 12px; border-radius: 10px; text-align: center; font-size: 0.85rem;
+        }
+        .stat b { display: block; font-size: 1.5rem; }
+        .stat.gotit { background: #e6f7ef; color: #047857; }
+        .stat.repeat { background: #fff3e0; color: #c2570b; }
+
+        /* Help */
+        #help-btn {
+            position: fixed; right: 22px; bottom: 22px; width: 44px; height: 44px;
+            background-color: var(--eth-blue); color: white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.4rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 100; user-select: none;
+            transition: transform 0.2s; border: none;
+        }
+        #help-btn:hover { transform: scale(1.1); }
+        #help-popup {
+            display: none; position: fixed; right: 78px; bottom: 22px;
+            background: white; padding: 18px 20px; border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 100;
+            font-size: 0.9rem; border-left: 5px solid var(--eth-blue); line-height: 1.7;
+            max-width: calc(100vw - 100px);
+        }
+
+        .empty-hint { color: var(--muted); font-size: 1rem; text-align: center; padding: 40px 10px; }
+
+        /* ---------------- RESPONSIVE ---------------- */
+        @media (max-width: 900px) {
+            #sidebar { transform: translateX(-100%); box-shadow: none; max-width: 84vw; }
+            #sidebar.open { transform: translateX(0); box-shadow: 2px 0 25px rgba(0,0,0,0.3); }
+            #sidebar-overlay.show { display: block; }
+            #menu-toggle { display: block; }
+            #main-content { margin-left: 0; padding-top: 66px; }
+            .card-face { padding: 48px 18px 44px; min-height: 300px; }
+            .card-content { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="menu-toggle" aria-label="Menü öffnen">&#9776;</button>
+    <div id="sidebar-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <h2>Analysis I<small>Prof. M. Einsiedler &middot; ETH Zürich</small></h2>
+        <div id="chapter-list"></div>
+        <footer>Erstellt von einem ETH-Studenten mit KI-Unterstützung &ndash; bitte Fehler stets mit dem offiziellen Skript abgleichen.</footer>
+    </nav>
+
+    <!-- MAIN -->
+    <main id="main-content">
+        <header class="page-head">
+            <h1 id="header-title">Willkommen</h1>
+            <h2 class="subtitle" id="header-subtitle">Wähle links ein Kapitel aus, um zu lernen.</h2>
+        </header>
+
+        <div id="toolbar" style="display:none;">
+            <select id="section-filter" aria-label="Abschnitt filtern"></select>
+            <button class="tool-btn" id="shuffle-btn" title="Reihenfolge mischen">&#128256; Mischen</button>
+            <button class="tool-btn" id="reset-btn" title="Fortschritt dieses Kapitels zurücksetzen">&#8635; Zurücksetzen</button>
+        </div>
+
+        <div id="progress-wrap" style="display:none;">
+            <div id="progress-label">
+                <span>Karte <span id="current-index">0</span> von <span id="total-cards">0</span></span>
+                <span><span style="color:var(--green);">&#9679;</span> <span id="count-gotit">0</span> gewusst &nbsp;
+                      <span style="color:var(--orange);">&#9679;</span> <span id="count-repeat">0</span> wiederholen</span>
+            </div>
+            <div id="progress-bar">
+                <div class="seg-gotit" style="width:0%"></div>
+                <div class="seg-repeat" style="width:0%"></div>
+            </div>
+        </div>
+
+        <div id="card-container" style="display:none;">
+            <div id="flashcard">
+                <div class="card-face front" id="face-front">
+                    <div class="card-badges" id="badges-front"></div>
+                    <div class="card-title" id="title-front"></div>
+                    <div class="card-content" id="content-front"></div>
+                    <div class="card-hint">Klicken oder Leertaste zum Umdrehen</div>
+                    <div class="card-meta" id="meta-front"></div>
+                </div>
+                <div class="card-face back" id="face-back">
+                    <div class="card-badges" id="badges-back"></div>
+                    <div class="card-title" id="title-back"></div>
+                    <div class="card-content" id="content-back"></div>
+                    <button id="explain-toggle">&#128161; Erklärung &amp; Beispiele anzeigen (&#8595;)</button>
+                    <div id="explain-panel"></div>
+                    <div class="card-meta" id="meta-back"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-hint" id="empty-hint">
+            W&auml;hle ein Kapitel in der Seitenleiste aus.
+        </div>
+
+        <!-- Front controls -->
+        <div class="controls" id="controls-front" style="display:none;">
+            <button class="action-btn btn-ghost" id="btn-prev">&#8592; Zurück</button>
+            <button class="action-btn btn-blue" id="btn-flip" style="flex-grow:1;">Umdrehen<small>Leertaste</small></button>
+        </div>
+
+        <!-- Back controls -->
+        <div class="controls" id="controls-back" style="display:none;">
+            <button class="action-btn btn-orange" id="btn-repeat" style="flex:1;">(´･_･`) Wiederholen<small>Pfeil links</small></button>
+            <button class="action-btn btn-green" id="btn-gotit" style="flex:1;">｡^&#8255;^｡ Gewusst<small>Pfeil rechts</small></button>
+        </div>
+    </main>
+
+    <!-- Help -->
+    <button id="help-btn" aria-label="Hilfe">?</button>
+    <div id="help-popup">
+        <h4 style="margin:0 0 8px 0; color:var(--eth-blue);">Tastatur-Steuerung</h4>
+        <b>Leertaste:</b> Karte umdrehen<br>
+        <b>Pfeil rechts (&#8594;):</b> Gewusst<br>
+        <b>Pfeil links (&#8592;):</b> Wiederholen / Zurück<br>
+        <b>Pfeil unten (&#8595;):</b> Erklärung ein-/ausblenden<br>
+        <b>Esc:</b> Dialoge schliessen
+    </div>
+
+    <!-- Finish modal -->
+    <div class="overlay" id="finish-modal">
+        <div class="modal-box" style="text-align:center;">
+            <h2 id="finish-heading">Deck geschafft! &#127881;</h2>
+            <div class="stats-row">
+                <div class="stat gotit"><b id="stat-gotit">0</b>gewusst</div>
+                <div class="stat repeat"><b id="stat-repeat">0</b>wiederholen</div>
+            </div>
+            <p id="finish-text" style="font-size:1rem;"></p>
+            <div style="display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
+                <button class="action-btn btn-orange" id="btn-start-repeat">Falsche Karten wiederholen</button>
+                <button class="action-btn btn-blue" id="btn-restart">Deck neu starten</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         DATEN-DATEIEN
+         Jede Datei definiert window.FLASHCARDS_KAPITEL_<N>.
+         Fehlt eine Datei, bleibt das Kapitel einfach deaktiviert.
+    ===================================================================== -->
+    <script src="data_kapitel1.js"></script>
+    <script src="data_kapitel2.js"></script>
+    <script src="data_kapitel3.js"></script>
+    <script src="data_kapitel4.js"></script>
+    <script src="data_kapitel5.js"></script>
+
+    <script>
+        /* -----------------------------------------------------------------
+           Kapitel-Registry (Titel folgen dem offiziellen Skript)
+        ----------------------------------------------------------------- */
+        const CHAPTERS = [
+            { id: 1,  title: "Kapitel 1: Einführung" },
+            { id: 2,  title: "Kapitel 2: Die reellen Zahlen" },
+            { id: 3,  title: "Kapitel 3: Funktionen und die reellen Zahlen" },
+            { id: 4,  title: "Kapitel 4: Das Riemann-Integral" },
+            { id: 5,  title: "Kapitel 5: Metrische Räume, Folgen und Stetigkeit" },
+            { id: 6,  title: "Kapitel 6: Grenzwerte reeller Folgen und Funktionen" },
+            { id: 7,  title: "Kapitel 7: Reihen, Funktionen und Potenzreihen" },
+            { id: 8,  title: "Kapitel 8: Differentialrechnung" },
+            { id: 9,  title: "Kapitel 9: Die Ableitung und das Riemann-Integral" },
+            { id: 10, title: "Kapitel 10: Metrische Räume" },
+            { id: 11, title: "Kapitel 11: Mehrdimensionale Differentialrechnung" }
+        ];
+        CHAPTERS.forEach(c => { c.cards = window["FLASHCARDS_KAPITEL_" + c.id] || null; });
+
+        /* ----------------------------- State ----------------------------- */
+        let currentChapter = null;   // registry entry
+        let fullDeck = [];           // cards after section filter
+        let activeDeck = [];         // current run (possibly shuffled / repeat-run)
+        let currentIdx = 0;
+        let showingFront = true;
+        let shuffled = false;
+        let ratings = {};            // cardKey -> 'gotit' | 'repeat'
+
+        const $ = id => document.getElementById(id);
+
+        /* ------------------------- Persistence --------------------------- */
+        function storageKey() { return "analysis1-flashcards-k" + currentChapter.id; }
+        function cardKey(card, i) { return card.id || (currentChapter.id + ":" + (card.title || i)); }
+        function saveState() {
+            if (!currentChapter) return;
+            try {
+                localStorage.setItem(storageKey(), JSON.stringify({ ratings, shuffled }));
+            } catch (e) { /* privater Modus etc. */ }
+        }
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(storageKey());
+                if (!raw) return { ratings: {}, shuffled: false };
+                const s = JSON.parse(raw);
+                return { ratings: s.ratings || {}, shuffled: !!s.shuffled };
+            } catch (e) { return { ratings: {}, shuffled: false }; }
+        }
+
+        /* --------------------------- Sidebar ------------------------------ */
+        function initSidebar() {
+            const list = $("chapter-list");
+            CHAPTERS.forEach(ch => {
+                const btn = document.createElement("button");
+                btn.className = "chapter-btn";
+                btn.id = "chap-btn-" + ch.id;
+                if (ch.cards && ch.cards.length > 0) {
+                    btn.innerHTML = ch.title + " <span class='count'>(" + ch.cards.length + " Karten)</span>";
+                    btn.onclick = () => { loadChapter(ch.id); closeSidebar(); };
+                } else {
+                    btn.innerHTML = ch.title + " <span class='soon'>folgt noch</span>";
+                    btn.disabled = true;
+                }
+                list.appendChild(btn);
+            });
+            const first = CHAPTERS.find(c => c.cards && c.cards.length > 0);
+            if (first) loadChapter(first.id);
+        }
+        function openSidebar() { $("sidebar").classList.add("open"); $("sidebar-overlay").classList.add("show"); }
+        function closeSidebar() { $("sidebar").classList.remove("open"); $("sidebar-overlay").classList.remove("show"); }
+
+        /* ------------------------ Chapter loading ------------------------- */
+        function loadChapter(id) {
+            currentChapter = CHAPTERS.find(c => c.id === id);
+            document.querySelectorAll(".chapter-btn").forEach(b => b.classList.remove("active"));
+            $("chap-btn-" + id).classList.add("active");
+
+            $("header-title").innerText = currentChapter.title;
+            $("header-subtitle").innerText = "Analysis I – Vorlesung von Prof. Einsiedler";
+
+            const st = loadState();
+            ratings = st.ratings;
+            shuffled = st.shuffled;
+            $("shuffle-btn").classList.toggle("on", shuffled);
+
+            buildSectionFilter();
+            applyFilter();
+
+            $("toolbar").style.display = "flex";
+            $("progress-wrap").style.display = "block";
+            $("card-container").style.display = "block";
+            $("empty-hint").style.display = "none";
+        }
+
+        function buildSectionFilter() {
+            const sel = $("section-filter");
+            const cats = [...new Set(currentChapter.cards.map(c => c.category).filter(Boolean))];
+            sel.innerHTML = "<option value=''>Alle Abschnitte (" + currentChapter.cards.length + " Karten)</option>" +
+                cats.map(c => "<option value=\"" + c.replace(/"/g, "&quot;") + "\">" + c + "</option>").join("");
+            sel.value = "";
+        }
+
+        function applyFilter() {
+            const cat = $("section-filter").value;
+            fullDeck = currentChapter.cards.filter(c => !cat || c.category === cat);
+            startRun(fullDeck);
+        }
+
+        /* --------------------------- Deck run ----------------------------- */
+        function startRun(cards) {
+            activeDeck = [...cards];
+            if (shuffled) {
+                for (let i = activeDeck.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
+                }
+            }
+            $("finish-modal").style.display = "none";
+            $("total-cards").innerText = activeDeck.length;
+            // Bei unbewerteter erster Karte beginnen, sonst vorne
+            let start = activeDeck.findIndex((c, i) => !ratings[cardKey(c, i)]);
+            if (start < 0) start = 0;
+            showCard(start);
+        }
+
+        function updateProgress() {
+            let gotit = 0, repeat = 0;
+            activeDeck.forEach((c, i) => {
+                const r = ratings[cardKey(c, i)];
+                if (r === "gotit") gotit++;
+                else if (r === "repeat") repeat++;
+            });
+            const n = Math.max(activeDeck.length, 1);
+            $("count-gotit").innerText = gotit;
+            $("count-repeat").innerText = repeat;
+            document.querySelector("#progress-bar .seg-gotit").style.width = (100 * gotit / n) + "%";
+            document.querySelector("#progress-bar .seg-repeat").style.width = (100 * repeat / n) + "%";
+        }
+
+        /* --------------------------- Rendering ---------------------------- */
+        function typeBadge(card) {
+            if (!card.type) return "";
+            return "<span class='badge type-" + card.type + "'>" + card.type + "</span>";
+        }
+        function renderCard(card) {
+            const badges = typeBadge(card) + (card.category ? "<span class='badge'>" + card.category + "</span>" : "");
+            $("badges-front").innerHTML = badges + "<span class='badge side'>Frage</span>";
+            $("badges-back").innerHTML = badges + "<span class='badge side'>Antwort</span>";
+            $("title-front").innerHTML = card.title || "";
+            $("title-back").innerHTML = card.title || "";
+            $("content-front").innerHTML = card.front || "";
+            $("content-back").innerHTML = card.back || "";
+            $("meta-front").innerHTML = card.meta || "";
+            $("meta-back").innerHTML = card.meta || "";
+
+            let panel = "";
+            if (card.explanation) panel += "<div class='explanation-block'><b>Erklärung:</b><br>" + card.explanation + "</div>";
+            if (card.example) panel += "<div class='explanation-block ex'><b>Beispiel:</b><br>" + card.example + "</div>";
+            if (card.counterexample) panel += "<div class='explanation-block cex'><b>Gegenbeispiele:</b><br>" + card.counterexample + "</div>";
+            $("explain-panel").innerHTML = panel || "<div class='explanation-block'>Keine weiteren Erklärungen vorhanden.</div>";
+            $("explain-panel").classList.remove("open");
+            $("explain-toggle").style.display = panel ? "block" : "none";
+
+            renderMath($("face-front"));
+            renderMath($("face-back"));
+        }
+
+        function showCard(idx) {
+            if (activeDeck.length === 0) return;
+            currentIdx = Math.min(idx, activeDeck.length - 1);
+            showingFront = true;
+            $("flashcard").classList.remove("flipped");
+            renderCard(activeDeck[currentIdx]);
+            $("current-index").innerText = currentIdx + 1;
+            $("controls-front").style.display = "flex";
+            $("controls-back").style.display = "none";
+            $("btn-prev").disabled = (currentIdx === 0);
+            updateProgress();
+        }
+
+        function flipCard() {
+            if (activeDeck.length === 0) return;
+            showingFront = !showingFront;
+            $("flashcard").classList.toggle("flipped", !showingFront);
+            $("controls-front").style.display = showingFront ? "flex" : "none";
+            $("controls-back").style.display = showingFront ? "none" : "flex";
+        }
+
+        function toggleExplanation() {
+            if (showingFront) return;
+            $("explain-panel").classList.toggle("open");
+            renderMath($("explain-panel"));
+        }
+
+        /* ---------------------------- Rating ------------------------------ */
+        function rateCard(rating) {
+            const card = activeDeck[currentIdx];
+            ratings[cardKey(card, currentIdx)] = rating;
+            saveState();
+            if (currentIdx < activeDeck.length - 1) {
+                showCard(currentIdx + 1);
+            } else {
+                updateProgress();
+                showFinishScreen();
+            }
+        }
+
+        function prevCard() {
+            if (currentIdx > 0) showCard(currentIdx - 1);
+        }
+
+        function showFinishScreen() {
+            let gotit = 0, repeat = 0;
+            activeDeck.forEach((c, i) => {
+                const r = ratings[cardKey(c, i)];
+                if (r === "gotit") gotit++; else if (r === "repeat") repeat++;
+            });
+            $("stat-gotit").innerText = gotit;
+            $("stat-repeat").innerText = repeat;
+            if (repeat > 0) {
+                $("finish-heading").innerHTML = "Durchgang beendet!";
+                $("finish-text").innerHTML = "Du hast <b>" + repeat + " Karte(n)</b> zum Wiederholen markiert.";
+                $("btn-start-repeat").style.display = "inline-block";
+            } else {
+                $("finish-heading").innerHTML = "Perfekt! &#127881;";
+                $("finish-text").innerHTML = "Alle Karten sitzen! ｡^&#8255;^｡";
+                $("btn-start-repeat").style.display = "none";
+            }
+            $("finish-modal").style.display = "flex";
+        }
+
+        function startRepetition() {
+            const repeats = activeDeck.filter((c, i) => ratings[cardKey(c, i)] === "repeat");
+            repeats.forEach((c, i) => { delete ratings[cardKey(c, i)]; });
+            saveState();
+            startRun(repeats);
+        }
+
+        function resetChapter() {
+            if (!currentChapter) return;
+            if (!confirm("Fortschritt für dieses Kapitel wirklich zurücksetzen?")) return;
+            ratings = {};
+            saveState();
+            applyFilter();
+        }
+
+        /* ---------------------------- MathJax ------------------------------ */
+        function renderMath(el) {
+            if (window.MathJax && typeof MathJax.typesetPromise === "function") {
+                try {
+                    if (typeof MathJax.typesetClear === "function") MathJax.typesetClear([el]);
+                    MathJax.typesetPromise([el]).catch(() => {});
+                } catch (e) { /* MathJax noch nicht bereit */ }
+            } else {
+                setTimeout(() => renderMath(el), 400);
+            }
+        }
+
+        /* ------------------------- Event wiring ---------------------------- */
+        $("menu-toggle").onclick = openSidebar;
+        $("sidebar-overlay").onclick = closeSidebar;
+        $("face-front").onclick = flipCard;
+        $("face-back").onclick = e => {
+            // Klicks auf Erklärungs-Elemente nicht als Flip interpretieren
+            if (e.target.closest("#explain-toggle") || e.target.closest("#explain-panel")) return;
+            flipCard();
+        };
+        $("btn-flip").onclick = flipCard;
+        $("btn-prev").onclick = prevCard;
+        $("btn-gotit").onclick = () => rateCard("gotit");
+        $("btn-repeat").onclick = () => rateCard("repeat");
+        $("explain-toggle").onclick = toggleExplanation;
+        $("section-filter").onchange = applyFilter;
+        $("shuffle-btn").onclick = () => {
+            shuffled = !shuffled;
+            $("shuffle-btn").classList.toggle("on", shuffled);
+            saveState();
+            applyFilter();
+        };
+        $("reset-btn").onclick = resetChapter;
+        $("btn-start-repeat").onclick = startRepetition;
+        $("btn-restart").onclick = () => { ratings = {}; saveState(); applyFilter(); };
+        $("help-btn").onclick = () => {
+            const p = $("help-popup");
+            p.style.display = p.style.display === "block" ? "none" : "block";
+        };
+
+        document.addEventListener("keydown", e => {
+            if (!currentChapter) return;
+            if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+
+            if ($("finish-modal").style.display === "flex") {
+                if (e.code === "Escape") $("finish-modal").style.display = "none";
+                return;
+            }
+            if (e.code === "Escape") { closeSidebar(); $("help-popup").style.display = "none"; return; }
+            if (e.code === "Space") { e.preventDefault(); flipCard(); return; }
+
+            if (showingFront) {
+                if (e.code === "ArrowLeft") prevCard();
+            } else {
+                if (e.code === "ArrowRight") rateCard("gotit");
+                else if (e.code === "ArrowLeft") rateCard("repeat");
+                else if (e.code === "ArrowDown") { e.preventDefault(); toggleExplanation(); }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", initSidebar);
+    </script>
+</body>
+</html>
