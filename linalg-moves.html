@@ -6,7 +6,7 @@
 <meta property="og:title" content="Linear Algebra moves">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
 <script defer src="assets/umami-kit.js?v=79d39d59"></script>
-<script defer src="assets/tips.js?v=25357800"></script>
+<script defer src="assets/tips.js?v=2dbf4b82"></script>
 <script defer src="assets/listen.js?v=427792c7"></script>
 <script defer src="assets/account.js?v=6e83599e"></script>
 <script>try{var t=localStorage.getItem("sh-theme");document.documentElement.setAttribute("data-theme",t||"dark");if(localStorage.getItem("sh-side")==="0")document.documentElement.classList.add("sh-noside")}catch(e){}</script>
@@ -268,6 +268,13 @@ a.subject:hover strong { text-decoration: underline; }
 <li><a href="#take-an-arbitrary-element">Take an arbitrary element</a></li>
 <li><a href="#name-a-witness">Name a witness</a></li>
 </ol></li>
+<li><a href="#from-lesson-3">From lesson 3</a>
+<ol>
+<li><a href="#prove-the-contrapositive">Prove the contrapositive</a></li>
+<li><a href="#induction-base-hypothesis-step">Induction: base, hypothesis, step</a></li>
+<li><a href="#assume-the-opposite">Assume the opposite</a></li>
+<li><a href="#pigeonhole-more-objects-than-boxes">Pigeonhole: more objects than boxes</a></li>
+</ol></li>
 </ol></details>
 <p class="legend">Proofs in Linear Algebra reuse a small set of moves, even more than in Analysis: most proofs are three to ten lines of “write down what the definition says, then use one axiom at a time”. Each card says when to reach for the move, the sentences it produces, and where it has appeared so far. Lesson pills link here. The list grows with every lesson.</p>
 
@@ -316,7 +323,7 @@ a.subject:hover strong { text-decoration: underline; }
 <div class="mcard" id="m-la_member"><h3 id="decide-membership-element-by-element">Decide membership element by element</h3>
 <p><strong>When:</strong> two sets must be equal ($A=B$). Show “$t\in A\iff t\in B$” for an arbitrary $t$, often by splitting into cases ($t\in z$ or $t\notin z$).</p>
 <p><strong>Sentences:</strong> “Let $t\in M$. Case $t\in z$: … Case $t\notin z$: … In both cases $t\in A\iff t\in B$, so $A=B$.”</p>
-<p><strong>Seen in:</strong> associativity of the symmetric difference, the ring $(\mathcal P(M),\triangle,\cap)$ (1).</p></div>
+<p><strong>Seen in:</strong> associativity of the symmetric difference, the ring $(\mathcal P(M),\triangle,\cap)$ (1); De Morgan for sets, $|\mathcal P(M)|=2^n$, classes form a partition (3).</p></div>
 </div>
 
 <h2 id="from-lesson-2">From <a class="xl" href="linalg-02.html">lesson 2</a></h2>
@@ -339,12 +346,35 @@ a.subject:hover strong { text-decoration: underline; }
 <div class="mcard" id="m-la_arbitrary"><h3 id="take-an-arbitrary-element">Take an arbitrary element</h3>
 <p><strong>When:</strong> the statement to prove starts with $\forall x\in M$. Write “Let $x\in M$ be arbitrary”, prove the claim for this $x$ using nothing but $x\in M$, and end with “since $x$ was arbitrary, the claim holds for all $x\in M$”.</p>
 <p><strong>Sentences:</strong> “Let $e\in\mathbb N_{&gt;0}$ be arbitrary. … So $e$ is not neutral. Since $e$ was arbitrary, $(\mathbb N_{&gt;0},+)$ has no neutral element.”</p>
-<p><strong>Seen in:</strong> $\exists\forall$ implies $\forall\exists$, $(\mathbb N_{&gt;0},+)$ has no neutral element (2); implicitly in every group check (1).</p></div>
+<p><strong>Seen in:</strong> $\exists\forall$ implies $\forall\exists$, $(\mathbb N_{&gt;0},+)$ has no neutral element (2); implicitly in every group check (1); compositions of injective and surjective maps, no largest prime (3).</p></div>
 
 <div class="mcard" id="m-la_witness"><h3 id="name-a-witness">Name a witness</h3>
 <p><strong>When:</strong> the statement to prove is $\exists y\ldots$ (also inside: $\forall x\,\exists y$). Write the $y$ down explicitly, allowed to depend on everything chosen before it, and check that it works. For $\exists!$ add a second part: two such elements are equal.</p>
 <p><strong>Sentences:</strong> “Given $x\in\mathbb Z$, put $y:=-x$; then $x+y=0$.” “Take $a=\bar2$, $b=\bar3$ in $\mathbb Z/6$: $ab=\bar0$ although $a,b\ne\bar0$.”</p>
-<p><strong>Seen in:</strong> $\forall x\,\exists y\,(x+y=0)$, zero divisors in $\mathbb Z/6$, the order of quantifiers (2); neutral elements and inverses (1).</p></div>
+<p><strong>Seen in:</strong> $\forall x\,\exists y\,(x+y=0)$, zero divisors in $\mathbb Z/6$, the order of quantifiers (2); neutral elements and inverses (1); surjective compositions, Cantor's set, the larger prime (3).</p></div>
+</div>
+
+<h2 id="from-lesson-3">From <a class="xl" href="linalg-03.html">lesson 3</a></h2>
+<div class="movecards">
+<div class="mcard" id="m-la_contra"><h3 id="prove-the-contrapositive">Prove the contrapositive</h3>
+<p><strong>When:</strong> the claim is $A\Rightarrow B$, and $\neg B$ gives you something concrete to compute with while $A$ does not. Typical: $B$ is a “not” statement (irrational, not divisible, injective written as “different inputs give different outputs”). Show $\neg B\Rightarrow\neg A$ instead; it is the same statement.</p>
+<p><strong>Sentences:</strong> “We prove the contrapositive. Assume $3\nmid n$, so $n=3k+1$ or $n=3k+2$. Then $n^2=\dots$ leaves remainder $1$, so $3\nmid n^2$.”</p>
+<p><strong>Seen in:</strong> $\sqrt2\notin\mathbb Q$, $3\mid n^2\Rightarrow3\mid n$ (3); zero divisors (script Note 1.3.6, <a class="xl" href="linalg-02.html">lesson 2</a>).</p></div>
+
+<div class="mcard" id="m-la_induct"><h3 id="induction-base-hypothesis-step">Induction: base, hypothesis, step</h3>
+<p><strong>When:</strong> the claim is “for all $n\ge n_0$”, and the case $n+1$ is the case $n$ plus one more piece (one more term, one more element, one more vector). State $A(n)$, check $A(n_0)$, assume $A(n)$, split off the last piece, use the hypothesis.</p>
+<p><strong>Sentences:</strong> “Base case $n=0$: … Step: assume the claim for some $n\ge0$. Then $\sum_{k=1}^{n+1}\dots=\sum_{k=1}^n\dots+(\text{last term})=\dots$ by the induction hypothesis. By induction, the claim holds for all $n\ge0$.”</p>
+<p><strong>Seen in:</strong> $|\mathcal P(M)|=2^n$, FS19 problem 6 (a), HS21 question XII (3).</p></div>
+
+<div class="mcard" id="m-la_contradiction"><h3 id="assume-the-opposite">Assume the opposite</h3>
+<p><strong>When:</strong> the claim says something does <em>not</em> exist or is <em>not</em> possible: no surjection, no largest element, uncountable, irrational. Assume it exists, give it a name, and derive a statement together with its negation.</p>
+<p><strong>Sentences:</strong> “Assume, to the contrary, that $g(a_0)=Y$ for some $a_0\in M$. Then $a_0\in Y\iff a_0\notin g(a_0)\iff a_0\notin Y$, a contradiction. Hence …”</p>
+<p><strong>Seen in:</strong> Cantor's theorem, Russell's paradox and the barber, $\sqrt3\notin\mathbb Q$ (3).</p></div>
+
+<div class="mcard" id="m-la_pigeon"><h3 id="pigeonhole-more-objects-than-boxes">Pigeonhole: more objects than boxes</h3>
+<p><strong>When:</strong> you need two of finitely many things to coincide, or a map between finite sets to fail injectivity. Name the objects, name the boxes, count: more objects than boxes means two objects share a box. Then use the coincidence.</p>
+<p><strong>Sentences:</strong> “The $p$ classes $\bar a^0,\dots,\bar a^{p-1}$ lie in the $p-1$ nonzero classes, so $\bar a^s=\bar a^t$ for some $s&lt;t$.”</p>
+<p><strong>Seen in:</strong> inverses in $\mathbb Z/p$, injective self-maps of finite sets are surjective, remainders of $n+1$ integers (3).</p></div>
 </div>
 
 <nav class="site foot" aria-label="Lesson navigation">
