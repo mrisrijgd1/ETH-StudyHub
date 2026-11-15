@@ -2,30 +2,42 @@
 (function () {
   'use strict';
   const palettes = {
-    green: { label: ['Grün', 'Green'], light: ['#f6f7ef','#fbfcf7','#233b2e','#687268','#d8ded2','#e8eddf','#355e42','#77965c','#ffffff'], dark: ['#141d18','#1d2a22','#e6eee7','#acbcb0','#3c5042','#2b3e30','#a7d4a5','#7fb284','#17241a'], swatches: ['#355e42','#a7d4a5'] },
-    violet: { label: ['Pink / Violett', 'Pink / violet'], light: ['#fbf5fc','#fffbff','#422747','#79667d','#e7d6eb','#f1e1f4','#884c9c','#bb5f93','#ffffff'], dark: ['#211624','#2d2033','#f4e7f7','#c5accb','#573d61','#402c49','#d8ade9','#e9a2cb','#321b3b'], swatches: ['#a055b5','#e9a2cb'] },
-    blue: { label: ['Blau', 'Blue'], light: ['#f2f7fc','#fbfdff','#243b54','#62758c','#d3dfed','#e2edf8','#315f98','#648fbc','#ffffff'], dark: ['#141d29','#1c2a3b','#e5edf8','#acbdd2','#3b526d','#283e57','#a2c6f4','#82a8d6','#172a42'], swatches: ['#315f98','#a2c6f4'] },
-    orange: { label: ['Rot / Orange', 'Red / orange'], light: ['#fcf5ef','#fffaf6','#512e25','#846b61','#ead8ce','#f7e5d8','#a4492f','#c57842','#ffffff'], dark: ['#251a17','#34251f','#faebe0','#d2b4a4','#60463a','#493126','#f3b78f','#e4917b','#3c231b'], swatches: ['#b74c38','#edaa67'] }
+    skymint: { label: ['Sky & Mint', 'Sky & mint'], swatches: ['#1865f2', '#14bf96'],
+      light: { 'bg': '#f7f8fa', 'surface': '#ffffff', 'raised': '#ffffff', 'ink': '#21242c', 'muted': '#5b616e', 'line': '#e1e5ec', 'border': '#8a909c', 'soft': '#eef3fd', 'accent': '#1559d6', 'on-accent': '#ffffff', 'accent-text': '#1559d6', 'accent-bright': '#1865f2', 'accent-soft': '#e5eefe', 'secondary': '#0a7558', 'highlight': '#14bf96', 'on-highlight': '#0b2a22', 'highlight-soft': '#ddf7ef', 'story': '#fff6e0', 'story-edge': '#c98700', 'exam': '#f1ebff', 'exam-edge': '#7a4ff0', 'success': '#1a7f37', 'warning': '#9a5b00', 'danger': '#c62828', 'focus': '#4255ff' },
+      dark: { 'bg': '#121826', 'surface': '#1a2234', 'raised': '#222c42', 'ink': '#eef2f8', 'muted': '#b0b8c8', 'line': '#2e3a52', 'border': '#74809a', 'soft': '#1d2740', 'accent': '#94bbff', 'on-accent': '#0b1a36', 'accent-text': '#94bbff', 'accent-bright': '#6fa2ff', 'accent-soft': '#1f3561', 'secondary': '#3ddbb4', 'highlight': '#3ddbb4', 'on-highlight': '#0b2a22', 'highlight-soft': '#143a33', 'story': '#2f2918', 'story-edge': '#ffc44d', 'exam': '#28224a', 'exam-edge': '#b39dff', 'success': '#5fd38d', 'warning': '#ffc95c', 'danger': '#ff8a80', 'focus': '#9aa6ff' } },
+    periwinkle: { label: ['Periwinkle', 'Periwinkle'], swatches: ['#4255ff', '#ffcc00'],
+      light: { 'bg': '#f6f7fb', 'surface': '#ffffff', 'raised': '#ffffff', 'ink': '#282d49', 'muted': '#5a6075', 'line': '#e1e3ee', 'border': '#8b90a8', 'soft': '#eef0fb', 'accent': '#3447e8', 'on-accent': '#ffffff', 'accent-text': '#3447e8', 'accent-bright': '#4255ff', 'accent-soft': '#e8ebff', 'secondary': '#8a5f00', 'highlight': '#ffcc00', 'on-highlight': '#282d49', 'highlight-soft': '#fff7d6', 'story': '#fff8eb', 'story-edge': '#d98a00', 'exam': '#e6fafa', 'exam-edge': '#14a3a3', 'success': '#1a7f37', 'warning': '#9a5b00', 'danger': '#c62828', 'focus': '#4255ff' },
+      dark: { 'bg': '#161a33', 'surface': '#1e2342', 'raised': '#262c52', 'ink': '#eef0ff', 'muted': '#b3b8d6', 'line': '#343a63', 'border': '#7a80a8', 'soft': '#232849', 'accent': '#a7b0ff', 'on-accent': '#121530', 'accent-text': '#a7b0ff', 'accent-bright': '#8c98ff', 'accent-soft': '#2c3470', 'secondary': '#ffd84d', 'highlight': '#ffd84d', 'on-highlight': '#282d49', 'highlight-soft': '#3d3518', 'story': '#2e2a1c', 'story-edge': '#ffc14d', 'exam': '#173336', 'exam-edge': '#4fd6d6', 'success': '#5fd38d', 'warning': '#ffc95c', 'danger': '#ff8a80', 'focus': '#9aa6ff' } },
+    bubblegum: { label: ['Bubblegum', 'Bubblegum'], swatches: ['#7c4dff', '#ff7eb6'],
+      light: { 'bg': '#faf7ff', 'surface': '#ffffff', 'raised': '#ffffff', 'ink': '#2b2240', 'muted': '#62597a', 'line': '#e9e2f5', 'border': '#9188a8', 'soft': '#f3edff', 'accent': '#6a3df0', 'on-accent': '#ffffff', 'accent-text': '#6a3df0', 'accent-bright': '#7c4dff', 'accent-soft': '#efe8ff', 'secondary': '#b02a68', 'highlight': '#ff7eb6', 'on-highlight': '#2b2240', 'highlight-soft': '#ffe6f1', 'story': '#fff4e8', 'story-edge': '#d97a1e', 'exam': '#e6f6ff', 'exam-edge': '#1f8fd1', 'success': '#1a7f37', 'warning': '#9a5b00', 'danger': '#c62828', 'focus': '#7c4dff' },
+      dark: { 'bg': '#1a1530', 'surface': '#231c3e', 'raised': '#2c244d', 'ink': '#f3eeff', 'muted': '#bfb4dc', 'line': '#3a3060', 'border': '#8278a8', 'soft': '#261f44', 'accent': '#c2adff', 'on-accent': '#1a1033', 'accent-text': '#c2adff', 'accent-bright': '#a98bff', 'accent-soft': '#3a2c70', 'secondary': '#ff9cc8', 'highlight': '#ff9cc8', 'on-highlight': '#2b2240', 'highlight-soft': '#45213a', 'story': '#33261c', 'story-edge': '#ffb366', 'exam': '#152f42', 'exam-edge': '#6cc4ff', 'success': '#5fd38d', 'warning': '#ffc95c', 'danger': '#ff8a80', 'focus': '#c2adff' } },
+    sunshine: { label: ['Sunshine', 'Sunshine'], swatches: ['#f26430', '#38bdf8'],
+      light: { 'bg': '#fffaf3', 'surface': '#ffffff', 'raised': '#ffffff', 'ink': '#2d2620', 'muted': '#6b5f55', 'line': '#f0e5d8', 'border': '#9e9184', 'soft': '#fff1e3', 'accent': '#b23f0c', 'on-accent': '#ffffff', 'accent-text': '#b23f0c', 'accent-bright': '#f26430', 'accent-soft': '#ffeadf', 'secondary': '#0e6a94', 'highlight': '#38bdf8', 'on-highlight': '#0c2a3a', 'highlight-soft': '#e0f5fe', 'story': '#fff7d6', 'story-edge': '#c99400', 'exam': '#e9f9ef', 'exam-edge': '#1f9d55', 'success': '#1a7f37', 'warning': '#9a5b00', 'danger': '#c62828', 'focus': '#1f6fd1' },
+      dark: { 'bg': '#1c1714', 'surface': '#26201b', 'raised': '#302822', 'ink': '#fbf3ea', 'muted': '#cdbfb2', 'line': '#40362e', 'border': '#8f8276', 'soft': '#2c241e', 'accent': '#ffb38f', 'on-accent': '#2d1408', 'accent-text': '#ffb38f', 'accent-bright': '#ff9a6e', 'accent-soft': '#4a2a1c', 'secondary': '#6dd0ff', 'highlight': '#6dd0ff', 'on-highlight': '#0c2a3a', 'highlight-soft': '#16323f', 'story': '#33301a', 'story-edge': '#ffd24d', 'exam': '#15332a', 'exam-edge': '#5fd38d', 'success': '#5fd38d', 'warning': '#ffc95c', 'danger': '#ff8a80', 'focus': '#8fb7ff' } }
   };
   const appearanceKey = 'sh-appearance';
-  let appearance = { theme: 'light', palette: 'green' };
-  try { const saved = JSON.parse(localStorage.getItem(appearanceKey) || '{}'); if (['light','dark'].includes(saved.theme)) appearance.theme = saved.theme; if (palettes[saved.palette]) appearance.palette = saved.palette; } catch (_) {}
+  const defaultPalette = 'skymint';
+  // Palettes before Nov 2026 (green, violet, blue, orange) map to their nearest new palette.
+  const legacyPalettes = { green: 'skymint', blue: 'skymint', violet: 'bubblegum', orange: 'sunshine' };
+  const knownPalette = id => palettes[id] ? id : (legacyPalettes[id] || defaultPalette);
+  let appearance = { theme: 'light', palette: defaultPalette };
+  try { const saved = JSON.parse(localStorage.getItem(appearanceKey) || '{}'); if (['light','dark'].includes(saved.theme)) appearance.theme = saved.theme; if (saved.palette) appearance.palette = knownPalette(saved.palette); } catch (_) {}
   function applyAppearance(persist) {
     const values = palettes[appearance.palette][appearance.theme];
-    const names = ['bg','surface','ink','muted','line','soft','accent','secondary','on-accent'];
-    names.forEach((name, index) => document.documentElement.style.setProperty('--design-' + name, values[index]));
+    Object.entries(values).forEach(([name, value]) => document.documentElement.style.setProperty('--design-' + name, value));
     document.documentElement.style.setProperty('--design-scheme', appearance.theme);
-    document.documentElement.style.setProperty('--design-shadow', appearance.theme === 'dark' ? '#00000050' : '#233b2e1c');
+    document.documentElement.style.setProperty('--design-shadow', appearance.theme === 'dark' ? '#00000050' : '#21242c1a');
+    document.documentElement.style.setProperty('--design-shadow-card', appearance.theme === 'dark' ? 'none' : '0 1px 2px rgb(33 36 44 / .06), 0 4px 14px rgb(33 36 44 / .07)');
     document.documentElement.dataset.appearanceTheme = appearance.theme;
     document.documentElement.dataset.appearancePalette = appearance.palette;
     document.documentElement.dataset.theme = appearance.theme;
     if (persist) {
       try { localStorage.setItem(appearanceKey, JSON.stringify(appearance)); localStorage.setItem('sh-theme', appearance.theme); } catch (_) {}
-      if (window.SHDesign) window.SHDesign.save({ ...window.SHDesign.get(), theme: appearance.theme, accent: values[6], background: values[0], text: values[2], box: values[1] }).catch(() => {});
+      if (window.SHDesign) window.SHDesign.save({ ...window.SHDesign.get(), theme: appearance.theme, accent: values.accent, background: values.bg, text: values.ink, box: values.surface }).catch(() => {});
     }
   }
   applyAppearance(false);
-  addEventListener('storage', event => { if (event.key === appearanceKey) { try { const next = JSON.parse(event.newValue); if (next && ['light','dark'].includes(next.theme) && palettes[next.palette]) { appearance = next; applyAppearance(false); updateDesignPanel(); } } catch (_) {} } });
+  addEventListener('storage', event => { if (event.key === appearanceKey) { try { const next = JSON.parse(event.newValue); if (next && ['light','dark'].includes(next.theme)) { appearance = { theme: next.theme, palette: knownPalette(next.palette) }; applyAppearance(false); updateDesignPanel(); } } catch (_) {} } });
   const source = document.currentScript;
   const base = new URL('../', source.src);
   const path = location.pathname.slice(base.pathname.length);
