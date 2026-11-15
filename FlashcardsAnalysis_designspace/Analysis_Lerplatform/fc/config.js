@@ -52,7 +52,7 @@ window.FC_CONFIG = {
     unsure: { kaomoji: "(・_・;)", de: "Unsicher", en: "Unsure" },
     got:    { kaomoji: "｡^‿^｡",   de: "Gewusst",  en: "Got it" }
   },
-  finishKaomoji: { perfect: "｡^‿^｡", mixed: "(｀・ω・´)ゞ" },
+  finishKaomoji: { perfect: "｡^‿^｡", mixed: "( ദ്ദി ˙ᗜ˙ )" },
 
   /* Greeting pool. {name} is replaced. Tags pick the context; untagged lines are always possible. */
   greetings: {
