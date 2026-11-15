@@ -1,5 +1,5 @@
 import json, pathlib, html, shutil
-D=pathlib.Path(__file__).parent/'dist'
+D=pathlib.Path(__file__).resolve().parent.parent/'chemie'
 lessons=[]
 def L(title,group,section,pages,week,warm,goal,theory,formula,example,exercises,quiz,answer,why,transfer):
  lessons.append(dict(id=len(lessons)+1,title=title,group=group,section=section,pages=pages,week=week,warm=warm,goal=goal,theory=theory.split('\n\n'),formula=formula,example=example,exercises=[dict(zip(['q','hint','solution'],x)) for x in exercises],quiz=quiz,answer=answer,why=why,transfer=transfer))

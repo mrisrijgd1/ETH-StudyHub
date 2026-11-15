@@ -12,10 +12,10 @@ Eigenständiger Lernraum für ETH-Kurs 529-0011-01L (HS 2026).
 Dieser Ordner ist ein separates, buildloses Webprojekt. Vom Repository-Verzeichnis aus:
 
 ```sh
-python3 -m http.server 8000 --directory Jamie/dist
+python3 -m http.server 8000 --directory chemie
 ```
 
-Danach `http://localhost:8000` öffnen. Bei einem statischen Hosting den Ordner `Jamie/dist` als Webverzeichnis verwenden. Es gibt keine neue automatische Bereitstellung über GitHub Actions.
+Danach `http://localhost:8000` öffnen. Bei einem statischen Hosting den Ordner `chemie` als Webverzeichnis verwenden. Es gibt keine neue automatische Bereitstellung über GitHub Actions.
 
 ## Inhalte bearbeiten und prüfen
 
@@ -24,7 +24,7 @@ python3 Jamie/course.py
 python3 Jamie/check.py
 ```
 
-`course.py` erzeugt `dist/course.json`. Für den Dokumentcheck benötigt Python keine zusätzlichen Pakete; `check.py` prüft die vorhandenen Dokumentziele und unabhängige Beispielrechnungen. `dist/documents.json` enthält den Bibliotheksindex, `dist/source-files.json` Seitenzahlen und SHA-256-Prüfsummen der PDFs.
+`course.py` erzeugt `chemie/course.json`. Für den Dokumentcheck benötigt Python keine zusätzlichen Pakete; `check.py` prüft die vorhandenen Dokumentziele und unabhängige Beispielrechnungen. `chemie/documents.json` enthält den Bibliotheksindex, `chemie/source-files.json` Seitenzahlen und SHA-256-Prüfsummen der PDFs.
 
 Die Quellen und Lernhinweise sind auf der Website über `#sources` erreichbar. Die originale Ausgabe des Skripts ist HS 2025, wie im Moodle-Kurs HS 2026 bereitgestellt. Aktuelle Folien und Serien reichen bis Woche 9; spätere Kapitel beruhen auf dem vollständigen Skript und Altprüfungen.
 
