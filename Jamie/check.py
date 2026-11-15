@@ -1,5 +1,5 @@
 import json,pathlib,re,math
-p=pathlib.Path(__file__).parent/'dist'; c=json.loads((p/'course.json').read_text())
+p=pathlib.Path(__file__).resolve().parent.parent/'chemie'; c=json.loads((p/'course.json').read_text())
 assert len(c)==27 and len({x['id'] for x in c})==27
 for l in c:
  assert len(l['exercises'])==3
