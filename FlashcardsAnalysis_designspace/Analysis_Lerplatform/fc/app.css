@@ -6,7 +6,8 @@
    ========================================================================= */
 
 /* ---- The only theme block: app tokens derived from the hub tokens ---- */
-.fc-app {
+/* the finish dialog and the toast sit outside <main class="fc-app">, so they need the same tokens */
+.fc-app, .fc-overlay, .fc-toast {
   --fc-bg: var(--design-bg, #f6f7fb);
   --fc-surface: var(--design-raised, var(--design-surface, #ffffff));
   --fc-ink: var(--design-ink, #233b2e);
@@ -244,9 +245,9 @@ a.fc-chapter:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(0 0 
 .fc-kbd { font-size: 12px; color: var(--fc-muted); text-align: center; }
 
 /* finish dialog */
-.fc-overlay { position: fixed; inset: 0; background: rgb(0 0 0 / .45); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.fc-overlay { position: fixed; inset: 0; background: rgb(0 0 0 / .5); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
 .fc-overlay.open { display: flex; }
-.fc-modal { background: var(--fc-surface); color: var(--fc-ink); border-radius: 18px; padding: 28px; max-width: 520px; width: 100%;
+.fc-modal { background: var(--fc-surface, #ffffff); box-shadow: 0 20px 50px rgb(0 0 0 / .3); color: var(--fc-ink); border-radius: 18px; padding: 28px; max-width: 520px; width: 100%;
   text-align: center; box-shadow: 0 10px 40px rgb(0 0 0 / .3); }
 .fc-modal .kao { font-size: 34px; margin: 6px 0 10px; }
 .fc-stats3 { display: flex; gap: 10px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
@@ -292,7 +293,7 @@ a.fc-chapter:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(0 0 
 /* ---- Colour and frames (Nov 2026) ----
    Each chapter has its own light tint from the hub palette (--design-tint-1..6; fallbacks = Sky & Mint).
    Boxes get a thin frame you can see; the flashcard itself gets a thick coloured frame. */
-.fc-app { --fc-frame: color-mix(in srgb, var(--design-border, #8a909c) 50%, var(--fc-surface)); --fc-tint-mix: var(--design-tint-strength, 10%); }
+.fc-app, .fc-overlay { --fc-frame: color-mix(in srgb, var(--design-border, #8a909c) 50%, var(--fc-surface)); --fc-tint-mix: var(--design-tint-strength, 10%); }
 html[data-appearance-theme=dark] .fc-app { --fc-tint-mix: var(--design-tint-strength, 15%); }
 .fc-app .fc-t1 { --t: var(--design-tint-1, #1865f2); }
 .fc-app .fc-t2 { --t: var(--design-tint-2, #14bf96); }
@@ -319,7 +320,7 @@ html[data-appearance-theme=dark] .fc-app { --fc-kpi-mix: 15%; }
 .fc-app .fc-kpis .k-weak { --k: var(--fc-again); }
 .fc-app .fc-kpis .k-today { --k: var(--design-tint-2, #14bf96); }
 /* visible frames */
-.fc-app .fc-panel, .fc-app .fc-modal { border: 1.5px solid var(--fc-frame) !important; }
+.fc-app .fc-panel, .fc-modal { border: 1.5px solid var(--fc-frame) !important; }
 .fc-app .fc-list li a, .fc-app .fc-list li button { border: 1.5px solid var(--fc-frame); border-left: 5px solid color-mix(in srgb, var(--fc-again) 70%, var(--fc-surface)); }
 .fc-app .fc-btn, .fc-app .fc-tabs button, .fc-app .fc-nav .fc-lang { border-color: var(--fc-frame); }
 /* the flashcard: thick frame, blue on the question side, mint on the answer side */
@@ -363,3 +364,7 @@ html[data-appearance-theme=dark] .fc-week { --wk-mix: 62%; --wk-base: #ffffff; }
 @media (max-width: 820px) { .fc-activity { grid-template-columns: 1fr; } .fc-week { border-left: 0; padding-left: 0; border-top: 1.5px solid var(--fc-frame, var(--fc-line)); padding-top: 18px; } }
 /* pastel palettes: darker icon glyphs */
 .fc-app .fc-chapter[class*="fc-t"] .fc-icon { color: color-mix(in srgb, var(--t) var(--design-icon-mix, 70%), var(--fc-ink)) !important; }
+.fc-list .n .fc-hist { display: block; font-size: 11.5px; font-weight: 500; color: var(--fc-muted); text-align: right; margin-top: 2px; }
+/* finish dialog: three equal buttons (the hub styles <a> and <button> differently) */
+.fc-modal .fc-row > .fc-btn { font: 600 14px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; min-height: 44px; height: 44px; box-sizing: border-box; display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 12px; text-decoration: none; margin: 0; }
+.fc-modal .fc-row > .fc-btn:not(.primary) { background: var(--fc-surface); color: var(--fc-ink); border: 1.5px solid var(--fc-frame); }

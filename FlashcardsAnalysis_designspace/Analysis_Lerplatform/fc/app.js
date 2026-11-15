@@ -462,8 +462,6 @@
     const greet = (greetCache && greetCache.uid === uid && greetCache.lang === LANG && greetCache.name === name) ? greetCache.html : (greetCache = { uid, lang: LANG, name, html: pickGreeting(si, st) }).html;
     const askName = !name && !(window.SH && window.SH.user);
     const lastS = U().lastSession;
-    const top = all.filter(c => peek(c.id) && (peek(c.id).wrong + peek(c.id).unsure) > 0)
-      .sort((a, b) => (peek(b.id).wrong * 2 + peek(b.id).unsure) - (peek(a.id).wrong * 2 + peek(a.id).unsure)).slice(0, 10);
     const a1 = chapters.filter(c => c.course === "A1"), a2 = chapters.filter(c => c.course === "A2");
     const withCards = chapters.filter(c => c.cards && c.cards.length);
     const tab = Math.max(0, withCards.findIndex(c => c.id === (prefs().radarTab || (withCards[0] || {}).id)));
@@ -491,10 +489,6 @@
       <section class="fc-section"><h2>${L("Stärken pro Abschnitt", "Strength per section")}</h2><div class="fc-panel fc-radar">
         ${everReviewed && rch ? `<div class="fc-tabs" role="tablist">${withCards.map((c, i) => `<button role="tab" data-rt="${c.id}" aria-selected="${i === tab}">${L("Kap.", "Ch.")} ${c.id}</button>`).join("")}</div>${radar(rch)}`
           : `<div class="fc-empty"><span class="kao">(｀・ω・´)</span>${L("Die Netzdiagramme füllen sich, sobald du Karten bewertest.", "The radar charts fill up as you rate cards.")}</div>`}</div></section>
-      <section class="fc-section"><h2>${L("Häufige Fehler & Unsicherheiten", "Repeated mistakes & doubts")}</h2>
-        ${top.length ? `<ul class="fc-list">${top.map(c => { const s = peek(c.id); return `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front))}</span><span class="n">${s.wrong}× ${C.ratings.again.kaomoji} · ${s.unsure}× ${C.ratings.unsure.kaomoji}</span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)}</span></a></li>`; }).join("")}</ul>`
-          : `<div class="fc-panel fc-empty"><span class="kao">｡^‿^｡</span>${L("Noch keine Fehler – oder du hast noch nicht angefangen.", "No mistakes yet – or you haven't started.")}</div>`}
-      </section>
       <section class="fc-section"><h2>${L("Kapitel", "Chapters")} · Analysis I</h2><div class="fc-grid course-grid">${a1.map(chapterBox).join("")}${proofBox()}</div></section>
       ${a2.length ? `<section class="fc-section"><h2>Analysis II</h2><div class="fc-grid course-grid">${a2.map(chapterBox).join("")}</div></section>` : ""}
       ${footer()}`;
@@ -614,7 +608,7 @@
         <label>${L("Deck", "Deck")} <select id="wk-deck">${decks.map(d => `<option value="${d[0]}"${d[0] === w.deck ? " selected" : ""}>${esc(d[1])}</option>`).join("")}</select></label>
         <label>${L("Typ", "Type")} <select id="wk-type">${types.map(d => `<option value="${d[0]}"${d[0] === w.type ? " selected" : ""}>${esc(d[1])}</option>`).join("")}</select></label>
         <a class="fc-btn primary" href="#/weak/session"${deck.length ? "" : ' aria-disabled="true"'}>${L("Üben", "Practise")} (${deck.length})</a></div></div>
-      ${deck.length ? `<ul class="fc-list" style="margin-top:16px">${deck.slice(0, 40).map(c => `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front))}</span><span class="n">${(peek(c.id).h || []).map(r => r === "g" ? "✓" : r === "u" ? "?" : "✗").join(" ")}</span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)} · ${typeLabel(c.type)}</span></a></li>`).join("")}</ul>`
+      ${deck.length ? `<ul class="fc-list" style="margin-top:16px">${deck.slice(0, 40).map(c => `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front))}</span><span class="n">${peek(c.id).wrong}× ${C.ratings.again.kaomoji} · ${peek(c.id).unsure}× ${C.ratings.unsure.kaomoji}<small class="fc-hist">${L("zuletzt", "recent")}: ${(peek(c.id).h || []).map(r => r === "g" ? "✓" : r === "u" ? "?" : "✗").join(" ")}</small></span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)} · ${typeLabel(c.type)}</span></a></li>`).join("")}</ul>`
         : `<div class="fc-panel fc-empty" style="margin-top:16px"><span class="kao">｡^‿^｡</span>${L("Keine schwachen Karten – stark!", "No weak cards – well done!")}</div>`}`;
     $$(".fc-list").forEach(typeset);
     $("#wk-deck").onchange = e => { w.deck = e.target.value; save(); render(); };
