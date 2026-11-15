@@ -2012,11 +2012,19 @@ window.FLASHCARDS_KAPITEL_5 = [
 
 /* Script-chapter deck (German only for now): cards by a classmate, following the script's chapters.
    Data above (window.FLASHCARDS_KAPITEL_n) is copied from the flashcards repo (PR from sync/flashcards).
-   Adds a deck switch on de/flashcards.html: "Nach Lektion" (StudyHub deck) | "Nach Skript-Kapitel". */
+   Adds a deck switch on flashcards.html (EN) and de/flashcards.html: "Nach Lektion" (StudyHub deck) | "Nach Skript-Kapitel". */
 (function () {
   var ctl = document.querySelector('.fc-controls'); if (!ctl) return;
+  var EN = (document.documentElement.lang || '').slice(0, 2) !== 'de';
+  var L = EN ? { deck: 'Deck:', byL: 'By lesson', byS: 'By script chapter (German, detailed)', ch: 'Chapter', sec: 'Section', all: 'All sections', start: 'Start', show: 'Show answer', again: 'Again', got: 'Got it', left: ' cards left in this round', done1: 'Round done: ', done2: ' cards.</strong> Press Start for another round, or choose another chapter.</p>', none: '<p>No cards for this choice.</p>', expl: 'Explanation', ex: 'Example', cex: 'Counterexample',
+    intro: '<p>Detailed cards by a classmate, chapter by chapter as in the script, with the script&rsquo;s numbers: definitions, theorems, proof blueprints and exercises, each with an explanation, an example and a counterexample. <strong>The cards are in German</strong>, in the script&rsquo;s own words (the German terms are in each lesson&rsquo;s glossary). So far chapters 1&ndash;5.</p>',
+    hint: '<p>Choose a chapter and press Start. &ldquo;Again&rdquo; puts a card back a few places later; &ldquo;Got it&rdquo; removes it from this round.</p>' }
+  : { deck: 'Kartensatz:', byL: 'Nach Lektion', byS: 'Nach Skript-Kapitel (ausführlich)', ch: 'Kapitel', sec: 'Abschnitt', all: 'Alle Abschnitte', start: 'Start', show: 'Antwort zeigen', again: 'Nochmal', got: 'Gewusst', left: ' Karten übrig in dieser Runde', done1: 'Runde fertig: ', done2: ' Karten.</strong> Drück auf Start für eine neue Runde oder wähl ein anderes Kapitel.</p>', none: '<p>Keine Karten für diese Auswahl.</p>', expl: 'Erklärung', ex: 'Beispiel', cex: 'Gegenbeispiel',
+    intro: '<p>Ausführliche Karten einer Mitstudentin, Kapitel für Kapitel wie im Skript (mit den Nummern des Skripts): Definitionen, Sätze, Beweis-Baupläne und Übungen, jeweils mit Erklärung, Beispiel und Gegenbeispiel. Bisher Kapitel 1–5.</p>',
+    hint: '<p>Wähle ein Kapitel und drück auf Start. „Nochmal“ legt eine Karte ein paar Plätze weiter hinten wieder ein; „Gewusst“ nimmt sie aus dieser Runde heraus.</p>' };
   var CH = [[1, 'Kapitel 1: Einführung'], [2, 'Kapitel 2: Die reellen Zahlen'], [3, 'Kapitel 3: Funktionen und die reellen Zahlen'], [4, 'Kapitel 4: Das Riemann-Integral'], [5, 'Kapitel 5: Metrische Räume, Folgen und Stetigkeit']]
     .filter(function (c) { return window['FLASHCARDS_KAPITEL_' + c[0]]; });
+  if (EN) CH = CH.map(function (c) { return [c[0], 'Chapter ' + c[0] + ': ' + ['', 'Introduction', 'The real numbers', 'Functions and the real numbers', 'The Riemann integral', 'Metric spaces, sequences and continuity'][c[0]]]; });
   var TYPE = { definition: 'Definition', satz: 'Satz', proposition: 'Proposition', lemma: 'Lemma', beispiel: 'Beispiel', beweis: 'Beweis' };
   var css = document.createElement('style');
   css.textContent = '.sd-switch{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0}.sd-switch button{font:inherit;padding:.45rem 1rem;border-radius:999px;border:1px solid var(--accent,#5b5bd6);background:none;color:var(--accent,#5b5bd6);cursor:pointer}.sd-switch button[aria-pressed=true]{background:var(--accent,#5b5bd6);color:var(--on,#fff)}' +
@@ -2026,16 +2034,16 @@ window.FLASHCARDS_KAPITEL_5 = [
     '#sd-stage :not(mjx-container)>svg{max-width:100%;height:auto;background:#fff;color:#111;border-radius:6px;padding:4px}#sd-stage .meta{font-size:.85rem;opacity:.75}#sd-btns{display:flex;flex-wrap:wrap;gap:.5rem}';
   document.head.appendChild(css);
   var sw = document.createElement('div'); sw.className = 'sd-switch';
-  sw.innerHTML = '<strong>Kartensatz:</strong> <button type="button" data-m="l" aria-pressed="true">Nach Lektion</button><button type="button" data-m="s" aria-pressed="false">Nach Skript-Kapitel (ausführlich)</button>';
+  sw.innerHTML = '<strong>' + L.deck + '</strong> <button type="button" data-m="l" aria-pressed="true">' + L.byL + '</button><button type="button" data-m="s" aria-pressed="false">' + L.byS + '</button>';
   ctl.parentNode.insertBefore(sw, ctl);
   var panel = document.createElement('div'); panel.id = 'sd-panel'; panel.hidden = true;
-  panel.innerHTML = '<p>Ausführliche Karten einer Mitstudentin, Kapitel für Kapitel wie im Skript (mit den Nummern des Skripts): Definitionen, Sätze, Beweis-Baupläne und Übungen, jeweils mit Erklärung, Beispiel und Gegenbeispiel. Bisher Kapitel 1–5.</p>' +
-    '<div class="row"><label>Kapitel <select id="sd-ch">' + CH.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
-    '<label>Abschnitt <select id="sd-cat"></select></label> <button type="button" class="primary" id="sd-start">Start</button></div>' +
-    '<p class="fc-meta" id="sd-count" aria-live="polite"></p><div id="sd-stage"><p>Wähle ein Kapitel und drück auf Start. „Nochmal“ legt eine Karte ein paar Plätze weiter hinten wieder ein; „Gewusst“ nimmt sie aus dieser Runde heraus.</p></div>' +
-    '<div id="sd-btns" hidden><button type="button" class="primary" id="sd-show">Antwort zeigen</button><button type="button" id="sd-again" hidden>Nochmal</button><button type="button" class="primary" id="sd-got" hidden>Gewusst</button></div>';
+  panel.innerHTML = L.intro +
+    '<div class="row"><label>' + L.ch + ' <select id="sd-ch">' + CH.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
+    '<label>' + L.sec + ' <select id="sd-cat"></select></label> <button type="button" class="primary" id="sd-start">' + L.start + '</button></div>' +
+    '<p class="fc-meta" id="sd-count" aria-live="polite"></p><div id="sd-stage">' + L.hint + '</div>' +
+    '<div id="sd-btns" hidden><button type="button" class="primary" id="sd-show">' + L.show + '</button><button type="button" id="sd-again" hidden>' + L.again + '</button><button type="button" class="primary" id="sd-got" hidden>' + L.got + '</button></div>';
   ctl.parentNode.insertBefore(panel, ctl);
-  var lessonEls = ['.fc-controls', '#fc-count', '#fc-stage', '#fc-btns', '.legend'].map(function (s) { return document.querySelector(s); }).filter(Boolean);
+  var lessonEls = ['.fc-controls', '#fc-count', '#fc-stage', '#fc-btns', '.legend', '.fc-list'].map(function (s) { return document.querySelector(s); }).filter(Boolean);
   var btnsL = document.getElementById('fc-btns');
   function mode(m) {
     sw.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.m === m); });
@@ -2048,7 +2056,7 @@ window.FLASHCARDS_KAPITEL_5 = [
   function cards() { return window['FLASHCARDS_KAPITEL_' + chSel.value] || []; }
   function fillCats() {
     var cs = []; cards().forEach(function (c) { if (c.category && cs.indexOf(c.category) < 0) cs.push(c.category); });
-    catSel.innerHTML = '<option value="">Alle Abschnitte</option>' + cs.map(function (c) { return '<option>' + c.replace(/</g, '&lt;') + '</option>'; }).join('');
+    catSel.innerHTML = '<option value="">' + L.all + '</option>' + cs.map(function (c) { return '<option>' + c.replace(/</g, '&lt;') + '</option>'; }).join('');
   }
   chSel.onchange = fillCats; fillCats();
   var stage = document.getElementById('sd-stage'), cnt = document.getElementById('sd-count'), btns = document.getElementById('sd-btns');
@@ -2056,19 +2064,19 @@ window.FLASHCARDS_KAPITEL_5 = [
   var q = [], cur = null, done = 0;
   function tex(el) { if (window.MathJax && MathJax.typesetPromise) { try { MathJax.typesetClear && MathJax.typesetClear([el]); } catch (e) {} MathJax.typesetPromise([el]).then(function () { window.__siteFit && window.__siteFit(el); }).catch(function () {}); } }
   function render(show) {
-    if (!cur) { btns.hidden = true; cnt.textContent = ''; stage.innerHTML = done ? '<p><strong>Runde fertig: ' + done + ' Karten.</strong> Drück auf Start für eine neue Runde oder wähl ein anderes Kapitel.</p>' : '<p>Keine Karten für diese Auswahl.</p>'; return; }
+    if (!cur) { btns.hidden = true; cnt.textContent = ''; stage.innerHTML = done ? '<p><strong>' + L.done1 + done + L.done2 : L.none; return; }
     var h = '<div>' + (cur.type && TYPE[cur.type] ? '<span class="bd">' + TYPE[cur.type] + '</span>' : '') + (cur.category ? '<span class="bd">' + cur.category + '</span>' : '') + '</div>' +
       (cur.title ? '<h3>' + cur.title + '</h3>' : '') + '<div>' + (cur.front || '') + '</div>';
     if (show) {
       h += '<hr><div>' + (cur.back || '') + '</div>' +
-        (cur.explanation ? '<div class="blk"><strong>Erklärung</strong><br>' + cur.explanation + '</div>' : '') +
-        (cur.example ? '<div class="blk ex"><strong>Beispiel</strong><br>' + cur.example + '</div>' : '') +
-        (cur.counterexample ? '<div class="blk cex"><strong>Gegenbeispiel</strong><br>' + cur.counterexample + '</div>' : '') +
+        (cur.explanation ? '<div class="blk"><strong>' + L.expl + '</strong><br>' + cur.explanation + '</div>' : '') +
+        (cur.example ? '<div class="blk ex"><strong>' + L.ex + '</strong><br>' + cur.example + '</div>' : '') +
+        (cur.counterexample ? '<div class="blk cex"><strong>' + L.cex + '</strong><br>' + cur.counterexample + '</div>' : '') +
         (cur.meta ? '<p class="meta">' + cur.meta + '</p>' : '');
     }
     stage.innerHTML = h; tex(stage);
     btns.hidden = false; bS.hidden = !!show; bA.hidden = !show; bG.hidden = !show;
-    cnt.textContent = (q.length + 1) + ' Karten übrig in dieser Runde';
+    cnt.textContent = (q.length + 1) + L.left;
   }
   function next() { cur = q.shift() || null; render(false); }
   document.getElementById('sd-start').onclick = function () {
