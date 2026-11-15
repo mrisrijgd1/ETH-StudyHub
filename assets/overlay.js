@@ -26,7 +26,7 @@
     if (d.accent) v += '--accent:' + d.accent + ';--k-X:' + d.accent + ';';
     if (d.background) v += '--bg:' + d.background + ';--bg2:' + d.background + ';';
     if (d.text) v += '--ink:' + d.text + ';--head:' + d.text + ';';
-    if (d.box) v += '--surface:' + d.box + ';--story:' + d.box + ';--exam:' + d.box + ';';
+    if (d.box) v += '--surface:' + d.box + ';';  // story and exam keep their own colours
     if (d.font && FONTS[d.font]) v += '--font-body:' + FONTS[d.font] + ';--font-display:' + FONTS[d.font] + ';';
     if (v) css += ':root,:root[data-theme="light"],:root[data-theme="dark"]{' + v + '}';
     if (d.font && FONTS[d.font]) css += 'body{font-family:var(--font-body)}';
@@ -83,7 +83,7 @@
     var h1 = main.querySelector('h1'); if (!h1) return;
     var css = document.createElement('style');
     css.textContent = '.sh-pdf{font:inherit;font-size:.88rem;padding:.3rem .9rem;border-radius:999px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;margin:.3rem 0 .6rem}' +
-      '@media print{.sh-bar,.sh-side,#sh-tip,.sh-listen,.sh-comments,.sh-progress,.sh-pdf,.badday,footer,nav.toc,iframe{display:none!important}' +
+      '@media print{.study-shell,#sh-tip,.sh-listen,.sh-comments,.sh-progress,.sh-pdf,.badday,footer,nav.toc,iframe{display:none!important}' +
       'body,main{background:#fff!important;color:#000!important}main{max-width:none!important;margin:0!important;padding:0!important}' +
       'details{border:none!important}details>summary{list-style:none;font-weight:600}details>summary::-webkit-details-marker{display:none}' +
       '.box,.exam,.story,details{break-inside:auto}h2,h3{break-after:avoid}mjx-container[display="true"]{overflow:visible!important}mjx-container svg g[stroke]{stroke:none!important}a{color:inherit!important;text-decoration:none!important}}';
