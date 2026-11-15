@@ -9,7 +9,7 @@
   const prefix = de ? 'de/' : '';
   const file = path.split('/').pop() || 'index.html';
   const L = (german, english) => de ? german : english;
-  const sharedPages = new Set(['linalg-moves.html', 'linalg-plan.html', 'linalg-script.html', 'linalg-01.html', 'linalg-02.html', 'linalg-03.html', 'script.html', 'phys-script.html', 'pdf.html']);
+  const sharedPages = new Set(['linalg-moves.html', 'linalg-plan.html', 'linalg-script.html', 'linalg-01.html', 'linalg-02.html', 'linalg-03.html', 'linalg-04.html', 'script.html', 'phys-script.html', 'pdf.html']);
   const url = value => { const target = new URL(value, base); if (de && sharedPages.has(value)) target.searchParams.set('lang', 'de'); return target.href; };
   const subjects = [
     { id: 'analysis', label: 'Analysis I', href: prefix + 'analysis.html' },
