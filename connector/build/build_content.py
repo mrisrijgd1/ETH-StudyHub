@@ -161,6 +161,10 @@ for fn in sorted(os.listdir(os.path.join(ROOT, 'docs'))):
     pdfdocs[did] = {'id': did, 'type': kind, 'subject': subject, 'title': titles.get(fn, did), 'url': SITE + 'docs/' + fn,
                     'label': 'official' if (kind in ('exam', 'formula-sheet') or is_solution(fn) or inline_solutions(fn)) else 'course material',
                     'file': os.path.join(ROOT, 'docs', fn)}
+# solutions written by StudyHub (no official solution exists): locked like official ones, but labelled honestly
+STUDYHUB_SOLUTIONS = {'physics-hs26-practice-exam-rupp-12-november-2026-solutions'}
+for did in STUDYHUB_SOLUTIONS:
+    if did in pdfdocs: pdfdocs[did]['label'] = 'StudyHub-written'
 # pair problem docs with solution docs
 for did, d in pdfdocs.items():
     if is_solution(did):
