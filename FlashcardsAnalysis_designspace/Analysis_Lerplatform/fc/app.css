@@ -6,7 +6,8 @@
    ========================================================================= */
 
 /* ---- The only theme block: app tokens derived from the hub tokens ---- */
-.fc-app {
+/* the finish dialog and the toast sit outside <main class="fc-app">, so they need the same tokens */
+.fc-app, .fc-overlay, .fc-toast {
   --fc-bg: var(--design-bg, #f6f7fb);
   --fc-surface: var(--design-raised, var(--design-surface, #ffffff));
   --fc-ink: var(--design-ink, #233b2e);
@@ -229,6 +230,7 @@ a.fc-chapter:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(0 0 
 .fc-xblock.cex { border-left-color: var(--fc-again); }
 /* card SVGs use fixed colours (stroke:black): keep them on an always-light surface */
 .fc-face svg:not(.fc-ui) { background: #ffffff; border-radius: 8px; padding: 4px; max-width: 100%; height: auto; }
+.fc-face mjx-container svg, .fc-list mjx-container svg { background: none !important; padding: 0 !important; border-radius: 0 !important; }
 .fc-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
 .fc-act { flex: 1 1 140px; min-height: 52px; padding: 10px 16px; border-radius: 12px; border: 0; cursor: pointer; font-weight: 700;
   color: var(--fc-ink); transition: transform .1s, filter .15s; }
@@ -243,9 +245,9 @@ a.fc-chapter:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(0 0 
 .fc-kbd { font-size: 12px; color: var(--fc-muted); text-align: center; }
 
 /* finish dialog */
-.fc-overlay { position: fixed; inset: 0; background: rgb(0 0 0 / .45); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.fc-overlay { position: fixed; inset: 0; background: rgb(0 0 0 / .5); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
 .fc-overlay.open { display: flex; }
-.fc-modal { background: var(--fc-surface); color: var(--fc-ink); border-radius: 18px; padding: 28px; max-width: 520px; width: 100%;
+.fc-modal { background: var(--fc-surface, #ffffff); box-shadow: 0 20px 50px rgb(0 0 0 / .3); color: var(--fc-ink); border-radius: 18px; padding: 28px; max-width: 520px; width: 100%;
   text-align: center; box-shadow: 0 10px 40px rgb(0 0 0 / .3); }
 .fc-modal .kao { font-size: 34px; margin: 6px 0 10px; }
 .fc-stats3 { display: flex; gap: 10px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
@@ -287,3 +289,82 @@ a.fc-chapter:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(0 0 
   .fc-flame g.body, .fc-flame .spark { animation: none !important; }
   a.fc-chapter:hover { transform: none; }
 }
+
+/* ---- Colour and frames (Nov 2026) ----
+   Each chapter has its own light tint from the hub palette (--design-tint-1..6; fallbacks = Sky & Mint).
+   Boxes get a thin frame you can see; the flashcard itself gets a thick coloured frame. */
+.fc-app, .fc-overlay { --fc-frame: color-mix(in srgb, var(--design-border, #8a909c) 50%, var(--fc-surface)); --fc-tint-mix: var(--design-tint-strength, 10%); }
+html[data-appearance-theme=dark] .fc-app { --fc-tint-mix: var(--design-tint-strength, 15%); }
+.fc-app .fc-t1 { --t: var(--design-tint-1, #1865f2); }
+.fc-app .fc-t2 { --t: var(--design-tint-2, #14bf96); }
+.fc-app .fc-t3 { --t: var(--design-tint-3, #9059ff); }
+.fc-app .fc-t4 { --t: var(--design-tint-4, #ffb100); }
+.fc-app .fc-t5 { --t: var(--design-tint-5, #ff6b5b); }
+.fc-app .fc-t6 { --t: var(--design-tint-6, #00a8d6); }
+.fc-app .fc-chapter.fc-t1, .fc-app .fc-chapter.fc-t2, .fc-app .fc-chapter.fc-t3, .fc-app .fc-chapter.fc-t4, .fc-app .fc-chapter.fc-t5, .fc-app .fc-chapter.fc-t6,
+.fc-app .fc-chapter.subject-card[class*="fc-t"] {
+  background: color-mix(in srgb, var(--t) var(--fc-tint-mix), var(--fc-surface)) !important;
+  border: 2px solid color-mix(in srgb, var(--t) 50%, var(--fc-surface)) !important; }
+.fc-app a.fc-chapter[class*="fc-t"]:hover { border-color: var(--t) !important; }
+.fc-app .fc-chapter[class*="fc-t"] .fc-icon { background: color-mix(in srgb, var(--t) 24%, var(--fc-surface)) !important;
+  color: color-mix(in srgb, var(--t) 70%, var(--fc-ink)) !important; }
+.fc-app .fc-chapter.disabled[class*="fc-t"] { opacity: .6; border-style: dashed !important; }
+/* stat tiles in their meaning's colour */
+.fc-app .fc-kpis .stat { border: 2px solid color-mix(in srgb, var(--k) 45%, var(--fc-surface)) !important;
+  background: color-mix(in srgb, var(--k) var(--fc-kpi-mix, 10%), var(--fc-surface)) !important; }
+html[data-appearance-theme=dark] .fc-app { --fc-kpi-mix: 15%; }
+.fc-app .fc-kpis .stat > strong { color: color-mix(in srgb, var(--k) 50%, var(--fc-ink)); }
+.fc-app .fc-kpis .k-total { --k: var(--design-tint-1, #1865f2); }
+.fc-app .fc-kpis .k-good { --k: var(--fc-good); }
+.fc-app .fc-kpis .k-unsure { --k: var(--fc-unsure); }
+.fc-app .fc-kpis .k-weak { --k: var(--fc-again); }
+.fc-app .fc-kpis .k-today { --k: var(--design-tint-2, #14bf96); }
+/* visible frames */
+.fc-app .fc-panel, .fc-modal { border: 1.5px solid var(--fc-frame) !important; }
+.fc-app .fc-list li a, .fc-app .fc-list li button { border: 1.5px solid var(--fc-frame); border-left: 5px solid color-mix(in srgb, var(--fc-again) 70%, var(--fc-surface)); }
+.fc-app .fc-btn, .fc-app .fc-tabs button, .fc-app .fc-nav .fc-lang { border-color: var(--fc-frame); }
+/* the flashcard: thick frame, blue on the question side, mint on the answer side */
+.fc-app .fc-face { border: 3px solid color-mix(in srgb, var(--design-tint-1, #1865f2) 65%, var(--fc-surface)); }
+.fc-app .fc-face.back { border-color: color-mix(in srgb, var(--design-tint-2, #14bf96) 75%, var(--fc-surface)); }
+/* streak card in warm flame colours */
+.fc-app .fc-panel:has(> .fc-streak), .fc-app .fc-panel.fc-streak { background: color-mix(in srgb, var(--fc-flame-outer) var(--fc-tint-mix), var(--fc-surface)) !important;
+  border: 2px solid color-mix(in srgb, var(--fc-flame-outer) 45%, var(--fc-surface)) !important; }
+
+/* ---- Activity: season heatmap (Nov–Feb) + week view side by side ---- */
+.fc-activity { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 28px; align-items: start; }
+.fc-act-h { font-size: 13px; font-weight: 650; margin-bottom: 8px; }
+.fc-heat .fut { fill: none; stroke: color-mix(in srgb, var(--fc-line) 80%, var(--fc-surface)); stroke-dasharray: 2 2; }
+.fc-heat .today { stroke: var(--fc-ink); stroke-width: 1.5; }
+.fc-week { border-left: 1.5px solid var(--fc-frame, var(--fc-line)); padding-left: 28px; min-width: 0; }
+.fc-week-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.fc-week-sum { font-size: 13px; color: var(--fc-muted); }
+.fc-week-sum strong { font-size: 20px; color: var(--fc-ink); }
+.fc-week-sum .up { color: var(--fc-good); font-weight: 600; margin-left: 6px; white-space: nowrap; }
+.fc-week-sum .down { color: var(--fc-again); font-weight: 600; margin-left: 6px; white-space: nowrap; }
+.fc-week-nav { display: flex; gap: 6px; }
+.fc-app .fc-week-nav .fc-btn { min-height: 32px; min-width: 32px; padding: 0 10px; border-radius: 10px; font-size: 16px; line-height: 1; }
+.fc-week-nav .fc-btn:disabled { opacity: .4; cursor: default; }
+.fc-week svg { display: block; width: 100%; max-width: 520px; height: auto; margin-top: 8px; }
+.fc-week { --wk-mix: 45%; --wk-base: var(--fc-surface); }
+html[data-appearance-theme=dark] .fc-week { --wk-mix: 62%; --wk-base: #ffffff; }
+.fc-week rect.g { fill: color-mix(in srgb, var(--fc-good) var(--wk-mix), var(--wk-base)); stroke: color-mix(in srgb, var(--fc-good) 70%, var(--fc-surface)); }
+.fc-week rect.u { fill: color-mix(in srgb, var(--fc-unsure) var(--wk-mix), var(--wk-base)); stroke: color-mix(in srgb, var(--fc-unsure) 75%, var(--fc-surface)); }
+.fc-week rect.a { fill: color-mix(in srgb, var(--fc-again) var(--wk-mix), var(--wk-base)); stroke: color-mix(in srgb, var(--fc-again) 70%, var(--fc-surface)); }
+.fc-week rect.g, .fc-week rect.u, .fc-week rect.a { stroke-width: 1; }
+.fc-week .base { stroke: var(--fc-line); }
+.fc-week .fut { fill: var(--fc-heat-0); }
+.fc-week text { fill: var(--fc-muted); font-size: 11px; }
+.fc-week text.n { fill: var(--fc-ink); font-weight: 650; }
+.fc-week text.today { fill: var(--fc-accent-text); font-weight: 700; }
+.fc-week .fc-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin: 0 4px 0 10px; vertical-align: -1px; }
+.fc-week .fc-legend i:first-child { margin-left: 0; }
+.fc-week .fc-legend i.g { background: color-mix(in srgb, var(--fc-good) var(--wk-mix), var(--wk-base)); border: 1px solid color-mix(in srgb, var(--fc-good) 70%, var(--fc-surface)); }
+.fc-week .fc-legend i.u { background: color-mix(in srgb, var(--fc-unsure) var(--wk-mix), var(--wk-base)); border: 1px solid color-mix(in srgb, var(--fc-unsure) 75%, var(--fc-surface)); }
+.fc-week .fc-legend i.a { background: color-mix(in srgb, var(--fc-again) var(--wk-mix), var(--wk-base)); border: 1px solid color-mix(in srgb, var(--fc-again) 70%, var(--fc-surface)); }
+@media (max-width: 820px) { .fc-activity { grid-template-columns: 1fr; } .fc-week { border-left: 0; padding-left: 0; border-top: 1.5px solid var(--fc-frame, var(--fc-line)); padding-top: 18px; } }
+/* pastel palettes: darker icon glyphs */
+.fc-app .fc-chapter[class*="fc-t"] .fc-icon { color: color-mix(in srgb, var(--t) var(--design-icon-mix, 70%), var(--fc-ink)) !important; }
+.fc-list .n .fc-hist { display: block; font-size: 11.5px; font-weight: 500; color: var(--fc-muted); text-align: right; margin-top: 2px; }
+/* finish dialog: three equal buttons (the hub styles <a> and <button> differently) */
+.fc-modal .fc-row > .fc-btn { font: 600 14px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; min-height: 44px; height: 44px; box-sizing: border-box; display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 12px; text-decoration: none; margin: 0; }
+.fc-modal .fc-row > .fc-btn:not(.primary) { background: var(--fc-surface); color: var(--fc-ink); border: 1.5px solid var(--fc-frame); }

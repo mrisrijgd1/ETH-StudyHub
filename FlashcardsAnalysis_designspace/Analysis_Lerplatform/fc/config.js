@@ -34,7 +34,9 @@ window.FC_CONFIG = {
   milestones: [7, 30, 100],  // celebrated once each
   rescueSize: 10,            // cards in "Streak retten"
   timeZone: "Europe/Zurich",
-  heatmapWeeks: 26,
+  // Activity heatmap: the exam season Nov–Feb (month numbers). Outside it (Mar–Oct) the last 4 months are shown.
+  heatmapFromMonth: 11,
+  heatmapToMonth: 2,
 
   /* Hub course progress (SH.saveCourseProgress). Off until the hub owner approves the keys. */
   reportCourseProgress: false,
@@ -50,7 +52,7 @@ window.FC_CONFIG = {
     unsure: { kaomoji: "(・_・;)", de: "Unsicher", en: "Unsure" },
     got:    { kaomoji: "｡^‿^｡",   de: "Gewusst",  en: "Got it" }
   },
-  finishKaomoji: { perfect: "｡^‿^｡", mixed: "(｀・ω・´)ゞ" },
+  finishKaomoji: { perfect: "｡^‿^｡", mixed: "( ദ്ദി ˙ᗜ˙ )" },
 
   /* Greeting pool. {name} is replaced. Tags pick the context; untagged lines are always possible. */
   greetings: {
