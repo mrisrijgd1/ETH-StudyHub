@@ -74,6 +74,8 @@
     document.documentElement.dataset.appearanceTheme = appearance.theme;
     document.documentElement.dataset.appearancePalette = appearance.palette;
     document.documentElement.dataset.theme = appearance.theme;
+    // Remember the exact tokens so the inline script in every page <head> can apply them before the first paint (no colour flash).
+    try { localStorage.setItem('sh-appearance-css', JSON.stringify({ t: appearance.theme, p: appearance.palette, css: document.documentElement.getAttribute('style') || '' })); } catch (_) {}
     if (persist) {
       try { localStorage.setItem(appearanceKey, JSON.stringify(appearance)); localStorage.setItem('sh-theme', appearance.theme); } catch (_) {}
       if (window.SHDesign) window.SHDesign.save({ ...window.SHDesign.get(), theme: appearance.theme, accent: values.accent, background: values.bg, text: values.ink, box: values.surface }).catch(() => {});
@@ -92,7 +94,7 @@
   const prefix = de ? 'de/' : '';
   const file = path.split('/').pop() || 'index.html';
   const L = (german, english) => de ? german : english;
-  const sharedPages = new Set(['linalg-moves.html', 'linalg-plan.html', 'linalg-script.html', 'linalg-01.html', 'linalg-02.html', 'linalg-03.html', 'linalg-04.html', 'script.html', 'phys-script.html', 'pdf.html']);
+  const sharedPages = new Set(['linalg-moves.html', 'linalg-plan.html', 'linalg-script.html', 'linalg-01.html', 'linalg-02.html', 'linalg-03.html', 'linalg-04.html', 'linalg-05.html', 'linalg-06.html', 'linalg-07.html', 'linalg-08.html', 'linalg-09.html', 'linalg-10.html', 'linalg-11.html', 'linalg-12.html', 'script.html', 'phys-script.html', 'pdf.html']);
   const url = value => { const target = new URL(value, base); if (de && sharedPages.has(value)) target.searchParams.set('lang', 'de'); return target.href; };
   const subjects = [
     { id: 'analysis', label: 'Analysis I', href: prefix + 'analysis.html' },
@@ -204,7 +206,9 @@
     modes[subject].forEach(([id, label, href]) => { const a = link(label, href); a.dataset.mode = id; lower.append(a); });
     shell.append(lower);
   }
-  document.body.prepend(shell);
+  // Generated pages already contain this header (make_github.py writes the same markup); swap in the live one without a layout jump.
+  const prebuilt = document.querySelector('header.study-shell');
+  if (prebuilt) prebuilt.replaceWith(shell); else document.body.prepend(shell);
   function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
   // Keep the original account link live for authenticated users.
