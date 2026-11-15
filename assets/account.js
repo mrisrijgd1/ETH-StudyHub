@@ -429,4 +429,4 @@
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 })();
 
-(function(){var s=document.currentScript;var base=new URL('.',s.src);['learning-app.css','studyhub.css'].forEach(function(file){var l=document.createElement('link');l.rel='stylesheet';l.href=new URL(file,base);document.head.appendChild(l)});var j=document.createElement('script');j.src=new URL('studyhub.js',base);document.head.appendChild(j)})();
+(function(){var s=document.currentScript;var base=new URL('.',s.src);['learning-app.css','studyhub.css'].forEach(function(file){var l=document.createElement('link');l.rel='stylesheet';l.href=new URL(file+'?v=subject-nav-20261115',base);document.head.appendChild(l)});var j=document.createElement('script');j.src=new URL('studyhub.js?v=subject-nav-20261115',base);document.head.appendChild(j)})();
