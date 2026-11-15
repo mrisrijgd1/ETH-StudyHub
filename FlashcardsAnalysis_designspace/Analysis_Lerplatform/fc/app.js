@@ -63,7 +63,7 @@
       category: c.category || "", type: c.type || "", title: c.title || "", front: c.front || "", back: c.back || "",
       meta: c.meta || "", explanation: c.explanation || "", example: c.example || "", counterexample: c.counterexample || ""
     })) : null;
-    const cats = cards ? [...new Set(cards.map(c => c.category).filter(Boolean))] : [];
+    const cats = cards ? [...new Set(cards.map(c => c.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "de", { numeric: true })) : [];
     return Object.assign({}, ch, { cards, cats });
   });
   const scriptCards = chapters.flatMap(ch => ch.cards || []);
@@ -250,14 +250,14 @@
   /* Icons: currentColor line drawings, one per chapter */
   const ICONS = {
     quantifiers: '<text x="6" y="31" font-size="22" font-family="Georgia,serif" fill="currentColor">∀</text><text x="22" y="31" font-size="22" font-family="Georgia,serif" fill="currentColor">∃</text>',
-    supremum: '<line x1="3" y1="26" x2="37" y2="26" stroke="currentColor" stroke-width="2"/><line x1="9" y1="20" x2="25" y2="20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><line x1="29" y1="12" x2="29" y2="30" stroke="currentColor" stroke-width="2"/><circle cx="29" cy="12" r="2.5" fill="currentColor"/>',
-    mapping: '<ellipse cx="9" cy="20" rx="6" ry="11" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="31" cy="20" rx="6" ry="11" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 15 Q20 9 28 15" fill="none" stroke="currentColor" stroke-width="2"/><path d="M25 12 L28 15 L24 17" fill="none" stroke="currentColor" stroke-width="2"/>',
+    supremum: '<line x1="3" y1="27" x2="37" y2="27" stroke="currentColor" stroke-width="2"/><path d="M8 22 V32 M8 22 H11 M8 32 H11" stroke="currentColor" stroke-width="2" fill="none"/><path d="M26 22 V32 M26 22 H23 M26 32 H23" stroke="currentColor" stroke-width="2" fill="none"/><line x1="11" y1="27" x2="23" y2="27" stroke="currentColor" stroke-width="4"/><text x="18" y="15" font-size="10" font-family="Georgia,serif" fill="currentColor">sup</text><line x1="26" y1="17" x2="26" y2="21" stroke="currentColor" stroke-width="1.6"/>',
+    mapping: '<text x="2" y="27" font-size="15" font-family="Georgia,serif" font-style="italic" fill="currentColor">X</text><text x="28" y="27" font-size="15" font-family="Georgia,serif" font-style="italic" fill="currentColor">Y</text><path d="M13 22 H27 M23 18 L27 22 L23 26" stroke="currentColor" stroke-width="2" fill="none"/><text x="17" y="15" font-size="10" font-family="Georgia,serif" font-style="italic" fill="currentColor">f</text>',
     riemann: '<path d="M4 32 H36" stroke="currentColor" stroke-width="2"/><rect x="7" y="24" width="6" height="8" fill="currentColor" opacity=".35"/><rect x="13" y="18" width="6" height="14" fill="currentColor" opacity=".35"/><rect x="19" y="13" width="6" height="19" fill="currentColor" opacity=".35"/><rect x="25" y="10" width="6" height="22" fill="currentColor" opacity=".35"/><path d="M5 30 Q18 16 34 6" fill="none" stroke="currentColor" stroke-width="2"/>',
     ball: '<circle cx="20" cy="20" r="13" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3"/><circle cx="20" cy="20" r="2.5" fill="currentColor"/><line x1="20" y1="20" x2="31" y2="13" stroke="currentColor" stroke-width="1.6"/><text x="22" y="30" font-size="9" font-family="Georgia,serif" fill="currentColor">ε</text>',
     limit: '<line x1="4" y1="14" x2="36" y2="14" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 3"/><circle cx="7" cy="32" r="2" fill="currentColor"/><circle cx="13" cy="7" r="2" fill="currentColor"/><circle cx="19" cy="22" r="2" fill="currentColor"/><circle cx="25" cy="11" r="2" fill="currentColor"/><circle cx="30" cy="16" r="2" fill="currentColor"/><circle cx="34" cy="13.5" r="2" fill="currentColor"/>',
     series: '<text x="7" y="31" font-size="26" font-family="Georgia,serif" fill="currentColor">Σ</text><path d="M27 30 L30 24 L33 21 L36 20" fill="none" stroke="currentColor" stroke-width="2"/>',
     tangent: '<path d="M4 32 Q16 4 36 22" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="12" x2="34" y2="15" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="13.5" r="2.5" fill="currentColor"/>',
-    ftc: '<text x="3" y="18" font-size="11" font-family="Georgia,serif" fill="currentColor">d/dx</text><text x="18" y="35" font-size="22" font-family="Georgia,serif" fill="currentColor">∫</text><path d="M26 10 Q32 6 34 14" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+    ftc: '<text x="4" y="32" font-size="26" font-family="Georgia,serif" fill="currentColor">∫</text><text x="17" y="24" font-size="11" font-family="Georgia,serif" fill="currentColor">d/dx</text>',
     metric: '<circle cx="9" cy="28" r="3" fill="currentColor"/><circle cx="31" cy="12" r="3" fill="currentColor"/><line x1="11" y1="26" x2="29" y2="14" stroke="currentColor" stroke-width="2"/><text x="12" y="14" font-size="9" font-family="Georgia,serif" fill="currentColor">d(x,y)</text>',
     multi: '<path d="M5 33 L5 6 M5 33 L35 33 M5 33 L22 20" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 25 Q22 8 33 18" fill="none" stroke="currentColor" stroke-width="2"/>'
   };
@@ -355,23 +355,71 @@
       <div class="fc-streak-sub">${L("Längste Serie", "Longest streak")}: ${si.longest} · ${L("heute", "today")}: ${si.today} ${L("Karten", "cards")}</div>
       <div class="${si.risk ? "fc-risk" : "fc-streak-sub"}" role="${si.risk ? "alert" : "status"}">${msg}</div>${extra}</div></div>`;
   }
+  const MONTHS = () => LANG === "de" ? ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"] : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  // Range of the heatmap: Nov 1 – end of Feb of the current exam season; Mar–Oct: the last 4 months.
+  function heatRange(today) {
+    const y = +today.slice(0, 4), m = +today.slice(5, 7), from = C.heatmapFromMonth || 11, to = C.heatmapToMonth || 2;
+    const pad = n => String(n).padStart(2, "0");
+    const lastDay = (yy, mm) => addDays(`${mm === 12 ? yy + 1 : yy}-${pad(mm === 12 ? 1 : mm + 1)}-01`, -1);
+    const inSeason = from > to ? (m >= from || m <= to) : (m >= from && m <= to);
+    if (inSeason) { const sy = from > to && m <= to ? y - 1 : y; return { start: `${sy}-${pad(from)}-01`, end: lastDay(from > to ? sy + 1 : sy, to) }; }
+    const sm = m - 3 > 0 ? m - 3 : m + 9, sy = m - 3 > 0 ? y : y - 1;
+    return { start: `${sy}-${pad(sm)}-01`, end: lastDay(y, m) };
+  }
   function heatmap(si) {
-    const weeks = C.heatmapWeeks, cell = 12, gap = 3, today = dayKey(NOW());
-    const todayDow = (new Date(today + "T12:00:00Z").getUTCDay() + 6) % 7;     // Monday = 0
-    const start = addDays(today, -(weeks - 1) * 7 - todayDow);
+    const cell = 14, gap = 3, today = dayKey(NOW()), { start: first, end } = heatRange(today);
+    const dow = k => (new Date(k + "T12:00:00Z").getUTCDay() + 6) % 7;      // Monday = 0
+    const start = addDays(first, -dow(first));
+    const weeks = Math.ceil((dow(first) + (Date.parse(end) - Date.parse(first)) / 864e5 + 1) / 7);
     const max = Math.max(1, ...Object.values(si.counts));
     let cells = "", months = "", lastM = "";
     for (let w = 0; w < weeks; w++) for (let d = 0; d < 7; d++) {
-      const k = addDays(start, w * 7 + d); if (k > today) continue;
-      const n = si.counts[k] || 0; const lvl = n === 0 ? 0 : Math.min(4, 1 + Math.floor(3 * n / max));
-      cells += `<rect class="d${lvl}" x="${30 + w * (cell + gap)}" y="${16 + d * (cell + gap)}" width="${cell}" height="${cell}" rx="2.5"><title>${k}: ${n} ${L("Karten", "cards")}</title></rect>`;
-      if (d === 0) { const m = k.slice(5, 7); if (m !== lastM) { lastM = m; months += `<text x="${30 + w * (cell + gap)}" y="10">${(LANG === "de" ? ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"] : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])[parseInt(m, 10) - 1]}</text>`; } }
+      const k = addDays(start, w * 7 + d); if (k < first || k > end) continue;
+      const x = 30 + w * (cell + gap), y = 18 + d * (cell + gap);
+      if (k > today) { cells += `<rect class="fut" x="${x + .5}" y="${y + .5}" width="${cell - 1}" height="${cell - 1}" rx="3"/>`; }
+      else {
+        const n = si.counts[k] || 0; const lvl = n === 0 ? 0 : Math.min(4, 1 + Math.floor(3 * n / max));
+        cells += `<rect class="d${lvl}${k === today ? " today" : ""}" x="${x}" y="${y}" width="${cell}" height="${cell}" rx="3"><title>${k}: ${n} ${L("Karten", "cards")}</title></rect>`;
+      }
+      const m = k.slice(5, 7); if (m !== lastM && (d === 0 || k === first)) { lastM = m; months += `<text x="${x}" y="11">${MONTHS()[parseInt(m, 10) - 1]}</text>`; }
     }
-    const dn = LANG === "de" ? ["Mo", "", "Mi", "", "Fr", "", ""] : ["Mon", "", "Wed", "", "Fri", "", ""];
-    const labels = dn.map((t, i) => t ? `<text x="0" y="${16 + i * (cell + gap) + 10}">${t}</text>` : "").join("");
-    const W = 30 + weeks * (cell + gap), H = 16 + 7 * (cell + gap);
-    return `<div class="fc-heat"><svg class="fc-ui" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${L("Aktivität der letzten 6 Monate", "Activity over the last 6 months")}">${months}${labels}${cells}</svg></div>
-      <div class="fc-legend">${L("weniger", "less")} <i style="background:var(--fc-heat-0)"></i><i style="background:var(--fc-heat-1)"></i><i style="background:var(--fc-heat-2)"></i><i style="background:var(--fc-heat-3)"></i><i style="background:var(--fc-heat-4)"></i> ${L("mehr", "more")}</div>`;
+    const dn = LANG === "de" ? ["Mo", "", "Mi", "", "Fr", "", "So"] : ["Mon", "", "Wed", "", "Fri", "", "Sun"];
+    const labels = dn.map((t, i) => t ? `<text x="0" y="${18 + i * (cell + gap) + 11}">${t}</text>` : "").join("");
+    const W = 30 + weeks * (cell + gap), H = 18 + 7 * (cell + gap);
+    const label = `${MONTHS()[+first.slice(5, 7) - 1]} ${first.slice(0, 4)} – ${MONTHS()[+end.slice(5, 7) - 1]} ${end.slice(0, 4)}`;
+    return `<div class="fc-heatbox"><div class="fc-act-h">${label}</div><div class="fc-heat"><svg class="fc-ui" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${L("Aktivität", "Activity")} ${label}">${months}${labels}${cells}</svg></div>
+      <div class="fc-legend">${L("weniger", "less")} <i style="background:var(--fc-heat-0)"></i><i style="background:var(--fc-heat-1)"></i><i style="background:var(--fc-heat-2)"></i><i style="background:var(--fc-heat-3)"></i><i style="background:var(--fc-heat-4)"></i> ${L("mehr", "more")}</div></div>`;
+  }
+  // Week view: cards per day Mon–Sun, stacked by rating; arrows browse earlier weeks.
+  let weekOffset = 0;
+  function weekView() {
+    const today = dayKey(NOW()), dow = (new Date(today + "T12:00:00Z").getUTCDay() + 6) % 7;
+    const mon = addDays(today, -dow - 7 * weekOffset), days = [...Array(7)].map((_, i) => addDays(mon, i));
+    const per = {}; days.forEach(k => per[k] = { g: 0, u: 0, a: 0 });
+    const prevMon = addDays(mon, -7); let prevTotal = 0;
+    U().log.forEach(([t, , r]) => { const k = dayKey(t); if (per[k]) per[k][r] = (per[k][r] || 0) + 1; else if (k >= prevMon && k < mon) prevTotal++; });
+    const tot = k => per[k].g + per[k].u + per[k].a, total = days.reduce((s, k) => s + tot(k), 0), active = days.filter(k => tot(k) > 0).length;
+    const max = Math.max(5, ...days.map(tot));
+    const W = 300, H = 170, base = 140, bw = 26, step = W / 7;
+    let g = `<line class="base" x1="0" y1="${base}" x2="${W}" y2="${base}"/>`;
+    const dn = LANG === "de" ? ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"] : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    days.forEach((k, i) => {
+      const x = i * step + (step - bw) / 2; let y = base; const p = per[k];
+      [["g", p.g], ["u", p.u], ["a", p.a]].forEach(([c, n]) => { if (!n) return; const h = (base - 18) * n / max; y -= h; g += `<rect class="${c}" x="${x}" y="${y}" width="${bw}" height="${h}" rx="3"><title>${dn[i]} ${k}: ${n} ${c === "g" ? L("gewusst", "got it") : c === "u" ? L("unsicher", "unsure") : L("nochmal", "again")}</title></rect>`; });
+      if (k > today) g += `<rect class="fut" x="${x + .5}" y="${base - 6.5}" width="${bw - 1}" height="6" rx="3"/>`;
+      if (tot(k)) g += `<text class="n" x="${x + bw / 2}" y="${y - 4}" text-anchor="middle">${tot(k)}</text>`;
+      g += `<text class="${k === today ? "dl today" : "dl"}" x="${x + bw / 2}" y="${base + 16}" text-anchor="middle">${dn[i]}</text>`;
+    });
+    const range = `${+mon.slice(8)}.${+mon.slice(5, 7)}. – ${+days[6].slice(8)}.${+days[6].slice(5, 7)}.`;
+    const title = weekOffset === 0 ? L("Diese Woche", "This week") : weekOffset === 1 ? L("Letzte Woche", "Last week") : L(`Vor ${weekOffset} Wochen`, `${weekOffset} weeks ago`);
+    const diff = total - prevTotal, trend = prevTotal === 0 && total === 0 ? "" : `<span class="${diff >= 0 ? "up" : "down"}">${diff >= 0 ? "▲" : "▼"} ${Math.abs(diff)} ${L("zur Vorwoche", "vs. week before")}</span>`;
+    return `<div class="fc-week"><div class="fc-week-head"><div><div class="fc-act-h">${title} · ${range}</div><div class="fc-week-sum"><strong>${total}</strong> ${L("Karten", "cards")} · ${active}/7 ${L("Tage aktiv", "days active")} ${trend}</div></div>
+      <div class="fc-week-nav"><button type="button" class="fc-btn" data-week="1" aria-label="${L("Vorherige Woche", "Previous week")}">‹</button><button type="button" class="fc-btn" data-week="-1" aria-label="${L("Nächste Woche", "Next week")}" ${weekOffset === 0 ? "disabled" : ""}>›</button></div></div>
+      <svg class="fc-ui" viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}: ${total} ${L("Karten", "cards")}">${g}</svg>
+      <div class="fc-legend"><i class="g"></i>${L("gewusst", "got it")} <i class="u"></i>${L("unsicher", "unsure")} <i class="a"></i>${L("nochmal", "again")}</div></div>`;
+  }
+  function wireWeek() {
+    $$(".fc-week-nav button").forEach(b => b.onclick = () => { weekOffset = Math.max(0, weekOffset + (+b.dataset.week)); const box = $(".fc-week"); if (box) { box.outerHTML = weekView(); wireWeek(); } });
   }
   function radar(ch) {
     const data = ch.cats.map(cat => { const cards = ch.cards.filter(c => c.category === cat); const s = stats(cards); return { cat, v: s.total ? s.mastered / s.total : 0, n: s.total, m: s.mastered }; });
@@ -393,9 +441,9 @@
     return `<svg class="fc-ui" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(chTitle(ch))}: ${L("Beherrschung pro Abschnitt", "mastery per section")}">${g}</svg>`;
   }
   function chapterBox(ch) {
-    if (!ch.cards) return `<div class="fc-chapter disabled" aria-disabled="true"><div class="fc-icon course-icon">${icon(ch.icon)}</div><div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${L("Noch keine Karten", "No cards yet")}</div></div>`;
+    if (!ch.cards) return `<div class="fc-chapter disabled fc-t${(ch.id - 1) % 6 + 1}" aria-disabled="true"><div class="fc-icon course-icon">${icon(ch.icon)}</div><div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${L("Noch keine Karten", "No cards yet")}</div></div>`;
     const st = stats(ch.cards);
-    return `<a class="fc-chapter subject-card" href="#/kapitel-${ch.id}"><div class="fc-icon course-icon">${icon(ch.icon)}</div>${bar(st)}<div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${st.total} ${L("Karten", "cards")}${st.weak ? " · " + st.weak + " " + L("schwach", "weak") : ""}</div></a>`;
+    return `<a class="fc-chapter subject-card fc-t${(ch.id - 1) % 6 + 1}" href="#/kapitel-${ch.id}"><div class="fc-icon course-icon">${icon(ch.icon)}</div>${bar(st)}<div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${st.total} ${L("Karten", "cards")}${st.weak ? " · " + st.weak + " " + L("schwach", "weak") : ""}</div></a>`;
   }
   function proofBox() {
     const cards = proofDeckAll(); const st = stats(cards);
@@ -404,7 +452,7 @@
     const lessons = new Set(cards.map(c => c.lesson)).size;
     const chips = ["def", "thm", "move", "recipe"].filter(t => counts[t]).map(t => `<span class="fc-chip">${typeLabel(t)} ${counts[t]}</span>`).join("");
     const sub = state === "ok" ? `${cards.length} ${L("Karten", "cards")} · ${lessons} ${L("Lektionen", "lessons")}` : state === "error" ? L("Nur im StudyHub verfügbar", "Only available inside StudyHub") : L("Wird geladen …", "Loading …");
-    return `<a class="fc-chapter fc-proof subject-card" href="#/proof-practice"><div class="fc-icon course-icon">${icon("ftc").replace("d/dx", "∴")}</div>
+    return `<a class="fc-chapter fc-proof subject-card fc-t3" href="#/proof-practice"><div class="fc-icon course-icon"><svg class="fc-ui" viewBox="0 0 40 40" aria-hidden="true"><rect x="11" y="11" width="18" height="18" rx="2" fill="currentColor"/></svg></div>
       <div><div class="fc-label">${L("Beweistraining", "Proof practice")}</div><div class="fc-sub">${L("Definitionen, Sätze, Kniffe und Rezepte aus den 22 Lektionen", "Definitions, theorems, moves and recipes from the 22 lessons")}</div><div class="fc-types">${chips}</div></div>
       <div style="min-width:200px">${bar(st)}<div class="fc-sub" style="margin-top:6px">${sub}</div></div></a>`;
   }
@@ -433,18 +481,18 @@
       </section>
       <section class="fc-section"><h2 class="fc-sr">${L("Statistik", "Stats")}</h2>
         <div class="fc-kpis stats-grid">
-          <div class="stat"><span>${L("Karten gesamt", "Total cards")}</span><strong>${st.total}</strong></div>
-          <div class="stat"><span>${L("Gewusst", "Mastered")}</span><strong>${st.mastered}</strong></div>
-          <div class="stat"><span>${L("Unsicher", "Unsure")}</span><strong>${st.unsure}</strong></div>
-          <div class="stat"><span>${L("Schwach", "Weak")}</span><strong>${st.weak}</strong></div>
-          <div class="stat"><span>${L("Heute geübt", "Reviewed today")}</span><strong>${si.today}</strong></div>
+          <div class="stat k-total"><span>${L("Karten gesamt", "Total cards")}</span><strong>${st.total}</strong></div>
+          <div class="stat k-good"><span>${L("Gewusst", "Mastered")}</span><strong>${st.mastered}</strong></div>
+          <div class="stat k-unsure"><span>${L("Unsicher", "Unsure")}</span><strong>${st.unsure}</strong></div>
+          <div class="stat k-weak"><span>${L("Schwach", "Weak")}</span><strong>${st.weak}</strong></div>
+          <div class="stat k-today"><span>${L("Heute geübt", "Reviewed today")}</span><strong>${si.today}</strong></div>
         </div></section>
-      <section class="fc-section"><h2>${L("Aktivität", "Activity")}</h2><div class="fc-panel">${everReviewed ? heatmap(si) : `<div class="fc-empty"><span class="kao">(・ω・)ノ</span>${L("Hier erscheint deine Lern-Aktivität, sobald du die erste Karte bewertet hast.", "Your activity appears here once you rate your first card.")}</div>`}</div></section>
+      <section class="fc-section"><h2>${L("Aktivität", "Activity")}</h2><div class="fc-panel">${everReviewed ? `<div class="fc-activity">${heatmap(si)}${weekView()}</div>` : `<div class="fc-empty"><span class="kao">(・ω・)ノ</span>${L("Hier erscheint deine Lern-Aktivität, sobald du die erste Karte bewertet hast.", "Your activity appears here once you rate your first card.")}</div>`}</div></section>
       <section class="fc-section"><h2>${L("Stärken pro Abschnitt", "Strength per section")}</h2><div class="fc-panel fc-radar">
         ${everReviewed && rch ? `<div class="fc-tabs" role="tablist">${withCards.map((c, i) => `<button role="tab" data-rt="${c.id}" aria-selected="${i === tab}">${L("Kap.", "Ch.")} ${c.id}</button>`).join("")}</div>${radar(rch)}`
           : `<div class="fc-empty"><span class="kao">(｀・ω・´)</span>${L("Die Netzdiagramme füllen sich, sobald du Karten bewertest.", "The radar charts fill up as you rate cards.")}</div>`}</div></section>
       <section class="fc-section"><h2>${L("Häufige Fehler & Unsicherheiten", "Repeated mistakes & doubts")}</h2>
-        ${top.length ? `<ul class="fc-list">${top.map(c => { const s = peek(c.id); return `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front)).slice(0, 160)}</span><span class="n">${s.wrong}× ${C.ratings.again.kaomoji} · ${s.unsure}× ${C.ratings.unsure.kaomoji}</span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)}</span></a></li>`; }).join("")}</ul>`
+        ${top.length ? `<ul class="fc-list">${top.map(c => { const s = peek(c.id); return `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front))}</span><span class="n">${s.wrong}× ${C.ratings.again.kaomoji} · ${s.unsure}× ${C.ratings.unsure.kaomoji}</span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)}</span></a></li>`; }).join("")}</ul>`
           : `<div class="fc-panel fc-empty"><span class="kao">｡^‿^｡</span>${L("Noch keine Fehler – oder du hast noch nicht angefangen.", "No mistakes yet – or you haven't started.")}</div>`}
       </section>
       <section class="fc-section"><h2>${L("Kapitel", "Chapters")} · Analysis I</h2><div class="fc-grid course-grid">${a1.map(chapterBox).join("")}${proofBox()}</div></section>
@@ -453,7 +501,8 @@
     $$("[data-rt]").forEach(b => b.onclick = () => { prefs().radarTab = parseInt(b.dataset.rt, 10); save(); render(); });
     const nf = $("#fc-nameform"); if (nf) nf.onsubmit = e => { e.preventDefault(); const v = $("#fc-name").value.trim(); if (v) { U().name = v; save(); greetCache = null; render(); } };
     const rn = $("#fc-rename"); if (rn) rn.onclick = e => { e.preventDefault(); const v = prompt(L("Dein Name:", "Your name:"), U().name || ""); if (v != null) { U().name = v.trim(); save(); greetCache = null; render(); } };
-    wireFooter();
+    wireFooter(); wireWeek();
+    $$(".fc-list").forEach(typeset);
     if (lesson.state[proofLang()] === "idle") loadLessons(proofLang()).then(() => { if (route().parts.length === 0) render(); });
   }
   function footer() {
@@ -565,8 +614,9 @@
         <label>${L("Deck", "Deck")} <select id="wk-deck">${decks.map(d => `<option value="${d[0]}"${d[0] === w.deck ? " selected" : ""}>${esc(d[1])}</option>`).join("")}</select></label>
         <label>${L("Typ", "Type")} <select id="wk-type">${types.map(d => `<option value="${d[0]}"${d[0] === w.type ? " selected" : ""}>${esc(d[1])}</option>`).join("")}</select></label>
         <a class="fc-btn primary" href="#/weak/session"${deck.length ? "" : ' aria-disabled="true"'}>${L("Üben", "Practise")} (${deck.length})</a></div></div>
-      ${deck.length ? `<ul class="fc-list" style="margin-top:16px">${deck.slice(0, 40).map(c => `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front)).slice(0, 160)}</span><span class="n">${(peek(c.id).h || []).map(r => r === "g" ? "✓" : r === "u" ? "?" : "✗").join(" ")}</span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)} · ${typeLabel(c.type)}</span></a></li>`).join("")}</ul>`
+      ${deck.length ? `<ul class="fc-list" style="margin-top:16px">${deck.slice(0, 40).map(c => `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front))}</span><span class="n">${(peek(c.id).h || []).map(r => r === "g" ? "✓" : r === "u" ? "?" : "✗").join(" ")}</span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)} · ${typeLabel(c.type)}</span></a></li>`).join("")}</ul>`
         : `<div class="fc-panel fc-empty" style="margin-top:16px"><span class="kao">｡^‿^｡</span>${L("Keine schwachen Karten – stark!", "No weak cards – well done!")}</div>`}`;
+    $$(".fc-list").forEach(typeset);
     $("#wk-deck").onchange = e => { w.deck = e.target.value; save(); render(); };
     $("#wk-type").onchange = e => { w.type = e.target.value; save(); render(); };
   }

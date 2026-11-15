@@ -459,7 +459,7 @@ window.FLASHCARDS_KAPITEL_5 = [
   {
     id: "k5_uebung_ultrametrik",
     title: "Übung (5.5.2): Ultrametriken und p-adische Metrik",
-    category: "5.5 Weitere Übungen",
+    category: "5.5 Weitere Lernmaterialien",
     type: "lemma",
     front: "Was ist eine <b>Ultrametrik</b>, was ist die <b>$p$-adische Metrik</b> auf $\\mathbb{Z}$, und was ist das verblüffende Prinzip für Bälle in Ultrametriken?",
     back: "&bull; <b>Ultrametrik:</b> wie eine Metrik, aber mit der schärferen Ungleichung<br>$$\\mathrm{d}(x_1, x_3) \\le \\max\\{\\mathrm{d}(x_1, x_2),\\ \\mathrm{d}(x_2, x_3)\\}$$<br>Jede Ultrametrik ist insbesondere eine Metrik ($\\max \\le$ Summe).<br><br>&bull; <b>$p$-adische Metrik:</b> Für eine Primzahl $p$ und $\\nu_p(x) = \\max\\{k \\mid p^k \\text{ teilt } x\\}$:<br>$$\\mathrm{d}_p(x,y) = \\begin{cases} p^{-\\nu_p(x-y)} & x \\neq y \\\\ 0 & x = y \\end{cases}$$<br>Zwei Zahlen sind sich &bdquo;nahe&ldquo;, wenn ihre Differenz durch eine hohe $p$-Potenz teilbar ist.<br><br>&bull; <b>Ball-Prinzip:</b> In einer Ultrametrik ist <i>jeder Punkt eines Balls dessen Zentrum</i>: $x \\in B_r(x_0) \\implies B_r(x) = B_r(x_0)$.",
@@ -471,7 +471,7 @@ window.FLASHCARDS_KAPITEL_5 = [
   {
     id: "k5_uebung_rangmetrik",
     title: "Übung (5.5.2): Rangmetrik auf Matrizen",
-    category: "5.5 Weitere Übungen",
+    category: "5.5 Weitere Lernmaterialien",
     type: "lemma",
     front: "Wie ist die <b>Rangmetrik</b> auf der Menge $X$ der $m \\times n$-Matrizen über einem Körper $\\mathbb{K}$ definiert, und wie beweist man die Dreiecksungleichung?",
     back: "$$\\mathrm{d}(A, B) = \\operatorname{rang}(A - B)$$<br><b>Nachweis der Axiome:</b><br>&bull; <i>Definitheit:</i> $\\operatorname{rang}(A - B) = 0 \\iff A - B = 0 \\iff A = B$.<br>&bull; <i>Symmetrie:</i> $\\operatorname{rang}(B - A) = \\operatorname{rang}(-(A-B)) = \\operatorname{rang}(A - B)$.<br>&bull; <i>Dreiecksungleichung:</i> Mit $A - C = (A - B) + (B - C)$ und der Rang-Subadditivität $\\operatorname{rang}(X + Y) \\le \\operatorname{rang}(X) + \\operatorname{rang}(Y)$ aus der Linearen Algebra:<br>$$\\mathrm{d}(A,C) \\le \\mathrm{d}(A,B) + \\mathrm{d}(B,C). \\quad \\square$$",
@@ -483,7 +483,7 @@ window.FLASHCARDS_KAPITEL_5 = [
   {
     id: "k5_uebung_aequivalente_metriken",
     title: "Übung (5.5.2): Äquivalente Metriken",
-    category: "5.5 Weitere Übungen",
+    category: "5.5 Weitere Lernmaterialien",
     type: "lemma",
     front: "Wann heissen zwei Metriken $\\mathrm{d}_1, \\mathrm{d}_2$ auf $X$ (mit Konstante $C$) <b>äquivalent</b>, und was folgt daraus für die Konvergenz?",
     back: "&bull; <b>Definition (Gl. 5.4):</b> Es gibt eine Konstante $C > 0$ mit<br>$$\\frac{1}{C}\\, \\mathrm{d}_1(x, y) \\le \\mathrm{d}_2(x, y) \\le C\\, \\mathrm{d}_1(x, y) \\qquad \\forall x, y \\in X$$<br>&bull; <b>Konsequenz:</b> Eine Folge konvergiert genau dann bezüglich $\\mathrm{d}_1$, wenn sie bezüglich $\\mathrm{d}_2$ konvergiert &ndash; mit demselben Grenzwert. (Denn $\\mathrm{d}_2(x_n, x_0) \\le C\\,\\mathrm{d}_1(x_n, x_0) \\to 0$ und umgekehrt.)",
