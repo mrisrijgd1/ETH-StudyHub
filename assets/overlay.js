@@ -76,7 +76,7 @@
    with every solution and hint unfolded (the browser's print dialog offers "Save as PDF"). */
 (function () {
   var page = (location.pathname.split('/').pop() || '');
-  if (!/^(lesson|phys|refresher|serie)-[a-z0-9]+\.html$/.test(page) || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html') return;
+  if (!/^(lesson|phys|refresher|serie|linalg)-[a-z0-9]+\.html$/.test(page) || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html') return;
   var DE = document.documentElement.lang === 'de';
   function go() {
     var main = document.querySelector('main'); if (!main) return;
@@ -88,9 +88,13 @@
       'details{border:none!important}details>summary{list-style:none;font-weight:600}details>summary::-webkit-details-marker{display:none}' +
       '.box,.exam,.story,details{break-inside:auto}h2,h3{break-after:avoid}mjx-container[display="true"]{overflow:visible!important}mjx-container svg g[stroke]{stroke:none!important}a{color:inherit!important;text-decoration:none!important}}';
     document.head.appendChild(css);
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'sh-pdf';
-    b.textContent = DE ? 'Als PDF speichern (mit allen Lösungen)' : 'Save as PDF (with all solutions)';
-    b.title = DE ? 'Öffnet den Druckdialog; wähle dort „Als PDF speichern“.' : 'Opens the print dialog; choose “Save as PDF” there.';
+    /* Ready-made PDF (made at build time by make_pdfs.js, Computer Modern like the script). */
+    var b = document.createElement('a'); b.className = 'sh-pdf';
+    b.href = (DE ? '../' : '') + 'pdf/' + (DE ? 'de/' : 'en/') + page.replace(/\.html$/, '.pdf');
+    b.setAttribute('download', 'StudyHub-' + (DE ? 'de-' : '') + page.replace(/\.html$/, '.pdf'));
+    b.style.display = 'inline-block'; b.style.textDecoration = 'none';
+    b.textContent = DE ? 'PDF herunterladen (mit allen Lösungen)' : 'Download PDF (with all solutions)';
+    b.title = DE ? 'Fertiges PDF im Stil des Skripts, alle Lösungen aufgeklappt.' : 'Ready-made PDF in the style of the script, every solution unfolded.';
     h1.insertAdjacentElement('afterend', b);
     var closed = [], theme = null, on = false;
     function before() {
@@ -105,7 +109,6 @@
       if (theme == null) document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', theme);
     }
     window.addEventListener('beforeprint', before); window.addEventListener('afterprint', after);
-    b.onclick = function () { before(); setTimeout(function () { window.print(); }, 300); };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 })();
