@@ -11,7 +11,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_def_4_1",
     title: "Definition 4.1: Zerlegung",
-    category: "4.1 Treppenfunktionen",
+    category: "4.1 Treppenfunktionen und deren Integral",
     type: "definition",
     front: "Was ist formal eine <b>Zerlegung</b> (oder Unterteilung) $\\mathfrak{Z}$ eines kompakten Intervalls $[a,b]$?",
     back: "Eine Zerlegung $\\mathfrak{Z}$ von $[a,b]$ ist gegeben durch endlich viele Punkte $x_0, \\dots, x_n \\in [a,b]$ mit $n \\in \\mathbb{N}$ und<br>$$a = x_0 < x_1 < \\dots < x_{n-1} < x_n = b.$$<br>Die Punkte $x_0,\\dots,x_n$ heissen <b>Teilungspunkte</b>. Wir schreiben $\\mathfrak{Z} = \\{a = x_0 < x_1 < \\dots < x_n = b\\}$.<br><br>Jede Zerlegung induziert die Partition<br>$$\\mathcal{P}(\\mathfrak{Z}) = \\big\\{\\{a\\}, (x_0,x_1), \\{x_1\\}, \\dots, (x_{n-1},x_n), \\{b\\}\\big\\}$$<br>von $[a,b]$ in offene Intervalle und einzelne Punkte.",
@@ -23,7 +23,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_def_4_2",
     title: "Definition 4.2: Treppenfunktion",
-    category: "4.1 Treppenfunktionen",
+    category: "4.1 Treppenfunktionen und deren Integral",
     type: "definition",
     front: "Wann heisst eine Funktion $f: [a,b] \\to \\mathbb{R}$ eine <b>Treppenfunktion</b> ($\\mathcal{TF}$)? Definiere auch <b>Konstanzintervalle</b> und <b>Konstanzwerte</b>.",
     back: "$f$ ist eine <b>Treppenfunktion</b>, falls es eine Zerlegung $\\mathfrak{Z} = \\{a = x_0 < \\dots < x_n = b\\}$ gibt, so dass es für jedes $k \\in \\{1,\\dots,n\\}$ eine Zahl $c_k \\in \\mathbb{R}$ gibt mit<br>$$\\forall x \\in (x_{k-1}, x_k): f(x) = c_k.$$<br>Die offenen Intervalle $(x_{k-1}, x_k)$ heissen <b>Konstanzintervalle</b>, $\\mathfrak{Z}$ heisst <b>Zerlegung in Konstanzintervalle</b> von $f$, und $c_1,\\dots,c_n$ sind die <b>Konstanzwerte</b> von $f$ bezüglich $\\mathfrak{Z}$.",
@@ -35,7 +35,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_def_4_3_verfeinerung",
     title: "Definition 4.3: Verfeinerung",
-    category: "4.1 Treppenfunktionen",
+    category: "4.1 Treppenfunktionen und deren Integral",
     type: "definition",
     front: "Wann ist eine Zerlegung $\\mathfrak{Z}'$ <b>feiner</b> als $\\mathfrak{Z}$, und was ist die <b>gemeinsame Verfeinerung</b> zweier Zerlegungen?",
     back: "Seien $\\mathfrak{Z}, \\mathfrak{Z}'$ zwei Zerlegungen von $[a,b]$.<br>&bull; $\\mathfrak{Z}'$ ist <b>feiner als</b> $\\mathfrak{Z}$, falls jeder Teilungspunkt von $\\mathfrak{Z}$ auch ein Teilungspunkt von $\\mathfrak{Z}'$ ist.<br>&bull; Die <b>gemeinsame Verfeinerung</b> von $\\mathfrak{Z}$ und $\\mathfrak{Z}'$ ist die Zerlegung, deren Menge von Teilungspunkten die <i>Vereinigung</i> der Teilungspunkte von $\\mathfrak{Z}$ und $\\mathfrak{Z}'$ ist.",
@@ -47,7 +47,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_def_4_4_integral",
     title: "Definition 4.4-4.6: Integral einer Treppenfunktion",
-    category: "4.1 Treppenfunktionen",
+    category: "4.1 Treppenfunktionen und deren Integral",
     type: "definition",
     front: "Wie ist das <b>Integral einer Treppenfunktion</b> definiert, und was besagt <b>Lemma 4.5</b> zur Wohldefiniertheit?",
     back: "Sei $f \\in \\mathcal{TF}([a,b])$ mit Zerlegung $\\mathfrak{Z}$ in Konstanzintervalle und Konstanzwerten $c_1,\\dots,c_n$. Dann (Def. 4.4):<br>$$I(f, \\mathfrak{Z}) = \\sum_{k=1}^n c_k (x_k - x_{k-1}) = \\sum_{k=1}^n c_k \\Delta x_k$$<br><b>Lemma 4.5 (Unabhängigkeit):</b> $I(f,\\mathfrak{Z})$ hängt <i>weder</i> von den Funktionswerten $f(x_k)$ an den Teilungspunkten <i>noch</i> von der Wahl der Zerlegung $\\mathfrak{Z}$ in Konstanzintervalle ab.<br><br>Deshalb definieren wir (Def. 4.6): $\\int_a^b f(x)\\,\\mathrm{d}x = \\int_a^b f\\,\\mathrm{d}x = I(f, \\mathfrak{Z})$.",
@@ -59,7 +59,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_lemma_4_7",
     title: "Lemma 4.7: Linearität (Treppenintegral)",
-    category: "4.1 Treppenfunktionen",
+    category: "4.1 Treppenfunktionen und deren Integral",
     type: "lemma",
     front: "Was besagt <b>Lemma 4.7</b> über die Struktur von $\\mathcal{TF}([a,b])$ und die Linearität des Integrals?",
     back: "Die nicht-leere Menge $\\mathcal{TF}([a,b]) = \\{f \\in \\mathcal{F}([a,b]) \\mid f \\text{ ist Treppenfunktion}\\}$ ist ein <b>Unterraum</b> des Vektorraums $\\mathcal{F}([a,b])$ der reellwertigen Funktionen auf $[a,b]$, und $\\int : \\mathcal{TF}([a,b]) \\to \\mathbb{R}$ ist <b>linear</b>: Für alle $f, g \\in \\mathcal{TF}([a,b])$ und $s \\in \\mathbb{R}$ ist $f + g \\in \\mathcal{TF}([a,b])$, $sf \\in \\mathcal{TF}([a,b])$ und<br>$$\\int_a^b (f+g)\\,\\mathrm{d}x = \\int_a^b f\\,\\mathrm{d}x + \\int_a^b g\\,\\mathrm{d}x, \\qquad \\int_a^b (sf)\\,\\mathrm{d}x = s \\int_a^b f\\,\\mathrm{d}x.$$",
@@ -71,7 +71,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_lemma_4_8",
     title: "Lemma 4.8: Monotonie (Treppenintegral)",
-    category: "4.1 Treppenfunktionen",
+    category: "4.1 Treppenfunktionen und deren Integral",
     type: "lemma",
     front: "Was besagt die <b>Monotonie des Integrals</b> von Treppenfunktionen (Lemma 4.8)?",
     back: "Sind $f, g \\in \\mathcal{TF}([a,b])$ zwei Treppenfunktionen mit $f \\le g$ (d.h. $f(x) \\le g(x)$ für alle $x \\in [a,b]$), dann gilt<br>$$\\int_a^b f\\,\\mathrm{d}x \\le \\int_a^b g\\,\\mathrm{d}x.$$<br><i>Insbesondere:</i> $f \\in \\mathcal{TF}([a,b])$ und $f \\ge 0$ implizieren $\\int_a^b f\\,\\mathrm{d}x \\ge 0$.",
@@ -87,7 +87,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_def_4_10",
     title: "Definition 4.10: Unter- und Obersummen",
-    category: "4.2 Riemann-Integral",
+    category: "4.2 Definition des Riemann-Integrals",
     type: "definition",
     front: "Wie sind für eine beschränkte Funktion $f \\in \\mathcal{F}([a,b])$ die Mengen der <b>Untersummen $\\mathcal{U}(f)$</b> und <b>Obersummen $\\mathcal{O}(f)$</b> definiert? Warum sind sie nicht-leer?",
     back: "$$\\mathcal{U}(f) = \\left\\{ \\int_a^b u\\,\\mathrm{d}x \\;\\middle|\\; u \\in \\mathcal{TF}([a,b]) \\text{ und } u \\le f \\right\\}$$<br>$$\\mathcal{O}(f) = \\left\\{ \\int_a^b o\\,\\mathrm{d}x \\;\\middle|\\; o \\in \\mathcal{TF}([a,b]) \\text{ und } f \\le o \\right\\}$$<br>Da $f$ beschränkt ist, existieren konstante Treppenfunktionen $u \\le f \\le o$ (z.B. $u = \\inf f([a,b])$, $o = \\sup f([a,b])$), also sind beide Mengen nicht-leer.<br><br>Mit Lemma 4.8 folgt die zentrale Ungleichung (4.2):<br>$$\\sup \\mathcal{U}(f) \\le \\inf \\mathcal{O}(f).$$",
@@ -99,7 +99,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_def_4_11",
     title: "Definition 4.11: Riemann-Integrierbarkeit",
-    category: "4.2 Riemann-Integral",
+    category: "4.2 Definition des Riemann-Integrals",
     type: "definition",
     front: "Definiere das <b>untere und obere Integral</b> und die <b>Riemann-Integrierbarkeit</b> einer beschränkten Funktion $f \\in \\mathcal{F}([a,b])$.",
     back: "&bull; $\\underline{I}(f) = \\sup\\, \\mathcal{U}(f)$ heisst <b>unteres Integral</b> von $f$.<br>&bull; $\\overline{I}(f) = \\inf\\, \\mathcal{O}(f)$ heisst <b>oberes Integral</b> von $f$.<br><br>$f$ heisst <b>Riemann-integrierbar</b> (R-integrierbar), falls $\\underline{I}(f) = \\overline{I}(f)$. Der gemeinsame Wert ist das <b>Riemann-Integral</b><br>$$\\int_a^b f\\,\\mathrm{d}x = \\underline{I}(f) = \\overline{I}(f).$$<br>Weiter: $\\mathcal{R}([a,b]) = \\{f \\in \\mathcal{F}([a,b]) \\mid f \\text{ ist Riemann-integrierbar}\\}$; $a$ heisst <b>untere</b>, $b$ <b>obere Integrationsgrenze</b>, $f$ der <b>Integrand</b>.",
@@ -111,7 +111,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_prop_4_12",
     title: "Proposition 4.12: Charakterisierungen der R-Integrierbarkeit",
-    category: "4.2 Riemann-Integral",
+    category: "4.2 Definition des Riemann-Integrals",
     type: "proposition",
     front: "Nenne die <b>drei äquivalenten Charakterisierungen</b> der Riemann-Integrierbarkeit (Proposition 4.12), insbesondere das <b>$\\varepsilon$-Kriterium</b>.",
     back: "Sei $f \\in \\mathcal{F}([a,b])$ beschränkt. Äquivalent sind:<br>(i) $f$ ist Riemann-integrierbar.<br>(ii) Es existiert <i>höchstens eine</i> (dann genau eine) reelle Zahl $I$ mit<br>$$\\int_a^b u\\,\\mathrm{d}x \\le I \\le \\int_a^b o\\,\\mathrm{d}x$$<br>für alle $u, o \\in \\mathcal{TF}([a,b])$ mit $u \\le f \\le o$.<br>(iii) <b>$\\varepsilon$-Kriterium:</b> Für alle $\\varepsilon > 0$ existieren $u, o \\in \\mathcal{TF}([a,b])$ mit $u \\le f \\le o$, so dass<br>$$\\int_a^b (o - u)\\,\\mathrm{d}x < \\varepsilon.$$",
@@ -123,7 +123,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_bsp_4_17_dirichlet",
     title: "Beispiel 4.17: Die Dirichlet-Funktion",
-    category: "4.2 Riemann-Integral",
+    category: "4.2 Definition des Riemann-Integrals",
     type: "beispiel",
     front: "Zeige anhand der <b>Dirichlet-Funktion</b>, dass nicht jede beschränkte Funktion Riemann-integrierbar ist.",
     back: "Betrachte die charakteristische Funktion<br>$$f = \\mathbb{1}_{\\mathbb{Q} \\cap [0,1]} : [0,1] \\to \\{0,1\\}, \\quad x \\mapsto \\begin{cases} 1 & x \\in \\mathbb{Q} \\\\ 0 & x \\notin \\mathbb{Q} \\end{cases}$$<br><b>Oberes Integral $= 1$:</b> Sei $o \\in \\mathcal{TF}([0,1])$ mit $f \\le o$ und Konstanzwerten $c_k$. Da $\\mathbb{Q}$ dicht in $\\mathbb{R}$ ist (Korollar 2.70), enthält jedes $(x_{k-1},x_k)$ ein rationales $x$, also $c_k = o(x) \\ge f(x) = 1$. Mit Teleskopsumme: $\\int_0^1 o\\,\\mathrm{d}x \\ge \\sum_k (x_k - x_{k-1}) = 1$.<br><b>Unteres Integral $= 0$:</b> Analog mit der Dichtheit der irrationalen Zahlen (Übung 4.18).<br>Da $0 \\neq 1$: $f \\notin \\mathcal{R}([0,1])$.",
@@ -243,7 +243,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_satz_4_31",
     title: "Satz 4.31: Integrierbarkeit monotoner Funktionen",
-    category: "4.5 Monotone Funktionen",
+    category: "4.5 Integrierbarkeit monotoner Funktionen",
     type: "satz",
     front: "Was besagt <b>Satz 4.31</b> über monotone Funktionen, und wie funktioniert der Beweis?",
     back: "<b>Satz 4.31:</b> Jede monotone Funktion in $\\mathcal{F}([a,b])$ ist Riemann-integrierbar.<br><br><b>Beweis (für $f$ monoton wachsend):</b> Wähle die äquidistante Zerlegung $x_k = a + \\frac{b-a}{n}k$ und die Treppenfunktionen $u, o$ mit $u = f(x_{k-1})$ und $o = f(x_k)$ auf $(x_{k-1}, x_k)$ (links- bzw. rechtsseitiger Wert). Wegen Monotonie gilt $u \\le f \\le o$, und mit Teleskopsumme:<br>$$\\int_a^b (o-u)\\,\\mathrm{d}x = \\sum_{k=1}^n \\big(f(x_k) - f(x_{k-1})\\big)\\frac{b-a}{n} = \\frac{b-a}{n}\\big(f(b) - f(a)\\big).$$<br>Nach dem Archimedischen Prinzip wird dies $< \\varepsilon$ für grosses $n$; Prop. 4.12 (iii) schliesst den Beweis. (Monoton fallend: wende das Resultat auf $-f$ an, Satz 4.19.)",
@@ -255,7 +255,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_def_4_33_korollar_4_34",
     title: "Definition 4.33 & Korollar 4.34: Stückweise Monotonie",
-    category: "4.5 Monotone Funktionen",
+    category: "4.5 Integrierbarkeit monotoner Funktionen",
     type: "definition",
     front: "Wann heisst $f \\in \\mathcal{F}([a,b])$ <b>stückweise monoton</b>, und was besagt <b>Korollar 4.34</b>?",
     back: "<b>Definition 4.33:</b> $f$ heisst <b>stückweise monoton</b>, falls es eine Zerlegung $\\mathfrak{Z} = \\{a = x_0 < \\dots < x_n = b\\}$ gibt, so dass $f|_{(x_{k-1},x_k)}$ für alle $k \\in \\{1,\\dots,n\\}$ monoton ist.<br><br><b>Korollar 4.34:</b> Jede stückweise monotone, <i>beschränkte</i> Funktion in $\\mathcal{F}([a,b])$ ist Riemann-integrierbar.<br><br>(Beweis via Satz 4.31 auf jedem Teilintervall, Satz 4.26 zum Zusammenkleben und Übung 4.22 für die Randpunkte &ndash; Übung 4.35.)",
@@ -271,7 +271,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_satz_4_37",
     title: "Satz 4.37: Integration von Polynomen",
-    category: "4.6 Polynome",
+    category: "4.6 Integration von Polynomen",
     type: "satz",
     front: "Was besagt <b>Satz 4.37</b> über die Riemann-Integrierbarkeit von Polynomen, und wie lautet die Formel für Monome $x^d$?",
     back: "Die Einschränkung einer reellen Polynomfunktion auf $[a,b]$ ist Riemann-integrierbar. Für alle Monome $x^d$ mit $d \\in \\mathbb{N}_0$ gilt<br>$$\\int_a^b x^d\\,\\mathrm{d}x = \\frac{1}{d+1}\\left(b^{d+1} - a^{d+1}\\right).$$",
@@ -287,7 +287,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_satz_4_42",
     title: "Satz 4.42: Integrierbarkeit stetiger Funktionen",
-    category: "4.7 Stetige Funktionen",
+    category: "4.7 Integrierbarkeit stetiger Funktionen",
     type: "satz",
     front: "Was besagt <b>Satz 4.42</b>, und welche beiden grossen Sätze aus Kapitel 3 gehen in den Beweis ein?",
     back: "<b>Satz 4.42:</b> Eine stetige Funktion auf einem kompakten Intervall $[a,b]$ mit $a < b$ ist Riemann-integrierbar.<br><br><b>Beweis-Zutaten:</b><br>&bull; <b>Gleichmässige Stetigkeit</b> (Satz 3.75): Zu $\\varepsilon > 0$ gibt es $\\delta > 0$ mit $|x - y| < \\delta \\Rightarrow |f(x) - f(y)| < \\varepsilon$ für <i>alle</i> $x, y \\in [a,b]$.<br>&bull; <b>Min/Max-Annahme</b> (Korollar 3.69): Auf jedem $[x_{k-1}, x_k]$ existieren $m_k = \\min f([x_{k-1},x_k])$ und $M_k = \\max f([x_{k-1},x_k])$.<br><br>Wählt man die Zerlegung mit Maschenweite $< \\delta$, gilt $M_k - m_k < \\varepsilon$, und die Treppen $u = m_k$, $o = M_k$ liefern<br>$$\\int_a^b (o-u)\\,\\mathrm{d}x = \\sum_{k=1}^n (M_k - m_k)\\Delta x_k < \\varepsilon(b-a),$$<br>womit Prop. 4.12 (iii) greift.",
@@ -299,7 +299,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_prop_4_44",
     title: "Proposition 4.44: Sandwich-Kriterium mit stetigen Funktionen",
-    category: "4.7 Stetige Funktionen",
+    category: "4.7 Integrierbarkeit stetiger Funktionen",
     type: "proposition",
     front: "Wie charakterisiert <b>Proposition 4.44</b> die Riemann-Integrierbarkeit mittels <b>stetiger</b> Funktionen (Sandwich-Kriterium)?",
     back: "Eine Funktion $f \\in \\mathcal{F}([a,b])$ auf einem kompakten Intervall $[a,b]$ mit $a < b$ ist <b>genau dann</b> Riemann-integrierbar, wenn für alle $\\varepsilon > 0$ <i>stetige</i> Funktionen $f_+, f_-$ existieren mit $f_- \\le f \\le f_+$ und<br>$$\\int_a^b (f_+ - f_-)\\,\\mathrm{d}x < \\varepsilon.$$",
@@ -311,7 +311,7 @@ window.FLASHCARDS_KAPITEL_4 = [
   {
     id: "k4_uebung_4_25",
     title: "Übung 4.25: Die Riemann-Funktion (modifizierte Dirichlet-Funktion)",
-    category: "4.7 Stetige Funktionen",
+    category: "4.3 Erste Integrationsgesetze",
     type: "beispiel",
     front: "Was besagt Übung 4.25 über die <b>Riemann-Funktion</b> (modifizierte Dirichlet-Funktion), und warum ist das Resultat überraschend?",
     back: "Die Funktion<br>$$g: [0,1] \\to [0,1], \\quad x \\mapsto \\begin{cases} 0 & \\text{falls } x \\text{ irrational} \\\\ \\frac{1}{q} & \\text{falls } x = \\frac{p}{q} \\text{ mit } p, q \\text{ teilerfremd} \\end{cases}$$<br>ist <b>Riemann-integrierbar</b> (mit Integral $0$).",

@@ -7,7 +7,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_potenzsummen",
     title: "Proposition 3.32 & 3.33: Summen von Potenzen",
-    category: "Reelle Funktionen & Summen",
+    category: "3.3 Die Fakultät und der Binomialsatz",
     type: "proposition",
     front: "Wie lautet die allgemeine Formel für die Summe der $d$-ten Potenzen $\\sum_{k=1}^n k^d$ und welche Eigenschaft besitzen die Koeffizienten des resultierenden Polynoms?",
     back: "Für jedes $d \\in \\mathbb{N}_0$ existiert ein Polynom $p_{d+1} \\in \\mathbb{Q}[x]$ vom Grad $d+1$ mit Leitkoeffizient $\\frac{1}{d+1}$, sodass für alle $n \\in \\mathbb{N}$ gilt:\n$$\\sum_{k=1}^n k^d = \\frac{1}{d+1} n^{d+1} + c_d n^d + \\dots + c_1 n + c_0$$\nInsbesondere gilt unter Verwendung von Binomialkoeffizienten $p_d(n) = \\binom{n}{d}$ die Hockey-Stick-Identität:\n$$\\sum_{k=0}^n \\binom{k}{d} = \\binom{n+1}{d+1}$$",
@@ -19,7 +19,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_beschraenkt_fkt",
     title: "Definition: Beschränktheit von Funktionen",
-    category: "Reelle Funktionen & Summen",
+    category: "3.4 Reellwertige Funktionen",
     type: "definition",
     front: "Wann heißt eine Funktion $f: D \\to \\mathbb{R}$ (auf $D \\subseteq \\mathbb{R}$) <b>nach oben beschränkt</b>, <b>nach unten beschränkt</b> bzw. <b>beschränkt</b>?",
     back: "Sei $D \\neq \\emptyset$ eine Menge und $f: D \\to \\mathbb{R}$ eine Funktion.<br>• $f$ heißt <b>nach oben beschränkt</b>, falls die Bildmenge $f(D)$ nach oben beschränkt ist, d.h.: $\\exists C \\in \\mathbb{R} \\; \\forall x \\in D: f(x) \\le C$.<br>• $f$ heißt <b>nach unten beschränkt</b>, falls $\\exists c \\in \\mathbb{R} \\; \\forall x \\in D: f(x) \\ge c$.<br>• $f$ heißt <b>beschränkt</b>, falls $f$ sowohl nach oben als auch nach unten beschränkt ist, d.h.:<br>$$\\exists M \\ge 0 \\; \\forall x \\in D: |f(x)| \\le M$$",
@@ -31,7 +31,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_monotonie_fkt",
     title: "Definition: Monotonie von Funktionen",
-    category: "Reelle Funktionen & Summen",
+    category: "3.4 Reellwertige Funktionen",
     type: "definition",
     front: "Wann heißt eine Funktion $f: D \\to \\mathbb{R}$ <b>monoton wachsend</b> bzw. <b>streng monoton wachsend</b>?",
     back: "Sei $D \\subseteq \\mathbb{R}$. Eine Funktion $f: D \\to \\mathbb{R}$ heißt:<br>• <b>monoton wachsend</b>, falls für alle $x_1, x_2 \\in D$ gilt:<br>$$x_1 < x_2 \\implies f(x_1) \\le f(x_2)$$<br>• <b>streng monoton wachsend</b>, falls für alle $x_1, x_2 \\in D$ gilt:<br>$$x_1 < x_2 \\implies f(x_1) < f(x_2)$$<br><i>(Analog definieren sich (streng) monoton fallend mit $\\ge$ bzw. $>$.)</i>",
@@ -43,7 +43,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_def_stetigkeit",
     title: "Definition 3.45: Stetigkeit an einem Punkt und auf einer Menge",
-    category: "Stetigkeit",
+    category: "3.5 Stetigkeit",
     type: "definition",
     front: "Formulieren Sie die präzise $\\varepsilon$-$\\delta$-Definition für die <b>Stetigkeit einer Funktion $f: D \\to \\mathbb{R}$ an einem Punkt $x_0 \\in D$</b> sowie auf ganz $D$.",
     back: "Sei $D \\subseteq \\mathbb{R}$ und $f: D \\to \\mathbb{R}$.<br>• $f$ heißt <b>stetig im Punkt $x_0 \\in D$</b>, falls:<br>$$\\forall \\varepsilon > 0 \\; \\exists \\delta > 0 \\; \\forall x \\in D: |x - x_0| < \\delta \\implies |f(x) - f(x_0)| < \\varepsilon$$<br>• $f$ heißt <b>stetig</b> (auf $D$), falls $f$ in jedem Punkt $x_0 \\in D$ stetig ist.",
@@ -55,7 +55,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_stetigkeits_beispiele",
     title: "Beispiele und Gegenbeispiele zur Stetigkeit",
-    category: "Stetigkeit",
+    category: "3.5 Stetigkeit",
     type: "lemma",
     front: "Nennen Sie elementare Klassen stetiger Funktionen sowie klassische Unstetigkeitsbeispiele aus dem Skript.",
     back: "<b>Stetige Funktionen:</b><br>1. Konstante Funktion $x \\mapsto c$<br>2. Identität / lineare Funktion $x \\mapsto ax$<br>3. Betragsfunktion $x \\mapsto |x|$<br>4. Potenzfunktionen $x \\mapsto x^n$ und $x \\mapsto \\sqrt{x}$ auf $[0, \\infty)$<br><br><b>Unstetige Funktionen:</b><br>1. Gaußklammer $x \\mapsto \\lfloor x \\rfloor$ (Sprungstellen bei $\\mathbb{Z}$)<br>2. Signum-Funktion $\\text{sgn}(x)$ bei $x_0 = 0$<br>3. Dirichlet-Funktion $\\mathbb{1}_{\\mathbb{Q}}$ (in jedem Punkt von $\\mathbb{R}$ unstetig!)",
@@ -67,7 +67,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_stetigkeit_algeb",
     title: "Proposition 3.50 & 3.52: Rechnen mit stetigen Funktionen & Komposition",
-    category: "Stetigkeit",
+    category: "3.5 Stetigkeit",
     type: "proposition",
     front: "Was lässt sich über die Summe, das Produkt, den Quotienten und die Hintereinanderausführung (Komposition) stetiger Funktionen aussagen?",
     back: "Seien $f, g: D \\to \\mathbb{R}$ stetig bei $x_0 \\in D$. Dann sind auch stetig bei $x_0$:<br>1. <b>Summe/Differenz:</b> $f + g$ und $f - g$<br>2. <b>Produkt:</b> $f \\cdot g$<br>3. <b>Quotient:</b> $\\frac{f}{g}$ (vorausgesetzt $g(x_0) \\neq 0$ auf einer Umgebung)<br>4. <b>Komposition:</b> Ist $f: D_1 \\to D_2$ stetig bei $x_0$ und $g: D_2 \\to \\mathbb{R}$ stetig bei $y_0 = f(x_0)$, so ist $g \\circ f: D_1 \\to \\mathbb{R}$ stetig bei $x_0$.",
@@ -79,7 +79,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_zwischenwertsatz",
     title: "Satz 3.58: Der Zwischenwertsatz (ZWS / Bolzano)",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.6 Der Zwischenwertsatz",
     type: "satz",
     front: "Formulieren Sie den <b>Zwischenwertsatz (ZWS)</b> für stetige reellwertige Funktionen.",
     back: "Sei $I \\subseteq \\mathbb{R}$ ein <b>Intervall</b> und $f: I \\to \\mathbb{R}$ eine <b>stetige Funktion</b>. Seien $a, b \\in I$ mit $a < b$.<br>Für jedes $c \\in \\mathbb{R}$, das zwischen $f(a)$ und $f(b)$ liegt (d.h. $f(a) \\le c \\le f(b)$ oder $f(b) \\le c \\le f(a)$), existiert mindestens ein $x_0 \\in [a, b]$ mit:<br>$$f(x_0) = c$$",
@@ -91,7 +91,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_beweis_zws",
     title: "Beweis-Blueprint: Zwischenwertsatz",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.6 Der Zwischenwertsatz",
     type: "beweis",
     front: "Skizzieren Sie den mathematischen Beweis des Zwischenwertsatzes (Satz 3.58) unter Verwendung des Supremumsprinzips.",
     back: "<b>Beweisschema (o.B.d.A. $f(a) < c < f(b)$):</b><br>1. Definierte die Menge $M = \\{t \\in [a, b] \\mid f(t) \\le c\\}$.<br>2. $M$ ist nicht-leer ($a \\in M$) und nach oben durch $b$ beschränkt.<br>3. Nach dem Vollständigkeitsaxiom existiert $x_0 = \\sup M \\in [a, b]$.<br>4. Zeige $f(x_0) = c$ durch Ausschluss der Fälle $f(x_0) < c$ und $f(x_0) > c$ via Stetigkeit:<br>&nbsp;&nbsp;• Wäre $f(x_0) < c$, wähle $\\varepsilon = c - f(x_0) > 0$. Wegen Stetigkeit gäbe es ein $\\delta > 0$ mit $f(x) < c$ für $x \\in (x_0, x_0+\\delta)$, im Widerspruch zu $x_0 = \\sup M$.<br>&nbsp;&nbsp;• Wäre $f(x_0) > c$, gäbe es analog ein $\\delta > 0$ mit $f(x) > c$ in $(x_0-\\delta, x_0]$, im Widerspruch dazu, dass $x_0$ kleinste obere Schranke ist.",
@@ -103,7 +103,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_nullstellen_polynome",
     title: "Übung 3.60: Nullstellen von Polynomen ungeraden Grades",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.6 Der Zwischenwertsatz",
     type: "proposition",
     front: "Zeigen Sie mit dem Zwischenwertsatz, dass jedes reelle Polynom <b>ungeraden Grades</b> mindestens eine reelle Nullstelle besitzt.",
     back: "Sei $p(x) = a_n x^n + a_{n-1} x^{n-1} + \\dots + a_0$ mit $a_n \\neq 0$ und $n$ ungerade.<br>O.B.d.A. sei $a_n > 0$. Ausklammern von $x^n$ zeigt:<br>$$\\lim_{x \\to +\\infty} p(x) = +\\infty \\quad \\text{und} \\quad \\lim_{x \\to -\\infty} p(x) = -\\infty$$\nSomit existieren $a < 0 < b$ mit $p(a) < 0$ und $p(b) > 0$.<br>Da $p$ als Polynom stetig ist, existiert nach dem Zwischenwertsatz ein $x_0 \\in (a, b)$ mit $p(x_0) = 0$.",
@@ -115,7 +115,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_injektiv_monoton",
     title: "Übung 3.61: Injektivität und Monotonie stetiger Funktionen",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.6 Der Zwischenwertsatz",
     type: "lemma",
     front: "Welcher Zusammenhang besteht zwischen <b>Injektivität</b> und <b>Monotonie</b> für stetige Funktionen auf einem Intervall?",
     back: "Sei $I \\subseteq \\mathbb{R}$ ein Intervall und $f: I \\to \\mathbb{R}$ eine stetige Funktion.<br>Dann gilt:<br>$$f \\text{ ist injektiv} \\iff f \\text{ ist streng monoton (wachsend oder fallend)}$$",
@@ -127,7 +127,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_umkehrsatz",
     title: "Satz 3.62: Der Satz über die Umkehrabbildung (Umkehrsatz)",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.7 Der Satz über die Umkehrabbildung",
     type: "satz",
     front: "Formulieren Sie den <b>Satz über die Umkehrabbildung</b> für stetige, streng monotone Funktionen.",
     back: "Sei $I \\subseteq \\mathbb{R}$ ein Intervall und $f: I \\to \\mathbb{R}$ eine <b>stetige, streng monotone</b> Funktion.<br>Dann gilt:<br>1. Das Bild $J = f(I) \\subseteq \\mathbb{R}$ ist wiederum ein <b>Intervall</b>.<br>2. Die Umkehrfunktion $f^{-1}: J \\to I$ existiert, ist <b>bijektiv</b>, <b>streng monoton</b> (mit demselben Monotonieverhalten wie $f$) und <b>stetig</b>.<br>3. Ist $I = [a, b]$, so ist $J = [f(a), f(b)]$ (falls $f$ wachsend) bzw. $J = [f(b), f(a)]$ (falls $f$ fallend).",
@@ -139,7 +139,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_beweis_umkehrsatz",
     title: "Beweis-Blueprint: Stetigkeit der Umkehrfunktion",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.7 Der Satz über die Umkehrabbildung",
     type: "beweis",
     front: "Wie zeigt man im Umkehrsatz (Satz 3.62) die <b>Stetigkeit der Umkehrfunktion $f^{-1}$</b> an einem inneren Punkt $y_0 = f(x_0)$?",
     back: "<b>Beweis-Skizze (für $f$ streng monoton wachsend):</b><br>1. Wähle zu $\\varepsilon > 0$ Punkte $x_- = x_0 - \\varepsilon$ und $x_+ = x_0 + \\varepsilon$ in $I$.<br>2. Wegen der strengen Monotonie von $f$ gilt für die Bilder:<br>$$y_- = f(x_-) < y_0 < f(x_+) = y_+$$<br>3. Wähle $\\delta = \\min\\{y_0 - y_-, y_+ - y_0\\} > 0$.<br>4. Für alle $y \\in f(I)$ mit $|y - y_0| < \\delta$ gilt $y_- < y < y_+$.<br>5. Anwenden der streng monoton wachsenden Umkehrfunktion $f^{-1}$ liefert:<br>$$x_0 - \\varepsilon = x_- < f^{-1}(y) < x_+ = x_0 + \\varepsilon \\implies |f^{-1}(y) - f^{-1}(y_0)| < \\varepsilon$$",
@@ -151,7 +151,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_wurzeln_potenzen",
     title: "Anwendung: $n$-te Wurzeln und Rationale Potenzen",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.7 Der Satz über die Umkehrabbildung",
     type: "proposition",
     front: "Wie werden allgemeine rationale Potenzen $x^{m/n}$ auf $[0, \\infty)$ definiert und welche Eigenschaften besitzen sie?",
     back: "1. Nach dem Umkehrsatz existiert für jedes $n \\in \\mathbb{N}$ die stetige, streng monotone Umkehrabbildung der Potenzfunktion $x \\mapsto x^n$ auf $[0, \\infty)$:<br>$$x \\in [0, \\infty) \\mapsto \\sqrt[n]{x} \\in [0, \\infty)$$<br>2. Für $x \\in [0, \\infty)$ und $r = \\frac{m}{n} \\in \\mathbb{Q}_{>0}$ definiert man:<br>$$x^{m/n} := \\sqrt[n]{x^m} = (\\sqrt[n]{x})^m$$<br>3. Diese Potenzfunktionen sind stetig und erfüllen alle Potenzgesetze (z.B. $x^{r_1+r_2} = x^{r_1} x^{r_2}$).",
@@ -163,7 +163,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_wurzeln_irrational",
     title: "Lemma 3.65: Irrationalität von Wurzeln aus natürlichen Zahlen",
-    category: "Zwischenwertsatz & Umkehrsatz",
+    category: "3.7 Der Satz über die Umkehrabbildung",
     type: "lemma",
     front: "Wann ist die $m$-te Wurzel $\\sqrt[m]{k}$ einer natürlichen Zahl $k \\in \\mathbb{N}$ rational?",
     back: "Seien $m, k \\in \\mathbb{N}$.<br>Die $m$-te Wurzel $\\sqrt[m]{k}$ ist genau dann rational, wenn sie eine <b>ganze Zahl</b> ist:<br>$$\\sqrt[m]{k} \\in \\mathbb{Q} \\iff \\sqrt[m]{k} \\in \\mathbb{N}$$<br><i>(Äquivalent: Jeder Primfaktor in der Primfaktorzerlegung von $k$ tritt mit einem Vielfachen des Exponenten $m$ auf.)</i>",
@@ -175,7 +175,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_beschraenkt_kompakt",
     title: "Satz 3.67: Beschränktheit auf kompakten Intervallen",
-    category: "Kompakte Intervalle & Gleichmäßige Stetigkeit",
+    category: "3.8 Stetige Funktionen auf kompakten Intervallen",
     type: "satz",
     front: "Formulieren Sie den Satz über die <b>Beschränktheit stetiger Funktionen</b> auf kompakten Intervallen.",
     back: "Seien $a, b \\in \\mathbb{R}$ mit $a < b$ und sei $f: [a, b] \\to \\mathbb{R}$ (oder $\\mathbb{C}$) eine <b>stetige Funktion</b> auf dem kompakten Intervall $[a, b]$.<br>Dann ist $f$ <b>beschränkt</b>, d.h. es existiert ein $M \\in \\mathbb{R}$ mit:<br>$$\\forall x \\in [a, b]: |f(x)| \\le M$$",
@@ -187,7 +187,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_beweis_beschraenkt_kompakt",
     title: "Beweis-Blueprint: Beschränktheit auf kompakten Intervallen",
-    category: "Kompakte Intervalle & Gleichmäßige Stetigkeit",
+    category: "3.8 Stetige Funktionen auf kompakten Intervallen",
     type: "beweis",
     front: "Skizzieren Sie den Widerspruchsbeweis für Satz 3.67 (Beschränktheit stetiger Funktionen auf $[a, b]$).",
     back: "<b>Beweis-Schema (via Intervallschachtelung / Bolzano-Weierstraß):</b><br>1. <b>Widerspruchsannahme:</b> $f$ ist unbeschränkt auf $I_0 = [a, b]$.<br>2. Halbiere $I_0$ in zwei Teilintervalle. Auf mindestens einer Hälfte muss $f$ unbeschränkt sein; nenne diese $I_1$.<br>3. Durch fortgesetzte Halbierung entsteht eine Intervallschachtelung $(I_n)_{n \\in \\mathbb{N}}$ mit Längen $|I_n| = \\frac{b-a}{2^n} \\to 0$.<br>4. Nach dem Intervallschachtelungsprinzip existiert ein eindeutiger gemeinsamer Punkt $x_0 \\in \\bigcap_{n=0}^\\infty I_n \\in [a, b]$.<br>5. Da $f$ stetig bei $x_0$ ist, existiert ein $\\delta > 0$ mit $|f(x)| \\le |f(x_0)| + 1$ für alle $x \\in (x_0-\\delta, x_0+\\delta)$.<br>6. Für ausreichend großes $n$ liegt jedoch $I_n \\subset (x_0-\\delta, x_0+\\delta)$, was der Unbeschränktheit von $f$ auf $I_n$ widerspricht!",
@@ -199,7 +199,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_satz_vom_maximum",
     title: "Korollar 3.69: Satz vom Maximum und Minimum (Weierstraß)",
-    category: "Kompakte Intervalle & Gleichmäßige Stetigkeit",
+    category: "3.8 Stetige Funktionen auf kompakten Intervallen",
     type: "satz",
     front: "Formulieren Sie den <b>Satz vom Maximum und Minimum</b> (Extremwertsatz von Weierstraß) auf kompakten Intervallen.",
     back: "Sei $f: [a, b] \\to \\mathbb{R}$ eine <b>stetige Funktion</b> auf einem kompakten Intervall $[a, b]$ ($a < b$).<br>Dann nimmt $f$ sowohl ihr <b>Maximum</b> als auch ihr <b>Minimum</b> an. D.h. es existieren $x_{\\min}, x_{\\max} \\in [a, b]$ mit:<br>$$f(x_{\\min}) \\le f(x) \\le f(x_{\\max}) \\quad \\text{für alle } x \\in [a, b]$$",
@@ -211,7 +211,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_def_gleichm_stetig",
     title: "Definition 3.71: Gleichmäßige Stetigkeit",
-    category: "Kompakte Intervalle & Gleichmäßige Stetigkeit",
+    category: "3.8 Stetige Funktionen auf kompakten Intervallen",
     type: "definition",
     front: "Definieren Sie den Begriff der <b>gleichmäßigen Stetigkeit</b> für eine Funktion $f: D \\to \\mathbb{R}$ ($D \\subseteq \\mathbb{R}$) und erläutern Sie den Unterschied zur gewöhnlichen Stetigkeit.",
     back: "Eine Funktion $f: D \\to \\mathbb{R}$ heißt <b>gleichmäßig stetig</b>, falls gilt:<br>$$\\forall \\varepsilon > 0 \\; \\exists \\delta > 0 \\; \\forall x, y \\in D: |x - y| < \\delta \\implies |f(x) - f(y)| < \\varepsilon$$<br><b>Unterschied zur punktweisen Stetigkeit:</b><br>• Punktweise Stetigkeit: $\\delta = \\delta(\\varepsilon, x_0)$ darf vom Punkt $x_0$ abhängen.<br>• Gleichmäßige Stetigkeit: $\\delta = \\delta(\\varepsilon)$ ist <b>universal</b> für das gesamte Gebiet $D$ gültig (hängt NUR von $\\varepsilon$ ab).",
@@ -223,7 +223,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_satz_von_heine",
     title: "Satz 3.75: Satz von Heine über die gleichmäßige Stetigkeit",
-    category: "Kompakte Intervalle & Gleichmäßige Stetigkeit",
+    category: "3.8 Stetige Funktionen auf kompakten Intervallen",
     type: "satz",
     front: "Formulieren Sie den <b>Satz von Heine</b> zur gleichmäßigen Stetigkeit.",
     back: "Sei $[a, b]$ ein <b>kompaktes Intervall</b> ($a < b$) und $f: [a, b] \\to \\mathbb{R}$ (oder $\\mathbb{C}$) eine <b>stetige Funktion</b>.<br>Dann ist $f$ auf $[a, b]$ <b>gleichmäßig stetig</b>.",
@@ -235,7 +235,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_beispiele_gl_stetig",
     title: "Übung 3.73 & 3.76: Analyse von Gleichmäßiger Stetigkeit",
-    category: "Kompakte Intervalle & Gleichmäßige Stetigkeit",
+    category: "3.8 Stetige Funktionen auf kompakten Intervallen",
     type: "lemma",
     front: "Untersuchen Sie die Funktionen $f(x) = x^2$ und $g(x) = \\frac{1}{x}$ auf verschiedenen Definitionsbereichen bzgl. gleichmäßiger Stetigkeit.",
     back: "1. <b>$f(x) = x^2$:</b><br>&nbsp;&nbsp;• Auf $[0, 1]$ <b>gleichmäßig stetig</b> (da $[0, 1]$ kompakt, Satz von Heine).<br>&nbsp;&nbsp;• Auf $\\mathbb{R}$ <b>nicht gleichmäßig stetig</b>: Für $x_n = n + \\frac{1}{n}$ und $y_n = n$ gilt $|x_n - y_n| = \\frac{1}{n} \\to 0$, aber $|f(x_n) - f(y_n)| = 2 + \\frac{1}{n^2} \\ge 2$.<br><br>2. <b>$g(x) = \\frac{1}{x}$:</b><br>&nbsp;&nbsp;• Auf $[1, \\infty)$ <b>gleichmäßig stetig</b> (da $|g(x) - g(y)| = \\frac{|x-y|}{xy} \\le |x-y|$, wähle $\\delta = \\varepsilon$).<br>&nbsp;&nbsp;• Auf $(0, 1)$ <b>nicht gleichmäßig stetig</b>: nahe $0$ wächst die Steigung unbeschränkt.",
@@ -247,7 +247,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_lipschitz_stetig",
     title: "Übung 3.78: Lipschitz-Stetigkeit",
-    category: "Kompakte Intervalle & Gleichmäßige Stetigkeit",
+    category: "3.8 Stetige Funktionen auf kompakten Intervallen",
     type: "definition",
     front: "Definieren Sie den Begriff der <b>Lipschitz-Stetigkeit</b> und ordnen Sie ihn in die Stetigkeitshierarchie ein.",
     back: "Eine Funktion $f: D \\to \\mathbb{R}$ heißt <b>Lipschitz-stetig</b> auf $D \\subseteq \\mathbb{R}$, falls eine Konstante $L \\ge 0$ (Lipschitz-Konstante) existiert, sodass für alle $x, y \\in D$ gilt:<br>$$|f(x) - f(y)| \\le L |x - y|$$<br><b>Stetigkeits-Hierarchie:</b><br>$$\\text{Lipschitz-stetig} \\implies \\text{Gleichmäßig stetig} \\implies \\text{Stetig}$$",
@@ -259,7 +259,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_bernoulli",
     title: "Lemma 3.5: Bernoulli'sche Ungleichung",
-    category: "Summen und Produkte",
+    category: "3.1 Summen und Produkte",
     type: "lemma",
     front: "Wie lautet die <b>Bernoulli'sche Ungleichung</b>?",
     back: "Für alle reellen Zahlen $a \\ge -1$ und $n \\in \\mathbb{N}_0$ gilt:\n$$(1 + a)^n \\ge 1 + na$$",
@@ -271,7 +271,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_geom_summe",
     title: "Proposition 3.8: Geometrische Summenformel",
-    category: "Summen und Produkte",
+    category: "3.1 Summen und Produkte",
     type: "proposition",
     front: "Wie lautet die <b>Geometrische Summenformel</b> für $q \\in \\mathbb{C}$?",
     back: "Sei $n \\in \\mathbb{N}_0$ und $q \\in \\mathbb{C}$. Dann gilt:\n$$\\sum_{k=0}^n q^k = \\begin{cases} n+1 & \\text{falls } q = 1 \\\\ \\frac{q^{n+1}-1}{q-1} & \\text{falls } q \\neq 1 \\end{cases}$$",
@@ -283,7 +283,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_def_polynom",
     title: "Definition 3.11 & 3.13: Polynom und Polynomfunktion",
-    category: "Polynome",
+    category: "3.2 Polynome",
     type: "definition",
     front: "Definieren Sie eine <b>Polynomfunktion</b> und erläutern Sie den Unterschied zu einem <b>Polynom</b>.",
     back: "• Eine <b>Polynomfunktion</b> auf $\\mathbb{C}$ ist eine Funktion $f: \\mathbb{C} \\to \\mathbb{C}, z \\mapsto \\sum_{k=0}^n a_k z^k$ (mit $n \\in \\mathbb{N}_0$ und Koeffizienten $a_k \\in \\mathbb{C}$).<br>• Ein <b>Polynom</b> über einem beliebigen Körper $K$ ist ein <i>formaler Ausdruck</i> $\\sum_{k=0}^n a_k T^k$ mit einer abstrakten Variablen $T$.<br>Das größte $k$ mit $a_k \\neq 0$ nennt man den <b>Grad (deg)</b>. Für das Nullpolynom ist der Grad als $-\\infty$ definiert.",
@@ -295,7 +295,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_def_fakultaet",
     title: "Definition 3.24: Fakultät",
-    category: "Kombinatorik & Binomialsatz",
+    category: "3.3 Die Fakultät und der Binomialsatz",
     type: "definition",
     front: "Wie ist die <b>Fakultät</b> $n!$ definiert?",
     back: "Die Funktion $n \\mapsto n!$ auf $\\mathbb{N}_0$ ist definiert durch:<br>$$0! = 1$$<br>$$n! = \\prod_{k=1}^n k \\quad \\text{für } n \\in \\mathbb{N}$$<br>Insbesondere gilt die rekursive Formel: $(n+1)! = n! \\cdot (n+1)$.",
@@ -307,7 +307,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_binomischer_lehrsatz",
     title: "Satz 3.28: Binomischer Lehrsatz",
-    category: "Kombinatorik & Binomialsatz",
+    category: "3.3 Die Fakultät und der Binomialsatz",
     type: "satz",
     front: "Formulieren Sie den <b>Binomischen Lehrsatz</b>.",
     back: "Für alle $w, z \\in \\mathbb{C}$ und $n \\in \\mathbb{N}_0$ gilt:\n$$(w + z)^n = \\sum_{k=0}^n \\binom{n}{k} w^{n-k} z^k$$",
@@ -319,7 +319,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_uebung_3_4",
     title: "Wichtige Übung 3.4: Verallgemeinerte Dreiecksungleichung",
-    category: "Summen und Produkte",
+    category: "3.1 Summen und Produkte",
     type: "lemma",
     front: "Wie lautet die <b>verallgemeinerte Dreiecksungleichung</b> für endlich viele komplexe Zahlen, und wie beweist man sie?",
     back: "Für alle Zahlen $a_1, \\dots, a_n \\in \\mathbb{C}$ gilt:<br>$$\\left| \\sum_{i=1}^n a_i \\right| \\le \\sum_{i=1}^n |a_i|$$<br><b>Beweis:</b> Vollständige Induktion über $n$: Der Fall $n=1$ ist trivial, und der Induktionsschritt folgt aus der gewöhnlichen Dreiecksungleichung:<br>$$\\left|\\sum_{i=1}^{n+1} a_i\\right| \\le \\left|\\sum_{i=1}^{n} a_i\\right| + |a_{n+1}| \\le \\sum_{i=1}^{n} |a_i| + |a_{n+1}|.$$",
@@ -331,7 +331,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_prop_3_15",
     title: "Proposition 3.15: Wachstum von Polynomfunktionen",
-    category: "Polynome",
+    category: "3.2 Polynome",
     type: "proposition",
     front: "Was besagt <b>Proposition 3.15</b> über das Wachstum von Polynomfunktionen und die Eindeutigkeit der Koeffizienten?",
     back: "Sei $f(T) \\in \\mathbb{C}[T]$ ein <i>nicht-konstantes</i> Polynom. Dann gibt es zu jedem $M > 0$ ein $R \\ge 1$, so dass für alle $z \\in \\mathbb{C}$ mit $|z| \\ge R$ auch $|f(z)| \\ge M$ gilt.<br><br><b>Insbesondere:</b> Die Zuordnung Polynom $\\mapsto$ Polynomfunktion ist <b>bijektiv</b> (ebenso für $\\mathbb{R}[T]$). Deshalb unterscheidet die Analysis fortan nicht mehr zwischen Polynom und Polynomfunktion.",
@@ -343,7 +343,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_uebung_3_17",
     title: "Wichtige Übung 3.17: Polynomdivision (Division mit Rest)",
-    category: "Polynome",
+    category: "3.2 Polynome",
     type: "satz",
     front: "Wie lautet die <b>Division mit Rest</b> für Polynome, und was bedeutet sie für rationale Funktionen?",
     back: "Ist $d$ ein Polynom verschieden von Null, dann gibt es für jedes Polynom $f$ zwei <b>eindeutig bestimmte</b> Polynome $q, r$ mit<br>$$f = q \\cdot d + r \\quad \\text{und} \\quad \\deg(r) < \\deg(d).$$<br><b>Für rationale Funktionen:</b> $\\frac{f(z)}{d(z)} = q(z) + \\frac{r(z)}{d(z)}$ auf $\\mathbb{C} \\setminus \\{z \\mid d(z) = 0\\}$ - der 'ganze Teil' $q$ und ein Restbruch mit kleinem Zählergrad.",
@@ -355,7 +355,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_uebung_3_19",
     title: "Wichtige Übung 3.19: Nullstellen und Vielfachheit",
-    category: "Polynome",
+    category: "3.2 Polynome",
     type: "satz",
     front: "Welcher Zusammenhang besteht zwischen <b>Nullstellen</b> und <b>Linearfaktoren</b>, und wie viele Nullstellen kann ein Polynom vom Grad $n$ haben?",
     back: "Für $f(T) \\in \\mathbb{C}[T]$ und $z \\in \\mathbb{C}$ gilt:<br>$$(T - z) \\text{ teilt } f \\iff f(z) = 0.$$<br><b>Folgerung:</b> Ein Polynom $f \\neq 0$ vom Grad $n$ besitzt <b>höchstens $n$ verschiedene Nullstellen</b> in $\\mathbb{C}$.<br><br><b>Vielfachheit:</b> Eine Nullstelle $z$ hat Vielfachheit $k \\in \\mathbb{N}$, falls $(T-z)^k$ das Polynom $f$ teilt, $(T-z)^{k+1}$ aber nicht.",
@@ -367,7 +367,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_uebung_3_20",
     title: "Wichtige Übung 3.20: Koeffizientenvergleich & Interpolation",
-    category: "Polynome",
+    category: "3.2 Polynome",
     type: "satz",
     front: "Was besagt der <b>Koeffizientenvergleich</b> (Übung 3.20), und was folgt daraus für die <b>Lagrange-Interpolation</b>?",
     back: "<b>Koeffizientenvergleich:</b> Seien $f, g$ Polynome vom Grad $\\le n$. Stimmen $f$ und $g$ an <b>mehr als $n$ Punkten</b> überein, so gilt $f = g$ (gleiche Grade und gleiche Koeffizienten).<br><br><b>Lagrange-Interpolation:</b> Zu $n$ verschiedenen Stützstellen $z_1, \\dots, z_n \\in \\mathbb{C}$ und beliebigen Werten $w_1, \\dots, w_n$ gibt es <b>genau ein</b> Polynom $f$ vom Grad $< n$ mit $f(z_k) = w_k$ für alle $k$.",
@@ -379,7 +379,7 @@ window.FLASHCARDS_KAPITEL_3 = [
   {
     id: "k3_binomialkoeffizienten",
     title: "Proposition 3.26 & Übung 3.27: Binomialkoeffizienten",
-    category: "Kombinatorik & Binomialsatz",
+    category: "3.3 Die Fakultät und der Binomialsatz",
     type: "proposition",
     front: "Definieren Sie den <b>Binomialkoeffizienten</b> $\\binom{n}{k}$ und nennen Sie die <b>Additionsformel</b> (Pascal) sowie die <b>kombinatorische Bedeutung</b>.",
     back: "<b>Definition:</b> Für $n, k \\in \\mathbb{N}_0$ mit $0 \\le k \\le n$:<br>$$\\binom{n}{k} = \\frac{n!}{k!\\,(n-k)!}, \\qquad \\text{insbesondere } \\binom{n}{k} = \\binom{n}{n-k}.$$<br><b>Proposition 3.26 (Additionsformel):</b> $\\binom{n}{0} = \\binom{n}{n} = 1$ und für $1 \\le k \\le n$:<br>$$\\binom{n}{k-1} + \\binom{n}{k} = \\binom{n+1}{k}$$<br>Insbesondere ist $\\binom{n}{k} \\in \\mathbb{N}$.<br><br><b>Übung 3.27:</b> $\\binom{n}{k}$ ist die Anzahl der $k$-elementigen Teilmengen von $\\{1, \\dots, n\\}$.",
