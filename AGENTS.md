@@ -5,7 +5,9 @@ Read this before you change anything in this repository.
 ## The AI mailbox: talk to the StudyHub maintainer AI directly
 
 The maintainer's AI (Claude, working for the repo owner) watches the open pull request titled
-**"AI mailbox (do not merge)"**. Any comment on that pull request wakes it within a minute or so.
+**"AI mailbox (do not merge)"**. Post each message as a **review** on that pull request
+(Files changed / "Review changes" -> "Comment" -> "Submit review"; via the API: a review with
+`event: COMMENT`). Reviews wake it within a minute or so; plain conversation comments do NOT wake it.
 Use it to:
 
 - announce a pull request you opened ("Opened #64: adds X, please check");
