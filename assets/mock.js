@@ -30,19 +30,25 @@
     clearInterval(tick); root.oninput = null;
     var subj = get('sh-mock-subj', 'analysis'), mins = get('sh-mock-min', 120);
     var opts = EX.filter(function (e) { return e.s === subj; }).map(function (e) {
-      return '<option value="' + esc(e.id) + '">' + esc(e.t) + (e.sol ? (e.inl ? L(' · solutions in the same PDF', ' · Lösungen im selben PDF') : L(' · official solutions', ' · offizielle Lösungen')) : '') + '</option>'; }).join('');
+      return '<option value="' + esc(e.id) + '">' + esc(e.t) + (e.sol ? (e.inl ? L(' · solutions in the same PDF', ' · Lösungen im selben PDF') : e.own ? L(' · StudyHub worked solution + marking scheme', ' · StudyHub-Musterlösung + Punkteschema') : L(' · official solutions', ' · offizielle Lösungen')) : '') + '</option>'; }).join('');
     root.innerHTML = '<h2 id="start">' + L('Start a mock', 'Probeprüfung starten') + '</h2>' +
       '<p>' + L('Three steps: choose an exam, set the time, start. Work on paper, like in the real exam. When the time is up, you mark it.', 'Drei Schritte: Prüfung wählen, Zeit setzen, starten. Arbeite auf Papier, wie in der echten Prüfung. Wenn die Zeit um ist, korrigierst du.') + '</p>' +
       '<div class="row"><label><input type="radio" name="subj" value="analysis"' + (subj === 'analysis' ? ' checked' : '') + '> Analysis 1</label><label><input type="radio" name="subj" value="physics"' + (subj === 'physics' ? ' checked' : '') + '> ' + L('Physics I', 'Physik I') + '</label></div>' +
       '<label>' + L('Exam (newest first)', 'Prüfung (neueste zuerst)') + '<select id="mk-ex">' + opts + '</select></label>' +
       '<p class="mk-n">' + L('Recommended: start with an exam that has official solutions, so you can mark it properly. Without official solutions, your own AI can mark it with the StudyHub connector.', 'Empfehlung: Beginne mit einer Prüfung mit offiziellen Lösungen, damit du sauber korrigieren kannst. Ohne offizielle Lösungen kann deine eigene KI mit dem StudyHub-Connector korrigieren.') + '</p>' +
       '<div class="row"><label>' + L('Minutes', 'Minuten') + ' <input id="mk-min" type="number" min="5" max="300" step="5" value="' + mins + '"></label>' +
-      '<span class="mk-n">' + L('Use the length of your real exam. Not announced yet? Take 120. Short on time today? Do half the exam in 60.', 'Nimm die Länge deiner echten Prüfung. Noch nicht bekannt? Nimm 120. Wenig Zeit heute? Mach die halbe Prüfung in 60.') + '</span></div>' +
+      '<span class="mk-n">' + L('Use the length of your real exam. Not announced yet? Take 120. Short on time today? Do half the exam in 60.', 'Nimm die Länge deiner echten Prüfung. Noch nicht bekannt? Nimm 120. Wenig Zeit heute? Mach die halbe Prüfung in 60.') + '</span></div><p class="mk-n" id="mk-hint"></p>' +
       '<div class="btns"><button class="main" id="mk-go">' + L('Start the timer', 'Timer starten') + '</button></div>' + hist();
     root.querySelectorAll('input[name=subj]').forEach(function (r) { r.onchange = function () { put('sh-mock-subj', r.value); pick(); }; });
+    var sel = document.getElementById('mk-ex');
+    function hint() { var x = exam(sel.value), h = document.getElementById('mk-hint'); if (!x || !h) return;
+      document.getElementById('mk-min').value = x.min || mins;
+      h.innerHTML = x.min ? L('This is a short practice exam (' + (x.tasks ? x.tasks.reduce(function (s, r) { return s + r[1]; }, 0) + ' points' : '') + '). No time is printed on it, so the timer is set to ' + x.min + ' minutes. Change it if you like.',
+        'Das ist eine kurze Probeprüfung (' + (x.tasks ? x.tasks.reduce(function (s, r) { return s + r[1]; }, 0) + ' Punkte' : '') + '). Auf dem Blatt steht keine Zeit, deshalb ist der Timer auf ' + x.min + ' Minuten gesetzt. Ändere ihn, wenn du willst.') : ''; }
+    sel.onchange = hint; hint();
     document.getElementById('mk-go').onclick = function () {
       var id = document.getElementById('mk-ex').value, m = Math.max(5, Math.min(300, parseInt(document.getElementById('mk-min').value, 10) || 120));
-      put('sh-mock-min', m); put('sh-mock-run', { id: id, min: m, start: Date.now() }); run(); };
+      if (!(exam(id) || {}).min) put('sh-mock-min', m); put('sh-mock-run', { id: id, min: m, start: Date.now() }); run(); };
     bindHist();
   }
 
@@ -66,10 +72,14 @@
     clearInterval(tick);
     var R = get('sh-mock-run', null), e = R && exam(R.id); if (!e) return pick();
     var used = Math.round(((R.stop || Date.now()) - R.start) / 60000);
-    var rows = R.tasks || [{ got: '', max: '' }, { got: '', max: '' }, { got: '', max: '' }];
+    var rows = R.tasks || (e.tasks ? e.tasks.map(function (t) { return { lab: t[0], got: '', max: t[1] }; }) : [{ got: '', max: '' }, { got: '', max: '' }, { got: '', max: '' }]);
     function table() { return '<table><tr><th>' + L('Task', 'Aufgabe') + '</th><th>' + L('Your points', 'Deine Punkte') + '</th><th>' + L('Max', 'Max') + '</th></tr>' +
-      rows.map(function (r, i) { return '<tr class="pts"><td>' + (i + 1) + '</td><td><input data-i="' + i + '" data-k="got" type="number" min="0" step="0.5" value="' + esc(r.got) + '"></td><td><input data-i="' + i + '" data-k="max" type="number" min="0" step="0.5" value="' + esc(r.max) + '"></td></tr>'; }).join('') + '</table>'; }
-    var solHtml = e.sol
+      rows.map(function (r, i) { return '<tr class="pts"><td>' + esc(r.lab || (i + 1)) + '</td><td><input data-i="' + i + '" data-k="got" type="number" min="0" step="0.5" value="' + esc(r.got) + '"></td><td><input data-i="' + i + '" data-k="max" type="number" min="0" step="0.5" value="' + esc(r.max) + '"></td></tr>'; }).join('') + '</table>'; }
+    var solHtml = e.sol && e.own
+      ? '<p><a class="btn" href="' + pdf(e.sol) + '" target="_blank" rel="noopener"><strong>' + L('Open the worked solution and marking scheme', 'Musterlösung und Punkteschema öffnen') + '</strong></a>. ' +
+        L('There is no official solution yet, so StudyHub wrote this one and checked every number twice. Its marking scheme splits each task’s points step by step; the maximum points are already filled in below. Mark strictly: formula first, units, a short reason.',
+          'Es gibt noch keine offizielle Lösung, deshalb hat StudyHub diese geschrieben und jede Zahl zweimal geprüft. Das Punkteschema darin teilt die Punkte jeder Aufgabe Schritt für Schritt auf; die Maximalpunkte sind unten schon eingetragen. Korrigiere streng: zuerst die Formel, Einheiten, eine kurze Begründung.') + '</p>'
+      : e.sol
       ? '<p><a class="btn" href="' + pdf(e.sol) + '" target="_blank" rel="noopener"><strong>' + L('Open the official solutions', 'Offizielle Lösungen öffnen') + '</strong></a>. ' + L('Mark task by task: full points only if your argument is complete; part points for correct steps. Be strict, like the exam is.', 'Korrigiere Aufgabe für Aufgabe: volle Punkte nur bei vollständigem Argument; Teilpunkte für richtige Schritte. Sei streng, wie die Prüfung.') + '</p>'
       : '<p>' + L('There are no official solutions for this exam. Two ways to mark it:', 'Für diese Prüfung gibt es keine offiziellen Lösungen. Zwei Wege zum Korrigieren:') + '</p><ul><li>' +
         L('With your own AI: in a chat with the <a href="connect.html">StudyHub connector</a>, write “Mark my mock of ', 'Mit deiner eigenen KI: Schreibe im Chat mit dem <a href="connect.html">StudyHub-Connector</a> „Korrigiere meine Probeprüfung ') + esc(e.t) + L('” and send photos or typed answers task by task.', '“ und schicke Fotos oder getippte Antworten, Aufgabe für Aufgabe.') + '</li><li>' +

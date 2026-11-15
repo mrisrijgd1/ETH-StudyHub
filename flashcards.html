@@ -249,27 +249,37 @@ a.subject:hover strong { text-decoration: underline; }
 <header>
 <span class="eyebrow">Toolbox · Flashcards</span>
 <h1>Flashcards</h1>
-<p class="lead">Definitions, theorems and proof moves, lesson by lesson. The cards now cover all 22 Analysis lessons; Physics and Linear Algebra are being added. Say the answer out loud or write it down before you flip the card: definitions and theorem statements must come out exactly.</p>
+<p class="lead">Definitions, theorems, proof moves and recipes, lesson by lesson, for all 22 Analysis lessons and all 16 Physics lessons; Linear Algebra follows after its redo. Say the answer out loud or write it down before you flip the card: definitions, theorems and laws must come out exactly.</p>
 </header>
+<style>
+.fc-list { display: flex; flex-direction: column; gap: 1rem; }
+.fc-list .fc-item { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-list .fc-item:first-child { border-top: 0; padding-top: 0; }
+.fc-list .q { font-weight: 600; }
+.fc-list .a h3 { display: none; }
+.fc-controls label.fc-off { opacity: .45; }
+</style>
 <div class="fc-controls" aria-label="Choose cards">
+  <label>Subject <select id="fc-subj" aria-label="Subject"><option value="a">Analysis 1</option><option value="p">Physics I</option></select></label>
   <label>Lessons <select id="fc-from" aria-label="From lesson"></select></label>
   <label>to <select id="fc-to" aria-label="To lesson"></select></label>
   <label><input type="checkbox" id="fc-def" checked> Definitions</label>
-  <label><input type="checkbox" id="fc-thm" checked> Theorems</label>
-  <label><input type="checkbox" id="fc-move" checked> Moves</label>
+  <label><input type="checkbox" id="fc-thm" checked> <span id="fc-thm-l">Theorems</span></label>
+  <label id="fc-move-l"><input type="checkbox" id="fc-move" checked> Moves</label>
   <label><input type="checkbox" id="fc-recipe" checked> Recipes</label>
   <button type="button" class="primary" id="fc-start">Start</button>
+  <button type="button" id="fc-list">Show as a list</button>
 </div>
 <p class="fc-meta" id="fc-count" aria-live="polite"></p>
 <div class="fc-stage" id="fc-stage">
-  <p>Choose the lessons and the kinds of card, then press Start. The cards come in random order. “Again” puts a card back a few places later; “Got it” removes it from this round.</p>
+  <p>Choose the subject, the lessons and the kinds of card, then press Start. The cards come in random order. “Again” puts a card back a few places later; “Got it” removes it from this round. “Show as a list” shows the same cards with their answers, in lesson order, for reading through.</p>
 </div>
 <div class="fc-btns" id="fc-btns" hidden>
   <button type="button" class="primary" id="fc-show">Show answer</button>
   <button type="button" id="fc-again" hidden>Again</button>
   <button type="button" class="primary" id="fc-got" hidden>Got it</button>
 </div>
-<p class="legend">Recipe cards are the step-by-step methods for computations (series tests, radius of convergence, integrals, Taylor expansions, differential equations). To drill only those, untick the other three kinds.</p>
+<p class="legend">Recipe cards are the step-by-step methods: in Analysis for computations (series tests, radius of convergence, integrals, Taylor expansions, differential equations), in Physics for each type of exam problem. To drill only those, untick the other kinds. Physics cards use Prof. Rupp's letters, the same as the formula sheet ($D$ for the spring constant, $T$ and $U$ for the energies, $M$ for the torque); Moves exist for Analysis only.</p>
 <div id="fc-pool">
 <!-- Flashcards: one <div class="fc"> per card. data-t = def | thm | recipe ; data-l = lesson where it is taught. Moves cards are added automatically from the moves library. -->
 
@@ -699,6 +709,323 @@ a.subject:hover strong { text-decoration: underline; }
 <div class="fc" data-id="a22-9" data-t="recipe" data-l="22"><div class="q">Recipe: “solve this differential equation”. How do you recognise the type?</div>
 <div class="a"><p>Only $y'$ and the right side factors as $f(x)g(y)$: separable. $y'+f(x)y=g(x)$, $y$ only to the first power: linear first order (variation of constants). $y''+a_1y'+a_0y=g$ with constant $a_0,a_1$: characteristic polynomial, then the Ansatz table. Then the initial values, then check.</p></div></div>
 
+<!-- Physics I deck: data-s="p". Script = Ensslin HS25; letters as in Rupp's lectures and the formula sheet. Link script pages as <a href="phys-script.html#pN">p. N</a> and Physics lessons as <a href="phys-NN.html">lesson N</a> (bare "p. N" / "lesson N" would link to the Analysis script and lessons). -->
+
+<div class="fc" data-s="p" data-id="p01-1" data-t="def" data-l="1"><div class="q">Velocity and acceleration of a point mass with position $\vec r(t)$. How do you go back from $\vec a$ to $\vec r$?</div>
+<div class="a"><p>$\vec v=\dot{\vec r}=\frac{d\vec r}{dt}$, $\vec a=\dot{\vec v}=\ddot{\vec r}$, component by component. Backwards: integrate, $\vec v(t)=\vec v(t_0)+\int_{t_0}^t\vec a\,dt'$ and $\vec r(t)=\vec r(t_0)+\int_{t_0}^t\vec v\,dt'$. A body accelerates when its speed or its direction changes (script section 2.4–2.5).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p01-2" data-t="thm" data-l="1"><div class="q">Motion with constant acceleration $\vec a_0$: the two formulas, and how many initial conditions fix the motion?</div>
+<div class="a"><p>$$\begin{aligned}\vec v(t)&amp;=\vec v(t_0)+\vec a_0(t-t_0)\\ \vec r(t)&amp;=\vec r(t_0)+\vec v(t_0)(t-t_0)+\tfrac12\vec a_0(t-t_0)^2\end{aligned}$$ Six initial conditions in space: three for $\vec r(t_0)$, three for $\vec v(t_0)$. Free fall and the throw are the same formula with different initial values.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p01-3" data-t="thm" data-l="1"><div class="q">The oblique throw from height $z_0$ with speed $v$ at angle $\alpha$: $x(t)$, $z(t)$, and which angle gives the longest range from the ground?</div>
+<div class="a"><p>$x(t)=v\cos\alpha\cdot t$, $z(t)=z_0+v\sin\alpha\cdot t-\frac12gt^2$. The trajectory is a parabola. From the ground, $45^\circ$ gives the largest range, and complementary angles land at the same place; from a raised launch point the best angle is below $45^\circ$ (<a href="phys-script.html#p20">p. 20</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p01-4" data-t="thm" data-l="1"><div class="q">Uniform circular motion: speed, period and acceleration. In which direction does the acceleration point?</div>
+<div class="a"><p>$\omega=\dot\varphi$, $v=\omega r$, $T=\frac{2\pi}\omega$, $f=\frac1T$. The centripetal acceleration $a=\omega^2r=\frac{v^2}r$ points to the centre; $\vec v=\vec\omega\times\vec r$ is tangent. If $\omega$ changes, a tangential part $r\alpha$ with $\alpha=\dot\omega$ is added.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p01-5" data-t="def" data-l="1"><div class="q">Rupp's polar unit vectors $\hat r$, $\hat\varphi$: how do they change, and what are $\vec v$ and $\vec a$ on a circle of radius $r$?</div>
+<div class="a"><p>$\dot{\hat r}=\dot\varphi\,\hat\varphi$, $\dot{\hat\varphi}=-\dot\varphi\,\hat r$. So $\vec v=r\dot\varphi\,\hat\varphi$ and $$\vec a=-r\dot\varphi^2\,\hat r+r\ddot\varphi\,\hat\varphi,$$ a centripetal and a tangential part. Arc length $s=r\varphi$, so $v=\dot s=r\omega$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p01-6" data-t="recipe" data-l="1"><div class="q">Recipe: a throw problem (top of the flight, landing, two bodies meeting).</div>
+<div class="a"><p>1. Axes and origin (usually the launch point, $y$ up). 2. Initial conditions as components: $v_{x0}=v_0\cos\alpha$, $v_{y0}=v_0\sin\alpha$. 3. Write $x(t)$, $y(t)$, $v_y(t)=v_{y0}-gt$. 4. Turn the question into a condition: top $\Leftrightarrow v_y=0$; landing $\Leftrightarrow y=0$, $t&gt;0$; meeting $\Leftrightarrow$ same $x$ and $y$ at the same $t$. 5. Solve for $t$, put it into the other component. 6. Check dimensions; numbers only at the end.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p01-7" data-t="def" data-l="1"><div class="q">Rupp's three quick checks for any formula (dimension analysis).</div>
+<div class="a"><p>Both sides have the same dimension; every term of a sum has the same dimension; whatever stands inside $e^{(\dots)}$, $\sin(\dots)$, $\ln(\dots)$ has no dimension. Used backwards, it finds a formula up to a constant: write $T=c\,\ell^\alpha g^\beta$ and match the powers of m and s. Her practice exam: result as a formula first, then numbers, always with units.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-1" data-t="def" data-l="2"><div class="q">How does the script define mass, and what is momentum?</div>
+<div class="a"><p>By the recoil experiment: two carts pushed apart by a spring have $\frac{m_A}{m_B}=\frac{v_B}{v_A}$, whatever the spring (<a href="phys-script.html#p32">p. 32</a>). Momentum $\vec p=m\vec v$, a vector, unit $\mathrm{kg\,m/s}=\mathrm{N\,s}$. Mass is a scalar; weight is a force.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-2" data-t="thm" data-l="2"><div class="q">State conservation of momentum. Why is it really three laws?</div>
+<div class="a"><p>In an isolated system (no external forces, or they cancel) the total momentum $\vec p_{\text{tot}}=\sum_i\vec p_i$ is constant (<a href="phys-script.html#p36">p. 36</a>). It is a vector, so each component $p_{\text{tot},x}$, $p_{\text{tot},y}$, $p_{\text{tot},z}$ is conserved separately: if only gravity acts, the horizontal momentum is still conserved.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-3" data-t="thm" data-l="2"><div class="q">State Newton's three laws (Rupp: NAx 1, 2, 3).</div>
+<div class="a"><p>1. With net force zero, a body stays at rest or moves in a straight line at constant speed (this defines inertial frames). 2. $\vec F=\frac{d\vec p}{dt}$, for constant mass $\vec F=m\vec a$, with $\vec F$ the vector sum of all forces on this body. 3. $\vec F_{B\to A}=-\vec F_{A\to B}$: forces come in pairs, acting on different bodies.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-4" data-t="thm" data-l="2"><div class="q">The classic third-law trap: a ball lies on a table. Which two forces are a third-law pair?</div>
+<div class="a"><p>The ball pushes the table down, the table pushes the ball up: that is the pair (different bodies). The ball's weight and the table's push on the ball are equal and opposite too, but they act on the same body: that is equilibrium (second law with $\vec a=0$). The weight's partner is the ball pulling the earth up.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-5" data-t="def" data-l="2"><div class="q">Definition: the impulse of a force. What does it give you?</div>
+<div class="a"><p>$$\vec p_E-\vec p_A=\int_{t_A}^{t_E}\vec F(t)\,dt.$$ In one dimension: the area under $F(t)$. From the momenta before ($A$) and after ($E$) you know the area without knowing $F(t)$; a longer stop means a smaller force (airbag) (<a href="phys-script.html#p41">p. 41</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-6" data-t="thm" data-l="2"><div class="q">The rocket equation. Why not $F=ma$?</div>
+<div class="a"><p>The mass changes, so use momentum conservation for rocket plus gas. Ejecting gas at speed $u$ relative to the rocket: $$\Delta v=v_1-v_0=u\ln\frac{m_0}{m_1}$$ (without external forces; <a href="phys-script.html#p50">p. 50</a>). It needs no air: it pushes against its own exhaust.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-7" data-t="def" data-l="2"><div class="q">Inertial frame and Galilei transformation.</div>
+<div class="a"><p>A frame in which Newton's first law holds is inertial. If $K'$ moves with constant velocity $\vec u$ relative to an inertial $K$: $\vec r\,'=\vec r-\vec u\,t$, $\vec v\,'=\vec v-\vec u$, $\vec a\,'=\vec a$. Forces are the same, so $K'$ is inertial too. Accelerated or rotating frames are not.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p02-8" data-t="recipe" data-l="2"><div class="q">Recipe: any dynamics problem (script section 3.8.1).</div>
+<div class="a"><p>1. Choose the body (system boundary). 2. Draw all forces on it, in a general position. 3. Inertial frame and axes that make the motion simple. 4. Second law in components: $m\ddot x=\sum F_x$, … 5. Solve the differential equations (free constants). 6. Fix the constants with $\vec r(t_0)$, $\vec v(t_0)$ (<a href="phys-script.html#p52">p. 52</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-1" data-t="def" data-l="3"><div class="q">Normal force, rope tension and constraint forces: what decides their size?</div>
+<div class="a"><p>The normal force $\vec F_N$ is perpendicular to the surface and exactly as large as needed so the body doesn't sink in. A massless rope pulls along itself with the same tension everywhere; a frictionless pulley only turns it. Rupp: such constraint forces (Zwangskräfte) have no formula of their own; find them from Newton's second law.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-2" data-t="thm" data-l="3"><div class="q">Hooke's law: the spring force, in Rupp's letters. What motion does a mass on a spring do?</div>
+<div class="a"><p>$F=-D\,(x-x_0)$ with spring constant $D$ (the script writes $k$) and rest length $x_0$. Released at rest from $x_1$: $x(t)=x_0+(x_1-x_0)\cos\omega t$ with $\omega=\sqrt{D/m}$, an oscillation (<a href="phys-script.html#p59">p. 59</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-3" data-t="thm" data-l="3"><div class="q">Static and sliding friction (formula sheet letters).</div>
+<div class="a"><p>Static (Haftreibung): $F_R\le\mu_HF_N$, as large as needed to hold the body. Sliding (Gleitreibung): $F_R=\mu_GF_N$, against the velocity. Usually $\mu_H&gt;\mu_G$; both roughly independent of contact area and speed. The script writes $\mu_0$ and $\mu$ (<a href="phys-script.html#p61">p. 61</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-4" data-t="thm" data-l="3"><div class="q">Inclined plane with angle $\alpha$: normal force, when does a body stick, and its acceleration when sliding down?</div>
+<div class="a"><p>$F_N=mg\cos\alpha$, downhill force $mg\sin\alpha$. It sticks if $\tan\alpha\le\mu_H$ (the mass cancels). Sliding down: $a=g(\sin\alpha-\mu_G\cos\alpha)$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-5" data-t="thm" data-l="3"><div class="q">Drag at low and high speed, and the terminal velocity.</div>
+<div class="a"><p>Low speed: $F_R=\kappa v$ (sphere: Stokes $6\pi\eta rv$). High speed: $F_R=\frac12c_W\rho Av^2$. A falling body reaches terminal velocity when drag equals weight; with $v^2$-drag $v_\infty=\sqrt{\frac{2mg}{c_W\rho A}}$ (<a href="phys-script.html#p64">p. 64</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-6" data-t="thm" data-l="3"><div class="q">Apparent weight in a lift accelerating with $a$ (upwards positive). When are you weightless?</div>
+<div class="a"><p>The scale shows $F_N=m(g+a)$. Starting upwards you feel heavier, braking on the way up lighter, at constant speed normal. Free fall ($a=-g$): $F_N=0$, weightless. Gravity hasn't vanished; nothing holds you up (<a href="phys-script.html#p71">p. 71</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-7" data-t="thm" data-l="3"><div class="q">Archimedes' principle. When does a body float?</div>
+<div class="a"><p>The buoyant force points up and equals the weight of the displaced fluid: $F_A=\rho_FV_{\text{sub}}g$ (on the formula sheet). A floating body sinks in until $\rho_FV_{\text{sub}}=\rho_KV$. Fully submerged, it sinks if $\rho_K&gt;\rho_F$ and rises if $\rho_K&lt;\rho_F$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p03-8" data-t="def" data-l="3"><div class="q">Gravity as a force field: $\vec F$, $\vec g$ at distance $r$, and $g$ at the surface.</div>
+<div class="a"><p>$\vec F=-G\frac{mM}{r^2}\hat r=m\vec g(\vec r)$ with $\vec g=-G\frac M{r^2}\hat r$. Inertial and gravitational mass are equal, so $\vec a=\vec g$ for every body. At the surface $g=G\frac M{R_E^2}\approx9.81\,\mathrm{m/s^2}$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p04-1" data-t="thm" data-l="4"><div class="q">Newton's law in a linearly accelerated frame BS′ (acceleration $\vec A$).</div>
+<div class="a"><p>$m\vec a\,'=\vec F+\vec F_T$ with the inertial force $\vec F_T=-m\vec A$, against the frame's acceleration (<a href="phys-script.html#p76">p. 76</a>). Rupp writes the frame's acceleration $\vec A_0$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p04-2" data-t="thm" data-l="4"><div class="q">The acceleration seen from an inertial frame when $K'$ rotates with constant $\vec\omega$: the four terms.</div>
+<div class="a"><p>$$\vec a=\vec a\,'+\vec A+2\,\vec\omega\times\vec v\,'+\vec\omega\times(\vec\omega\times\vec r\,').$$ Relative acceleration, acceleration of the origin, Coriolis term, centripetal term (<a href="phys-script.html#p78">p. 78</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p04-3" data-t="def" data-l="4"><div class="q">The three fictitious forces in a rotating, accelerated frame: formula and direction of each.</div>
+<div class="a"><p>Inertial $\vec F_T=-m\vec A$: against the frame's acceleration. Centrifugal $\vec F_{ZF}=-m\,\vec\omega\times(\vec\omega\times\vec r\,')$: away from the axis, size $m\omega^2r_\perp$, on everything. Coriolis $\vec F_C=-2m\,\vec\omega\times\vec v\,'$: only on bodies moving relative to the frame, perpendicular to $\vec v\,'$ and $\vec\omega$, does no work. None has a third-law partner.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p04-4" data-t="thm" data-l="4"><div class="q">Coriolis on the earth: which way are horizontal motions deflected, and how big is it?</div>
+<div class="a"><p>Horizontal Coriolis acceleration $2v'\omega\sin\varphi$ at latitude $\varphi$. Northern hemisphere: to the right; southern: to the left; at the equator: none. That is why storms spin counter-clockwise in the north (<a href="phys-script.html#p86">p. 86</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p04-5" data-t="thm" data-l="4"><div class="q">The Foucault pendulum: how fast does its plane turn?</div>
+<div class="a"><p>With $\omega\sin\varphi$: a full turn takes $T=\frac{24\,\mathrm h}{\sin\varphi}$. One day at the poles, about 33 h in Zurich, never at the equator. Seen from the inertial frame, the plane stays fixed and the earth turns underneath (<a href="phys-script.html#p86">p. 86–90</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p04-6" data-t="recipe" data-l="4"><div class="q">Recipe: a problem in an accelerated or rotating frame.</div>
+<div class="a"><p>1. Is the body at rest or simple in that frame? Then use it. 2. Draw all real forces. 3. Add the fictitious ones: $-m\vec A$; $m\omega^2r_\perp$ outwards; $-2m\vec\omega\times\vec v\,'$ if it moves in the frame. 4. $m\vec a\,'=\sum\vec F$ in components (at rest: $\vec a\,'=0$, $\vec v\,'=0$, no Coriolis). 5. Check from the inertial frame.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p05-1" data-t="def" data-l="5"><div class="q">Definition: the gradient of a scalar field $u$. Its three properties.</div>
+<div class="a"><p>$\nabla u=\left(\frac{\partial u}{\partial x},\frac{\partial u}{\partial y},\frac{\partial u}{\partial z}\right)$, with $du=\nabla u\cdot d\vec r$. It points in the direction of steepest ascent, is perpendicular to the level surfaces, and $\int_{\vec r_1}^{\vec r_2}\nabla u\cdot d\vec r=u(\vec r_2)-u(\vec r_1)$ on every path (<a href="phys-script.html#p98">p. 98–103</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p05-2" data-t="def" data-l="5"><div class="q">Definition: work, for a constant force on a straight path and in general. When is it positive, negative, zero?</div>
+<div class="a"><p>$W=\vec F\cdot\vec s=Fs\cos\alpha$; in general $W=\int_\Gamma\vec F\cdot d\vec r$ (<a href="phys-script.html#p109">p. 109</a>). $W&gt;0$ if the force helps the motion, $W&lt;0$ if it opposes it (friction, always), $W=0$ if $\vec F\perp$ the path (a centripetal force, the normal force on a flat track). Unit: joule.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p05-3" data-t="def" data-l="5"><div class="q">Definition: power. Formula with force and velocity.</div>
+<div class="a"><p>$P=\frac{dW}{dt}$, unit watt $=\mathrm{J/s}$. If the point of application moves with $\vec v$: $P=\vec F\cdot\vec v$. Constant power: $W=P\,\Delta t$ (<a href="phys-script.html#p111">p. 111</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p05-4" data-t="thm" data-l="5"><div class="q">The work–energy theorem. For which forces does it hold?</div>
+<div class="a"><p>$T=\frac12mv^2=\frac{p^2}{2m}$ and $W_{1\to2}=T_2-T_1$: the work of the total force equals the change of kinetic energy. It holds for every force, conservative or not (for $v\ll c$) (<a href="phys-script.html#p112">p. 112</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p05-5" data-t="recipe" data-l="5"><div class="q">Recipe: compute a work integral.</div>
+<div class="a"><p>1. Force in components. 2. Straight along $x$: $W=\int_{x_1}^{x_2}F_x\,dx$; radial: $\int F_r\,dr$. 3. Curved: parametrise $\vec r(t)$, then $W=\int\vec F(\vec r(t))\cdot\dot{\vec r}(t)\,dt$. 4. Shortcuts: $\vec F\perp d\vec r$ everywhere gives $0$; constant $\vec F$ gives $\vec F\cdot(\vec r_2-\vec r_1)$. 5. Check the sign.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p06-1" data-t="def" data-l="6"><div class="q">Definition: a conservative force and its potential energy $U$. Four equivalent ways to say it.</div>
+<div class="a"><p>$\vec F=-\nabla U$ for some $U$ (<a href="phys-script.html#p113">p. 113</a>). Equivalent: the work is the same on every path between two points; the work around every closed path is $0$; $\nabla\times\vec F=0$ (in a region without holes). Friction and drag are not conservative.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p06-2" data-t="thm" data-l="6"><div class="q">Work of a conservative force, and how you find $U$ from $\vec F$.</div>
+<div class="a"><p>$W_{1\to2}=U(\vec r_1)-U(\vec r_2)$, independent of the path. So $\Delta U_{AB}=-\int_A^B\vec F\cdot d\vec r$ (formula sheet). The zero of $U$ is free: only differences are measurable.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p06-3" data-t="def" data-l="6"><div class="q">The three potential energies to know (with their zeros).</div>
+<div class="a"><p>Gravity near the ground: $U=mgz$ (zero at $z=0$). Spring: $U=\frac12D(x-x_0)^2$ (zero at the rest length). Central gravity: $U(r)=-G\frac{m_1m_2}r$ (zero at infinity, so negative everywhere) (<a href="phys-script.html#p115">p. 115–119</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p06-4" data-t="thm" data-l="6"><div class="q">Reading a potential $U(x)$: force, equilibria and turning points.</div>
+<div class="a"><p>$F_x=-\frac{dU}{dx}$: the force points downhill. Equilibrium where $U'=0$: stable at a minimum, unstable (labil) at a maximum, neutral on a flat stretch. With energy $E$ the body stays where $U(x)\le E$ and turns around where $U(x)=E$ (<a href="phys-script.html#p119">p. 119–122</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p06-5" data-t="thm" data-l="6"><div class="q">Conservation of mechanical energy, and the version with friction (Rupp's form).</div>
+<div class="a"><p>Only conservative forces doing work: $E=T+U$ is constant. With non-conservative forces: $W_{NK}=\Delta T+\Delta U=\Delta E$; friction makes $W_{NK}&lt;0$, and the lost energy becomes heat. Forces doing no work (normal force of a smooth track, string tension) don't matter (<a href="phys-script.html#p123">p. 123–124</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p06-6" data-t="recipe" data-l="6"><div class="q">Recipe: the energy method (speed, height, a force on a curved path).</div>
+<div class="a"><p>1. Two moments: one known, one asked. 2. Choose the zero of $U$; list $T_1,U_1,T_2,U_2$. 3. $T_1+U_1=T_2+U_2$, or with friction $T_1+U_1+W_{NK}=T_2+U_2$, $W_{NK}=-F_Rs$. 4. Solve; the mass usually cancels. 5. A force at a point of a curve: $v$ from energy, then radially $\sum F_{\text{to centre}}=m\frac{v^2}R$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p06-7" data-t="def" data-l="6"><div class="q">Rupp's energy with a system boundary: closed and open systems, and the trap.</div>
+<div class="a"><p>Closed system (only internal forces): the total energy stays the same, it only changes form. Open system: the energy change equals the work $W$ of the external forces. Trap: count gravity once, either inside the system as $\Delta U=mg\Delta h$ or outside as the work of $\vec F_G$, never both.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p07-1" data-t="def" data-l="7"><div class="q">Definition: angular momentum and torque of a point mass about O. Units?</div>
+<div class="a"><p>$\vec L=\vec r\times\vec p=m\,\vec r\times\vec v$, $|\vec L|=r_\perp p$; unit $\mathrm{kg\,m^2/s}$. $\vec M=\vec r\times\vec F$, $|\vec M|=rF\sin\varphi$; unit $\mathrm{N\,m}$. Both depend on the reference point O: always say “about O” (<a href="phys-script.html#p129">p. 129</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p07-2" data-t="thm" data-l="7"><div class="q">The angular momentum theorem, and when $\vec L$ is conserved.</div>
+<div class="a"><p>$\dot{\vec L}=\vec M$ (Drallsatz, <a href="phys-script.html#p130">p. 130</a>). If the torque about O vanishes, $\vec L$ about O is constant in size and direction: a free particle, and every central force (along $\vec r$), for example a planet about the sun.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p07-3" data-t="def" data-l="7"><div class="q">The centre of mass, and the centre-of-mass theorem (Schwerpunktsatz).</div>
+<div class="a"><p>$\vec r_S=\frac1{m_{\text{tot}}}\sum_im_i\vec r_i$. Internal forces cancel in pairs, so $m_{\text{tot}}\ddot{\vec r}_S=\vec F_{\text{ext}}$ and $\vec P=m_{\text{tot}}\vec v_S$ (<a href="phys-script.html#p135">p. 135</a>). The centre of mass moves like one point with all the mass, whatever the points where the external forces act (where they act only decides the rotation).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p07-4" data-t="thm" data-l="7"><div class="q">Splitting $T$ and $\vec L$ into centre-of-mass and internal parts.</div>
+<div class="a"><p>$T=\frac12m_{\text{tot}}v_S^2+\sum_i\frac{p_i'^2}{2m_i}$. $\vec L=\vec r_S\times m_{\text{tot}}\vec v_S$ (orbital) $+\sum_i\vec r_i\,'\times\vec p_i\,'$ (spin). In the centre-of-mass frame SPS′ the total momentum is zero (<a href="phys-script.html#p140">p. 140–141</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p07-5" data-t="thm" data-l="7"><div class="q">The four conservation laws for a system of particles, with their conditions.</div>
+<div class="a"><p>$\vec F_{\text{ext}}=0$: centre of mass moves uniformly, total momentum conserved (also when bodies split or merge). $\vec M_{\text{ext}}=0$ (about a fixed point or about S): $\vec L$ conserved. All forces conservative: $E_{\text{tot}}=T+U_{\text{int}}+U_{\text{ext}}$ conserved. Each one per component, where the condition holds.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p07-6" data-t="def" data-l="7"><div class="q">The reduced mass of a two-body system. What is it used for?</div>
+<div class="a"><p>$\mu=\frac{m_1m_2}{m_1+m_2}$. The relative motion $\vec r_{12}=\vec r_1-\vec r_2$ obeys $\mu\ddot{\vec r}_{12}=\vec F_{12}$: one particle of mass $\mu$. For very different masses $\mu$ is almost the smaller mass (hydrogen: $\mu\approx0.9995\,m_e$) (<a href="phys-script.html#p144">p. 144–147</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p07-7" data-t="recipe" data-l="7"><div class="q">Recipe: a system of several bodies.</div>
+<div class="a"><p>1. Draw the system boundary; forget the internal forces. 2. List the external forces and their torques. 3. External force zero in some direction: that momentum component is conserved. External torque zero about an axis: $L$ about it is conserved. 4. Motion as a whole: $m_{\text{tot}}\ddot{\vec r}_S=\vec F_{\text{ext}}$. 5. Energies: split $T$ into centre-of-mass and internal parts.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p08-1" data-t="thm" data-l="8"><div class="q">What is conserved in a collision? The three types (script's $Q$-value and Rupp's names).</div>
+<div class="a"><p>Momentum always: $\sum\vec p^{\,A}=\sum\vec p^{\,E}$ (the short impact makes external impulses negligible). Kinetic energy, $T_1+T_2=T_3+T_4-Q$: elastic $Q=0$; inelastic $Q&lt;0$ (Rupp: partially elastic, or fully inelastic when they stick); superelastic $Q&gt;0$ (explosion). Total energy incl. heat: always (<a href="phys-script.html#p148">p. 148</a>, <a href="phys-script.html#p153">p. 153</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p08-2" data-t="thm" data-l="8"><div class="q">Central elastic collision, body 2 at rest: velocities after, and the three cases.</div>
+<div class="a"><p>$$u_1=\frac{m_1-m_2}{m_1+m_2}v_1,\qquad u_2=\frac{2m_1}{m_1+m_2}v_1.$$ $m_1&gt;m_2$: both move on, the light one faster (up to $2v_1$). $m_1=m_2$: velocities exchanged (Newton's cradle). $m_1&lt;m_2$: the light ball bounces back. General version on the formula sheet (<a href="phys-script.html#p149">p. 149–150</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p08-3" data-t="thm" data-l="8"><div class="q">The shortcut for elastic central collisions.</div>
+<div class="a"><p>The relative velocity reverses: $v_1-v_2=-(u_1-u_2)$. Together with momentum conservation that is a linear system, quicker than the quadratic from energy.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p08-4" data-t="thm" data-l="8"><div class="q">Completely inelastic collision: common velocity and energy loss.</div>
+<div class="a"><p>$\vec u=\frac{m_1\vec v_1+m_2\vec v_2}{m_1+m_2}=\vec v_S$. Lost kinetic energy: $-Q=\frac12\mu(v_1-v_2)^2$, the internal part. That is the largest possible loss: the centre-of-mass energy $\frac12m_{\text{tot}}v_S^2$ can never be destroyed.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p08-5" data-t="thm" data-l="8"><div class="q">Elastic collision in 2-D with equal masses, one at rest: at what angle do they separate, and why?</div>
+<div class="a"><p>At $90^\circ$. Momentum: $\vec v_1=\vec v_3+\vec v_4$; energy: $v_1^2=v_3^2+v_4^2$. Squaring the first and comparing gives $\vec v_3\cdot\vec v_4=0$ (<a href="phys-script.html#p158">p. 158</a>). Momentum is conserved per component.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p08-6" data-t="recipe" data-l="8"><div class="q">Recipe: a collision problem (pendulum, ramp, ballistic pendulum).</div>
+<div class="a"><p>1. Before: speeds from energy conservation. 2. During: momentum conservation per component, with signs; elastic: add energy (or “relative velocity reverses”); sticking: one common velocity. 3. Solve for the velocities just after. 4. After: energy again (how high, how far). 5. Check: momentum before = after, $T$ after $\le$ before, limits $m_1=m_2$, $m_2\to\infty$. Energy before, momentum during, energy after.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-1" data-t="thm" data-l="9"><div class="q">Newton's law of gravitation: force, potential energy, and the shortcut for $GM_E$.</div>
+<div class="a"><p>$\vec F=-G\frac{m_1m_2}{r^2}\hat r$, $U=-G\frac{m_1m_2}r$, $G=6.67\cdot10^{-11}\,\mathrm{N\,m^2/kg^2}$ (<a href="phys-script.html#p163">p. 163</a>). From $g=\frac{GM_E}{R_E^2}$: $GM_E=gR_E^2$. No calculator in the exam: use this.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-2" data-t="thm" data-l="9"><div class="q">State Kepler's three laws.</div>
+<div class="a"><p>1. Planets move on ellipses with the sun in a focus. 2. Equal areas in equal times: $\frac{dA}{dt}=\frac L{2m}$ (angular momentum is conserved). 3. $\frac{T^2}{a^3}=\frac{4\pi^2}{GM}$, the same for every body around the same $M$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-3" data-t="thm" data-l="9"><div class="q">The circular orbit: speed, period, and the energies.</div>
+<div class="a"><p>$G\frac{Mm}{r^2}=m\frac{v^2}r$ gives $v=\sqrt{\frac{GM}r}$ and $T^2=\frac{4\pi^2}{GM}r^3$. $T_{\text{kin}}=\frac{GMm}{2r}$, $U=-\frac{GMm}r$, so $E=-\frac{GMm}{2r}=-T_{\text{kin}}$. Farther out: slower, longer period.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-4" data-t="thm" data-l="9"><div class="q">Orbit energy and shape: what decides bound or not, and the speed anywhere on an orbit?</div>
+<div class="a"><p>$E=-\frac{GMm}{2a}$ depends only on the semi-major axis. $E&lt;0$: circle or ellipse (bound); $E=0$: parabola; $E&gt;0$: hyperbola. Anywhere: $v^2=GM\left(\frac2r-\frac1a\right)$. Perihelion $r_P=a(1-\varepsilon)$, aphelion $r_A=a(1+\varepsilon)$, and $r_Pv_P=r_Av_A$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-5" data-t="thm" data-l="9"><div class="q">Escape velocity and the first cosmic velocity.</div>
+<div class="a"><p>Escape: $E\ge0$, so $v_{\text{esc}}=\sqrt{\frac{2GM}r}=\sqrt2\,v_{\text{circ}}$; from the earth $\approx11\,\mathrm{km/s}$. Circular orbit just above the ground: $v=\sqrt{gR_E}\approx8\,\mathrm{km/s}$. The mass of the body cancels.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-6" data-t="def" data-l="9"><div class="q">The effective potential: formula, and what it tells you.</div>
+<div class="a"><p>$E_p^{\text{eff}}(r)=-G\frac{mM}r+\frac{L^2}{2mr^2}$, and $E=\frac12m\dot r^2+E_p^{\text{eff}}(r)$: a one-dimensional problem in $r$. At its minimum: a circle; $E_0&lt;E&lt;0$: $r$ swings between two turning points (ellipse); $E\ge0$: one turning point, the body escapes. The $\frac{L^2}{2mr^2}$ term is the centrifugal barrier (<a href="phys-script.html#p171">p. 171</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-7" data-t="thm" data-l="9"><div class="q">The gravitational field outside and inside a homogeneous sphere (or shell).</div>
+<div class="a"><p>Outside: as if all the mass sat at the centre, $g=\frac{GM}{r^2}$. Inside a shell: zero. Inside a homogeneous sphere: only the mass inside $r$ pulls, $g(r)=\frac{GM}{R^3}r$, growing linearly from $0$ (<a href="phys-script.html#p173">p. 173–178</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p09-8" data-t="recipe" data-l="9"><div class="q">Recipe: an orbit problem.</div>
+<div class="a"><p>Circular orbit: $\frac{GMm}{r^2}=m\omega^2r=m\frac{v^2}r$, $\omega=\frac{2\pi}T$. Two points of one orbit: energy, plus at perihelion and aphelion $r_Pv_P=r_Av_A$. Bound? Sign of $E=\frac12mv^2-\frac{GMm}r$. Size or period: $E=-\frac{GMm}{2a}$, then Kepler 3. Changing orbits: $\Delta E=E_2-E_1$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p10-1" data-t="def" data-l="10"><div class="q">The centre of mass of a rigid body: formula and the two habits that make the integral short.</div>
+<div class="a"><p>$\vec r_S=\frac1M\int\vec r\,dm=\frac1M\int_V\vec r\rho\,dV$ (<a href="phys-script.html#p184">p. 184</a>). Symmetry first: S lies on every mirror plane and symmetry axis. Then slice the body into pieces of known mass (discs, rings, strips); cylinder coordinates $dV=r\,dr\,d\varphi\,dz$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p10-2" data-t="def" data-l="10"><div class="q">Torque on a rigid body: line of action, lever arm, couple.</div>
+<div class="a"><p>A force may slide along its line of action without changing anything. $M=F\cdot(\text{lever arm})=rF\sin\varphi$, the lever arm being the distance from O to the line of action. A couple (two equal, opposite forces on different lines) has total force zero and the same torque about every point (<a href="phys-script.html#p186">p. 186–193</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p10-3" data-t="thm" data-l="10"><div class="q">Static equilibrium of a rigid body: the conditions, and the main trick.</div>
+<div class="a"><p>$\sum\vec F_i=0$ and $\sum\vec M_i=0$ (<a href="phys-script.html#p194">p. 194</a>). If the forces add to zero, the torque condition about one point gives it about every point. Trick: take torques about a point where an unknown force acts; it drops out. The weight may be drawn at the centre of mass.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p10-4" data-t="thm" data-l="10"><div class="q">A box (length $L$, height $h$) on a slope of angle $\alpha$: when does it slide, when does it tip?</div>
+<div class="a"><p>Slides when $\tan\alpha&gt;\mu_H$ (shape doesn't matter). Tips when the vertical through the centre of mass passes the lower edge: $\tan\alpha&gt;\frac Lh$. The smaller limit wins: tall and narrow tips first, flat slides first. Rupp: always check both ways equilibrium can fail.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p10-5" data-t="recipe" data-l="10"><div class="q">Recipe: a statics problem (ladder, beam on supports, crate on a ramp).</div>
+<div class="a"><p>1. Draw every force at its point of application (weights at S, normal forces perpendicular, friction along the surface, ropes along themselves). 2. Force balance in two directions. 3. Torque balance about a point where an unknown force acts (counter-clockwise positive). 4. Solve; a negative support force means lift-off and tipping. 5. On the verge of tipping the normal force sits at the edge; on the verge of sliding $F_R=\mu_HF_N$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p11-1" data-t="def" data-l="11"><div class="q">The moment of inertia about an axis, and the rotation formulas for a fixed axis.</div>
+<div class="a"><p>$J_A=\int r_\perp^2\,dm$, $r_\perp$ the distance from the axis (Rupp and some exams write $I$). $L=J_A\omega$, $T_{\text{rot}}=\frac12J_A\omega^2$, $M=J_A\ddot\varphi=J_A\alpha$, $P=M\omega$, $W=\int M\,d\varphi$ (<a href="phys-script.html#p204">p. 204–207</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p11-2" data-t="def" data-l="11"><div class="q">Moments of inertia about an axis through the centre of mass: hoop, disc, solid sphere, hollow sphere, rod, cuboid.</div>
+<div class="a"><p>Hoop or thin hollow cylinder $MR^2$; solid cylinder or disc $\frac12MR^2$; solid sphere $\frac25MR^2$; thin hollow sphere $\frac23MR^2$; thin rod (axis through the middle, perpendicular) $\frac1{12}M\ell^2$; cuboid $\frac1{12}M(a^2+b^2)$ (<a href="phys-script.html#p207">p. 207–209</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p11-3" data-t="thm" data-l="11"><div class="q">State Steiner's theorem.</div>
+<div class="a"><p>For an axis parallel to one through the centre of mass, at distance $d$: $J_A=J_S+Md^2$ (on the formula sheet as $J_A=J_Z+m_{\text{tot}}d^2$). Always start from the axis through S. Example: a rod about one end, $\frac1{12}M\ell^2+M\frac{\ell^2}4=\frac13M\ell^2$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p11-4" data-t="thm" data-l="11"><div class="q">Rolling without slipping: the condition, the kinetic energy, and who wins a race down a slope.</div>
+<div class="a"><p>$s=R\varphi$, $v_S=R\omega$, $a_S=R\alpha$ (<a href="phys-script.html#p210">p. 210</a>). $T=\frac12mv^2+\frac12J_S\omega^2=\frac12m(1+k)v^2$ with $J_S=kmR^2$. From height $h$: $v=\sqrt{\frac{2gh}{1+k}}$. Smallest $k$ wins: solid sphere, then disc, then hoop, whatever mass and radius.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p11-5" data-t="recipe" data-l="11"><div class="q">Recipe: a rolling or rotating body.</div>
+<div class="a"><p>1. $J$ about the right axis (table or integral, then Steiner). 2. Rolling? $v=R\omega$. 3. Speeds: energy with $T=\frac12mv^2+\frac12J_S\omega^2$ (or $\frac12J_P\omega^2$ about a fixed pivot). 4. Accelerations and forces: $ma_S=\sum F$ plus $J\alpha=\sum M$, linked by $a=R\alpha$. 5. No external torque: $J\omega=J'\omega'$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-1" data-t="thm" data-l="12"><div class="q">Why does almost everything oscillate harmonically near a stable equilibrium?</div>
+<div class="a"><p>Taylor: $U(r_0+x)\approx U(r_0)+\frac12U''(r_0)x^2$, since $U'(r_0)=0$ at a minimum. So $F=-kx$ with $k=U''(r_0)$, and $\ddot x+\omega_0^2x=0$ with $\omega_0=\sqrt{k/m}$ (<a href="phys-script.html#p224">p. 224–226</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-2" data-t="thm" data-l="12"><div class="q">The harmonic oscillator: solution, period, velocity, acceleration.</div>
+<div class="a"><p>$x=A\sin(\omega t+\delta)$ (or $B\sin\omega t+C\cos\omega t$); $T=\frac{2\pi}\omega$, $f=\frac\omega{2\pi}$, independent of $A$. $v=A\omega\cos(\omega t+\delta)$, $a=-\omega^2x$. Turning points: $v=0$, $|a|$ largest. Middle: $|v|=A\omega$ largest, $a=0$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-3" data-t="thm" data-l="12"><div class="q">Amplitude and phase from $x(0)=x_0$, $v(0)=v_0$. And the two quick cases.</div>
+<div class="a"><p>$A=\sqrt{x_0^2+\frac{v_0^2}{\omega^2}}$, $\tan\delta=\frac{x_0\omega}{v_0}$ (<a href="phys-script.html#p235">p. 235</a>). Released from rest at $x_0$: $x=x_0\cos\omega t$. Pushed through the middle with $v_0$: $x=\frac{v_0}\omega\sin\omega t$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-4" data-t="thm" data-l="12"><div class="q">Energy of the harmonic oscillator, and the averages.</div>
+<div class="a"><p>$E_{\text{tot}}=\frac12m\omega^2A^2=\frac12kA^2$, constant. $E_{\text{kin}}$ and $E_{\text{pot}}$ swap back and forth with twice the frequency; on average each is $\frac12E_{\text{tot}}$. Double $A$: four times the energy.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-5" data-t="thm" data-l="12"><div class="q">String pendulum, physical pendulum, and springs in parallel and in series.</div>
+<div class="a"><p>String pendulum (small angles): $\omega=\sqrt{g/l}$, mass cancels. Physical pendulum: $\omega=\sqrt{\frac{mgd}{J_P}}$, $J_P=J_S+md^2$, $d$ the distance pivot–S. Springs side by side: $k=k_1+k_2$; one after the other: $\frac1k=\frac1{k_1}+\frac1{k_2}$. A vertical spring has the same $\omega$; gravity only shifts the equilibrium.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-6" data-t="thm" data-l="12"><div class="q">The damped oscillator $\ddot x+2\rho\dot x+\omega_0^2x=0$: the three cases.</div>
+<div class="a"><p>$\lambda=-\rho\pm\sqrt{\rho^2-\omega_0^2}$. Weak ($\rho&lt;\omega_0$): $x=Ae^{-\rho t}\sin(\omega t+\delta)$, $\omega=\sqrt{\omega_0^2-\rho^2}&lt;\omega_0$. Critical ($\rho=\omega_0$): $x=(C_1+C_2t)e^{-\rho t}$, fastest return without oscillating. Strong ($\rho&gt;\omega_0$): two decaying exponentials, creeps back (<a href="phys-script.html#p238">p. 238–241</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-7" data-t="def" data-l="12"><div class="q">Energy decay of a weakly damped oscillator, and the quality factor.</div>
+<div class="a"><p>$E(t)=E_0e^{-t/\tau}$ with $\tau=\frac1{2\rho}$: the energy decays twice as fast as the amplitude. $Q=2\pi\frac\tau T$, $2\pi$ times energy stored over energy lost per period. Small damping, large $Q$ (<a href="phys-script.html#p244">p. 244–245</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p12-8" data-t="recipe" data-l="12"><div class="q">Recipe: set up and solve an oscillation (exam problem).</div>
+<div class="a"><p>1. Coordinate ($x$ or $\varphi$), zero at equilibrium. 2. Newton $m\ddot x=\sum F$, or torques about the fixed axis $J_P\ddot\varphi=\sum M$; restoring term with a minus sign. 3. Small angles $\sin\varphi\approx\varphi$; bring it to $\ddot\varphi+\omega^2\varphi=0$, read off $\omega^2$. 4. $\varphi=A\sin(\omega t+\delta)$, fit to the initial conditions, $T=\frac{2\pi}\omega$. 5. Check units of $\omega^2$ ($\mathrm{s^{-2}}$) and limits.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p13-1" data-t="thm" data-l="13"><div class="q">Forced oscillation $\ddot x+2\rho\dot x+\omega_0^2x=\frac{F_0}m\cos\Omega t$: what is left after a long time?</div>
+<div class="a"><p>The transient (homogeneous part) dies out like $e^{-\rho t}$. The steady state oscillates with the driver's frequency $\Omega$: $$|x_0|=\frac{F_0/m}{\sqrt{(\omega_0^2-\Omega^2)^2+4\rho^2\Omega^2}},\quad\tan\delta_0=\frac{-2\rho\Omega}{\omega_0^2-\Omega^2},$$ the phase lag running from $0$ to $-\pi$ (<a href="phys-script.html#p245">p. 245–246</a>; formula sheet: $C_2$, $\phi$).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p13-2" data-t="thm" data-l="13"><div class="q">The three limits of a forced oscillation: amplitude and phase.</div>
+<div class="a"><p>Slow ($\Omega\ll\omega_0$): $\frac{F_0}k$, in phase (the spring rules). Resonance ($\Omega\approx\omega_0$): $\frac{F_0}{2m\rho\omega_0}$, lag $\frac\pi2$ (damping alone decides; velocity in phase with the force). Fast ($\Omega\gg\omega_0$): $\frac{F_0}{m\Omega^2}\to0$, opposite phase (inertia) (<a href="phys-script.html#p249">p. 249</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p13-3" data-t="thm" data-l="13"><div class="q">Amplitude resonance versus power resonance: where is each maximum?</div>
+<div class="a"><p>Amplitude: $\Omega_{\text{res}}=\omega_0\sqrt{1-2\xi^2}$ with $\xi=\frac\rho{\omega_0}$, a little below $\omega_0$, and only if $\xi&lt;\frac1{\sqrt2}$ (otherwise no peak). Absorbed power: maximal exactly at $\Omega=\omega_0$. For weak damping they coincide (<a href="phys-script.html#p247">p. 247–250</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p13-4" data-t="thm" data-l="13"><div class="q">Beats: what you get from two oscillations of nearby frequencies, and how often you hear a swell.</div>
+<div class="a"><p>$$\begin{aligned}&amp;A\cos\omega_1t+A\cos\omega_2t\\&amp;\quad=2A\cos\left(\tfrac{\omega_1-\omega_2}2t\right)\cos\left(\tfrac{\omega_1+\omega_2}2t\right):\end{aligned}$$ a fast oscillation with a slowly swelling amplitude. Beat angular frequency $\omega_s=\frac{|\omega_1-\omega_2|}2$, but you hear $|f_1-f_2|$ swells per second (<a href="phys-script.html#p255">p. 255–256</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p13-5" data-t="thm" data-l="13"><div class="q">Two identical pendulums coupled by a weak spring $k$: the normal modes and the energy exchange.</div>
+<div class="a"><p>In phase ($x_1=x_2$): $\omega_0=\sqrt{g/\ell}$, spring never stretched. In antiphase ($x_1=-x_2$): $\omega_1=\sqrt{\omega_0^2+\frac{2k}m}$. Starting one pendulum alone gives a beat in each; the energy moves fully across in $\Delta t=\frac\pi{\omega_1-\omega_0}$ (<a href="phys-script.html#p270">p. 270–274</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p14-1" data-t="def" data-l="14"><div class="q">Kelvin scale, heat capacity, and the mixing temperature.</div>
+<div class="a"><p>$T/\mathrm K=\vartheta/{}^\circ\mathrm C+273.15$; in every formula $T$ is in kelvin. $\Delta Q=C\Delta T=mc_m\Delta T=\nu c_M\Delta T$. Mixing in an insulated box: $T_e=\frac{C_1T_1+C_2T_2}{C_1+C_2}$ (<a href="phys-script.html#p284">p. 284–286</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p14-2" data-t="thm" data-l="14"><div class="q">The first law with the script's arrows. What do $\swarrow$ and $\nearrow$ mean?</div>
+<div class="a"><p>$dU=\delta W^\swarrow+\delta Q^\swarrow$ (<a href="phys-script.html#p288">p. 288</a>). $\swarrow$: into the system, $\nearrow$: out of it; $W^\nearrow=-W^\swarrow$. Work on a gas: $\delta W^\swarrow=-p\,dV$ (expanding, the gas does work). In the exam, say which convention you use.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p14-3" data-t="thm" data-l="14"><div class="q">The ideal gas: equation of state, the two constants, and what is <em>not</em> in it.</div>
+<div class="a"><p>$pV=NkT=\nu RT$, $k=1.381\cdot10^{-23}\,\mathrm{J/K}$, $R=N_Ak=8.314\,\mathrm{J/(mol\,K)}$ (<a href="phys-script.html#p291">p. 291–292</a>). Which gas it is: a mole of any ideal gas fills the same volume at the same $p$ and $T$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p14-4" data-t="thm" data-l="14"><div class="q">Equipartition: $U$, $C_V$, $C_p$, $\kappa$ in terms of the degrees of freedom $f$. Values of $f$?</div>
+<div class="a"><p>$U=\frac f2\nu RT$, $C_V=\frac f2R$, $C_p=C_V+R=\frac{f+2}2R$, $\kappa=\frac{C_p}{C_V}=\frac{f+2}f$ (<a href="phys-script.html#p296">p. 296</a>; table on the formula sheet). One atom: $f=3$; two atoms (air): $f=5$, vibration frozen at room temperature; non-linear molecule: $f=6$; solid: $6$, so $3R$ (Dulong–Petit).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p14-5" data-t="thm" data-l="14"><div class="q">Why is $C_p&gt;C_V$?</div>
+<div class="a"><p>At constant volume all the heat goes into $U$. At constant pressure the gas also expands and does work $p\,dV=\nu R\,dT$, which the heat must pay for too. So $C_p=C_V+R$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p14-6" data-t="recipe" data-l="14"><div class="q">Recipe: first-law bookkeeping for an ideal gas.</div>
+<div class="a"><p>1. Name the process: what is constant ($V$, $p$, $T$, or no heat)? 2. $\Delta U=\nu C_V\Delta T$, always, for every process. 3. $W^\swarrow=-\int p\,dV$: $0$ at constant $V$, $-p\Delta V$ at constant $p$. 4. $Q^\swarrow=\Delta U-W^\swarrow$. 5. Signs by common sense: heated and expanding means $Q^\swarrow&gt;0$, $W^\swarrow&lt;0$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p15-1" data-t="thm" data-l="15"><div class="q">The four changes of state: $W^\swarrow$, $Q^\swarrow$, $\Delta U$ for each.</div>
+<div class="a"><p>Isochoric: $W=0$, $Q=\Delta U=\nu C_V\Delta T$. Isobaric: $W^\swarrow=-\nu R\Delta T$, $Q^\swarrow=\nu C_p\Delta T$. Isothermal: $\Delta U=0$, $Q^\swarrow=-W^\swarrow=\nu RT\ln\frac{V_2}{V_1}$. Adiabatic: $Q=0$, $W^\swarrow=\Delta U=\nu C_V\Delta T$ (table on the formula sheet).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p15-2" data-t="thm" data-l="15"><div class="q">The Poisson equations. Why is an adiabat steeper than an isotherm?</div>
+<div class="a"><p>$TV^{\kappa-1}=\text{const}$, $pV^\kappa=\text{const}$, $T^\kappa p^{1-\kappa}=\text{const}$ (<a href="phys-script.html#p299">p. 299–302</a>). Compressing without letting heat out raises the pressure twice: once for the smaller volume, once for the higher temperature ($\kappa&gt;1$).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p15-3" data-t="thm" data-l="15"><div class="q">The second law in words: Kelvin's and Clausius's forms.</div>
+<div class="a"><p>Kelvin: no periodically working machine can take heat from one reservoir and turn it completely into work. Clausius: no periodically working machine can move heat from cold to hot without work being put in (<a href="phys-script.html#p303">p. 303–304</a>). “Periodically” matters: a single isothermal expansion does turn heat fully into work.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p15-4" data-t="thm" data-l="15"><div class="q">Cyclic processes: net work, engine or refrigerator, and the efficiency.</div>
+<div class="a"><p>$\Delta U_{\text{cycle}}=0$, so $W^\nearrow_{\text{net}}=\sum Q^\swarrow$, the enclosed area in the $p$–$V$ diagram. Clockwise: engine; counter-clockwise: refrigerator or heat pump. $\eta=\frac{W^\nearrow_{\text{net}}}{Q^\swarrow_{\text{in}}}$ with only the heat taken in.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p15-5" data-t="thm" data-l="15"><div class="q">The Carnot cycle: its four steps, its efficiency, and run backwards.</div>
+<div class="a"><p>Isothermal expansion at $T_w$, adiabatic expansion, isothermal compression at $T_k$, adiabatic compression. $\eta_C=1-\frac{T_k}{T_w}$, the best any engine between these temperatures can do. Backwards: heat pump $\eta_W=\frac{T_w}{T_w-T_k}&gt;1$, refrigerator $\eta_K=\frac{T_k}{T_w-T_k}$ (<a href="phys-script.html#p306">p. 306–311</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p15-6" data-t="thm" data-l="15"><div class="q">Otto, Diesel, Stirling: which steps? Otto's efficiency?</div>
+<div class="a"><p>Otto: adiabatic compression, isochoric heating, adiabatic expansion, isochoric cooling; $\eta=1-r^{1-\kappa}$ with $r=\frac{V_{\max}}{V_{\min}}$. Diesel: like Otto but heating at constant pressure. Stirling: two isotherms and two isochores; with a regenerator, Carnot efficiency.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p15-7" data-t="recipe" data-l="15"><div class="q">Recipe: a cyclic process (problem 5).</div>
+<div class="a"><p>1. States: table of $p,V,T$ at each corner, filled with $pV=\nu RT$ and the law of each step (Poisson for adiabats). 2. Each step: $\Delta U=\nu C_V\Delta T$, $W^\swarrow$ from the table, $Q^\swarrow=\Delta U-W^\swarrow$; say your arrow. 3. Check $\sum\Delta U=0$. 4. $W^\nearrow_{\text{net}}=\sum Q^\swarrow$: positive is an engine. 5. $\eta=\frac{W^\nearrow_{\text{net}}}{Q^\swarrow_{\text{in}}}$, below $1-\frac{T_{\min}}{T_{\max}}$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p16-1" data-t="def" data-l="16"><div class="q">Entropy, two ways: Boltzmann and heat over temperature.</div>
+<div class="a"><p>$S=k\ln W$, $W$ the number of ways (the probability) of the state (<a href="phys-script.html#p314">p. 314</a>). $dS=\frac{\delta Q^\swarrow_{\text{rev}}}T$ for heat supplied reversibly. $S$ is a state function: for any process, compute $\Delta S$ along an invented reversible path between the same states.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p16-2" data-t="thm" data-l="16"><div class="q">The second law as a formula. Reversible versus irreversible.</div>
+<div class="a"><p>In a closed system $\Delta S\ge0$; for a reversible cycle $\oint\frac{\delta Q_{\text{rev}}}T=0$ (<a href="phys-script.html#p317">p. 317</a>). Reversible: through equilibrium states, infinitely slowly, undoable without a trace. Heat conduction, mixing, friction and free expansion are irreversible and raise $S$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p16-3" data-t="thm" data-l="16"><div class="q">$\Delta S$ of an ideal gas for the four processes, and for a heat reservoir.</div>
+<div class="a"><p>In general $\Delta S=\nu C_V\ln\frac{T_2}{T_1}+\nu R\ln\frac{V_2}{V_1}$. Isochoric $\nu C_V\ln\frac{T_2}{T_1}$; isobaric $\nu C_p\ln\frac{T_2}{T_1}$; isothermal $\nu R\ln\frac{V_2}{V_1}=\frac{Q^\swarrow}T$; reversible adiabatic $0$. Reservoir at $T_R$: $\frac{Q^\swarrow_R}{T_R}$.</p></div></div>
+
+<div class="fc" data-s="p" data-id="p16-4" data-t="thm" data-l="16"><div class="q">Free expansion of an ideal gas into vacuum: $Q$, $W$, $\Delta U$, $\Delta T$, $\Delta S$?</div>
+<div class="a"><p>$Q=0$, $W=0$, so $\Delta U=0$ and $T$ stays the same. Yet $\Delta S=\nu R\ln\frac{V_E}{V_A}&gt;0$ (computed along a reversible isotherm): irreversible. $\Delta S=\frac QT$ holds only for reversible heat (<a href="phys-script.html#p316">p. 316</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p16-5" data-t="thm" data-l="16"><div class="q">The van der Waals equation: what do $a$ and $b$ stand for? The critical point?</div>
+<div class="a"><p>$\left(p+\frac{a\nu^2}{V^2}\right)(V-\nu b)=\nu RT$. $a$: attraction between molecules (internal pressure, lowers $p$); $b$: the volume the molecules occupy. Critical point: $V_{MK}=3b$, $T_K=\frac{8a}{27bR}$, $p_K=\frac a{27b^2}$; above $T_K$ no pressure liquefies the gas (<a href="phys-script.html#p318">p. 318–321</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p16-6" data-t="def" data-l="16"><div class="q">Latent heat, vapour pressure, and why water boils below 100 °C on a mountain.</div>
+<div class="a"><p>During a phase transition the heat breaks bonds instead of raising $T$: $Q=mL_m$ (water: melting $333\,\mathrm{kJ/kg}$, boiling $2260\,\mathrm{kJ/kg}$). In the coexistence region the pressure depends only on $T$: the vapour pressure $p_d(T)$. Water boils when $p_d$ reaches the outside pressure, which is lower on a mountain (<a href="phys-script.html#p321">p. 321–322</a>).</p></div></div>
+
+<div class="fc" data-s="p" data-id="p16-7" data-t="def" data-l="16"><div class="q">Enthalpy, Joule–Thomson, and the third law.</div>
+<div class="a"><p>$H=U+pV$; at constant pressure $dH=\delta Q^\swarrow$. Joule–Thomson: a gas pushed through a plug keeps $H$ constant; an ideal gas doesn't change $T$, a real gas cools below its inversion temperature (Linde's air liquefier). Third law: absolute zero cannot be reached in finitely many steps (<a href="phys-script.html#p325">p. 325–328</a>).</p></div></div>
+
 <div class="fc" data-t="move" data-l="1"><div class="q">Move: The negation recipe. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show something is <em>not</em> continuous or <em>not</em> uniformly continuous. <strong>Sentences:</strong> “Let $\varepsilon=\dots$ (you choose). Let $\delta&gt;0$ be arbitrary. Take $x=\dots$, $y=\dots$ (depending on $\delta$). Then $|x-y|&lt;\delta$ but $|f(x)-f(y)|\ge\varepsilon$.”</p><p><a href="moves.html#m-neg">The card in the moves library</a></p></div></div>
 <div class="fc" data-t="move" data-l="2"><div class="q">Move: The injectivity template. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show a map $f$ is injective. <strong>Sentences:</strong> “Let $x_1,x_2$ with $f(x_1)=f(x_2)$. … Hence $x_1=x_2$.” Start from equal outputs, end at equal inputs.</p><p><a href="moves.html#m-inj">The card in the moves library</a></p></div></div>
 <div class="fc" data-t="move" data-l="2"><div class="q">Move: The surjectivity template. When do you use it, and what do you write?</div><div class="a"><p><strong>When:</strong> you must show a map $f:X\to Y$ is surjective. <strong>Sentences:</strong> “Let $y\in Y$. Put $x=\dots$ (found on scrap paper by solving $f(x)=y$). Then $x\in X$ and $f(x)=\dots=y$.”</p><p><a href="moves.html#m-surj">The card in the moves library</a></p></div></div>
@@ -761,42 +1088,78 @@ a.subject:hover strong { text-decoration: underline; }
 </div>
 <script>
 (function () {
-  var pool = Array.prototype.slice.call(document.querySelectorAll('#fc-pool .fc'));
-  var from = document.getElementById('fc-from'), to = document.getElementById('fc-to');
-  var maxL = 1; pool.forEach(function (c) { maxL = Math.max(maxL, +c.dataset.l); });
-  for (var i = 1; i <= maxL; i++) { from.add(new Option(i, i)); to.add(new Option(i, i)); }
-  var saved = null; try { saved = JSON.parse(localStorage.getItem('fc-range')); } catch (e) {}
-  var m = /^#l(\d+)-(\d+)$/.exec(location.hash);
-  if (m) saved = { a: +m[1], b: +m[2] };
-  from.value = saved && saved.a <= maxL ? saved.a : 1; to.value = saved && saved.b <= maxL ? saved.b : maxL;
+  var T = { def: 'Definition', thm: 'Theorem', law: 'Law', move: 'Move', recipe: 'Recipe', lesson: ' · lesson ', left: ' left in this round', cards: ' cards',
+            done: function (n) { return '<p><strong>Round done: ' + n + ' cards.</strong> Press Start for another round, or change the lessons.</p>'; },
+            none: '<p>No cards match this choice.</p>', subj: { a: 'Analysis', p: 'Physics' }, thmA: 'Theorems', thmP: 'Laws and theorems' };
+  var all = Array.prototype.slice.call(document.querySelectorAll('#fc-pool .fc'));
+  function subjOf(c) { return c.dataset.s || 'a'; }
+  var subjSel = document.getElementById('fc-subj'), from = document.getElementById('fc-from'), to = document.getElementById('fc-to');
   var stage = document.getElementById('fc-stage'), count = document.getElementById('fc-count'), btns = document.getElementById('fc-btns');
   var bShow = document.getElementById('fc-show'), bAgain = document.getElementById('fc-again'), bGot = document.getElementById('fc-got');
-  var names = { def: 'Definition', thm: 'Theorem', move: 'Move', recipe: 'Recipe' };
+  var moveBox = document.getElementById('fc-move'), moveLabel = document.getElementById('fc-move-l'), thmLabel = document.getElementById('fc-thm-l');
   var queue = [], cur = null, done = 0;
+  function load(key) { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } }
+  function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
+  function maxL(s) { var m = 1; all.forEach(function (c) { if (subjOf(c) === s) m = Math.max(m, +c.dataset.l); }); return m; }
+  function setSubject(s, range) {
+    subjSel.value = s;
+    var mx = maxL(s); from.innerHTML = ''; to.innerHTML = '';
+    for (var i = 1; i <= mx; i++) { from.add(new Option(i, i)); to.add(new Option(i, i)); }
+    var r = range || load(s === 'p' ? 'fc-range-p' : 'fc-range');
+    from.value = r && r.a <= mx ? r.a : 1; to.value = r && r.b <= mx ? r.b : mx;
+    var phys = s === 'p';
+    moveBox.disabled = phys; moveLabel.classList.toggle('fc-off', phys);
+    thmLabel.textContent = phys ? T.thmP : T.thmA;
+  }
+  var hm = /^#([lp])(\d+)-(\d+)$/.exec(location.hash);
+  if (hm) setSubject(hm[1] === 'p' ? 'p' : 'a', { a: +hm[2], b: +hm[3] });
+  else setSubject(load('fc-subj') === 'p' ? 'p' : 'a');
+  subjSel.addEventListener('change', function () { save('fc-subj', subjSel.value); setSubject(subjSel.value); });
+  function selection() {
+    var s = subjSel.value, a = +from.value, b = +to.value; if (a > b) { var t = a; a = b; b = t; }
+    save(s === 'p' ? 'fc-range-p' : 'fc-range', { a: a, b: b });
+    var types = ['def', 'thm', 'move', 'recipe'].filter(function (t) { var x = document.getElementById('fc-' + t); return x.checked && !x.disabled; });
+    return all.filter(function (c) { var l = +c.dataset.l; return subjOf(c) === s && l >= a && l <= b && types.indexOf(c.dataset.t) >= 0; });
+  }
+  function label(c) {
+    var t = c.dataset.t === 'thm' && subjOf(c) === 'p' ? T.law : T[c.dataset.t];
+    return t + ' · ' + T.subj[subjOf(c)] + T.lesson + c.dataset.l;
+  }
   function render() {
     stage.innerHTML = '';
     if (!cur) {
       btns.hidden = true;
-      stage.innerHTML = queue.length === 0 && done ? '<p><strong>Round done: ' + done + ' cards.</strong> Press Start for another round, or change the lessons.</p>' : '<p>No cards match this choice.</p>';
+      stage.innerHTML = queue.length === 0 && done ? T.done(done) : T.none;
       count.textContent = ''; return;
     }
-    var meta = document.createElement('p'); meta.className = 'fc-meta';
-    meta.textContent = names[cur.dataset.t] + ' · lesson ' + cur.dataset.l;
+    var meta = document.createElement('p'); meta.className = 'fc-meta'; meta.textContent = label(cur);
     stage.appendChild(meta);
     stage.appendChild(cur.querySelector('.q').cloneNode(true));
     var a = cur.querySelector('.a').cloneNode(true); a.hidden = true; stage.appendChild(a);
     btns.hidden = false; bShow.hidden = false; bAgain.hidden = true; bGot.hidden = true;
-    count.textContent = (queue.length + 1) + ' left in this round';
+    count.textContent = (queue.length + 1) + T.left;
     bShow.focus({ preventScroll: true });
   }
   function next() { cur = queue.shift() || null; render(); }
   document.getElementById('fc-start').addEventListener('click', function () {
-    var a = +from.value, b = +to.value; if (a > b) { var t = a; a = b; b = t; }
-    try { localStorage.setItem('fc-range', JSON.stringify({ a: a, b: b })); } catch (e) {}
-    var types = ['def', 'thm', 'move', 'recipe'].filter(function (t) { return document.getElementById('fc-' + t).checked; });
-    queue = pool.filter(function (c) { var l = +c.dataset.l; return l >= a && l <= b && types.indexOf(c.dataset.t) >= 0; });
+    queue = selection();
     for (var i = queue.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t2 = queue[i]; queue[i] = queue[j]; queue[j] = t2; }
     done = 0; next();
+  });
+  document.getElementById('fc-list').addEventListener('click', function () {
+    var sel = selection(); queue = []; cur = null; done = 0; btns.hidden = true; stage.innerHTML = '';
+    if (!sel.length) { stage.innerHTML = T.none; count.textContent = ''; return; }
+    sel.sort(function (x, y) { return (+x.dataset.l) - (+y.dataset.l); });
+    var list = document.createElement('div'); list.className = 'fc-list';
+    sel.forEach(function (c) {
+      var it = document.createElement('div'); it.className = 'fc-item';
+      var meta = document.createElement('p'); meta.className = 'fc-meta'; meta.textContent = label(c);
+      it.appendChild(meta); it.appendChild(c.querySelector('.q').cloneNode(true)); it.appendChild(c.querySelector('.a').cloneNode(true));
+      list.appendChild(it);
+    });
+    stage.appendChild(list);
+    count.textContent = sel.length + T.cards;
+    if (window.__siteFit) window.__siteFit(stage);
   });
   bShow.addEventListener('click', function () {
     stage.querySelector('.a').hidden = false; bShow.hidden = true; bAgain.hidden = false; bGot.hidden = false;
