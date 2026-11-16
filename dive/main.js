@@ -709,6 +709,7 @@ async function boot() {
   if (!SUBJECT_CHOICES.includes(pref('subject'))) app.store = setPref(app.store, 'subject', 'analysis');
 
   sea = createSea($('sea'), { reducedMotion, lang: getLang });
+  app.sea = sea;
   sea.setMode('surface');
 
   $('btn-dive').addEventListener('click', startDive);

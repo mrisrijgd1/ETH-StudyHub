@@ -17,8 +17,12 @@ export function depthToWorldY(depth, zones = ZONES, stepPx = STEP_PX) {
 }
 
 const FLOOR_Y = depthToWorldY(MAX_DEPTH);
-const BELOW_FLOOR = 90;
 const DIVER_OFFSET = 14; // diver hangs this far below the depth line
+
+/** World y of the diver's head at a depth; at the trench floor he stands on the ground. */
+export function diverWorldY(depth) {
+  return depth >= MAX_DEPTH ? FLOOR_Y - 10 : depthToWorldY(depth) + DIVER_OFFSET;
+}
 
 const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -88,7 +92,7 @@ export function createSea(canvas, { reducedMotion = false, lang = () => 'de' } =
   }
 
   function buildBackground() {
-    const h = Math.ceil(FLOOR_Y + BELOW_FLOOR);
+    const h = Math.ceil(FLOOR_Y + H);
     bg = makeCanvas(W, h);
     const g = bg.getContext('2d');
     ditherRows(g, W, h, seaColorAt);
@@ -344,7 +348,7 @@ export function createSea(canvas, { reducedMotion = false, lang = () => 'de' } =
 
   function diverTargetCam() {
     if (st.mode === 'surface') return -Math.round(H * 0.45);
-    return Math.round(st.diverY - H * 0.3);
+    return Math.min(Math.round(st.diverY - H * 0.3), Math.ceil(FLOOR_Y + 30 - H * 0.5));
   }
 
   function update(dt) {
@@ -534,12 +538,12 @@ export function createSea(canvas, { reducedMotion = false, lang = () => 'de' } =
     startDive() {
       st.mode = 'dive'; st.detail = true;
       st.diverY = 4;
-      moveDiverTo(depthToWorldY(0) + DIVER_OFFSET, 1.0);
+      moveDiverTo(diverWorldY(0), 1.0);
       kick();
     },
     correct(depth) {
       burst();
-      moveDiverTo(depthToWorldY(depth) + DIVER_OFFSET, 1.4, 0.15);
+      moveDiverTo(diverWorldY(depth), 1.4, 0.15);
       kick();
     },
     wrong() {
@@ -553,7 +557,7 @@ export function createSea(canvas, { reducedMotion = false, lang = () => 'de' } =
       kick();
     },
     jumpTo(depth) {
-      st.diverY = st.from = st.to = depthToWorldY(depth) + DIVER_OFFSET; st.tween = 1; kick();
+      st.diverY = st.from = st.to = diverWorldY(depth); st.tween = 1; kick();
     },
   };
 }
