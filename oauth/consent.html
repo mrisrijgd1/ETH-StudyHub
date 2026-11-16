@@ -2,22 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Connect your AI</title>
+<title>Connect your AI · StudyHub</title>
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=a7bf1523">
+<link rel="stylesheet" href="../assets/studyhub.css?v=fe0ad35d">
+<script defer src="../assets/studyhub.js?v=292f8f50"></script>
 <style>
-:root{--bg:#15120f;--surface:#1e1a15;--ink:#e6ddcd;--head:#e0c48e;--muted:#a89c89;--rule:#36302a;--accent:#86b394;--on:#10150f;color-scheme:dark}
-@media (prefers-color-scheme:light){:root{--bg:#ebe2d4;--surface:#f5efe5;--ink:#2c251c;--head:#263a2e;--muted:#6f6350;--rule:#d6c8b2;--accent:#2f5a42;--on:#f8f4ea;color-scheme:light}}
-body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 "EB Garamond",Georgia,serif;display:flex;justify-content:center}
-main{max-width:34rem;width:100%;padding:3rem 16px;box-sizing:border-box}
-h1{color:var(--head);font-size:2rem;margin:.2rem 0 1rem;line-height:1.2}.eyebrow{font:600 .8rem Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.box{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:1rem 1.2rem;margin:1rem 0}
-ul{padding-left:1.2rem}button{font:600 1rem Inter,system-ui,sans-serif;padding:.65rem 1.4rem;border-radius:999px;border:1px solid var(--accent);cursor:pointer;margin:.3rem .5rem .3rem 0}
-.yes{background:var(--accent);color:var(--on)}.no{background:none;color:var(--accent)}.muted{color:var(--muted);font-size:.9rem}
+/* Same tokens as every other StudyHub page (assets/appearance.css), so the palette and light/dark choice carry over. */
+body{margin:0;background:var(--design-bg);color:var(--design-ink);font-family:var(--design-font);font-size:17px;line-height:1.65}
+main.consent{max-width:36rem;margin:0 auto;padding:40px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px));box-sizing:content-box;display:flex;flex-direction:column;gap:1rem}
+main.consent h1{font-size:clamp(1.8rem,5vw,2.4rem);line-height:1.15;font-weight:750;letter-spacing:-.5px;margin:0;color:var(--design-ink);text-wrap:balance}
+main.consent p,main.consent ul{margin:0}
+main.consent ul{padding-left:1.3rem;display:flex;flex-direction:column;gap:.35rem}
+main.consent a{color:var(--design-accent)}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--design-muted)}
+.box{background:var(--design-surface);border:1px solid var(--design-line);border-radius:14px;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:.7rem;box-shadow:0 1px 3px var(--design-shadow)}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem}
+main.consent button{font:inherit;font-weight:650;font-size:1rem;padding:.65rem 1.5rem;border-radius:999px;border:1px solid var(--design-accent)!important;cursor:pointer}
+main.consent button:disabled{opacity:.6;cursor:default}
+main.consent button.yes{background:var(--design-accent)!important;color:var(--design-on-accent)!important}main.consent button.no{background:var(--design-surface)!important;color:var(--design-accent)!important}
+.muted{color:var(--design-muted);font-size:.92rem}
 </style>
 </head>
-<body>
-<main id="c">
+<body class="studyhub-app sh-unified">
+<main id="c" class="consent">
 <span class="eyebrow">StudyHub</span>
 <h1 id="t">Connect your AI</h1>
 <p id="m">Loading…</p>
@@ -39,7 +50,7 @@ ul{padding-left:1.2rem}button{font:600 1rem Inter,system-ui,sans-serif;padding:.
     { auth: { persistSession: true, detectSessionInUrl: true, storageKey: 'sb-qgntwqqmpdiwexnwsmnm-auth-token' } });
   function signInBox() {
     show(L('Sign in to StudyHub', 'Bei StudyHub anmelden'), '<p>' + L('Your AI wants to connect to your StudyHub account. Sign in first (free, with Google). You can stay anonymous on the site.', 'Deine KI möchte sich mit deinem StudyHub-Konto verbinden. Melde dich zuerst an (gratis, mit Google). Auf der Seite kannst du anonym bleiben.') + '</p>' +
-      '<button class="yes" id="g">' + L('Sign in with Google', 'Mit Google anmelden') + '</button>');
+      '<div class="actions"><button class="yes" id="g">' + L('Sign in with Google', 'Mit Google anmelden') + '</button></div>');
     document.getElementById('g').onclick = function () {
       sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname + '?authorization_id=' + encodeURIComponent(id) } });
     };
@@ -60,7 +71,7 @@ ul{padding-left:1.2rem}button{font:600 1rem Inter,system-ui,sans-serif;padding:.
         '<li>' + L('give you hints one at a time, and solutions only after your attempt', 'dir Tipps einzeln geben, und Lösungen erst nach deinem Versuch') + '</li>' +
         '<li>' + L('read and change your own data: progress, My StudyHub (plan, notes, questions, flashcards), marks, mocks and design', 'deine eigenen Daten lesen und ändern: Fortschritt, Mein StudyHub (Plan, Notizen, Fragen, Lernkarten), Resultate, Probeprüfungen und Design') + '</li></ul>' +
         '<p class="muted">' + L('Every change is versioned and can be undone on ', 'Jede Änderung wird versioniert und kann rückgängig gemacht werden auf ') + '<a href="../my.html">' + L('My StudyHub', 'Mein StudyHub') + '</a>. ' + L('The shared lessons can never be changed by your AI. Signed in as ', 'Die gemeinsamen Lektionen kann deine KI nie ändern. Angemeldet als ') + esc(x.user && x.user.email) + '.</p></div>' +
-        '<button class="yes" id="ok">' + L('Allow', 'Erlauben') + '</button><button class="no" id="no">' + L('Deny', 'Ablehnen') + '</button>');
+        '<div class="actions"><button class="yes" id="ok">' + L('Allow', 'Erlauben') + '</button><button class="no" id="no">' + L('Deny', 'Ablehnen') + '</button></div>');
       document.getElementById('ok').onclick = function () { this.disabled = true; sb.auth.oauth.approveAuthorization(id).then(done); };
       document.getElementById('no').onclick = function () { this.disabled = true; sb.auth.oauth.denyAuthorization(id).then(done); };
     });
