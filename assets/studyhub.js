@@ -102,8 +102,10 @@
     { id: 'chemie', label: 'Chemie I (PC)', href: 'chemie/' },
     { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' }
   ];
-  const subject = chemistry ? 'chemie' : fcApp ? 'analysis' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
-  if (!fcApp && file === 'flashcards.html') { location.replace(new URL(fcAppPath + 'index.html' + (de ? '?lang=de' : '') + '#/proof-practice', base).href); return; }
+  // flashcards.html#p1-16 is the Physics deck (StudyHub's own cards); it stays on this page.
+  const physCards = !fcApp && !de && file === 'flashcards.html' && /^#p\d/.test(location.hash);
+  const subject = chemistry ? 'chemie' : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'index.html' + (de ? '?lang=de' : '') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
   const modes = {
@@ -119,6 +121,8 @@
     physics: [
       ['lessons', L('Lektionen', 'Lessons'), prefix + 'physics.html#lessons'],
       ['practice', L('Üben & Werkzeuge', 'Practice & tools'), prefix + 'physics.html#tools'],
+      // the Physics deck exists in English only so far
+      ...(de ? [] : [['cards', 'Flashcards', 'flashcards.html#p1-16']]),
       ['plan', L('Prüfungsplan', 'Exam plan'), prefix + 'phys-plan.html'],
       ['script', L('Skript', 'Script'), 'phys-script.html'],
       ['board', L('Tafel & Skript', 'Board & script'), prefix + 'phys-board.html'],
