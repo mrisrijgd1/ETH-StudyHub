@@ -11,7 +11,12 @@ items = json.load(open(os.path.join(SRC, 'library.json')))
 docs, chunks = [], []
 for it in items:
     path = os.path.join(SRC, it['file'])
-    n = int(re.search(r'Pages:\s+(\d+)', subprocess.run(['pdfinfo', path], capture_output=True, text=True).stdout).group(1))
+    info = subprocess.run(['pdfinfo', path], capture_output=True, text=True)
+    m = re.search(r'Pages:\s+(\d+)', info.stdout)
+    if not m:  # missing file or not a PDF: skip it so one bad entry never blocks the whole sync
+        print(f"::warning::skipped {it['id']} ({it['file']}): not a readable PDF. {info.stderr.strip()[:200]}")
+        continue
+    n = int(m.group(1))
     txt = unicodedata.normalize('NFC', subprocess.run(['pdftotext', '-layout', path, '-'], capture_output=True, text=True).stdout)
     pages = [re.sub(r'[ \t]{3,}', '  ', p).strip() for p in txt.split('\f')[:n]]
     d = os.path.join(OUT, 'pages', it['id']); os.makedirs(d, exist_ok=True)
