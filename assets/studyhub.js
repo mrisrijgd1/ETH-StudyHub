@@ -175,7 +175,8 @@
   const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
   utilities.append(link(L('Fortschritt', 'Progress'), prefix + 'account.html'));
   utilities.append(link(L('Mehr', 'More'), prefix + 'more.html'));
-  const languageTarget = chemistry ? null : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
+  const appLangTarget = (() => { const u = new URL(location.href); u.searchParams.set('lang', de ? 'en' : 'de'); return u.pathname.split('/').pop() + u.search + u.hash; })();
+  const languageTarget = chemistry ? null : fcApp ? appLangTarget : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
   if (languageTarget) utilities.append(link(de ? 'EN' : 'DE', languageTarget));
   const design = document.createElement('details'); design.className = 'study-design';
   const toggle = document.createElement('summary'); toggle.textContent = 'Design'; design.append(toggle);
