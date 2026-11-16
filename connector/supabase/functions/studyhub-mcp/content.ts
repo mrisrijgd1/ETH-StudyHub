@@ -178,6 +178,8 @@ export function segmentFor(pages: string[], q: string): string | null {
 }
 
 export function scriptExcerpt(c: Content, subject: string, pages: number[]) {
+  // Linear Algebra page numbers refer to its own script (a private library file), never to the Analysis script.
+  if (subject === "linalg") return [];
   const sc = c.scripts[subject === "physics" ? "script-physics" : "script-analysis"];
   if (!sc || !pages?.length) return [];
   return pages.slice(0, 3).map((p) => ({ printed_page: p, quote_as: `script p. ${p}`, text: (sc.page_text[p + sc.offset - 1] ?? "").slice(0, 1800) }));

@@ -238,7 +238,9 @@ async function gapFinder(ctx: Ctx, minutes: number, subject?: string) {
   const { data: res } = await ctx.admin.from("results").select("item_id, score, max_score, topics, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(200);
   const P = new Map((prog ?? []).map((p) => [pageId(p.page), p]));
   const attempted = new Set((states ?? []).filter((s) => s.attempted_at).map((s) => s.item_id));
-  const pages = C.docs.filter((d: any) => (d.type === "lesson" || d.type === "refresher") && (!subject || d.subject === subject)).map((d: any) => d.id).sort();
+  const pages = C.docs.filter((d: any) => (d.type === "lesson" || d.type === "refresher")
+    // Linear Algebra is examined after the second semester: it joins the plan only when asked for by name.
+    && (subject ? d.subject === subject : d.subject !== "linalg")).map((d: any) => d.id).sort();
   const fp = await fingerprint(ctx);
   const weakPages = new Map<string, number>();
   for (const r of res ?? []) if (r.max_score > 0 && r.score / r.max_score < 0.6) { const pg = String(r.item_id).split("/")[0]; weakPages.set(pg, (weakPages.get(pg) ?? 0) + 1); }

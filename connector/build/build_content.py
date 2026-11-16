@@ -15,6 +15,7 @@ SITE = 'https://mrisrijgd1.github.io/ETH-StudyHub/'
 os.makedirs(OUT, exist_ok=True)
 
 LOCK_SUMMARY = re.compile(r"^(solution|lösung|the proof and the grader|the proof in one piece|the mistake|full solution|musterlösung)", re.I)
+HINT_SUMMARY = re.compile(r'(hint|tipp|hinweis)', re.I)
 SKIP_PAGES = {'mock.html', 'design-previews.html', 'final-preview.html', 'pdf.html', 'script.html', 'phys-script.html', 'account.html',
               'community.html', 'download.html', 'help.html', 'tips.html', 'path.html', 'index.html', 'more.html', 'my.html', 'connect.html'}
 
@@ -23,6 +24,10 @@ def page_kind(f):
     if f.startswith('refresher-'): return 'refresher', 'analysis'
     if f.startswith('phys-') and re.match(r'phys-\d', f): return 'lesson', 'physics'
     if f.startswith('phys-'): return 'page', 'physics'
+    if re.match(r'linalg-\d', f): return 'lesson', 'linalg'
+    if f.startswith('linalg'): return 'page', 'linalg'
+    if f.startswith('serie-p'): return 'page', 'physics'
+    if f.startswith('serie-l'): return 'page', 'linalg'
     if f in ('moves.html', 'flashcards.html') or f.startswith('toolbox'): return 'toolbox', 'analysis'
     return 'page', 'analysis' if f not in ('physics.html',) else 'physics'
 
@@ -76,9 +81,11 @@ for f in sorted(os.listdir(ROOT)):
             wrap = soup.new_tag('div')
             prev = []
             for sib in d.previous_siblings:
-                if isinstance(sib, Tag) and (sib.name in ('h2', 'h3', 'h4') or sib.name == 'details'):
-                    if sib.name != 'details': prev.append(sib)
-                    break
+                if isinstance(sib, Tag) and sib.name in ('h2', 'h3', 'h4'):
+                    prev.append(sib); break
+                # an earlier solution (already swapped for its placeholder) ends this problem;
+                # hint and "You need" boxes belong to it
+                if isinstance(sib, Tag) and sib.name == 'p' and sib.get_text().startswith('[Solution locked'): break
                 prev.append(sib)
             for sib in reversed(prev): wrap.append(sib.__copy__() if isinstance(sib, Tag) else NavigableString(str(sib)))
             cont_text_src = wrap
@@ -92,13 +99,17 @@ for f in sorted(os.listdir(ROOT)):
         if head is None and cont is not None:
             head = cont.find_previous(['h2', 'h3', 'h4'])  # a box without its own heading: use the section's
         etitle = head.get_text(' ', strip=True) if head else f'{title}: exercise {n_ex}'
+        if head is None:
+            head = d.find_previous(['h2', 'h3', 'h4'])  # no heading in reach: use the section's
+        if head is not None:
+            etitle = head.get_text(' ', strip=True)
         sol_text = text_of(d)
         sol_text = re.sub(r'^▸ [^\n]*\n', '', sol_text)
         # hints: existing hint boxes, then the solution's "Frame:" and "Moves:" lines
         hints = []
         for hd in (src.find_all('details') if src is not None else []):
             hs = hd.find('summary')
-            if hs and re.match(r'(hint|tipp|hinweis)', hs.get_text(strip=True), re.I):
+            if hs and HINT_SUMMARY.match(hs.get_text(strip=True)):
                 hints.append(re.sub(r'^▸ [^\n]*\n', '', text_of(hd)))
         for para in d.find_all('p'):
             pt = para.get_text(' ', strip=True)
@@ -112,7 +123,12 @@ for f in sorted(os.listdir(ROOT)):
               'grader': "grader" in s.get_text(' ', strip=True).lower()}
         ph = soup.new_tag('p'); ph.string = f'[Solution locked: exercise id {eid}. Use get_hint / submit_attempt.]'
         d.replace_with(ph)
-        ex['problem'] = text_of(cont) if cont is not None else text_of(cont_text_src)
+        # the problem as get_exercise shows it: without the hint boxes (those come one at a time through get_hint)
+        prob_src = BeautifulSoup(str(cont if cont is not None else cont_text_src), 'html.parser')
+        for hd in prob_src.find_all('details'):
+            hs = hd.find('summary')
+            if hs and HINT_SUMMARY.match(hs.get_text(strip=True)): hd.decompose()
+        ex['problem'] = text_of(prob_src)
         ex['script_pages'] = script_pages(ex['problem'] + ' ' + sol_text)
         exercises[eid] = ex
     body = text_of(main)
