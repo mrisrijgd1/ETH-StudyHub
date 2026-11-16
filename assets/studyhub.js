@@ -175,8 +175,7 @@
   const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
   utilities.append(link(L('Fortschritt', 'Progress'), prefix + 'account.html'));
   utilities.append(link(L('Mehr', 'More'), prefix + 'more.html'));
-  const appLangTarget = (() => { const u = new URL(location.href); u.searchParams.set('lang', de ? 'en' : 'de'); return u.pathname.split('/').pop() + u.search + u.hash; })();
-  const languageTarget = chemistry ? null : fcApp ? appLangTarget : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
+  const languageTarget = chemistry ? null : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
   if (languageTarget) utilities.append(link(de ? 'EN' : 'DE', languageTarget));
   const design = document.createElement('details'); design.className = 'study-design';
   const toggle = document.createElement('summary'); toggle.textContent = 'Design'; design.append(toggle);
@@ -219,12 +218,6 @@
   if (prebuilt) prebuilt.replaceWith(shell); else document.body.prepend(shell);
   function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
-  // Flashcards app (Rachel's folder is re-synced from her repo, so fixes live here): one language switch, plain wording.
-  if (fcApp) {
-    const st = document.createElement('style'); st.textContent = '.fc-lang{display:none!important}'; document.head.append(st);
-    const plain = () => document.querySelectorAll('#fc-view p').forEach(p => { const t = p.textContent; if (t.includes('card environment')) p.textContent = t.replace('in your card environment', 'in your flashcards'); else if (t.includes('Kartenumgebung')) p.textContent = t.replace('in deiner Kartenumgebung', 'in deinen Karten'); });
-    new MutationObserver(plain).observe(document.body, { childList: true, subtree: true }); plain();
-  }
   // The header link keeps one fixed name ("Progress") whether or not you are signed in.
   let progress = {}; try { progress = JSON.parse(localStorage.getItem('studyhub-chemie-v1') || '{}'); } catch (_) {}
   document.querySelectorAll('[data-chemie-progress]').forEach(el => { el.textContent = (progress.done || []).length + ' / 27 ' + L('Lektionen abgeschlossen', 'lessons completed'); });
