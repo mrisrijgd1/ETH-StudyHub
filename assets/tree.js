@@ -104,7 +104,7 @@
     var rest = down(k, {}, 0);
     document.getElementById('tr-out').innerHTML = '<p class="me" style="margin-top:1rem">' + esc(name(k)) + ' <a class="les" href="' + href(k) + '">' + L('Lesson ', 'Lektion ') + T[k][0] + ', ' + L('proof', 'Beweis') + ' →</a></p><div class="cols">' +
       '<div><h3>' + L('Rests on', 'Beruht auf') + '</h3>' + (rest || '<p>' + L('Nothing earlier: this is a starting point (an axiom, a definition, or a direct argument).', 'Nichts Früherem: ein Ausgangspunkt (Axiom, Definition oder direktes Argument).') + '</p>') + '</div>' +
-      '<div><h3>' + L('Used directly by', 'Direkt verwendet von') + '</h3>' + (u.length ? '<ul>' + u.map(function (x) { return '<li>' + item(x) + '</li>'; }).join('') + '</ul>' : '<p>' + L('Nothing later in Analysis 1 builds on it directly.', 'Nichts Späteres in Analysis 1 baut direkt darauf auf.') + '</p>') + '</div></div>';
+      '<div><h3>' + L('Used directly by', 'Direkt verwendet von') + '</h3>' + (u.length ? '<ul>' + u.map(function (x) { return '<li>' + item(x) + '</li>'; }).join('') + '</ul>' : '<p>' + L('Nothing later in Analysis I builds on it directly.', 'Nichts Späteres in Analysis I baut direkt darauf auf.') + '</p>') + '</div></div>';
     try { history.replaceState(null, '', '#' + k); } catch (e) {}
   }
   document.getElementById('tr-sel').onchange = function () { show(this.value); };

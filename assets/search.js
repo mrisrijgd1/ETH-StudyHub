@@ -9,11 +9,11 @@
   var hint = document.getElementById('tb-hint');
   var T = de ? {
     def: 'Definition', thm: 'Satz', recipe: 'Rezept', move: 'Beweiskniff', word: 'Fachbegriff', ex: 'Aufgabe / Beispiel', proof: 'Beweis', sec: 'Lektionsabschnitt', page: 'Seite',
-    a: 'Analysis 1', p: 'Physik I', g: 'StudyHub', show: 'Antwort zeigen', loading: 'Suche wird geladen …', fail: 'Die Suche konnte nicht geladen werden. Lade die Seite neu.',
+    a: 'Analysis I', p: 'Physik I', g: 'StudyHub', show: 'Antwort zeigen', loading: 'Suche wird geladen …', fail: 'Die Suche konnte nicht geladen werden. Lade die Seite neu.',
     none: 'Nichts gefunden. Versuch es mit weniger Wörtern, einem Wortanfang oder dem englischen Begriff.', one: '1 Treffer', many: ' Treffer', more: 'Mehr zeigen', study: 'Als Lernkarte üben'
   } : {
     def: 'Definition', thm: 'Theorem', recipe: 'Recipe', move: 'Proof move', word: 'German term', ex: 'Exercise / example', proof: 'Proof', sec: 'Lesson section', page: 'Page',
-    a: 'Analysis 1', p: 'Physics I', g: 'StudyHub', show: 'Show answer', loading: 'Loading the search …', fail: 'The search could not be loaded. Please reload the page.',
+    a: 'Analysis I', p: 'Physics I', g: 'StudyHub', show: 'Show answer', loading: 'Loading the search …', fail: 'The search could not be loaded. Please reload the page.',
     none: 'Nothing found. Try fewer words, the start of a word, or the German term.', one: '1 result', many: ' results', more: 'Show more', study: 'Study it as a flashcard'
   };
   var GROUP = { all: null, dt: ['def', 'thm'], mr: ['move', 'recipe'], ex: ['ex'], proof: ['proof'], word: ['word'], text: ['sec', 'page'] };

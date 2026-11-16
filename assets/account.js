@@ -205,7 +205,7 @@
     if (sum) {
       var p = load();
       var GROUPS = [
-        [L('Analysis 1', 'Analysis 1'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
+        [L('Analysis I', 'Analysis I'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
         ['Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
         [L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
         [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 5, L('Lessons (so far)', 'Lektionen (bisher)')]]]];

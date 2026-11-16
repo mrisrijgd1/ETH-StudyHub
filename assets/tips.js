@@ -150,6 +150,7 @@
     '#sh-tip .x:hover{opacity:1}#sh-tip .b{display:flex;gap:.5rem;margin-top:.55rem;flex-wrap:wrap}' +
     '#sh-tip .b button{font:inherit;font-size:.85rem;font-weight:600;padding:.3rem .9rem;border-radius:999px;border:1px solid var(--accent,#5b5bd6);background:none;color:var(--accent,#5b5bd6);cursor:pointer}' +
     '#sh-tip .b button.y{background:var(--accent,#5b5bd6);color:#fff}#sh-tip .f{display:flex;justify-content:space-between;align-items:center;margin-top:.55rem}#sh-tip .nx{font:inherit;font-size:.8rem;font-weight:600;color:var(--accent,#5b5bd6);background:none;border:0;padding:0;cursor:pointer}#sh-tip .all{font-size:.8rem;font-weight:600;color:var(--accent,#5b5bd6)}#sh-tip .off{font:inherit;font-size:.72rem;color:var(--muted,#777);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}' +
+    '@media(max-width:640px){#sh-tip{left:8px;right:8px;bottom:8px;width:auto;max-width:none;padding:.45rem 2rem .45rem .7rem;font-size:.82rem;line-height:1.35}#sh-tip .k{margin:0 0 .1rem}#sh-tip .t{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}#sh-tip .f{flex-wrap:wrap;gap:.1rem .6rem;margin-top:.3rem}#sh-tip .nx,#sh-tip .all,#sh-tip .off{font-size:.74rem}#sh-tip .b{margin-top:.35rem}}' +
     '@media print{#sh-tip{display:none}}';
   function show() {
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
