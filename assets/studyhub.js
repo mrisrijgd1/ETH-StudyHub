@@ -2,6 +2,9 @@
 (function () {
   'use strict';
   const palettes = {
+    storybook: { label: ['Märchenbuch', 'Storybook'], swatches: ['#7a2e1d', '#c98700'], group: 'story', tints: ['#7a2e1d', '#2f5d50', '#b8860b', '#4b3a7a', '#a3432b', '#3b6a8a'], strength: ['16%', '16%'],
+      light: { 'bg': '#f4ead5', 'surface': '#fbf5e6', 'raised': '#fffaf0', 'ink': '#3a2a1a', 'muted': '#6a553f', 'line': '#dcc9a6', 'border': '#9a8460', 'soft': '#efe2c4', 'accent': '#7a2e1d', 'on-accent': '#fff8ea', 'accent-text': '#7a2e1d', 'accent-bright': '#a3432b', 'accent-soft': '#f0dccb', 'secondary': '#2f5d50', 'highlight': '#c98700', 'on-highlight': '#2b1c00', 'highlight-soft': '#f6e6b8', 'story': '#fff1cf', 'story-edge': '#b8860b', 'exam': '#efe3f2', 'exam-edge': '#6b3f7a', 'success': '#2f6b2f', 'warning': '#8a5300', 'danger': '#a02020', 'focus': '#7a2e1d' },
+      dark: { 'bg': '#1d1710', 'surface': '#262015', 'raised': '#30291b', 'ink': '#f0e3c8', 'muted': '#c4b08f', 'line': '#43392a', 'border': '#8a7757', 'soft': '#2a2316', 'accent': '#e39a80', 'on-accent': '#2a1208', 'accent-text': '#e39a80', 'accent-bright': '#e39a80', 'accent-soft': '#4a2a1e', 'secondary': '#8fc9b4', 'highlight': '#e0b550', 'on-highlight': '#2b1c00', 'highlight-soft': '#4a3a14', 'story': '#3a2f14', 'story-edge': '#d9a93a', 'exam': '#31263a', 'exam-edge': '#b894c8', 'success': '#7fcf7f', 'warning': '#e0a84a', 'danger': '#ff8a80', 'focus': '#e39a80' } },
     skymint: { label: ['Sky & Mint', 'Sky & mint'], swatches: ['#1865f2', '#14bf96'], group: 'fun', tints: ['#1865f2', '#14bf96', '#9059ff', '#ffb100', '#ff6b5b', '#00a8d6'],
       light: { 'bg': '#f7f8fa', 'surface': '#ffffff', 'raised': '#ffffff', 'ink': '#21242c', 'muted': '#5b616e', 'line': '#e1e5ec', 'border': '#8a909c', 'soft': '#eef3fd', 'accent': '#1865f2', 'on-accent': '#ffffff', 'accent-text': '#1865f2', 'accent-bright': '#1865f2', 'accent-soft': '#e5eefe', 'secondary': '#0a7558', 'highlight': '#14bf96', 'on-highlight': '#0b2a22', 'highlight-soft': '#ddf7ef', 'story': '#fff6e0', 'story-edge': '#c98700', 'exam': '#f1ebff', 'exam-edge': '#7a4ff0', 'success': '#1a7f37', 'warning': '#9a5b00', 'danger': '#c62828', 'focus': '#4255ff' },
       dark: { 'bg': '#121826', 'surface': '#1a2234', 'raised': '#222c42', 'ink': '#eef2f8', 'muted': '#b0b8c8', 'line': '#2e3a52', 'border': '#74809a', 'soft': '#1d2740', 'accent': '#6fa2ff', 'on-accent': '#0b1a36', 'accent-text': '#6fa2ff', 'accent-bright': '#6fa2ff', 'accent-soft': '#1f3561', 'secondary': '#3ddbb4', 'highlight': '#3ddbb4', 'on-highlight': '#0b2a22', 'highlight-soft': '#143a33', 'story': '#2f2918', 'story-edge': '#ffc44d', 'exam': '#28224a', 'exam-edge': '#b39dff', 'success': '#5fd38d', 'warning': '#ffc95c', 'danger': '#ff8a80', 'focus': '#9aa6ff' } },
@@ -172,7 +175,8 @@
   const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
   utilities.append(link(L('Fortschritt', 'Progress'), prefix + 'account.html'));
   utilities.append(link(L('Mehr', 'More'), prefix + 'more.html'));
-  const languageTarget = chemistry ? null : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
+  const appLangTarget = (() => { const u = new URL(location.href); u.searchParams.set('lang', de ? 'en' : 'de'); return u.pathname.split('/').pop() + u.search + u.hash; })();
+  const languageTarget = chemistry ? null : fcApp ? appLangTarget : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
   if (languageTarget) utilities.append(link(de ? 'EN' : 'DE', languageTarget));
   const design = document.createElement('details'); design.className = 'study-design';
   const toggle = document.createElement('summary'); toggle.textContent = 'Design'; design.append(toggle);
@@ -187,7 +191,7 @@
   }); themes.append(themeOptions); panel.append(themes);
   const colours = document.createElement('fieldset'); const colourLegend = document.createElement('legend'); colourLegend.textContent = L('Farbwelt', 'Colour palette'); colours.append(colourLegend);
   const colourOptions = document.createElement('div'); colourOptions.className = 'design-colours';
-  const groups = { fun: L('Bunt', 'Bright'), classic: L('Klassisch', 'Classic'), calm: L('Ruhig', 'Calm'), picked: L('Deine Auswahl', 'Your picks'), access: L('Barrierearm', 'Accessible') };
+  const groups = { story: L('Märchenbuch', 'Storybook'), fun: L('Bunt', 'Bright'), classic: L('Klassisch', 'Classic'), calm: L('Ruhig', 'Calm'), picked: L('Deine Auswahl', 'Your picks'), access: L('Barrierearm', 'Accessible') };
   let lastGroup = '';
   Object.entries(palettes).forEach(([id, value]) => {
     if (value.group !== lastGroup) { lastGroup = value.group; const h = document.createElement('p'); h.className = 'design-group'; h.textContent = groups[value.group] || ''; colourOptions.append(h); }
@@ -215,8 +219,13 @@
   if (prebuilt) prebuilt.replaceWith(shell); else document.body.prepend(shell);
   function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
-  // Keep the original account link live for authenticated users.
-  document.addEventListener('sh-auth', () => { const account = shell.querySelector('.study-utilities a'); if (account && window.SH?.user) account.textContent = L('Mein Fortschritt', 'My progress'); });
+  // Flashcards app (Rachel's folder is re-synced from her repo, so fixes live here): one language switch, plain wording.
+  if (fcApp) {
+    const st = document.createElement('style'); st.textContent = '.fc-lang{display:none!important}'; document.head.append(st);
+    const plain = () => document.querySelectorAll('#fc-view p').forEach(p => { const t = p.textContent; if (t.includes('card environment')) p.textContent = t.replace('in your card environment', 'in your flashcards'); else if (t.includes('Kartenumgebung')) p.textContent = t.replace('in deiner Kartenumgebung', 'in deinen Karten'); });
+    new MutationObserver(plain).observe(document.body, { childList: true, subtree: true }); plain();
+  }
+  // The header link keeps one fixed name ("Progress") whether or not you are signed in.
   let progress = {}; try { progress = JSON.parse(localStorage.getItem('studyhub-chemie-v1') || '{}'); } catch (_) {}
   document.querySelectorAll('[data-chemie-progress]').forEach(el => { el.textContent = (progress.done || []).length + ' / 27 ' + L('Lektionen abgeschlossen', 'lessons completed'); });
 })();
