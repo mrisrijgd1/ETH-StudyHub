@@ -171,6 +171,8 @@
   upper.append(brand);
   const courses = document.createElement('nav'); courses.className = 'study-subjects'; courses.setAttribute('aria-label', L('Fächer', 'Subjects'));
   subjects.forEach(item => { const a = link(item.label, item.href); if (subject === item.id) a.setAttribute('aria-current', 'page'); courses.append(a); });
+  // Exam Dive (Rachel's game, dive/): a game, not a course, so it gets its own marker
+  const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); courses.append(dive);
   upper.append(courses);
   const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
   utilities.append(link(L('Fortschritt', 'Progress'), prefix + 'account.html'));
