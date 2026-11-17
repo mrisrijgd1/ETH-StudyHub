@@ -39,6 +39,10 @@ export function answersForPerfect(zones = ZONES, max = MAX_DEPTH) {
 
 export const isPerfect = (depth, max = MAX_DEPTH) => depth >= max;
 
+/** Practice mode (no timer) has unlimited lives: a wrong answer does not end the dive. */
+export const isPractice = (timer) => !(Number(timer) > 0);
+export const wrongEndsDive = (timer) => !isPractice(timer);
+
 // ---------- answer checking ----------
 
 /**

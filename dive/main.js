@@ -3,8 +3,7 @@ import { MAX_DEPTH, FLOOR, TIMERS, DEFAULT_TIMER, TIMER_WARN_SECONDS, SUBJECT_CH
 import {
   zoneAt, depthAfterCorrect, isPerfect, checkAnswer, subjectsFor,
   availableChapters, filterQuestions, isFiltered, drawQuestion, optionOrder, bestKey, qualifiesForBest,
-  formatTimer, reportUrl,
-} from './game.js';
+  formatTimer, reportUrl, wrongEndsDive } from './game.js';
 import { loadState, saveState, recordDive, recentIdSet, setPref } from './storage.js';
 import { loadBank, bankMode } from './bank.js';
 import { t, setLang, getLang } from './i18n.js';
@@ -261,7 +260,7 @@ function renderHistory() {
     list.append(el('li', { class: 'hist' },
       el('div', { class: 'hist-main' },
         el('strong', { class: 'hist-depth', text: `${d.depth} m` }),
-        el('span', { text: ` · ${subjectLabel(d.subject)} · ${formatTimer(d.timer) || t('timer_off')} · ${chaptersText(d)} · ${d.answers} ✓` }),
+        el('span', { text: ` · ${subjectLabel(d.subject)} · ${formatTimer(d.timer) || t('timer_off')} · ${chaptersText(d)} · ${d.answers} ✓${d.mistakes ? ` · ${d.mistakes} ✗` : ''}` }),
         ...tags),
       el('div', { class: 'hist-sub' },
         el('span', { text: `${fmtDate(d.date)} · ${t('ended_by')}: ${t(`reason_${d.endedBy}`)}` }),
@@ -297,7 +296,7 @@ function startDive() {
     subject: pref('subject'), subjects, timer, filtered,
     chapters: filtered ? sel : null,
     pool, depth: 0, answers: 0, used: new Set(), recent: recentIdSet(app.store),
-    log: [], current: null, timerId: 0, ended: false, n: 0,
+    log: [], current: null, timerId: 0, ended: false, n: 0, mistakes: 0,
   };
   sfx.start();
   show('dive');
@@ -450,6 +449,12 @@ function submit(chosen, { timeout = false } = {}) {
     const zoneChanged = zoneAt(before) !== zoneAt(d.depth);
     if (isPerfect(d.depth)) sfx.perfect(); else if (zoneChanged) sfx.zone(); else sfx.correct();
     announce(t('live_correct', { m: d.depth }) + (zoneChanged && zoneAt(d.depth) ? ` ${zoneAt(d.depth).name[getLang()]}.` : ''));
+  } else if (!wrongEndsDive(d.timer)) {
+    // practice mode: unlimited lives, the diver keeps its depth
+    d.mistakes++;
+    sea.wrong();
+    sfx.wrong();
+    announce(t('live_wrong_practice', { m: d.depth }));
   } else {
     sea.wrong();
     sea.ascend(1.0);
@@ -511,7 +516,7 @@ function renderReveal({ correct, timeout, gained }) {
 
   const perfect = correct && isPerfect(d.depth);
   const banner = perfect ? t('perfect_banner') : correct ? t('correct_banner', { m: gained })
-    : timeout ? t('timeout_banner') : t('wrong_banner');
+    : timeout ? t('timeout_banner') : wrongEndsDive(d.timer) ? t('wrong_banner') : t('wrong_banner_practice');
   card.append(el('div', { class: `banner ${correct ? 'good' : 'bad'}`, id: 'reveal-banner', text: banner }));
   card.append(metaLine(q), ...stemBlock(q, 'reveal-stem'));
   if (q.type === 'multi' && chosen.size === 0 && !timeout) card.append(el('p', { class: 'hint', text: t('you_chose_none') }));
@@ -523,7 +528,7 @@ function renderReveal({ correct, timeout, gained }) {
   if (perfect) {
     primary = el('button', { class: 'pixel-btn', type: 'button', text: t('to_result'), onclick: () => endDive('perfect') });
     actions.append(primary);
-  } else if (correct) {
+  } else if (correct || !wrongEndsDive(d.timer)) {
     primary = el('button', { class: 'pixel-btn', type: 'button', text: t('continue'), onclick: () => { sfx.click(); nextQuestion(); } });
     actions.append(primary, el('button', { class: 'pixel-btn alt', type: 'button', text: t('surface'), onclick: () => endDive('surface') }));
   } else {
@@ -559,7 +564,7 @@ function endDive(reason) {
   const record = {
     date: new Date().toISOString(),
     subject: d.subject, chapters: d.chapters, filtered: d.filtered, timer: d.timer,
-    depth: d.depth, answers: d.answers, endedBy: reason, endQuestion,
+    depth: d.depth, answers: d.answers, mistakes: d.mistakes, endedBy: reason, endQuestion,
     questions: d.log, bank: app.mode,
   };
   const { state, newBest } = recordDive(app.store, record);
@@ -584,7 +589,7 @@ function renderOver(rec, newBest) {
   stats.textContent = '';
   const row = (k, v) => [el('dt', { text: k }), el('dd', { text: v })];
   stats.append(...row(t('reached'), `${rec.depth} m`), ...row(t('zone_reached'), z),
-    ...row(t('answers'), String(rec.answers)), ...row(t('ended_by'), t(`reason_${rec.endedBy}`)),
+    ...row(t('answers'), String(rec.answers)), ...(rec.mistakes ? row(t('mistakes'), String(rec.mistakes)) : []), ...row(t('ended_by'), t(`reason_${rec.endedBy}`)),
     ...row(t('subject'), `${subjectLabel(rec.subject)} · ${formatTimer(rec.timer) || t('timer_off')} · ${chaptersText(rec)}`));
   const tags = $('over-tags');
   tags.textContent = '';
