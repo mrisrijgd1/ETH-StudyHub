@@ -5,7 +5,8 @@ import {
   availableChapters, filterQuestions, isFiltered, drawQuestion, optionOrder, bestKey, qualifiesForBest,
   formatTimer, reportUrl, wrongEndsDive } from './game.js';
 import { loadState, saveState, recordDive, recentIdSet, setPref } from './storage.js';
-import { loadBank, bankMode } from './bank.js';
+import { loadBank, bankMode, normaliseAll } from './bank.js';
+import { account, signIn, loadPrivateBank, saveRun, leaderboard } from './auth.js';
 import { t, setLang, getLang } from './i18n.js';
 import { loadMathJax, typeset, clearMath, setRichText } from './math.js';
 import { sfx, setMuted } from './audio.js';
@@ -38,6 +39,8 @@ const app = {
   dive: null,
   lastDive: null,
   mathFailed: false,
+  acc: null,          // signed-in StudyHub account, or null for guests
+  boardSeq: 0,
 };
 
 function persist() { saveState(app.store); }
@@ -146,7 +149,7 @@ function renderSubjectGroup() {
     input.addEventListener('change', () => {
       setPrefAndSave('subject', s);
       setPrefAndSave('chapters', null);
-      renderChips(); renderStartNote();
+      renderChips(); renderStartNote(); renderLeaderboard();
     });
     g.append(el('label', { class: 'seg-item', for: id }, input, el('span', { text: subjectLabel(s) })));
   }
@@ -158,7 +161,7 @@ function renderTimerGroup() {
   for (const sec of TIMERS) {
     const id = `timer-${sec}`;
     const input = el('input', { type: 'radio', name: 'timer', id, value: sec, checked: Number(pref('timer')) === sec });
-    input.addEventListener('change', () => { setPrefAndSave('timer', sec); renderStartNote(); });
+    input.addEventListener('change', () => { setPrefAndSave('timer', sec); renderStartNote(); renderLeaderboard(); });
     g.append(el('label', { class: 'seg-item', for: id }, input, el('span', { text: formatTimer(sec) || t('timer_off') })));
   }
 }
@@ -274,7 +277,7 @@ function renderBankInfo(errorMsg) {
   const p = $('bank-info');
   if (errorMsg) { p.textContent = t('bank_error', { msg: errorMsg }); p.classList.add('err'); return; }
   p.classList.remove('err');
-  p.textContent = t(app.mode === 'dev' ? 'bank_dev' : 'bank_public', { n: app.bank.length })
+  p.textContent = t(app.mode === 'dev' ? 'bank_dev' : app.mode === 'private' ? 'bank_private' : 'bank_public', { n: app.bank.length })
     + (app.mathFailed ? ` ${t('math_offline')}` : '');
 }
 
@@ -282,7 +285,54 @@ function renderStart() {
   applyStaticText();
   paintPixelText($('title-canvas'), 'EXAM DIVE', { split: true });
   renderSubjectGroup(); renderTimerGroup(); renderChips(); renderStartNote();
-  renderBests(); renderHistory(); renderBankInfo(app.bankError);
+  renderBests(); renderHistory(); renderBankInfo(app.bankError); renderLeaderboard();
+}
+
+// ---------- leaderboard (signed-in users only) ----------
+
+function signInButton(label) {
+  return el('button', { class: 'pixel-btn small', type: 'button', text: label, onclick: () => signIn().catch(() => {}) });
+}
+
+async function renderLeaderboard() {
+  const box = $('board');
+  if (!box) return;
+  const seq = ++app.boardSeq;
+  box.textContent = '';
+  const subject = pref('subject');
+  const timer = Number(pref('timer')) > 0 ? Number(pref('timer')) : DEFAULT_TIMER;
+  $('board-scope').textContent = `${subjectLabel(subject)} · ${formatTimer(timer)}`
+    + (Number(pref('timer')) > 0 ? '' : ` ${t('board_practice_note')}`);
+  if (!app.acc) {
+    box.append(el('p', { class: 'hint', text: t('board_guest') }), signInButton(t('sign_in')));
+    return;
+  }
+  box.append(el('p', { class: 'hint', text: t('board_loading') }));
+  let rows;
+  try { rows = await leaderboard(app.acc, subject, timer); } catch (e) {
+    if (seq !== app.boardSeq) return;
+    box.textContent = '';
+    box.append(el('p', { class: 'hint err', text: t('board_error') }));
+    return;
+  }
+  if (seq !== app.boardSeq) return;
+  box.textContent = '';
+  const me = app.acc.profile && app.acc.profile.nickname;
+  if (!rows.length) box.append(el('p', { class: 'hint', text: t('board_empty') }));
+  else {
+    box.append(el('table', { class: 'board' },
+      el('thead', {}, el('tr', {}, el('th', { scope: 'col', text: '#' }), el('th', { scope: 'col', text: t('board_name') }),
+        el('th', { scope: 'col', text: t('board_depth') }), el('th', { scope: 'col', text: t('board_date') }))),
+      el('tbody', {}, ...rows.map((r, i) => el('tr', { class: r.nickname === me ? 'me' : '' },
+        el('td', { text: String(i + 1) }), el('th', { scope: 'row', text: r.nickname }),
+        el('td', { text: `${r.depth} m` }), el('td', { text: fmtDate(r.reached_at) }))))));
+  }
+  const prof = app.acc.profile;
+  if (!prof || !prof.leaderboard || !prof.nickname) {
+    box.append(el('p', { class: 'hint' }, t('board_optin'), ' ',
+      el('a', { href: '../account.html', text: t('board_optin_link') })));
+  }
+  if (app.mode !== 'private') box.append(el('p', { class: 'hint', text: t('board_only_private') }));
 }
 
 // ---------- the dive ----------
@@ -571,6 +621,7 @@ function endDive(reason) {
   app.store = state;
   persist();
   app.lastDive = record;
+  if (app.acc && app.mode === 'private' && qualifiesForBest(record) && record.depth > 0) saveRun(app.acc, record);
   if (reason !== 'wrong' && reason !== 'timeout') sea.ascend(0.2);
   renderOver(record, newBest);
   show('over');
@@ -748,8 +799,18 @@ async function boot() {
   loadMathJax().then(ok => { if (!ok) noteMathFailure(); });
 
   try {
+    app.acc = await account();
+    const loadQuestions = async () => {
+      if (app.acc && app.mode !== 'dev') {
+        try {
+          const priv = normaliseAll(await loadPrivateBank(app.acc));
+          if (priv.length) { app.mode = 'private'; return priv; }
+        } catch (e) { console.warn('[dive] private bank unavailable, using samples:', e.message || e); }
+      }
+      return loadBank();
+    };
     const [bank, chapters] = await Promise.all([
-      loadBank(),
+      loadQuestions(),
       fetch(new URL('chapters.json', import.meta.url)).then(r => r.json()).catch(() => ({ analysis: [], physics: [] })),
     ]);
     app.bank = bank;
