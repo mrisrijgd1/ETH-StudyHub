@@ -34,7 +34,8 @@ All numbers live in one object, `ZONES` in `config.js`.
   is chosen with probability proportional to its still-available questions; the target difficulty
   is drawn with the zone's weights, and an empty level falls back to the nearest level, harder
   first (3 → 4, 2, 5, 1); inside a level, ids not seen in the last 5 dives are preferred.
-- Timer per question: 0:30, 1:00, 2:00 (default), 3:00, 5:00 or "aus". "aus" is practice: saved in
+- Timer per question: 0:30, 1:00, 2:00 (default), 3:00, 5:00 or "aus". "aus" is practice: unlimited
+  lives (a wrong answer keeps the depth and the dive goes on; mistakes are counted), saved in
   the history, never a best depth. Chapter-filtered dives are saved as "gefiltert" and never count
   for best depths. Best depths are kept per subject choice × timer.
 - `single` questions: click or keys 1–6 / A–F. `multi` questions ("Alle richtigen ankreuzen"):
