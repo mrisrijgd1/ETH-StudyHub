@@ -120,9 +120,19 @@ All numbers live in one object, `ZONES` in `config.js`.
    physical reason and say which hypothesis fails. Cite only references you checked in the script.
 4. Run the tests: the bank test checks the public sample file.
 
-Private questions (old exams, course quizzes) belong in the gitignored `questions/dev/` folder now
-and, later, in Supabase for signed-in users. To switch the source, change only `loadBank()` in
-`bank.js`; it must keep returning normalised questions (`normaliseAll()` does the validation).
+## Private bank and leaderboard (signed-in users)
+
+- **Guests** play the 12 public samples (`questions/sample.json`).
+- **Signed-in StudyHub users** get the full bank (old exams and quizzes), and the full bank stays private:
+  - it lives in ETH-StudyHub-library, `mcq/dive/game/`;
+  - the library sync copies it with `connector/build/build_dive.py` and uploads it with `upload.py` to the private Supabase bucket `dive`;
+  - a storage policy lets only the `authenticated` role read it (`connector/sql/007_dive.sql`).
+- **Loading:** `auth.js` loads the bank and swaps figure paths for signed URLs. If anything fails, the game falls back to the samples.
+- **Leaderboard:**
+  - Only timed, unfiltered dives with the full bank are saved to `dive_runs`; practice and filtered dives are never sent.
+  - `dive_leaderboard(subject, timer)` shows the best depth per person.
+  - Only signed-in users can read it, and only people who opted in to the StudyHub leaderboard with a nickname appear.
+- `auth.js` uses the same project, publishable key and session key as `assets/account.js`, so the StudyHub sign-in is shared.
 
 ## Developer bank and the converter
 
