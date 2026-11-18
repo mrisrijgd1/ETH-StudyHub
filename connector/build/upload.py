@@ -29,7 +29,7 @@ for d, _, fs in os.walk(OUT):
         h = hashlib.sha1(open(p, 'rb').read()).hexdigest(); new[rel] = h
         if old.get(rel) != h: todo.append(rel)
 print(f'{len(new)} files, {len(todo)} changed')
-ct = lambda r: 'application/json' if r.endswith('.json') else 'image/jpeg' if r.endswith('.jpg') else 'application/octet-stream'
+ct = lambda r: 'application/json' if r.endswith('.json') else 'image/jpeg' if r.endswith('.jpg') else 'image/png' if r.endswith('.png') else 'application/octet-stream'
 with ThreadPoolExecutor(8) as ex:
     for i, r in enumerate(ex.map(lambda r: put(r, open(os.path.join(OUT, r), 'rb').read(), ct(r)), todo)):
         if i % 200 == 0: print('uploaded', i + 1)
