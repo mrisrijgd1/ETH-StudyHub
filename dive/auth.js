@@ -58,7 +58,8 @@ export function account() {
 /** Google sign-in, back to this page (the same flow as the rest of StudyHub). */
 export async function signIn() {
   const c = await client();
-  await c.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } });
+  const { error } = await c.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } });
+  if (error) throw error;
 }
 
 /** Private bank files for signed-in users. Returns { index, files: {name: json}, figureUrl(path) }. */
@@ -109,3 +110,4 @@ export async function leaderboard(acc, subject, timer) {
   if (error) throw new Error(error.message || String(error));
   return data || [];
 }
+

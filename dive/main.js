@@ -1,7 +1,7 @@
 // Exam Dive: app controller (screens, dive state machine, DOM). Game rules live in game.js.
 import { MAX_DEPTH, FLOOR, TIMERS, DEFAULT_TIMER, TIMER_WARN_SECONDS, SUBJECT_CHOICES, REPORT_REPO } from './config.js';
 import {
-  zoneAt, depthAfterCorrect, isPerfect, checkAnswer, subjectsFor,
+  zoneAt, depthAfterCorrect, depthAfterAnswers, isPerfect, checkAnswer, subjectsFor,
   availableChapters, filterQuestions, isFiltered, drawQuestion, optionOrder, bestKey, qualifiesForBest,
   formatTimer, reportUrl, wrongEndsDive } from './game.js';
 import { loadState, saveState, recordDive, recentIdSet, setPref } from './storage.js';
@@ -28,6 +28,7 @@ const el = (tag, attrs = {}, ...kids) => {
 };
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const params = new URLSearchParams(location.search);
 
 const app = {
   store: loadState(),
@@ -40,6 +41,7 @@ const app = {
   lastDive: null,
   mathFailed: false,
   acc: null,          // signed-in StudyHub account, or null for guests
+  authPending: true,
   boardSeq: 0,
 };
 
@@ -55,6 +57,10 @@ function applyStaticText() {
   $('btn-lang').textContent = t('lang_toggle');
   $('btn-lang').setAttribute('aria-label', t('lang_toggle_label'));
   $('sea').setAttribute('aria-label', t('canvas_label'));
+  $('dive-profile').setAttribute('aria-label', t('account_settings'));
+  $('dive-profile').href = getLang() === 'de' ? '../de/account.html?settings=1' : '../account.html?settings=1';
+  $('dive-login-title').textContent = t(app.authPending ? 'checking_login' : 'login_required');
+  $('dive-login-note').textContent = app.authPending ? '' : t('login_help');
   updateSoundButton();
 }
 
@@ -207,7 +213,7 @@ function renderStartNote() {
   const note = $('start-note');
   const btn = $('btn-dive');
   const notes = [];
-  let ok = app.bank.length > 0;
+  let ok = !!app.acc && app.bank.length > 0;
   if (app.bank.length) {
     const { sel, filtered, pool } = startSelection();
     if (sel.length === 0) { notes.push(t('note_no_chapters')); ok = false; }
@@ -284,6 +290,13 @@ function renderBankInfo(errorMsg) {
 function renderStart() {
   applyStaticText();
   paintPixelText($('title-canvas'), 'EXAM DIVE', { split: true });
+  $('dive-login').hidden = !!app.acc;
+  $('dive-login-button').hidden = app.authPending || !!app.acc;
+  $('dive-login-cta').hidden = app.authPending || !!app.acc;
+  $('dive-profile').hidden = !app.acc;
+  document.querySelectorAll('[data-dive-account]').forEach(panel => { panel.hidden = !app.acc; });
+  if (!app.acc) return;
+  $('btn-resume').hidden = !savedDive();
   renderSubjectGroup(); renderTimerGroup(); renderChips(); renderStartNote();
   renderBests(); renderHistory(); renderBankInfo(app.bankError); renderLeaderboard();
 }
@@ -337,8 +350,64 @@ async function renderLeaderboard() {
 
 // ---------- the dive ----------
 
+function diveCheckpointKey() { return `sh-resume:${app.acc.user.id}:dive`; }
+
+function savedDive() {
+  if (!app.acc) return null;
+  try {
+    const saved = JSON.parse(localStorage.getItem(diveCheckpointKey()));
+    if (saved?.mode !== app.mode || !app.byId.has(saved.current.id)) return null;
+    return saved;
+  } catch { return null; }
+}
+
+function checkpointDive() {
+  const d = app.dive;
+  if (!app.acc || !d?.current || d.ended) return;
+  const { subject, timer, filtered, chapters, depth, answers, n, mistakes, log, used, endedBy } = d;
+  const { q, order, chosen, answered, deadline } = d.current;
+  const target = new URL(location.href);
+  target.searchParams.set('resume', '1');
+  target.searchParams.set('lang', getLang());
+  try {
+    localStorage.setItem(diveCheckpointKey(), JSON.stringify({
+      href: target.pathname + target.search, title: `${subjectLabel(subject)} · ${depth} m`, at: Date.now(), mode: app.mode,
+      subject, timer, filtered, chapters, depth, answers, n, mistakes, log, used: [...used], endedBy,
+      current: { id: q.id, order: order.map(option => option.key), chosen: [...chosen], answered, deadline },
+    }));
+  } catch { /* The dive can continue if storage is unavailable. */ }
+}
+
+function resumeDive() {
+  const saved = savedDive();
+  if (!saved) return;
+  const { subject, timer, filtered, chapters, depth, answers, n, mistakes, log, used, endedBy, current } = saved;
+  const q = app.byId.get(current.id);
+  const order = current.order.map(key => q.options.find(option => option.key === key));
+  if (order.some(option => !option) || order.length !== q.options.length) return;
+  const subjects = subjectsFor(subject);
+  app.dive = {
+    subject, subjects, timer, filtered, chapters, depth, answers, n, mistakes, log, endedBy,
+    timerId: 0, ended: false, used: new Set(used), recent: recentIdSet(app.store),
+    pool: filterQuestions(app.bank, { subjects, chapters }),
+    current: { q, order, chosen: new Set(current.chosen), answered: current.answered, deadline: current.deadline },
+  };
+  show('dive');
+  sea.startDive();
+  sea.jumpTo(depth);
+  rollGauge(depth, depth);
+  updateHud();
+  if (current.answered) {
+    const answer = log[log.length - 1];
+    renderReveal({ correct: answer.correct, timeout: answer.timeout, gained: answer.correct ? depth - depthAfterAnswers(answers - 1) : 0 });
+  } else {
+    renderQuestion();
+    startTimer();
+  }
+}
+
 function startDive() {
-  if ($('btn-dive').disabled) return;
+  if (!app.acc || $('btn-dive').disabled) return;
   const { subjects, sel, filtered, pool } = startSelection();
   if (!pool.length) return;
   const timer = Number(pref('timer'));
@@ -373,6 +442,7 @@ function nextQuestion() {
   updateHud();
   renderQuestion();
   startTimer();
+  checkpointDive();
 }
 
 function optionLabel(q, opt, i) { return q.fixedOrder ? opt.key : 'abcdef'[i]; }
@@ -421,9 +491,10 @@ function renderQuestion() {
         onclick: () => submit([opt.key]) }, el('span', { class: 'opt-key', 'aria-hidden': 'true', text: label }), text)));
     } else {
       const id = `opt-${i}`;
-      const box = el('input', { type: 'checkbox', id, value: opt.key });
+      const box = el('input', { type: 'checkbox', id, value: opt.key, checked: d.current.chosen.has(opt.key) });
       box.addEventListener('change', () => {
         if (box.checked) d.current.chosen.add(opt.key); else d.current.chosen.delete(opt.key);
+        checkpointDive();
         sfx.click();
       });
       list.append(el('li', {}, el('label', { class: 'opt', for: id }, box,
@@ -456,11 +527,12 @@ function startTimer() {
   const d = app.dive;
   stopTimer();
   if (!d.timer) return;
-  const deadline = performance.now() + d.timer * 1000;
+  const deadline = d.current.deadline ?? (d.current.deadline = Date.now() + d.timer * 1000);
+  const activeDeadline = performance.now() + Math.max(0, Math.min(d.timer * 1000, deadline - Date.now()));
   let lastWhole = d.timer;
   const tick = () => {
     if (!app.dive || app.dive !== d || d.current.answered) { stopTimer(); return; }
-    const left = Math.max(0, (deadline - performance.now()) / 1000);
+    const left = Math.max(0, (activeDeadline - performance.now()) / 1000);
     const fill = $('timer-fill'), text = $('timer-text'), bar = $('timer');
     if (fill) fill.style.width = `${(left / d.timer) * 100}%`;
     const whole = Math.ceil(left);
@@ -476,7 +548,7 @@ function startTimer() {
     if (left <= 0) { stopTimer(); submit([], { timeout: true }); }
   };
   tick();
-  d.timerId = setInterval(tick, 100);
+  if (!d.current.answered) d.timerId = setInterval(tick, 100);
 }
 
 function submit(chosen, { timeout = false } = {}) {
@@ -513,6 +585,7 @@ function submit(chosen, { timeout = false } = {}) {
     announce(t(timeout ? 'live_timeout' : 'live_wrong', { m: d.depth }));
   }
   updateHud();
+  checkpointDive();
   renderReveal({ correct, timeout, gained });
 }
 
@@ -610,6 +683,7 @@ function endDive(reason) {
   if (!d || d.ended) return;
   d.ended = true;
   stopTimer();
+  try { localStorage.removeItem(diveCheckpointKey()); } catch { /* storage unavailable */ }
   const endQuestion = ['wrong', 'timeout', 'abort'].includes(reason) && d.current ? d.current.q.id : null;
   const record = {
     date: new Date().toISOString(),
@@ -759,7 +833,7 @@ function goStart() {
 let sea;
 
 async function boot() {
-  setLang(pref('lang') || 'de');
+  setLang(params.get('lang') || pref('lang') || 'de');
   setMuted(pref('muted') !== false);
   if (!TIMERS.includes(Number(pref('timer')))) app.store = setPref(app.store, 'timer', DEFAULT_TIMER);
   if (!SUBJECT_CHOICES.includes(pref('subject'))) app.store = setPref(app.store, 'subject', 'analysis');
@@ -769,6 +843,14 @@ async function boot() {
   sea.setMode('surface');
 
   $('btn-dive').addEventListener('click', startDive);
+  $('btn-resume').addEventListener('click', resumeDive);
+  const loginButtons = [$('dive-login-button'), $('dive-login-cta')];
+  async function logIn() {
+    loginButtons.forEach(button => { button.disabled = true; });
+    try { await signIn(); }
+    catch { $('dive-login-note').textContent = t('login_failed'); loginButtons.forEach(button => { button.disabled = false; }); }
+  }
+  loginButtons.forEach(button => button.addEventListener('click', logIn));
   $('chips-all').addEventListener('click', () => setAllChips(true));
   $('chips-none').addEventListener('click', () => setAllChips(false));
   $('btn-abort').addEventListener('click', abortDive);
@@ -800,6 +882,10 @@ async function boot() {
 
   try {
     app.acc = await account();
+    if (!app.acc) return;
+    app.acc.sb.auth.onAuthStateChange((event, session) => {
+      if (session?.user?.id !== app.acc.user.id) setTimeout(() => location.reload(), 0);
+    });
     const loadQuestions = async () => {
       if (app.acc && app.mode !== 'dev') {
         try {
@@ -818,11 +904,15 @@ async function boot() {
     app.chapterTitles = chapters;
   } catch (e) {
     app.bankError = e.message || String(e);
+  } finally {
+    app.authPending = false;
+    renderStart();
+    if (params.get('resume') === '1') resumeDive();
   }
-  renderStart();
 }
 
 boot();
 
 // for debugging in the console
 window.__dive = app;
+

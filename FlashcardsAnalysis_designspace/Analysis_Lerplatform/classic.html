@@ -291,6 +291,7 @@
             .card-content { font-size: 1.02rem; }
         }
     </style>
+  <script defer src="../../assets/account.js"></script>
 </head>
 <body>
 
@@ -435,12 +436,23 @@
         let showingFront = true;
         let shuffled = false;
         let ratings = {};            // cardKey -> 'gotit' | 'repeat'
+        const inStudyHub = location.pathname.includes('/FlashcardsAnalysis_designspace/Analysis_Lerplatform/');
+        let deckOwner = null;
+        let restoring = false;
 
         const $ = id => document.getElementById(id);
 
         /* ------------------------- Persistence --------------------------- */
-        function storageKey() { return "analysis1-flashcards-k" + currentChapter.id; }
+        function storageKey() { return "analysis1-flashcards-k" + currentChapter.id + (deckOwner ? ':' + deckOwner : ''); }
         function cardKey(card, i) { return card.id || (currentChapter.id + ":" + (card.title || i)); }
+        function rememberCard() {
+            if (restoring || !deckOwner || !activeDeck.length) return;
+            window.SH?.resume?.write('classic-cards', {
+                href: location.pathname, title: currentChapter.title,
+                chapter: currentChapter.id, section: $("section-filter").value,
+                order: activeDeck.map(card => currentChapter.cards.indexOf(card)), index: currentIdx, flipped: !showingFront
+            });
+        }
         function saveState() {
             if (!currentChapter) return;
             try {
@@ -449,7 +461,12 @@
         }
         function loadState() {
             try {
-                const raw = localStorage.getItem(storageKey());
+                let raw = localStorage.getItem(storageKey());
+                const legacyKey = "analysis1-flashcards-k" + currentChapter.id;
+                if (!raw && deckOwner && !localStorage.getItem(legacyKey + ':owner')) {
+                    raw = localStorage.getItem(legacyKey);
+                    if (raw) { localStorage.setItem(storageKey(), raw); localStorage.setItem(legacyKey + ':owner', deckOwner); }
+                }
                 if (!raw) return { ratings: {}, shuffled: false };
                 const s = JSON.parse(raw);
                 return { ratings: s.ratings || {}, shuffled: !!s.shuffled };
@@ -457,8 +474,9 @@
         }
 
         /* --------------------------- Sidebar ------------------------------ */
-        function initSidebar() {
+        function initSidebar(chapter) {
             const list = $("chapter-list");
+            list.replaceChildren();
             CHAPTERS.forEach(ch => {
                 const btn = document.createElement("button");
                 btn.className = "chapter-btn";
@@ -472,7 +490,7 @@
                 }
                 list.appendChild(btn);
             });
-            const first = CHAPTERS.find(c => c.cards && c.cards.length > 0);
+            const first = CHAPTERS.find(c => c.id === chapter && c.cards?.length) || CHAPTERS.find(c => c.cards?.length);
             if (first) loadChapter(first.id);
         }
         function openSidebar() { $("sidebar").classList.add("open"); $("sidebar-overlay").classList.add("show"); }
@@ -585,6 +603,7 @@
             $("controls-back").style.display = "none";
             $("btn-prev").disabled = (currentIdx === 0);
             updateProgress();
+            rememberCard();
         }
 
         function flipCard() {
@@ -593,6 +612,7 @@
             $("flashcard").classList.toggle("flipped", !showingFront);
             $("controls-front").style.display = showingFront ? "flex" : "none";
             $("controls-back").style.display = showingFront ? "none" : "flex";
+            rememberCard();
         }
 
         function toggleExplanation() {
@@ -609,6 +629,7 @@
             if (currentIdx < activeDeck.length - 1) {
                 showCard(currentIdx + 1);
             } else {
+                if (deckOwner) window.SH?.resume?.write('classic-cards', null);
                 updateProgress();
                 showFinishScreen();
             }
@@ -695,7 +716,7 @@
         };
 
         document.addEventListener("keydown", e => {
-            if (!currentChapter) return;
+            if (!currentChapter || (inStudyHub && !deckOwner)) return;
             if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
 
             if ($("finish-modal").style.display === "flex") {
@@ -714,7 +735,36 @@
             }
         });
 
-        document.addEventListener("DOMContentLoaded", initSidebar);
+        function applyAccount() {
+            const id = window.SH?.user?.id || null;
+            if (id === deckOwner) return;
+            deckOwner = id;
+            closeSidebar();
+            $("finish-modal").style.display = "none";
+            $("help-popup").style.display = "none";
+            if (!id) { currentChapter = null; activeDeck = []; return; }
+            const saved = window.SH.resume?.read('classic-cards');
+            restoring = true;
+            initSidebar(saved?.chapter);
+            if (saved && currentChapter?.id === saved.chapter && Array.isArray(saved.order)) {
+                const cards = saved.order.map(i => currentChapter.cards[i]);
+                if (cards.length && cards.every(Boolean)) {
+                    $("section-filter").value = saved.section || '';
+                    fullDeck = currentChapter.cards.filter(c => !saved.section || c.category === saved.section);
+                    activeDeck = cards;
+                    $("total-cards").innerText = activeDeck.length;
+                    showCard(Math.max(0, saved.index || 0));
+                    if (saved.flipped) flipCard();
+                }
+            }
+            restoring = false;
+            rememberCard();
+        }
+        if (inStudyHub) {
+            document.body.classList.add('study-classic-cards');
+            document.addEventListener('sh-auth', applyAccount);
+            applyAccount();
+        } else document.addEventListener('DOMContentLoaded', () => initSidebar());
     </script>
 </body>
 </html>

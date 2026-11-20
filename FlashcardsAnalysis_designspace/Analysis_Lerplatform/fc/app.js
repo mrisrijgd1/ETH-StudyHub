@@ -191,13 +191,14 @@
   /* Accounts (StudyHub window.SH)                                       */
   /* ------------------------------------------------------------------ */
   let profileName = "";
+  const inStudyHub = location.pathname.includes("/FlashcardsAnalysis_designspace/Analysis_Lerplatform/");
   function hookAccount() {
     const apply = () => {
       const SH = window.SH; const user = SH && SH.user;
       const next = user && user.id ? user.id : "guest";
       if (next !== uid) {
         const wasGuest = uid === "guest"; const guest = store.users.guest;
-        uid = next; U();
+        uid = next; U(); S = null; closeFinish();
         if (wasGuest && next !== "guest" && guest && guest.log.length && !U().log.length && !store.offered) {
           store.offered = true;
           if (confirm(L("Deinen Fortschritt als Gast in dein Konto übernehmen?", "Carry your guest progress over to your account?"))) {
@@ -206,14 +207,8 @@
         }
         save();
       }
-      if (user) {
-        const md = user.user_metadata || {};
-        profileName = ((md.full_name || md.name || "").split(/\s+/)[0]) || "";
-        try {
-          SH.sb && SH.sb.from("profiles").select("nickname").eq("id", user.id).maybeSingle()
-            .then(r => { if (r && r.data && r.data.nickname) { profileName = r.data.nickname; render(); } });
-        } catch (e) {}
-      } else profileName = "";
+      const md = user?.user_metadata || {};
+      profileName = user ? SH.profile?.nickname || ((md.full_name || md.name || "").split(/\s+/)[0]) : "";
       render();
     };
     document.addEventListener("sh-auth", apply);
@@ -293,6 +288,7 @@
   let lastRouteKey = "";
   function render(fromHash) {
     if (!store) return;
+    if (inStudyHub && !window.SH?.user) { $("#fc-view").replaceChildren(); return; }
     const r = route(), view = $("#fc-view");
     const key = location.hash;
     const p = r.parts;
@@ -666,9 +662,17 @@
         return;
       }
       if (!spec) { go("#/"); return; }
-      const cards = spec.order && prefs().shuffle ? shuffle(spec.cards) : spec.cards.slice();
-      S = Object.assign({ key, idx: 0, flipped: false, run: {} }, spec, { cards });
-      U().lastSession = { hash: key, at: NOW() }; save();
+      const saved = U().lastSession;
+      const restore = saved?.hash === key && Array.isArray(saved.ids);
+      const restoredCards = restore ? saved.ids.map(id => byId.get(id)) : [];
+      const canRestore = restoredCards.length > 0 && restoredCards.every(Boolean);
+      const cards = canRestore ? restoredCards : spec.order && prefs().shuffle ? shuffle(spec.cards) : spec.cards.slice();
+      S = Object.assign({ key, idx: 0, flipped: false, run: {}, complete: false }, spec, { cards });
+      if (canRestore) {
+        S.idx = Math.min(cards.length - 1, Math.max(0, Number(saved.idx) || 0));
+        S.run = saved.run || {};
+        S.flipped = !!saved.flipped;
+      }
     }
     const v = $("#fc-view");
     if (!S.cards.length) {
@@ -698,7 +702,22 @@
     $("#s-flip").onclick = flip; $("#s-prev").onclick = () => show(S.idx - 1);
     $("#s-xt").onclick = toggleExplain;
     $$("#s-cback [data-r]").forEach(b => b.onclick = () => doRate(b.dataset.r));
+    const flipped = S.flipped;
     show(S.idx);
+    if (flipped) flip();
+  }
+  function checkpoint() {
+    if (!S?.cards.length || S.complete) return;
+    U().lastSession = { hash: S.key, idx: S.idx, ids: S.cards.map(c => c.id), run: S.run, flipped: S.flipped, at: NOW() };
+    save();
+    const target = new URL(location.href);
+    target.searchParams.set("lang", LANG);
+    window.SH?.resume?.write("analysis-cards", { href: target.pathname + target.search + target.hash, title: S.title });
+  }
+  function clearCheckpoint() {
+    U().lastSession = null;
+    window.SH?.resume?.write("analysis-cards", null);
+    save();
   }
   function badges(c) {
     const t = c.type ? `<span class="fc-tag t-${esc(c.type)}">${esc(typeLabel(c.type))}</span>` : "";
@@ -723,7 +742,7 @@
     $("#s-x").innerHTML = x; $("#s-x").classList.remove("open"); $("#s-xt").hidden = !x;
     $("#s-i").textContent = S.idx + 1; $("#s-prev").disabled = S.idx === 0;
     $("#s-cfront").hidden = false; $("#s-cback").hidden = true;
-    progress(); typeset($("#s-front")); typeset($("#s-back"));
+    progress(); typeset($("#s-front")); typeset($("#s-back")); checkpoint();
   }
   function progress() {
     const v = Object.values(S.run), n = S.cards.length || 1;
@@ -737,6 +756,7 @@
     $("#s-cfront").hidden = S.flipped; $("#s-cback").hidden = !S.flipped;
     announce(S.flipped ? L("Antwort", "Answer") : L("Frage", "Question"));
     if (S.flipped) $("#s-cback .got").focus({ preventScroll: true });
+    checkpoint();
   }
   function toggleExplain() { if (!S || !S.flipped || $("#s-xt").hidden) return; $("#s-x").classList.toggle("open"); typeset($("#s-x")); }
   function doRate(r) {
@@ -744,7 +764,8 @@
     const c = S.cards[S.idx]; rate(c, r); S.run[c.id] = r;
     announce(L({ a: "Nochmal", u: "Unsicher", g: "Gewusst" }[r], { a: "Again", u: "Unsure", g: "Got it" }[r]));
     renderNav(navKey(route()));
-    if (S.idx < S.cards.length - 1) show(S.idx + 1); else { progress(); finish(); }
+    if (S.idx < S.cards.length - 1) show(S.idx + 1);
+    else { S.complete = true; clearCheckpoint(); progress(); finish(); }
   }
   function finish() {
     const v = Object.values(S.run); const g = v.filter(r => r === "g").length, u = v.filter(r => r === "u").length, a = v.filter(r => r === "a").length;
@@ -754,7 +775,7 @@
     $("#fc-finish-stats").innerHTML = `<div class="g"><b>${g}</b>${L("gewusst", "got it")}</div><div class="u"><b>${u}</b>${L("unsicher", "unsure")}</div><div class="a"><b>${a}</b>${L("nochmal", "again")}</div>`;
     $("#fc-finish-text").innerHTML = perfect ? L("Alle Karten sitzen! ｡^‿^｡", "Every card sticks! ｡^‿^｡") : L(`<b>${a + u}</b> Karte(n) möchten nochmal geübt werden.`, `<b>${a + u}</b> card(s) want another round.`);
     const btns = $("#fc-finish-btns"); btns.innerHTML = "";
-    if (!perfect) { const b = document.createElement("button"); b.className = "fc-btn primary"; b.textContent = L("Falsche Karten wiederholen", "Repeat the missed cards"); b.onclick = () => { const miss = S.cards.filter(c => S.run[c.id] && S.run[c.id] !== "g"); S.cards = prefs().shuffle ? shuffle(miss) : miss; S.run = {}; S.idx = 0; closeFinish(); render(); }; btns.appendChild(b); }
+    if (!perfect) { const b = document.createElement("button"); b.className = "fc-btn primary"; b.textContent = L("Falsche Karten wiederholen", "Repeat the missed cards"); b.onclick = () => { const miss = S.cards.filter(c => S.run[c.id] && S.run[c.id] !== "g"); S.cards = prefs().shuffle ? shuffle(miss) : miss; S.run = {}; S.idx = 0; S.flipped = false; S.complete = false; closeFinish(); render(); }; btns.appendChild(b); }
     const again = document.createElement("button"); again.className = "fc-btn"; again.textContent = L("Deck neu starten", "Restart deck"); again.onclick = () => { S = null; closeFinish(); render(); }; btns.appendChild(again);
     const back = document.createElement("a"); back.className = "fc-btn"; back.href = S.back; back.textContent = L("Zur Übersicht", "Back to overview"); back.onclick = () => closeFinish(); btns.appendChild(back);
     $("#fc-finish").classList.add("open"); (btns.firstChild || back).focus();
@@ -779,6 +800,11 @@
   function start() {
     loadStore(); U(); initLang(); migrateLegacy(); hookAccount(); render(true);
     window.addEventListener("storage", e => { if (e.key === C.storageKey) { loadStore(); render(); } });
+    window.addEventListener("pagehide", () => {
+      if (saveT === null) return;
+      clearTimeout(saveT);
+      try { localStorage.setItem(C.storageKey, JSON.stringify(store)); } catch (e) {}
+    });
   }
   window.__fc = { stats, isWeak, isMastered, streakInfo, rate: (id, r) => rate(byId.get(id), r), store: () => store, chapters, lesson, loadLessons, render };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();

@@ -93,7 +93,7 @@
   // Rachel's flashcards app (synced from her repo). The Analysis "Flashcards" tab opens it.
   const fcAppPath = 'FlashcardsAnalysis_designspace/Analysis_Lerplatform/';
   const fcApp = path.startsWith(fcAppPath);
-  const de = chemistry || path.startsWith('de/') || new URLSearchParams(location.search).get('lang') === 'de';
+  const de = chemistry || path.startsWith('de/') || new URLSearchParams(location.search).get('lang') === 'de' || (fcApp && document.documentElement.lang === 'de' && !new URLSearchParams(location.search).has('lang'));
   const prefix = de ? 'de/' : '';
   const file = path.split('/').pop() || 'index.html';
   const L = (german, english) => de ? german : english;
@@ -106,9 +106,14 @@
     { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' }
   ];
   // flashcards.html#p1-16 is the Physics deck (StudyHub's own cards); it stays on this page.
-  const physCards = !fcApp && !de && file === 'flashcards.html' && /^#p\d/.test(location.hash);
+  let returnHash = '';
+  try {
+    const destination = JSON.parse(sessionStorage.getItem('sh-login-return'));
+    if (destination?.path === location.pathname && /access_token=|[?&]code=/.test(location.hash + location.search)) returnHash = destination.hash;
+  } catch (_) {}
+  const physCards = !fcApp && !de && file === 'flashcards.html' && (/^#p\d/.test(location.hash) || /^#p\d/.test(returnHash));
   const subject = chemistry ? 'chemie' : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
-  if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'index.html' + (de ? '?lang=de' : '') + '#/proof-practice', base).href); return; }
+  if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
   const modes = {
@@ -116,7 +121,7 @@
       ['lessons', L('Lektionen', 'Lessons'), prefix + 'analysis.html#lessons'],
       ['revision', L('Repetition', 'Revision'), prefix + 'analysis.html#refresher'],
       ['practice', L('Üben', 'Practice'), prefix + 'practice.html'],
-      ['cards', L('Lernkarten', 'Flashcards'), fcAppPath + 'index.html' + (de ? '?lang=de' : '')],
+      ['cards', L('Lernkarten', 'Flashcards'), fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en')],
       ['plan', L('Prüfungsplan', 'Exam plan'), prefix + 'exam-map.html'],
       ['script', L('Skript', 'Script'), 'script.html'],
       ['exams', L('Prüfungen', 'Exams'), prefix + 'docs.html']
@@ -172,25 +177,67 @@
   const courses = document.createElement('nav'); courses.className = 'study-subjects'; courses.setAttribute('aria-label', L('Fächer', 'Subjects'));
   subjects.forEach(item => { const a = link(item.label, item.href); if (subject === item.id) a.setAttribute('aria-current', 'page'); courses.append(a); });
   // Exam Dive (Rachel's game, dive/): a game, not a course, so it gets its own marker
-  const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); courses.append(dive);
+  const dive = link('Exam Dive', 'dive/?lang=' + (de ? 'de' : 'en'), 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); courses.append(dive);
   upper.append(courses);
   const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
   utilities.append(link(L('Fortschritt', 'Progress'), prefix + 'account.html'));
   utilities.append(link(L('Mehr', 'More'), prefix + 'more.html'));
-  const appLangTarget = (() => { const u = new URL(location.href); u.searchParams.set('lang', de ? 'en' : 'de'); return u.pathname.split('/').pop() + u.search + u.hash; })();
-  const languageTarget = chemistry ? null : fcApp ? appLangTarget : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
-  if (languageTarget) utilities.append(link(de ? 'EN' : 'DE', languageTarget));
+  const activityHash = /access_token=|error_description=/.test(location.hash) ? returnHash : location.hash;
+  const language = de ? 'en' : 'de';
+  const currentApp = file + '?lang=' + language + activityHash;
+  const languageTarget = chemistry || physCards ? (de ? 'index.html' : 'de/index.html') : fcApp ? fcAppPath + currentApp : sharedPages.has(file) ? currentApp : (de ? file : 'de/' + file);
+  const languageLink = link(de ? 'EN' : 'DE', languageTarget, 'study-guest-language');
+  languageLink.lang = de ? 'en' : 'de';
+  languageLink.setAttribute('aria-label', de ? 'English' : 'Deutsch');
+  utilities.append(languageLink);
+  const login = link(L('Anmelden', 'Log in'), prefix + 'account.html', 'study-login');
+  utilities.append(login);
   const design = document.createElement('details'); design.className = 'study-design';
-  const toggle = document.createElement('summary'); toggle.textContent = 'Design'; design.append(toggle);
+  design.hidden = true;
+  const toggle = document.createElement('summary');
+  toggle.className = 'study-profile-toggle';
+  toggle.setAttribute('aria-label', L('Kontoeinstellungen', 'Account settings'));
+  toggle.innerHTML = '<span class="study-profile-icon" aria-hidden="true"></span>';
+  design.append(toggle);
   const panel = document.createElement('div'); panel.className = 'study-design-panel';
-  const heading = document.createElement('h2'); heading.textContent = L('Dein Design', 'Your design'); panel.append(heading);
+  const heading = document.createElement('h2'); heading.textContent = L('Einstellungen', 'Settings'); panel.append(heading);
+  const profileForm = document.createElement('form');
+  profileForm.className = 'study-profile-form';
+  profileForm.innerHTML = '<label>' + L('Benutzername für die Bestenliste', 'Leaderboard username') + '<input name="nickname" type="text" maxlength="30" autocomplete="nickname"></label>' +
+    '<label class="study-profile-optin"><input name="leaderboard" type="checkbox">' + L('In der Bestenliste anzeigen', 'Show me on the leaderboard') + '</label>' +
+    '<button type="submit">' + L('Speichern', 'Save') + '</button><p role="status"></p>';
+  const profileName = profileForm.elements.nickname;
+  const profileOptIn = profileForm.elements.leaderboard;
+  const profileMessage = profileForm.querySelector('[role="status"]');
+  profileForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = profileForm.querySelector('button');
+    button.disabled = true;
+    try {
+      await window.SH.updateProfile(profileName.value, profileOptIn.checked);
+      profileMessage.textContent = L('Gespeichert.', 'Saved.');
+    } catch (error) { profileMessage.textContent = error.message; }
+    finally { button.disabled = false; }
+  });
+  panel.append(profileForm);
+  const choices = document.createElement('div');
+  choices.className = 'study-profile-links';
+  const switchLanguage = link(L('Sprache: English', 'Language: Deutsch'), languageTarget);
+  switchLanguage.lang = de ? 'en' : 'de';
+  choices.append(switchLanguage, link(L('Konto & Fortschritt', 'Account & progress'), prefix + 'account.html'));
+  panel.append(choices);
+  const appearanceDisclosure = document.createElement('details');
+  appearanceDisclosure.className = 'study-profile-appearance';
+  const appearanceToggle = document.createElement('summary');
+  appearanceToggle.textContent = 'Design';
+  appearanceDisclosure.append(appearanceToggle);
   const themes = document.createElement('fieldset');
   const themeLegend = document.createElement('legend'); themeLegend.textContent = L('Darstellung', 'Appearance'); themes.append(themeLegend);
   const themeOptions = document.createElement('div'); themeOptions.className = 'design-theme-options';
   [['light', L('Hell', 'Light')], ['dark', L('Dunkel', 'Dark')]].forEach(([value, text]) => {
     const label = document.createElement('label'); const input = document.createElement('input'); input.type = 'radio'; input.name = 'study-design-theme'; input.value = value;
     input.addEventListener('change', () => { appearance.theme = value; applyAppearance(true); updateDesignPanel(); }); label.append(input, document.createTextNode(text)); themeOptions.append(label);
-  }); themes.append(themeOptions); panel.append(themes);
+  }); themes.append(themeOptions); appearanceDisclosure.append(themes);
   const colours = document.createElement('fieldset'); const colourLegend = document.createElement('legend'); colourLegend.textContent = L('Farbwelt', 'Colour palette'); colours.append(colourLegend);
   const colourOptions = document.createElement('div'); colourOptions.className = 'design-colours';
   const groups = { story: L('Märchenbuch', 'Storybook'), fun: L('Bunt', 'Bright'), classic: L('Klassisch', 'Classic'), calm: L('Ruhig', 'Calm'), picked: L('Deine Auswahl', 'Your picks'), access: L('Barrierearm', 'Accessible') };
@@ -200,8 +247,9 @@
     const button = document.createElement('button'); button.type = 'button'; button.dataset.palette = id;
     const swatch = document.createElement('span'); swatch.className = 'design-swatch'; swatch.setAttribute('aria-hidden', 'true'); swatch.style.background = 'linear-gradient(135deg,' + value.swatches[0] + ' 50%,' + value.swatches[1] + ' 50%)';
     button.append(swatch, document.createTextNode(value.label[de ? 0 : 1])); button.addEventListener('click', () => { appearance.palette = id; applyAppearance(true); updateDesignPanel(); }); colourOptions.append(button);
-  }); colours.append(colourOptions); panel.append(colours);
-  const hint = document.createElement('p'); hint.className = 'design-save-hint'; hint.textContent = L('Wird für alle Fächer in diesem Browser gespeichert.', 'Saved for all subjects in this browser.'); panel.append(hint);
+  }); colours.append(colourOptions); appearanceDisclosure.append(colours);
+  const hint = document.createElement('p'); hint.className = 'design-save-hint'; hint.textContent = L('Wird für alle Fächer in diesem Browser gespeichert.', 'Saved for all subjects in this browser.'); appearanceDisclosure.append(hint);
+  panel.append(appearanceDisclosure, link(L('Mein StudyHub', 'My StudyHub'), prefix + 'my.html'));
   design.append(panel); utilities.append(design);
   function updateDesignPanel() {
     design.querySelectorAll('input[name="study-design-theme"]').forEach(input => { input.checked = input.value === appearance.theme; });
@@ -221,7 +269,240 @@
   if (prebuilt) prebuilt.replaceWith(shell); else document.body.prepend(shell);
   function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
-  // The header link keeps one fixed name ("Progress") whether or not you are signed in.
-  let progress = {}; try { progress = JSON.parse(localStorage.getItem('studyhub-chemie-v1') || '{}'); } catch (_) {}
-  document.querySelectorAll('[data-chemie-progress]').forEach(el => { el.textContent = (progress.done || []).length + ' / 27 ' + L('Lektionen abgeschlossen', 'lessons completed'); });
+  const main = document.querySelector('main');
+  const lessonMatch = /^(lesson|phys|refresher|linalg|serie)-[ap]?\d+\.html$/.test(file);
+  const gatedPage = fcApp || lessonMatch || /^(flashcards|practice|mock|moves|linalg-moves|tree|toolbox|skipped)\.html$/.test(file);
+  const gate = document.createElement('section');
+  gate.className = 'study-login-prompt';
+  gate.hidden = true;
+  gate.innerHTML = '<h1></h1><p></p><button type="button" class="study-action"></button><p role="status"></p>';
+  const gateTitle = gate.querySelector('h1');
+  const gateText = gate.querySelector('p');
+  const gateButton = gate.querySelector('button');
+  const gateStatus = gate.querySelector('[role="status"]');
+  gateButton.textContent = L('Mit Google anmelden', 'Log in with Google');
+  if (main && (gatedPage || chemistry)) main.before(gate);
+
+  function startLogin(button, status) {
+    button.setAttribute('aria-disabled', 'true');
+    if (status) status.textContent = '';
+    window.SH.signIn().catch(() => {
+      button.removeAttribute('aria-disabled');
+      if (status) status.textContent = L('Anmeldung fehlgeschlagen. Bitte versuche es erneut.', 'Could not log in. Please try again.');
+      else location.href = login.href;
+    });
+  }
+  login.addEventListener('click', event => {
+    if (!window.SH || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+    event.preventDefault();
+    if (!login.hasAttribute('aria-disabled')) startLogin(login);
+  });
+  gateButton.addEventListener('click', () => {
+    if (window.SH && !gateButton.hasAttribute('aria-disabled')) startLogin(gateButton, gateStatus);
+  });
+  function updateGate() {
+    const chemieActivity = chemistry && /^#(?:lesson|review|training|exams)(?:\/|$)/.test(location.hash);
+    const protectedActivity = gatedPage || chemieActivity;
+    if (!main || (!gatedPage && !chemistry)) return;
+    const pending = !window.SH || window.SH.authPending;
+    const locked = protectedActivity && !window.SH?.user;
+    main.classList.toggle('study-locked', locked);
+    gate.hidden = !locked;
+    gateTitle.textContent = pending ? L('Anmeldung wird geprüft', 'Checking sign-in') : L('Bitte melde dich an', 'Please log in');
+    gateText.textContent = pending ? '' : L('Melde dich an, um hier weiterzulernen.', 'Log in to continue studying here.');
+    gateButton.hidden = pending;
+    if (window.SH && !window.SH.user) document.querySelector('#fc-finish')?.classList.remove('open');
+  }
+
+  const lessonKind = lessonMatch && subject ? subject + '-lesson' : '';
+  let lessonOwner;
+  function rememberLesson() {
+    if (!lessonKind || !window.SH?.user) return;
+    const section = Array.from(main.querySelectorAll('h2[id], h3[id]')).filter(h => h.getBoundingClientRect().top < 130 && h.getClientRects().length).pop();
+    const target = new URL(location.href);
+    const requestedSection = document.getElementById(target.hash.slice(1));
+    const previous = window.SH.resume?.read(lessonKind);
+    // Returning to the navigation bar shouldn't erase the reading position.
+    if (!section && !requestedSection && previous?.href && new URL(previous.href, base).pathname === target.pathname) return;
+    target.hash = section?.id || (requestedSection?.closest('main') === main ? requestedSection.id : '');
+    window.SH.resume?.write(lessonKind, { href: target.pathname + target.search + target.hash, title: main.querySelector('h1')?.textContent.trim() });
+  }
+  if (lessonKind && main) {
+    let scrollTimer;
+    addEventListener('scroll', () => { clearTimeout(scrollTimer); scrollTimer = setTimeout(rememberLesson, 250); }, { passive: true });
+    addEventListener('pagehide', rememberLesson);
+    addEventListener('hashchange', () => requestAnimationFrame(rememberLesson));
+  }
+
+  const continueKinds = ['analysis-lesson', 'physics-lesson', 'linalg-lesson', 'chemie-lesson', 'analysis-cards', 'classic-cards', 'physics-cards', 'chemie-cards', 'dive'];
+  const continueLabels = {
+    'analysis-lesson': 'Analysis I', 'physics-lesson': L('Physik I', 'Physics I'),
+    'linalg-lesson': L('Lineare Algebra I', 'Linear Algebra I'), 'chemie-lesson': 'Chemie I (PC)',
+    'analysis-cards': L('Analysis-Lernkarten', 'Analysis flashcards'), 'classic-cards': L('Analysis-Lernkarten (klassisch)', 'Analysis flashcards (classic)'), 'physics-cards': L('Physik-Lernkarten', 'Physics flashcards'),
+    'chemie-cards': L('Chemie-Lernkarten', 'Chemistry flashcards'), dive: 'Exam Dive'
+  };
+  const continueSection = document.createElement('section');
+  continueSection.className = 'study-continue';
+  continueSection.hidden = true;
+  const continueHeading = document.createElement('h2');
+  continueHeading.textContent = L('Hier hast du aufgehört', 'Pick up where you left off');
+  const continueList = document.createElement('div');
+  continueSection.append(continueHeading, continueList);
+  if (main?.classList.contains('study-home')) main.querySelector('.home-hero')?.after(continueSection);
+  function renderContinue() {
+    if (!continueSection.isConnected) return;
+    const available = continueKinds.map(kind => ({ kind, entry: window.SH?.resume?.read(kind) })).filter(item => item.entry?.href);
+    available.sort((a, b) => b.entry.at - a.entry.at);
+    continueList.replaceChildren();
+    available.forEach(({ kind, entry }) => {
+      const target = new URL(entry.href, base);
+      if (target.origin !== base.origin || !target.pathname.startsWith(base.pathname)) return;
+      const item = document.createElement('a');
+      item.href = target.href;
+      const label = document.createElement('strong');
+      label.textContent = continueLabels[kind];
+      const title = document.createElement('span');
+      title.textContent = entry.title || L('Fortsetzen', 'Resume');
+      item.append(label, title);
+      continueList.append(item);
+    });
+    continueSection.hidden = !continueList.childElementCount;
+  }
+
+  function updateAccountUI() {
+    const account = window.SH;
+    const signedIn = !!account?.user;
+    design.hidden = !signedIn;
+    login.hidden = signedIn;
+    languageLink.hidden = signedIn;
+    if (!signedIn) design.open = false;
+    if (signedIn && new URLSearchParams(location.search).get('settings') === '1') {
+      design.open = true;
+      const settingsUrl = new URL(location.href);
+      settingsUrl.searchParams.delete('settings');
+      history.replaceState(null, '', settingsUrl);
+    }
+    profileForm.querySelector('button').disabled = !!account?.accountDataPending;
+    profileName.disabled = profileOptIn.disabled = !!account?.accountDataPending;
+    if (!account?.accountDataPending) {
+      profileName.value = account?.profile?.nickname || '';
+      profileOptIn.checked = !!account?.profile?.leaderboard;
+    }
+    updateGate();
+    if (lessonKind && main && signedIn && lessonOwner !== account.user.id) { lessonOwner = account.user.id; rememberLesson(); }
+    if (!signedIn) lessonOwner = null;
+    renderContinue();
+  }
+  document.addEventListener('sh-auth', updateAccountUI);
+  addEventListener('hashchange', updateGate);
+  addEventListener('pageshow', renderContinue);
+  addEventListener('storage', event => { if (event.key?.startsWith('sh-resume:')) renderContinue(); });
+  updateAccountUI();
+
+  const courseArt = {
+    analysis: L('Eine Funktion und ihre Tangente', 'A function and its tangent'),
+    physics: L('Wurfparabeln mit gleicher Anfangsgeschwindigkeit', 'Projectile paths at the same launch speed'),
+    linalg: L('Wie eine lineare Abbildung ein Gitter verändert', 'How a linear map transforms a grid')
+  };
+
+  function drawCourseGraphic(canvas) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const theme = getComputedStyle(document.documentElement);
+    const accent = theme.getPropertyValue('--design-accent');
+    const muted = theme.getPropertyValue('--design-muted');
+    const secondary = theme.getPropertyValue('--design-secondary');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save(); ctx.scale(2, 2);
+    function trace(points, colour, width = 1) {
+      ctx.beginPath(); ctx.strokeStyle = colour; ctx.lineWidth = width; ctx.lineCap = 'round';
+      points.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+      ctx.stroke();
+    }
+    ctx.globalAlpha = .22;
+    for (let x = 26; x <= 386; x += 20) trace([[x, 16], [x, 216]], muted);
+    for (let y = 16; y <= 216; y += 20) trace([[26, y], [386, y]], muted);
+    ctx.globalAlpha = 1;
+    const axisX = subject === 'physics' ? 46 : 206;
+    const axisY = subject === 'physics' ? 196 : 116;
+    trace([[26, axisY], [386, axisY]], muted);
+    trace([[axisX, 16], [axisX, 216]], muted);
+    if (subject === 'analysis') {
+      const f = x => 126 - 40 * Math.tanh((x - 200) / 60) - .0007 * (x - 200) ** 2;
+      trace(Array.from({ length: 71 }, (_, i) => [36 + 5 * i, f(36 + 5 * i)]), accent, 3);
+      const x = 204, y = f(x), slope = (f(x + .01) - f(x - .01)) / .02;
+      ctx.setLineDash([5, 5]); trace([[138, y - 66 * slope], [294, y + 90 * slope]], secondary, 2); ctx.setLineDash([]);
+      ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(x, y, 5, 0, 2 * Math.PI); ctx.fill();
+    } else if (subject === 'physics') {
+      [27, 44, 64].forEach((angle, i) => {
+        const radians = angle * Math.PI / 180, speed = 18, gravity = 1.9;
+        const duration = 2 * speed * Math.sin(radians) / gravity;
+        trace(Array.from({ length: 51 }, (_, j) => {
+          const t = duration * j / 50;
+          return [46 + speed * Math.cos(radians) * t * 1.9, 196 - (speed * Math.sin(radians) * t - gravity * t * t / 2) * 1.7];
+        }), i === 1 ? accent : secondary, i === 1 ? 3 : 1.5);
+      });
+    } else {
+      const transform = (x, y) => [206 + 37 * x + 21 * y, 116 - 23 * y + 8 * x];
+      for (let i = -2; i <= 2; i++) {
+        trace([transform(i, -2), transform(i, 2)], accent, i === 0 ? 3 : 1.25);
+        trace([transform(-2, i), transform(2, i)], secondary, i === 0 ? 3 : 1.25);
+      }
+    }
+    ctx.restore();
+  }
+
+  function makeCourseOverview() {
+    if (!main || !courseArt[subject] || file !== ({ analysis: 'analysis.html', physics: 'physics.html', linalg: 'linalg.html' })[subject]) return;
+    const intro = main.querySelector(':scope > header');
+    const lessonName = { analysis: 'lesson', physics: 'phys', linalg: 'linalg' }[subject];
+    const lessonPath = new RegExp('/' + lessonName + '-\\d+\\.html$');
+    const lessons = Array.from(main.querySelectorAll('.lessons > .lcard > a[href]')).filter(a => lessonPath.test(new URL(a.href).pathname));
+    if (!intro || !lessons.length) return;
+    const hero = document.createElement('section'); hero.className = 'study-course-intro';
+    const actions = document.createElement('div'); actions.className = 'study-course-actions';
+    const primary = document.createElement('a'); primary.className = 'study-action';
+    const browse = document.createElement('a'); browse.href = '#lessons'; browse.textContent = L('Alle Lektionen', 'All lessons');
+    const stat = document.createElement('p'); stat.className = 'study-course-count';
+    actions.append(primary, browse);
+    intro.append(actions, stat);
+    const graphic = document.createElement('figure'); graphic.className = 'study-course-graphic';
+    const canvas = document.createElement('canvas'); canvas.width = 824; canvas.height = 464; canvas.setAttribute('aria-hidden', 'true');
+    const caption = document.createElement('figcaption'); caption.textContent = courseArt[subject];
+    graphic.append(canvas, caption);
+    intro.before(hero); hero.append(intro, graphic);
+    drawCourseGraphic(canvas);
+    toggle.addEventListener('click', () => requestAnimationFrame(() => drawCourseGraphic(canvas)));
+    design.addEventListener('change', () => drawCourseGraphic(canvas));
+    colourOptions.addEventListener('click', () => drawCourseGraphic(canvas));
+    addEventListener('storage', event => { if (event.key === appearanceKey) drawCourseGraphic(canvas); });
+
+    function renderProgress() {
+      const signedIn = !!window.SH?.user;
+      const record = signedIn && window.SH.resume?.read(subject + '-lesson');
+      const progress = signedIn ? window.SH.courseProgress() : {};
+      const finished = a => progress[new URL(a.href).pathname.split('/').pop()]?.done;
+      const next = lessons.find(a => !finished(a));
+      const resume = record && lessons.some(a => new URL(a.href).pathname === new URL(record.href, base).pathname && !finished(a));
+      primary.href = resume ? record.href : (next || lessons[0]).href;
+      primary.textContent = resume ? L('Lektion fortsetzen', 'Resume lesson') : signedIn ? L('Lektion öffnen', 'Open lesson') : L('Anmelden und starten', 'Log in to start');
+      const count = lessons.filter(finished).length;
+      stat.textContent = signedIn ? L(count + ' / ' + lessons.length + ' Lektionen abgeschlossen', count + ' / ' + lessons.length + ' lessons completed') : L(lessons.length + ' Lektionen', lessons.length + ' lessons');
+    }
+    document.addEventListener('sh-auth', renderProgress);
+    addEventListener('pageshow', renderProgress);
+    renderProgress();
+  }
+  makeCourseOverview();
+
+  function showChemistryProgress() {
+    const progress = window.SH?.user ? window.SH.courseProgress() : null;
+    const done = progress && Object.keys(progress).filter(key => /^chemie-\d+\.html$/.test(key) && progress[key].done).length;
+    document.querySelectorAll('[data-chemie-progress]').forEach(el => {
+      el.textContent = progress ? done + ' / 27 ' + L('Lektionen abgeschlossen', 'lessons completed') : L('27 Lektionen', '27 lessons');
+    });
+  }
+  document.addEventListener('sh-auth', showChemistryProgress);
+  showChemistryProgress();
 })();
+

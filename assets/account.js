@@ -6,7 +6,8 @@
   var URL_ = 'https://qgntwqqmpdiwexnwsmnm.supabase.co';
   var KEY = 'sb_publishable_Kox04-HlRIieoQbhDlqSuw_ko2783NR';
   var SBKEY = 'sb-qgntwqqmpdiwexnwsmnm-auth-token';
-  var DE = /\/de\//.test(location.pathname);
+  var language = new URLSearchParams(location.search).get('lang');
+  var DE = /\/(de|chemie)\//.test(location.pathname) || language === 'de';
   var BASE = (function () { var s = document.querySelector('script[src*="assets/account.js"]'); return s ? s.getAttribute('src').replace(/account\.js.*$/, '') : 'assets/'; })();
   var ROOT = BASE.replace(/assets\/$/, '');           // '' or '../'
   function L(en, de) { return DE ? de : en; }
@@ -27,6 +28,9 @@
 
   /* ---------- Supabase (lazy) ---------- */
   var sb = null, user = null, profile = null, ready;
+  var authPending = wantSdk();
+  var accountDataPending = authPending;
+  var returnKey = 'sh-login-return';
   function wantSdk() {
     try { if (localStorage.getItem(SBKEY)) return true; } catch (e) {}
     return /access_token=|[?&]code=/.test(location.hash + location.search);
@@ -40,18 +44,40 @@
       sb = window.supabase.createClient(URL_, KEY, { auth: { persistSession: true, detectSessionInUrl: true, storageKey: SBKEY } });
       return sb.auth.getSession();
     }).then(function (r) {
-      user = r && r.data && r.data.session ? r.data.session.user : null;
-      sb.auth.onAuthStateChange(function (ev, session) { var u = session ? session.user : null; if ((u && u.id) !== (user && user.id)) { user = u; setTimeout(afterAuth, 0); } }); // setTimeout: never call Supabase inside this callback (it can deadlock)
+      if (r.error) throw r.error;
+      user = r.data.session ? r.data.session.user : null;
+      authPending = false;
+      accountDataPending = !!user;
+      if (user) restoreLoginDestination();
+      publishAccount();
+      sb.auth.onAuthStateChange(function (ev, session) {
+        var next = session ? session.user : null;
+        if ((next && next.id) === (user && user.id)) return;
+        user = next;
+        profile = null;
+        authPending = false;
+        accountDataPending = !!user;
+        setTimeout(function () { publishAccount(); afterAuth(); }, 0); // Supabase calls must run outside the auth callback.
+      });
       return afterAuth();
+    }).catch(function (error) {
+      ready = null;
+      authPending = false;
+      accountDataPending = false;
+      publishAccount();
+      throw error;
     });
     return ready;
   }
   function afterAuth() {
     if (!user) { profile = null; render(); return Promise.resolve(); }
+    var userId = user.id;
     return Promise.all([
-      sb.from('profiles').select('nickname,leaderboard').eq('id', user.id).maybeSingle(),
+      sb.from('profiles').select('nickname,leaderboard').eq('id', userId).maybeSingle(),
       sb.from('progress').select('page,done,rating,note,updated_at')
     ]).then(function (rs) {
+      if (!user || user.id !== userId) return;
+      accountDataPending = false;
       profile = rs[0].data || null;
       var rows = rs[1].data || [], p = load(), push = [];
       rows.forEach(function (r) {
@@ -65,7 +91,7 @@
       store(p);
       if (push.length) sb.from('progress').upsert(push.map(row));
       render();
-    }).catch(function () { render(); });
+    }).catch(function () { if (user && user.id === userId) { accountDataPending = false; render(); } });
   }
   function row(k) { var e = load()[k] || {}; return { page: k, done: !!e.done, rating: e.rating || null, note: e.note || null, updated_at: new Date(e.t || Date.now()).toISOString() }; }
   var timer;
@@ -75,7 +101,47 @@
   }
   function signIn() {
     track('login');
-    sdk().then(function () { sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } }); });
+    var hash = /access_token=|error_description=/.test(location.hash) ? '' : location.hash;
+    try { sessionStorage.setItem(returnKey, JSON.stringify({ path: location.pathname, hash: hash })); } catch (e) {}
+    return sdk().then(function () {
+      return sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } });
+    }).then(function (result) { if (result.error) throw result.error; });
+  }
+  function restoreLoginDestination() {
+    try {
+      var target = JSON.parse(sessionStorage.getItem(returnKey));
+      if (!target || target.path !== location.pathname) return;
+      sessionStorage.removeItem(returnKey);
+      if (target.hash && !location.hash) location.hash = target.hash;
+    } catch (e) {}
+  }
+  function updateProfile(nickname, leaderboard) {
+    if (!user || !sb) return Promise.reject(new Error(L('Please log in.', 'Bitte melde dich an.')));
+    var userId = user.id;
+    var name = nickname.trim();
+    if (name && (name.length < 2 || name.length > 30)) return Promise.reject(new Error(L('Use 2 to 30 characters.', 'Bitte verwende 2 bis 30 Zeichen.')));
+    return sb.from('profiles').upsert({ id: userId, nickname: name || null, leaderboard: leaderboard }).then(function (result) {
+      if (result.error) throw new Error(/duplicate|unique/i.test(result.error.message) ? L('This username is taken.', 'Dieser Benutzername ist vergeben.') : L('Could not save your profile.', 'Dein Profil konnte nicht gespeichert werden.'));
+      if (user && user.id === userId) {
+        profile = { nickname: name || null, leaderboard: leaderboard };
+        banner();
+        publishAccount();
+      }
+    });
+  }
+
+  // Keep each activity separate so completing one never clears the others.
+  function resumeKey(kind) { return 'sh-resume:' + user.id + ':' + kind; }
+  function readResume(kind) {
+    if (!user) return null;
+    try { return JSON.parse(localStorage.getItem(resumeKey(kind))); } catch (e) { return null; }
+  }
+  function writeResume(kind, state) {
+    if (!user) return;
+    try {
+      if (state) localStorage.setItem(resumeKey(kind), JSON.stringify(Object.assign({}, state, { at: Date.now() })));
+      else localStorage.removeItem(resumeKey(kind));
+    } catch (e) {}
   }
 
   /* ---------- banner link ---------- */
@@ -149,10 +215,12 @@
   function accountPage() {
     var box = document.getElementById('sh-account'); if (!box) return;
     if (!user) {
-      box.innerHTML = '<p>' + L('You are using StudyHub as a guest. Everything works, and your progress is saved in this browser.', 'Du nutzt StudyHub als Gast. Alles funktioniert, und dein Fortschritt wird in diesem Browser gespeichert.') + '</p>' +
+      box.innerHTML = '<p>' + L('Log in to open lessons, practice flashcards and save your progress.', 'Melde dich an, um Lektionen und Lernkarten zu öffnen und deinen Fortschritt zu speichern.') + '</p>' +
         '<p><button type="button" class="start-btn sh-google">' + L('Sign in with Google', 'Mit Google anmelden') + '</button></p>' +
-        '<p class="soon">' + L('Optional. Signing in only adds syncing across your devices. Nobody sees your name or email.', 'Optional. Die Anmeldung fügt nur die Synchronisation über deine Geräte hinzu. Niemand sieht deinen Namen oder deine E-Mail.') + '</p>';
-      box.querySelector('.sh-google').onclick = signIn;
+        '<p class="sh-msg" role="status"></p>';
+      box.querySelector('.sh-google').onclick = function () {
+        signIn().catch(function () { box.querySelector('.sh-msg').textContent = L('Could not log in. Please try again.', 'Anmeldung fehlgeschlagen. Bitte versuche es erneut.'); });
+      };
     } else {
       var nick = profile && profile.nickname || '', lb = !!(profile && profile.leaderboard);
       box.innerHTML = '<p>' + L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email || '') + '</strong> ' + L('(only you see this)', '(nur du siehst das)') + '.</p>' +
@@ -163,12 +231,8 @@
         '<p><button type="button" class="sh-plain sh-out">' + L('Sign out', 'Abmelden') + '</button> · <button type="button" class="sh-plain sh-del">' + L('Delete my account', 'Mein Konto löschen') + '</button></p>';
       var inp = box.querySelector('input[type=text]'), chk = box.querySelector('.sh-check input'), msg = box.querySelector('.sh-msg');
       box.querySelector('.sh-save').onclick = function () {
-        var n = inp.value.trim();
-        if (n && (n.length < 2 || n.length > 30)) { msg.textContent = L('2 to 30 characters, please.', 'Bitte 2 bis 30 Zeichen.'); return; }
-        sb.from('profiles').upsert({ id: user.id, nickname: n || null, leaderboard: chk.checked }).then(function (r) {
-          if (r.error) { msg.textContent = /duplicate|unique/i.test(r.error.message) ? L('This nickname is taken.', 'Dieser Spitzname ist vergeben.') : L('Could not save: ', 'Speichern fehlgeschlagen: ') + r.error.message; return; }
-          profile = { nickname: n || null, leaderboard: chk.checked }; msg.textContent = L('Saved.', 'Gespeichert.'); banner();
-        });
+        updateProfile(inp.value, chk.checked).then(function () { msg.textContent = L('Saved.', 'Gespeichert.'); })
+          .catch(function (error) { msg.textContent = error.message; });
       };
       box.querySelector('.sh-out').onclick = function () { sb.auth.signOut().then(function () { user = null; profile = null; render(); }); };
       box.querySelector('.sh-del').onclick = function () {
@@ -403,8 +467,11 @@
     });
   }
 
-  function render() { banner(); refreshPanel(); ticks(); accountPage(); forumPage(); leaderboardPage();
-    window.SH = { sb: sb, user: user, signIn: signIn, sdk: sdk, L: L, esc: esc, courseProgress: load, saveCourseProgress: function(entries) {
+  function render() { banner(); refreshPanel(); ticks(); accountPage(); forumPage(); leaderboardPage(); publishAccount(); }
+  function publishAccount() {
+    window.SH = { sb: sb, user: user, profile: profile, authPending: authPending, accountDataPending: accountDataPending, signIn: signIn, sdk: sdk, L: L, esc: esc,
+      updateProfile: updateProfile, signOut: function () { return sb.auth.signOut(); },
+      resume: { read: readResume, write: writeResume }, courseProgress: load, saveCourseProgress: function(entries) {
       var p=load(), changed=[]; Object.keys(entries).forEach(function(k){if(!/^chemie-\d+\.html$/.test(k))return;var v=entries[k];if(!p[k] || !!p[k].done!==!!v.done){p[k]=Object.assign(p[k]||{},v,{t:Date.now()});changed.push(k)}});store(p);
       if(sb&&user&&changed.length)sb.from('progress').upsert(changed.map(row)).then(function(r){if(r.error)status(L('Could not sync, saved in this browser.','Sync fehlgeschlagen, im Browser gespeichert.'))});
     } }; try { document.dispatchEvent(new Event('sh-auth')); } catch (e) {} }
@@ -432,3 +499,4 @@
 /* Compatibility for pages that are not generated by the build (Chemie app, course apps in subfolders): if a page has not
    linked the StudyHub design in its <head>, add it here. Generated pages link it in <head> themselves, so this does nothing there. */
 (function(){var s=document.currentScript;if(!s||document.querySelector('link[href*="assets/studyhub.css"],link[href*="/studyhub.css"]'))return;var base=new URL('.',s.src);['learning-app.css','appearance.css','studyhub.css'].forEach(function(f){var l=document.createElement('link');l.rel='stylesheet';l.href=new URL(f+'?v=fe0ad35d',base);document.head.appendChild(l)});if(!document.querySelector('script[src*="studyhub.js"]')){var j=document.createElement('script');j.src=new URL('studyhub.js?v=fe0ad35d',base);document.head.appendChild(j)}})();
+

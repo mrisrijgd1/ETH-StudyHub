@@ -1100,13 +1100,64 @@ a.subject:hover strong { text-decoration: underline; }
     count.textContent = (queue.length + 1) + T.left;
     bShow.focus({ preventScroll: true });
   }
-  function next() { cur = queue.shift() || null; render(); }
+  var checkpointKey = 'physics-cards';
+  function resumesPhysics() { return /^#p\d/.test(location.hash); }
+  var resumeButton = document.createElement('button');
+  resumeButton.type = 'button';
+  resumeButton.className = 'start-btn sh-resume-round';
+  resumeButton.textContent = 'Resume flashcards';
+  resumeButton.hidden = true;
+  document.getElementById('fc-start').after(resumeButton);
+  function cardKey(c) {
+    return c.dataset.id || [subjOf(c), c.dataset.l, c.dataset.t, c.querySelector('.q').textContent.trim()].join(':');
+  }
+  var cardsByKey = new Map(all.filter(function (c) { return subjOf(c) === 'p'; }).map(function (c) { return [cardKey(c), c]; }));
+  function saveRound() {
+    if (!resumesPhysics() || !window.SH?.user) return;
+    if (!cur) { window.SH.resume?.write(checkpointKey, null); return; }
+    if (subjOf(cur) !== 'p') return;
+    var url = new URL(location.href);
+    url.searchParams.set('resume', '1');
+    window.SH.resume?.write(checkpointKey, {
+      href: url.pathname + url.search + url.hash, title: queue.length + 1 + ' cards left',
+      cards: [cur].concat(queue).map(cardKey), done: done, revealed: bShow.hidden
+    });
+  }
+  function resumeRound() {
+    var saved = window.SH?.resume?.read(checkpointKey);
+    var cards = saved?.cards?.map(function (id) { return cardsByKey.get(id); }) || [];
+    if (!cards.length || cards.some(function (c) { return !c; })) return;
+    setSubject('p');
+    queue = cards;
+    done = saved.done;
+    cur = queue.shift();
+    render();
+    if (saved.revealed) revealAnswer();
+    resumeButton.hidden = true;
+  }
+  var resumeChecked = false;
+  document.addEventListener('sh-auth', function () {
+    resumeButton.hidden = !resumesPhysics() || !window.SH.resume?.read(checkpointKey) || !!cur;
+    if (!window.SH.user) { cur = null; queue = []; done = 0; return; }
+    if (!resumeChecked && resumesPhysics() && new URLSearchParams(location.search).get('resume') === '1') resumeRound();
+    resumeChecked = resumesPhysics();
+  });
+  addEventListener('hashchange', function () {
+    var match = /^#p(\d+)-(\d+)$/.exec(location.hash);
+    if (!match) return;
+    setSubject('p', { a: +match[1], b: +match[2] });
+    if (window.SH?.user && !resumeChecked && new URLSearchParams(location.search).get('resume') === '1') resumeRound();
+  });
+  resumeButton.addEventListener('click', resumeRound);
+  function next() { cur = queue.shift() || null; resumeButton.hidden = true; render(); saveRound(); }
   document.getElementById('fc-start').addEventListener('click', function () {
+    if (!window.SH?.user) return;
     queue = selection();
     for (var i = queue.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t2 = queue[i]; queue[i] = queue[j]; queue[j] = t2; }
     done = 0; next();
   });
   document.getElementById('fc-list').addEventListener('click', function () {
+    if (!window.SH?.user) return;
     var sel = selection(); queue = []; cur = null; done = 0; btns.hidden = true; stage.innerHTML = '';
     if (!sel.length) { stage.innerHTML = T.none; count.textContent = ''; return; }
     sel.sort(function (x, y) { return (+x.dataset.l) - (+y.dataset.l); });
@@ -1121,13 +1172,16 @@ a.subject:hover strong { text-decoration: underline; }
     count.textContent = sel.length + T.cards;
     if (window.__siteFit) window.__siteFit(stage);
   });
-  bShow.addEventListener('click', function () {
+  function revealAnswer() {
+    if (!cur || !window.SH?.user) return;
     stage.querySelector('.a').hidden = false; bShow.hidden = true; bAgain.hidden = false; bGot.hidden = false;
     if (window.__siteFit) window.__siteFit(stage);
     bGot.focus({ preventScroll: true });
-  });
-  bAgain.addEventListener('click', function () { queue.splice(Math.min(3, queue.length), 0, cur); next(); });
-  bGot.addEventListener('click', function () { if (!cur) return; done++; next(); });
+    saveRound();
+  }
+  bShow.addEventListener('click', revealAnswer);
+  bAgain.addEventListener('click', function () { if (!cur || !window.SH?.user) return; queue.splice(Math.min(3, queue.length), 0, cur); next(); });
+  bGot.addEventListener('click', function () { if (!cur || !window.SH?.user) return; done++; next(); });
 })();
 </script>
 
@@ -1170,3 +1224,4 @@ a.subject:hover strong { text-decoration: underline; }
 </script>
 </body>
 </html>
+
