@@ -93,29 +93,35 @@
   // Rachel's flashcards app (synced from her repo). The Analysis "Flashcards" tab opens it.
   const fcAppPath = 'FlashcardsAnalysis_designspace/Analysis_Lerplatform/';
   const fcApp = path.startsWith(fcAppPath);
-  const de = chemistry || path.startsWith('de/') || new URLSearchParams(location.search).get('lang') === 'de';
+  // The Chemie course itself is German; its header follows the language of the last StudyHub page (sh-lang).
+  let lastLang = null; try { lastLang = localStorage.getItem('sh-lang'); } catch (_) {}
+  const de = chemistry ? lastLang === 'de' : (path.startsWith('de/') || new URLSearchParams(location.search).get('lang') === 'de');
+  if (!chemistry && !fcApp && !path.startsWith('dive/')) { try { localStorage.setItem('sh-lang', de ? 'de' : 'en'); } catch (_) {} }
   const prefix = de ? 'de/' : '';
   const file = path.split('/').pop() || 'index.html';
   const L = (german, english) => de ? german : english;
   const sharedPages = new Set(['linalg-moves.html', 'linalg-plan.html', 'linalg-script.html', 'linalg-01.html', 'linalg-02.html', 'linalg-03.html', 'linalg-04.html', 'linalg-05.html', 'linalg-06.html', 'linalg-07.html', 'linalg-08.html', 'linalg-09.html', 'linalg-10.html', 'linalg-11.html', 'linalg-12.html', 'script.html', 'phys-script.html', 'pdf.html']);
   const url = value => { const target = new URL(value, base); if (de && sharedPages.has(value)) target.searchParams.set('lang', 'de'); return target.href; };
+  // The header follows the path picked on the home page (sh-path): Chemie only on the Interdisciplinary path.
+  let studyPath = null; try { studyPath = localStorage.getItem('sh-path'); } catch (_) {}
   const subjects = [
     { id: 'analysis', label: 'Analysis I', href: prefix + 'analysis.html' },
     { id: 'physics', label: L('Physik I', 'Physics I'), href: prefix + 'physics.html' },
     { id: 'chemie', label: 'Chemie I (PC)', href: 'chemie/' },
     { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' }
-  ];
+  ].filter(item => item.id !== 'chemie' || studyPath === 'inter' || chemistry);
   // flashcards.html#p1-16 is the Physics deck (StudyHub's own cards); it stays on this page.
   const physCards = !fcApp && !de && file === 'flashcards.html' && /^#p\d/.test(location.hash);
-  const subject = chemistry ? 'chemie' : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  const practiceFor = file === 'practice.html' ? ({ '#physics': 'physics', '#linalg': 'linalg' })[location.hash] : null;
+  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
   if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'index.html' + (de ? '?lang=de' : '') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
   const modes = {
     analysis: [
       ['lessons', L('Lektionen', 'Lessons'), prefix + 'analysis.html#lessons'],
-      ['revision', L('Repetition', 'Revision'), prefix + 'analysis.html#refresher'],
-      ['practice', L('Üben', 'Practice'), prefix + 'practice.html'],
+      ['revision', L('Repetition', 'Refresher'), prefix + 'analysis.html#refresher'],
+      ['practice', L('Üben', 'Practice'), prefix + 'practice.html#analysis'],
       ['cards', L('Lernkarten', 'Flashcards'), fcAppPath + 'index.html' + (de ? '?lang=de' : '')],
       ['plan', L('Prüfungsplan', 'Exam plan'), prefix + 'exam-map.html'],
       ['script', L('Skript', 'Script'), 'script.html'],
@@ -123,7 +129,7 @@
     ],
     physics: [
       ['lessons', L('Lektionen', 'Lessons'), prefix + 'physics.html#lessons'],
-      ['practice', L('Üben & Werkzeuge', 'Practice & tools'), prefix + 'physics.html#tools'],
+      ['practice', L('Üben', 'Practice'), prefix + 'physics.html#tools'],
       // the Physics deck exists in English only so far
       ...(de ? [] : [['cards', 'Flashcards', 'flashcards.html#p1-16']]),
       ['plan', L('Prüfungsplan', 'Exam plan'), prefix + 'phys-plan.html'],
@@ -133,15 +139,16 @@
     ],
     linalg: [
       ['lessons', L('Lektionen', 'Lessons'), prefix + 'linalg.html#lessons'],
-      ['practice', L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'],
+      ['practice', L('Üben', 'Practice'), 'practice.html#linalg'],
+      ['moves', L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'],
       ['plan', L('Prüfungsplan', 'Exam plan'), 'linalg-plan.html'],
       ['script', L('Skript', 'Script'), 'linalg-script.html']
     ],
     chemie: [
-      ['lessons', 'Lektionen', 'chemie/#home'],
-      ['review', 'Wiederholen', 'chemie/#review'],
-      ['exams', 'Üben & Prüfungen', 'chemie/#exams'],
-      ['library', 'Materialien', 'chemie/#library']
+      ['lessons', L('Lektionen', 'Lessons'), 'chemie/#home'],
+      ['review', L('Wiederholen', 'Refresher'), 'chemie/#review'],
+      ['exams', L('Üben & Prüfungen', 'Practice'), 'chemie/#exams'],
+      ['library', L('Materialien', 'Library'), 'chemie/#library']
     ]
   };
   function activeMode() {
@@ -150,6 +157,7 @@
       return ({ review: 'review', exams: 'exams', training: 'exams', library: 'library', sources: 'library' })[route] || 'lessons';
     }
     if (location.hash === '#tools' && subject === 'physics') return 'practice';
+    if (file === 'linalg-moves.html') return 'moves';
     if (location.hash === '#refresher' || /^refresher-/.test(file)) return 'revision';
     if (/script\.html$/.test(file)) return 'script';
     if (/docs\.html$/.test(file)) return 'exams';

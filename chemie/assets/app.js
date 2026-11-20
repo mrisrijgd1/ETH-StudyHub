@@ -32,3 +32,23 @@ Promise.all([fetch('course.json').then(r=>{if(!r.ok)throw Error();return r.json(
 
 // Reuse StudyHub account progress while keeping notes and work in this browser.
 document.addEventListener('sh-auth',()=>{if(!window.SH?.courseProgress)return;const p=window.SH.courseProgress();for(let n=1;n<=27;n++){const entry=p['chemie-'+String(n).padStart(2,'0')+'.html'];if(entry){state.done=state.done.filter(id=>id!==n);if(entry.done)state.done.push(n)}}save();if(course.length)render();});
+
+/* StudyHub, 20 Nov 2026: the original PDFs moved to the private StudyHub library (copyright),
+   so links to docs/… would 404. Turn them into a plain label and explain where the files are. */
+(function privateDocs(){
+  const main=document.getElementById('main'); if(!main) return;
+  const note='<div class="callout private-docs"><p><strong>Die Originaldateien</strong> (Skript, Folien, Serien, Lösungen, Altprüfungen) liegen in der privaten StudyHub-Bibliothek, nicht auf dieser öffentlichen Seite. Öffne sie in Moodle oder <a href="../connect.html">verbinde deine KI mit StudyHub</a>: Sie kann jede Datei für dich öffnen.</p></div>';
+  function fix(){
+    main.querySelectorAll('a[href^="docs/"]').forEach(a=>{
+      const s=document.createElement('span'); s.className='doc-private';
+      s.textContent=a.textContent.replace(/\s*↗\s*$/,'')+' (private Bibliothek)';
+      s.title='In der privaten StudyHub-Bibliothek (über deine KI) oder in Moodle';
+      a.replaceWith(s);
+    });
+    const route=(location.hash.slice(1)||'home').split('/')[0];
+    if(['library','exams','training'].includes(route)&&!main.querySelector('.private-docs')){
+      const head=main.querySelector('.page-head'); if(head) head.insertAdjacentHTML('afterend',note);
+    }
+  }
+  new MutationObserver(fix).observe(main,{childList:true,subtree:true}); fix();
+})();
