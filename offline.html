@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offline · StudyHub</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#f7f8fa;--fg:#1d2330;--muted:#5b6475;--accent:#1865f2;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#141821;--fg:#e8ebf2;--muted:#a3abbb;--accent:#7aa7ff;--card:#1d2330}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:48px 16px}
+h1{font-size:1.6rem;margin:.2em 0 .4em}p{color:var(--muted)}
+.box{background:var(--card);border-radius:14px;padding:16px 18px;margin-top:18px}
+a{color:var(--accent)}ul{padding-left:1.2em}
+</style>
+</head>
+<body>
+<main>
+<img src="assets/icons/icon-192.png" width="56" height="56" alt="">
+<h1>You're offline</h1>
+<p>This page isn't saved on this device yet. Pages you have opened before, and everything you saved with <strong>Save for offline</strong> on My StudyHub, still work.</p>
+<div class="box">
+<p style="margin-top:0"><strong>Try one of these:</strong></p>
+<ul id="saved"><li><a href="index.html">Home</a></li></ul>
+</div>
+<p lang="de" style="margin-top:28px">Du bist offline. Diese Seite ist auf diesem Gerät noch nicht gespeichert. Seiten, die du schon geöffnet hast, und alles, was du unter „Fortschritt“ mit <strong>Für offline speichern</strong> gesichert hast, funktionieren weiter.</p>
+</main>
+<script>
+(async function () {
+  try {
+    var names = { 'analysis.html': 'Analysis I', 'physics.html': 'Physics I', 'linalg.html': 'Linear Algebra I', 'flashcards.html': 'Flashcards', 'dive/index.html': 'Exam Dive', 'account.html': 'My StudyHub' };
+    var keys = await caches.keys(), have = {};
+    for (var k of keys) for (var r of await (await caches.open(k)).keys()) have[new URL(r.url).pathname.replace(/^.*?ETH-StudyHub\//, '').replace(/^\//, '')] = 1;
+    var ul = document.getElementById('saved');
+    Object.keys(names).forEach(function (p) { if (have[p]) { var li = document.createElement('li'); li.innerHTML = '<a href="' + p + '">' + names[p] + '</a>'; ul.appendChild(li); } });
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

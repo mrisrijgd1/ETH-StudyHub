@@ -46,10 +46,10 @@
     });
     return ready;
   }
-  /* ---------- app state sync (Exam Dive, Chemie; flashcards app once its owner agrees) ----------
+  /* ---------- app state sync (Exam Dive, Chemie, flashcards app) ----------
      One row per app in public.app_state. Rule: a side that did not change since the last sync takes the
      other side; if both changed, the two are merged (Dive: best of both + all dives; Chemie: union). */
-  var APPS = { dive: 'studyhub.dive.v1', chemie: 'studyhub-chemie-v1' };
+  var APPS = { dive: 'studyhub.dive.v1', chemie: 'studyhub-chemie-v1', flashcards: 'studyhub-analysis-flashcards-v1' }; // flashcards: OK'd by the app's owner via Srish, 20 Nov
   var SYNCMETA = 'sh-appsync';
   function hsh(str) { var h = 5381; for (var i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return String(h); }
   function lget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -64,6 +64,18 @@
       var seen = {}, dives = [].concat(a.dives || [], b.dives || []).filter(function (d) { var k = JSON.stringify([d.date, d.depth, d.subject, d.timer]); if (seen[k]) return false; seen[k] = 1; return true; });
       dives.sort(function (x, y) { return String(y.date || '').localeCompare(String(x.date || '')); });
       return Object.assign({}, b, a, { v: 1, bests: bests, dives: dives.slice(0, 100) });
+    },
+    flashcards: function (a, b) { // per user profile and card, the more recently studied state wins; logs are joined
+      var out = Object.assign({}, b, a, { users: {} }), ua = obj(a.users), ub = obj(b.users);
+      Object.keys(ub).concat(Object.keys(ua)).forEach(function (id) {
+        if (out.users[id]) return;
+        var x = obj(ua[id]), y = obj(ub[id]), cards = Object.assign({}, obj(y.cards));
+        Object.keys(obj(x.cards)).forEach(function (c) { var p = x.cards[c], q = cards[c];
+          if (!q || (p.last || 0) > (q.last || 0) || ((p.last || 0) === (q.last || 0) && (p.n || 0) >= (q.n || 0))) cards[c] = p; });
+        var seen = {}, log = [].concat(y.log || [], x.log || []).filter(function (e) { var k = JSON.stringify(e); if (seen[k]) return false; seen[k] = 1; return true; });
+        out.users[id] = Object.assign({}, y, x, { cards: cards, log: log.slice(-5000) });
+      });
+      return out;
     },
     chemie: function (a, b) {
       var out = Object.assign({}, b, a), done = {};
@@ -93,6 +105,37 @@
     }).catch(function () {});
   }
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') appSync(); });
+
+  /* ---------- offline: service worker + "Save for offline" on My StudyHub ---------- */
+  var swReady = ('serviceWorker' in navigator && location.protocol !== 'file:') ? navigator.serviceWorker.register(ROOT + 'sw.js').catch(function () { return null; }) : Promise.resolve(null);
+  function offlineBox() {
+    var box = document.getElementById('sh-offline'); if (!box) return;
+    if (!('serviceWorker' in navigator) || !window.caches) { box.insertAdjacentHTML('beforeend', '<p>' + L('This browser cannot save pages for offline use.', 'Dieser Browser kann keine Seiten offline speichern.') + '</p>'); return; }
+    var lang = DE ? 'de' : 'en';
+    box.insertAdjacentHTML('beforeend',
+      '<p>' + L('To have <strong>everything</strong> ready offline (all lessons, refreshers, exercise sheets, flashcards, Exam Dive and Chemie, about 15 MB), save it once on this device. PDFs and old exams stay online only.',
+               'Damit <strong>alles</strong> offline bereit ist (alle Lektionen, Refresher, Übungsblätter, Lernkarten, Exam Dive und Chemie, etwa 15 MB), speichere es einmal auf diesem Gerät. PDFs und alte Prüfungen bleiben nur online.') + '</p>' +
+      '<p><button type="button" class="sh-off-btn">' + L('Save for offline', 'Für offline speichern') + '</button> <span class="sh-off-msg" role="status"></span></p>' +
+      '<p>' + L('To get StudyHub as an app on your home screen: on iPhone, Safari → Share → <em>Add to Home Screen</em>; on Android or a laptop, Chrome → menu → <em>Install app</em>.',
+               'StudyHub als App auf dem Startbildschirm: iPhone: Safari → Teilen → <em>Zum Home-Bildschirm</em>; Android oder Laptop: Chrome → Menü → <em>App installieren</em>.') + '</p>');
+    var btn = box.querySelector('.sh-off-btn'), msg = box.querySelector('.sh-off-msg');
+    try { var last = localStorage.getItem('sh-offline-' + lang); if (last) msg.textContent = L('Saved on ', 'Gespeichert am ') + new Date(+last).toLocaleDateString(DE ? 'de-CH' : 'en-GB') + L('. Save again after updates.', '. Nach Updates erneut speichern.'); } catch (e) {}
+    btn.onclick = function () {
+      btn.disabled = true; msg.textContent = L('Preparing…', 'Wird vorbereitet …');
+      Promise.all([swReady.then(function () { return navigator.serviceWorker.ready; }), fetch(ROOT + 'offline-list.json', { cache: 'no-store' }).then(function (r) { return r.json(); })]).then(function (x) {
+        var reg = x[0], urls = x[1][lang] || [];
+        var ch = new MessageChannel();
+        ch.port1.onmessage = function (e) {
+          var d = e.data || {};
+          msg.textContent = d.done < d.total ? L('Saving… ', 'Wird gespeichert … ') + d.done + ' / ' + d.total
+            : (d.failed ? L('Saved, except ', 'Gespeichert, außer ') + d.failed + L(' files (try again online).', ' Dateien (online erneut versuchen).') : L('Done: everything works offline on this device.', 'Fertig: alles funktioniert auf diesem Gerät offline.'));
+          if (d.done >= d.total) { btn.disabled = false; try { localStorage.setItem('sh-offline-' + lang, String(Date.now())); } catch (er) {} track('offline-save', { lang: lang, failed: d.failed }); }
+        };
+        (reg.active || navigator.serviceWorker.controller).postMessage({ type: 'save', urls: urls.map(function (u) { return /^https?:/.test(u) ? u : ROOT + u; }) }, [ch.port2]);
+      }).catch(function () { btn.disabled = false; msg.textContent = L('Could not start. Are you online?', 'Konnte nicht starten. Bist du online?'); });
+    };
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', offlineBox); else offlineBox();
 
   function afterAuth() {
     if (!user) { profile = null; render(); return Promise.resolve(); }
