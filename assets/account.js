@@ -73,7 +73,8 @@
         Object.keys(obj(x.cards)).forEach(function (c) { var p = x.cards[c], q = cards[c];
           if (!q || (p.last || 0) > (q.last || 0) || ((p.last || 0) === (q.last || 0) && (p.n || 0) >= (q.n || 0))) cards[c] = p; });
         var seen = {}, log = [].concat(y.log || [], x.log || []).filter(function (e) { var k = JSON.stringify(e); if (seen[k]) return false; seen[k] = 1; return true; });
-        out.users[id] = Object.assign({}, y, x, { cards: cards, log: log.slice(-5000) });
+        var ls = [x.lastSession, y.lastSession].filter(Boolean).sort(function (m, n) { return (n.at || 0) - (m.at || 0); })[0]; // "Continue where you left off" = the newer device's deck
+        out.users[id] = Object.assign({}, y, x, { cards: cards, log: log.slice(-5000) }, ls ? { lastSession: ls } : {});
       });
       return out;
     },
