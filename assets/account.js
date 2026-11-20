@@ -208,7 +208,7 @@
         [L('Analysis I', 'Analysis I'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
         ['Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
         [L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
-        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 5, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
+        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 9, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
       function nameOf(k) {
         var n = (k.match(/(\d+)\.html$/) || [])[1]; n = n ? String(+n) : k;
         if (/^lesson-/.test(k)) return L('Analysis lesson ', 'Analysis-Lektion ') + n;
@@ -242,7 +242,7 @@
     }
     var pf = document.getElementById('sh-perf');
     if (pf) {
-      if (!(sb && user)) pf.innerHTML = '<p>' + L('Marks from your AI, timed mocks and your mistake fingerprint appear here once you sign in (above). They are saved in your account, not in the browser.', 'Resultate deiner KI, Probeprüfungen und dein Fehler-Fingerabdruck erscheinen hier, sobald du dich (oben) anmeldest. Sie werden in deinem Konto gespeichert, nicht im Browser.') + '</p>';
+      if (!(sb && user)) pf.innerHTML = '<p>' + L('Marks from your AI, timed mocks and your mistake fingerprint appear here once you <a href="#account">sign in</a>. They are saved in your account, not in the browser.', 'Resultate deiner KI, Probeprüfungen und dein Fehler-Fingerabdruck erscheinen hier, sobald du dich <a href="#account">anmeldest</a>. Sie werden in deinem Konto gespeichert, nicht im Browser.') + '</p>';
       else Promise.all([sb.from('results').select('item_id,kind,score,max_score,summary,mistakes,created_at').order('created_at', { ascending: false }).limit(100),
         sb.from('mocks').select('exam_id,minutes,started_at,submitted_at,score,max_score').order('started_at', { ascending: false }).limit(20)]).then(function (r) {
         var res = r[0].data || [], mocks = r[1].data || [], scored = res.filter(function (x) { return x.max_score > 0; });
