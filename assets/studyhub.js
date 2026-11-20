@@ -201,7 +201,10 @@
   const courses = document.createElement('nav'); courses.className = 'study-subjects'; courses.setAttribute('aria-label', L('Fächer', 'Subjects'));
   subjects.forEach(item => { const a = link(item.label, item.href); if (subject === item.id) a.setAttribute('aria-current', 'page'); courses.append(a); });
   // Exam Dive (Rachel's game, dive/): a game, not a course, so it gets its own marker
-  const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); courses.append(dive);
+  const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); const brk = document.createElement('span'); brk.className = 'study-break'; brk.setAttribute('aria-hidden', 'true'); courses.append(brk);
+  courses.append(dive);
+  // Phones: 'More' sits in the subject bar next to Exam Dive (the utility row keeps My StudyHub, language and Design)
+  courses.append(link(L('Mehr', 'More'), prefix + 'more.html', 'study-more-sub'));
   upper.append(courses);
   const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
   utilities.append(link(L('Fortschritt', 'My StudyHub'), prefix + 'account.html', 'study-progress'));
