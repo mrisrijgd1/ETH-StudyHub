@@ -19,11 +19,11 @@ Answers come back as a reply comment in the same pull request. Never merge the m
 
 ## House rules (short)
 
-1. **Most HTML pages are generated.** The site is built from a separate build source
-   (`build2.py` + `make_github.py`); a rebuild overwrites hand edits to built pages such as
-   `index.html`, `lesson-*.html`, `assets/account.js`. If you need such a change, say so in the
-   mailbox; it gets ported into the build source. Your own folders (e.g. `chemie/`, `Jamie/`,
-   `FlashcardsAnalysis_designspace/`) are yours.
+1. **The files on `main` are the source of truth** (since 20 Nov 2026). Edit pages and assets directly,
+   on a branch with a PR. A separate build source still exists only to generate NEW lesson pages; it
+   never overwrites existing pages. Your own folders (e.g. `chemie/`, `Jamie/`,
+   `FlashcardsAnalysis_designspace/`) are yours. After adding or removing pages, run
+   `python3 tools/make_offline_list.py` so "Save for offline" includes them.
 2. **Everything here is public.** No copyrighted PDFs beyond what the owner approved, no
    handwritten notes, no secrets or keys.
 3. **Ask first** (via the mailbox) before changing `.github/workflows/`, `connector/`, SQL,
