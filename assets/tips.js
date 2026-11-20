@@ -139,7 +139,7 @@
     seen[key(i)] = 1; set('sh-tips-seen', JSON.stringify(seen));
     return L[i];
   }
-  tip = freshNews() || (tipsOff ? null : pick());
+  tip = tipsOff ? null : (freshNews() || pick()); // "Don't show tips" also silences the What's-new cards
   if (!tip) return;
   var css = '#sh-tip{position:fixed;right:16px;bottom:16px;z-index:50;max-width:340px;width:calc(100% - 32px);box-sizing:border-box;' +
     'background:var(--surface,#fff);color:var(--ink,#222);border:1px solid var(--rule,#ccd);border-left:4px solid var(--accent,#5b5bd6);' +
@@ -166,7 +166,7 @@
       box.innerHTML = html;
       box.querySelector('.x').onclick = function () { track('tip-close', { i: i }); close(); };
       box.querySelector('.off').onclick = function () { set('sh-tips-off', '1'); track('tips-off', { i: i }); close(); };
-      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); var t = freshNews() || (tipsOff ? null : pick()); if (t) { tip = t; render(); } else close(); };
+      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); var t = tipsOff ? null : (freshNews() || pick()); if (t) { tip = t; render(); } else close(); };
       var links = box.querySelectorAll('.t a');
       for (var k = 0; k < links.length; k++) links[k].addEventListener('click', function () { track('tip-click', { i: i, href: this.getAttribute('href') }); });
       if (tip.q) {
