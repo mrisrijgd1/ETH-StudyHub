@@ -76,7 +76,7 @@
    with every solution and hint unfolded (the browser's print dialog offers "Save as PDF"). */
 (function () {
   var page = (location.pathname.split('/').pop() || '');
-  if (!/^(lesson|phys|refresher|serie|linalg)-[a-z0-9]+\.html$/.test(page) || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html') return;
+  if (!/^(lesson|phys|refresher|serie|linalg)-[a-z0-9]+\.html$/.test(page) || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html' || page === 'linalg-plan.html' || page === 'linalg-script.html') return;
   var DE = document.documentElement.lang === 'de';
   function go() {
     var main = document.querySelector('main'); if (!main) return;

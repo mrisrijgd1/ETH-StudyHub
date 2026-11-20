@@ -10,7 +10,7 @@
   var BASE = (function () { var s = document.querySelector('script[src*="assets/account.js"]'); return s ? s.getAttribute('src').replace(/account\.js.*$/, '') : 'assets/'; })();
   var ROOT = BASE.replace(/assets\/$/, '');           // '' or '../'
   function L(en, de) { return DE ? de : en; }
-  (function () { var o = document.createElement('script'); o.src = BASE + 'overlay.js'; document.head.appendChild(o); })(); // personal design overlay
+  (function () { var o = document.createElement('script'); o.src = BASE + 'overlay.js?v=pdf1120'; document.head.appendChild(o); })(); // personal design overlay
   (function () { // "Suggest a fix or addition" box on content pages (suggest.js)
     var pg = (location.pathname.split('/').pop() || '').replace(/\.html.*$/, '');
     if (!/^(lesson|phys|refresher|serie|linalg)-[a-z]?\d+$|^(toolbox|moves|tree|flashcards)$/.test(pg)) return;
