@@ -183,7 +183,7 @@
   const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); courses.append(dive);
   upper.append(courses);
   const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
-  utilities.append(link(L('Fortschritt', 'Progress'), prefix + 'account.html'));
+  utilities.append(link(L('Fortschritt', 'My StudyHub'), prefix + 'account.html', 'study-progress'));
   utilities.append(link(L('Mehr', 'More'), prefix + 'more.html'));
   const appLangTarget = (() => { const u = new URL(location.href); u.searchParams.set('lang', de ? 'en' : 'de'); return u.pathname.split('/').pop() + u.search + u.hash; })();
   const languageTarget = chemistry ? null : fcApp ? appLangTarget : sharedPages.has(file) ? file + (de ? '?lang=en' : '?lang=de') : (de ? file : 'de/' + file);
