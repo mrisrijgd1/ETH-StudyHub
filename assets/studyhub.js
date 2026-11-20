@@ -130,7 +130,8 @@
     { id: 'physics', label: L('Physik I', 'Physics I'), href: prefix + 'physics.html' },
     { id: 'chemie', label: 'Chemie I (PC)', href: 'chemie/' },
     { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' }
-  ].filter(item => item.id !== 'chemie' || studyPath === 'inter' || chemistry);
+  ];
+  const showChemie = p => p === 'inter' || chemistry;
   // flashcards.html#p1-16 is the Physics deck (StudyHub's own cards); it stays on this page.
   const physCards = !fcApp && !de && file === 'flashcards.html' && /^#p\d/.test(location.hash);
   const practiceFor = file === 'practice.html' ? ({ '#physics': 'physics', '#linalg': 'linalg' })[location.hash] : null;
@@ -199,7 +200,11 @@
   const star = document.createElement('span'); star.textContent = ' ✦'; star.setAttribute('aria-hidden', 'true'); brand.append(star);
   upper.append(brand);
   const courses = document.createElement('nav'); courses.className = 'study-subjects'; courses.setAttribute('aria-label', L('Fächer', 'Subjects'));
-  subjects.forEach(item => { const a = link(item.label, item.href); if (subject === item.id) a.setAttribute('aria-current', 'page'); courses.append(a); });
+  subjects.forEach(item => { const a = link(item.label, item.href); if (subject === item.id) a.setAttribute('aria-current', 'page'); if (item.id === 'chemie') { a.dataset.subj = 'chemie'; if (!showChemie(studyPath)) a.style.display = 'none'; } courses.append(a); });
+  // Picking a path on the home page updates the header at once (no reload needed); also follows other open tabs.
+  const pathChanged = p => document.querySelectorAll('[data-subj="chemie"]').forEach(a => { a.style.display = showChemie(p) ? '' : 'none'; });
+  addEventListener('sh-path', e => pathChanged(e.detail));
+  addEventListener('storage', e => { if (e.key === 'sh-path') pathChanged(e.newValue); });
   // Exam Dive (Rachel's game, dive/): a game, not a course, so it gets its own marker
   const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); const brk = document.createElement('span'); brk.className = 'study-break'; brk.setAttribute('aria-hidden', 'true'); courses.append(brk);
   courses.append(dive);
