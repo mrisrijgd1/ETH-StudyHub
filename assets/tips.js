@@ -12,7 +12,7 @@
     { t: 'Having a hard time, not just with the material? <a href="help.html">Here is where to find help</a>, at ETH and beyond. You are not alone.' },
     { t: 'Stuck in a proof? The <a href="moves.html">moves library</a> lists the tricks proofs keep reusing, and when to reach for each one.' },
     { t: 'Ten minutes of <a href="flashcards.html">flashcards</a> a day keeps definitions exam-exact.' },
-    { t: 'Not sure where to start? <a href="path.html">Find your path</a> in five quick questions.' },
+    { t: 'Not sure where to start? <a href="path.html">Five quick questions</a> suggest a route for you.' },
     { t: 'You can <a href="download.html">download everything</a> and make your own version with Claude, tuned to how you learn.' },
     { t: 'Every story has a formal twin: read the picture first, then the exact version right next to it.' },
     { t: 'The <a href="exam-map.html">exam map</a> shows what the old exams actually ask, so you know what matters most.' },
