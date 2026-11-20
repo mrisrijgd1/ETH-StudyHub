@@ -46,8 +46,57 @@
     });
     return ready;
   }
+  /* ---------- app state sync (Exam Dive, Chemie; flashcards app once its owner agrees) ----------
+     One row per app in public.app_state. Rule: a side that did not change since the last sync takes the
+     other side; if both changed, the two are merged (Dive: best of both + all dives; Chemie: union). */
+  var APPS = { dive: 'studyhub.dive.v1', chemie: 'studyhub-chemie-v1' };
+  var SYNCMETA = 'sh-appsync';
+  function hsh(str) { var h = 5381; for (var i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return String(h); }
+  function lget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lset(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function meta() { try { return JSON.parse(lget(SYNCMETA) || '{}') || {}; } catch (e) { return {}; } }
+  function obj(x) { return x && typeof x === 'object' && !Array.isArray(x) ? x : {}; }
+  var MERGE = {
+    dive: function (a, b) {
+      var bests = Object.assign({}, obj(b.bests));
+      Object.keys(obj(a.bests)).forEach(function (k) { var x = a.bests[k], y = bests[k];
+        if (!y || (x.depth || 0) > (y.depth || 0) || ((x.depth || 0) === (y.depth || 0) && (x.answers || 0) > (y.answers || 0))) bests[k] = x; });
+      var seen = {}, dives = [].concat(a.dives || [], b.dives || []).filter(function (d) { var k = JSON.stringify([d.date, d.depth, d.subject, d.timer]); if (seen[k]) return false; seen[k] = 1; return true; });
+      dives.sort(function (x, y) { return String(y.date || '').localeCompare(String(x.date || '')); });
+      return Object.assign({}, b, a, { v: 1, bests: bests, dives: dives.slice(0, 100) });
+    },
+    chemie: function (a, b) {
+      var out = Object.assign({}, b, a), done = {};
+      (b.done || []).concat(a.done || []).forEach(function (n) { done[n] = 1; });
+      out.done = Object.keys(done).map(Number).sort(function (x, y) { return x - y; });
+      ['notes', 'work', 'quiz', 'confidence', 'timers'].forEach(function (k) { out[k] = Object.assign({}, obj(b[k]), obj(a[k])); });
+      return out;
+    }
+  };
+  function appSync() {
+    if (!sb || !user) return Promise.resolve();
+    return sb.from('app_state').select('app,data').then(function (r) {
+      if (r.error) return; // table not set up yet: stay local
+      var remote = {}, m = meta(), push = [];
+      (r.data || []).forEach(function (row) { remote[row.app] = row.data; });
+      Object.keys(APPS).forEach(function (app) {
+        var ls = lget(APPS[app]), R = remote[app], fin = null, local = null;
+        try { local = ls ? JSON.parse(ls) : null; } catch (e) { local = null; }
+        var changed = ls != null && hsh(ls) !== m[app];
+        if (R == null) { if (local) { fin = ls; push.push({ app: app, data: local }); } }
+        else if (local == null || !changed) { fin = JSON.stringify(R); if (fin !== ls) lset(APPS[app], fin); }
+        else { var mg = MERGE[app](local, R); fin = JSON.stringify(mg); lset(APPS[app], fin); push.push({ app: app, data: mg }); }
+        if (fin != null) m[app] = hsh(fin);
+      });
+      lset(SYNCMETA, JSON.stringify(m));
+      if (push.length) return sb.from('app_state').upsert(push.map(function (x) { return { app: x.app, data: x.data, updated_at: new Date().toISOString() }; }));
+    }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') appSync(); });
+
   function afterAuth() {
     if (!user) { profile = null; render(); return Promise.resolve(); }
+    appSync();
     return Promise.all([
       sb.from('profiles').select('nickname,leaderboard').eq('id', user.id).maybeSingle(),
       sb.from('progress').select('page,done,rating,note,updated_at')
