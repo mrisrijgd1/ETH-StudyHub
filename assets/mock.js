@@ -28,12 +28,13 @@
 
   function pick() {
     clearInterval(tick); root.oninput = null;
+    var qs = (location.search.match(/[?&]s=(analysis|physics|linalg)\b/) || [])[1]; if (qs && !pick.done) { put('sh-mock-subj', qs); pick.done = 1; }
     var subj = get('sh-mock-subj', 'analysis'), mins = get('sh-mock-min', 120);
     var opts = EX.filter(function (e) { return e.s === subj; }).map(function (e) {
       return '<option value="' + esc(e.id) + '">' + esc(e.t) + (e.sol ? (e.inl ? L(' · solutions in the same PDF', ' · Lösungen im selben PDF') : e.own ? L(' · StudyHub worked solution + marking scheme', ' · StudyHub-Musterlösung + Punkteschema') : L(' · official solutions', ' · offizielle Lösungen')) : '') + '</option>'; }).join('');
     root.innerHTML = '<h2 id="start">' + L('Start a mock', 'Probeprüfung starten') + '</h2>' +
       '<p>' + L('Three steps: choose an exam, set the time, start. Work on paper, like in the real exam. When the time is up, you mark it.', 'Drei Schritte: Prüfung wählen, Zeit setzen, starten. Arbeite auf Papier, wie in der echten Prüfung. Wenn die Zeit um ist, korrigierst du.') + '</p>' +
-      '<div class="row"><label><input type="radio" name="subj" value="analysis"' + (subj === 'analysis' ? ' checked' : '') + '> Analysis I</label><label><input type="radio" name="subj" value="physics"' + (subj === 'physics' ? ' checked' : '') + '> ' + L('Physics I', 'Physik I') + '</label></div>' +
+      '<div class="row"><label><input type="radio" name="subj" value="analysis"' + (subj === 'analysis' ? ' checked' : '') + '> Analysis I</label><label><input type="radio" name="subj" value="physics"' + (subj === 'physics' ? ' checked' : '') + '> ' + L('Physics I', 'Physik I') + '</label><label><input type="radio" name="subj" value="linalg"' + (subj === 'linalg' ? ' checked' : '') + '> ' + L('Linear Algebra I', 'Lineare Algebra I') + '</label></div>' +
       '<label>' + L('Exam (newest first)', 'Prüfung (neueste zuerst)') + '<select id="mk-ex">' + opts + '</select></label>' +
       '<p class="mk-n">' + L('Recommended: start with an exam that has official solutions, so you can mark it properly. Without official solutions, your own AI can mark it with the StudyHub connector.', 'Empfehlung: Beginne mit einer Prüfung mit offiziellen Lösungen, damit du sauber korrigieren kannst. Ohne offizielle Lösungen kann deine eigene KI mit dem StudyHub-Connector korrigieren.') + '</p>' +
       '<div class="row"><label>' + L('Minutes', 'Minuten') + ' <input id="mk-min" type="number" min="5" max="300" step="5" value="' + mins + '"></label>' +
@@ -43,7 +44,8 @@
     var sel = document.getElementById('mk-ex');
     function hint() { var x = exam(sel.value), h = document.getElementById('mk-hint'); if (!x || !h) return;
       document.getElementById('mk-min').value = x.min || mins;
-      h.innerHTML = x.min ? L('This is a short practice exam (' + (x.tasks ? x.tasks.reduce(function (s, r) { return s + r[1]; }, 0) + ' points' : '') + '). No time is printed on it, so the timer is set to ' + x.min + ' minutes. Change it if you like.',
+      var pts = x.tasks ? x.tasks.reduce(function (s, r) { return s + r[1]; }, 0) : 0;
+      h.innerHTML = x.mine ? L('StudyHub wrote this exam in the style of the real one (' + pts + ' points, ' + x.min + ' minutes, printed on the first page). The worked solution opens after you finish.', 'StudyHub hat diese Prüfung im Stil der echten geschrieben (' + pts + ' Punkte, ' + x.min + ' Minuten, auf der ersten Seite). Die Musterlösung öffnet sich, wenn du fertig bist.') : x.min ? L('This is a short practice exam (' + (x.tasks ? x.tasks.reduce(function (s, r) { return s + r[1]; }, 0) + ' points' : '') + '). No time is printed on it, so the timer is set to ' + x.min + ' minutes. Change it if you like.',
         'Das ist eine kurze Probeprüfung (' + (x.tasks ? x.tasks.reduce(function (s, r) { return s + r[1]; }, 0) + ' Punkte' : '') + '). Auf dem Blatt steht keine Zeit, deshalb ist der Timer auf ' + x.min + ' Minuten gesetzt. Ändere ihn, wenn du willst.') : ''; }
     sel.onchange = hint; hint();
     document.getElementById('mk-go').onclick = function () {
@@ -77,8 +79,8 @@
       rows.map(function (r, i) { return '<tr class="pts"><td>' + esc(r.lab || (i + 1)) + '</td><td><input data-i="' + i + '" data-k="got" type="number" min="0" step="0.5" value="' + esc(r.got) + '"></td><td><input data-i="' + i + '" data-k="max" type="number" min="0" step="0.5" value="' + esc(r.max) + '"></td></tr>'; }).join('') + '</table>'; }
     var solHtml = e.sol && e.own
       ? '<p><a class="btn" href="' + pdf(e.sol) + '" target="_blank" rel="noopener"><strong>' + L('Open the worked solution and marking scheme', 'Musterlösung und Punkteschema öffnen') + '</strong></a>. ' +
-        L('There is no official solution yet, so StudyHub wrote this one and checked every number twice. Its marking scheme splits each task’s points step by step; the maximum points are already filled in below. Mark strictly: formula first, units, a short reason.',
-          'Es gibt noch keine offizielle Lösung, deshalb hat StudyHub diese geschrieben und jede Zahl zweimal geprüft. Das Punkteschema darin teilt die Punkte jeder Aufgabe Schritt für Schritt auf; die Maximalpunkte sind unten schon eingetragen. Korrigiere streng: zuerst die Formel, Einheiten, eine kurze Begründung.') + '</p>'
+        L((e.mine ? 'StudyHub wrote this exam, so StudyHub also wrote the solution' : 'There is no official solution yet, so StudyHub wrote this one') + ' and checked every number twice. Its marking scheme splits each task’s points step by step; the maximum points are already filled in below. ' + (e.s === 'linalg' ? 'Mark strictly: every step needs its reason, and a definition with a missing condition earns nothing.' : 'Mark strictly: formula first, units, a short reason.'),
+          (e.mine ? 'StudyHub hat diese Prüfung geschrieben, also auch die Lösung' : 'Es gibt noch keine offizielle Lösung, deshalb hat StudyHub diese geschrieben') + ' und jede Zahl zweimal geprüft. Das Punkteschema darin teilt die Punkte jeder Aufgabe Schritt für Schritt auf; die Maximalpunkte sind unten schon eingetragen. ' + (e.s === 'linalg' ? 'Korrigiere streng: jeder Schritt braucht seine Begründung, und eine Definition mit fehlender Bedingung gibt keine Punkte.' : 'Korrigiere streng: zuerst die Formel, Einheiten, eine kurze Begründung.')) + '</p>'
       : e.sol
       ? '<p><a class="btn" href="' + pdf(e.sol) + '" target="_blank" rel="noopener"><strong>' + L('Open the official solutions', 'Offizielle Lösungen öffnen') + '</strong></a>. ' + L('Mark task by task: full points only if your argument is complete; part points for correct steps. Be strict, like the exam is.', 'Korrigiere Aufgabe für Aufgabe: volle Punkte nur bei vollständigem Argument; Teilpunkte für richtige Schritte. Sei streng, wie die Prüfung.') + '</p>'
       : '<p>' + L('There are no official solutions for this exam. Two ways to mark it:', 'Für diese Prüfung gibt es keine offiziellen Lösungen. Zwei Wege zum Korrigieren:') + '</p><ul><li>' +
