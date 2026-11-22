@@ -301,7 +301,7 @@
         [L('Analysis I', 'Analysis I'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
         ['Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
         [L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
-        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 20, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
+        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 21, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
       function nameOf(k) {
         var n = (k.match(/(\d+)\.html$/) || [])[1]; n = n ? String(+n) : k;
         if (/^lesson-/.test(k)) return L('Analysis lesson ', 'Analysis-Lektion ') + n;
