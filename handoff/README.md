@@ -14,3 +14,7 @@ Specs and eval *designs* for testing open Swiss-hosted models as a study compani
 | `01-model-research.md` | Candidates, hosting, licences, with sources |
 | `02-eval-spec.md` | Test sets, grading, statistics, gates (to be frozen before the first run) |
 | `03-plan.md` | Order of work, budget, timeline |
+| `04-study-planner.md` | **Proposal:** AI study planner for signed-in students (timetables, lecture position, questionnaire, plan page, data protection, optional research consent) |
+| `05-spaced-repetition.md` | **Proposal:** spaced repetition for the flashcards, batches, reminders and opt-in push notifications |
+
+04 and 05 are feature proposals for discussion; nothing in them is built, and each build step is asked first on #65.
