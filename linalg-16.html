@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Two Censuses">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=fix1120"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=guest1122b"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Two Censuses</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=story1120">
+<link rel="stylesheet" href="assets/studyhub.css?v=guest1122b">
+<script defer src="assets/studyhub.js?v=guest1122b"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-subjects" aria-label="Subjects"><a href="analysis.html">Analysis I</a><a href="physics.html">Physics I</a><a href="chemie/">Chemie I (PC)</a><a href="linalg.html" aria-current="page">Linear Algebra I</a><a href="dive/" class="study-game"><span aria-hidden="true">🎮 </span>Exam Dive</a></nav><nav class="study-utilities" aria-label="Personal area"><a href="account.html" class="study-progress">Progress</a><a href="more.html">More</a><a href="linalg-16.html?lang=de" lang="de" hreflang="de">DE</a><details class="study-design"><summary>Design</summary></details></nav></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Linear Algebra I · Lesson 16</span>
+<h1>The Two Censuses</h1>
+<p class="lead">Row space and column space, Gaussian elimination and row echelon form, and why the row rank always equals the column rank, proved three ways; with one elimination you get bases of the row space, the column space and the kernel, and equations for a span.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-15-5">Recap of lesson 7, lesson 14 and lesson 15 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-two-censuses">1. The story: the two censuses</a>
+</li>
+<li><a href="#s2-row-space-and-column-space">2. Row space and column space</a>
+<ol>
+<li><a href="#proof-a">Proof A: row operations do not change the row space (script Lemma 2.3.23, p. 59)</a></li>
+</ol></li>
+<li><a href="#s3-echelon-form">3. Row echelon form: where both ranks can be read off</a>
+<ol>
+<li><a href="#proof-b">Proof B: in a row echelon matrix, row rank = number of pivots = column rank (script Lemma 2.3.27, p. 60)</a></li>
+</ol></li>
+<li><a href="#s4-gauss-proof">4. Row operations keep the column relations: the Gauss proof</a>
+<ol>
+<li><a href="#proof-c">Proof C: column rank = row rank, by Gaussian elimination (script Satz 2.3.32 and Corollary 2.3.34, pp. 62–63)</a></li>
+<li><a href="#we-1">Worked example 1: four spaces with one elimination (script Example 2.3.33)</a></li>
+</ol></li>
+<li><a href="#s5-two-more-proofs">5. Two more proofs: the normal form and duality</a>
+<ol>
+<li><a href="#proof-d">Proof D: column rank = row rank, by the normal form (script Lemma 3.4.4 and Satz 3.4.1, pp. 95–97)</a></li>
+<li><a href="#proof-e">Proof E: column rank = row rank, by duality (script Corollaries 10.5.8–10.5.9, p. 330)</a></li>
+</ol></li>
+<li><a href="#s6-one-elimination-four-answers">6. One elimination, four answers</a>
+<ol>
+<li><a href="#we-2">Worked example 2: a rank in three lines (HS17, problem 3 (c), 3 points)</a></li>
+<li><a href="#we-3">Worked example 3: equations for a span (script Example “Condition for the span”, p. 58)</a></li>
+<li><a href="#why-it-s-cool">Why it&#x27;s cool</a></li>
+<li><a href="#for-wonder-the-rank-does-not-depend-on-the-field">For wonder: the rank does not depend on the field</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-4">Worked example 4: quick exam items (FS17, HS21, FS26)</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (script Corollary 2.3.29 and Example “Condition for the span”: one subspace, three descriptions)</a></li>
+<li><a href="#ex-2">Exercise 2 (HS17, problem 3 (b), 3 points)</a></li>
+<li><a href="#ex-3">Exercise 3 (a rank with a parameter)</a></li>
+<li><a href="#ex-4">Exercise 4 (rank of a sum; matrices of rank 1)</a></li>
+<li><a href="#ex-5">Exercise 5 (solvability of $Ax=b$ by ranks)</a></li>
+<li><a href="#ex-6">Exercise 6 (HS24, problem 4.A1–4.A2, 7 points)</a></li>
+<li><a href="#ex-7">Exercise 7 (script Corollary 10.5.9 at work)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) define the <strong>row space</strong>, the <strong>column space</strong>, the row rank and the column rank of a matrix, and prove that row operations do not change the row space; (2) prove that in a row echelon matrix the nonzero rows are a basis of the row space and the pivot columns are a basis of the column space; (3) prove that row operations keep every linear relation between the columns, and use it to read a basis of the column space off the <em>original</em> matrix; (4) prove <strong>row rank = column rank</strong> in three ways (by Gaussian elimination, by the normal form $D_r$, and by duality); (5) compute with one elimination a basis of the row space, the column space and the kernel, and equations for a span.</dd></div>
+  <div><dt>Time</dt><dd>About 100 minutes. A natural break comes after section 4 (the Gauss proof of row rank = column rank is complete; the two other proofs and the computations follow).</dd></div>
+  <div><dt>Script (English, printed pages)</dt><dd>Script EN 2023, chapters 2, 3 and 10:
+    <ul>
+      <li><strong><a class="pl" href="linalg-script.html#p57">pp. 57–58</a>:</strong> Corollary 2.3.20 and Proposition 2.3.21 (subspaces have bases, $\dim U\le\dim V$; <a class="xl" href="linalg-08.html">lesson 8</a>), the top-down and bottom-up methods, Example “Condition for the span”, Example “Is a list of vectors linearly independent?”.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p59">pp. 59–61</a>:</strong> Definition 2.3.22 (row and column space), Lemma 2.3.23 and Note 2.3.24 (row operations keep the row space, not the column space), Definition 2.3.25 (row and column rank), Note 2.3.26, Lemma 2.3.27 (row echelon matrices), the definition of the rank as the number of pivots, Corollary 2.3.28 (it is well defined), Corollary 2.3.29 (a basis from a spanning list), Definition 2.3.30 (the transpose).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p62">pp. 62–63</a>:</strong> Satz 2.3.32 (column rank equals row rank, proof sketch), Example 2.3.33 (“magic”: four spaces with one elimination), Corollary 2.3.34 (a few tricks), Note 2.3.35.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p95">pp. 95–97</a>:</strong> Satz 3.4.1 (column rank equals row rank), Lemma 3.4.2 (isomorphisms keep the rank), Lemma 3.4.3, Lemma 3.4.4 (equivalent matrices have equal row ranks and equal column ranks), the proof of Satz 3.4.1, Note 3.4.5.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p330">p. 330</a>:</strong> Corollaries 10.5.8–10.5.9 (column rank = row rank by duality; $\dim\mathrm{Im}\,T=\dim\mathrm{Im}\,T^*$).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Expected with the rank theorem as Prof. Halbeisen's next section (our copy of the notes ends with §8 on <a class="pl" href="linalg-script.html#p47">p. 47</a>). Gaussian elimination itself you know from the exercise classes (Übungsstunden) and from <a class="xl" href="linalg-07.html">lesson 7</a> (Note 2.3.18: independence in $K^m$ is decided by $Ax=0$). The board-versus-script page will compare once the notes arrive.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Every computation problem that asks for a basis, a dimension or a rank is solved by today's method, and the old exams ask for it directly: HS17, problem 3 (b)–(c) (6 points: define the rank of a matrix, show it is the dimension of the column space, compute a rank; Worked example 2 and Exercise 2), FS18, problem 3 (b) (6 points: a basis of a preimage; <a class="xl" href="linalg-15.html">lesson 15</a>, Exercise 3, solved it with an equation for a span, the method of section 6), and the true/false and multiple-choice items FS17, (xxiii)–(xxiv), HS21, (XVII) and FS26, 1.MC8 (Worked example 4). Row rank = column rank also appears silently in every later course: it is why a square matrix with independent rows has independent columns.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-15-5">Recap of <a class="xl" href="linalg-07.html">lesson 7</a>, <a class="xl" href="linalg-14.html">lesson 14</a> and <a class="xl" href="linalg-15.html">lesson 15</a> (5 minutes)</h3>
+<p>$\mathrm{rank}(A):=\dim\mathrm{Im}(m_A)$, and $\mathrm{Im}(m_A)$ is spanned by the columns (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof A). Rank–nullity: $\dim\mathrm{Ker}(m_A)+\mathrm{rank}(A)=n$ for $A\in M_{m\times n}(K)$. Every $A$ is equivalent to $D_r$ with $r=\mathrm{rank}(A)$ (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof F). <a class="xl" href="linalg-14.html">Lesson 14</a>: $[T^*]=[T]^T$ in dual bases, and $\mathrm{Im}\,T^*=(\mathrm{Ker}\,T)^0$. Check yourself:</p>
+<ol>
+  <li>The three row operations of Gaussian elimination are…?</li>
+  <li>Do the systems $Ax=0$ and $Bx=0$ have the same solutions when $B$ comes from $A$ by row operations?</li>
+  <li>$\dim U^0$ for a subspace $U$ of an $n$-dimensional $V$?</li>
+  <li>The rank of $A=\begin{pmatrix}1&amp;2\\2&amp;4\end{pmatrix}$?</li>
+</ol>
+<details><summary>Answers</summary><div><p>1. Swap two rows ($L_i\leftrightarrow L_j$); multiply a row by a scalar $\lambda\ne0$ ($\lambda L_i\to L_i$); add a multiple of another row ($L_i+\lambda L_j\to L_i$, $i\ne j$). 2. Yes: each operation can be undone by an operation of the same kind, and each row of $B$ is a combination of rows of $A$ and the other way round, so every solution of one system solves the other. 3. $n-\dim U$ (<a class="xl" href="linalg-14.html">lesson 14</a>, Proof E). 4. $1$: the second column is twice the first. The rows are dependent too, and today shows that this is no coincidence.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>row space, column space</td><td>Zeilenraum, Spaltenraum</td></tr>
+    <tr><td>row rank, column rank</td><td>Zeilenrang, Spaltenrang</td></tr>
+    <tr><td>row operation (elementary)</td><td>(elementare) Zeilenumformung</td></tr>
+    <tr><td>Gaussian elimination</td><td>Gauss-Verfahren, Gauss-Elimination</td></tr>
+    <tr><td>row echelon form</td><td>Zeilenstufenform</td></tr>
+    <tr><td>reduced row echelon form</td><td>reduzierte Zeilenstufenform</td></tr>
+    <tr><td>pivot</td><td>Pivot(-element)</td></tr>
+    <tr><td>free variable</td><td>freie Variable</td></tr>
+    <tr><td>transpose</td><td>Transponierte</td></tr>
+    <tr><td>row-equivalent</td><td>zeilenäquivalent</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-two-censuses">1. The story: the two censuses</h2>
+<div class="story">
+<p>The Free City keeps its tax records in a great ledger: one line for every household, one column for every kind of goods. Two clerks are sent to count how much the ledger really knows. The first clerk reads it line by line and asks how many households are genuinely different, not just mixtures of others. The second reads it column by column and asks how many kinds of goods are genuinely different.</p>
+<p>The ledger can be tall and narrow or short and wide; the lines live in one space and the columns in another. Nobody expects the two clerks to agree. Yet they always do. This lesson explains why, three times: once with the clerks' everyday tool, the tidying of the ledger by row operations (Gaussian elimination); once with the mapmakers' normal form from <a class="xl" href="linalg-15.html">lesson 15</a>; and once with the surveyors of surveyors from <a class="xl" href="linalg-14.html">lesson 14</a>.</p>
+<p>The tidying also has a practical gift. One elimination tells the clerks at the same time which households are independent, which columns are independent, and which combinations of columns cancel out completely.</p>
+</div>
+<p>In mathematics: for $A\in M_{m\times n}(K)$ the rows span a subspace of $K^n$ and the columns span a subspace of $K^m$. Their dimensions, the row rank and the column rank, are equal.</p>
+
+<h2 id="s2-row-space-and-column-space">2. Row space and column space</h2>
+
+<div class="box">
+<p><strong>Definition (row and column space, row and column rank; script Definitions 2.3.22 and 2.3.25, <a class="pl" href="linalg-script.html#p59">pp. 59–60</a>).</strong> Let $A\in M_{m\times n}(K)$ with rows $u_1,\dots,u_m\in K^n$ and columns $v_1,\dots,v_n\in K^m$.</p>
+<ul>
+  <li>$\mathrm{RowS}(A):=\mathrm{Sp}(u_1,\dots,u_m)\subseteq K^n$ is the <strong>row space</strong>, and $\mathrm{row\,rank}(A):=\dim\mathrm{RowS}(A)$.</li>
+  <li>$\mathrm{ColS}(A):=\mathrm{Sp}(v_1,\dots,v_n)\subseteq K^m$ is the <strong>column space</strong>, and $\mathrm{col\,rank}(A):=\dim\mathrm{ColS}(A)$.</li>
+</ul>
+<p>By <a class="xl" href="linalg-15.html">lesson 15</a>, Proof A, $\mathrm{ColS}(A)=\mathrm{Im}(m_A)$ (<a class="xl" href="linalg-15.html">lesson 15</a>), so $\mathrm{col\,rank}(A)=\mathrm{rank}(A)$. The <strong>transpose</strong> $A^T$ (script Definition 2.3.30, <a class="pl" href="linalg-script.html#p61">p. 61</a>) swaps the two: $\mathrm{RowS}(A)=\mathrm{ColS}(A^T)$ and $\mathrm{ColS}(A)=\mathrm{RowS}(A^T)$.</p></div>
+
+<h3 id="proof-a">Proof A: row operations do not change the row space (script Lemma 2.3.23, <a class="pl" href="linalg-script.html#p59">p. 59</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> If $B\in M_{m\times n}(K)$ comes from $A$ by row operations, then $\mathrm{RowS}(A)=\mathrm{RowS}(B)$.</p></div>
+<p><strong>The idea.</strong> It suffices to check one operation at a time. Each new row is a combination of the old rows, so the new span lies in the old span; and each operation can be undone by another row operation, so the old span lies in the new one.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “It suffices to treat one row operation; let $u_1,\dots,u_m$ be the rows of $A$.”</li>
+  <li><strong>Last line:</strong> “so both lists span the same subspace of $K^n$.”</li>
+  <li><strong>The gap:</strong> each list consists of linear combinations of the other list (<a class="xl" href="linalg-06.html">lesson 6</a>: then the spans are equal).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Reordering the lines of the ledger changes nothing.</p></div><div class="sp-formal"><p>$L_i\leftrightarrow L_j$: the list of rows is the same list in another order, so the span is the same.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A line written in another currency still says the same.</p></div><div class="sp-formal"><p>$\lambda L_i\to L_i$ with $\lambda\ne0$: $\lambda u_i\in\mathrm{Sp}(u_1,\dots,u_m)$, and $u_i=\lambda^{-1}(\lambda u_i)\in\mathrm{Sp}(u_1,\dots,\lambda u_i,\dots,u_m)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Adding one household's record to another's can be undone by subtracting it again.</p></div><div class="sp-formal"><p>$L_i+\lambda L_j\to L_i$ ($i\ne j$): $u_i+\lambda u_j$ is a combination of $u_1,\dots,u_m$; conversely $u_i=(u_i+\lambda u_j)-\lambda u_j$ is a combination of the new rows, since $u_j$ is still one of them.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So no tidying step changes what the ledger knows.</p></div><div class="sp-formal"><p>In each case every new row lies in the old span and every old row in the new span, so the spans are equal (<a class="xl" href="linalg-06.html">lesson 6</a>). By induction on the number of operations, $\mathrm{RowS}(A)=\mathrm{RowS}(B)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_member">to show $x\in S$: bring $x$ to the form that defines $S$</a> <a class="mvl" href="linalg-moves.html#m-la_undo">undo the row operation</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>It suffices to treat one operation. A swap only reorders the rows. For $\lambda L_i\to L_i$ ($\lambda\ne0$): $\lambda u_i$ is a combination of the old rows and $u_i=\lambda^{-1}(\lambda u_i)$ of the new ones. For $L_i+\lambda L_j\to L_i$ ($i\ne j$): $u_i+\lambda u_j$ is a combination of the old rows and $u_i=(u_i+\lambda u_j)-\lambda u_j$ of the new ones. So each list lies in the span of the other, and the spans agree. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Reduce to one operation.</li>
+  <li>New rows are combinations of old rows: “⊆”.</li>
+  <li>Undo the operation: “⊇”.</li>
+</ol>
+<p><strong>In short:</strong> row operations are reversible, and each step only mixes rows, so the row space stays. <strong>Caution:</strong> the column space usually changes. For $A=\begin{pmatrix}1&amp;1\\1&amp;1\end{pmatrix}$, the operation $L_2-L_1\to L_2$ gives $\begin{pmatrix}1&amp;1\\0&amp;0\end{pmatrix}$, and $\mathrm{ColS}$ moves from $\mathrm{Sp}((1,1)^T)$ to $\mathrm{Sp}((1,0)^T)$. Only its <em>dimension</em> survives (Proof C).</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Why must $\lambda\ne0$ in the second operation?
+  <details><summary>Answer</summary><div><p>With $\lambda=0$ the row $u_i$ becomes $0$ and cannot be recovered: the row space can shrink. For $A=\begin{pmatrix}1&amp;0\end{pmatrix}$, “$0\cdot L_1$” gives the zero matrix with row space $\{0\}$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show: $Ax=0$ and $Bx=0$ have the same solutions when $B$ comes from $A$ by row operations.
+  <details><summary>Answer</summary><div><p>$x$ solves $Ax=0$ iff every row $u$ of $A$ satisfies $u\cdot x=0$. If this holds for all rows of $A$, it holds for every combination of them, hence for all rows of $B$ (they lie in $\mathrm{RowS}(A)$). By symmetry (the rows of $A$ lie in $\mathrm{RowS}(B)$) the converse holds. This is the fact Proof C builds on.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof A from the frame alone.</li>
+</ol></div>
+
+<h2 id="s3-echelon-form">3. Row echelon form: where both ranks can be read off</h2>
+
+<div class="box">
+<p><strong>Definition (row echelon form; pivots).</strong> A matrix $B\in M_{m\times n}(K)$ is in <strong>row echelon form</strong> if its zero rows are at the bottom and the first nonzero entry of each nonzero row, its <strong>pivot</strong>, stands strictly to the right of the pivot of the row above. If the nonzero rows are $u_1,\dots,u_r$, their pivots stand in columns $j_1&lt;j_2&lt;\dots&lt;j_r$, the <strong>pivot columns</strong>. If moreover every pivot is $1$ and every pivot column has zeros apart from its pivot, $B$ is in <strong>reduced</strong> row echelon form. Gaussian elimination brings every matrix into (reduced) row echelon form by row operations.</p>
+<p>Example: $B=\begin{pmatrix}1&amp;-2&amp;0&amp;-1\\0&amp;0&amp;1&amp;2\\0&amp;0&amp;0&amp;0\end{pmatrix}$ is reduced, with $r=2$ and pivot columns $j_1=1$, $j_2=3$.</p></div>
+
+<h3 id="proof-b">Proof B: in a row echelon matrix, row rank = number of pivots = column rank (script Lemma 2.3.27, <a class="pl" href="linalg-script.html#p60">p. 60</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $B\in M_{m\times n}(K)$ be in row echelon form with nonzero rows $u_1,\dots,u_r$ and pivot columns $j_1&lt;\dots&lt;j_r$. Then (1) $u_1,\dots,u_r$ is a basis of $\mathrm{RowS}(B)$; (2) the pivot columns $c_{j_1},\dots,c_{j_r}$ of $B$ are a basis of $\mathrm{ColS}(B)$. In particular $\mathrm{row\,rank}(B)=\mathrm{col\,rank}(B)=r$.</p></div>
+<p><strong>The idea.</strong> The staircase shape makes independence visible. For the rows, look at the pivot positions from left to right: at column $j_1$ only $u_1$ is nonzero, so its coefficient must vanish, then at $j_2$, and so on. For the columns, read from the bottom up: in row $r$ only the last pivot column is nonzero. Spanning is free for the rows (the other rows are zero); for the columns we count dimensions.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1) First line:</strong> “Let $\alpha_1u_1+\dots+\alpha_ru_r=0$.” <strong>Last line:</strong> “so all $\alpha_i=0$; and the rows below $u_r$ are zero, so $u_1,\dots,u_r$ span $\mathrm{RowS}(B)$.”</li>
+  <li><strong>(2) First line:</strong> “Every column has zeros below row $r$, so $\mathrm{ColS}(B)\subseteq K^r\times\{0\}^{m-r}$.” <strong>Last line:</strong> “$r$ independent vectors in this $r$-dimensional space are a basis of it, so it equals $\mathrm{ColS}(B)$.”</li>
+  <li><strong>The gap:</strong> the staircase: entry $(i,j)$ of $B$ is $0$ whenever $j&lt;j_i$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>At the first pivot, only the first household has goods of that kind.</p></div><div class="sp-formal"><p>(1) Let $\sum_{i=1}^r\alpha_iu_i=0$, and write $b_{ij}$ for the entries. For $i\ge2$ we have $j_1&lt;j_i$, so $b_{ij_1}=0$. The $j_1$-th entry of the sum is therefore $\alpha_1b_{1j_1}=0$, and $b_{1j_1}\ne0$ gives $\alpha_1=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Then the second pivot, and so on down the stairs.</p></div><div class="sp-formal"><p>Induction: if $\alpha_1=\dots=\alpha_k=0$ ($k&lt;r$), the $j_{k+1}$-th entry of the sum is $\alpha_{k+1}b_{k+1,j_{k+1}}$ (rows $i&gt;k+1$ vanish there because $j_{k+1}&lt;j_i$), so $\alpha_{k+1}=0$. Hence $u_1,\dots,u_r$ are independent; the other rows are $0$, so they span $\mathrm{RowS}(B)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>For the columns, start at the bottom step.</p></div><div class="sp-formal"><p>(2) Let $\sum_{k=1}^r\beta_kc_{j_k}=0$. In row $r$, the columns $j_1,\dots,j_{r-1}$ have entry $0$ (they lie left of the pivot $j_r$), so row $r$ of the sum is $\beta_rb_{rj_r}=0$ and $\beta_r=0$. Going up row by row in the same way, $\beta_{r-1}=\dots=\beta_1=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Count the room: there is space for exactly $r$ kinds of goods, and we have found $r$.</p></div><div class="sp-formal"><p>Rows $r+1,\dots,m$ of $B$ are zero, so $\mathrm{ColS}(B)\subseteq K^r\times\{0\}^{m-r}$, a space of dimension $r$. The $r$ pivot columns are independent and lie in it, so they are a basis of it (<a class="xl" href="linalg-07.html">lesson 7</a>, equilibrium). Hence $\mathrm{ColS}(B)=K^r\times\{0\}^{m-r}$ with basis $c_{j_1},\dots,c_{j_r}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_induct">induction: base, hypothesis, step</a> <a class="mvl" href="linalg-moves.html#m-la_dimcount">count first: $n$ vectors in an $n$-dimensional space</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) Let $\sum_i\alpha_iu_i=0$. Since $b_{ij}=0$ for $j&lt;j_i$, the $j_1$-th entry of the sum is $\alpha_1b_{1j_1}$, so $\alpha_1=0$; inductively, once $\alpha_1=\dots=\alpha_k=0$, the $j_{k+1}$-th entry is $\alpha_{k+1}b_{k+1,j_{k+1}}$, so $\alpha_{k+1}=0$. The remaining rows are zero, so $u_1,\dots,u_r$ is a basis of $\mathrm{RowS}(B)$. (2) Let $\sum_k\beta_kc_{j_k}=0$. Row $r$ gives $\beta_rb_{rj_r}=0$, so $\beta_r=0$, and upwards $\beta_{r-1}=\dots=\beta_1=0$. The pivot columns are $r$ independent vectors in $K^r\times\{0\}^{m-r}\supseteq\mathrm{ColS}(B)$, which has dimension $r$; so they are a basis of it, and $\mathrm{ColS}(B)$ equals it. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Rows: compare entries at the pivot columns, left to right.</li>
+  <li>Columns: compare entries row by row, bottom to top.</li>
+  <li>Columns span: count, $\mathrm{ColS}(B)\subseteq K^r\times\{0\}$.</li>
+</ol>
+<p><strong>In short:</strong> for a staircase both ranks are the number of steps. The script then <em>defines</em> $\mathrm{rank}(A)$ as the number of pivots of any row echelon form of $A$, and this number does not depend on how you eliminate: by Proof A and (1), the number of pivots is $\dim\mathrm{RowS}(A)$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In $B=\begin{pmatrix}2&amp;1&amp;5\\0&amp;0&amp;3\end{pmatrix}$, name the pivots, a basis of $\mathrm{RowS}(B)$ and a basis of $\mathrm{ColS}(B)$.
+  <details><summary>Answer</summary><div><p>Pivots $2$ (column 1) and $3$ (column 3). Row space basis: $(2,1,5),(0,0,3)$. Column space basis: $(2,0)^T,(5,3)^T$; indeed $\mathrm{ColS}(B)=K^2$. The non-pivot column $(1,0)^T=\tfrac12(2,0)^T$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Where does the proof of (2) use that the rows below $r$ are zero, and where that the pivots move strictly to the right?
+  <details><summary>Answer</summary><div><p>Zero rows: for $\mathrm{ColS}(B)\subseteq K^r\times\{0\}$, the counting step. Strictly to the right: for “row $r$ of $c_{j_k}$ is $0$ when $k&lt;r$”, which needs $j_k&lt;j_r$; the same for each row going up.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof B from the frame alone.</li>
+</ol></div>
+
+<h2 id="s4-gauss-proof">4. Row operations keep the column relations: the Gauss proof</h2>
+<p>Row operations change the column space (Proof A, caution), so Proof B does not yet say anything about $\mathrm{ColS}(A)$. The script's “magic” (Example 2.3.33) is that they keep something better: every linear relation between the columns.</p>
+
+<h3 id="proof-c">Proof C: column rank = row rank, by Gaussian elimination (script Satz 2.3.32 and Corollary 2.3.34, <a class="pl" href="linalg-script.html#p62">pp. 62–63</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $B$ come from $A\in M_{m\times n}(K)$ by row operations, with columns $a_1,\dots,a_n$ and $b_1,\dots,b_n$.</p>
+<ol>
+  <li>For all $x\in K^n$: $\;x_1a_1+\dots+x_na_n=0\iff x_1b_1+\dots+x_nb_n=0$.</li>
+  <li>If $B$ is in row echelon form with pivot columns $j_1,\dots,j_r$, then $a_{j_1},\dots,a_{j_r}$ (the columns of the <em>original</em> $A$) are a basis of $\mathrm{ColS}(A)$.</li>
+  <li>Hence $\mathrm{col\,rank}(A)=r=\mathrm{row\,rank}(A)$.</li>
+</ol></div>
+<p><strong>The idea.</strong> A relation between the columns is a solution of $Ax=0$, because $Ax=\sum_jx_ja_j$; and row operations do not change the solutions (Rung 2 of Proof A). So $A$ and $B$ have exactly the same column relations. “Independent” and “is a combination of” are statements about relations, so they transfer from $B$, where Proof B decides them, back to $A$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1) First line:</strong> “$\sum_jx_ja_j=Ax$ and $\sum_jx_jb_j=Bx$.” <strong>Last line:</strong> “so $Ax=0\iff Bx=0$.”</li>
+  <li><strong>(2) First line:</strong> “Let $\sum_k\beta_ka_{j_k}=0$.” Then: “Let $a_l$ be any column; we write it as a combination of $a_{j_1},\dots,a_{j_r}$.”</li>
+  <li><strong>The gap:</strong> translate each statement into a vector $x$ with $Ax=0$, move it to $B$ by (1), use Proof B there, move back.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A recipe that cancels the columns of the ledger cancels them after tidying too, and the other way round.</p></div><div class="sp-formal"><p>(1) $\sum_jx_ja_j=Ax$ and $\sum_jx_jb_j=Bx$. Each row of $B$ is a combination of rows of $A$, so $Ax=0$ implies $Bx=0$; each row of $A$ is a combination of rows of $B$ (Proof A: the row spaces agree), so $Bx=0$ implies $Ax=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The pivot columns of the tidy ledger are independent, so the same columns of the original ledger are.</p></div><div class="sp-formal"><p>(2) Let $\sum_k\beta_ka_{j_k}=0$. This is $Ax=0$ for the $x$ with $x_{j_k}=\beta_k$ and all other entries $0$. By (1), $Bx=0$, i.e. $\sum_k\beta_kb_{j_k}=0$, and by Proof B (2) all $\beta_k=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Every other column of the tidy ledger is a mixture of the pivot columns, with the same recipe in the original.</p></div><div class="sp-formal"><p>Let $l\in\{1,\dots,n\}$. By Proof B (2), $b_l=\sum_k\gamma_kb_{j_k}$ for some $\gamma_k\in K$. So $Bx=0$ for $x=e_l-\sum_k\gamma_ke_{j_k}$, hence $Ax=0$ by (1), i.e. $a_l=\sum_k\gamma_ka_{j_k}$. So $a_{j_1},\dots,a_{j_r}$ span $\mathrm{ColS}(A)$, and they are a basis.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Both clerks count $r$.</p></div><div class="sp-formal"><p>(3) $\mathrm{col\,rank}(A)=r$ by (2), and $\mathrm{row\,rank}(A)=\mathrm{row\,rank}(B)=r$ by Proof A and Proof B (1). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_colrel">row operations keep the column relations</a> <a class="mvl" href="linalg-moves.html#m-la_undo">undo the row operation</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) $\sum_jx_ja_j=Ax$, $\sum_jx_jb_j=Bx$, and the rows of $A$ and of $B$ span the same space (Proof A), so $Ax=0\iff Bx=0$. (2) If $\sum_k\beta_ka_{j_k}=0$, then by (1) $\sum_k\beta_kb_{j_k}=0$, so all $\beta_k=0$ by Proof B. For any $l$, Proof B gives $b_l=\sum_k\gamma_kb_{j_k}$; applying (1) to $x=e_l-\sum_k\gamma_ke_{j_k}$ gives $a_l=\sum_k\gamma_ka_{j_k}$. So $a_{j_1},\dots,a_{j_r}$ is a basis of $\mathrm{ColS}(A)$. (3) Hence $\mathrm{col\,rank}(A)=r=\mathrm{row\,rank}(B)=\mathrm{row\,rank}(A)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Column relation $=$ solution of $Ax=0$; same solutions after row operations.</li>
+  <li>Independence and “is a combination of” are relations: transfer them from $B$ to $A$.</li>
+  <li>Count: $r$ pivot columns of $A$, $r$ nonzero rows of $B$.</li>
+</ol>
+<p><strong>In short:</strong> the pivot columns of the <em>original</em> matrix are a basis of its column space; the nonzero rows of the <em>echelon form</em> are a basis of the row space. Never mix them up: the pivot columns of $B$ are usually <strong>not</strong> in $\mathrm{ColS}(A)$ (Worked example 1, step 3).</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> $A=\begin{pmatrix}1&amp;2\\3&amp;6\end{pmatrix}$ reduces to $\begin{pmatrix}1&amp;2\\0&amp;0\end{pmatrix}$. Which relation between the columns do you read off, and does it hold in $A$?
+  <details><summary>Answer</summary><div><p>In $B$: column 2 $=2\cdot$ column 1. In $A$: $(2,6)^T=2(1,3)^T$ ✓. A basis of $\mathrm{ColS}(A)$ is $(1,3)^T$, not $(1,0)^T$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Deduce: $\mathrm{rank}(A)=\mathrm{rank}(A^T)$.
+  <details><summary>Answer</summary><div><p>$\mathrm{rank}(A^T)=\mathrm{col\,rank}(A^T)=\mathrm{row\,rank}(A)=\mathrm{col\,rank}(A)=\mathrm{rank}(A)$, using $\mathrm{ColS}(A^T)=\mathrm{RowS}(A)$ and (3).</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof C from the frame alone.</li>
+</ol></div>
+
+<div class="box"><h3 id="we-1">Worked example 1: four spaces with one elimination (script Example 2.3.33)</h3>
+<p>Let $A=\begin{pmatrix}-3&amp;6&amp;-1&amp;1\\1&amp;-2&amp;2&amp;3\\2&amp;-4&amp;5&amp;8\end{pmatrix}\in M_{3\times4}(\mathbb R)$. Find bases of $\mathrm{RowS}(A)$, $\mathrm{ColS}(A)$ and $\mathrm{Ker}(m_A)$, and the rank.</p>
+<ol class="gq">
+  <li>Bring $A$ to reduced row echelon form.
+  <details><summary>Answer</summary><div><p>$L_1\leftrightarrow L_2$; then $L_2+3L_1\to L_2$ and $L_3-2L_1\to L_3$ give rows $(1,-2,2,3)$, $(0,0,5,10)$, $(0,0,1,2)$. Then $L_2\leftrightarrow L_3$, $L_3-5L_2\to L_3$, $L_1-2L_2\to L_1$:</p>
+  <p>$$B=\begin{pmatrix}1&amp;-2&amp;0&amp;-1\\0&amp;0&amp;1&amp;2\\0&amp;0&amp;0&amp;0\end{pmatrix}.$$</p>
+  <p>Two pivots, in columns $1$ and $3$: $\mathrm{rank}(A)=2$.</p></div></details></li>
+  <li>A basis of the row space.
+  <details><summary>Answer</summary><div><p>The nonzero rows of $B$ (Proofs A and B): $(1,-2,0,-1)$, $(0,0,1,2)$. Check that they really lie in $\mathrm{RowS}(A)$: row 2 of $A$ is $(1,-2,2,3)=(1,-2,0,-1)+2(0,0,1,2)$ ✓. (The script stops at a non-reduced echelon form and gets the basis $(1,-2,1,1),(0,0,1,2)$; both are right.)</p></div></details></li>
+  <li>A basis of the column space, and the relations between the columns.
+  <details><summary>Answer</summary><div><p>The pivot columns of $A$ (Proof C): $(-3,1,2)^T$ and $(-1,2,5)^T$. The non-pivot columns of $B$ give the relations: column 2 $=-2\cdot$ column 1, column 4 $=-1\cdot$ column 1 $+2\cdot$ column 3. Check in $A$: $-(-3,1,2)^T+2(-1,2,5)^T=(1,3,8)^T$ ✓. <strong>Danger</strong> (the script's warning): the pivot columns of $B$, $(1,0,0)^T$ and $(0,1,0)^T$, are <em>not</em> a basis of $\mathrm{ColS}(A)$; $(1,0,0)^T$ is not even in it (every column of $A$ satisfies $x_1+13x_2-5x_3=0$, see section 6, and $(1,0,0)$ does not).</p></div></details></li>
+  <li>A basis of the kernel, and a check with rank–nullity.
+  <details><summary>Answer</summary><div><p>$Bx=0$ reads $x_1=2x_2+x_4$, $x_3=-2x_4$, with $x_2,x_4$ free. $x_2=1,x_4=0$: $(2,1,0,0)$; $x_2=0,x_4=1$: $(1,0,-2,1)$. These are exactly the two column relations of step 3, written as vectors. $\dim\mathrm{Ker}=2=4-2$ ✓ (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof B).</p></div></details></li>
+</ol></div>
+
+<div class="explorer" id="ge-ex">
+<span class="label">Try it: the clerks tidy the ledger</span>
+<p>Type a $3\times4$ matrix $A$ (integers, fractions like <code>1/2</code> or decimals) and press <em>Next step</em>: the explorer performs one row operation at a time, exactly, until the reduced row echelon form is reached. Then it reads off a basis of the row space (rows of the echelon form, Proof B), of the column space (pivot columns of the <em>original</em> $A$, Proof C) and of the kernel, and checks each column relation in $A$.</p>
+<div class="ex-nav" style="flex-wrap:wrap" id="ge-in">
+  <label style="white-space:nowrap">row 1: <input id="ge-00" type="text" value="-3" style="width:2.2em" aria-label="a11"> <input id="ge-01" type="text" value="6" style="width:2.2em" aria-label="a12"> <input id="ge-02" type="text" value="-1" style="width:2.2em" aria-label="a13"> <input id="ge-03" type="text" value="1" style="width:2.2em" aria-label="a14"></label>
+  <label style="white-space:nowrap">row 2: <input id="ge-10" type="text" value="1" style="width:2.2em" aria-label="a21"> <input id="ge-11" type="text" value="-2" style="width:2.2em" aria-label="a22"> <input id="ge-12" type="text" value="2" style="width:2.2em" aria-label="a23"> <input id="ge-13" type="text" value="3" style="width:2.2em" aria-label="a24"></label>
+  <label style="white-space:nowrap">row 3: <input id="ge-20" type="text" value="2" style="width:2.2em" aria-label="a31"> <input id="ge-21" type="text" value="-4" style="width:2.2em" aria-label="a32"> <input id="ge-22" type="text" value="5" style="width:2.2em" aria-label="a33"> <input id="ge-23" type="text" value="8" style="width:2.2em" aria-label="a34"></label>
+</div>
+<div class="ex-nav"><button type="button" id="ge-n">Next step</button> <button type="button" id="ge-s">Restart</button> <button type="button" id="ge-r">Example</button></div>
+<div id="ge-m" style="overflow-x:auto"></div>
+<div id="ge-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var N=document.getElementById('ge-n');if(!N)return;
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function Q(n,d){if(d<0){n=-n;d=-d;}var g=gcd(n,d);return {n:n/g,d:d/g};}
+  function add(a,b){return Q(a.n*b.d+b.n*a.d,a.d*b.d);}function sub(a,b){return Q(a.n*b.d-b.n*a.d,a.d*b.d);}
+  function mul(a,b){return Q(a.n*b.n,a.d*b.d);}function div(a,b){return Q(a.n*b.d,a.d*b.n);}function isz(a){return a.n===0;}
+  function one(a){return a.n===1&&a.d===1;}
+  function fmt(a){var s=a.d===1?String(Math.abs(a.n)):Math.abs(a.n)+'/'+a.d;return (a.n<0?'−':'')+s;}
+  function parse(t){t=String(t).replace(/\s+/g,'').replace('−','-');var m=t.match(/^(-?\d{1,4})(?:\/(\d{1,4}))?$/);if(m){var d=m[2]?+m[2]:1;if(d===0)return null;return Q(+m[1],d);}
+    m=t.match(/^(-?)(\d{0,3})\.(\d{1,2})$/);if(m){var k=Math.pow(10,m[3].length);return Q((m[1]?-1:1)*((+m[2]||0)*k+ +m[3]),k);}return null;}
+  function V(v){return '('+v.map(fmt).join(', ')+')';}
+  var ex=[['-3','6','-1','1','1','-2','2','3','2','-4','5','8'],['1','2','3','4','2','4','6','8','3','6','9','12'],['11','12','13','14','21','22','23','24','31','32','33','34'],['1','0','2','1','0','1','1','1','1','1','3','2'],['0','2','4','2','1','1','1','1','2','0','1','3']],ei=0;
+  var msg=['Script Example 2.3.33 (Worked example 1).','Rank 1: every row is a multiple of (1, 2, 3, 4), and so every column is a multiple of (1, 2, 3).','The first three rows of HS17, problem 3 (c): rank 2 (Worked example 2).','Column 3 = 2·column 1 + column 2 and column 4 = column 1 + column 2: rank 2.','Full rank 3: the column space is all of ℝ³, and the kernel is a line.'];
+  var A=null,steps=[],k=0;
+  function read(){var M=[],i,j;for(i=0;i<3;i++){M.push([]);for(j=0;j<4;j++){var x=parse(document.getElementById('ge-'+i+j).value);if(x===null)return null;M[i].push(x);}}return M;}
+  function plan(M0){
+    var M=M0.map(function(r){return r.slice();}),S=[{M:M.map(function(r){return r.slice();}),op:'Start: the matrix A.'}],row=0,piv=[],i,c;
+    function snap(op){S.push({M:M.map(function(r){return r.slice();}),op:op});}
+    for(c=0;c<4&&row<3;c++){
+      var p=-1;for(i=row;i<3;i++)if(!isz(M[i][c])){p=i;break;}
+      if(p<0)continue;
+      if(p!==row){var t=M[row];M[row]=M[p];M[p]=t;snap('Swap: L'+(row+1)+' ↔ L'+(p+1)+' (bring a nonzero entry to the pivot position in column '+(c+1)+').');}
+      var pv=M[row][c];
+      if(!one(pv)){M[row]=M[row].map(function(x){return div(x,pv);});snap('Scale: '+fmt(div(Q(1,1),pv))+'·L'+(row+1)+' → L'+(row+1)+' (make the pivot 1).');}
+      for(i=0;i<3;i++)if(i!==row&&!isz(M[i][c])){var f=M[i][c];M[i]=M[i].map(function(x,q){return sub(x,mul(f,M[row][q]));});
+        var nf=Q(-f.n,f.d);snap('Eliminate: L'+(i+1)+(nf.n<0?' − '+fmt(Q(f.n,f.d)):' + '+fmt(nf))+'·L'+(row+1)+' → L'+(i+1)+' (clear column '+(c+1)+').');}
+      piv.push(c);row++;}
+    return {S:S,piv:piv,R:M};
+  }
+  var P=null;
+  function table(M,piv,done){var h='<table style="border-collapse:collapse;margin:.6em auto;font-family:var(--font-util)">';
+    for(var i=0;i<3;i++){h+='<tr>';for(var j=0;j<4;j++){var pc=done&&piv.indexOf(j)>=0&&piv.indexOf(j)===i;h+='<td style="padding:.15em .55em;text-align:right;border-left:'+(j===0?'2px solid currentColor':'0')+';border-right:'+(j===3?'2px solid currentColor':'0')+(pc?';font-weight:700;color:var(--k-c)':'')+'">'+fmt(M[i][j])+'</td>';}h+='</tr>';}
+    return h+'</table>';}
+  function show(){
+    var m=document.getElementById('ge-m'),out=document.getElementById('ge-out');
+    if(!A){m.innerHTML='';out.innerHTML='<p><strong>Please type numbers</strong> (integers, fractions like 1/2, or decimals).</p>';return;}
+    var st=P.S[k],last=k===P.S.length-1;
+    m.innerHTML=table(st.M,P.piv,last);
+    var s='<p><strong>Step '+k+' of '+(P.S.length-1)+'.</strong> '+st.op+(last?' This is the reduced row echelon form.':'')+'</p>';
+    if(last){
+      var r=P.piv.length,R=P.R,free=[0,1,2,3].filter(function(c){return P.piv.indexOf(c)<0;});
+      s+='<p><strong>Row space</strong> (nonzero rows above, Proof B): '+(r?'basis '+R.slice(0,r).map(V).join(', '):'{0}')+'; row rank '+r+'.</p>';
+      s+='<p><strong>Column space</strong> (pivot columns '+(r?P.piv.map(function(c){return c+1;}).join(', '):'none')+' of the original A, Proof C): '+(r?'basis '+P.piv.map(function(c){return V([A[0][c],A[1][c],A[2][c]]);}).join(', '):'{0}')+'; column rank '+r+'. Row rank = column rank ✓.</p>';
+      var rel=[],ok=true;
+      free.forEach(function(fc){var v=[Q(0,1),Q(0,1),Q(0,1),Q(0,1)];v[fc]=Q(1,1);var parts=[];
+        P.piv.forEach(function(pc,ri){v[pc]=Q(-R[ri][fc].n,R[ri][fc].d);if(!isz(R[ri][fc]))parts.push(fmt(R[ri][fc])+'·col '+(pc+1));});
+        for(var i=0;i<3;i++){var t=Q(0,1);for(var j=0;j<4;j++)t=add(t,mul(A[i][j],v[j]));if(!isz(t))ok=false;}
+        rel.push({v:v,txt:'col '+(fc+1)+' = '+(parts.length?parts.join(' + ').replace(/\+ −/g,'− '):'0')});});
+      s+='<p><strong>Kernel</strong> (free variables '+(free.length?free.map(function(f){return 'x'+(f+1);}).join(', '):'none')+'): '+(rel.length?'basis '+rel.map(function(o){return V(o.v);}).join(', '):'{0}')+'; dimension '+free.length+' = 4 − '+r+' ✓.</p>';
+      if(rel.length)s+='<p><strong>Column relations in A</strong> (read off the echelon form, Proof C (1)): '+rel.map(function(o){return o.txt;}).join('; ')+'. Checked in the original A: '+(ok?'✓':'✗')+'</p>';
+      var cur=[];for(var i=0;i<3;i++)for(var j=0;j<4;j++)cur.push(document.getElementById('ge-'+i+j).value.trim());cur=cur.join(',');
+      ex.forEach(function(e,q){if(e.join(',')===cur)s+='<p class="small">'+msg[q]+'</p>';});
+    } else s+='<p class="small">Press Next step.</p>';
+    out.innerHTML=s;
+  }
+  function reset(){A=read();if(A)P=plan(A);k=0;show();}
+  for(var i=0;i<3;i++)for(var j=0;j<4;j++)document.getElementById('ge-'+i+j).addEventListener('input',reset);
+  N.addEventListener('click',function(){if(A&&k<P.S.length-1){k++;show();}});
+  document.getElementById('ge-s').addEventListener('click',function(){k=0;show();});
+  document.getElementById('ge-r').addEventListener('click',function(){ei=(ei+1)%ex.length;for(var q=0;q<12;q++)document.getElementById('ge-'+Math.floor(q/4)+(q%4)).value=ex[ei][q];reset();});
+  reset();
+})();
+</script>
+
+<h2 id="s5-two-more-proofs">5. Two more proofs: the normal form and duality</h2>
+<p>Proof C is complete, and the script calls it a sketch only because it leans on facts about Gaussian elimination from the exercise classes. The script's official proof (Satz 3.4.1) uses the normal form of <a class="xl" href="linalg-15.html">lesson 15</a>, and chapter 10 gives a third one with the dual map of <a class="xl" href="linalg-14.html">lesson 14</a>. Both are short, both are exam material, and each shows a different reason why the two clerks must agree.</p>
+
+<h3 id="proof-d">Proof D: column rank = row rank, by the normal form (script Lemma 3.4.4 and Satz 3.4.1, <a class="pl" href="linalg-script.html#p95">pp. 95–97</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> (1) Let $A\in M_{m\times n}(K)$, $P\in\mathrm{GL}_m(K)$ and $Q\in\mathrm{GL}_n(K)$. Then $\mathrm{col\,rank}(PAQ)=\mathrm{col\,rank}(A)$ and $\mathrm{row\,rank}(PAQ)=\mathrm{row\,rank}(A)$. (2) Hence $\mathrm{col\,rank}(A)=\mathrm{row\,rank}(A)$ for every $A$.</p></div>
+<p><strong>The idea.</strong> Both ranks survive multiplication by invertible matrices: the column rank because invertible maps keep the dimension of an image, the row rank because transposing turns it into a column rank. And by <a class="xl" href="linalg-15.html">lesson 15</a>, every $A$ can be multiplied into $D_r$, where both ranks are visibly $r$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1) First line:</strong> “$\mathrm{col\,rank}(PAQ)=\mathrm{rank}(m_{PAQ})=\mathrm{rank}(m_P\circ m_A\circ m_Q)$.” <strong>Row rank:</strong> “$\mathrm{row\,rank}(PAQ)=\mathrm{col\,rank}((PAQ)^T)$.”</li>
+  <li><strong>(2) First line:</strong> “By <a class="xl" href="linalg-15.html">lesson 15</a>, Proof F, there are $P,Q$ with $PAQ=D_r$, $r=\mathrm{rank}(A)$.” <strong>Last line:</strong> “$\mathrm{col\,rank}(A)=r=\mathrm{row\,rank}(A)$.”</li>
+  <li><strong>The gap:</strong> <a class="xl" href="linalg-15.html">lesson 15</a>, Proof E (an injective map after, or a surjective map before, does not change the rank) and $(XY)^T=Y^TX^T$ (<a class="xl" href="linalg-12.html">lesson 12</a>).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Relabelling the households or the goods by an invertible scheme changes no count.</p></div><div class="sp-formal"><p>(1) $m_{PAQ}=m_P\circ m_A\circ m_Q$ (<a class="xl" href="linalg-12.html">lesson 12</a>). $m_P$ is injective and $m_Q$ surjective (both are bijective, since $P$ and $Q$ are invertible), so by <a class="xl" href="linalg-15.html">lesson 15</a>, Proof E (2) and (3), $\mathrm{rank}(m_{PAQ})=\mathrm{rank}(m_A)$, i.e. $\mathrm{col\,rank}(PAQ)=\mathrm{col\,rank}(A)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The row clerk is the column clerk of the transposed ledger.</p></div><div class="sp-formal"><p>$(PAQ)^T=Q^TA^TP^T$, and $Q^T$, $P^T$ are invertible with inverses $(Q^{-1})^T$, $(P^{-1})^T$. By the column statement for $A^T$: $\mathrm{row\,rank}(PAQ)=\mathrm{col\,rank}(Q^TA^TP^T)=\mathrm{col\,rank}(A^T)=\mathrm{row\,rank}(A)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>In the mapmakers' best bases the ledger is a staircase of ones, and both clerks count the ones.</p></div><div class="sp-formal"><p>(2) By <a class="xl" href="linalg-15.html">lesson 15</a>, Proof F, $PAQ=D_r=\begin{pmatrix}I_r&amp;0\\0&amp;0\end{pmatrix}$ for some invertible $P,Q$. The nonzero rows of $D_r$ are $e_1^T,\dots,e_r^T$ and the nonzero columns $e_1,\dots,e_r$: both ranks of $D_r$ are $r$. By (1), $\mathrm{col\,rank}(A)=r=\mathrm{row\,rank}(A)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_sandwich">sandwich the map between identities</a> <a class="mvl" href="linalg-moves.html#m-la_transpose">swap rows and columns with the transpose</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) $m_{PAQ}=m_P\circ m_A\circ m_Q$ with $m_P$, $m_Q$ bijective, so $\mathrm{rank}(PAQ)=\mathrm{rank}(A)$ by <a class="xl" href="linalg-15.html">lesson 15</a>, Proof E; this is the column statement. For rows: $\mathrm{row\,rank}(PAQ)=\mathrm{col\,rank}(Q^TA^TP^T)=\mathrm{col\,rank}(A^T)=\mathrm{row\,rank}(A)$, since $Q^T,P^T$ are invertible. (2) Choose $P,Q$ with $PAQ=D_r$ (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof F). Both ranks of $D_r$ equal $r$, so by (1) both ranks of $A$ equal $r$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Invertible factors keep the column rank (image dimension).</li>
+  <li>Transpose for the row rank.</li>
+  <li>Normal form $D_r$: count.</li>
+</ol>
+<p><strong>In short:</strong> both ranks are invariants of equivalence, and $D_r$ has both equal to $r$. Since now $\mathrm{rank}(A)=\mathrm{col\,rank}(A)=\mathrm{row\,rank}(A)$, the word “rank” needs no qualifier any more.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Why is $Q^T$ invertible?
+  <details><summary>Answer</summary><div><p>$Q^T(Q^{-1})^T=(Q^{-1}Q)^T=I_n^T=I_n$, and the same the other way round (<a class="xl" href="linalg-12.html">lesson 12</a>: $(XY)^T=Y^TX^T$).</p></div></details></li>
+  <li><strong>Rung 2.</strong> Proof D (1) says equivalent matrices have equal ranks. Deduce the converse from <a class="xl" href="linalg-15.html">lesson 15</a>.
+  <details><summary>Answer</summary><div><p>If $\mathrm{rank}(A)=\mathrm{rank}(A')=r$, both are equivalent to $D_r$ (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof F), and equivalence is an equivalence relation (<a class="xl" href="linalg-13.html">lesson 13</a>, Exercise 4 (a)), so $A\sim A'$. Together: two matrices of the same size are equivalent if and only if they have the same rank</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof D from the frame alone.</li>
+</ol></div>
+
+<h3 id="proof-e">Proof E: column rank = row rank, by duality (script Corollaries 10.5.8–10.5.9, <a class="pl" href="linalg-script.html#p330">p. 330</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> (1) For linear $T:V\to W$ between finite-dimensional spaces, $\dim\mathrm{Im}\,T^*=\dim\mathrm{Im}\,T$. (2) For $A\in M_{m\times n}(K)$: $\mathrm{row\,rank}(A)=\mathrm{col\,rank}(A)$.</p></div>
+<p><strong>The idea.</strong> <a class="xl" href="linalg-14.html">Lesson 14</a> computed the image of the dual map: it is the annihilator of the kernel. Its dimension is what the kernel leaves over, which is the rank by rank–nullity. And in dual bases the matrix of $T^*$ is the transpose, whose column rank is the row rank of $A$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1) First line:</strong> “By <a class="xl" href="linalg-14.html">lesson 14</a>, Proof F, $\mathrm{Im}\,T^*=(\mathrm{Ker}\,T)^0$.” <strong>Last line:</strong> “$=\dim\mathrm{Im}\,T$ by rank–nullity.”</li>
+  <li><strong>(2) First line:</strong> “Let $T=m_A:K^n\to K^m$.” <strong>Last line:</strong> “$\mathrm{row\,rank}(A)=\mathrm{col\,rank}(A^T)=\dim\mathrm{Im}\,T^*=\dim\mathrm{Im}\,T=\mathrm{col\,rank}(A)$.”</li>
+  <li><strong>The gap:</strong> the rank of a map equals the rank of its matrix in any bases.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The surveyors of surveyors see exactly the functionals that ignore the lost district.</p></div><div class="sp-formal"><p>(1) By <a class="xl" href="linalg-14.html">lesson 14</a>, Proof F, $\mathrm{Im}\,T^*=(\mathrm{Ker}\,T)^0\subseteq V^*$. By <a class="xl" href="linalg-14.html">lesson 14</a>, Proof E, $\dim(\mathrm{Ker}\,T)^0=\dim V-\dim\mathrm{Ker}\,T$, and this is $\dim\mathrm{Im}\,T$ by rank–nullity (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof B).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A map and its matrix tell the same story in different languages.</p></div><div class="sp-formal"><p>For bases $B$ of $V$ and $C$ of $W$, $m_{[T]^B_C}=\Phi_C\circ T\circ\Phi_B^{-1}$ with the coordinate isomorphisms $\Phi_B,\Phi_C$ (lessons 12–13), so $\mathrm{rank}([T]^B_C)=\mathrm{rank}(T)$ by <a class="xl" href="linalg-15.html">lesson 15</a>, Proof E.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Now read the transposed ledger.</p></div><div class="sp-formal"><p>(2) Let $T=m_A:K^n\to K^m$. In the dual bases of the standard bases, $[T^*]=A^T$ (<a class="xl" href="linalg-14.html">lesson 14</a>, Proof D). So</p>
+<p>$$\begin{aligned}\mathrm{row\,rank}(A)&amp;=\mathrm{col\,rank}(A^T)\\&amp;=\dim\mathrm{Im}\,T^*\\&amp;\overset{(1)}=\dim\mathrm{Im}\,T\\&amp;=\mathrm{col\,rank}(A).\end{aligned}$$ <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_rankcount">count with rank–nullity</a> <a class="mvl" href="linalg-moves.html#m-la_matmap">turn matrices into maps and back</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) $\dim\mathrm{Im}\,T^*=\dim(\mathrm{Ker}\,T)^0=\dim V-\dim\mathrm{Ker}\,T=\dim\mathrm{Im}\,T$ (<a class="xl" href="linalg-14.html">lesson 14</a>, Proofs F and E; <a class="xl" href="linalg-15.html">lesson 15</a>, Proof B). (2) For $T=m_A$, $[T^*]=A^T$ in the dual standard bases (<a class="xl" href="linalg-14.html">lesson 14</a>, Proof D), and the rank of a map is the rank of any of its matrices (coordinate isomorphisms keep the rank). So $\mathrm{row\,rank}(A)=\mathrm{col\,rank}(A^T)=\dim\mathrm{Im}\,T^*=\dim\mathrm{Im}\,T=\mathrm{col\,rank}(A)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>$\mathrm{Im}\,T^*=(\mathrm{Ker}\,T)^0$, then count.</li>
+  <li>Matrix of $T^*$ is $A^T$.</li>
+</ol>
+<p><strong>In short:</strong> the row rank of $A$ is the rank of the dual map. If an exam has just asked you to prove $(\mathrm{Ker}\,T)^0=\mathrm{Im}\,T^*$, this is the two-line corollary it wants next.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Which three earlier results does Proof E (1) use, in which order?
+  <details><summary>Answer</summary><div><p>$\mathrm{Im}\,T^*=(\mathrm{Ker}\,T)^0$ (<a class="xl" href="linalg-14.html">lesson 14</a>, Proof F); $\dim U^0=\dim V-\dim U$ (<a class="xl" href="linalg-14.html">lesson 14</a>, Proof E); rank–nullity (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof B).</p></div></details></li>
+  <li><strong>Rung 2.</strong> <a class="xl" href="linalg-14.html">Lesson 14</a> proved Proof F (2), $(\mathrm{Ker}\,T)^0=\mathrm{Im}\,T^*$, without rank–nullity. Why was that important?
+  <details><summary>Answer</summary><div><p>Proof E must not use row rank = column rank anywhere, or it would go in a circle. <a class="xl" href="linalg-14.html">Lesson 14</a>'s Proof F built the needed functionals directly from a basis of the kernel, and Proofs E (<a class="xl" href="linalg-14.html">lesson 14</a>) and B (<a class="xl" href="linalg-15.html">lesson 15</a>) are pure dimension counts; none of them touches rows. So Proof E is a genuinely independent third proof.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof E from the frame alone.</li>
+</ol></div>
+
+<h2 id="s6-one-elimination-four-answers">6. One elimination, four answers</h2>
+<p>Everything a computation problem asks about a list of vectors or a matrix comes from one elimination. For $A\in M_{m\times n}(K)$ of rank $r$:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Wanted</th><th>Method</th><th>Dimension</th></tr></thead>
+  <tbody>
+    <tr><td>basis of $\mathrm{RowS}(A)$, or of a span in $K^n$</td><td>vectors as <strong>rows</strong>; nonzero rows of the echelon form (script Corollary 2.3.29)</td><td>$r$</td></tr>
+    <tr><td>basis of $\mathrm{ColS}(A)=\mathrm{Im}(m_A)$, chosen <em>from the given vectors</em></td><td>vectors as <strong>columns</strong>; the pivot columns of the original (Proof C)</td><td>$r$</td></tr>
+    <tr><td>basis of $\mathrm{Ker}(m_A)$</td><td>solve $Bx=0$ in reduced form; one vector per free variable</td><td>$n-r$</td></tr>
+    <tr><td>equations for $\mathrm{ColS}(A)$ (“condition for the span”)</td><td>eliminate $(A\,|\,b)$ with symbolic $b$; the zero rows give the equations</td><td>$m-r$ equations</td></tr>
+  </tbody>
+</table></div>
+<p>The last row is $\mathrm{Ker}(m_{A^T})$ in disguise: the equations for $\mathrm{ColS}(A)$ are the functionals that vanish on it, $\mathrm{ColS}(A)^0$, and there are $m-r$ independent ones (<a class="xl" href="linalg-14.html">lesson 14</a>, Proof E). The four dimensions $r$, $r$, $n-r$, $m-r$ are the whole story of a matrix up to equivalence.</p>
+
+<div class="box"><h3 id="we-2">Worked example 2: a rank in three lines (HS17, problem 3 (c), 3 points)</h3>
+<p>Determine the rank of $A=\begin{pmatrix}11&amp;12&amp;13&amp;14\\21&amp;22&amp;23&amp;24\\31&amp;32&amp;33&amp;34\\41&amp;42&amp;43&amp;44\end{pmatrix}\in M_{4\times4}(\mathbb R)$.</p>
+<ol class="gq">
+  <li>Subtract row 1 from the others. What do you get?
+  <details><summary>Answer</summary><div><p>$L_i-L_1\to L_i$ ($i=2,3,4$) gives rows $(10,10,10,10)$, $(20,20,20,20)$, $(30,30,30,30)$. Then $L_3-2L_2$, $L_4-3L_2$ make rows 3 and 4 zero.</p></div></details></li>
+  <li>Finish the echelon form and read off the rank.
+  <details><summary>Answer</summary><div><p>$\tfrac1{10}L_2$, then $L_1-11L_2$: rows $(0,1,2,3)$ and $(1,0,-1,-2)$; after a swap, $B=\begin{pmatrix}1&amp;0&amp;-1&amp;-2\\0&amp;1&amp;2&amp;3\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\end{pmatrix}$. Two pivots: $\mathrm{rank}(A)=2$. Check: $(11,12,13,14)=11(1,0,-1,-2)+12(0,1,2,3)$ ✓.</p></div></details></li>
+  <li>The structure behind it, as a full-marks justification without elimination.
+  <details><summary>Answer</summary><div><p>Row $i$ is $10i\cdot(1,1,1,1)+(1,2,3,4)$, so $\mathrm{RowS}(A)\subseteq\mathrm{Sp}\big((1,1,1,1),(1,2,3,4)\big)$ and the rank is at most $2$. Rows 1 and 2 are not multiples of each other, so it is at least $2$. Column relations from $B$: column 3 $=-$column 1 $+2\cdot$column 2 ✓ ($-11+24=13$).</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-3">Worked example 3: equations for a span (script Example “Condition for the span”, <a class="pl" href="linalg-script.html#p58">p. 58</a>)</h3>
+<p>Describe $U=\mathrm{Sp}\big((1,1,1)^T,(1,0,-1)^T\big)\subseteq\mathbb R^3$ by equations. Then do the same for $\mathrm{ColS}(A)$ from Worked example 1.</p>
+<ol class="gq">
+  <li>Set up $(A\,|\,b)$ with the two vectors as columns and eliminate.
+  <details><summary>Answer</summary><div><p>$\left(\begin{array}{cc|c}1&amp;1&amp;b_1\\1&amp;0&amp;b_2\\1&amp;-1&amp;b_3\end{array}\right)$. $L_2-L_1$, $L_3-L_1$: rows $(0,-1\,|\,b_2-b_1)$, $(0,-2\,|\,b_3-b_1)$. $L_3-2L_2$: $(0,0\,|\,b_1-2b_2+b_3)$.</p></div></details></li>
+  <li>Read off the condition.
+  <details><summary>Answer</summary><div><p>$b\in U$ iff $(A\,|\,b)$ is solvable iff the zero row has right side $0$: $U=\{b\in\mathbb R^3\mid b_1-2b_2+b_3=0\}$. One equation, as predicted: $m-r=3-2=1$. Check: $1-2+1=0$ and $1-0-1=0$ ✓.</p></div></details></li>
+  <li>The same for $\mathrm{ColS}(A)=\mathrm{Sp}\big((-3,1,2)^T,(-1,2,5)^T\big)$ (Worked example 1).
+  <details><summary>Answer</summary><div><p>Eliminate $\left(\begin{array}{cc|c}-3&amp;-1&amp;b_1\\1&amp;2&amp;b_2\\2&amp;5&amp;b_3\end{array}\right)$: $L_1+3L_2$ gives $(0,5\,|\,b_1+3b_2)$, $L_3-2L_2$ gives $(0,1\,|\,b_3-2b_2)$, and then $(L_1+3L_2)-5(L_3-2L_2)$ gives $(0,0\,|\,b_1+13b_2-5b_3)$. So $\mathrm{ColS}(A)=\{b\mid b_1+13b_2-5b_3=0\}$. Check: $-3+13-10=0$ and $-1+26-25=0$ ✓; and $(1,3,8)$: $1+39-40=0$ ✓. The script's transpose method gave the basis $(1,0,\tfrac15),(0,1,\tfrac{13}5)$: it satisfies $5b_3=b_1+13b_2$ ✓.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Why it's cool</h3>
+<p>A matrix with a thousand rows and three columns has row rank at most three: a thousand equations about three unknowns can contain at most three independent pieces of information. Nobody would guess this from the rows alone; it is the column clerk who knows. Turned around, every big table of data that is “really” described by a few hidden factors has small rank, and the rank is the number of those factors. Recommendation systems and image compression start exactly there: they approximate a huge table by one of small rank, a sum of a few matrices $uv^T$ of rank $1$ (Exercise 4).</p></div>
+
+<div class="box"><h3 id="for-wonder-the-rank-does-not-depend-on-the-field">For wonder: the rank does not depend on the field (optional, 5 min)</h3>
+<p>A matrix with rational entries is also a real and a complex matrix. Could it have rank $2$ over $\mathbb Q$ and rank $3$ over $\mathbb C$, because complex coefficients find more relations? No: Gaussian elimination only ever adds, subtracts, multiplies and divides the entries, so it runs identically over $\mathbb Q$, $\mathbb R$ and $\mathbb C$ and finds the same pivots. The rank is decided inside the smallest field that contains the entries. (Over a field of a different characteristic, such as $\mathbb F_2$, it can change: $\begin{pmatrix}1&amp;1\\1&amp;-1\end{pmatrix}$ has rank $2$ over $\mathbb Q$ but rank $1$ over $\mathbb F_2$, where $-1=1$. The entries are then read differently, so it is really a different matrix.)</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</h2>
+<div class="box"><h3 id="we-4">Worked example 4: quick exam items (FS17, HS21, FS26)</h3>
+<ol class="gq">
+  <li>FS17, (xxiii): the rank of a triangular matrix equals the number of its nonzero diagonal entries.
+  <details><summary>Answer</summary><div><p><strong>False.</strong> $\begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}$ is triangular with no nonzero diagonal entry, but has rank $1$. (It is true if all diagonal entries are nonzero: then the matrix is in echelon form with $n$ pivots, Proof B.)</p></div></details></li>
+  <li>FS17, (xxiv): a matrix is not invertible if and only if its row rank differs from its column rank.
+  <details><summary>Answer</summary><div><p><strong>False.</strong> Row rank and column rank are always equal (Proofs C–E), but non-invertible matrices exist, such as $0\in M_{2\times2}(K)$.</p></div></details></li>
+  <li>HS21, (XVII): $A\in M_{m\times n}(\mathbb R)$ and $b$ are such that $AX=b$ has exactly one solution. Then (a) $A$ is invertible; (b) $n&lt;m$; (c) $\mathrm{rank}(A)=n$; (d) $\mathrm{rank}(A)=m$.
+  <details><summary>Answer</summary><div><p><strong>(c).</strong> If $x_0$ is a solution, the solutions are $x_0+\mathrm{Ker}(m_A)$ (<a class="xl" href="linalg-11.html">lesson 11</a>), so uniqueness means $\mathrm{Ker}(m_A)=\{0\}$, and rank–nullity gives $\mathrm{rank}(A)=n$. The others fail for $A=\begin{pmatrix}1\\0\end{pmatrix}$, $b=\begin{pmatrix}1\\0\end{pmatrix}$ (not square, so not invertible; rank $1\ne m=2$) and for $A=I_2$ ($n=m$).</p></div></details></li>
+  <li>FS26, 1.MC8: for $A\in M_{n\times n}(K)$ and $P\in\mathrm{GL}_n(K)$ let $r=\mathrm{rank}(A-I_n)$ and $s=\mathrm{rank}(PAP^{-1}-I_n)$. Which hold? (A) $r=s$; (B) $r\ne s$; (C) $r&gt;s$; (D) $r&lt;s$; (E) if $r&lt;n$, there is $v\ne0$ with $Av=v$.
+  <details><summary>Answer</summary><div><p><strong>(A) and (E).</strong> $PAP^{-1}-I_n=P(A-I_n)P^{-1}$, and invertible factors do not change the rank (Proof D (1)), so $r=s$. If $r&lt;n$, rank–nullity gives $\mathrm{Ker}(A-I_n)\ne\{0\}$, i.e. some $v\ne0$ in $K^n$ with $Av=v$. (Checked twice, no official solution; the exam writes $v\in V$, meaning $K^n$.)</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Each solution folds open under its exercise. The old exams in our library have no official solutions for these problems: those answers were checked twice by hand, and it says so.</p>
+
+<h3 id="ex-1">Exercise 1 (script Corollary 2.3.29 and Example “Condition for the span”: one subspace, three descriptions)</h3>
+<p>Let $U=\mathrm{Sp}(w_1,w_2,w_3,w_4)\subseteq\mathbb R^4$ with $w_1=(1,2,0,1)$, $w_2=(2,4,1,1)$, $w_3=(0,0,1,-1)$, $w_4=(1,2,1,0)$. (a) Find a basis of $U$ with the row method. (b) Find a basis of $U$ consisting of some of the $w_i$, and write the others as combinations of it. (c) Describe $U$ by linear equations.</p>
+<details><summary>Hint</summary><div><p>(a) The $w_i$ as rows. (b) The $w_i$ as columns; pivot columns of the original (Proof C). (c) $(A\,|\,b)$ with your basis from (b) as columns; you should get $4-\dim U$ equations.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> one elimination per question; check every answer by substituting. (Checked twice; the vectors are ours.)</p>
+<p>(a) Rows $w_1,\dots,w_4$. $L_2-2L_1$: $(0,0,1,-1)$; $L_4-L_1$: $(0,0,1,-1)$; then $L_2$ and $L_4$ minus $L_3$ vanish. Echelon form with nonzero rows $(1,2,0,1)$, $(0,0,1,-1)$: a basis of $U$, and $\dim U=2$.</p>
+<p>(b) Columns $w_1,\dots,w_4$: $A=\begin{pmatrix}1&amp;2&amp;0&amp;1\\2&amp;4&amp;0&amp;2\\0&amp;1&amp;1&amp;1\\1&amp;1&amp;-1&amp;0\end{pmatrix}$. $L_2-2L_1\to L_2$ (zero row), $L_4-L_1$: $(0,-1,-1,-1)$, then $L_4+L_3$ (zero row). Reduced: rows $(1,0,-2,-1)$, $(0,1,1,1)$, zeros; pivot columns $1,2$. So $w_1,w_2$ is a basis, and the non-pivot columns give $w_3=-2w_1+w_2$ and $w_4=-w_1+w_2$. Check: $-2(1,2,0,1)+(2,4,1,1)=(0,0,1,-1)$ ✓, $-(1,2,0,1)+(2,4,1,1)=(1,2,1,0)$ ✓.</p>
+<p>(c) $\left(\begin{array}{cc|c}1&amp;2&amp;b_1\\2&amp;4&amp;b_2\\0&amp;1&amp;b_3\\1&amp;1&amp;b_4\end{array}\right)$: $L_2-2L_1$ gives $(0,0\,|\,b_2-2b_1)$; $L_4-L_1$ gives $(0,-1\,|\,b_4-b_1)$, and adding $L_3$ gives $(0,0\,|\,b_3+b_4-b_1)$. So</p>
+<p>$$\begin{aligned}U=\{b\in\mathbb R^4\mid\;&amp;b_2-2b_1=0,\\&amp;b_3+b_4-b_1=0\}.\end{aligned}$$</p>
+<p>Two equations $=4-2$ ✓. Check with $w_3=(0,0,1,-1)$: $0-0=0$ and $1-1-0=0$ ✓.</p>
+</div></details>
+
+<h3 id="ex-2">Exercise 2 (HS17, problem 3 (b), 3 points)</h3>
+<p>Give the definition of the rank of a matrix $A\in M_{m\times n}(K)$ and show that it equals the dimension of the column space.</p>
+<details><summary>Hint</summary><div><p>Use the script's definition: the number of pivots of a row echelon form of $A$. Then you need Proof C (2) in exam length: same column relations, so the pivot columns of $A$ are a basis.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> definition; then “same relations” and Proof B. (Checked twice, no official solution. If your definition is $\mathrm{rank}(A)=\dim\mathrm{Im}(m_A)$, the claim is <a class="xl" href="linalg-15.html">lesson 15</a>, Proof A; state which definition you use.)</p>
+<p><em>Definition.</em> Bring $A$ by row operations to a row echelon form $B$. $\mathrm{rank}(A)$ is the number $r$ of pivots of $B$; it does not depend on $B$, since $r=\dim\mathrm{RowS}(B)=\dim\mathrm{RowS}(A)$ (Proofs A and B).</p>
+<p><em>Claim.</em> Let $a_j$, $b_j$ be the columns and $j_1,\dots,j_r$ the pivot columns. Since $\sum_jx_ja_j=Ax$, $\sum_jx_jb_j=Bx$ and row operations do not change the solutions of a homogeneous system, $A$ and $B$ satisfy the same column relations. In $B$, the pivot columns are independent and every column is a combination of them (Proof B). Both are statements about relations, so the same holds for $a_{j_1},\dots,a_{j_r}$ in $A$: they are a basis of $\mathrm{ColS}(A)$, and $\dim\mathrm{ColS}(A)=r=\mathrm{rank}(A)$. <span class="qed">∎</span></p>
+</div></details>
+
+<h3 id="ex-3">Exercise 3 (a rank with a parameter)</h3>
+<p>Determine $\mathrm{rank}(A_t)$ for every $t\in\mathbb R$, where $A_t=\begin{pmatrix}1&amp;1&amp;t\\1&amp;t&amp;1\\t&amp;1&amp;1\end{pmatrix}$.</p>
+<details><summary>Hint</summary><div><p>Eliminate with the first row. You will want to divide by $t-1$: treat $t=1$ separately first.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> eliminate; split the cases at every division. (Checked twice.)</p>
+<p>$L_2-L_1$: $(0,\;t-1,\;1-t)$; $L_3-tL_1$: $(0,\;1-t,\;1-t^2)$.</p>
+<ul>
+  <li>$t=1$: both rows are $0$, and $A_1$ has three equal rows $(1,1,1)$: rank $1$.</li>
+  <li>$t\ne1$: divide row 2 by $t-1$ and row 3 by $1-t$: $(0,1,-1)$ and $(0,1,1+t)$. Subtract: $(0,0,2+t)$. So the rank is $3$ if $t\ne-2$, and $2$ if $t=-2$.</li>
+</ul>
+<p>Answer: $\mathrm{rank}(A_t)=1$ for $t=1$, $2$ for $t=-2$, and $3$ otherwise. Check $t=-2$: the rows $(1,1,-2)$, $(1,-2,1)$, $(-2,1,1)$ add up to $0$ ✓, and the first two are independent.</p>
+</div></details>
+
+<h3 id="ex-4">Exercise 4 (rank of a sum; matrices of rank 1)</h3>
+<p>Let $A,B\in M_{m\times n}(K)$. (a) Show $\mathrm{rank}(A+B)\le\mathrm{rank}(A)+\mathrm{rank}(B)$. (b) Show: $\mathrm{rank}(A)=1$ if and only if $A=uv^T$ for some $u\in K^m\setminus\{0\}$ and $v\in K^n\setminus\{0\}$. (c) Deduce that a matrix of rank $r$ is a sum of $r$ matrices of rank $1$.</p>
+<details><summary>Hint</summary><div><p>(a) Each column of $A+B$ lies in $\mathrm{ColS}(A)+\mathrm{ColS}(B)$; use the dimension formula for sums (<a class="xl" href="linalg-08.html">lesson 8</a>). (b) Column $j$ of $uv^T$ is $v_ju$. (c) Use the normal form $D_r=E_{11}+\dots+E_{rr}$ and Proof D.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) column spaces; (b) “all columns are multiples of one vector”; (c) normal form. (Checked twice.)</p>
+<p>(a) The $j$-th column of $A+B$ is $a_j+b_j\in\mathrm{ColS}(A)+\mathrm{ColS}(B)$, so $\mathrm{ColS}(A+B)\subseteq\mathrm{ColS}(A)+\mathrm{ColS}(B)$, and $\dim(\mathrm{ColS}(A)+\mathrm{ColS}(B))\le\dim\mathrm{ColS}(A)+\dim\mathrm{ColS}(B)$ (<a class="xl" href="linalg-08.html">lesson 8</a>).</p>
+<p>(b) “⇐”: column $j$ of $uv^T$ is $v_ju$. Since $v\ne0$, some column is a nonzero multiple of $u$, so $\mathrm{ColS}(uv^T)=\mathrm{Sp}(u)$ has dimension $1$. “⇒”: $\mathrm{ColS}(A)=\mathrm{Sp}(u)$ for some $u\ne0$, so every column is $a_j=v_ju$ for some $v_j\in K$; with $v=(v_1,\dots,v_n)^T$ this says $A=uv^T$, and $v\ne0$ because $A\ne0$.</p>
+<p>(c) Write $PAQ=D_r$ (Proof D). Then $A=P^{-1}D_rQ^{-1}=\sum_{i=1}^rP^{-1}E_{ii}Q^{-1}$, and $P^{-1}E_{ii}Q^{-1}$ has rank $\mathrm{rank}(E_{ii})=1$ (Proof D (1)). By (a), $r$ is also the minimum number of rank-$1$ summands.</p>
+</div></details>
+
+<h3 id="ex-5">Exercise 5 (solvability of $Ax=b$ by ranks)</h3>
+<p>Let $A\in M_{m\times n}(K)$ and $b\in K^m$, and write $(A\,|\,b)$ for $A$ with the extra column $b$. Show: (a) $Ax=b$ has a solution if and only if $\mathrm{rank}(A\,|\,b)=\mathrm{rank}(A)$; (b) $Ax=b$ has a solution for <em>every</em> $b$ if and only if $\mathrm{rank}(A)=m$, if and only if the rows of $A$ are independent; (c) $Ax=b$ has at most one solution for every $b$ if and only if $\mathrm{rank}(A)=n$, if and only if the columns of $A$ are independent.</p>
+<details><summary>Hint</summary><div><p>$Ax=b$ is solvable iff $b\in\mathrm{ColS}(A)$. For (b) use row rank = column rank; for (c), the solutions form $x_0+\mathrm{Ker}(m_A)$ when nonempty.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> translate each statement into column spaces and kernels; count. (Checked twice.)</p>
+<p>(a) $Ax=\sum_jx_ja_j$, so $Ax=b$ is solvable iff $b\in\mathrm{ColS}(A)$ iff $\mathrm{ColS}(A\,|\,b)=\mathrm{ColS}(A)$. Since always $\mathrm{ColS}(A)\subseteq\mathrm{ColS}(A\,|\,b)$, equality holds iff the dimensions agree (<a class="xl" href="linalg-08.html">lesson 8</a>).</p>
+<p>(b) Solvable for every $b$ iff $\mathrm{ColS}(A)=K^m$ iff $\mathrm{rank}(A)=m$. By row rank $=$ column rank, this means the $m$ rows span an $m$-dimensional space, i.e. they are independent.</p>
+<p>(c) If $x_0$ is a solution, all solutions are $x_0+\mathrm{Ker}(m_A)$ (<a class="xl" href="linalg-11.html">lesson 11</a>). So “at most one” for every $b$ iff $\mathrm{Ker}(m_A)=\{0\}$ iff (rank–nullity) $\mathrm{rank}(A)=n$ iff the $n$ columns span an $n$-dimensional space, i.e. they are independent.</p>
+<p>Together: a square matrix has independent rows iff it has independent columns iff it is invertible. HS21, (XVII) (Worked example 4) is (c).</p>
+</div></details>
+
+<h3 id="ex-6">Exercise 6 (HS24, problem 4.A1–4.A2, 7 points)</h3>
+<p>Let $A\in M_{m\times n}(\mathbb R)$ with $m&gt;n&gt;0$ and $\mathrm{rank}(A)=n$. (4.A1) Show that $A^TA\in M_{n\times n}(\mathbb R)$ is invertible. (For real matrices the exam's adjoint $A^*$ is $A^T$.) (4.A2) Does this still hold over $\mathbb C$?</p>
+<details><summary>Hint</summary><div><p>$A^TA$ is square, so it suffices that $\mathrm{Ker}(m_{A^TA})=\{0\}$ (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof C). If $A^TAx=0$, multiply by $x^T$ from the left and recognise $\|Ax\|^2$. For (4.A2), what is $y^Ty$ for $y=(1,i)^T$?</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> square matrix: kernel zero suffices; the sum of squares trick. (Checked twice, no official solution. The scalar product is Linear Algebra II, but this argument uses only $y^Ty=y_1^2+\dots+y_m^2$.)</p>
+<p>(4.A1) Let $x\in\mathbb R^n$ with $A^TAx=0$. Then $0=x^TA^TAx=(Ax)^T(Ax)=\sum_iy_i^2$ for $y=Ax$. A sum of real squares is $0$ only if every $y_i=0$, so $Ax=0$. Since $\mathrm{rank}(A)=n$, $m_A$ is injective (rank–nullity), so $x=0$. Hence $m_{A^TA}$ is injective, and as a square matrix $A^TA$ is invertible (<a class="xl" href="linalg-15.html">lesson 15</a>, Proof C).</p>
+<p>(4.A2) With the adjoint $A^*=\bar A^T$ (conjugate transpose), yes: $x^*A^*Ax=\sum_i|y_i|^2$, and the same proof works. With the plain transpose, no: $A=\begin{pmatrix}1\\i\end{pmatrix}$ has rank $1=n$, but $A^TA=1+i^2=0$.</p>
+</div></details>
+
+<h3 id="ex-7">Exercise 7 (script Corollary 10.5.9 at work)</h3>
+<p>Let $V,W$ be finite-dimensional and $T:V\to W$ linear. Using only $\dim\mathrm{Im}\,T^*=\dim\mathrm{Im}\,T$ (Proof E (1)) and rank–nullity, show: $T$ is injective iff $T^*$ is surjective, and $T$ is surjective iff $T^*$ is injective.</p>
+<details><summary>Hint</summary><div><p>$T^*:W^*\to V^*$, and $\dim V^*=\dim V$, $\dim W^*=\dim W$. Surjective means rank $=$ dimension of the target; injective means rank $=$ dimension of the source.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> translate both properties into ranks; compare. (Checked twice.)</p>
+<p>$T^*$ surjective $\iff\dim\mathrm{Im}\,T^*=\dim V^*=\dim V\iff\dim\mathrm{Im}\,T=\dim V\iff\dim\mathrm{Ker}\,T=0$ (rank–nullity) $\iff T$ injective.</p>
+<p>$T^*$ injective $\iff\dim\mathrm{Im}\,T^*=\dim W^*=\dim W$ (rank–nullity for $T^*$) $\iff\dim\mathrm{Im}\,T=\dim W\iff T$ surjective.</p>
+<p><a class="xl" href="linalg-14.html">Lesson 14</a>, Proof F (3), proved the same with annihilators; here it is a pure count. In matrices: $A$ has independent columns iff $A^T$ has spanning columns.</p>
+</div></details>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<ul>
+  <li><strong>Corollary 2.3.20, Proposition 2.3.21 and the top-down and bottom-up methods</strong> (<a class="pl" href="linalg-script.html#p57">p. 57</a>): every subspace has a basis and $\dim U\le\dim V$ were proved in <a class="xl" href="linalg-08.html">lesson 8</a>; the two methods are the proofs of <a class="xl" href="linalg-07.html">lesson 7</a> read as algorithms, and today's elimination replaces them in computations.</li>
+  <li><strong>Elementary matrices</strong> (a row operation is multiplication from the left by an invertible matrix): <strong>lesson 17</strong>, with inverse matrices and linear systems. They give a fourth proof of Proof A.</li>
+  <li><strong>Column operations and column echelon form</strong> (script <a class="pl" href="linalg-script.html#p61">p. 61</a>): the same as row operations on $A^T$; nothing new.</li>
+  <li><strong>The “orthogonality trick”</strong> promised in Note 2.3.35: Linear Algebra II (scalar products).</li>
+  <li><strong>Note 3.4.5</strong> (the source of Proof D in Fischer's book): history only.</li>
+</ul>
+<p><strong>Next:</strong> <a class="xl" href="linalg-17.html">lesson 17</a>: inverse matrices, elementary matrices and linear systems: how Gaussian elimination computes $A^{-1}$, and what the solution set of $Ax=b$ looks like.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg.html">Linear Algebra home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

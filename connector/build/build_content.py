@@ -172,7 +172,7 @@ pdfdocs = {}
 for fn in sorted(os.listdir(os.path.join(ROOT, 'docs'))):
     if not fn.endswith('.pdf'): continue
     did = fn[:-4]
-    subject = 'physics' if fn.startswith('physics') else 'analysis'
+    subject = 'physics' if fn.startswith('physics') else 'linalg' if fn.startswith('linalg') else 'analysis'
     kind = 'formula-sheet' if 'formula-sheet' in fn else 'exam' if re.search(r'exam|einsiedler|rechnungen|style-practice', fn) else 'pvk'
     pdfdocs[did] = {'id': did, 'type': kind, 'subject': subject, 'title': titles.get(fn, did), 'url': SITE + 'docs/' + fn,
                     'label': 'official' if (kind in ('exam', 'formula-sheet') or is_solution(fn) or inline_solutions(fn)) else 'course material',

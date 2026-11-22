@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Surveyors of Surveyors">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=fix1120"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=guest1122b"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Surveyors of Surveyors</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=story1120">
+<link rel="stylesheet" href="assets/studyhub.css?v=guest1122b">
+<script defer src="assets/studyhub.js?v=guest1122b"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-subjects" aria-label="Subjects"><a href="analysis.html">Analysis I</a><a href="physics.html">Physics I</a><a href="chemie/">Chemie I (PC)</a><a href="linalg.html" aria-current="page">Linear Algebra I</a><a href="dive/" class="study-game"><span aria-hidden="true">🎮 </span>Exam Dive</a></nav><nav class="study-utilities" aria-label="Personal area"><a href="account.html" class="study-progress">Progress</a><a href="more.html">More</a><a href="linalg-14.html?lang=de" lang="de" hreflang="de">DE</a><details class="study-design"><summary>Design</summary></details></nav></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Linear Algebra I · Lesson 14</span>
+<h1>Surveyors of Surveyors</h1>
+<p class="lead">The bidual and the evaluation map, the dual map and its transposed matrix, and the annihilator: which functionals see nothing of a subspace, and how kernels and images trade places under duality.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-13-5">Recap of lesson 13 and lesson 10 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-surveyors-of-surveyors">1. The story: surveyors of surveyors</a>
+</li>
+<li><a href="#s2-canonical-and-non-canonical">2. Canonical and non-canonical</a>
+<ol>
+<li><a href="#we-1">Worked example 1: $\Phi_B$ depends on the basis</a></li>
+</ol></li>
+<li><a href="#s3-the-bidual">3. The bidual and the evaluation map</a>
+<ol>
+<li><a href="#proof-a">Proof A: the evaluation map is a canonical isomorphism (script Proposition 10.3.3, pp. 321–322)</a></li>
+<li><a href="#we-2">Worked example 2: house-inspectors and dual bases</a></li>
+</ol></li>
+<li><a href="#s4-the-dual-map">4. The dual map</a>
+<ol>
+<li><a href="#proof-b">Proof B: the dual map is well defined and linear (script Proposition 10.4.7, p. 325; HS24, 3.A4 and FS25, 4.A4, first parts)</a></li>
+<li><a href="#proof-c">Proof C: the rules of the dual map (script Proposition 10.4.8, p. 325; HS24, 3.A4)</a></li>
+<li><a href="#we-3">Worked example 3: the dual of the derivative (script Example 10.4.10)</a></li>
+<li><a href="#proof-d">Proof D: the matrix of the dual map is the transpose (script Proposition 10.4.11, p. 326)</a></li>
+<li><a href="#we-4">Worked example 4: the dual of the derivative in coordinates (script Example 10.4.12)</a></li>
+</ol></li>
+<li><a href="#s5-the-annihilator">5. The annihilator</a>
+<ol>
+<li><a href="#proof-e">Proof E: the annihilator is a subspace, and $\dim U^0=\dim V-\dim U$ (script Propositions 10.5.3 (1) and 10.5.4, pp. 328–329; FS25, 4.A1–4.A2)</a></li>
+<li><a href="#we-5">Worked example 5: computing annihilators (FS25, 4.A3; HS24, multiple choice 11)</a></li>
+<li><a href="#proof-f">Proof F: kernel and image of the dual map (script Proposition 10.5.5 and Corollary 10.5.7, pp. 329–330; FS25, 4.A4; FS18, problem 4)</a></li>
+<li><a href="#why-it-s-cool">Why it&#x27;s cool</a></li>
+<li><a href="#for-wonder-points-and-lines-trade-places">For wonder: points and lines trade places</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-6">Worked example 6: quick exam items (HS18, (a); true/false)</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (script Exercise on p. 323: $\tau$ maps a basis to the dual of its dual)</a></li>
+<li><a href="#ex-2">Exercise 2 (script Note “Naturality”, p. 322)</a></li>
+<li><a href="#ex-3">Exercise 3 (FS18, problem 4, 15 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (script Proposition 10.5.3: the dual of a quotient, p. 328)</a></li>
+<li><a href="#ex-5">Exercise 5 (rules for annihilators)</a></li>
+<li><a href="#ex-6">Exercise 6 (the double annihilator: every subspace is a solution set)</a></li>
+<li><a href="#ex-7">Exercise 7 (the dual map in coordinates, from lesson 13)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) explain what “canonical” means and why the isomorphism $V\to V^*$, $v_i\mapsto v_i^*$, is not canonical; (2) define the <strong>bidual</strong> $V^{**}$ and prove that the evaluation map $\tau:V\to V^{**}$, $\tau(v)(\ell)=\ell(v)$, is linear and injective, and an isomorphism if $\dim V&lt;\infty$; (3) define the <strong>dual map</strong> $T^*:W^*\to V^*$, $T^*(\psi)=\psi\circ T$, and prove that it is well defined and linear, that $(S\circ T)^*=T^*\circ S^*$, $(\mathrm{id}_V)^*=\mathrm{id}_{V^*}$ and $(T^{-1})^*=(T^*)^{-1}$; (4) prove that the matrix of the dual map in the dual bases is the <strong>transpose</strong>, $[T^*]^{C^*}_{B^*}=\big([T]^B_C\big)^T$, and compute with it; (5) define the <strong>annihilator</strong> $U^0$, prove that it is a subspace with $\dim U^0=\dim V-\dim U$, and compute it; (6) prove $(\mathrm{Im}\,T)^0=\mathrm{Ker}\,T^*$ and $(\mathrm{Ker}\,T)^0=\mathrm{Im}\,T^*$, and deduce that $T$ is surjective iff $T^*$ is injective, and injective iff $T^*$ is surjective.</dd></div>
+  <div><dt>Time</dt><dd>About 100 minutes. A natural break comes after section 4 (the bidual and the dual map are done; matrices and annihilators come next).</dd></div>
+  <div><dt>Script (English, printed pages)</dt><dd>Script EN 2023, chapter 10:
+    <ul>
+      <li><strong><a class="pl" href="linalg-script.html#p321">p. 321</a>:</strong> Section 10.3 (canonical versus non-canonical); Proposition 10.3.1 ($\Phi_B:V\to V^*$, $v_i\mapsto v_i^*$, is injective); Definition 10.3.2 (the bidual); Proposition 10.3.3 (the evaluation map $\tau$ is a canonical isomorphism); Note “About $\tau$”.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p322">pp. 322–323</a>:</strong> the proof of Proposition 10.3.3; Note 10.3.4 (rulers and what they measure); Note “Naturality” (the commuting square); Exercise ($\tau(B)=(B^*)^*$); Definition 10.3.5 and Exercise 10.3.6 (the dual pairing $\langle\varphi,v\rangle=\varphi(v)$).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p323">pp. 323–324</a>:</strong> Section 10.4; Definitions 10.4.1 and 10.4.2 (covariant and contravariant functors), Exercise 10.4.3, Example 10.4.4.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p325">p. 325</a>:</strong> Definition 10.4.5 (the dual map), Note 10.4.6, Proposition 10.4.7 (well defined and linear), Proposition 10.4.8 ($(S\circ T)^*=T^*\circ S^*$, $(\mathrm{id}_V)^*=\mathrm{id}_{V^*}$, $(T^{-1})^*=(T^*)^{-1}$).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p326">pp. 326–327</a>:</strong> Note 10.4.9, Example 10.4.10 (the dual of the derivative), Proposition 10.4.11 ($[T^*]^{C^*}_{B^*}=([T]^B_C)^T$), Example 10.4.12.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p327">pp. 327–330</a>:</strong> Section 10.5; Definition 10.5.1 (the annihilator $U^0$; in the lecture $U^\perp$), Note 10.5.2, Proposition 10.5.3 ($(V/U)^*\cong U^0$), Proposition 10.5.4 ($\dim U^0=\dim V-\dim U$, with a basis), Proposition 10.5.5 ($(\mathrm{Im}\,T)^0=\mathrm{Ker}\,T^*$, $(\mathrm{Ker}\,T)^0=\mathrm{Im}\,T^*$), Corollary 10.5.7.</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Prof. Halbeisen's §9 (expected after 9 Nov). The notes in our library end with §8 on <a class="pl" href="linalg-script.html#p47">p. 47</a>, so this lesson follows the script; the board-versus-script page will compare once the notes arrive. Note the lecture's name $U^\perp$ for the annihilator (script footnote to Definition 10.5.1). The proof of $(\mathrm{Ker}\,T)^0=\mathrm{Im}\,T^*$ in the script uses the rank theorem of <a class="xl" href="linalg-plan.html">lesson 15</a>; Proof F below avoids it, so everything here rests only on lessons 1–13. There is no Serie for §9 in the library yet; the practice comes from the old exams.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>The dual map and the annihilator are favourite exam material because the proofs are short and exact. FS25, problem 4 (11 points) asks: define $U^0$ and show it is a subspace (4.A1; Proof E); prove $\dim U+\dim U^0=\dim V$ (4.A2; Proof E); compute an annihilator in $\mathbb R^4$ (4.A3; Worked example 5); define $S^*$, show it is linear and prove $(\mathrm{im}\,S)^0=\ker S^*$ (4.A4; Proofs B and F). HS24, 3.A4 asks for the definition of $S^*$, its linearity and $(T\circ S)^*=S^*\circ T^*$ (Proof C). FS18, problem 4 (15 points; Exercise 3) asks: $T$ surjective $\Rightarrow$ $T^*$ injective, and $T$ injective $\Rightarrow$ $T^*$ surjective. HS24, multiple choice 11 asks for a basis of an annihilator in coordinates (Worked example 5). The true/false blocks ask whether $V\cong V^{**}$ canonically and whether the dual basis is determined by $V$ alone (Worked example 6).</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-13-5">Recap of <a class="xl" href="linalg-13.html">lesson 13</a> and <a class="xl" href="linalg-10.html">lesson 10</a> (5 minutes)</h3>
+<p>$V^*=\mathrm{Hom}(V,K)$; a basis $B=(v_1,\dots,v_n)$ has the dual basis $v_i^*$ with $v_i^*(v_j)=\delta_{ij}$; coordinates in a dual basis are values on the basis (<a class="xl" href="linalg-10.html">lesson 10</a>: coordinates in a dual basis are values). Dual bases change with the transpose (<a class="xl" href="linalg-13.html">lesson 13</a>, Proof F). Check yourself:</p>
+<ol>
+  <li>What is $\dim V^*$ if $\dim V=n$?</li>
+  <li>For $V=\mathbb R^2$ and $\varphi(x,y)=3x-y$: what is $[\varphi]_{E^*}$?</li>
+  <li>Is $\mathrm{Ker}(\varphi)$ for $\varphi\ne0$ in $V^*$ a subspace, and what is its dimension?</li>
+  <li>What is $(AB)^T$?</li>
+</ol>
+<details><summary>Answers</summary><div><p>1. $n$: the dual basis has $n$ elements (<a class="xl" href="linalg-10.html">lesson 10</a>). 2. The values on $e_1,e_2$: $(3,-1)$. 3. Yes (<a class="xl" href="linalg-11.html">lesson 11</a>), and $\dim\mathrm{Ker}(\varphi)=n-1$: $\varphi$ is onto $K$ and $V/\mathrm{Ker}(\varphi)\cong K$ (<a class="xl" href="linalg-11.html">lesson 11</a>, the isomorphism theorem, with <a class="xl" href="linalg-09.html">lesson 9</a>'s $\dim V/U=\dim V-\dim U$). 4. $B^TA^T$ (<a class="xl" href="linalg-12.html">lesson 12</a>, Exercise 2). Today the order reversal in question 4 reappears as $(S\circ T)^*=T^*\circ S^*$.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>canonical, natural</td><td>kanonisch, natürlich</td></tr>
+    <tr><td>bidual space, double dual</td><td>Bidualraum</td></tr>
+    <tr><td>evaluation map</td><td>Auswertungsabbildung</td></tr>
+    <tr><td>dual pairing</td><td>duale Paarung</td></tr>
+    <tr><td>dual map</td><td>duale Abbildung</td></tr>
+    <tr><td>transpose</td><td>Transponierte</td></tr>
+    <tr><td>functor (covariant, contravariant)</td><td>Funktor (kovariant, kontravariant)</td></tr>
+    <tr><td>annihilator</td><td>Annulator, Annihilator</td></tr>
+    <tr><td>to vanish on</td><td>verschwinden auf</td></tr>
+    <tr><td>restriction</td><td>Einschränkung</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-surveyors-of-surveyors">1. The story: surveyors of surveyors</h2>
+<div class="story">
+<p>In <a class="xl" href="linalg-10.html">lesson 10</a> the Free City hired surveyors: each one walks to a house and reads off a number, fairly (doubling the house doubles the reading, two houses together give the sum of readings). Now the council wants to <em>check the surveyors</em>. It hires inspectors, and an inspector is again fair: she takes a surveyor and returns a number.</p>
+<p>One kind of inspector needs no instructions at all. Pick a house; the inspector “of that house” asks every surveyor what he reads at that house. No grid, no choice of roads: the house alone defines her. Every house has its inspector, and different houses have different inspectors. In a city with finitely many roads, these are all the inspectors there are. This is why the council calls the house-inspectors <em>canonical</em>. By contrast, pairing each road of a grid with “its” surveyor (<a class="xl" href="linalg-10.html">lesson 10</a>'s dual basis) depends on the whole grid: change one road and all the pairings move.</p>
+<p>Couriers (<a class="xl" href="linalg-11.html">lesson 11</a>) cooperate with surveyors too. A courier carries houses from the Free City to the sister city. A surveyor working in the sister city becomes a surveyor for the Free City: “send the house by courier, then read”. So couriers going <em>forward</em> turn surveyors <em>backward</em>. And some surveyors are useless for a district: they read zero on every house of it. The council keeps a register of them, the district's <em>annihilator</em>, and finds that the larger the district, the shorter the register.</p>
+</div>
+<p>In mathematics: the bidual $V^{**}$ (inspectors), the evaluation map $\tau:V\to V^{**}$ (house-inspectors), the dual map $T^*:W^*\to V^*$, $\psi\mapsto\psi\circ T$ (surveyors pulled back along a courier), and the annihilator $U^0$ of a subspace $U$ (surveyors that vanish on $U$), with $\dim U+\dim U^0=\dim V$.</p>
+
+<h2 id="s2-canonical-and-non-canonical">2. Canonical and non-canonical</h2>
+<p>For a finite-dimensional $V$ we know $V\cong V^*$, since both have dimension $n$ (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof D). The script makes this explicit (Proposition 10.3.1): for a basis $B=(v_i)$ the linear map $\Phi_B:V\to V^*$ with $\Phi_B(v_i)=v_i^*$ is injective, and an isomorphism if $\dim V&lt;\infty$ (it maps a basis to a basis). But $\Phi_B$ depends on $B$, and not only through the labels. A construction is called <strong>canonical</strong> (or natural) if it needs no choice, or if the result does not depend on the choices made (script Section 10.3, <a class="pl" href="linalg-script.html#p321">p. 321</a>).</p>
+
+<div class="box"><h3 id="we-1">Worked example 1: $\Phi_B$ depends on the basis</h3>
+<p>(a) Let $V=\mathbb R$. Compute $\Phi_B(1)$ for $B=(1)$ and for $B=(2)$. (b) Let $V=\mathbb R^2$, $B=E$ and $B'=(e_1,\,e_1+e_2)$. Compute $\Phi_E(e_1)$ and $\Phi_{B'}(e_1)$.</p>
+<ol class="gq">
+  <li>(a) What is the dual basis of $(1)$, and of $(2)$?
+  <details><summary>Answer</summary><div><p>For $B=(1)$: $v_1^*(x)=x$, since $v_1^*(1)=1$. For $B=(2)$: $v_1^*(x)=\frac x2$, since $v_1^*(2)=1$.</p></div></details></li>
+  <li>(a) Compute $\Phi_B(1)$ in both cases.
+  <details><summary>Answer</summary><div><p>$B=(1)$: $\Phi_B(1)=v_1^*$, the functional $x\mapsto x$. $B=(2)$: $1=\frac12\cdot2$, so $\Phi_B(1)=\frac12v_1^*$, the functional $x\mapsto\frac x4$. Two different functionals: $\Phi_B$ depends on $B$, even in dimension one. Scaling the basis by $c$ scales $\Phi_B$ by $1/c^2$.</p></div></details></li>
+  <li>(b) Compute both.
+  <details><summary>Answer</summary><div><p>$\Phi_E(e_1)=e_1^*$, i.e. $(x,y)\mapsto x$. For $B'=(b_1,b_2)=(e_1,e_1+e_2)$: the dual basis is $b_1^*(x,y)=x-y$, $b_2^*(x,y)=y$ (check: $b_1^*(1,0)=1$, $b_1^*(1,1)=0$, $b_2^*(1,0)=0$, $b_2^*(1,1)=1$). Since $e_1=b_1$, $\Phi_{B'}(e_1)=b_1^*$, i.e. $(x,y)\mapsto x-y$. The vector $e_1$ is in both bases, but its partner changed because the <em>other</em> basis vector changed.</p></div></details></li>
+</ol></div>
+<p>So there are many isomorphisms $V\to V^*$ and none is better than the others. For $V^{**}$ the situation is different.</p>
+
+<h2 id="s3-the-bidual">3. The bidual and the evaluation map</h2>
+<div class="box">
+<p><strong>Definition (bidual; script Definition 10.3.2, <a class="pl" href="linalg-script.html#p321">p. 321</a>).</strong> $V^{**}:=(V^*)^*$ is the <strong>bidual space</strong> of $V$: the linear maps $V^*\to K$. The <strong>evaluation map</strong> is</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\tau:V\to V^{**},\\ &amp;\tau(v)(\ell):=\ell(v)\quad(\ell\in V^*).\end{aligned}$$</span>
+<p>In words: $\tau(v)$ takes a functional and evaluates it at $v$. It uses no basis.</p></div>
+<p>Before proving anything, check that $\tau(v)$ really lies in $V^{**}$, i.e. that it is linear in $\ell$: $\tau(v)(\ell_1+\alpha\ell_2)$ $=(\ell_1+\alpha\ell_2)(v)$ $=\ell_1(v)+\alpha\ell_2(v)$ by the definition of the vector space operations on $V^*$ (<a class="xl" href="linalg-10.html">lesson 10</a>). Note the two different kinds of linearity: $\tau(v)$ is linear in $\ell$, and the claim below is that $\tau$ is linear in $v$.</p>
+
+<h3 id="proof-a">Proof A: the evaluation map is a canonical isomorphism (script Proposition 10.3.3, <a class="pl" href="linalg-script.html#p321">pp. 321–322</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> $\tau:V\to V^{**}$ is linear and injective. If $\dim V&lt;\infty$, it is an isomorphism.</p></div>
+<p><strong>The idea.</strong> Linearity: two elements of $V^{**}$ are equal if they agree on every $\ell$, and on each $\ell$ the claim is the linearity of $\ell$. Injectivity: check the kernel (<a class="xl" href="linalg-11.html">lesson 11</a>). If $\tau(v)=0$, then every functional vanishes at $v$; but if $v\ne0$, some functional does not (extend $v$ to a basis and take the dual basis vector). The script does this for finite dimension with the dual basis. Then a dimension count finishes: $\dim V^{**}=\dim V^*=\dim V$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Linear, first line:</strong> “Let $v,v'\in V$, $\alpha\in K$, and let $\ell\in V^*$ be arbitrary.” <strong>Last line:</strong> “So $\tau(\alpha v+v')=\alpha\tau(v)+\tau(v')$.”</li>
+  <li><strong>Injective, first line:</strong> “Let $v\in\mathrm{Ker}(\tau)$, i.e. $\ell(v)=0$ for all $\ell\in V^*$.” <strong>Last line:</strong> “Hence $v=0$.”</li>
+  <li><strong>Iso:</strong> “$\dim V^{**}=\dim V$, and an injective linear map between spaces of equal finite dimension is bijective.”</li>
+  <li><strong>The gap:</strong> a functional that sees $v\ne0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The inspector of a combined house hears the combined readings, because every surveyor is fair.</p></div><div class="sp-formal"><p><em>Linear.</em> Let $v,v'\in V$, $\alpha\in K$. For every $\ell\in V^*$: $\tau(\alpha v+v')(\ell)=\ell(\alpha v+v')=\alpha\ell(v)+\ell(v')$ $=\alpha\tau(v)(\ell)+\tau(v')(\ell)=\big(\alpha\tau(v)+\tau(v')\big)(\ell)$. As $\ell$ was arbitrary, $\tau(\alpha v+v')=\alpha\tau(v)+\tau(v')$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If every surveyor reads zero at a house, the house is the fountain: a surveyor hired along a grid through that house would read one.</p></div><div class="sp-formal"><p><em>Injective.</em> Let $v\in\mathrm{Ker}(\tau)$: $\ell(v)=0$ for all $\ell\in V^*$. Suppose $v\ne0$. Extend $(v)$ to a basis $B=(v,v_2,\dots)$ of $V$ (<a class="xl" href="linalg-07.html">lesson 7</a>; in infinite dimension this needs the basis theorem of <a class="xl" href="linalg-07.html">lesson 7</a>'s “What we skipped”). Its dual vector $v^*$ (the functional with $v^*(v)=1$ and $v^*(v_i)=0$, which exists by <a class="xl" href="linalg-10.html">lesson 10</a>) satisfies $v^*(v)=1\ne0$, a contradiction. So $v=0$, and $\tau$ is injective (<a class="xl" href="linalg-11.html">lesson 11</a>, Proof G).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>In a city with finitely many roads, counting shows there are no other inspectors.</p></div><div class="sp-formal"><p><em>Iso if $\dim V=n&lt;\infty$.</em> By <a class="xl" href="linalg-10.html">lesson 10</a>, $\dim V^*=n$, hence $\dim V^{**}=\dim(V^*)^*=n$. $\tau$ maps a basis of $V$ to $n$ linearly independent vectors of $V^{**}$ (if $\sum_i a_i\tau(v_i)=0$, then $\tau(\sum_ia_iv_i)=0$, so $\sum_ia_iv_i=0$ by injectivity and all $a_i=0$), which form a basis of the $n$-dimensional $V^{**}$ (<a class="xl" href="linalg-07.html">lesson 7</a>). A linear map sending a basis to a basis is an isomorphism (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof D). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_pointwise">two maps are equal if they agree at every point</a> <a class="mvl" href="linalg-moves.html#m-la_kernelzero">injective: check the kernel</a> <a class="mvl" href="linalg-moves.html#m-la_adapted">choose a basis adapted to a subspace</a> <a class="mvl" href="linalg-moves.html#m-la_dimcount">count first: $n$ vectors in an $n$-dimensional space</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>For $v,v'\in V$, $\alpha\in K$ and all $\ell\in V^*$, $\tau(\alpha v+v')(\ell)=\ell(\alpha v+v')=\alpha\ell(v)+\ell(v')=(\alpha\tau(v)+\tau(v'))(\ell)$, so $\tau$ is linear. If $\tau(v)=0$ and $v\ne0$, extend $v$ to a basis and let $v^*$ be the dual vector of $v$; then $0=\tau(v)(v^*)=v^*(v)=1$, a contradiction. So $\mathrm{Ker}(\tau)=\{0\}$ and $\tau$ is injective. If $\dim V=n$, then $\dim V^{**}=\dim V^*=n$, so the injective $\tau$ maps a basis to $n$ independent vectors, a basis of $V^{**}$, and is an isomorphism. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Linearity: evaluate both sides at an arbitrary $\ell$.</li>
+  <li>Injectivity: kernel; a nonzero $v$ is seen by its own dual basis vector after extending $v$ to a basis.</li>
+  <li>Surjectivity only in finite dimension, by counting: $\dim V^{**}=\dim V$.</li>
+</ol>
+<p><strong>In short:</strong> $\tau(v)=$ “evaluate at $v$”; linear by linearity of each $\ell$, injective because some functional sees every $v\ne0$, onto by counting.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> $V=\mathbb R^2$, $v=(1,2)$. Write $\tau(v)$ as a map on $V^*$, using $\ell=ae_1^*+be_2^*$.
+  <details><summary>Answer</summary><div><p>$\tau(v)(\ell)=\ell(1,2)=a+2b$. So $\tau(v)$ is the functional on $V^*$ that sends the row $(a,b)$ to $a+2b$: “multiply the row by the column $(1,2)$”. With $V^*$ written as rows (<a class="xl" href="linalg-10.html">lesson 10</a>), $V^{**}$ is columns again, and $\tau$ is the identity on columns.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Why does the injectivity part not need $\dim V&lt;\infty$, while the last part does?
+  <details><summary>Answer</summary><div><p>Extending to a basis and the dual vector $v^*$ exist in every vector space (with the basis theorem for infinite dimension). Counting dimensions needs finite numbers. In fact for infinite-dimensional $V$, $\tau$ is never surjective (script Note “About $\tau$”; <a class="xl" href="linalg-10.html">lesson 10</a>, section 7 showed that the dual set is not a basis there).</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof A from the frame alone.</li>
+</ol></div>
+
+<div class="box"><p><strong>Why $\tau$ is called canonical, precisely.</strong> (1) It is defined without any basis. (2) It is <strong>natural</strong>: for every linear $T:V\to W$ the square “$\tau_W\circ T=T^{**}\circ\tau_V$” commutes (script Note “Naturality”, <a class="pl" href="linalg-script.html#p322">p. 322</a>; Exercise 2 below, once $T^*$ is defined). (3) It turns dual bases into dual bases: $\tau(v_i)=(v_i^*)^*$ for every basis (script Exercise, <a class="pl" href="linalg-script.html#p323">p. 323</a>; Exercise 1). Because of this, one identifies $V^{**}$ with $V$ in finite dimension and writes $v(\ell)=\ell(v)$. The symmetric notation $\langle\ell,v\rangle:=\ell(v)$, the <strong>dual pairing</strong> (Definition 10.3.5), is linear in each slot (Exercise 10.3.6: it is “bilinear”).</p></div>
+
+<div class="box"><h3 id="we-2">Worked example 2: house-inspectors and dual bases</h3>
+<p>Let $V=\mathbb R[x]_{\le2}$ and $p=1+x^2$. (a) Compute $\tau(p)$ on $\ell_1(q)=q(2)$ and on $\ell_2(q)=\int_0^1q(t)\,dt$. (b) Let $B=(1,x,x^2)$ with dual basis $(1^*,x^*,(x^2)^*)$. Show $\tau(x)=(x^*)^*$, i.e. $\tau(x)$ takes the values $0,1,0$ on $1^*,x^*,(x^2)^*$.</p>
+<ol class="gq">
+  <li>(a)
+  <details><summary>Answer</summary><div><p>$\tau(p)(\ell_1)=\ell_1(p)=p(2)=5$ and $\tau(p)(\ell_2)=\int_0^1(1+t^2)\,dt=1+\frac13=\frac43$. The inspector of $p$ just asks each surveyor about $p$.</p></div></details></li>
+  <li>(b)
+  <details><summary>Answer</summary><div><p>$\tau(x)(1^*)=1^*(x)=0$, $\tau(x)(x^*)=x^*(x)=1$, $\tau(x)((x^2)^*)=(x^2)^*(x)=0$. The dual basis of $(1^*,x^*,(x^2)^*)$ is defined by exactly these values, so $\tau(x)=(x^*)^*$ (two functionals on $V^*$ that agree on a basis of $V^*$ are equal, <a class="xl" href="linalg-11.html">lesson 11</a>).</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-the-dual-map">4. The dual map</h2>
+<div class="box">
+<p><strong>Definition (dual map; script Definition 10.4.5, <a class="pl" href="linalg-script.html#p325">p. 325</a>).</strong> For $T\in\mathrm{Hom}(V,W)$ the <strong>dual map</strong> is</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;T^*:W^*\to V^*,\\ &amp;T^*(\psi):=\psi\circ T\quad(\psi\in W^*),\end{aligned}$$</span>
+<p>that is, $\big(T^*\psi\big)(v)=\psi(Tv)$ for $v\in V$. Note the direction: $T$ goes from $V$ to $W$, but $T^*$ goes from $W^*$ to $V^*$. (The script warns in Note 10.4.6 that $T^*$ also denotes the adjoint map for scalar products, Linear Algebra II; under the identification of Note 10.5.10 the two agree.)</p></div>
+
+<h3 id="proof-b">Proof B: the dual map is well defined and linear (script Proposition 10.4.7, <a class="pl" href="linalg-script.html#p325">p. 325</a>; HS24, 3.A4 and FS25, 4.A4, first parts)</h3>
+<div class="box"><p><strong>Claim.</strong> For every $\psi\in W^*$, $T^*(\psi)\in V^*$ (well defined), and $T^*:W^*\to V^*$ is linear.</p></div>
+<p><strong>The idea.</strong> “Well defined” here means: the formula lands where it should. $\psi\circ T$ is a composition of linear maps, hence linear $V\to K$ (<a class="xl" href="linalg-11.html">lesson 11</a>). Linearity of $T^*$ is a statement about functionals on $V$, so test it on an arbitrary $v$: there it is just the definition of $+$ and scalar multiplication in $W^*$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Well defined:</strong> “$\psi\circ T:V\to K$ is a composition of linear maps.”</li>
+  <li><strong>Linear, first line:</strong> “Let $\psi_1,\psi_2\in W^*$, $\alpha\in K$, and $v\in V$.” <strong>Last line:</strong> “So $T^*(\alpha\psi_1+\psi_2)=\alpha T^*\psi_1+T^*\psi_2$.”</li>
+  <li><strong>The gap:</strong> how $+$ and scalars are defined in $W^*$ and $V^*$ (pointwise).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>“Send by courier, then read” is a fair surveyor, because both steps are fair.</p></div><div class="sp-formal"><p>Let $\psi\in W^*$. Then $\psi\circ T:V\to K$ is a composition of linear maps, hence linear (<a class="xl" href="linalg-11.html">lesson 11</a>): $T^*(\psi)\in V^*$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Mixing two sister-city surveyors and then pulling back is the same as pulling back each and mixing.</p></div><div class="sp-formal"><p>Let $\psi_1,\psi_2\in W^*$, $\alpha\in K$. For every $v\in V$: $T^*(\alpha\psi_1+\psi_2)(v)=(\alpha\psi_1+\psi_2)(Tv)$ $=\alpha\psi_1(Tv)+\psi_2(Tv)$ $=\alpha(T^*\psi_1)(v)+(T^*\psi_2)(v)$ $=(\alpha T^*\psi_1+T^*\psi_2)(v)$. As $v$ was arbitrary, $T^*(\alpha\psi_1+\psi_2)=\alpha T^*\psi_1+T^*\psi_2$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_precompose">dual maps: test at a vector, $(T^*\psi)(v)=\psi(Tv)$</a> <a class="mvl" href="linalg-moves.html#m-la_pointwise">two maps are equal if they agree at every point</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>For $\psi\in W^*$, $\psi\circ T$ is linear as a composition of linear maps, so $T^*\psi\in V^*$. For $\psi_1,\psi_2\in W^*$, $\alpha\in K$ and all $v\in V$, $T^*(\alpha\psi_1+\psi_2)(v)=(\alpha\psi_1+\psi_2)(Tv)=\alpha\psi_1(Tv)+\psi_2(Tv)=(\alpha T^*\psi_1+T^*\psi_2)(v)$. Hence $T^*$ is linear. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Write the definition with the direction: $T^*:W^*\to V^*$, $\psi\mapsto\psi\circ T$.</li>
+  <li>Well defined: a composition of linear maps is linear.</li>
+  <li>Linear: evaluate both sides at an arbitrary $v\in V$.</li>
+</ol>
+<p><strong>In short:</strong> everything about $T^*$ is checked by evaluating at a vector: $(T^*\psi)(v)=\psi(Tv)$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> $T:\mathbb R^2\to\mathbb R^2$, $T(x,y)=(x+y,\,2y)$, $\psi(u,w)=u-w$. Compute $T^*\psi$.
+  <details><summary>Answer</summary><div><p>$(T^*\psi)(x,y)=\psi(x+y,2y)=x+y-2y=x-y$. So $T^*\psi=e_1^*-e_2^*$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Is $T^*$ linear even if $V$ and $W$ are infinite-dimensional?
+  <details><summary>Answer</summary><div><p>Yes: Proof B used no basis and no dimension. Only the matrix (Proof D) needs finite bases.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof B from the frame alone.</li>
+</ol></div>
+
+<h3 id="proof-c">Proof C: the rules of the dual map (script Proposition 10.4.8, <a class="pl" href="linalg-script.html#p325">p. 325</a>; HS24, 3.A4)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $T:V\to W$ and $S:W\to U$ be linear. Then (1) $(S\circ T)^*=T^*\circ S^*$; (2) $(\mathrm{id}_V)^*=\mathrm{id}_{V^*}$; (3) if $T$ is an isomorphism, then so is $T^*$, and $(T^*)^{-1}=(T^{-1})^*$.</p></div>
+<p><strong>The idea.</strong> (1) and (2) are one line each: composition of maps is associative. The order reverses because pulling back goes backwards: to pull a surveyor from the third city to the first, first pull him back to the second, then to the first. (3) follows from (1) and (2) without any computation: apply ${}^*$ to $T\circ T^{-1}=\mathrm{id}$ and $T^{-1}\circ T=\mathrm{id}$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1)</strong> “For $\varphi\in U^*$: $(S\circ T)^*(\varphi)=\varphi\circ(S\circ T)=\dots=T^*(S^*\varphi)$.”</li>
+  <li><strong>(2)</strong> “For $\varphi\in V^*$: $(\mathrm{id}_V)^*\varphi=\varphi\circ\mathrm{id}_V=\varphi$.”</li>
+  <li><strong>(3)</strong> “$\mathrm{id}_{V^*}=(\mathrm{id}_V)^*=(T^{-1}\circ T)^*=T^*\circ(T^{-1})^*$, and the other order.”</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A surveyor of the third city, pulled back along a relay, is pulled back twice: first to the middle city, then to the first.</p></div><div class="sp-formal"><p>(1) For every $\varphi\in U^*$: $(S\circ T)^*(\varphi)=\varphi\circ(S\circ T)=(\varphi\circ S)\circ T$ $=T^*(\varphi\circ S)=T^*(S^*\varphi)=(T^*\circ S^*)(\varphi)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Pulling back along “stay home” changes nothing.</p></div><div class="sp-formal"><p>(2) For every $\varphi\in V^*$: $(\mathrm{id}_V)^*(\varphi)=\varphi\circ\mathrm{id}_V=\varphi=\mathrm{id}_{V^*}(\varphi)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A courier who can be undone gives a pull-back that can be undone, by the pull-back of the return courier.</p></div><div class="sp-formal"><p>(3) Let $T$ be an isomorphism with inverse $T^{-1}:W\to V$ (linear, <a class="xl" href="linalg-12.html">lesson 12</a>, Proof C). By (2) and (1): $\mathrm{id}_{V^*}=(\mathrm{id}_V)^*=(T^{-1}\circ T)^*=T^*\circ(T^{-1})^*$ and $\mathrm{id}_{W^*}=(T\circ T^{-1})^*=(T^{-1})^*\circ T^*$. So $T^*$ is bijective with inverse $(T^{-1})^*$; it is linear by Proof B. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_precompose">dual maps: test at a vector, $(T^*\psi)(v)=\psi(Tv)$</a> <a class="mvl" href="linalg-moves.html#m-la_isinverse">show it is the inverse: compose both ways</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) For $\varphi\in U^*$, $(S\circ T)^*\varphi=\varphi\circ S\circ T=T^*(\varphi\circ S)=T^*(S^*\varphi)$. (2) $(\mathrm{id}_V)^*\varphi=\varphi\circ\mathrm{id}_V=\varphi$. (3) By (1) and (2), $T^*\circ(T^{-1})^*=(T^{-1}\circ T)^*=(\mathrm{id}_V)^*=\mathrm{id}_{V^*}$ and $(T^{-1})^*\circ T^*=(T\circ T^{-1})^*=\mathrm{id}_{W^*}$; hence $T^*$ is an isomorphism with inverse $(T^{-1})^*$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Write the domains: $T^*:W^*\to V^*$, $S^*:U^*\to W^*$, so only $T^*\circ S^*$ is even defined.</li>
+  <li>(1), (2): apply to an arbitrary functional and use associativity.</li>
+  <li>(3): “dualise” the two equations $T^{-1}\circ T=\mathrm{id}$, $T\circ T^{-1}=\mathrm{id}$.</li>
+</ol>
+<p><strong>In short:</strong> $(S\circ T)^*=T^*\circ S^*$ because $\varphi\circ(S\circ T)=(\varphi\circ S)\circ T$; the order reverses like $(AB)^T=B^TA^T$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Why is $S^*\circ T^*$ not even defined?
+  <details><summary>Answer</summary><div><p>$T^*$ ends in $V^*$, but $S^*$ starts in $U^*$; in general $V^*\ne U^*$. Checking the domains is the quickest way to get the order right.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show with (1): if $S\circ T=0$, then $T^*\circ S^*=0$. What does that say about $\mathrm{Im}\,S^*$ and $\mathrm{Ker}\,T^*$?
+  <details><summary>Answer</summary><div><p>$T^*\circ S^*=(S\circ T)^*=0^*=0$, since $\varphi\circ0=0$. So $\mathrm{Im}\,S^*\subseteq\mathrm{Ker}\,T^*$: every functional of the form $\varphi\circ S$ vanishes on $\mathrm{Im}\,T$ (it is $\varphi\circ S\circ T=0$ there).</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof C from the frame alone.</li>
+</ol></div>
+
+<div class="box"><p><strong>Functors, in one paragraph (script Definitions 10.4.1–10.4.2, Note 10.4.9).</strong> A rule $F$ that assigns to each vector space a vector space $F(V)$ and to each linear map a linear map is a <strong>covariant functor</strong> if $F(\mathrm{id})=\mathrm{id}$ and $F(S\circ T)=F(S)\circ F(T)$, and a <strong>contravariant functor</strong> if instead $F(S\circ T)=F(T)\circ F(S)$ (and $F(T)$ goes the other way). Proof C says exactly: $V\mapsto V^*$, $T\mapsto T^*$ is a contravariant functor. Example 10.4.4 (the constant functor) shows that the conditions alone are easy to satisfy; the dual is interesting because of what it remembers about $T$ (section 5). The word returns in Linear Algebra II and in every later algebra course; for the exam, knowing Proof C is what counts.</p></div>
+
+<div class="box"><h3 id="we-3">Worked example 3: the dual of the derivative (script Example 10.4.10)</h3>
+<p>Let $D:\mathbb R[x]\to\mathbb R[x]$, $Dp=p'$. (a) For $\varphi(p)=p(3)$, describe $D^*\varphi$. (b) For $\psi(p)=\int_0^1p(t)\,dt$, describe $D^*\psi$.</p>
+<ol class="gq">
+  <li>(a)
+  <details><summary>Answer</summary><div><p>$(D^*\varphi)(p)=\varphi(Dp)=\varphi(p')=p'(3)$. So $D^*\varphi$ is “the slope at $3$”.</p></div></details></li>
+  <li>(b)
+  <details><summary>Answer</summary><div><p>$(D^*\psi)(p)=\psi(p')=\int_0^1p'(t)\,dt=p(1)-p(0)$ by the fundamental theorem of calculus (Analysis I). So $D^*\psi=\mathrm{ev}_1-\mathrm{ev}_0$. The dual map turned an integral into two evaluations; that is the fundamental theorem of calculus seen from the dual side.</p></div></details></li>
+</ol></div>
+
+<h3 id="proof-d">Proof D: the matrix of the dual map is the transpose (script Proposition 10.4.11, <a class="pl" href="linalg-script.html#p326">p. 326</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $T\in\mathrm{Hom}(V,W)$, $B=(v_1,\dots,v_n)$ a basis of $V$, $C=(w_1,\dots,w_m)$ a basis of $W$, with dual bases $B^*$, $C^*$. Then</p>
+<span class="math-display" style="display:block">$$[T^*]^{C^*}_{B^*}=\big([T]^B_C\big)^T.$$</span></div>
+<p><strong>The idea.</strong> The same three steps as <a class="xl" href="linalg-13.html">lesson 13</a>, Proof F (which is the special case $T=\mathrm{id}_V$). Column $j$ of $[T^*]^{C^*}_{B^*}$ is the coordinate vector of $T^*w_j^*$ in $B^*$. Coordinates in a dual basis are values on the basis (<a class="xl" href="linalg-10.html">lesson 10</a>: coordinates in a dual basis are values), and $(T^*w_j^*)(v_i)=w_j^*(Tv_i)$ is the $j$-th coordinate of $Tv_i$: the entry in row $j$, column $i$ of $[T]^B_C$. Column $j$ of the new matrix is row $j$ of the old one.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $A=(a_{ki})=[T]^B_C$, i.e. $Tv_i=\sum_{k=1}^ma_{ki}w_k$.”</li>
+  <li><strong>Last line:</strong> “So column $j$ of $[T^*]^{C^*}_{B^*}$ is $(a_{j1},\dots,a_{jn})^T$, the $j$-th row of $A$.”</li>
+  <li><strong>The gap:</strong> “coordinates in a dual basis are values” (<a class="xl" href="linalg-10.html">lesson 10</a>) and $w_j^*(w_k)=\delta_{jk}$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The courier's table says where each road of the first city goes.</p></div><div class="sp-formal"><p>Let $A=(a_{ki})=[T]^B_C\in M_{m\times n}(K)$: $Tv_i=\sum_{k=1}^ma_{ki}w_k$ for $i=1,\dots,n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The $j$-th sister-city surveyor, pulled back, reads at road $i$ the $j$-th address of where road $i$ is sent.</p></div><div class="sp-formal"><p>For $j=1,\dots,m$ and $i=1,\dots,n$: $(T^*w_j^*)(v_i)=w_j^*(Tv_i)=\sum_ka_{ki}w_j^*(w_k)=\sum_ka_{ki}\delta_{jk}=a_{ji}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A surveyor's coordinates are her readings at the roads.</p></div><div class="sp-formal"><p>By <a class="xl" href="linalg-10.html">lesson 10</a> (coordinates in a dual basis are values), $[T^*w_j^*]_{B^*}=\big((T^*w_j^*)(v_1),\dots,(T^*w_j^*)(v_n)\big)^T=(a_{j1},\dots,a_{jn})^T$. This is column $j$ of $[T^*]^{C^*}_{B^*}$ and row $j$ of $A$. Hence $[T^*]^{C^*}_{B^*}=A^T$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_precompose">dual maps: test at a vector, $(T^*\psi)(v)=\psi(Tv)$</a> <a class="mvl" href="linalg-moves.html#m-la_delta">apply to a basis vector: the delta picks one term</a> <a class="mvl" href="linalg-moves.html#m-la_colbycol">the matrix column by column</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $A=(a_{ki})=[T]^B_C$, so $Tv_i=\sum_ka_{ki}w_k$. Then $(T^*w_j^*)(v_i)=w_j^*(Tv_i)=\sum_ka_{ki}\delta_{jk}=a_{ji}$. By <a class="xl" href="linalg-10.html">lesson 10</a> (coordinates in a dual basis are values), the $j$-th column of $[T^*]^{C^*}_{B^*}$, which is $[T^*w_j^*]_{B^*}$, has the entries $a_{j1},\dots,a_{jn}$: it is the $j$-th row of $A$. So $[T^*]^{C^*}_{B^*}=A^T$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Name $A=[T]^B_C$ by its columns: $Tv_i=\sum_ka_{ki}w_k$.</li>
+  <li>Evaluate $T^*w_j^*$ at $v_i$; the delta leaves $a_{ji}$.</li>
+  <li>Coordinates in $B^*$ are values on $B$: column $j$ is row $j$ of $A$.</li>
+</ol>
+<p><strong>In short:</strong> in dual bases, the dual map has the transposed matrix. With the standard bases of $K^n$ and functionals written as rows, $T^*$ is “multiply the row by $A$ from the right”: $\psi\mapsto\psi A$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Check Proof D on Rung 1 of Proof B: $T(x,y)=(x+y,2y)$, $\psi=e_1^*-e_2^*$.
+  <details><summary>Answer</summary><div><p>$[T]_E=\begin{pmatrix}1&amp;1\\0&amp;2\end{pmatrix}$, so $[T^*]_{E^*}=\begin{pmatrix}1&amp;0\\1&amp;2\end{pmatrix}$, and $\begin{pmatrix}1&amp;0\\1&amp;2\end{pmatrix}\begin{pmatrix}1\\-1\end{pmatrix}=\begin{pmatrix}1\\-1\end{pmatrix}$: $T^*\psi=e_1^*-e_2^*$ ✓. As rows: $(1,-1)\begin{pmatrix}1&amp;1\\0&amp;2\end{pmatrix}=(1,-1)$ ✓.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Derive $(AB)^T=B^TA^T$ from Proof C (1) and Proof D.
+  <details><summary>Answer</summary><div><p>Take $T=m_B$, $S=m_A$ (with standard bases). Then $(AB)^T=[(S\circ T)^*]=[T^*\circ S^*]=[T^*][S^*]=B^TA^T$, using Proof D three times and the product rule of <a class="xl" href="linalg-12.html">lesson 12</a>. The transpose rule is the dual map's order reversal in matrix form.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof D from the frame alone.</li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Worked example 4: the dual of the derivative in coordinates (script Example 10.4.12)</h3>
+<p>Restrict $D$ to $V=\mathbb R[x]_{\le2}$ and use $B=(1,\,1+x,\,1+x+x^2)$ with dual basis $B^*=(v_1^*,v_2^*,v_3^*)$ (<a class="xl" href="linalg-10.html">lesson 10</a>: $v_1^*(p)=c-b$, $v_2^*(p)=b-a$, $v_3^*(p)=a$ for $p=c+bx+ax^2$). Let $\varphi(p)=p(3)$. Compute $D^*\varphi$ with matrices and check against Worked example 3.</p>
+<ol class="gq">
+  <li>Find $[D]_B$.
+  <details><summary>Answer</summary><div><p>$D(1)=0$, $D(1+x)=1$, $D(1+x+x^2)=1+2x=-1\cdot1+2\cdot(1+x)$. Columns: $(0,0,0)$, $(1,0,0)$, $(-1,2,0)$. So $[D]_B=\begin{pmatrix}0&amp;1&amp;-1\\0&amp;0&amp;2\\0&amp;0&amp;0\end{pmatrix}$.</p></div></details></li>
+  <li>Find $[\varphi]_{B^*}$.
+  <details><summary>Answer</summary><div><p>Values on $B$ (<a class="xl" href="linalg-10.html">lesson 10</a>: coordinates in a dual basis are values): $\varphi(1)=1$, $\varphi(1+x)=4$, $\varphi(1+x+x^2)=13$. So $[\varphi]_{B^*}=(1,4,13)$, i.e. $\varphi=v_1^*+4v_2^*+13v_3^*$.</p></div></details></li>
+  <li>Compute $[D^*\varphi]_{B^*}$ with Proof D, and check.
+  <details><summary>Answer</summary><div><p>$[D^*]_{B^*}=[D]_B^T=\begin{pmatrix}0&amp;0&amp;0\\1&amp;0&amp;0\\-1&amp;2&amp;0\end{pmatrix}$, and $[D^*]_{B^*}(1,4,13)^T=(0,\;1,\;-1+8)^T=(0,1,7)^T$. So $D^*\varphi=v_2^*+7v_3^*$, i.e. $(D^*\varphi)(c+bx+ax^2)=(b-a)+7a=b+6a$. Check: $p'(3)=b+2a\cdot3=b+6a$ ✓, as in Worked example 3 (a).</p></div></details></li>
+</ol></div>
+
+<div class="explorer" id="dm-ex">
+<span class="label">Try it: pulling a functional back</span>
+<p>Type the standard matrix $A$ of $T:\mathbb R^2\to\mathbb R^2$ and a functional $\psi=(p,q)$ on the target, $\psi(u,w)=pu+qw$. The explorer computes $T^*\psi=\psi\circ T$ as a row ($\psi A$) and as a column ($A^T\psi^T$, Proof D), finds $\mathrm{Im}\,T$, and checks $(\mathrm{Im}\,T)^0=\mathrm{Ker}\,T^*$ (Proof F). The picture shows $\mathrm{Im}\,T$ (solid) and the line where $\psi=0$ (dashed): $T^*\psi=0$ exactly when the solid line lies inside the dashed one.</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">$A$ = (<input id="dm-a11" type="text" value="1" style="width:2.6em" aria-label="a11">, <input id="dm-a12" type="text" value="2" style="width:2.6em" aria-label="a12"> ; <input id="dm-a21" type="text" value="2" style="width:2.6em" aria-label="a21">, <input id="dm-a22" type="text" value="4" style="width:2.6em" aria-label="a22">)</label>
+  <label style="white-space:nowrap">$\psi$ = (<input id="dm-p" type="text" value="1" style="width:2.6em" aria-label="p">, <input id="dm-q" type="text" value="0" style="width:2.6em" aria-label="q">)</label>
+  <button type="button" id="dm-r">Example</button>
+</div>
+<svg id="dm-svg" viewBox="0 0 300 300" width="100%" style="max-width:300px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="The image of T and the zero line of psi"></svg>
+<div id="dm-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var R=document.getElementById('dm-r');if(!R)return;
+  var ids=['a11','a12','a21','a22','p','q'];
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function Q(n,d){if(d<0){n=-n;d=-d;}var g=gcd(n,d);return {n:n/g,d:d/g};}
+  function add(a,b){return Q(a.n*b.d+b.n*a.d,a.d*b.d);}function sub(a,b){return Q(a.n*b.d-b.n*a.d,a.d*b.d);}
+  function mul(a,b){return Q(a.n*b.n,a.d*b.d);}function isz(a){return a.n===0;}function num(a){return a.n/a.d;}
+  function fmt(a){var s=a.d===1?String(Math.abs(a.n)):Math.abs(a.n)+'/'+a.d;return (a.n<0?'−':'')+s;}
+  function parse(t){t=String(t).replace(/\s+/g,'').replace('−','-');var m=t.match(/^(-?\d{1,4})(?:\/(\d{1,4}))?$/);if(m){var d=m[2]?+m[2]:1;if(d===0)return null;return Q(+m[1],d);}
+    m=t.match(/^(-?)(\d{0,3})\.(\d{1,2})$/);if(m){var k=Math.pow(10,m[3].length);return Q((m[1]?-1:1)*((+m[2]||0)*k+ +m[3]),k);}return null;}
+  var ex=[['1','2','2','4','1','0'],['1','2','2','4','2','-1'],['1','1','0','2','1','-1'],['0','0','0','0','3','1'],['1','0','0','1','0','1']],ei=0;
+  var msg=['Rank 1: Im T is the line through (1, 2). ψ = e₁* does not vanish on it, so T*ψ ≠ 0.','Same T, ψ = 2e₁* − e₂*: it vanishes on (1, 2), so ψ ∈ (Im T)⁰ and T*ψ = 0 (Proof F).','T is invertible, Im T = ℝ²: only ψ = 0 annihilates it, and T* is injective (Corollary 10.5.7).','T = 0: Im T = {0}, every ψ annihilates it, T* = 0.','T = id: T* = id, T*ψ = ψ.'];
+  function draw(){
+    var v={},bad=false;ids.forEach(function(k){v[k]=parse(document.getElementById('dm-'+k).value);if(v[k]===null)bad=true;});
+    var out=document.getElementById('dm-out'),svg=document.getElementById('dm-svg');
+    if(bad){out.innerHTML='<p><strong>Please type numbers</strong> (integers, fractions like 3/5, or decimals).</p>';svg.innerHTML='';return;}
+    var A=[[v.a11,v.a12],[v.a21,v.a22]],p=v.p,q=v.q;
+    var r1=add(mul(p,A[0][0]),mul(q,A[1][0])),r2=add(mul(p,A[0][1]),mul(q,A[1][1]));
+    var det=sub(mul(A[0][0],A[1][1]),mul(A[0][1],A[1][0]));
+    var c1=[A[0][0],A[1][0]],c2=[A[0][1],A[1][1]],rank,dir=null;
+    if(isz(A[0][0])&&isz(A[0][1])&&isz(A[1][0])&&isz(A[1][1]))rank=0;else if(!isz(det))rank=2;else{rank=1;dir=(isz(c1[0])&&isz(c1[1]))?c2:c1;}
+    var t='<p><strong>T*ψ = ψ∘T</strong>: (T*ψ)(x, y) = ψ(A(x, y)) = '+fmt(r1)+'·x '+(r2.n<0?'− '+fmt(Q(-r2.n,r2.d)):'+ '+fmt(r2))+'·y. As a row: ψA = ('+fmt(p)+', '+fmt(q)+')·A = ('+fmt(r1)+', '+fmt(r2)+'). As a column: Aᵀ(ψ)ᵀ = ('+fmt(r1)+', '+fmt(r2)+')ᵀ, the matrix of T* in the dual basis is Aᵀ (Proof D).</p>';
+    var imtxt=rank===0?'{0}':rank===2?'all of ℝ² (det A = '+fmt(det)+' ≠ 0)':'the line spanned by ('+fmt(dir[0])+', '+fmt(dir[1])+')';
+    var ann=rank===0?true:rank===2?(isz(p)&&isz(q)):isz(add(mul(p,dir[0]),mul(q,dir[1])));
+    t+='<p><strong>Im T</strong> = '+imtxt+'. ψ '+(ann?'<strong>vanishes</strong> on Im T, so ψ ∈ (Im T)⁰':'does <strong>not</strong> vanish on Im T')+'; and T*ψ '+((isz(r1)&&isz(r2))?'= 0':'≠ 0')+'. ';
+    t+=(ann===(isz(r1)&&isz(r2)))?'Both agree: (Im T)⁰ = Ker T* ✓':'✗';
+    t+='</p><p><strong>dim (Im T)⁰</strong> = 2 − '+rank+' = '+(2-rank)+' (Proof E).</p>';
+    var cur=ids.map(function(k){return document.getElementById('dm-'+k).value.trim();}).join(',');
+    ex.forEach(function(e,i){if(e.join(',')===cur)t+='<p class="small">'+msg[i]+'</p>';});
+    out.innerHTML=t;
+    function X(x){return (150+130*x).toFixed(1);}function Y(y){return (150-130*y).toFixed(1);}
+    var h='<line x1="10" y1="150" x2="290" y2="150" style="stroke:var(--rule)"/><line x1="150" y1="10" x2="150" y2="290" style="stroke:var(--rule)"/>';
+    if(rank===2)h+='<rect x="12" y="12" width="276" height="276" style="fill:var(--k-c);opacity:.12"/><text x="18" y="30" font-size="13" style="fill:var(--k-c)">Im T = ℝ²</text>';
+    if(rank===1){var dx=num(dir[0]),dy=num(dir[1]),L=Math.sqrt(dx*dx+dy*dy);dx/=L;dy/=L;h+='<line x1="'+X(-1.1*dx)+'" y1="'+Y(-1.1*dy)+'" x2="'+X(1.1*dx)+'" y2="'+Y(1.1*dy)+'" style="stroke:var(--k-c)" stroke-width="3"/><text x="'+(+X(0.9*dx)+6)+'" y="'+(+Y(0.9*dy)-6)+'" font-size="13" style="fill:var(--k-c)">Im T</text>';}
+    if(rank===0)h+='<circle cx="150" cy="150" r="5" style="fill:var(--k-c)"/><text x="158" y="140" font-size="13" style="fill:var(--k-c)">Im T = {0}</text>';
+    if(!(isz(p)&&isz(q))){var zx=-num(q),zy=num(p),M=Math.sqrt(zx*zx+zy*zy);zx/=M;zy/=M;h+='<line x1="'+X(-1.1*zx)+'" y1="'+Y(-1.1*zy)+'" x2="'+X(1.1*zx)+'" y2="'+Y(1.1*zy)+'" style="stroke:var(--k-eps)" stroke-width="2.5" stroke-dasharray="7 5"/><text x="'+(+X(-0.95*zx)+6)+'" y="'+(+Y(-0.95*zy)+16)+'" font-size="13" style="fill:var(--k-eps)">ψ = 0</text>';}
+    else h+='<text x="18" y="285" font-size="13" style="fill:var(--k-eps)">ψ = 0 everywhere</text>';
+    svg.innerHTML=h;
+  }
+  ids.forEach(function(k){document.getElementById('dm-'+k).addEventListener('input',draw);});
+  R.addEventListener('click',function(){ei=(ei+1)%ex.length;ids.forEach(function(k,i){document.getElementById('dm-'+k).value=ex[ei][i];});draw();});
+  draw();
+})();
+</script>
+<p class="small">Things to try: the start values show a rank-one $T$ and a $\psi$ that does not vanish on its image. Press “Example” for a $\psi$ in the annihilator ($T^*\psi=0$), an invertible $T$, the zero map and the identity. Then rotate $\psi$ yourself until the dashed line covers the solid one.</p>
+
+<h2 id="s5-the-annihilator">5. The annihilator</h2>
+<div class="box">
+<p><strong>Definition (annihilator; script Definition 10.5.1, <a class="pl" href="linalg-script.html#p327">p. 327</a>).</strong> For a vector space $V$ and a subset $\emptyset\ne U\subseteq V$,</p>
+<span class="math-display" style="display:block">$$\begin{aligned}U^0&amp;:=\{\varphi\in V^*\mid\varphi(u)=0\ \text{for all }u\in U\}\\ &amp;=\{\varphi\in V^*\mid U\subseteq\mathrm{Ker}\,\varphi\}.\end{aligned}$$</span>
+<p>In the lecture it is written $U^\perp$; some authors call it the orthogonal space of $U$ (Note 10.5.2). In $K^n$ with functionals as rows: $U^0$ is the set of rows $\varphi$ with $\varphi u=0$ for all $u\in U$.</p></div>
+
+<h3 id="proof-e">Proof E: the annihilator is a subspace, and $\dim U^0=\dim V-\dim U$ (script Propositions 10.5.3 (1) and 10.5.4, <a class="pl" href="linalg-script.html#p328">pp. 328–329</a>; FS25, 4.A1–4.A2)</h3>
+<div class="box"><p><strong>Claim.</strong> (a) $U^0$ is a subspace of $V^*$. (b) Let $\dim V=n$ and $U\subseteq V$ a subspace with basis $(u_1,\dots,u_k)$, extended to a basis $B=(u_1,\dots,u_k,v_1,\dots,v_{n-k})$ of $V$, with dual basis $B^*=(u_1^*,\dots,u_k^*,v_1^*,\dots,v_{n-k}^*)$. Then $U^0=\mathrm{Sp}(v_1^*,\dots,v_{n-k}^*)$, and $\dim U^0=\dim V-\dim U$.</p></div>
+<p><strong>The idea.</strong> (a) is the subspace test. (b) A basis adapted to $U$ makes everything visible. The dual vectors $v_j^*$ vanish on all $u_i$, hence on $U$: they lie in $U^0$. Conversely, write $\varphi\in U^0$ in the dual basis; its coefficients are its values on $B$ (<a class="xl" href="linalg-10.html">lesson 10</a>: coordinates in a dual basis are values), and the values on the $u_i$ are $0$. So $\varphi$ is a combination of the $v_j^*$ alone. These are part of a basis, hence independent: they are a basis of $U^0$, with $n-k$ elements.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(a)</strong> “$0\in U^0$; if $\varphi,\chi\in U^0$ and $\alpha\in K$, then for $u\in U$: $(\varphi+\alpha\chi)(u)=0$.”</li>
+  <li><strong>(b) ⊇:</strong> “$v_j^*(u_i)=0$ for all $i$, so $v_j^*$ vanishes on $\mathrm{Sp}(u_i)=U$.”</li>
+  <li><strong>(b) ⊆:</strong> “Let $\varphi\in U^0$. Write $\varphi=\sum_i\alpha_iu_i^*+\sum_j\beta_jv_j^*$. Evaluate at $u_i$: $\alpha_i=0$.”</li>
+  <li><strong>The gap:</strong> a subset of a basis is independent, and a functional vanishing on a spanning set vanishes on the span.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Mixing surveyors who read zero on a district gives a surveyor who reads zero there.</p></div><div class="sp-formal"><p>(a) The zero functional vanishes on $U$, so $0\in U^0$. If $\varphi,\chi\in U^0$, $\alpha\in K$, then for all $u\in U$: $(\varphi+\alpha\chi)(u)=\varphi(u)+\alpha\chi(u)=0$. So $U^0$ is a subspace (<a class="xl" href="linalg-05.html">lesson 5</a>).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The surveyors hired for the roads outside the district read zero on the district's own roads.</p></div><div class="sp-formal"><p>(b) “⊇”: by definition of the dual basis, $v_j^*(u_i)=0$ for all $i,j$. A linear map vanishing on $u_1,\dots,u_k$ vanishes on $\mathrm{Sp}(u_1,\dots,u_k)=U$. So $v_j^*\in U^0$ and, $U^0$ being a subspace, $\mathrm{Sp}(v_1^*,\dots,v_{n-k}^*)\subseteq U^0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A surveyor useless on the district has no share of the district's own surveyors.</p></div><div class="sp-formal"><p>“⊆”: let $\varphi\in U^0$ and write $\varphi=\sum_{i=1}^k\alpha_iu_i^*+\sum_{j=1}^{n-k}\beta_jv_j^*$ (<a class="xl" href="linalg-10.html">lesson 10</a>: $B^*$ is a basis). Evaluating at $u_i$: $0=\varphi(u_i)=\alpha_i$. So $\varphi=\sum_j\beta_jv_j^*\in\mathrm{Sp}(v_1^*,\dots,v_{n-k}^*)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Count the register.</p></div><div class="sp-formal"><p>$v_1^*,\dots,v_{n-k}^*$ are part of the basis $B^*$, hence linearly independent, so they form a basis of $U^0$ and $\dim U^0=n-k=\dim V-\dim U$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_subspace">subspace test: zero, sums, multiples</a> <a class="mvl" href="linalg-moves.html#m-la_adapted">choose a basis adapted to a subspace</a> <a class="mvl" href="linalg-moves.html#m-la_delta">apply to a basis vector: the delta picks one term</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(a) $0\in U^0$, and for $\varphi,\chi\in U^0$, $\alpha\in K$, $u\in U$: $(\varphi+\alpha\chi)(u)=0$. (b) Each $v_j^*$ vanishes on $u_1,\dots,u_k$, hence on $U$, so $\mathrm{Sp}(v_j^*)\subseteq U^0$. Conversely, for $\varphi\in U^0$ write $\varphi=\sum_i\alpha_iu_i^*+\sum_j\beta_jv_j^*$; then $\alpha_i=\varphi(u_i)=0$, so $\varphi\in\mathrm{Sp}(v_j^*)$. The $v_j^*$ are independent as part of $B^*$, so they are a basis of $U^0$, and $\dim U^0=n-k$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>(a) Subspace test in two lines.</li>
+  <li>(b) Basis of $U$, extend to $V$, take the dual basis: “the dual vectors of the added vectors”.</li>
+  <li>Show both inclusions, then count. (FS25, 4.A2 allows the existence of the dual basis without proof, and nothing else.)</li>
+</ol>
+<p><strong>In short:</strong> in a basis adapted to $U$, the annihilator is spanned by the dual vectors of the vectors outside $U$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> What are $\{0\}^0$ and $V^0$?
+  <details><summary>Answer</summary><div><p>$\{0\}^0=V^*$ (every functional vanishes at $0$) and $V^0=\{0\}$ (a functional vanishing everywhere is $0$). Consistent with the formula: $n-0=n$ and $n-n=0$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show that $U^0=\mathrm{Sp}(U)^0$ for any nonempty subset $U$. Why does that let you compute an annihilator from a spanning set?
+  <details><summary>Answer</summary><div><p>$\mathrm{Sp}(U)^0\subseteq U^0$ since $U\subseteq\mathrm{Sp}(U)$. Conversely, a linear $\varphi$ vanishing on $U$ vanishes on all linear combinations of $U$. So it suffices to impose $\varphi(u)=0$ for the vectors of a spanning set: one linear equation per spanning vector.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof E from the frame alone.</li>
+</ol></div>
+
+<div class="box"><h3 id="we-5">Worked example 5: computing annihilators (FS25, 4.A3; HS24, multiple choice 11)</h3>
+<p>(a) FS25, 4.A3: in $V=\mathbb R^4$ with standard basis, find the annihilator of $U=\mathrm{Sp}(e_1+2e_2+3e_3,\;e_4)$. (b) HS24, MC 11: let $V=\mathbb C[x]_{\le2}$. Which is a basis of the annihilator of $\{6x^2+x+2\}$ in $V^*$, in coordinates with respect to the dual basis $(1^*,x^*,(x^2)^*)$? (A) $(0,-6,1),\,(1,-2,0)$; (B) $(2,1,6)$; (C) $(0,-6,1),\,(-1,2,1)$.</p>
+<ol class="gq">
+  <li>(a) Write $\varphi=a_1e_1^*+\dots+a_4e_4^*$. Which equations does $\varphi\in U^0$ impose?
+  <details><summary>Answer</summary><div><p>By Rung 2, one per spanning vector: $\varphi(e_1+2e_2+3e_3)=a_1+2a_2+3a_3=0$ and $\varphi(e_4)=a_4=0$.</p></div></details></li>
+  <li>(a) Solve and give a basis.
+  <details><summary>Answer</summary><div><p>$a_4=0$, $a_1=-2a_2-3a_3$ with $a_2,a_3$ free. $(a_2,a_3)=(1,0)$ gives $-2e_1^*+e_2^*$; $(0,1)$ gives $-3e_1^*+e_3^*$. So $U^0=\mathrm{Sp}\big(-2e_1^*+e_2^*,\;-3e_1^*+e_3^*\big)$, of dimension $2=4-2$ ✓ (Proof E). Check: $(-2e_1^*+e_2^*)(e_1+2e_2+3e_3)=-2+2=0$ ✓.</p></div></details></li>
+  <li>(b) Which condition must a coordinate vector $(a,b,c)$ satisfy?
+  <details><summary>Answer</summary><div><p>$\varphi=a1^*+bx^*+c(x^2)^*$ applied to $2+x+6x^2$ gives $2a+b+6c=0$. The annihilator has dimension $3-1=2$, so (B), a single vector, is out (it is the coordinate vector of the polynomial itself, a trap).</p></div></details></li>
+  <li>(b) Test the vectors.
+  <details><summary>Answer</summary><div><p>(A): $(0,-6,1)$: $0-6+6=0$ ✓; $(1,-2,0)$: $2-2+0=0$ ✓; independent (not multiples) ✓. (C): $(-1,2,1)$: $-2+2+6=6\ne0$ ✗. <strong>Answer (A).</strong></p></div></details></li>
+</ol></div>
+
+<p>The last step connects the annihilator to kernels and images. The two formulas say: <em>the functionals that see nothing of $T$'s output are the ones killed by $T^*$</em>, and <em>the functionals that ignore $T$'s kernel are exactly the pulled-back ones</em>.</p>
+
+<h3 id="proof-f">Proof F: kernel and image of the dual map (script Proposition 10.5.5 and Corollary 10.5.7, <a class="pl" href="linalg-script.html#p329">pp. 329–330</a>; FS25, 4.A4; FS18, problem 4)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $V,W$ be finite-dimensional and $T\in\mathrm{Hom}(V,W)$. Then</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\text{(1)}\ \ (\mathrm{Im}\,T)^0=\mathrm{Ker}\,T^*,\\ &amp;\text{(2)}\ \ (\mathrm{Ker}\,T)^0=\mathrm{Im}\,T^*.\end{aligned}$$</span>
+<p>(3) $T$ is surjective $\iff$ $T^*$ is injective, and $T$ is injective $\iff$ $T^*$ is surjective.</p></div>
+<p><strong>The idea.</strong> (1) is pure unfolding: $T^*\psi=0$ means $\psi(Tv)=0$ for all $v$, which says that $\psi$ vanishes on $\mathrm{Im}\,T$. (2) “⊆” is as easy: $(\psi\circ T)(v)=\psi(0)=0$ on the kernel. For “⊇”, given $\varphi$ vanishing on $\mathrm{Ker}\,T$, we must <em>build</em> $\psi$ on $W$ with $\psi\circ T=\varphi$. The script uses a dimension count from the rank theorem (lesson 15); here is a direct construction. Take a basis of $\mathrm{Ker}\,T$, extend it by $v_1,\dots,v_r$; the images $Tv_j$ are independent, so we may prescribe $\psi(Tv_j):=\varphi(v_j)$ and extend to $W$. (3) follows from (1), (2) and the dimension formula of Proof E.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1)</strong> “$\psi\in\mathrm{Ker}\,T^*\iff\psi\circ T=0\iff\psi(Tv)=0\ \forall v\iff\psi\in(\mathrm{Im}\,T)^0$.”</li>
+  <li><strong>(2) ⊇, first line:</strong> “Let $\varphi\in(\mathrm{Ker}\,T)^0$; let $(u_1,\dots,u_k)$ be a basis of $\mathrm{Ker}\,T$, extended by $v_1,\dots,v_r$ to a basis of $V$.” <strong>Last line:</strong> “$T^*\psi$ and $\varphi$ agree on a basis, so $\varphi=T^*\psi\in\mathrm{Im}\,T^*$.”</li>
+  <li><strong>(3)</strong> “$T$ surjective $\iff\mathrm{Im}\,T=W\iff(\mathrm{Im}\,T)^0=\{0\}\iff\mathrm{Ker}\,T^*=\{0\}$.”</li>
+  <li><strong>The gap:</strong> $Tv_1,\dots,Tv_r$ are independent; $U^0=\{0\}\iff U=W$ by counting.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A sister-city surveyor whose pull-back reads nothing is one who reads nothing on the houses couriers can deliver.</p></div><div class="sp-formal"><p>(1) For $\psi\in W^*$: $\psi\in\mathrm{Ker}\,T^*$ $\iff\psi\circ T=0\iff\psi(Tv)=0$ for all $v\in V$ $\iff\psi(w)=0$ for all $w\in\mathrm{Im}\,T\iff\psi\in(\mathrm{Im}\,T)^0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A pulled-back surveyor reads zero on houses the courier loses.</p></div><div class="sp-formal"><p>(2) “⊆”: let $\varphi=T^*\psi\in\mathrm{Im}\,T^*$. For $v\in\mathrm{Ker}\,T$: $\varphi(v)=\psi(Tv)=\psi(0)=0$. So $\varphi\in(\mathrm{Ker}\,T)^0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The roads outside the lost district arrive at independent places.</p></div><div class="sp-formal"><p>“⊇”: let $\varphi\in(\mathrm{Ker}\,T)^0$. Let $(u_1,\dots,u_k)$ be a basis of $\mathrm{Ker}\,T$ and extend it by $v_1,\dots,v_r$ to a basis of $V$ (<a class="xl" href="linalg-07.html">lesson 7</a>). The vectors $Tv_1,\dots,Tv_r$ are independent: if $\sum_jc_jTv_j=0$, then $\sum_jc_jv_j\in\mathrm{Ker}\,T$, so $\sum_jc_jv_j=\sum_id_iu_i$ for some $d_i$, and independence of the basis gives all $c_j=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Hire a sister-city surveyor who reads at each delivered road what the given surveyor reads at its source.</p></div><div class="sp-formal"><p>Extend $Tv_1,\dots,Tv_r$ by $w_1,\dots,w_s$ to a basis of $W$, and let $\psi\in W^*$ be the functional with $\psi(Tv_j)=\varphi(v_j)$ and $\psi(w_l)=0$ (<a class="xl" href="linalg-10.html">lesson 10</a>: a functional is any choice of values on a basis).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Then the pulled-back surveyor and the given one agree everywhere.</p></div><div class="sp-formal"><p>On the basis of $V$: $(T^*\psi)(u_i)=\psi(0)=0=\varphi(u_i)$ (as $\varphi\in(\mathrm{Ker}\,T)^0$), and $(T^*\psi)(v_j)=\psi(Tv_j)=\varphi(v_j)$. Two linear maps agreeing on a basis are equal: $\varphi=T^*\psi\in\mathrm{Im}\,T^*$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Reaching every house means no useless surveyor; losing no house means every surveyor is a pull-back.</p></div><div class="sp-formal"><p>(3) For a subspace $U\subseteq W$: $U^0=\{0\}\iff\dim U=\dim W\iff U=W$ (Proof E and <a class="xl" href="linalg-08.html">lesson 8</a>: a subspace of full dimension is everything). Hence $T$ surjective $\iff(\mathrm{Im}\,T)^0=\{0\}\overset{(1)}\iff\mathrm{Ker}\,T^*=\{0\}\iff T^*$ injective. Similarly, for $U\subseteq V$: $U^0=V^*\iff\dim U=0\iff U=\{0\}$; so $T$ injective $\iff(\mathrm{Ker}\,T)^0=V^*\overset{(2)}\iff\mathrm{Im}\,T^*=V^*\iff T^*$ surjective. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_precompose">dual maps: test at a vector, $(T^*\psi)(v)=\psi(Tv)$</a> <a class="mvl" href="linalg-moves.html#m-la_adapted">choose a basis adapted to a subspace</a> <a class="mvl" href="linalg-moves.html#m-la_onbasis">two linear maps that agree on a basis are equal</a> <a class="mvl" href="linalg-moves.html#m-la_dimcount">count first: $n$ vectors in an $n$-dimensional space</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) $\psi\in\mathrm{Ker}\,T^*\iff\psi(Tv)=0$ for all $v\iff\psi\in(\mathrm{Im}\,T)^0$. (2) If $\varphi=\psi\circ T$ and $Tv=0$, then $\varphi(v)=0$: $\mathrm{Im}\,T^*\subseteq(\mathrm{Ker}\,T)^0$. Conversely let $\varphi\in(\mathrm{Ker}\,T)^0$, let $u_1,\dots,u_k$ be a basis of $\mathrm{Ker}\,T$, extended by $v_1,\dots,v_r$ to a basis of $V$. If $\sum c_jTv_j=0$, then $\sum c_jv_j\in\mathrm{Ker}\,T=\mathrm{Sp}(u_i)$, so all $c_j=0$: the $Tv_j$ are independent. Extend them to a basis of $W$ and define $\psi\in W^*$ by $\psi(Tv_j)=\varphi(v_j)$ and $0$ on the added vectors. Then $T^*\psi$ and $\varphi$ agree on the $u_i$ (both $0$) and on the $v_j$, so $\varphi=T^*\psi$. (3) By Proof E, $U^0=\{0\}$ iff $U$ is the whole space and $U^0$ is the whole dual iff $U=\{0\}$; combine with (1) and (2). <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>(1): a chain of four “iff”, each one a definition.</li>
+  <li>(2) ⊆: one line. ⊇: kernel basis, extend, images independent, prescribe $\psi$, compare on the basis.</li>
+  <li>(3): translate “surjective” into “image is everything” and use $\dim U^0=\dim V-\dim U$.</li>
+</ol>
+<p><strong>In short:</strong> $\mathrm{Ker}\,T^*$ is the annihilator of $\mathrm{Im}\,T$ and $\mathrm{Im}\,T^*$ the annihilator of $\mathrm{Ker}\,T$; surjective and injective swap under ${}^*$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In the explorer's second example, $A=\begin{pmatrix}1&amp;2\\2&amp;4\end{pmatrix}$: find $\mathrm{Ker}\,T^*$ with (1), and check with Proof D.
+  <details><summary>Answer</summary><div><p>$\mathrm{Im}\,T=\mathrm{Sp}((1,2))$, so $(\mathrm{Im}\,T)^0=\{(p,q):p+2q=0\}=\mathrm{Sp}(2e_1^*-e_2^*)$. With Proof D: $A^T\begin{pmatrix}2\\-1\end{pmatrix}=\begin{pmatrix}1&amp;2\\2&amp;4\end{pmatrix}\begin{pmatrix}2\\-1\end{pmatrix}=0$ ✓ ($A$ is symmetric here).</p></div></details></li>
+  <li><strong>Rung 2.</strong> Where does Proof F (3) need finite dimension?
+  <details><summary>Answer</summary><div><p>In “$U^0=\{0\}\Rightarrow U=W$” via counting. (Over infinite-dimensional spaces it is still true with the basis theorem, but the counting argument is gone.) The direction “$T$ surjective $\Rightarrow T^*$ injective” needs nothing: if $\psi\circ T=0$ and $T$ is onto, then $\psi=0$. That is FS18, 4 (a) in one line.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof F from the frame alone.</li>
+</ol></div>
+<p>One more consequence is worth a preview. Combining (1) with Proof E gives $\dim\mathrm{Ker}\,T^*=\dim W-\dim\mathrm{Im}\,T$. With the rank theorem of lesson 15 this turns into $\dim\mathrm{Im}\,T=\dim\mathrm{Im}\,T^*$, and by Proof D that says: <strong>the column rank of a matrix equals its row rank</strong> (script Corollaries 10.5.8–10.5.9). That is lesson 16.</p>
+
+<h3 id="why-it-s-cool">Why it's cool</h3>
+<p>Annihilators turn subspaces into equations. A plane through $0$ in $\mathbb R^3$ is $\{v:\varphi(v)=0\}$ for one functional $\varphi$, a line through $0$ needs two, and in general a $k$-dimensional subspace of $K^n$ is cut out by exactly $n-k$ independent linear equations, namely a basis of $U^0$ (Proof E and Exercise 6). Every system of homogeneous linear equations is a question about an annihilator, which is why Gaussian elimination (lessons 16–17) and duality belong together. And Proof D explains a mystery of matrix arithmetic: the transpose, which looks like a mere rearrangement of entries, is the matrix of a genuine map, the dual map, and the rule $(AB)^T=B^TA^T$ is the order reversal of pulling back.</p>
+
+<h3 id="for-wonder-points-and-lines-trade-places">For wonder: points and lines trade places (optional, 5 min)</h3>
+<p>In $V=\mathbb R^3$, the annihilator turns lines through $0$ (dimension $1$) into planes through $0$ in $V^*$ (dimension $2$), and planes into lines. It reverses inclusions: if a line lies in a plane, the plane's annihilator lies in the line's (Exercise 5). Now think of lines through $0$ in $\mathbb R^3$ as the “points” and planes through $0$ as the “lines” of the projective plane, the geometry of perspective drawing. Then the annihilator is a dictionary that swaps points and lines and keeps incidence: “two points lie on one line” becomes “two lines meet in one point”. Every theorem of projective geometry has a dual theorem for free; for example, Pascal's theorem about six points on a conic dualises to Brianchon's theorem about six tangent lines. Proof A is why the dictionary works both ways: applying it twice gives back what you started with ($V^{**}=V$).</p>
+
+<h2 id="worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</h2>
+
+<div class="box"><h3 id="we-6">Worked example 6: quick exam items (HS18, (a); true/false)</h3>
+<p>True or false, with a reason. $V,W$ are finite-dimensional unless said otherwise.</p>
+<ol class="gq">
+  <li>HS18, (a): “the term dual basis denotes a basis of $V^*$ that is uniquely determined by $V$.”
+  <details><summary>Answer</summary><div><p><strong>False.</strong> The dual basis is determined by a <em>basis</em> of $V$, not by $V$: Worked example 1 (b) shows two bases containing $e_1$ with different partners for it.</p></div></details></li>
+  <li>For every vector space $V$, the map $\tau:V\to V^{**}$ is an isomorphism.
+  <details><summary>Answer</summary><div><p><strong>False</strong> in general: it is always injective, but surjective only if $\dim V&lt;\infty$ (Proof A and the script's Note “About $\tau$”).</p></div></details></li>
+  <li>If $T:V\to W$ is injective, then $T^*$ is injective.
+  <details><summary>Answer</summary><div><p><strong>False.</strong> $T:K\to K^2$, $T(x)=(x,0)$ is injective, but $T^*(e_2^*)=e_2^*\circ T=0$ with $e_2^*\ne0$. By Proof F (3), $T^*$ is <em>surjective</em> instead.</p></div></details></li>
+  <li>If $U_1\subseteq U_2\subseteq V$, then $U_2^0\subseteq U_1^0$.
+  <details><summary>Answer</summary><div><p><strong>True.</strong> A functional vanishing on $U_2$ vanishes on the smaller $U_1$. The bigger the district, the shorter the register.</p></div></details></li>
+  <li>$[T^*]^{C^*}_{B^*}=[T]^B_C$ for every $T\in\mathrm{End}(K^n)$ and $B=C=E$.
+  <details><summary>Answer</summary><div><p><strong>False</strong> (true only for symmetric matrices): it is the transpose. $T(x,y)=(y,0)$ has $[T]_E=\begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}$ and $[T^*]_{E^*}=\begin{pmatrix}0&amp;0\\1&amp;0\end{pmatrix}$.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Each solution folds open under its exercise. The old Linear Algebra I-only exams have no official solutions in our library: those answers were checked twice by hand, and it says so.</p>
+
+<h3 id="ex-1">Exercise 1 (script Exercise on <a class="pl" href="linalg-script.html#p323">p. 323</a>: $\tau$ maps a basis to the dual of its dual)</h3>
+<p>Let $\dim V=n$, $B=(v_1,\dots,v_n)$ a basis, $B^*=(v_1^*,\dots,v_n^*)$ its dual basis and $(B^*)^*=((v_1^*)^*,\dots,(v_n^*)^*)$ the basis of $V^{**}$ dual to $B^*$. Show that $\tau(v_i)=(v_i^*)^*$ for all $i$.</p>
+<details><summary>Hint</summary><div><p>Two elements of $V^{**}$ are equal if they agree on a basis of $V^*$. Evaluate both sides at $v_j^*$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> compare two linear maps $V^*\to K$ on the basis $B^*$.</p>
+<p>For every $j$: $\tau(v_i)(v_j^*)=v_j^*(v_i)=\delta_{ji}$, and $(v_i^*)^*(v_j^*)=\delta_{ij}$ by the definition of the dual basis of $B^*$. Both are linear maps $V^*\to K$ that agree on the basis $B^*$, so they are equal (<a class="xl" href="linalg-11.html">lesson 11</a>): $\tau(v_i)=(v_i^*)^*$. In words: $\tau$ sends every basis to the dual basis of its dual basis, for <em>every</em> basis at once; that is the precise sense in which $\tau$ needs no choice.</p>
+</div></details>
+
+<h3 id="ex-2">Exercise 2 (script Note “Naturality”, <a class="pl" href="linalg-script.html#p322">p. 322</a>)</h3>
+<p>Let $T:V\to W$ be linear and $T^{**}:=(T^*)^*:V^{**}\to W^{**}$. Show that $\tau_W\circ T=T^{**}\circ\tau_V$ as maps $V\to W^{**}$.</p>
+<details><summary>Hint</summary><div><p>Both sides send $v$ to an element of $W^{**}$; evaluate it at an arbitrary $\psi\in W^*$ and unfold the definitions one at a time.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> equality of maps into $W^{**}$: test at $v\in V$, then at $\psi\in W^*$. (Checked twice; the script leaves it to the reader.)</p>
+<p>Let $v\in V$ and $\psi\in W^*$. Left: $(\tau_W(Tv))(\psi)=\psi(Tv)$. Right: $\big(T^{**}(\tau_Vv)\big)(\psi)=\big(\tau_V(v)\circ T^*\big)(\psi)=\tau_V(v)(T^*\psi)=(T^*\psi)(v)=\psi(Tv)$. Equal for all $\psi$ and all $v$. So the square commutes: under the identification $V=V^{**}$, $W=W^{**}$, the map $T^{**}$ <em>is</em> $T$. (In matrices: $(A^T)^T=A$.)</p>
+</div></details>
+
+<h3 id="ex-3">Exercise 3 (FS18, problem 4, 15 points)</h3>
+<p>Let $V,W$ be finite-dimensional over $K$, $T\in\mathrm{Hom}(V,W)$, and $T^*\in\mathrm{Hom}(W^*,V^*)$ given by $(T^*f)(v)=f(Tv)$. (a) (4 points) Show: if $T$ is surjective, then $T^*$ is injective. (b) (6 points) Let $T$ be injective and $U\subseteq W$ a subspace with $W=U\oplus\mathrm{Im}(T)$. Show that $\Phi:W\to V$, $w=u+Tv\mapsto v$, is a well-defined homomorphism. (c) (5 points) Show: if $T$ is injective, then $T^*$ is surjective.</p>
+<details><summary>Hint</summary><div><p>(a) Kernel: if $f\circ T=0$, where can $f$ be nonzero? (b) Well defined: is the decomposition $w=u+Tv$ unique, and is $v$ determined by $Tv$? (c) Given $\varphi\in V^*$, try $f=\varphi\circ\Phi$ and compute $T^*f$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) kernel; (b) uniqueness of the decomposition, then linearity; (c) exhibit a preimage. (Checked twice, no official solution. Proof F (3) gives (a) and (c) at once; the exam wants this hands-on route.)</p>
+<p>(a) Let $f\in\mathrm{Ker}\,T^*$: $f(Tv)=0$ for all $v$. Since $T$ is surjective, every $w\in W$ is some $Tv$, so $f(w)=0$ for all $w$: $f=0$. So $T^*$ is injective (<a class="xl" href="linalg-11.html">lesson 11</a>, Proof G).</p>
+<p>(b) <em>Well defined:</em> since $W=U\oplus\mathrm{Im}(T)$, every $w$ is $w=u+w'$ with unique $u\in U$, $w'\in\mathrm{Im}(T)$ (<a class="xl" href="linalg-08.html">lesson 8</a>). And $w'=Tv$ for exactly one $v$, because $T$ is injective. So $\Phi(w)=v$ is a well-defined value. <em>Linear:</em> if $w_1=u_1+Tv_1$, $w_2=u_2+Tv_2$ and $\alpha\in K$, then $w_1+\alpha w_2=(u_1+\alpha u_2)+T(v_1+\alpha v_2)$ with $u_1+\alpha u_2\in U$; by uniqueness, $\Phi(w_1+\alpha w_2)=v_1+\alpha v_2=\Phi(w_1)+\alpha\Phi(w_2)$.</p>
+<p>(c) Let $T$ be injective. A complement $U$ of $\mathrm{Im}(T)$ in $W$ exists (<a class="xl" href="linalg-08.html">lesson 8</a>: extend a basis of $\mathrm{Im}(T)$ to a basis of $W$). Take $\Phi$ from (b); note $\Phi(Tv)=v$ (decomposition $0+Tv$), i.e. $\Phi\circ T=\mathrm{id}_V$. For $\varphi\in V^*$ put $f:=\varphi\circ\Phi\in W^*$. Then $T^*f=\varphi\circ\Phi\circ T=\varphi\circ\mathrm{id}_V=\varphi$. So $T^*$ is surjective.</p>
+</div></details>
+
+<h3 id="ex-4">Exercise 4 (script Proposition 10.5.3: the dual of a quotient, <a class="pl" href="linalg-script.html#p328">p. 328</a>)</h3>
+<p>Let $U\subseteq V$ be a subspace and $\pi:V\to V/U$ the quotient map (<a class="xl" href="linalg-09.html">lesson 9</a>). Show that $\mathcal L:(V/U)^*\to U^0$, $S\mapsto S\circ\pi$, is a well-defined linear isomorphism. In words: functionals on $V/U$ are the same as functionals on $V$ that vanish on $U$.</p>
+<details><summary>Hint</summary><div><p>$\mathcal L=\pi^*$ (Proof B), so linearity is free; $\pi$ is surjective, so $\pi^*$ is injective (Exercise 3 (a)). For surjectivity, given $T\in U^0$, define $T'(v+U):=T(v)$ and check that this is well defined (<a class="xl" href="linalg-09.html">lesson 9</a>).</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> lands in $U^0$; linear; injective; surjective via a well-defined map on cosets. (The script leaves parts as an exercise; checked twice.)</p>
+<p><em>Lands in $U^0$:</em> for $u\in U$, $(S\circ\pi)(u)=S(u+U)=S(0_{V/U})=0$. <em>Linear:</em> $\mathcal L=\pi^*$, linear by Proof B. <em>Injective:</em> if $S\circ\pi=0$, then $S(v+U)=0$ for all $v$, and every element of $V/U$ is some $v+U$, so $S=0$. <em>Surjective:</em> let $T\in U^0$. Define $T':V/U\to K$, $T'(v+U):=T(v)$. Well defined: if $v+U=v'+U$, then $v-v'\in U$, so $T(v)-T(v')=T(v-v')=0$. Linear: $T'((v+U)+\alpha(v'+U))=T'((v+\alpha v')+U)=T(v)+\alpha T(v')$. And $\mathcal L(T')=T'\circ\pi=T$. So $\mathcal L$ is an isomorphism. In finite dimension this gives $\dim U^0=\dim(V/U)=\dim V-\dim U$ again (<a class="xl" href="linalg-09.html">lesson 9</a>), a second proof of Proof E's formula.</p>
+</div></details>
+
+<h3 id="ex-5">Exercise 5 (rules for annihilators)</h3>
+<p>Let $U_1,U_2\subseteq V$ be subspaces. (a) Show: $U_1\subseteq U_2\Rightarrow U_2^0\subseteq U_1^0$. (b) Show $(U_1+U_2)^0=U_1^0\cap U_2^0$. (c) In $\mathbb R^3$ find a basis of $U^0$ for $U=\mathrm{Sp}((1,1,1))$, and describe $U$ as the solution set of linear equations.</p>
+<details><summary>Hint</summary><div><p>(b) Two inclusions; for “⊇”, a functional vanishing on $U_1$ and on $U_2$ vanishes on every $u_1+u_2$. (c) One equation $a+b+c=0$ for $\varphi=(a,b,c)$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> unfold the definition; two inclusions; solve a linear equation.</p>
+<p>(a) If $\varphi$ vanishes on $U_2$, it vanishes on the subset $U_1$.</p>
+<p>(b) “⊆”: $U_i\subseteq U_1+U_2$, so by (a) $(U_1+U_2)^0\subseteq U_i^0$ for $i=1,2$. “⊇”: if $\varphi\in U_1^0\cap U_2^0$, then $\varphi(u_1+u_2)=\varphi(u_1)+\varphi(u_2)=0$ for all $u_i\in U_i$.</p>
+<p>(c) $\varphi=ae_1^*+be_2^*+ce_3^*\in U^0\iff a+b+c=0$. Basis: $e_1^*-e_2^*$, $e_2^*-e_3^*$ (dimension $2=3-1$ ✓). And $U=\{v:(e_1^*-e_2^*)(v)=0,\ (e_2^*-e_3^*)(v)=0\}=\{(x,y,z):x=y=z\}$: two equations for a line in $\mathbb R^3$ (Exercise 6 shows that this always works).</p>
+</div></details>
+
+<h3 id="ex-6">Exercise 6 (the double annihilator: every subspace is a solution set)</h3>
+<p>Let $\dim V&lt;\infty$ and $U\subseteq V$ a subspace. Show that $U=\{v\in V\mid\varphi(v)=0\text{ for all }\varphi\in U^0\}$. Equivalently, $\tau(U)=(U^0)^0$.</p>
+<details><summary>Hint</summary><div><p>“⊆” is the definition. For “⊇”, take $v\notin U$ and find $\varphi\in U^0$ with $\varphi(v)\ne0$: extend a basis of $U$ by $v$, then to a basis of $V$, and use a dual basis vector.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> two inclusions; the hard one by contraposition with a dual basis vector; then count for the second form. (Checked twice, no official solution.)</p>
+<p>“⊆”: every $\varphi\in U^0$ vanishes on $U$ by definition. “⊇” by contraposition: let $v\notin U$ and $(u_1,\dots,u_k)$ a basis of $U$. Then $(u_1,\dots,u_k,v)$ is independent (<a class="xl" href="linalg-06.html">lesson 6</a>: $v\notin\mathrm{Sp}(u_i)$); extend it to a basis of $V$ and let $v^*$ be the dual vector of $v$ in its dual basis. By Proof E, $v^*\in U^0$, and $v^*(v)=1\ne0$. So $v$ is not in the right-hand set.</p>
+<p>Second form: $\tau(v)\in(U^0)^0$ means $\tau(v)(\varphi)=\varphi(v)=0$ for all $\varphi\in U^0$, so the first form says $\tau(U)\subseteq(U^0)^0$, with equality because both have dimension $\dim U$ (Proof E twice: $\dim(U^0)^0=n-(n-\dim U)$; and $\tau$ is injective). So a $k$-dimensional subspace of $K^n$ is the solution set of the $n-k$ equations given by a basis of $U^0$.</p>
+</div></details>
+
+<h3 id="ex-7">Exercise 7 (the dual map in coordinates, from <a class="xl" href="linalg-13.html">lesson 13</a>)</h3>
+<p>Let $T:\mathbb R[x]_{\le2}\to\mathbb R^2$, $T(p)=(p(0),p(1))$, with $E=(1,x,x^2)$ and the standard basis $E_2=(e_1,e_2)$. (a) Describe $T^*(e_1^*)$ and $T^*(e_2^*)$ as functionals on $\mathbb R[x]_{\le2}$. (b) Compute $[T^*]^{E_2^*}_{E^*}$ with Proof D and check its columns against (a). (c) Is $T^*$ injective? Is it surjective? Use Proof F.</p>
+<details><summary>Hint</summary><div><p>(a) $(T^*e_1^*)(p)=e_1^*(T(p))$. (b) <a class="xl" href="linalg-13.html">Lesson 13</a>, Exercise 5 (a) has $[T]^E_{E_2}$. (c) Is $T$ surjective? Injective?</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> unfold; transpose; translate injective/surjective through Proof F (3).</p>
+<p>(a) $(T^*e_1^*)(p)=e_1^*(p(0),p(1))=p(0)$, so $T^*e_1^*=\mathrm{ev}_0$; likewise $T^*e_2^*=\mathrm{ev}_1$.</p>
+<p>(b) $[T]^E_{E_2}=\begin{pmatrix}1&amp;0&amp;0\\1&amp;1&amp;1\end{pmatrix}$, so $[T^*]^{E_2^*}_{E^*}=\begin{pmatrix}1&amp;1\\0&amp;1\\0&amp;1\end{pmatrix}$. Column 1 should be $[\mathrm{ev}_0]_{E^*}=(\mathrm{ev}_0(1),\mathrm{ev}_0(x),\mathrm{ev}_0(x^2))=(1,0,0)$ ✓; column 2 $[\mathrm{ev}_1]_{E^*}=(1,1,1)$ ✓.</p>
+<p>(c) $T$ is surjective: $T(1-x)=(1,0)$ and $T(x)=(0,1)$. So $T^*$ is injective (Proof F (3); directly: $\mathrm{ev}_0,\mathrm{ev}_1$ are independent). $T$ is not injective: $T(x^2-x)=(0,0)$. So $T^*$ is not surjective: its image is $(\mathrm{Ker}\,T)^0$, the functionals vanishing on $x^2-x$, a $2$-dimensional subspace of the $3$-dimensional $V^*$.</p>
+</div></details>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<ul>
+  <li><strong>Corollaries 10.5.8–10.5.9</strong> (row rank equals column rank, $\dim\mathrm{Im}\,T=\dim\mathrm{Im}\,T^*$, <a class="pl" href="linalg-script.html#p330">p. 330</a>): they need the rank theorem; <strong>lessons 15–16</strong>.</li>
+  <li><strong>The script's proof of Proposition 10.5.5 (2)</strong>, by a dimension count with the rank theorem: replaced by the direct construction in Proof F; the dimension count returns in lesson 16.</li>
+  <li><strong>Definitions 10.4.1–10.4.2, Exercise 10.4.3, Example 10.4.4</strong> (functors, commuting triangles): summarised in one box in section 4; they are not exam material in Linear Algebra I.</li>
+  <li><strong>Definition 10.3.5 and Exercise 10.3.6</strong> (the dual pairing is bilinear): named in section 3; bilinear forms are Linear Algebra II (script chapter 8).</li>
+  <li><strong>Note 10.5.10</strong> (with a scalar product, $V\cong V^*$ canonically, the dual map becomes the adjoint and the annihilator the orthogonal complement): Linear Algebra II.</li>
+  <li><strong>Lecture §9</strong>: not in our copy of the notes yet; the board-versus-script page will compare it with this lesson.</li>
+</ul>
+<p><strong>Next:</strong> lesson 15: kernel and image once more, and the rank–nullity theorem $\dim V=\dim\mathrm{Ker}\,T+\dim\mathrm{Im}\,T$, with injective, surjective and bijective maps between spaces of equal dimension.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg.html">Linear Algebra home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

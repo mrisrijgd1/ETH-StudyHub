@@ -294,6 +294,13 @@
     design.querySelectorAll('[data-palette]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.palette === appearance.palette)));
   }
   updateDesignPanel();
+  function positionDesignPanel() {
+    if (!design.open || innerWidth > 600) return;
+    const top = Math.max(16, Math.min(toggle.getBoundingClientRect().bottom + 8, innerHeight - 160));
+    design.style.setProperty('--study-design-top', top + 'px');
+  }
+  design.addEventListener('toggle', positionDesignPanel);
+  addEventListener('resize', positionDesignPanel);
   document.addEventListener('pointerdown', event => { if (!design.contains(event.target)) design.open = false; });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && design.open) { design.open = false; toggle.focus(); } });
   upper.append(utilities); shell.append(upper);
@@ -309,17 +316,27 @@
   updateMode(); addEventListener('hashchange', updateMode);
   const main = document.querySelector('main');
   const lessonMatch = /^(lesson|phys|refresher|linalg|serie)-[ap]?\d+\.html$/.test(file);
-  const gatedPage = fcApp || lessonMatch || /^(flashcards|practice|mock|moves|linalg-moves|tree|toolbox|skipped)\.html$/.test(file);
+  const publicLearningPage = fcApp || lessonMatch || /^(flashcards|practice|mock|moves|linalg-moves|tree|toolbox|skipped)\.html$/.test(file);
   const gate = document.createElement('section');
   gate.className = 'study-login-prompt';
   gate.hidden = true;
-  gate.innerHTML = '<h1></h1><p></p><button type="button" class="study-action"></button><p role="status"></p>';
-  const gateTitle = gate.querySelector('h1');
+  gate.innerHTML = '<h2></h2><p></p><div class="study-sync-actions"><button type="button" class="study-action"></button><button type="button" class="study-sync-dismiss"></button></div><p role="status"></p>';
+  const gateTitle = gate.querySelector('h2');
   const gateText = gate.querySelector('p');
   const gateButton = gate.querySelector('button');
   const gateStatus = gate.querySelector('[role="status"]');
   gateButton.textContent = L('Mit Google anmelden', 'Log in with Google');
-  if (main && (gatedPage || chemistry)) main.before(gate);
+  if (main && (publicLearningPage || chemistry)) main.before(gate);
+
+  const gateDismiss = gate.querySelector('.study-sync-dismiss');
+  gateDismiss.textContent = L('Nicht jetzt', 'Not now');
+  let syncHintDismissed = false;
+  try { syncHintDismissed = localStorage.getItem('sh-sync-hint-dismissed') === '1'; } catch (_) {}
+  gateDismiss.addEventListener('click', () => {
+    syncHintDismissed = true;
+    try { localStorage.setItem('sh-sync-hint-dismissed', '1'); } catch (_) {}
+    updateGate();
+  });
 
   function startLogin(button, status) {
     button.setAttribute('aria-disabled', 'true');
@@ -339,17 +356,24 @@
     if (window.SH && !gateButton.hasAttribute('aria-disabled')) startLogin(gateButton, gateStatus);
   });
   function updateGate() {
-    const chemieActivity = chemistry && /^#(?:lesson|review|training|exams)(?:\/|$)/.test(location.hash);
-    const protectedActivity = gatedPage || chemieActivity;
-    if (!main || (!gatedPage && !chemistry)) return;
+    // Only the already-protected Chemie activities require authentication.
+    // Public lessons and practice must remain usable even while auth is pending.
+    const protectedActivity = chemistry && /^#(?:lesson|review|training|exams)(?:\/|$)/.test(location.hash);
+    if (!main || (!publicLearningPage && !chemistry)) return;
     const pending = !window.SH || window.SH.authPending;
-    const locked = protectedActivity && !window.SH?.user;
+    const signedIn = !!window.SH?.user;
+    const locked = protectedActivity && !signedIn;
     main.classList.toggle('study-locked', locked);
-    gate.hidden = !locked;
-    gateTitle.textContent = pending ? L('Anmeldung wird geprüft', 'Checking sign-in') : L('Bitte melde dich an', 'Please log in');
-    gateText.textContent = pending ? '' : L('Melde dich an, um hier weiterzulernen.', 'Log in to continue studying here.');
+    gate.classList.toggle('study-sync-hint', !protectedActivity);
+    gate.hidden = protectedActivity ? !locked : pending || signedIn || syncHintDismissed;
+    gateTitle.textContent = protectedActivity
+      ? pending ? L('Anmeldung wird geprüft', 'Checking sign-in') : L('Bitte melde dich an', 'Please log in')
+      : L('Deinen Lernstand synchronisieren', 'Sync your progress');
+    gateText.textContent = protectedActivity
+      ? pending ? '' : L('Melde dich an, um diese geschützte Aktivität zu öffnen.', 'Log in to open this protected activity.')
+      : L('Alles funktioniert auch ohne Konto. Melde dich optional an, um deinen Lernstand auf deinen Geräten zu synchronisieren.', 'Everything works without an account. Optionally log in to save your place and sync across your devices.');
     gateButton.hidden = pending;
-    if (window.SH && !window.SH.user) document.querySelector('#fc-finish')?.classList.remove('open');
+    gateDismiss.hidden = protectedActivity;
   }
 
   const lessonKind = lessonMatch && subject ? subject + '-lesson' : '';
@@ -420,10 +444,17 @@
   function updateAccountUI() {
     const account = window.SH;
     const signedIn = !!account?.user;
-    design.hidden = !signedIn;
+    design.hidden = false;
+    profileForm.hidden = !signedIn;
+    choices.hidden = !signedIn;
+    heading.textContent = signedIn ? L('Einstellungen', 'Settings') : 'Design';
+    toggle.classList.toggle('study-profile-toggle', signedIn);
+    toggle.setAttribute('aria-label', signedIn ? L('Kontoeinstellungen', 'Account settings') : 'Design');
+    toggle.innerHTML = signedIn ? '<span class="study-profile-icon" aria-hidden="true"></span>' : 'Design';
+    if (!signedIn) appearanceDisclosure.open = true;
     login.hidden = signedIn;
     languageLink.hidden = signedIn;
-    if (!signedIn) design.open = false;
+
     if (signedIn && new URLSearchParams(location.search).get('settings') === '1') {
       design.open = true;
       const settingsUrl = new URL(location.href);
@@ -528,12 +559,12 @@
     function renderProgress() {
       const signedIn = !!window.SH?.user;
       const record = signedIn && window.SH.resume?.read(subject + '-lesson');
-      const progress = signedIn ? window.SH.courseProgress() : {};
+      const progress = window.SH?.courseProgress?.() || {};
       const finished = a => progress[new URL(a.href).pathname.split('/').pop()]?.done;
       const next = lessons.find(a => !finished(a));
       const resume = record && lessons.some(a => new URL(a.href).pathname === new URL(record.href, base).pathname && !finished(a));
       primary.href = resume ? record.href : (next || lessons[0]).href;
-      primary.textContent = resume ? L('Lektion fortsetzen', 'Resume lesson') : signedIn ? L('Lektion öffnen', 'Open lesson') : L('Anmelden und starten', 'Log in to start');
+      primary.textContent = resume ? L('Lektion fortsetzen', 'Resume lesson') : L('Lektion öffnen', 'Open lesson');
       const count = lessons.filter(finished).length;
       stat.textContent = signedIn ? L(count + ' / ' + lessons.length + ' Lektionen abgeschlossen', count + ' / ' + lessons.length + ' lessons completed') : L(lessons.length + ' Lektionen', lessons.length + ' lessons');
     }
