@@ -11,7 +11,7 @@
 <script defer src="assets/umami-kit.js?v=79d39d59"></script>
 <script defer src="assets/tips.js?v=fix1120"></script>
 <script defer src="assets/listen.js?v=427792c7"></script>
-<script defer src="assets/account.js?v=fc1120"></script>
+<script defer src="assets/account.js?v=guest1122b"></script>
 <script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Flashcards</title>
@@ -201,8 +201,8 @@ a.subject:hover strong { text-decoration: underline; }
 
 <link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
 <link rel="stylesheet" href="assets/appearance.css?v=story1120">
-<link rel="stylesheet" href="assets/studyhub.css?v=bar1120">
-<script defer src="assets/studyhub.js?v=fix1120"></script>
+<link rel="stylesheet" href="assets/studyhub.css?v=guest1122b">
+<script defer src="assets/studyhub.js?v=guest1122b"></script>
 </head>
 <body class="studyhub-app sh-unified" data-subject="analysis">
 <header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-subjects" aria-label="Subjects"><a href="analysis.html" aria-current="page">Analysis I</a><a href="physics.html">Physics I</a><a href="chemie/">Chemie I (PC)</a><a href="linalg.html">Linear Algebra I</a><a href="dive/" class="study-game"><span aria-hidden="true">🎮 </span>Exam Dive</a></nav><nav class="study-utilities" aria-label="Personal area"><a href="account.html" class="study-progress">Progress</a><a href="more.html">More</a><a href="de/flashcards.html" lang="de" hreflang="de">DE</a><details class="study-design"><summary>Design</summary></details></nav></div><nav class="study-modes" aria-label="Subject modes"><a href="analysis.html#lessons" data-mode="lessons">Lessons</a><a href="analysis.html#refresher" data-mode="revision">Revision</a><a href="practice.html" data-mode="practice">Practice</a><a href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html" data-mode="cards" aria-current="page">Flashcards</a><a href="exam-map.html" data-mode="plan">Exam plan</a><a href="script.html" data-mode="script">Script</a><a href="docs.html" data-mode="exams">Exams</a></nav></header>
@@ -1103,13 +1103,64 @@ a.subject:hover strong { text-decoration: underline; }
     count.textContent = (queue.length + 1) + T.left;
     bShow.focus({ preventScroll: true });
   }
-  function next() { cur = queue.shift() || null; render(); }
+  var checkpointKey = 'physics-cards';
+  function resumesPhysics() { return /^#p\d/.test(location.hash); }
+  var resumeButton = document.createElement('button');
+  resumeButton.type = 'button';
+  resumeButton.className = 'start-btn sh-resume-round';
+  resumeButton.textContent = 'Resume flashcards';
+  resumeButton.hidden = true;
+  document.getElementById('fc-start').after(resumeButton);
+  function cardKey(c) {
+    return c.dataset.id || [subjOf(c), c.dataset.l, c.dataset.t, c.querySelector('.q').textContent.trim()].join(':');
+  }
+  var cardsByKey = new Map(all.filter(function (c) { return subjOf(c) === 'p'; }).map(function (c) { return [cardKey(c), c]; }));
+  function saveRound() {
+    if (!resumesPhysics() || !window.SH?.user) return;
+    if (!cur) { window.SH.resume?.write(checkpointKey, null); return; }
+    if (subjOf(cur) !== 'p') return;
+    var url = new URL(location.href);
+    url.searchParams.set('resume', '1');
+    window.SH.resume?.write(checkpointKey, {
+      href: url.pathname + url.search + url.hash, title: queue.length + 1 + ' cards left',
+      cards: [cur].concat(queue).map(cardKey), done: done, revealed: bShow.hidden
+    });
+  }
+  function resumeRound() {
+    var saved = window.SH?.resume?.read(checkpointKey);
+    var cards = saved?.cards?.map(function (id) { return cardsByKey.get(id); }) || [];
+    if (!cards.length || cards.some(function (c) { return !c; })) return;
+    setSubject('p');
+    queue = cards;
+    done = saved.done;
+    cur = queue.shift();
+    render();
+    if (saved.revealed) revealAnswer();
+    resumeButton.hidden = true;
+  }
+  var resumeChecked = false;
+  document.addEventListener('sh-auth', function () {
+    resumeButton.hidden = !resumesPhysics() || !window.SH.resume?.read(checkpointKey) || !!cur;
+    if (!window.SH.user) { cur = null; queue = []; done = 0; return; }
+    if (!resumeChecked && resumesPhysics() && new URLSearchParams(location.search).get('resume') === '1') resumeRound();
+    resumeChecked = resumesPhysics();
+  });
+  addEventListener('hashchange', function () {
+    var match = /^#p(\d+)-(\d+)$/.exec(location.hash);
+    if (!match) return;
+    setSubject('p', { a: +match[1], b: +match[2] });
+    if (window.SH?.user && !resumeChecked && new URLSearchParams(location.search).get('resume') === '1') resumeRound();
+  });
+  resumeButton.addEventListener('click', resumeRound);
+  function next() { cur = queue.shift() || null; resumeButton.hidden = true; render(); saveRound(); }
   document.getElementById('fc-start').addEventListener('click', function () {
+    if (!window.SH?.user) return;
     queue = selection();
     for (var i = queue.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t2 = queue[i]; queue[i] = queue[j]; queue[j] = t2; }
     done = 0; next();
   });
   document.getElementById('fc-list').addEventListener('click', function () {
+    if (!window.SH?.user) return;
     var sel = selection(); queue = []; cur = null; done = 0; btns.hidden = true; stage.innerHTML = '';
     if (!sel.length) { stage.innerHTML = T.none; count.textContent = ''; return; }
     sel.sort(function (x, y) { return (+x.dataset.l) - (+y.dataset.l); });
@@ -1124,13 +1175,16 @@ a.subject:hover strong { text-decoration: underline; }
     count.textContent = sel.length + T.cards;
     if (window.__siteFit) window.__siteFit(stage);
   });
-  bShow.addEventListener('click', function () {
+  function revealAnswer() {
+    if (!cur || !window.SH?.user) return;
     stage.querySelector('.a').hidden = false; bShow.hidden = true; bAgain.hidden = false; bGot.hidden = false;
     if (window.__siteFit) window.__siteFit(stage);
     bGot.focus({ preventScroll: true });
-  });
-  bAgain.addEventListener('click', function () { queue.splice(Math.min(3, queue.length), 0, cur); next(); });
-  bGot.addEventListener('click', function () { if (!cur) return; done++; next(); });
+    saveRound();
+  }
+  bShow.addEventListener('click', revealAnswer);
+  bAgain.addEventListener('click', function () { if (!cur || !window.SH?.user) return; queue.splice(Math.min(3, queue.length), 0, cur); next(); });
+  bGot.addEventListener('click', function () { if (!cur || !window.SH?.user) return; done++; next(); });
 })();
 </script>
 
