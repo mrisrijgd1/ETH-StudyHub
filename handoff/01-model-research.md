@@ -1,6 +1,6 @@
 # 01: Model research (v2)
 
-## Candidates (one blind comparison, merged with Srish's plan, F1)
+## Candidates (one blind comparison, merged with Mridul's plan, F1)
 All run on **Infomaniak AI Services** where possible: OpenAI-compatible API, Swiss hosting, with requests not stored and not used for training (per Infomaniak). Licence and terms are checked for each model before the run.
 - `swiss-ai/Apertus-v1.5-70B`, thinking on and off
 - Qwen3.5-397B, Mistral-Small-4, Gemma-4-31B, Kimi-K2.6 (as listed by Infomaniak)

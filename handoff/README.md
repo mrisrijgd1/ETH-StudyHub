@@ -6,7 +6,7 @@ Specs and eval *designs* for testing open Swiss-hosted models as a study compani
 - Specs and eval designs only. No training data, runs or weights.
 - This repo is public. Held-out items live in a private repo of Rachel's, never here and never in the library sync.
 - No student data anywhere: items, prompts, logs or examples are team-written only.
-- No secrets. API keys go into GitHub secrets set by Srish.
+- No secrets. API keys go into GitHub secrets set by Mridul.
 - Nothing here touches the live site.
 
 | File | Content |
