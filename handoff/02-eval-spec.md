@@ -24,10 +24,10 @@ The pilot has about 85 items (~10 per main set). We grow only after the pilot sh
 ## Track L (lesson building)
 - Gold references: 3 existing good lessons (Analysis, Linear Algebra, Physics).
 - Same inputs as our builder: the script section (only courses where we hold the material), the format rules, and one example lesson. We also test parts: worked example, exercise variants, hint ladder, flashcards, MCQ distractors, DE glossary.
-- Scores: serious maths errors (hard gate: zero) and errors per 1,000 words; script fidelity; coverage; teaching quality; format (`check_page.js`); **minutes of human editing** vs building with Claude; blind A/B by Srish.
+- Scores: serious maths errors (hard gate: zero) and errors per 1,000 words; script fidelity; coverage; teaching quality; format (`check_page.js`); **minutes of human editing** vs building with Claude; blind A/B by Mridul.
 
 ## Items
-- Written or checked by a maths/physics student (maths: Srish, physics: Rachel, in batches of ~10). Each item records which model, if any, drafted it (C2).
+- Written or checked by a maths/physics student (maths: Mridul, physics: Rachel, in batches of ~10). Each item records which model, if any, drafted it (C2).
 - Contamination: 13-gram overlap + embedding similarity; for Apertus, a search of its open training data; the fresh-variant gap for closed-data models.
 
 ## Grading
