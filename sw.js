@@ -3,7 +3,7 @@
    - Versioned files (?v=): the saved copy at once. Other files: network first, saved copy offline.
    - MathJax (jsDelivr) and Google Fonts: saved on first use.
    - Never saved: PDFs and the docs/ folder (too big), Supabase (accounts), analytics. */
-const VERSION = 'sw-2026-11-20b';
+const VERSION = 'sw-2026-11-22-versioned-assets';
 const PAGES = 'sh-pages', FILES = 'sh-files', EXT = 'sh-ext';
 const CORE = ['./', 'index.html', 'offline.html', 'manifest.webmanifest', 'assets/icons/icon-192.png'];
 
@@ -33,9 +33,14 @@ async function netFirst(req, name, page) {
 }
 async function fileSWR(req, name) {
   const c = await caches.open(name);
-  const hit = await c.match(req) || await c.match(req, { ignoreSearch: true });
+  const versioned = new URL(req.url).searchParams.has('v');
+  // A new version must not silently receive an older cached script or stylesheet.
+  const hit = await c.match(req) || (!versioned && await c.match(req, { ignoreSearch: true }));
   const net = fetch(req).then(res => { if (res && (res.ok || res.type === 'opaque')) c.put(req, res.clone()); return res; }).catch(() => null);
-  return hit || (await net) || new Response('', { status: 504 });
+  const response = hit || (await net);
+  if (response) return response;
+  // A previous version is still useful when the device is genuinely offline.
+  return (await c.match(req, { ignoreSearch: true })) || new Response('', { status: 504 });
 }
 
 self.addEventListener('fetch', e => {
