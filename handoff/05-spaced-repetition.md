@@ -17,7 +17,7 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
 
 ## 2. Goals
 1. Remember, per student and card, when it should come back.
-2. Short daily **batches** (default 20 cards, ~5 min) instead of endless decks.
+2. Short **batches** (default 20 cards) instead of endless decks, with an honest time estimate.
 3. Reminders that help and never nag; push notifications only for students who ask for them.
 4. Exam-aware: everything important is reviewed at least once in the last days before each exam.
 5. Works offline; works with the study planner (04), but also on its own.
@@ -28,12 +28,16 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
 - **Rating buttons:** keep today's simple pair as the default and map it: *Again* → Again, *Got it* → Good.
   An optional "4 buttons" setting adds *Hard* and *Easy* for students who want finer control.
 - **Target retention** 90 % by default (setting: 85 / 90 / 95 %).
+- **One schedule per card number, in any language (decided by Rachel, 23 Nov).** The schedule is keyed only by
+  the card id (`data-id`, e.g. `p03-6`). The English and German versions of a card must therefore keep the same
+  id, and reviewing a card in German counts for the English version and vice versa. Cards that are genuinely
+  different (e.g. the German script deck, ids `k1_…`) keep their own ids and schedules.
 - **Exam mode:** with exam dates known (from the planner or entered on the flashcards page), intervals are
-  capped so every card of that course is due at least once in the last 7 days before its exam, and new
-  cards stop 3 days before it.
-- **New cards per day:** default 15 per course, adjustable. New cards follow the lecture: a lesson's cards
-  are offered once the lecture has covered it (planner's lecture-position table, or the student adds
-  lessons by hand).
+  capped so every card of that course is due at least once in the last 7 days before its exam.
+- **No limit on new cards per day (decided by Rachel, 23 Nov).** Students learn as many new cards as they
+  want. New cards follow the lecture: a lesson's cards are offered once the lecture has covered it (planner's
+  lecture-position table, or the student adds lessons by hand). Instead of a limit, the page shows the
+  **workload forecast** for the next 7 days (see §4.1), so students see what many new cards will cost later.
 - **Load balancing:** FSRS "fuzz" spreads reviews so no day spikes. Daily review cap (default 100) so a
   backlog never becomes a wall.
 - **Backlog recovery:** after missed days, overdue cards are sorted by how likely they are forgotten and
@@ -43,12 +47,33 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
   schedule. If maintainers mark a card as substantially changed, it's shown once as "updated card".
 
 ## 4. Batches (review sessions)
-- **Start:** "Review now: 20 cards · ~5 min" on the flashcards page, on the home page for signed-in students,
+- **Start:** "Review now: 20 cards · ~11 min" (time computed per §4.1) on the flashcards page, on the home page for signed-in students,
   and in the planner's daily plan as a block.
 - **Content of a batch:** due cards first (most likely forgotten first), then new cards; **interleaved**
   across lessons and courses (a student can restrict a batch to one course).
-- **Size:** 10 / 20 / 30 cards or "5 minutes" (time-based). After a batch: "Done for now", with
+- **Size:** default **20 cards** (decided by Rachel, 23 Nov); 10 / 30 / 50 or "X minutes" (time-based) as options. After a batch: "Done for now", with
   "One more batch" as a secondary button; no pressure to continue.
+### 4.1 Time estimate
+- **First view of a card: 1 minute.** Reading, understanding and trying to recall a new definition or theorem
+  takes time.
+- **Reviews get faster** as the card gets familiar (repetitions = successful reviews since the last "Again"):
+
+  | Card state | Time |
+  |---|---|
+  | New (first view) | 60 s |
+  | 1st repetition | 40 s |
+  | 2nd repetition | 30 s |
+  | 3rd repetition | 20 s |
+  | 4th and later | 15 s |
+  | After "Again" (lapse) | 40 s, then down the table again |
+
+- A batch's estimate is the sum over its cards, rounded up to whole minutes. Example: 10 new cards + 10 cards
+  at their 2nd repetition = 10 × 60 s + 10 × 30 s = 15 min. The same numbers feed the planner's flashcard block,
+  the notification text and the 7-day forecast.
+- **Calibration:** `srs_reviews` stores the real time per card, so after about 100 reviews the table is replaced
+  by the student's own median times per state (shown as "based on your pace").
+
+### 4.2 During a batch
 - **Answer first, then reveal:** keep the current "Say the answer out loud or write it down" instruction;
   MathJax rendering as today.
 - **Card types:** defs and theorems by default; computation cards optional. A "theorems to prove" filter for
@@ -81,7 +106,7 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
 - Pause for X days (holidays, illness) without losing the schedule.
 
 **What a notification says:**
-- Title: "StudyHub flashcards". Body: "15 cards are ready (~4 min): Analysis I, Physics I."
+- Title: "StudyHub flashcards". Body: "15 cards are ready (~8 min): Analysis I, Physics I." (time per §4.1)
 - **No card content and no grades on the lock screen.** Tapping opens `flashcards.html?review=due`, which
   starts the batch directly.
 - Kind and neutral wording, rotated; never guilt ("You haven't studied in 3 days!" is not allowed).
@@ -112,6 +137,7 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
 - **Simulation:** replay synthetic review histories (diligent, irregular, 10 days missed, exam in 5 days)
   and check: daily load never above the cap, exam-mode coverage reaches 100 % of the course's cards,
   backlog clears within the promised days.
+- **Time estimate:** compare §4.1 predictions with measured review times in the team pilot.
 - **Notification rules test:** no push in quiet hours, at most N per day, none after a review that day,
   none below the threshold, none after opt-out (automated tests against the Edge Function).
 - **Team pilot** (Rachel, Mridul, volunteers) for two weeks before release, with their consent.
@@ -127,9 +153,10 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
 
 ## 9. Open questions
 1. Mridul: OK for two new tables, an Edge Function with `pg_cron`, and push handlers in `sw.js`?
-2. Should the German Analysis deck and the English decks share one schedule when they cover the same card?
-3. Default batch size and daily new-card limit for first-years (proposal: 20 and 15 per course).
-4. Should "Got it / Again" stay the default, or should the 4-button version be default for everyone?
+2. Should "Got it / Again" stay the default, or should the 4-button version be default for everyone?
+
+Decided by Rachel (23 Nov): one schedule per card id regardless of language; default batch 20 cards;
+no daily limit on new cards; time estimate 1 min per new card, less with each repetition (§4.1).
 
 ## Sources
 - ts-fsrs (FSRS-6, MIT licence): https://github.com/open-spaced-repetition/ts-fsrs
