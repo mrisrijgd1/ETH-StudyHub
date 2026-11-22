@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Shuffled Seats">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=fix1120"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=fc1120"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Shuffled Seats</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=story1120">
+<link rel="stylesheet" href="assets/studyhub.css?v=bar1120">
+<script defer src="assets/studyhub.js?v=fix1120"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-subjects" aria-label="Subjects"><a href="analysis.html">Analysis I</a><a href="physics.html">Physics I</a><a href="chemie/">Chemie I (PC)</a><a href="linalg.html" aria-current="page">Linear Algebra I</a><a href="dive/" class="study-game"><span aria-hidden="true">🎮 </span>Exam Dive</a></nav><nav class="study-utilities" aria-label="Personal area"><a href="account.html" class="study-progress">Progress</a><a href="more.html">More</a><a href="linalg-19.html?lang=de" lang="de" hreflang="de">DE</a><details class="study-design"><summary>Design</summary></details></nav></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Linear Algebra I · Lesson 19</span>
+<h1>The Shuffled Seats</h1>
+<p class="lead">Determinants II: permutations, inversions and the sign, why the sign is multiplicative, the Leibniz formula and the rule of Sarrus, and the proof that the determinant exists.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-18-5">Recap of lesson 18 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-shuffled-seats">1. The story: the shuffled seats</a>
+</li>
+<li><a href="#s2-permutations-and-the-sign">2. Permutations and the sign</a>
+<ol>
+<li><a href="#proof-a">Proof A: the sign as a product of quotients (script Lemma 4.3.15, p. 134)</a></li>
+<li><a href="#proof-b">Proof B: the sign is multiplicative (script Lemma 4.3.16, pp. 134–136)</a></li>
+<li><a href="#proof-c">Proof C: transpositions are odd, and half of $S_n$ is even (script Lemma 4.3.3 and Corollaries 4.3.18–4.3.20, pp. 131 and 136–137)</a></li>
+</ol></li>
+<li><a href="#s3-the-leibniz-formula">3. The Leibniz formula, and why the determinant exists</a>
+<ol>
+<li><a href="#proof-d">Proof D: the Leibniz formula satisfies the axioms (script Theorem 4.3.24, pp. 139–141)</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-1">Worked example 1: Sarrus against elimination (script Example 4.2.7)</a></li>
+<li><a href="#we-2">Worked example 2: which permutation is even? (FS25, MC13)</a></li>
+<li><a href="#we-3">Worked example 3: Leibniz on sparse matrices, and a $2\times2$ quick item (FS26, MC3)</a></li>
+<li><a href="#why-it-s-cool">Why it&#x27;s cool</a></li>
+<li><a href="#for-wonder-the-permanent">For wonder: drop the sign, and the problem becomes hard</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (script Exercise 4.3.1: the $2\times2$ case from the axioms)</a></li>
+<li><a href="#ex-2">Exercise 2 (the group $S_3$; script Example 4.3.7 and Exercise 4.3.8)</a></li>
+<li><a href="#ex-3">Exercise 3 (every permutation is a product of transpositions)</a></li>
+<li><a href="#ex-4">Exercise 4 (the reversal, and the anti-diagonal matrix)</a></li>
+<li><a href="#ex-5">Exercise 5 (permutation matrices)</a></li>
+<li><a href="#ex-6">Exercise 6 (a sparse $4\times4$ determinant by Leibniz)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) work with permutations in $S_n$: one-line notation, composition, inverses, transpositions; (2) count the inversions of a permutation and read off its sign; (3) prove that the sign is a product of quotients and that $\mathrm{sign}(\tau\sigma)=\mathrm{sign}(\tau)\,\mathrm{sign}(\sigma)$; (4) prove that every transposition is odd and that exactly half of $S_n$ is even; (5) state the Leibniz formula, write it out for $n=2,3$ (Sarrus' rule), and prove that it satisfies the three axioms, so that the determinant exists.</dd></div>
+  <div><dt>Time</dt><dd>About 90 minutes. A natural break comes after section 2 (permutations and the sign); the Leibniz formula and the existence proof follow.</dd></div>
+  <div><dt>Script (English, printed pages)</dt><dd>Script EN 2023, section 4.3 up to the existence theorem:
+    <ul>
+      <li><strong><a class="pl" href="linalg-script.html#p130">pp. 130–133</a>:</strong> Exercise 4.3.1 (the $2\times2$ case from the axioms), the group $S_n$, Definition 4.3.2 (transpositions), Lemma 4.3.3 (conjugating $\tau_{1,2}$), Examples 4.3.4–4.3.7 ($S_1$, $S_2$, $S_3$), Exercise 4.3.8, Definition 4.3.9 (inversions).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p133">pp. 133–137</a>:</strong> Examples 4.3.10–4.3.12, Definition 4.3.13 (the sign), Example 4.3.14, Lemma 4.3.15 (sign as a product), Lemma 4.3.16 (sign as a homomorphism), Corollaries 4.3.18–4.3.20 (inverses, transpositions, even and odd permutations).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p138">pp. 138–141</a>:</strong> the Leibniz formula (4.7), Examples 4.3.21–4.3.22 ($n=2,3$, Sarrus' rule), Theorem 4.3.24 (existence of the determinant).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Expected right after the axioms (our copy of Prof. Halbeisen's notes ends with §8 on <a class="pl" href="linalg-script.html#p47">p. 47</a>). $\det A^T=\det A$ (the rest of section 4.3), expansion along a row and Cramer's rule are lesson 20. The board-versus-script page will compare once the notes arrive.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>The sign of a permutation is a typical one-point multiple-choice item (FS25, MC13: “which of these permutations is even?”; Worked example 2), and “state the definition of the determinant” (<a class="xl" href="linalg-18.html">lesson 18</a>) can also be answered with the Leibniz formula. The $3\times3$ formula is the fastest check of any $3\times3$ elimination. The proof that $\mathrm{sign}$ is multiplicative and the existence proof are classic oral-exam and “prove the lemma from the lecture” material; the trick of pairing $\sigma$ with $\sigma\tau$ (Proof D) returns in lesson 20 for $\det A^T$.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-18-5">Recap of <a class="xl" href="linalg-18.html">lesson 18</a> (5 minutes)</h3>
+<p>The determinant is a map $\det:M_{n\times n}(K)\to K$ that is linear in each row (D1), vanishes when two rows are equal (D2), and has $\det I_n=1$ (D3). From these: a swap flips the sign, adding a multiple of another row changes nothing, triangular matrices give the product of the diagonal, $\det A\ne0\iff A$ invertible, and $\det(AB)=\det A\det B$. At most one such map exists. Check yourself:</p>
+<ol>
+  <li>What does a swap of two rows do to $\det$?</li>
+  <li>$\det(5A)$ for $A\in M_{3\times3}(K)$?</li>
+  <li>Why did <a class="xl" href="linalg-18.html">lesson 18</a> not prove that a determinant exists?</li>
+</ol>
+<details><summary>Answers</summary><div><p>1. It multiplies $\det$ by $-1$. 2. $125\det A$: each of the three rows is scaled by $5$. 3. It only showed that two functions with the axioms must agree. Defining $\det A$ as “the product over an elimination” would need a proof that every elimination gives the same number. Today we write down a formula and check the axioms directly.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>permutation</td><td>Permutation</td></tr>
+    <tr><td>symmetric group $S_n$</td><td>symmetrische Gruppe $S_n$</td></tr>
+    <tr><td>transposition</td><td>Transposition</td></tr>
+    <tr><td>inversion (misordered pair)</td><td>Fehlstand</td></tr>
+    <tr><td>sign, signum</td><td>Signum, Vorzeichen</td></tr>
+    <tr><td>even / odd permutation</td><td>gerade / ungerade Permutation</td></tr>
+    <tr><td>alternating group $A_n$</td><td>alternierende Gruppe $A_n$</td></tr>
+    <tr><td>Leibniz formula</td><td>Leibniz-Formel</td></tr>
+    <tr><td>rule of Sarrus</td><td>Regel von Sarrus</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-shuffled-seats">1. The story: the shuffled seats</h2>
+<div class="story">
+<p>The surveyors of the Free City proved in <a class="xl" href="linalg-18.html">lesson 18</a> that at most one honest measure of land can exist. The council asks the awkward question: does one exist at all? Perhaps the three rules contradict each other, and every candidate breaks one of them.</p>
+<p>To answer, the surveyors expand a ledger completely. Each row is a mixture of the standard edges, so by the first rule the measure splits into many small pieces, one for each way of choosing one entry from every row. Pieces that use the same column twice are flat and vanish. What survives is one piece for each way of seating the $n$ rows in the $n$ columns, one row per column: a <strong>shuffle</strong> of the seats. Each shuffle contributes the product of its chosen entries, with a sign that says whether the shuffle can be undone by an even or an odd number of swaps.</p>
+<p>So the surveyors must first understand shuffles: when is a shuffle even, and why can it never be both even and odd? Then they take the formula that the expansion forced and check that it obeys all three rules. It does. The measure exists.</p>
+</div>
+<p>In mathematics: $\det A=\sum_{\sigma\in S_n}\mathrm{sign}(\sigma)$ $\cdot\,a_{1\sigma(1)}\cdots a_{n\sigma(n)}$, where $\mathrm{sign}(\sigma)=(-1)^{\#\text{inversions of }\sigma}$.</p>
+
+<h2 id="s2-permutations-and-the-sign">2. Permutations and the sign</h2>
+<div class="box">
+<p><strong>Permutations.</strong> $S_n$ is the set of bijections $\sigma:\{1,\dots,n\}\to\{1,\dots,n\}$. With composition $\tau\sigma:=\tau\circ\sigma$ it is a group, the <strong>symmetric group</strong>, with $|S_n|=n!$. We write $\sigma$ in one line as $(\sigma(1),\sigma(2),\dots,\sigma(n))$; the script writes the two-line form $\begin{pmatrix}1&amp;2&amp;\cdots&amp;n\\\sigma(1)&amp;\sigma(2)&amp;\cdots&amp;\sigma(n)\end{pmatrix}$.</p>
+<p><strong>Transpositions.</strong> For $i\ne j$, $\tau_{i,j}$ swaps $i$ and $j$ and fixes everything else. $\tau_{i,j}^2=\mathrm{Id}$, so $\tau_{i,j}^{-1}=\tau_{i,j}$, and $\tau_{i,j}=\tau_{j,i}$.</p>
+<p><strong>Inversions and sign.</strong> An <strong>inversion</strong> of $\sigma$ is a pair $i&lt;j$ with $\sigma(i)&gt;\sigma(j)$: two seats whose order the shuffle reverses. If $\sigma$ has $k$ inversions, $\mathrm{sign}(\sigma):=(-1)^k$; $\sigma$ is <strong>even</strong> if $\mathrm{sign}(\sigma)=1$ and <strong>odd</strong> otherwise.</p>
+<p><strong>Example.</strong> $\sigma=(2,3,1)\in S_3$: the pairs $(1,2)$, $(1,3)$, $(2,3)$ have images $(2,3)$, $(2,1)$, $(3,1)$; two are reversed, so $\sigma$ is even. $\tau_{1,2}=(2,1,3)$ has the single inversion $(1,2)$, so it is odd.</p>
+</div>
+
+<h3 id="proof-a">Proof A: the sign as a product of quotients (script Lemma 4.3.15, <a class="pl" href="linalg-script.html#p134">p. 134</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> For every $\sigma\in S_n$,</p>
+<p>$$\mathrm{sign}(\sigma)=\prod_{1\le i&lt;j\le n}\frac{\sigma(j)-\sigma(i)}{j-i}.$$</p></div>
+<p><strong>The idea.</strong> The denominators are all the differences $j-i$ of pairs. The numerators are the same differences again, in another order and with some signs flipped, because $\sigma$ just relabels the pairs. A sign flips exactly at an inversion.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $P$ be the set of two-element subsets $\{i,j\}$ of $\{1,\dots,n\}$.”</li>
+  <li><strong>Last line:</strong> “so the product is $(-1)^k\cdot1=\mathrm{sign}(\sigma)$, where $k$ is the number of inversions.”</li>
+  <li><strong>The gap:</strong> absolute values match because $\{i,j\}\mapsto\{\sigma(i),\sigma(j)\}$ is a bijection of $P$; signs are negative exactly at inversions.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A shuffle moves pairs of seats to pairs of seats, and every pair is hit once.</p></div><div class="sp-formal"><p>Let $P$ be the set of two-element subsets of $\{1,\dots,n\}$. The map $\{i,j\}\mapsto\{\sigma(i),\sigma(j)\}$ sends $P$ to $P$ (as $\sigma$ is injective) and has the inverse $\{k,l\}\mapsto\{\sigma^{-1}(k),\sigma^{-1}(l)\}$, so it is a bijection of $P$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the distances between the shuffled seats are the old distances, in another order.</p></div><div class="sp-formal"><p>Each factor's absolute value $|\sigma(j)-\sigma(i)|$ depends only on the pair $\{\sigma(i),\sigma(j)\}$. Reindexing the product by this bijection gives $\prod_{i&lt;j}|\sigma(j)-\sigma(i)|=\prod_{k&lt;l}(l-k)=\prod_{i&lt;j}(j-i)$. So the absolute value of the product is $1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A factor is negative exactly when the shuffle reverses that pair.</p></div><div class="sp-formal"><p>For $i&lt;j$ the denominator is positive, and $\sigma(j)-\sigma(i)&lt;0$ iff $(i,j)$ is an inversion. So exactly $k$ factors are negative, where $k$ is the number of inversions, and the product is $(-1)^k=\mathrm{sign}(\sigma)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_reindex">reindex by a bijection</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $P$ be the set of two-element subsets of $\{1,\dots,n\}$. Since $\sigma$ is a bijection, so is $\{i,j\}\mapsto\{\sigma(i),\sigma(j)\}$ on $P$. Hence $\prod_{i&lt;j}|\sigma(j)-\sigma(i)|=\prod_{i&lt;j}(j-i)$, and the product in the claim has absolute value $1$. Its factor for $i&lt;j$ is negative iff $(i,j)$ is an inversion, so the product equals $(-1)^k=\mathrm{sign}(\sigma)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Absolute values: the pairs are only relabelled (bijection of two-element subsets).</li>
+  <li>Signs: a factor is negative exactly at an inversion.</li>
+</ol>
+<p><strong>In short:</strong> same distances, $k$ minus signs.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Check the claim for $\sigma=(2,3,1)$.
+  <details><summary>Answer</summary><div><p>Pairs $(1,2),(1,3),(2,3)$: $\frac{3-2}{1}\cdot\frac{1-2}{2}\cdot\frac{1-3}{1}=1\cdot(-\tfrac12)\cdot(-2)=1=\mathrm{sign}(\sigma)$ ✓.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Why do we need two-element <em>subsets</em> and not ordered pairs $i&lt;j$?
+  <details><summary>Answer</summary><div><p>$\sigma$ need not keep the order: for an inversion, $(i,j)$ goes to the pair $(\sigma(j),\sigma(i))$ in increasing order. As subsets, $\{i,j\}\mapsto\{\sigma(i),\sigma(j)\}$ is well defined and bijective, and the absolute value $|\sigma(j)-\sigma(i)|$ does not care about the order.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof A from the frame alone.</li>
+</ol></div>
+
+<div class="explorer" id="pe-ex">
+<span class="label">Try it: inversions, sign and swaps</span>
+<p>Type a permutation of $1,\dots,n$ in one-line notation ($n\le8$), for example <em>2 4 1 3</em>. The explorer lists the inversions, computes the sign, checks the product formula of Proof A, and undoes the shuffle by swaps.</p>
+<div class="ex-nav" style="flex-wrap:wrap"><label style="white-space:nowrap">σ = <input id="pe-in" type="text" value="3 1 2 4" style="width:9em" aria-label="permutation in one-line notation"></label> <button type="button" id="pe-r">Example</button></div>
+<div id="pe-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var I=document.getElementById('pe-in');if(!I)return;
+  var ex=['3 1 2 4','4 1 2 3','2 1 3 4','2 4 1 3','5 4 3 2 1','2 3 1'],ei=0;
+  var msg=['FS25, MC13 (A): two inversions, even. This is the answer (Worked example 2).','FS25, MC13 (B): three inversions, odd.','FS25, MC13 (C): the transposition τ₁,₂, odd.','FS25, MC13 (D): three inversions, odd.','The reversal of 5 seats: every pair is reversed, 5·4/2 = 10 inversions, even (Exercise 4).','The example of section 2: even.'];
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function show(){var out=document.getElementById('pe-out'),t=I.value.trim().split(/[\s,]+/).filter(function(x){return x!=='';});
+    var n=t.length,s=t.map(Number),ok=n>=1&&n<=8,seen={};
+    s.forEach(function(x){if(!(x>=1&&x<=n&&Math.floor(x)===x)||seen[x])ok=false;seen[x]=1;});
+    if(!ok){out.innerHTML='<p><strong>Please type each of the numbers 1, …, n exactly once</strong> (n at most 8), separated by spaces.</p>';return;}
+    var inv=[],i,j,num=1,den=1;
+    for(i=0;i<n;i++)for(j=i+1;j<n;j++){if(s[i]>s[j])inv.push('('+(i+1)+','+(j+1)+')');num*=s[j]-s[i];den*=j-i;}
+    var g=gcd(num,den),q=num/g,d=den/g;
+    var sg=inv.length%2===0?1:-1,h='';
+    h+='<p><strong>Inversions</strong> (pairs i &lt; j with σ(i) &gt; σ(j)): '+(inv.length?inv.join(', '):'none')+'. That is <strong>'+inv.length+'</strong>, so sign(σ) = '+(sg>0?'+1 (even)':'−1 (odd)')+'.</p>';
+    h+='<p class="small">Proof A: the product of (σ(j) − σ(i))/(j − i) over all pairs is '+(d===1?String(q).replace('-','−'):String(q).replace('-','−')+'/'+d)+' '+(d===1&&q===sg?'✓':'✗')+'</p>';
+    var a=s.slice(),sw=[];for(var p=n;p>=1;p--){if(a[p-1]!==p){var r=a.indexOf(p);var tmp=a[r];a[r]=a[p-1];a[p-1]=tmp;sw.push('τ<sub>'+(r+1)+','+p+'</sub>');}}
+    h+='<p><strong>Undo by swaps.</strong> Moving the largest value to its seat each time needs '+sw.length+' swap'+(sw.length===1?'':'s')+(sw.length?': σ·'+sw.join('·')+' = Id, so σ = '+sw.slice().reverse().join('·'):'; σ = Id')+'. '+(sw.length%2===(sg>0?0:1)?'The parity of the number of swaps matches the sign (Proof C).':'')+'</p>';
+    var cur=s.join(' ');ex.forEach(function(e,k){if(e===cur)h+='<p class="small">'+msg[k]+'</p>';});
+    out.innerHTML=h;}
+  I.addEventListener('input',show);
+  document.getElementById('pe-r').addEventListener('click',function(){ei=(ei+1)%ex.length;I.value=ex[ei];show();});
+  show();
+})();
+</script>
+
+<h3 id="proof-b">Proof B: the sign is multiplicative (script Lemma 4.3.16, <a class="pl" href="linalg-script.html#p134">pp. 134–136</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> For all $\sigma,\tau\in S_n$: $\mathrm{sign}(\tau\sigma)=\mathrm{sign}(\tau)\,\mathrm{sign}(\sigma)$. In other words, $\mathrm{sign}:S_n\to\{\pm1\}$ is a group homomorphism.</p></div>
+<p><strong>The idea.</strong> Use the product of Proof A for $\tau\sigma$, and insert $\sigma(j)-\sigma(i)$ below and above each factor. One half is $\mathrm{sign}(\sigma)$. The other half is the product for $\tau$, read on the pairs $\{\sigma(i),\sigma(j)\}$, which are all pairs once more.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “By Proof A, $\mathrm{sign}(\tau\sigma)=\prod_{i&lt;j}\frac{\tau\sigma(j)-\tau\sigma(i)}{j-i}$.”</li>
+  <li><strong>Last line:</strong> “$=\mathrm{sign}(\tau)\,\mathrm{sign}(\sigma)$.”</li>
+  <li><strong>The gap:</strong> split each factor into two quotients; the first product is $\mathrm{sign}(\tau)$ after reindexing.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two shuffles in a row: first $\sigma$ moves the seats, then $\tau$.</p></div><div class="sp-formal"><p>All numbers below are nonzero rationals, since $\sigma(i)\ne\sigma(j)$ for $i\ne j$. By Proof A,</p>
+<p>$$\begin{aligned}\mathrm{sign}(\tau\sigma)&amp;=\prod_{i&lt;j}\frac{\tau\sigma(j)-\tau\sigma(i)}{j-i}\\&amp;=\prod_{i&lt;j}\frac{\tau\sigma(j)-\tau\sigma(i)}{\sigma(j)-\sigma(i)}\\&amp;\quad\cdot\prod_{i&lt;j}\frac{\sigma(j)-\sigma(i)}{j-i}.\end{aligned}$$</p>
+<p>The second product is $\mathrm{sign}(\sigma)$ (Proof A).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The first product only asks, for each pair of seats after $\sigma$, whether $\tau$ reverses it.</p></div><div class="sp-formal"><p>The quotient $\frac{\tau(l)-\tau(k)}{l-k}$ does not change if $k$ and $l$ are swapped (numerator and denominator both change sign), so it depends only on the set $\{k,l\}$. As $\{i,j\}$ runs through all two-element subsets, so does $\{k,l\}=\{\sigma(i),\sigma(j)\}$ (Proof A). Reindexing,</p>
+<p>$$\begin{aligned}&amp;\prod_{i&lt;j}\frac{\tau\sigma(j)-\tau\sigma(i)}{\sigma(j)-\sigma(i)}\\&amp;=\prod_{k&lt;l}\frac{\tau(l)-\tau(k)}{l-k}=\mathrm{sign}(\tau).\end{aligned}$$</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So the parities of two shuffles simply multiply.</p></div><div class="sp-formal"><p>Hence $\mathrm{sign}(\tau\sigma)=\mathrm{sign}(\tau)\,\mathrm{sign}(\sigma)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_reindex">reindex by a bijection</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>By Proof A, $\mathrm{sign}(\tau\sigma)=\prod_{i&lt;j}\frac{\tau\sigma(j)-\tau\sigma(i)}{\sigma(j)-\sigma(i)}\cdot\prod_{i&lt;j}\frac{\sigma(j)-\sigma(i)}{j-i}$. The second product is $\mathrm{sign}(\sigma)$. In the first, each factor is symmetric in its two indices, so it depends only on $\{\sigma(i),\sigma(j)\}$, and these sets run through all two-element subsets exactly once. So the first product is $\prod_{k&lt;l}\frac{\tau(l)-\tau(k)}{l-k}=\mathrm{sign}(\tau)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Write $\mathrm{sign}(\tau\sigma)$ as the product of Proof A.</li>
+  <li>Multiply and divide each factor by $\sigma(j)-\sigma(i)$.</li>
+  <li>Second product: $\mathrm{sign}(\sigma)$. First product: symmetric factors, reindex by $\{k,l\}=\{\sigma(i),\sigma(j)\}$, get $\mathrm{sign}(\tau)$.</li>
+</ol>
+<p><strong>In short:</strong> insert $\sigma(j)-\sigma(i)$ and reindex.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Check the claim for $\tau=\tau_{1,2}$ and $\sigma=(2,3,1)$ in $S_3$.
+  <details><summary>Answer</summary><div><p>$\tau\sigma(1)=\tau(2)=1$, $\tau\sigma(2)=\tau(3)=3$, $\tau\sigma(3)=\tau(1)=2$, so $\tau\sigma=(1,3,2)$ with one inversion: sign $-1=(-1)\cdot1$ ✓.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Why can we not prove Proof B directly by counting inversions?
+  <details><summary>Answer</summary><div><p>The inversions of $\tau\sigma$ are not simply the inversions of $\sigma$ plus those of $\tau$: a pair reversed by both is not an inversion of $\tau\sigma$. One can make the counting work (the number changes by an even amount), but the product formula does this bookkeeping automatically.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof B from the frame alone.</li>
+</ol></div>
+
+<h3 id="proof-c">Proof C: transpositions are odd, and half of $S_n$ is even (script Lemma 4.3.3 and Corollaries 4.3.18–4.3.20, <a class="pl" href="linalg-script.html#p131">pp. 131 and 136–137</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> (1) $\mathrm{sign}(\sigma^{-1})=\mathrm{sign}(\sigma)$ for all $\sigma\in S_n$. (2) $\mathrm{sign}(\tau_{i,j})=-1$ for all $i\ne j$. (3) A product of $k$ transpositions has sign $(-1)^k$. (4) For $n\ge2$ the even permutations form a subgroup $A_n$, and $|A_n|=\tfrac{n!}2$: the map $\sigma\mapsto\sigma\tau_{1,2}$ is a bijection from the even onto the odd permutations.</p></div>
+<p><strong>The idea.</strong> Everything follows from Proof B. For (2), every transposition is a relabelled copy of $\tau_{1,2}$: $\tau_{i,j}=\rho\,\tau_{1,2}\,\rho^{-1}$ for any $\rho$ with $\rho(1)=i$, $\rho(2)=j$, and the signs of $\rho$ and $\rho^{-1}$ cancel.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1) First line:</strong> “$1=\mathrm{sign}(\mathrm{Id})=\mathrm{sign}(\sigma\sigma^{-1})$.”</li>
+  <li><strong>(2) First line:</strong> “Let $\rho\in S_n$ with $\rho(1)=i$, $\rho(2)=j$. We show $\rho\tau_{1,2}\rho^{-1}=\tau_{i,j}$ by evaluating at every $k$.”</li>
+  <li><strong>(4) Last line:</strong> “$n!=|A_n|+|A_n\tau_{1,2}|=2|A_n|$.”</li>
+  <li><strong>The gap:</strong> Proof B in each part.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Undoing a shuffle has the same parity as the shuffle.</p></div><div class="sp-formal"><p>(1) $\mathrm{Id}$ has no inversions, so $1=\mathrm{sign}(\mathrm{Id})=\mathrm{sign}(\sigma\sigma^{-1})=\mathrm{sign}(\sigma)\,\mathrm{sign}(\sigma^{-1})$ (Proof B). Since $\mathrm{sign}(\sigma)=\pm1$, $\mathrm{sign}(\sigma^{-1})=\mathrm{sign}(\sigma)^{-1}=\mathrm{sign}(\sigma)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Swapping seats $i$ and $j$ is swapping seats $1$ and $2$ after renaming the seats.</p></div><div class="sp-formal"><p>(2) For $n\ge2$ choose $\rho\in S_n$ with $\rho(1)=i$, $\rho(2)=j$. For $k\notin\{i,j\}$, $\rho^{-1}(k)\notin\{1,2\}$, so $\rho\tau_{1,2}\rho^{-1}(k)=\rho\rho^{-1}(k)=k$. Also $\rho\tau_{1,2}\rho^{-1}(i)=\rho(\tau_{1,2}(1))=\rho(2)=j$, and likewise $j\mapsto i$. So $\rho\tau_{1,2}\rho^{-1}=\tau_{i,j}$. The only inversion of $\tau_{1,2}=(2,1,3,\dots,n)$ is $(1,2)$, so by Proof B and (1), $\mathrm{sign}(\tau_{i,j})=\mathrm{sign}(\rho)\cdot(-1)\cdot\mathrm{sign}(\rho)=-1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Each swap flips the parity once.</p></div><div class="sp-formal"><p>(3) By Proof B and (2), $\mathrm{sign}(\tau_1\cdots\tau_k)=\mathrm{sign}(\tau_1)\cdots\mathrm{sign}(\tau_k)=(-1)^k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>One extra swap pairs every even shuffle with an odd one.</p></div><div class="sp-formal"><p>(4) $A_n$ is the kernel of the homomorphism $\mathrm{sign}$, hence a subgroup. Let $\tau=\tau_{1,2}$. If $\sigma$ is even, $\mathrm{sign}(\sigma\tau)=-1$; if $\gamma$ is odd, $\gamma\tau^{-1}$ is even and $\gamma=(\gamma\tau^{-1})\tau$. So $\sigma\mapsto\sigma\tau$ maps $A_n$ onto the odd permutations, with inverse $\gamma\mapsto\gamma\tau^{-1}$. Every permutation is either even or odd, so $n!=|A_n|+|A_n|$ and $|A_n|=\tfrac{n!}2$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_reindex">reindex by a bijection</a> · <a class="mvl" href="linalg-moves.html#m-la_isinverse">check that it is the inverse</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(1) $1=\mathrm{sign}(\sigma\sigma^{-1})=\mathrm{sign}(\sigma)\,\mathrm{sign}(\sigma^{-1})$ and $\mathrm{sign}(\sigma)=\pm1$. (2) For $\rho$ with $\rho(1)=i$, $\rho(2)=j$, evaluation at every $k$ gives $\rho\tau_{1,2}\rho^{-1}=\tau_{i,j}$; since $\tau_{1,2}$ has exactly one inversion, $\mathrm{sign}(\tau_{i,j})=\mathrm{sign}(\rho)(-1)\mathrm{sign}(\rho^{-1})=-1$. (3) Proof B and (2). (4) $A_n=\ker(\mathrm{sign})$ is a subgroup; $\sigma\mapsto\sigma\tau_{1,2}$ is a bijection from $A_n$ onto the odd permutations with inverse $\gamma\mapsto\gamma\tau_{1,2}^{-1}$, so $n!=2|A_n|$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>(1): apply $\mathrm{sign}$ to $\sigma\sigma^{-1}=\mathrm{Id}$.</li>
+  <li>(2): write $\tau_{i,j}=\rho\tau_{1,2}\rho^{-1}$, check it on $i$, $j$ and the rest, then Proof B.</li>
+  <li>(4): multiplication by one fixed transposition swaps “even” and “odd”.</li>
+</ol>
+<p><strong>In short:</strong> Proof B does all the work; a transposition is a renamed $\tau_{1,2}$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Count the inversions of $\tau_{1,3}=(3,2,1)\in S_3$ directly.
+  <details><summary>Answer</summary><div><p>$(1,2)$: $3&gt;2$; $(1,3)$: $3&gt;1$; $(2,3)$: $2&gt;1$. Three inversions, odd ✓. In general $\tau_{i,j}$ with $i&lt;j$ has $2(j-i)-1$ inversions.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Could a permutation be a product of $3$ transpositions and also a product of $4$?
+  <details><summary>Answer</summary><div><p>No: by (3) the first has sign $-1$, the second $+1$, and the sign is well defined (it counts inversions). This is why “even” and “odd” make sense.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof C from the frame alone.</li>
+</ol></div>
+
+<h2 id="s3-the-leibniz-formula">3. The Leibniz formula, and why the determinant exists</h2>
+<div class="box">
+<p><strong>Where the formula comes from.</strong> Suppose $\det$ satisfies (D1)–(D3). Row $i$ of $A$ is $\sum_ja_{ij}e_j^T$. Expanding every row by (D1) gives $\det A=\sum a_{1j_1}\cdots a_{nj_n}\det(e_{j_1};\dots;e_{j_n})$ over all choices $j_1,\dots,j_n$. If two of the $j$'s agree, the matrix has two equal rows and the term vanishes (D2). So only the choices $j_i=\sigma(i)$ with $\sigma\in S_n$ survive, and $\det(e_{\sigma(1)};\dots;e_{\sigma(n)})=\mathrm{sign}(\sigma)$: sort the rows by swaps (each swap gives a factor $-1$) and use Proof C (3). This is the uniqueness proof once more, now with a formula in hand (script Exercise 4.3.1 for $n=2$).</p>
+<p><strong>The Leibniz formula</strong> (script (4.7), <a class="pl" href="linalg-script.html#p138">p. 138</a>). For $A=(a_{ij})\in M_{n\times n}(K)$ define</p>
+<p>$$\det A:=\sum_{\sigma\in S_n}\mathrm{sign}(\sigma)\prod_{i=1}^na_{i\sigma(i)}.$$</p>
+<p>Each term is $\mathrm{sign}(\sigma)$ $\cdot\,a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)}$.</p>
+<p>Each term picks one entry from every row and every column, like $n$ rooks that do not attack each other.</p>
+<p><strong>$n=2$:</strong> $S_2=\{\mathrm{Id},\tau_{1,2}\}$, so $\det A=a_{11}a_{22}-a_{12}a_{21}$.</p>
+<p><strong>$n=3$ (rule of Sarrus):</strong> the three even permutations $\mathrm{Id}$, $(2,3,1)$, $(3,1,2)$ and the three transpositions give</p>
+<p>$$\begin{aligned}\det A={}&amp;a_{11}a_{22}a_{33}+a_{12}a_{23}a_{31}\\&amp;+a_{13}a_{21}a_{32}-a_{13}a_{22}a_{31}\\&amp;-a_{12}a_{21}a_{33}-a_{11}a_{23}a_{32}.\end{aligned}$$</p>
+<p>Picture: copy the first two columns to the right; the three “downhill” diagonals count with $+$, the three “uphill” ones with $-$. There is <strong>no</strong> such rule for $n\ge4$: $S_4$ has $24$ elements, not $8$ diagonals.</p>
+</div>
+
+<h3 id="proof-d">Proof D: the Leibniz formula satisfies the axioms (script Theorem 4.3.24, <a class="pl" href="linalg-script.html#p139">pp. 139–141</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> The map $\det$ defined by the Leibniz formula satisfies (D1), (D2) and (D3). Hence the determinant exists, and by <a class="xl" href="linalg-18.html">lesson 18</a>, Proof E, it is the only map with these properties.</p></div>
+<p><strong>The idea.</strong> (D1): every term contains exactly one entry of row $i$, so each term is linear in row $i$. (D3): for $I_n$ only $\sigma=\mathrm{Id}$ avoids a zero entry. (D2): if rows $i$ and $j$ are equal, pair each even $\sigma$ with the odd $\sigma\tau_{i,j}$; the two terms have the same product and opposite signs.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(D1) First line:</strong> “Fix $i$ and let row $i$ be $\lambda a'+\mu a''$; the other rows are fixed.” <strong>Last line:</strong> “$=\lambda\det A'+\mu\det A''$.”</li>
+  <li><strong>(D2) First line:</strong> “Let rows $i\ne j$ of $A$ be equal, and $\tau=\tau_{i,j}$.” <strong>Last line:</strong> “each pair cancels, so $\det A=0$.”</li>
+  <li><strong>(D3):</strong> “For $\sigma\ne\mathrm{Id}$ some $\sigma(k)\ne k$, so the term contains $\delta_{k\sigma(k)}=0$.”</li>
+  <li><strong>The gap:</strong> the splitting $S_n=A_n\sqcup A_n\tau$ of Proof C (4), and the equal rows.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Every seating uses exactly one entry of each row, so stretching or mixing a row stretches or mixes every piece.</p></div><div class="sp-formal"><p>(D1) Fix $i$, and let $A$, $A'$, $A''$ agree outside row $i$, with $a_{ik}=\lambda a'_{ik}+\mu a''_{ik}$ for all $k$. For every $\sigma$,</p>
+<p>$$\begin{aligned}&amp;a_{1\sigma(1)}\cdots a_{i\sigma(i)}\cdots a_{n\sigma(n)}\\&amp;=\lambda\,a_{1\sigma(1)}\cdots a'_{i\sigma(i)}\cdots a_{n\sigma(n)}\\&amp;\quad+\mu\,a_{1\sigma(1)}\cdots a''_{i\sigma(i)}\cdots a_{n\sigma(n)}.\end{aligned}$$</p>
+<p>Multiply by $\mathrm{sign}(\sigma)$ and sum over $\sigma$: $\det A=\lambda\det A'+\mu\det A''$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>When two rows are the same, every seating has a twin that swaps their seats: same product, opposite parity.</p></div><div class="sp-formal"><p>(D2) Let rows $i\ne j$ be equal and $\tau=\tau_{i,j}$. By Proof C (4), $S_n=A_n\sqcup A_n\tau$, so</p>
+<p>$$\begin{aligned}\det A=\sum_{\sigma\in A_n}\Big(&amp;\prod_{k}a_{k\sigma(k)}\\&amp;-\prod_{k}a_{k\sigma\tau(k)}\Big).\end{aligned}$$</p>
+<p>The two products agree in every factor with $k\notin\{i,j\}$, since $\sigma\tau(k)=\sigma(k)$. The remaining factors are $a_{i\sigma(i)}a_{j\sigma(j)}$ and $a_{i\sigma(j)}a_{j\sigma(i)}$. Since rows $i$ and $j$ are equal, $a_{i\sigma(j)}=a_{j\sigma(j)}$ and $a_{j\sigma(i)}=a_{i\sigma(i)}$, so these agree too. Every bracket is $0$, and $\det A=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The city's own square plot has only one seating that avoids an empty seat.</p></div><div class="sp-formal"><p>(D3) For $A=I_n$, $a_{kl}=0$ for $k\ne l$. If $\sigma\ne\mathrm{Id}$, some $k$ has $\sigma(k)\ne k$ and the term contains $a_{k\sigma(k)}=0$. So $\det I_n=\mathrm{sign}(\mathrm{Id})\cdot1\cdots1=1$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_reindex">reindex by a bijection</a> · <a class="mvl" href="linalg-moves.html#m-la_multilin">expand a row by multilinearity</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(D1) Each term $\mathrm{sign}(\sigma)a_{1\sigma(1)}\cdots a_{n\sigma(n)}$ contains exactly one entry of row $i$, so it is linear in row $i$; a sum of linear maps is linear. (D2) If rows $i\ne j$ are equal, let $\tau=\tau_{i,j}$; by Proof C (4), $\det A=\sum_{\sigma\in A_n}\big(\prod_ka_{k\sigma(k)}-\prod_ka_{k\sigma\tau(k)}\big)$. The products agree for $k\notin\{i,j\}$, and $a_{i\sigma(j)}a_{j\sigma(i)}=a_{j\sigma(j)}a_{i\sigma(i)}$ because the rows are equal. So every bracket vanishes. (D3) For $I_n$ every $\sigma\ne\mathrm{Id}$ meets a zero entry, so $\det I_n=1$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>(D1): one entry of row $i$ in each term, so each term is linear in row $i$.</li>
+  <li>(D2): split $S_n$ into $A_n$ and $A_n\tau_{i,j}$, pair $\sigma$ with $\sigma\tau_{i,j}$, compare the two products factor by factor.</li>
+  <li>(D3): only the identity avoids a zero on $I_n$.</li>
+</ol>
+<p><strong>In short:</strong> linear term by term, equal rows cancel in pairs, the identity matrix has one surviving term.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In (D2) we did not use $1+1\ne0$. Why does that matter?
+  <details><summary>Answer</summary><div><p>The shortcut “swapping the two equal rows gives $\det A=-\det A$, so $\det A=0$” needs $2\ne0$ and fails over $\mathbb F_2$. The pairing argument shows (D2) over every field.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Use the Leibniz formula to show: if $A$ has integer entries, then $\det A\in\mathbb Z$.
+  <details><summary>Answer</summary><div><p>Every term is $\pm1$ times a product of integers, and a sum of integers is an integer.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof D from the frame alone.</li>
+</ol></div>
+
+<h2 id="worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</h2>
+
+<div class="box"><h3 id="we-1">Worked example 1: Sarrus against elimination (script Example 4.2.7)</h3>
+<p><a class="xl" href="linalg-18.html">Lesson 18</a> computed $\det A=10$ for $A=\begin{pmatrix}0&amp;1&amp;2\\3&amp;-2&amp;0\\4&amp;1&amp;4\end{pmatrix}$ by elimination. Check it with the rule of Sarrus.</p>
+<ol class="gq">
+  <li>The three “downhill” products.
+  <details><summary>Answer</summary><div><p>$a_{11}a_{22}a_{33}=0\cdot(-2)\cdot4=0$, $a_{12}a_{23}a_{31}=1\cdot0\cdot4=0$, $a_{13}a_{21}a_{32}=2\cdot3\cdot1=6$. Sum $6$.</p></div></details></li>
+  <li>The three “uphill” products, and the result.
+  <details><summary>Answer</summary><div><p>$a_{13}a_{22}a_{31}=2\cdot(-2)\cdot4=-16$, $a_{12}a_{21}a_{33}=1\cdot3\cdot4=12$, $a_{11}a_{23}a_{32}=0$. Sum $-4$. So $\det A=6-(-4)=10$ ✓, the same as the elimination, as Proof E of <a class="xl" href="linalg-18.html">lesson 18</a> promises.</p></div></details></li>
+  <li>When is Sarrus the better tool, and when elimination?
+  <details><summary>Answer</summary><div><p>Sarrus: $3\times3$ only, especially with letters or parameters, and as a check. Elimination: everything from $4\times4$ up, and matrices with structure (<a class="xl" href="linalg-18.html">lesson 18</a>, Exercise 3). For $n\ge4$ there is no Sarrus rule.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-2">Worked example 2: which permutation is even? (FS25, MC13)</h3>
+<p>Which of the following permutations in one-line notation is even? (A) $(3,1,2,4)$; (B) $(4,1,2,3)$; (C) $(2,1,3,4)$; (D) $(2,4,1,3)$.</p>
+<ol class="gq">
+  <li>Count the inversions of each.
+  <details><summary>Answer</summary><div><p>A quick way: for each entry, count the smaller entries to its right. (A) $3$ has $1,2$ to its right: $2$; the rest $0$. Total $2$. (B) $4$: three smaller to its right; total $3$. (C) $2$: one; total $1$. (D) $2$: one ($1$); $4$: two ($1,3$); total $3$.</p></div></details></li>
+  <li>Answer.
+  <details><summary>Answer</summary><div><p>Only (A) has an even number of inversions: <strong>(A)</strong>. Check with swaps: $(3,1,2,4)$ is sorted by swapping the entries $3,2$ and then $2,1$: two swaps, even (Proof C (3)). The explorer starts with (A).</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-3">Worked example 3: Leibniz on sparse matrices, and a $2\times2$ quick item (FS26, MC3)</h3>
+<ol class="gq">
+  <li>Compute $\det\begin{pmatrix}0&amp;2&amp;0&amp;0\\0&amp;0&amp;0&amp;3\\1&amp;0&amp;0&amp;0\\0&amp;0&amp;5&amp;0\end{pmatrix}$ with the Leibniz formula.
+  <details><summary>Answer</summary><div><p>Each row has one nonzero entry, so only one $\sigma$ avoids all zeros: $\sigma(1)=2$, $\sigma(2)=4$, $\sigma(3)=1$, $\sigma(4)=3$, i.e. $\sigma=(2,4,1,3)$, with $3$ inversions (Worked example 2, (D)). So $\det=-2\cdot3\cdot1\cdot5=-30$.</p></div></details></li>
+  <li>Compute $\det\begin{pmatrix}1&amp;2&amp;0&amp;0\\3&amp;4&amp;0&amp;0\\0&amp;0&amp;5&amp;6\\0&amp;0&amp;7&amp;8\end{pmatrix}$ with the Leibniz formula.
+  <details><summary>Answer</summary><div><p>A nonzero term needs $\sigma(\{1,2\})=\{1,2\}$ and $\sigma(\{3,4\})=\{3,4\}$: four permutations. $\mathrm{Id}$: $+1\cdot4\cdot5\cdot8=160$. $\tau_{1,2}$: $-2\cdot3\cdot5\cdot8=-240$. $\tau_{3,4}$: $-1\cdot4\cdot6\cdot7=-168$. $\tau_{1,2}\tau_{3,4}$ (even): $+2\cdot3\cdot6\cdot7=252$. Sum: $4$. And $(4-6)(40-42)=4$: the determinant of a block diagonal matrix is the product of the blocks' determinants (proved in general in lesson 20).</p></div></details></li>
+  <li>FS26, MC3: let $\det\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}=4$. Which are true? (A) $\det\begin{pmatrix}2a&amp;2b\\2c&amp;2d\end{pmatrix}=8$; (B) $\det\begin{pmatrix}a&amp;b\\c-a&amp;d-b\end{pmatrix}=4$; (C) $\det\begin{pmatrix}a&amp;b\\c+2a&amp;d+2b\end{pmatrix}=4$; (D) $\det\begin{pmatrix}a&amp;b\\3c&amp;3d\end{pmatrix}=12$.
+  <details><summary>Answer</summary><div><p><strong>(B), (C), (D).</strong> (A): both rows are scaled by $2$, so the determinant is $4\cdot4=16$. (B), (C): adding a multiple of row 1 to row 2 changes nothing; by the $2\times2$ formula, $a(d+2b)-b(c+2a)=ad-bc$. (D): one row scaled by $3$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Why it's cool</h3>
+<p>The sign of a permutation decides one of the most famous puzzles of the 19th century. In the 15-puzzle, fifteen numbered tiles slide in a $4\times4$ frame. The puzzle maker Sam Loyd claimed to offer a prize for swapping only the tiles 14 and 15. Nobody could, and nobody ever will: every slide, combined with the position of the empty square, keeps a parity fixed, and a single swap would change it (Proof C (3)). The same parity explains why a Rubik's cube cannot have exactly two edge pieces swapped, and in physics why exchanging two electrons multiplies their wave function by $-1$. That minus sign is the reason two electrons cannot share a state, and so the reason the periodic table has the shape it has.</p></div>
+
+<div class="box"><h3 id="for-wonder-the-permanent">For wonder: drop the sign, and the problem becomes hard (optional, 5 min)</h3>
+<p>Remove $\mathrm{sign}(\sigma)$ from the Leibniz formula and you get the <strong>permanent</strong>, $\mathrm{per}\,A=\sum_\sigma a_{1\sigma(1)}\cdots a_{n\sigma(n)}$. It looks simpler, but it obeys no row-operation rules, so elimination does not help. For a $0/1$ matrix it counts the ways to match $n$ people with $n$ jobs. Computing it is believed to be genuinely hard: no fast method is known, and in 1979 Leslie Valiant showed that a fast method would solve a whole class of counting problems. The sign is exactly what makes the determinant computable in $\tfrac13n^3$ steps.</p></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Each solution folds open under its exercise.</p>
+
+<h3 id="ex-1">Exercise 1 (script Exercise 4.3.1: the $2\times2$ case from the axioms)</h3>
+<p>Using only (D1)–(D3) and the swap rule (D6) of <a class="xl" href="linalg-18.html">lesson 18</a>, show that every function $\Delta:M_{2\times2}(K)\to K$ with these properties satisfies $\Delta\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}=ad-bc$.</p>
+<details><summary>Hint</summary><div><p>Write the rows as $ae_1+be_2$ and $ce_1+de_2$ and expand both rows by (D1).</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> expand by multilinearity, kill equal rows, sort the rest.</p>
+<p>Write $\Delta(u;v)$ for the matrix with rows $u,v$. By (D1) in row 1 and then in row 2,</p>
+<p>$$\begin{aligned}&amp;\Delta(ae_1+be_2;\,ce_1+de_2)\\&amp;=ac\,\Delta(e_1;e_1)+ad\,\Delta(e_1;e_2)\\&amp;\quad+bc\,\Delta(e_2;e_1)+bd\,\Delta(e_2;e_2).\end{aligned}$$</p>
+<p>$\Delta(e_1;e_1)=\Delta(e_2;e_2)=0$ by (D2), $\Delta(e_1;e_2)=\Delta(I_2)=1$ by (D3), and $\Delta(e_2;e_1)=-1$ by (D6). So $\Delta=ad-bc$. $\blacksquare$ For general $n$ the same expansion produces exactly the Leibniz formula (section 3).</p>
+</div></details>
+
+<h3 id="ex-2">Exercise 2 (the group $S_3$; script Example 4.3.7 and Exercise 4.3.8)</h3>
+<p>(a) List the six elements of $S_3$ with their signs. (b) Show that $A_3$ is a subgroup with three elements. (c) Show that $S_n$ is not abelian for $n\ge3$.</p>
+<details><summary>Hint</summary><div><p>(c) Compare $\tau_{1,2}\tau_{2,3}$ and $\tau_{2,3}\tau_{1,2}$ at the point $1$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> count inversions; Proof C (4); one point where two products differ.</p>
+<p>(a) Even: $\mathrm{Id}=(1,2,3)$ (no inversions), $(2,3,1)$ and $(3,1,2)$ (two each). Odd: the transpositions $(2,1,3)=\tau_{1,2}$, $(1,3,2)=\tau_{2,3}$, $(3,2,1)=\tau_{1,3}$.</p>
+<p>(b) $A_3=\{\mathrm{Id},(2,3,1),(3,1,2)\}$ is the kernel of $\mathrm{sign}$, hence a subgroup (Proof C (4)), and $|A_3|=3!/2=3$. Directly: with $\gamma=(2,3,1)$, $\gamma^2=(3,1,2)$ and $\gamma^3=\mathrm{Id}$.</p>
+<p>(c) For $n\ge3$: $\tau_{1,2}\tau_{2,3}(1)=\tau_{1,2}(1)=2$, but $\tau_{2,3}\tau_{1,2}(1)=\tau_{2,3}(2)=3$. So $\tau_{1,2}\tau_{2,3}\ne\tau_{2,3}\tau_{1,2}$. $\blacksquare$</p>
+</div></details>
+
+<h3 id="ex-3">Exercise 3 (every permutation is a product of transpositions)</h3>
+<p>Show that for $n\ge2$ every $\sigma\in S_n$ is a product of transpositions. Conclude that $\mathrm{sign}(\sigma)=(-1)^k$ for <em>any</em> way of writing $\sigma$ as a product of $k$ transpositions.</p>
+<details><summary>Hint</summary><div><p>Induction on $n$. If $\sigma(n)\ne n$, then $\tau_{n,\sigma(n)}\sigma$ fixes $n$. This is the explorer's “undo by swaps”, done from the left.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> induction on $n$; fix the last point with one transposition.</p>
+<p>$n=2$: $\mathrm{Id}=\tau_{1,2}\tau_{1,2}$ and $\tau_{1,2}$ itself. Step $n-1\to n$ ($n\ge3$): let $\sigma\in S_n$. If $\sigma(n)\ne n$, put $\sigma'=\tau_{n,\sigma(n)}\sigma$, so $\sigma'(n)=n$; otherwise $\sigma'=\sigma$. Then $\sigma'$ restricted to $\{1,\dots,n-1\}$ is a permutation of $\{1,\dots,n-1\}$, a product of transpositions by the hypothesis; the same transpositions, read in $S_n$, give $\sigma'$. Then $\sigma=\tau_{n,\sigma(n)}\sigma'$ (as $\tau^{-1}=\tau$), or $\sigma=\sigma'$. The second statement is Proof C (3). $\blacksquare$</p>
+</div></details>
+
+<h3 id="ex-4">Exercise 4 (the reversal, and the anti-diagonal matrix)</h3>
+<p>Let $\omega=(n,n-1,\dots,1)\in S_n$. (a) Compute $\mathrm{sign}(\omega)$. (b) Compute the determinant of the $n\times n$ matrix $J_n$ with ones on the anti-diagonal ($a_{i,n+1-i}=1$) and zeros elsewhere.</p>
+<details><summary>Hint</summary><div><p>(a) Which pairs are inversions? (b) Which $\sigma$ gives a nonzero term?</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> count all pairs; one surviving Leibniz term.</p>
+<p>(a) Every pair $i&lt;j$ is reversed, so $\omega$ has $\binom n2=\tfrac{n(n-1)}2$ inversions and $\mathrm{sign}(\omega)=(-1)^{n(n-1)/2}$. This is $+1$ for $n\equiv0,1$ and $-1$ for $n\equiv2,3\pmod4$; for example $n=5$ gives $10$ inversions (try it in the explorer).</p>
+<p>(b) Row $i$ of $J_n$ has its only nonzero entry in column $n+1-i=\omega(i)$, so the only nonzero Leibniz term is the one for $\omega$: $\det J_n=\mathrm{sign}(\omega)=(-1)^{n(n-1)/2}$. Check: $n=2$, $\det\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}=-1$ ✓; $n=3$: one swap ($L_1\leftrightarrow L_3$) gives $I_3$, so $-1$ ✓.</p>
+</div></details>
+
+<h3 id="ex-5">Exercise 5 (permutation matrices)</h3>
+<p>For $\sigma\in S_n$ let $P_\sigma$ be the matrix whose row $i$ is $e_{\sigma(i)}^T$. (a) Show $\det P_\sigma=\mathrm{sign}(\sigma)$. (b) Show $P_\sigma P_\rho=P_{\rho\sigma}$. (c) <a class="xl" href="linalg-18.html">Lesson 18</a> gives $\det(P_\sigma P_\rho)=\det P_\sigma\det P_\rho$, hence $\mathrm{sign}(\rho\sigma)=\mathrm{sign}(\rho)\,\mathrm{sign}(\sigma)$. Is this a second proof of Proof B?</p>
+<details><summary>Hint</summary><div><p>(b) Row $i$ of a product $XY$ is (row $i$ of $X$) times $Y$, and $e_k^TY$ is row $k$ of $Y$. (c) What did we need to know before we could use the product rule?</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> one Leibniz term; rows of a product; watch for a circle.</p>
+<p>(a) $(P_\sigma)_{ik}=1$ iff $k=\sigma(i)$. The only nonzero term of the Leibniz formula is the one for $\sigma$, so $\det P_\sigma=\mathrm{sign}(\sigma)$.</p>
+<p>(b) Row $i$ of $P_\sigma P_\rho$ is $e_{\sigma(i)}^TP_\rho$, which is row $\sigma(i)$ of $P_\rho$, i.e. $e_{\rho(\sigma(i))}^T$. That is row $i$ of $P_{\rho\sigma}$.</p>
+<p>(c) <strong>No</strong>, not as a foundation. The product rule of <a class="xl" href="linalg-18.html">lesson 18</a> assumed that a determinant exists, and our existence proof (Proof D) used the splitting $S_n=A_n\sqcup A_n\tau$, which came from Proof B. So the argument is circular as a proof of Proof B. It is a good memory aid, and a consistency check.</p>
+</div></details>
+
+<h3 id="ex-6">Exercise 6 (a sparse $4\times4$ determinant by Leibniz)</h3>
+<p>Compute $\det\begin{pmatrix}0&amp;0&amp;1&amp;2\\0&amp;0&amp;3&amp;4\\5&amp;6&amp;0&amp;0\\7&amp;8&amp;0&amp;0\end{pmatrix}$ with the Leibniz formula, and check with row swaps.</p>
+<details><summary>Hint</summary><div><p>A nonzero term needs $\sigma(\{1,2\})=\{3,4\}$ and $\sigma(\{3,4\})=\{1,2\}$: four permutations. Count each one's inversions with the “smaller entries to the right” trick.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> list the surviving permutations, sign each, add; check by elimination.</p>
+<ul>
+  <li>$(3,4,1,2)$: $4$ inversions, $+a_{13}a_{24}a_{31}a_{42}=+1\cdot4\cdot5\cdot8=160$.</li>
+  <li>$(4,3,1,2)$: $5$ inversions, $-a_{14}a_{23}a_{31}a_{42}=-2\cdot3\cdot5\cdot8=-240$.</li>
+  <li>$(3,4,2,1)$: $5$ inversions, $-a_{13}a_{24}a_{32}a_{41}=-1\cdot4\cdot6\cdot7=-168$.</li>
+  <li>$(4,3,2,1)$: $6$ inversions, $+a_{14}a_{23}a_{32}a_{41}=+2\cdot3\cdot6\cdot7=252$.</li>
+</ul>
+<p>Sum: $160-240-168+252=4$. Check: the swaps $L_1\leftrightarrow L_3$ and $L_2\leftrightarrow L_4$ (two sign changes) give the block matrix of Worked example 3 with blocks swapped, and $(40-42)(4-6)=4$ ✓.</p>
+</div></details>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<ul>
+  <li><strong>Examples 4.3.4–4.3.5</strong> ($S_1$ and $S_2$): contained in section 2.</li>
+  <li><strong>The two-line pictures of inversions</strong> (Examples 4.3.10–4.3.12, crossings of strings): the explorer's inversion list does the same job.</li>
+  <li><strong>Theorem 4.3.25 ($\det A^T=\det A$) and the rest of section 4.3</strong> (Vandermonde, block matrices, determinants over rings): lesson 20.</li>
+</ul>
+<p><strong>Next:</strong> lesson 20: $\det A^T=\det A$, column operations, expansion along a row or column, the adjugate matrix and Cramer's rule.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg.html">Linear Algebra home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
