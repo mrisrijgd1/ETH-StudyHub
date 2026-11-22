@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Surveyors of the Free City">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=fix1120"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=fc1120"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Surveyors of the Free City</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=story1120">
+<link rel="stylesheet" href="assets/studyhub.css?v=bar1120">
+<script defer src="assets/studyhub.js?v=fix1120"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-subjects" aria-label="Subjects"><a href="analysis.html">Analysis I</a><a href="physics.html">Physics I</a><a href="chemie/">Chemie I (PC)</a><a href="linalg.html" aria-current="page">Linear Algebra I</a><a href="dive/" class="study-game"><span aria-hidden="true">🎮 </span>Exam Dive</a></nav><nav class="study-utilities" aria-label="Personal area"><a href="account.html" class="study-progress">Progress</a><a href="more.html">More</a><a href="linalg-10.html?lang=de" lang="de" hreflang="de">DE</a><details class="study-design"><summary>Design</summary></details></nav></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Linear Algebra I · Lesson 10</span>
+<h1>The Surveyors of the Free City</h1>
+<p class="lead">Linear functionals and the dual space V*, a functional is determined by its values on a basis and any values can be prescribed, V* is a vector space, the Kronecker delta and the dual basis with dim V* = dim V, the coordinate formulas, computing dual bases, a dual-basis explorer, why the dual basis fails in infinite dimension (c00), Serie 5 exercises 25 and 26, Serie 6 exercises 27 and 28, Quiz 4, HS17 problem 4.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-9-5">Recap of lesson 9 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-surveyors-of">1. The story: the surveyors of the Free City</a>
+</li>
+<li><a href="#s2-linear-functionals">2. Linear functionals</a>
+<ol>
+<li><a href="#proof-a">Proof A: a functional sends $0$ to $0$ and respects linear combinations (lecture §6, remark after the definition)</a></li>
+<li><a href="#we-1">Worked example 1: functional or not? (lecture examples; script p. 313)</a></li>
+</ol></li>
+<li><a href="#s3-a-functional-is-determined-by">3. A functional is determined by its values on a basis</a>
+<ol>
+<li><a href="#proof-b">Proof B: values on a basis determine the functional (lecture, Satz 6.0; script p. 314, “unique” part)</a></li>
+<li><a href="#proof-c">Proof C: any values on a basis come from exactly one functional (script p. 314, “exists” part; lecture, used in Satz 6.2)</a></li>
+<li><a href="#we-2">Worked example 2: a value from three values (Quiz 4)</a></li>
+</ol></li>
+<li><a href="#s4-the-dual-space">4. The dual space $V^*$</a>
+<ol>
+<li><a href="#proof-d">Proof D: $V^*$ is a vector space over $K$ (lecture, Satz 6.1; script, Corollary “$V^*$ is a vector space”, p. 313)</a></li>
+</ol></li>
+<li><a href="#s5-the-kronecker-delta-and-the">5. The Kronecker delta and the dual basis</a>
+<ol>
+<li><a href="#proof-e">Proof E: the dual basis is a basis of $V^*$, so $\dim V^*=\dim V$ (lecture, Satz 6.2; Proposition 10.2.5 (1), p. 317; Corollary, p. 313)</a></li>
+<li><a href="#proof-f">Proof F: the coordinate formulas (Lemma 10.2.10, p. 320; Proposition 10.2.5 (1), p. 317)</a></li>
+<li><a href="#we-3">Worked example 3: the dual basis of $\mathrm{Fib}$ (lecture, example 1 after the definition)</a></li>
+</ol></li>
+<li><a href="#s6-computing-a-dual-basis">6. Computing a dual basis</a>
+<ol>
+<li><a href="#the-method-script-example-10">The method (script Example 10.2.6, p. 318, and the solution of Exercise 10.2.9, p. 320)</a></li>
+<li><a href="#we-4">Worked example 4: two dual bases from the script (Example 10.2.6, p. 318; Exercise 10.2.9, p. 319–320)</a></li>
+</ol></li>
+<li><a href="#s7-infinite-dimension-the-dual-set">7. Infinite dimension: the dual set is not a basis</a>
+<ol>
+<li><a href="#proof-g">Proof G: in infinite dimension the dual set is independent but does not span $V^*$ (Proposition 10.2.5 (2), p. 317; Serie 6, exercise 27 (c))</a></li>
+<li><a href="#over-what-is-proved-and">$\dim c_{00}&lt;\dim c_{00}^*$ over $\mathbb F_2$: what is proved and what is stated (lecture; Serie 6, exercise 27, remark)</a></li>
+<li><a href="#why-it-s-cool">Why it&#x27;s cool</a></li>
+<li><a href="#for-wonder-the-dual-is">For wonder: the dual is always bigger in infinite dimension</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-5">Worked example 5: three functionals on $\mathbb R_2[X]$ (HS17, problem 4 (a) and (b), 11 points)</a></li>
+<li><a href="#we-6">Worked example 6: three quick exam items (HS24, 3.A3; FS25, MC6; mock exam HS20, 2 (d))</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Serie 5, exercise 26, and HS20, 2 (d))</a></li>
+<li><a href="#ex-2">Exercise 2 (Serie 5, exercise 25)</a></li>
+<li><a href="#ex-3">Exercise 3 (Serie 6, exercise 27)</a></li>
+<li><a href="#ex-4">Exercise 4 (Serie 6, exercise 28: step functions)</a></li>
+<li><a href="#ex-5">Exercise 5 (FS17, problem 6 (a)–(d), 15 points)</a></li>
+<li><a href="#ex-6">Exercise 6 (true or false)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) define a <strong>linear functional</strong> and decide quickly whether a given map $V\to K$ is one; (2) prove that a functional is <strong>determined by its values on a basis</strong> and that <strong>any values can be prescribed</strong>; (3) define the <strong>dual space</strong> $V^*$ with its operations and prove that it is a vector space; (4) define the <strong>Kronecker delta</strong> and the <strong>dual basis</strong>, and prove that the dual basis is a basis of $V^*$, so $\dim V^*=\dim V$; (5) use the coordinate formulas $v=\sum_i b_i^*(v)\,b_i$ and $f=\sum_i f(b_i)\,b_i^*$; (6) <strong>compute a dual basis</strong> in $K^n$ and in a polynomial space by solving small linear systems; (7) explain why the dual basis is <em>not</em> a basis of $V^*$ when $\dim V=\infty$, with the example $c_{00}$.</dd></div>
+  <div><dt>Time</dt><dd>About 90 minutes. A natural break comes after section 5 (the dual basis is proved; computing it and the infinite case come next).</dd></div>
+  <div><dt>Script (English, printed pages)</dt><dd>Script EN 2023, chapter 10 “Dual space II”, Sections 10.0–10.2:
+    <ul>
+      <li><strong><a class="pl" href="linalg-script.html#p313">p. 313</a>:</strong> Definition 10.0.1 (the Kronecker delta $\delta_{ij}$); Definition “Dual space” ($V^*:=\mathrm{Hom}_K(V,K)$, its elements are the linear functionals); Corollary “$V^*$ is a vector space” (and $\dim V^*=\dim V$ in finite dimension); the exercise identifying $(K^n_{\text{col}})^*$ with the row vectors; Section 10.1, the operations $(\varphi+\psi)(v):=\varphi(v)+\psi(v)$ and $(\alpha\varphi)(v):=\alpha\varphi(v)$.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p314">p. 314</a>:</strong> a functional is uniquely determined by any choice of values on a basis (the script quotes Theorem 3.1.15 on linear maps); Proposition 10.1.1 ($V^*\cong K^I$ for a basis indexed by $I$); Example 10.1.2 (for $\dim V=n$, $\varphi$ becomes the row $(\varphi(v_1),\dots,\varphi(v_n))$); Example 10.1.3 (for $V$ $=\mathrm{Sp}(e_1,e_2,\dots)\subseteq K^\infty$, $V^*\cong K^\infty$ and $\dim V^*&gt;\dim V$).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p315">p. 315</a>:</strong> Example 10.1.4 (functions with finite support $K^{(I)}$), Exercises 10.1.5 and 10.1.6 (direct sums and products); only named here.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p316">p. 316</a>:</strong> Example 10.1.7 ($(K^n)^*$ is the space of row vectors), Note 10.1.8, Definition 10.2.1 (the dual basis $v_i^*(v_j)=\delta_{ij}$; “dual set” in infinite dimension).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p317">p. 317</a>:</strong> Note 10.2.2 ($v_i^*$ depends on the whole basis), Notation 10.2.3, Note 10.2.4, Proposition 10.2.5 ((1) in finite dimension the dual basis is a basis and $l=\sum_i l(v_i)v_i^*$; (2) the dual set is always linearly independent).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p318">p. 318–319</a>:</strong> Example 10.2.6 (the dual basis of $(1,2),(3,4)$ via an inverse matrix), the lemma on transition matrices of dual bases (only named here), Proposition 10.2.7 and Note 10.2.8 (an algorithm for dual bases), Exercise 10.2.9 (the dual basis of $1,\,1+x,\,1+x+x^2$).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p320">p. 320</a>:</strong> the solution of Exercise 10.2.9, Lemma 10.2.10 (the coordinates of $v$ are $v_i^*(v)$, the coordinates of $\varphi$ are $\varphi(v_i)$), Example 10.2.11 (scalar products; Linear Algebra II).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Prof. Halbeisen's §6 “Der Dualraum” (19–26 Oct, notes <a class="pl" href="linalg-script.html#p32">pp. 32–36</a>): the definition of a linear map and of a functional (a linear map $V\to K$); examples 0–2 (the zero functional, $f_{a,b}(\alpha,\beta)=a\alpha+b\beta$ on $\mathbb R^2$, and every functional on $\mathbb R^2$ is an $f_{a,b}$); <strong>Satz 6.0</strong> (on a basis $x_1,\dots,x_n$: $f(\sum\alpha_ix_i)=\sum a_i\alpha_i$ with $a_i=f(x_i)$), with the row-times-column picture; <strong>Satz 6.1</strong> (the functionals on $V$ form a vector space $V^*$); the example $\mathbb R^{2*}\cong\mathbb R^2$; <strong>Satz 6.2</strong> ($\dim V^*=\dim V$, proved with the functionals $x_i^*$ and the delta $\delta_i^j$); the definition of the dual basis and of a pair of dual bases; the examples: the dual basis of $\mathrm{Fib}$, and $\dim c_{00}&lt;\dim c_{00}^*$ over $\mathbb F_2$. Serie 5, exercises 25 and 26, Serie 6, exercises 27 and 28, and Quiz 4 belong here.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>The dual space is one of the few Linear Algebra I topics that the combined exams ask in a <strong>fixed pattern</strong>, and Halbeisen spends a whole section on it. HS24, problem 3: “define the dual space $V^*$” (1 point), “given a basis $v_1,\dots,v_n$, define the dual basis and show that it is a basis of $V^*$, without using any result on $\dim V^*$” (3 points), “write the functional $L(p)$ $=\frac12\int_{-1}^1(p(t)+p'(t))\,dt$ on $\mathbb R[x]_{\le2}$ as a combination of the dual basis of $1,x,x^2$” (3 points). FS25, question MC6: the coordinate vector of a functional on $\mathbb C[x]_{\le2}$ with respect to the dual basis. HS17, problem 4 (11 points for (a) and (b)): show that three functionals on $\mathbb R_2[X]$ form a basis of $V^*$, and find the basis $B$ of $V$ whose dual basis they are. The mock exam HS20, 2 (d): the dimension of $\mathrm{Hom}(M_{3\times4}(\mathbb F_5),\mathbb F_5)$, which is the dual of a $12$-dimensional space. Quiz 4 and HS20, 2 (d) ask for the value of a linear map that is known only on a basis. The annihilator (FS17, problem 6; FS25, problem 4) and the dual map (HS24, 3.A4) build on today and come in lesson 14. All the patterns of today are below, worked through.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-9-5">Recap of <a class="xl" href="linalg-09.html">lesson 9</a> (5 minutes)</h3>
+<p>$W\subseteq V$ a subspace. The cosets $a+W$ partition $V$; $a+W=b+W\iff a-b\in W$; the quotient $V/W$ has the operations $(a+W)+(b+W):=(a+b)+W$ and $\lambda(a+W):=\lambda a+W$, and these are well defined; $\dim V/W=\dim V-\dim W$. Check yourself:</p>
+<ol>
+  <li>Is $(2,1,0)+W=(0,0,3)+W$ for $W$ $=\{x\in\mathbb R^3\mid x_1+x_2+x_3=0\}$?</li>
+  <li>What does “the rule $[a]\mapsto g(a)$ is well defined on $V/W$” mean, in one sentence?</li>
+  <li>$V=\mathbb F_3^4$, $\dim W=1$. How many elements has $V/W$?</li>
+  <li>Which vector of $V/W$ is the zero vector?</li>
+</ol>
+<details><summary>Answers</summary><div><p>1. $(2,1,0)-(0,0,3)=(2,1,-3)$ has coordinate sum $0$, so it lies in $W$: <strong>equal</strong>. 2. If $a+W=a'+W$, then $g(a)=g(a')$: the value does not depend on the representative. 3. $\dim V/W=3$, so $3^3=27$ elements (or: $81$ vectors in cosets of $|W|=3$ elements, $81/3=27$). 4. $0+W=W$. Today the well-definedness check comes back in FS17, problem 6, where a functional on $V/W$ is defined through representatives (Exercise 5).</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>linear map</td><td>lineare Abbildung</td></tr>
+    <tr><td>linear functional, linear form</td><td>(lineares) Funktional, Linearform</td></tr>
+    <tr><td>zero functional</td><td>Nullfunktional</td></tr>
+    <tr><td>dual space $V^*$</td><td>Dualraum</td></tr>
+    <tr><td>Kronecker delta</td><td>Kronecker-Delta</td></tr>
+    <tr><td>dual basis, pair of dual bases</td><td>duale Basis, Paar dualer Basen</td></tr>
+    <tr><td>dual set (infinite dimension)</td><td>duale Familie (unendlichdimensional)</td></tr>
+    <tr><td>evaluation (at a point)</td><td>Auswertung (an einer Stelle)</td></tr>
+    <tr><td>row vector, column vector</td><td>Zeilenvektor, Spaltenvektor</td></tr>
+    <tr><td>extend linearly</td><td>linear fortsetzen</td></tr>
+    <tr><td>support (of a sequence)</td><td>Träger</td></tr>
+    <tr><td>isomorphic</td><td>isomorph</td></tr>
+    <tr><td>annihilator (lesson 14)</td><td>Annullator (Annihilator)</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-surveyors-of">1. The story: the surveyors of the Free City</h2>
+<div class="story">
+<p>The Free City now has arrows (<a class="xl" href="linalg-05.html">lesson 5</a>), mapmakers who choose roads so that every place has a unique address (lessons 6 and 7), districts (<a class="xl" href="linalg-08.html">lesson 8</a>) and parallel streets (<a class="xl" href="linalg-09.html">lesson 9</a>). What it does not yet have is a way to <em>measure</em>. So the council hires surveyors.</p>
+<p>A surveyor has one instrument. Hold it against any arrow, and it shows a single number. The council has only two rules for a fair instrument. If two journeys are joined end to end, the reading of the joint journey is the sum of the two readings. If a journey is stretched, the reading is stretched by the same factor. A surveyor who reads “how far east” is fair. A surveyor who reads “how long, in steps” is not: two journeys of length $1$ in opposite directions join to a journey of length $0$, not $2$.</p>
+<p>The first discovery: a fair surveyor only needs to be told the readings on the mapmaker's roads. Every place is so far along road one, so far along road two; the fair rules then force the reading of every journey. And conversely, any readings on the roads can be chosen: there is always exactly one fair surveyor with those readings.</p>
+<p>The second discovery: surveyors can be combined. Two surveyors standing together and adding their readings are again a fair surveyor; so is a surveyor whose numbers are doubled. The surveyors of the city obey the same eight laws as the arrows. They form a second city, the city of instruments.</p>
+<p>The third discovery: for each choice of roads there is a special team. For each road, one surveyor reads “how far along <em>my</em> road”, and reads $0$ on every other road. This team is the mapmakers' set of roads for the city of instruments: every fair surveyor is a unique mixture of them, and there are exactly as many of them as roads. The census of the instruments agrees with the census of the arrows.</p>
+<p>Only at the end of the lesson does the city become infinite: an endless street with numbered houses, where every caravan visits only finitely many. There the team is still independent (no surveyor in it can be imitated by the others), but it no longer reaches every surveyor. The surveyor who simply counts all houses visited is no finite mixture of the road surveyors.</p>
+</div>
+<p>In mathematics: a fair surveyor is a <strong>linear functional</strong> $f:V\to K$; “told the readings on the roads” is “<strong>determined by its values on a basis</strong>”; the city of instruments is the <strong>dual space</strong> $V^*$; the special team is the <strong>dual basis</strong> $b_1^*,\dots,b_n^*$ with $b_i^*(b_j)=\delta_{ij}$; the census of the instruments is $\dim V^*=\dim V$; the endless street is $c_{00}$, where the <strong>dual set</strong> is linearly independent but does not span $V^*$.</p>
+
+<h2 id="s2-linear-functionals">2. Linear functionals</h2>
+<p>Throughout, $K$ is a field and $V$ a vector space over $K$. We regard $K$ itself as a vector space over $K$ (the case $n=1$ of $K^n$; its one-element basis is $1$). The lecture defines linear maps in general here and then specialises; the script defines the functionals as the elements of $\mathrm{Hom}_K(V,K)$. Both say the same thing.</p>
+<div class="box">
+<p><strong>Definition (linear map, linear functional; lecture §6; script <a class="pl" href="linalg-script.html#p313">p. 313</a>).</strong> Let $V,W$ be vector spaces over $K$. A map $f:V\to W$ is <strong>linear</strong> if for all $x,y\in V$ and all $\lambda\in K$:</p>
+<ol>
+  <li>$f(x+y)=f(x)+f(y)$ (additive), and</li>
+  <li>$f(\lambda x)=\lambda f(x)$ (homogeneous).</li>
+</ol>
+<p>A linear map $f:V\to K$ is a <strong>linear functional</strong> (also: linear form). The functional $V\to K$, $x\mapsto0$, is the <strong>zero functional</strong>.</p>
+</div>
+<p class="small">In the lecture: Halbeisen writes $f(x+_Vy)=f(x)+_Wf(y)$ to stress that the two plus signs live in different spaces, and remarks that (ii) with $\lambda=0$ gives $f(0_V)=0_K$. The script writes functionals as $l$, $\varphi$ or $\psi$; we use $f,g$ like the lecture and the Serien. Linear maps $V\to W$ in general are the topic of lesson 11, where $V^*$ will reappear as $\mathrm{Hom}(V,K)$.</p>
+
+<p><strong>Examples</strong> (check each one against the two rules in your head):</p>
+<ul>
+  <li><strong>On $K^n$:</strong> for fixed $a_1,\dots,a_n\in K$, $f(x_1,\dots,x_n):=a_1x_1+\dots+a_nx_n$. The lecture's example 1 is $f_{a,b}(\alpha,\beta)=a\alpha+b\beta$ on $\mathbb R^2$. The <strong>coordinate functionals</strong> $x\mapsto x_i$ are the case $a=e_i$.</li>
+  <li><strong>On polynomials</strong> $K[x]$: <strong>evaluation at a point</strong> $t\in K$, $\mathrm{ev}_t(p):=p(t)$ (because $(p+q)(t)=p(t)+q(t)$ and $(\lambda p)(t)=\lambda p(t)$); the <strong>coefficient of $x^k$</strong>, $p=\sum_jc_jx^j\mapsto c_k$; over $\mathbb R$ also $p\mapsto p'(0)$ and $p\mapsto\int_0^1p(t)\,dt$ (derivative and integral are linear, Analysis).</li>
+  <li><strong>On sequences:</strong> on $K^\infty$ the $k$-th entry $(a_n)\mapsto a_k$; on $c_{00}$, the space of sequences with only finitely many nonzero entries (section 7), the sum of all entries $(a_n)\mapsto\sum_na_n$, a finite sum.</li>
+  <li><strong>On matrices:</strong> the trace $M_{n\times n}(K)\to K$, $A\mapsto a_{11}+\dots+a_{nn}$; any single entry $A\mapsto a_{ij}$.</li>
+</ul>
+<p><strong>Non-examples</strong> on $\mathbb R^2$: $x\mapsto x_1+1$ (sends $0$ to $1$); $x\mapsto x_1x_2$ (doubling $x$ quadruples the value); $x\mapsto|x_1|$ ($f(-e_1)=1\ne-1=-f(e_1)$); on $\mathbb R[x]$: $p\mapsto p(0)^2$. Each fails one of the two rules, and to show that, <strong>one counterexample</strong> is enough.</p>
+
+<h3 id="proof-a">Proof A: a functional sends $0$ to $0$ and respects linear combinations (lecture §6, remark after the definition)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $f:V\to K$ be a linear functional. Then (a) $f(0_V)=0$ and $f(-x)=-f(x)$; (b) for all $n\ge1$, $x_1,\dots,x_n\in V$ and $\lambda_1,\dots,\lambda_n\in K$: $\ f\big(\sum_{i=1}^n\lambda_ix_i\big)$ $=\sum_{i=1}^n\lambda_if(x_i)$. Conversely, a map $f:V\to K$ with $f(\lambda x+\mu y)$ $=\lambda f(x)+\mu f(y)$ for all $x,y,\lambda,\mu$ is linear.</p></div>
+<p><strong>The idea.</strong> The two rules are about one sum and one multiple; a linear combination is built from finitely many of each, so apply the rules one piece at a time. For the zero vector, write it as a multiple: $0_V=0\cdot0_V$, then homogeneity pulls the scalar $0$ out.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line (a):</strong> “$f(0_V)=f(0\cdot0_V)$.” <strong>Last line:</strong> “$=0\cdot f(0_V)=0$.”</li>
+  <li><strong>First line (b):</strong> “Induction on $n$. For $n=1$: $f(\lambda_1x_1)=\lambda_1f(x_1)$ by homogeneity.” <strong>Last line:</strong> “which is the claim for $n+1$.”</li>
+  <li><strong>The gap:</strong> split off the last term with additivity, then use the hypothesis for $n$ terms.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The journey that goes nowhere is any journey stretched by zero, so its reading is zero times something.</p></div><div class="sp-formal"><p>(a) $f(0_V)=f(0\cdot0_V)=0\cdot f(0_V)=0$ (<a class="xl" href="linalg-05.html">lesson 5</a>: $0\cdot v=0_V$; homogeneity). And $f(-x)=f((-1)x)=(-1)f(x)=-f(x)$ (<a class="xl" href="linalg-05.html">lesson 5</a>: $(-1)x=-x$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A single stretched road is the second rule.</p></div><div class="sp-formal"><p>(b) Induction on $n$. For $n=1$, $f(\lambda_1x_1)=\lambda_1f(x_1)$ by homogeneity.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A longer trip is the trip so far, joined with one more stretched road.</p></div><div class="sp-formal"><p>Let the claim hold for $n$. Then $f\big(\sum_{i=1}^{n+1}\lambda_ix_i\big)$ $=f\big(\sum_{i=1}^n\lambda_ix_i\big)+f(\lambda_{n+1}x_{n+1})$ (additivity) $=\sum_{i=1}^n\lambda_if(x_i)+\lambda_{n+1}f(x_{n+1})$ (hypothesis and homogeneity), which is the claim for $n+1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>An instrument that respects every two-road mixture respects joining (both factors $1$) and stretching (second factor $0$).</p></div><div class="sp-formal"><p>Conversely: $\lambda=\mu=1$ gives additivity. With $\lambda=\mu=0$ we get $f(0_V)=0$, and then $\mu=0$, $y=0_V$ gives $f(\lambda x)=\lambda f(x)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_unfold">unfold the definition</a> <a class="mvl" href="linalg-moves.html#m-la_induct">induction: base, hypothesis, step</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(a) Since $0\cdot0_V=0_V$, homogeneity gives $f(0_V)=f(0\cdot0_V)=0\cdot f(0_V)=0$. Since $(-1)x=-x$, we get $f(-x)=(-1)f(x)=-f(x)$.</p>
+<p>(b) Induction on $n$. For $n=1$ this is homogeneity. If it holds for $n$, then by additivity, the hypothesis and homogeneity, $f\big(\sum_{i=1}^{n+1}\lambda_ix_i\big)$ $=f\big(\sum_{i=1}^{n}\lambda_ix_i\big)+f(\lambda_{n+1}x_{n+1})$ $=\sum_{i=1}^{n+1}\lambda_if(x_i)$.</p>
+<p>Conversely, if $f(\lambda x+\mu y)$ $=\lambda f(x)+\mu f(y)$ always holds, then $\lambda=\mu=1$ gives additivity, $\lambda=\mu=0$ gives $f(0_V)=0$, and $\mu=0$, $y=0_V$ gives homogeneity. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Use (a) to show in one line that $x\mapsto x_1+1$ on $\mathbb R^2$ is not a functional.
+  <details><summary>Answer</summary><div><p>It sends $0$ to $1\ne0$, but every functional sends $0$ to $0$ (Proof A (a)).</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show that $g:\mathbb R^2\to\mathbb R$, $g(x)=3x_1-x_2$, is a functional, using only the one-line criterion “$g(\lambda x+\mu y)$ $=\lambda g(x)+\mu g(y)$”.
+  <details><summary>Answer</summary><div><p>$g(\lambda x+\mu y)$ $=3(\lambda x_1+\mu y_1)-(\lambda x_2+\mu y_2)$ $=\lambda(3x_1-x_2)+\mu(3y_1-y_2)$ $=\lambda g(x)+\mu g(y)$, by the field rules in $\mathbb R$.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof A from the frame alone.</li>
+</ol></div>
+
+<div class="box"><h3 id="we-1">Worked example 1: functional or not? (lecture examples; script <a class="pl" href="linalg-script.html#p313">p. 313</a>)</h3>
+<p>Decide for each map whether it is a linear functional. (a) $f:\mathbb R^3\to\mathbb R$, $f(x)=x_1-x_2+2x_3$. (b) $g:\mathbb R[x]\to\mathbb R$, $g(p)=p(2)-p'(0)$. (c) $h:M_{2\times2}(\mathbb R)\to\mathbb R$, $h(A)=a_{11}a_{22}-a_{12}a_{21}$. (d) $k:\mathbb F_2^3\to\mathbb F_2$, $k(x)=x_1+x_2+x_3$. (e) complex conjugation $m(z)=\bar z$ on $\mathbb C$: is it a functional of the complex vector space $\mathbb C$? And what is it when $\mathbb C$ is regarded as a real vector space?</p>
+<ol class="gq">
+  <li>(a) and (d): what kind of formula are they?
+  <details><summary>Answer</summary><div><p>Both are of the form $a_1x_1+\dots+a_nx_n$ with fixed coefficients: (a) with $(1,-1,2)$, (d) with $(1,1,1)$ in $\mathbb F_2$. Such a map is always a functional: $\sum a_i(\lambda x_i+\mu y_i)$ $=\lambda\sum a_ix_i+\mu\sum a_iy_i$ by the field rules. <strong>Both are functionals.</strong> (d) is the parity of the number of $1$'s.</p></div></details></li>
+  <li>(b): check the criterion of Proof A.
+  <details><summary>Answer</summary><div><p>$g(\lambda p+\mu q)$ $=(\lambda p+\mu q)(2)-(\lambda p+\mu q)'(0)$ $=\lambda p(2)+\mu q(2)-\lambda p'(0)-\mu q'(0)$ $=\lambda g(p)+\mu g(q)$, since evaluation and differentiation are linear. <strong>Functional.</strong></p></div></details></li>
+  <li>(c): is it homogeneous?
+  <details><summary>Answer</summary><div><p>$h(2A)=4h(A)$, so for $A=I_2$: $h(2I_2)=4\ne2=2h(I_2)$. <strong>Not a functional</strong> ($h$ is the determinant, which is multilinear in the columns but not linear; lessons 15+).</p></div></details></li>
+  <li>(e): over which field is complex conjugation linear?
+  <details><summary>Answer</summary><div><p>Over $\mathbb C$: $m(iz)=\overline{iz}$ $=-i\bar z\ne i\bar z$ for $z=1$, so it is <strong>not $\mathbb C$-linear</strong>. As a map of real vector spaces $\mathbb C\to\mathbb C$ it is additive and $m(\lambda z)=\lambda\bar z$ for real $\lambda$, so it is $\mathbb R$-linear, but its target $\mathbb C$ is $2$-dimensional over $\mathbb R$, so it is a linear map, not a functional. The real part $z\mapsto\mathrm{Re}\,z$ <em>is</em> a functional on $\mathbb C$ over $\mathbb R$. Moral: “linear” always refers to a field, and a functional takes values in that field.</p></div></details></li>
+</ol></div>
+
+<h2 id="s3-a-functional-is-determined-by">3. A functional is determined by its values on a basis</h2>
+<p>The lecture's example 2 says: every functional $f$ on $\mathbb R^2$ is an $f_{a,b}$, namely with $a=f(e_1)$ and $b=f(e_2)$, since $f(\alpha,\beta)$ $=f(\alpha e_1+\beta e_2)$ $=\alpha f(e_1)+\beta f(e_2)$. Satz 6.0 does the same for any basis. Together with the converse (any values on a basis come from a functional) this is the most used fact of the lesson; the script states it on <a class="pl" href="linalg-script.html#p314">p. 314</a> for all bases and calls the two halves the “unique” part and the “exists” part.</p>
+
+<h3 id="proof-b">Proof B: values on a basis determine the functional (lecture, Satz 6.0; script <a class="pl" href="linalg-script.html#p314">p. 314</a>, “unique” part)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $b_1,\dots,b_n$ be a basis of $V$ and $f:V\to K$ a linear functional. Put $a_i:=f(b_i)$. Then for every $y=\sum_{i=1}^n\alpha_ib_i\in V$:</p>
+<span class="math-display" style="display:block">$$f(y)=\sum_{i=1}^n a_i\alpha_i=a_1\alpha_1+\dots+a_n\alpha_n.$$</span>
+<p>In particular, two functionals $f,g$ with $f(b_i)=g(b_i)$ for all $i$ are equal.</p></div>
+<p><strong>The idea.</strong> Every vector is a combination of the basis vectors with coefficients $\alpha_i$ (its coordinates, <a class="xl" href="linalg-06.html">lesson 6</a>), and a functional respects combinations (Proof A). So the value at $y$ is computed from the coordinates of $y$ and the $n$ numbers $f(b_i)$. Two functionals with the same $n$ numbers compute the same value everywhere.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $y\in V$. Since $b_1,\dots,b_n$ is a basis, $y=\sum_i\alpha_ib_i$ with unique $\alpha_i\in K$.”</li>
+  <li><strong>Last line:</strong> “So $f(y)=\sum_ia_i\alpha_i$.” For the second statement: “so $f(y)=g(y)$ for all $y$, i.e. $f=g$.”</li>
+  <li><strong>The gap:</strong> one application of Proof A (b).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Every place has an address on the mapmakers' roads: so far along road one, so far along road two.</p></div><div class="sp-formal"><p>Let $y\in V$. As $b_1,\dots,b_n$ is a basis, there are (unique) $\alpha_1,\dots,\alpha_n\in K$ with $y=\sum_{i=1}^n\alpha_ib_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A fair instrument reads a mixture as the same mixture of its readings on the roads.</p></div><div class="sp-formal"><p>By linearity (Proof A (b)), $f(y)=\sum_{i=1}^n\alpha_if(b_i)$ $=\sum_{i=1}^na_i\alpha_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two instruments that agree on every road agree everywhere.</p></div><div class="sp-formal"><p>If also $g$ is a functional with $g(b_i)=a_i$ for all $i$, the same computation gives $g(y)=\sum_ia_i\alpha_i=f(y)$. As $y$ was arbitrary, $f=g$ (maps with the same domain, target and values are equal). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_arbitrary">take an arbitrary element</a> <a class="mvl" href="linalg-moves.html#m-la_onbasis">two linear maps that agree on a basis are equal</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $y\in V$ and write $y=\sum_{i=1}^n\alpha_ib_i$, which is possible since $b_1,\dots,b_n$ is a basis. Since $f$ is linear, $f(y)=\sum_{i=1}^n\alpha_if(b_i)$ $=\sum_{i=1}^na_i\alpha_i$. If $g$ is another functional with $g(b_i)=f(b_i)$ for all $i$, the same computation shows $g(y)=f(y)$ for every $y\in V$; hence $g=f$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Which property of a basis does the first line use: spanning or independence?
+  <details><summary>Answer</summary><div><p>Spanning: every $y$ is <em>some</em> combination. Uniqueness of the $\alpha_i$ (from independence) is not needed for Proof B; it is needed for Proof C.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show that Proof B holds for a spanning list $v_1,\dots,v_m$ that is not a basis: two functionals agreeing on all $v_j$ are equal.
+  <details><summary>Answer</summary><div><p>Let $y\in V$ and write $y=\sum_j\beta_jv_j$ (some choice). Then $f(y)=\sum_j\beta_jf(v_j)$ $=\sum_j\beta_jg(v_j)=g(y)$. So $f=g$. Only spanning was used.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof B from the frame alone.</li>
+</ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>“Let $y\in V$. Write $y=\sum\alpha_ib_i$” (basis).</li>
+  <li>Apply $f$ and pull the sum and the scalars out (linearity).</li>
+  <li>Read off: $f(y)=\sum\alpha_if(b_i)$.</li>
+  <li>For “equal”: the same computation for $g$, then “as $y$ was arbitrary, $f=g$”.</li>
+</ol>
+<p><strong>In short:</strong> write $y$ in the basis, then pull everything out of $f$.</p></div>
+
+<p><strong>The row-times-column picture (lecture, after Satz 6.0; script Example 10.1.7, <a class="pl" href="linalg-script.html#p316">p. 316</a>).</strong> Write the numbers $a_i=f(b_i)$ as a row and the coordinates $\alpha_i$ of $y$ as a column. Then Proof B says</p>
+<span class="math-display" style="display:block">$$\begin{aligned}f(y)&amp;=\begin{pmatrix}a_1&amp;\cdots&amp;a_n\end{pmatrix}\begin{pmatrix}\alpha_1\\ \vdots\\ \alpha_n\end{pmatrix}\\&amp;:=a_1\alpha_1+\dots+a_n\alpha_n.\end{aligned}$$</span>
+<p>For $V=K^n$ with the standard basis the coordinates of $y$ are its entries, so <strong>every functional on $K^n$ is “multiply by a row vector”</strong>: $f(y)=a_1y_1+\dots+a_ny_n$ with $a_i=f(e_i)$. That is the script's slogan $(K^n_{\text{col}})^*=K^n_{\text{row}}$: vectors are columns, functionals are rows. (Matrices of linear maps in general come in lesson 11; here we only need this one product of a row and a column.)</p>
+
+<h3 id="proof-c">Proof C: any values on a basis come from exactly one functional (script <a class="pl" href="linalg-script.html#p314">p. 314</a>, “exists” part; lecture, used in Satz 6.2)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $b_1,\dots,b_n$ be a basis of $V$ and let $a_1,\dots,a_n\in K$ be arbitrary. Then there is exactly one linear functional $f:V\to K$ with $f(b_i)=a_i$ for $i=1,\dots,n$, namely</p>
+<span class="math-display" style="display:block">$$f\Big(\sum_{i=1}^n\alpha_ib_i\Big):=\sum_{i=1}^n\alpha_ia_i.$$</span></div>
+<p><strong>The idea.</strong> Proof B tells us what $f$ <em>must</em> be; now take that formula as the definition. Two things need checking. First, the formula must assign exactly one value to each $y$: it uses the coordinates of $y$, and these are unique because the basis is independent (<a class="xl" href="linalg-06.html">lesson 6</a>, unique coordinates). This is a well-definedness check, like in <a class="xl" href="linalg-09.html">lesson 9</a>. Second, $f$ must be linear: coordinates of a sum are sums of coordinates.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “For $y\in V$ let $\alpha_1,\dots,\alpha_n$ be its unique coordinates, $y=\sum\alpha_ib_i$, and define $f(y):=\sum\alpha_ia_i$.”</li>
+  <li><strong>To show:</strong> (1) $f$ is a map $V\to K$ (well defined); (2) $f(x+y)=f(x)+f(y)$, $f(\lambda x)=\lambda f(x)$; (3) $f(b_i)=a_i$; (4) uniqueness.</li>
+  <li><strong>Last line:</strong> “Uniqueness follows from Proof B.”</li>
+  <li><strong>The gap:</strong> the coordinates of $x+y$ and of $\lambda x$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The council writes the prescribed readings into the instrument and builds it to read every address by the rule. Each place has only one address, so the instrument never shows two numbers.</p></div><div class="sp-formal"><p>Every $y\in V$ has unique coordinates: $y=\sum_{i=1}^n\alpha_ib_i$ with uniquely determined $\alpha_i\in K$ (<a class="xl" href="linalg-06.html">lesson 6</a>, unique coordinates). So $f(y):=\sum_i\alpha_ia_i$ defines a map $f:V\to K$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Joining two journeys adds their addresses road by road.</p></div><div class="sp-formal"><p>Let $x=\sum\xi_ib_i$, $y=\sum\alpha_ib_i$. Then $x+y=\sum(\xi_i+\alpha_i)b_i$, and by uniqueness these are the coordinates of $x+y$. So $f(x+y)=\sum(\xi_i+\alpha_i)a_i$ $=\sum\xi_ia_i+\sum\alpha_ia_i$ $=f(x)+f(y)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Stretching a journey stretches its address.</p></div><div class="sp-formal"><p>For $\lambda\in K$: $\lambda x=\sum(\lambda\xi_i)b_i$, so $f(\lambda x)=\sum\lambda\xi_ia_i$ $=\lambda f(x)$. Hence $f$ is linear.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Road $j$ itself has the address “one along road $j$, nothing else”.</p></div><div class="sp-formal"><p>$b_j=\sum_i\delta_{ij}b_i$ (coefficient $1$ at $i=j$, else $0$), so $f(b_j)=a_j$. Uniqueness: two functionals with the same values on the basis are equal (Proof B). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_extend">define a linear map by its values on a basis</a> <a class="mvl" href="linalg-moves.html#m-la_welldef">well defined: one value per input</a> <a class="mvl" href="linalg-moves.html#m-la_onbasis">two linear maps that agree on a basis are equal</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Each $y\in V$ can be written uniquely as $y=\sum_{i=1}^n\alpha_ib_i$, since $b_1,\dots,b_n$ is a basis. Hence $f(y):=\sum_{i=1}^n\alpha_ia_i$ is a well-defined map $V\to K$. If $x=\sum\xi_ib_i$ and $\lambda\in K$, then $x+y=\sum(\xi_i+\alpha_i)b_i$ and $\lambda x=\sum(\lambda\xi_i)b_i$ are the unique representations, so $f(x+y)=\sum(\xi_i+\alpha_i)a_i$ $=f(x)+f(y)$ and $f(\lambda x)=\sum\lambda\xi_ia_i$ $=\lambda f(x)$. Thus $f$ is linear. Since $b_j$ has coordinates $\delta_{1j},\dots,\delta_{nj}$, we get $f(b_j)=a_j$. If $g$ is another functional with $g(b_j)=a_j$ for all $j$, then $g=f$ by Proof B. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Where exactly is the linear independence of $b_1,\dots,b_n$ used?
+  <details><summary>Answer</summary><div><p>In “the coordinates are unique”: it makes $f$ well defined, and it makes “$\xi_i+\alpha_i$ are the coordinates of $x+y$” true.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show that Proof C fails for the spanning list $e_1,e_2,e_1+e_2$ of $\mathbb R^2$: find values $a_1,a_2,a_3$ that no functional has.
+  <details><summary>Answer</summary><div><p>Any functional has $f(e_1+e_2)=f(e_1)+f(e_2)$. So $a_1=a_2=0$, $a_3=1$ is impossible. A list that is dependent puts constraints on the values; a basis puts none.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof C from the frame alone.</li>
+</ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Define $f$ by the formula on coordinates, and say why it is well defined (the coordinates are unique).</li>
+  <li>Linearity: the coordinates of $x+y$ and $\lambda x$ are $\xi_i+\alpha_i$ and $\lambda\xi_i$.</li>
+  <li>Check $f(b_j)=a_j$.</li>
+  <li>Uniqueness: cite “a functional is determined by its values on a basis”.</li>
+</ol>
+<p><strong>In short:</strong> define on coordinates, check linear, check the basis values, uniqueness by the previous proof.</p></div>
+<p class="small">The script calls this “extending linearly” and proves it once for all linear maps (Theorem 3.1.15); lesson 11 repeats Proofs B and C for maps $V\to W$ with exactly the same words. In infinite dimension the same proof works with finite combinations of basis vectors (script <a class="pl" href="linalg-script.html#p314">p. 314</a>, footnote).</p>
+
+<div class="box"><h3 id="we-2">Worked example 2: a value from three values (Quiz 4)</h3>
+<p>In $\mathbb R^3$ let $x_1=(2,0,1)$, $x_2=(1,2,1)$, $x_3=(1,1,0)$ and $y=(3,0,0)$. A functional $f$ satisfies $f(x_1)=1$, $f(x_2)=2$, $f(x_3)=3$. Compute $f(y)$.</p>
+<ol class="gq">
+  <li>Why is $f$ determined by these three values at all?
+  <details><summary>Answer</summary><div><p>Because $x_1,x_2,x_3$ is a basis of $\mathbb R^3$ (check: $\lambda_1x_1+\lambda_2x_2+\lambda_3x_3$ $=0$ gives $\lambda_1+\lambda_2=0$ from the third entry, $2\lambda_2+\lambda_3=0$ from the second, $2\lambda_1+\lambda_2+\lambda_3=0$ from the first; then $\lambda_2=-\lambda_1$, $\lambda_3=2\lambda_1$, and the first equation gives $3\lambda_1=0$, so all are $0$). By Proofs B and C there is exactly one such $f$.</p></div></details></li>
+  <li>Write $y$ as a combination of $x_1,x_2,x_3$.
+  <details><summary>Answer</summary><div><p>Solve $\lambda_1(2,0,1)+\lambda_2(1,2,1)+\lambda_3(1,1,0)$ $=(3,0,0)$: third entry $\lambda_1+\lambda_2=0$; second $2\lambda_2+\lambda_3=0$; first $2\lambda_1+\lambda_2+\lambda_3=3$. With $\lambda_2=-\lambda_1$, $\lambda_3=2\lambda_1$: $2\lambda_1-\lambda_1+2\lambda_1=3$, so $\lambda_1=1$, $\lambda_2=-1$, $\lambda_3=2$. Check: $(2,0,1)-(1,2,1)+(2,2,0)=(3,0,0)$.</p></div></details></li>
+  <li>Compute $f(y)$.
+  <details><summary>Answer</summary><div><p>By linearity, $f(y)=f(x_1)-f(x_2)+2f(x_3)=1-2+6=$ <strong>$5$</strong>, as in the official solution.</p></div></details></li>
+  <li>Second route: find the row vector of $f$.
+  <details><summary>Answer</summary><div><p>$f(z)=a_1z_1+a_2z_2+a_3z_3$ with $2a_1+a_3=1$, $a_1+2a_2+a_3=2$, $a_1+a_2=3$. From the first, $a_3=1-2a_1$; the second becomes $-a_1+2a_2=1$; with $a_2=3-a_1$: $-a_1+6-2a_1=1$, so $a_1=\frac53$, $a_2=\frac43$, $a_3=-\frac73$. Then $f(3,0,0)=3a_1=5$. Same answer; the first route is shorter because $y$ only had to be expressed once.</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-the-dual-space">4. The dual space $V^*$</h2>
+<p>Functionals can be added and scaled, value by value, exactly as functions in Analysis. The surprise of Satz 6.1 is not that this works, but that the result is again a vector space over $K$, so everything from lessons 5–9 (span, bases, dimension, subspaces, quotients) applies to functionals too.</p>
+<div class="box">
+<p><strong>Definition (the dual space; script <a class="pl" href="linalg-script.html#p313">p. 313</a> and Section 10.1; lecture, Satz 6.1 and the definition after it).</strong> The <strong>dual space</strong> of $V$ is the set $V^*$ of all linear functionals $f:V\to K$, with the operations</p>
+<span class="math-display" style="display:block">$$\begin{aligned}(f+g)(x)&amp;:=f(x)+g(x),\\(\lambda f)(x)&amp;:=\lambda\,f(x)\end{aligned}$$</span>
+<p>for $f,g\in V^*$, $\lambda\in K$ and $x\in V$. On each right-hand side the operations are those of the field $K$.</p></div>
+<p class="small">Notation: the script and the lecture both write $V^*$, and so do the Serien and every past exam; we use $V^*$ throughout. The script defines $V^*:=\mathrm{Hom}_K(V,K)$, the space of linear maps $V\to K$; in the lecture order $\mathrm{Hom}(V,W)$ only comes in §7, and lesson 11 will see $V^*$ as the special case $W=K$. In the lecture: Halbeisen writes the operations as $+^*$ and $\cdot^*$ to separate them from the operations of $V$ and of $K$; we drop the stars once the point is made.</p>
+
+<h3 id="proof-d">Proof D: $V^*$ is a vector space over $K$ (lecture, Satz 6.1; script, Corollary “$V^*$ is a vector space”, <a class="pl" href="linalg-script.html#p313">p. 313</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> With the operations above, $V^*$ is a vector space over $K$. Its zero vector is the zero functional, and the negative of $f$ is $-f:x\mapsto-f(x)$.</p></div>
+<p><strong>The idea.</strong> Two different things must be checked, and the lecture is careful to separate them. First, the operations really land in $V^*$: the sum of two functionals and a multiple of a functional must again be <em>linear</em>. Second, the eight axioms: each one is an equation between two functions, and two functions are equal when they agree at every $x$. At a single $x$ every axiom turns into a rule of the field $K$. So nothing new has to be invented; the field does all the work.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Step 1, first line:</strong> “Let $f,g\in V^*$, $\lambda\in K$. We show that $f+g$ and $\lambda f$ are linear.” <strong>Last line:</strong> “So $f+g,\lambda f\in V^*$.”</li>
+  <li><strong>Step 2, first line:</strong> “Each axiom is an equality of maps $V\to K$; let $x\in V$ be arbitrary and compare the values at $x$.” <strong>Last line:</strong> “So $V^*$ is a vector space over $K$.”</li>
+  <li><strong>The gap:</strong> for Step 1, expand $(f+g)(x+y)$ and $(f+g)(\mu x)$ with the definitions; for Step 2, one field rule per axiom.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two fair surveyors who add their readings: joining journeys still adds up, for each of them and so for the pair.</p></div><div class="sp-formal"><p>Let $f,g\in V^*$ and $x,y\in V$, $\mu\in K$. Then $(f+g)(x+y)=f(x+y)+g(x+y)$ $=f(x)+f(y)+g(x)+g(y)$ $=(f+g)(x)+(f+g)(y)$, using the definition, the linearity of $f,g$, and commutativity and associativity in $K$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Stretching a journey stretches both readings, so it stretches their sum.</p></div><div class="sp-formal"><p>$(f+g)(\mu x)=f(\mu x)+g(\mu x)$ $=\mu f(x)+\mu g(x)$ $=\mu\big(f(x)+g(x)\big)$ $=\mu(f+g)(x)$ (distributivity in $K$). So $f+g$ is linear.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A surveyor whose readings are all multiplied by $\lambda$ (new units) is still fair.</p></div><div class="sp-formal"><p>$(\lambda f)(x+y)$ $=\lambda(f(x)+f(y))$ $=(\lambda f)(x)+(\lambda f)(y)$ and $(\lambda f)(\mu x)=\lambda\mu f(x)$ $=\mu\lambda f(x)=\mu(\lambda f)(x)$ (commutativity of $K$). So $\lambda f\in V^*$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Every law of the city of instruments, checked against one journey at a time, is a law of the numbers.</p></div><div class="sp-formal"><p>The axioms. For all $x\in V$: $((f+g)+h)(x)=(f(x)+g(x))+h(x)$ $=f(x)+(g(x)+h(x))=(f+(g+h))(x)$; $(f+g)(x)=(g+f)(x)$; $(f+0)(x)=f(x)+0=f(x)$, where $0$ is the zero functional (linear by Example 0); $(f+(-f))(x)=f(x)-f(x)=0$, where $-f=(-1)f\in V^*$; $(\lambda(\mu f))(x)$ $=\lambda\mu f(x)$ $=((\lambda\mu)f)(x)$; $(1f)(x)=f(x)$; $(\lambda(f+g))(x)$ $=\lambda f(x)+\lambda g(x)$ $=(\lambda f+\lambda g)(x)$; $((\lambda+\mu)f)(x)$ $=\lambda f(x)+\mu f(x)$ $=(\lambda f+\mu f)(x)$. Each step is a field rule. Since maps with equal values are equal, all eight axioms hold. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_check">the structure checklist</a> <a class="mvl" href="linalg-moves.html#m-la_pointwise">equal maps: compare the values at every point</a> <a class="mvl" href="linalg-moves.html#m-la_inherit">inherit from the bigger structure</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p><em>The operations stay in $V^*$.</em> Let $f,g\in V^*$, $\lambda,\mu\in K$ and $x,y\in V$. Then</p>
+<span class="math-display" style="display:block">$$\begin{aligned}(f+g)(x+y)&amp;=f(x)+f(y)\\&amp;\quad+g(x)+g(y)\\&amp;=(f+g)(x)+(f+g)(y),\\(f+g)(\mu x)&amp;=\mu f(x)+\mu g(x)\\&amp;=\mu(f+g)(x),\\(\lambda f)(x+y)&amp;=\lambda f(x)+\lambda f(y)\\&amp;=(\lambda f)(x)+(\lambda f)(y),\\(\lambda f)(\mu x)&amp;=\lambda\mu f(x)=\mu(\lambda f)(x),\end{aligned}$$</span>
+<p>by the definitions of the operations, the linearity of $f$ and $g$ and the field rules of $K$. So $f+g\in V^*$ and $\lambda f\in V^*$.</p>
+<p><em>The axioms.</em> Each axiom is an equality of maps $V\to K$. Evaluated at an arbitrary $x\in V$, it becomes the corresponding rule of $K$: associativity and commutativity of $+$, the neutral element $0$ (the zero functional, which is linear), the negative $-f=(-1)f$, $\lambda(\mu f)=(\lambda\mu)f$, $1f=f$ and the two distributive laws, as computed above. Since two maps with the same values at every point are equal, $V^*$ is a vector space over $K$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In $(\lambda f)(\mu x)=\mu(\lambda f)(x)$, which field rule is used, and why would the proof break for a “field” that is not commutative?
+  <details><summary>Answer</summary><div><p>$\lambda\mu=\mu\lambda$. Without it, $\lambda f$ would only satisfy $(\lambda f)(\mu x)=\lambda\mu f(x)$, which need not be $\mu\lambda f(x)$; then $\lambda f$ would not be homogeneous. (For skew fields one has to put the dual space on the other side; this is not in our course.)</p></div></details></li>
+  <li><strong>Rung 2.</strong> Short route: by <a class="xl" href="linalg-05.html">lesson 5</a>, the set $K^V$ of <em>all</em> maps $V\to K$ is a vector space with these operations (script <a class="pl" href="linalg-script.html#p38">p. 38</a>). Prove Satz 6.1 with the subspace test.
+  <details><summary>Answer</summary><div><p>$V^*\subseteq K^V$. The zero functional is linear, so $0\in V^*$. Step 1 above shows that $V^*$ is closed under sums and scalar multiples. By the subspace test (<a class="xl" href="linalg-05.html">lesson 5</a>), $V^*$ is a subspace of $K^V$, hence a vector space.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof D from the frame alone (Step 1 in full, Step 2 for at least the two distributive laws).</li>
+</ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Define the operations “value by value”.</li>
+  <li>Show that $f+g$ and $\lambda f$ are again linear (four short lines).</li>
+  <li>For the axioms: “each is an equality of functions; evaluated at $x$ it is a field rule”, and write out one or two of them.</li>
+  <li>Name the zero (zero functional) and the negative ($x\mapsto-f(x)$).</li>
+</ol>
+<p><strong>In short:</strong> first closed, then value by value. (HS24, 3.A1 only asks for the definition: “the set of linear maps $V\to K$ with pointwise operations”.)</p></div>
+
+<p><strong>The example of the lecture: $\mathbb R^{2*}$ “is” $\mathbb R^2$.</strong> By Proof B every $f\in(\mathbb R^2)^*$ is $f_{a,b}$ with $(a,b)=(f(e_1),f(e_2))$, and by Proof C every pair $(a,b)$ occurs. Moreover $f_{a,b}+f_{c,d}=f_{a+c,b+d}$ and $\lambda f_{a,b}$ $=f_{\lambda a,\lambda b}$. So $f_{a,b}\leftrightarrow(a,b)$ is a bijection $(\mathbb R^2)^*\to\mathbb R^2$ compatible with the operations. Halbeisen calls such spaces <strong>isomorphic</strong>, “of the same shape”; lesson 11 makes the word precise. In the script's words: the functionals on columns are the rows (<a class="pl" href="linalg-script.html#p313">p. 313</a> and Example 10.1.7, <a class="pl" href="linalg-script.html#p316">p. 316</a>).</p>
+
+<h2 id="s5-the-kronecker-delta-and-the">5. The Kronecker delta and the dual basis</h2>
+<div class="box">
+<p><strong>Definition (Kronecker delta; Definition 10.0.1, <a class="pl" href="linalg-script.html#p313">p. 313</a>).</strong> For indices $i,j$ (from any index set $I$) put</p>
+<span class="math-display" style="display:block">$$\delta_{ij}:=\begin{cases}1=1_K&amp;\text{if }i=j,\\0=0_K&amp;\text{if }i\ne j.\end{cases}$$</span>
+<p>So $\sum_j\lambda_j\delta_{ij}=\lambda_i$: a sum against $\delta_{ij}$ picks out the single term with $j=i$.</p></div>
+<div class="box">
+<p><strong>Definition (dual basis; Definition 10.2.1, <a class="pl" href="linalg-script.html#p316">p. 316</a>; lecture, after Satz 6.2).</strong> Let $B=(b_1,\dots,b_n)$ be a basis of $V$. For $i=1,\dots,n$ let $b_i^*\in V^*$ be the unique functional with</p>
+<span class="math-display" style="display:block">$$b_i^*(b_j)=\delta_{ij}\qquad(j=1,\dots,n).$$</span>
+<p>(It exists and is unique by Proof C, with the values $a_j=\delta_{ij}$.) $B^*=(b_1^*,\dots,b_n^*)$ is the <strong>dual basis</strong> of $V^*$ with respect to $B$, and $B$, $B^*$ form a <strong>pair of dual bases</strong>. If $V$ has an infinite basis $(b_i)_{i\in I}$, the same definition gives the <strong>dual set</strong> $(b_i^*)_{i\in I}$ (section 7).</p></div>
+<p class="small">In the lecture: Halbeisen writes $x_i^*(x_j)=\delta_i^j$ with an upper index and defines $x_i^*$ by these values together with “$x_i^*(x+y)=x_i^*(x)+x_i^*(y)$, $x_i^*(\lambda x)=\lambda x_i^*(x)$”; that such a functional exists is exactly Proof C. Physicists write $v^i$ for $v_i^*$ (Notation 10.2.3, <a class="pl" href="linalg-script.html#p317">p. 317</a>).</p>
+<p><strong>What $b_i^*$ does.</strong> For $v=\sum_j\alpha_jb_j$, linearity gives $b_i^*(v)=\sum_j\alpha_j\delta_{ij}$ $=\alpha_i$. So <strong>$b_i^*$ reads off the $i$-th coordinate</strong> of $v$ in the basis $B$. For the standard basis of $K^n$, $e_i^*(x)=x_i$: the dual basis is the coordinate functionals, and their rows are $e_1,\dots,e_n$ written as rows.</p>
+<p><strong>Careful (Note 10.2.2, <a class="pl" href="linalg-script.html#p317">p. 317</a>): $b_i^*$ depends on the whole basis, not only on $b_i$.</strong> In $\mathbb R^2$ take $B=(e_1,e_2)$ and $B'=(e_1,\,e_1+e_2)$. Both start with $e_1$. But $e_1^*(x)=x_1$, while for $B'$ we write $x=(x_1-x_2)e_1+x_2(e_1+e_2)$, so the first dual functional of $B'$ is $x\mapsto x_1-x_2$. The two differ at $e_2$: $e_1^*(e_2)=0$, but the first functional of $B'^*$ gives $-1$. The first coordinate of a vector depends on which other basis vectors are used.</p>
+
+<h3 id="proof-e">Proof E: the dual basis is a basis of $V^*$, so $\dim V^*=\dim V$ (lecture, Satz 6.2; Proposition 10.2.5 (1), <a class="pl" href="linalg-script.html#p317">p. 317</a>; Corollary, <a class="pl" href="linalg-script.html#p313">p. 313</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $b_1,\dots,b_n$ be a basis of $V$. Then $b_1^*,\dots,b_n^*$ is a basis of $V^*$, and every $f\in V^*$ satisfies</p>
+<span class="math-display" style="display:block">$$f=\sum_{i=1}^n f(b_i)\,b_i^*.$$</span>
+<p>In particular $\dim V^*=\dim V$ for finite-dimensional $V$.</p></div>
+<p><strong>The idea.</strong> A basis must span and be independent. <em>Spanning:</em> the obvious guess for $f$ is $\sum f(b_i)b_i^*$, because $b_i^*$ “reads the $i$-th coordinate” and $f(v)=\sum\alpha_if(b_i)$ (Proof B). To prove the guess, use Proof B once more: two functionals are equal if they agree on the basis $b_1,\dots,b_n$, and on $b_j$ the delta collapses the sum. <em>Independence:</em> if a combination of the $b_i^*$ is the zero functional, feed it the vector $b_j$; the delta picks out the $j$-th coefficient, and the zero functional gives $0$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Spanning, first line:</strong> “Let $f\in V^*$ and put $g:=\sum_if(b_i)b_i^*\in V^*$.” <strong>Last line:</strong> “So $f=g$, and $f\in\mathrm{Sp}(b_1^*,\dots,b_n^*)$.”</li>
+  <li><strong>Independence, first line:</strong> “Let $\lambda_1,\dots,\lambda_n\in K$ with $\sum_i\lambda_ib_i^*=0$ (the zero functional).” <strong>Last line:</strong> “So $\lambda_j=0$ for all $j$.”</li>
+  <li><strong>The gap:</strong> evaluate at $b_j$ and use $b_i^*(b_j)=\delta_{ij}$; the sum and the scalars come out by the definition of the operations in $V^*$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Any fair surveyor is imitated by a team: on each road, hire the road's own surveyor and scale them by what our surveyor reads on that road.</p></div><div class="sp-formal"><p><em>Spanning.</em> Let $f\in V^*$ and $g:=\sum_{i=1}^nf(b_i)\,b_i^*$. Then $g\in V^*$ (Proof D).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>On road $j$ only road $j$'s surveyor reads anything, and they read $1$; so the team reads exactly what our surveyor reads there.</p></div><div class="sp-formal"><p>For each $j$: $g(b_j)=\sum_if(b_i)\,b_i^*(b_j)$ $=\sum_if(b_i)\,\delta_{ij}=f(b_j)$, by the definition of the operations in $V^*$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Agreeing on every road means agreeing everywhere.</p></div><div class="sp-formal"><p>So $f$ and $g$ agree on the basis, and $f=g$ (Proof B). Hence $f=\sum_if(b_i)b_i^*$, and $b_1^*,\dots,b_n^*$ span $V^*$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A team that reads $0$ everywhere reads $0$ on road $j$; but there only road $j$'s surveyor speaks, so their weight is $0$.</p></div><div class="sp-formal"><p><em>Independence.</em> Let $\sum_i\lambda_ib_i^*=0$ in $V^*$. Evaluate at $b_j$: $0$ $=\big(\sum_i\lambda_ib_i^*\big)(b_j)$ $=\sum_i\lambda_i\delta_{ij}$ $=\lambda_j$. This holds for every $j$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>As many instruments in the team as roads on the map.</p></div><div class="sp-formal"><p>So $b_1^*,\dots,b_n^*$ is a basis of $V^*$ with $n$ elements, and $\dim V^*=n=\dim V$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_onbasis">two linear maps that agree on a basis are equal</a> <a class="mvl" href="linalg-moves.html#m-la_delta">apply to a basis vector: the delta picks one term</a> <a class="mvl" href="linalg-moves.html#m-la_unfold">unfold the definition</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>The functionals $b_i^*$ exist and are unique by the extension principle. <em>They span $V^*$:</em> let $f\in V^*$ and $g:=\sum_{i=1}^nf(b_i)b_i^*$. For every $j$,</p>
+<span class="math-display" style="display:block">$$\begin{aligned}g(b_j)&amp;=\sum_{i=1}^nf(b_i)\,b_i^*(b_j)\\&amp;=\sum_{i=1}^nf(b_i)\,\delta_{ij}=f(b_j).\end{aligned}$$</span>
+<p>Two functionals that agree on a basis are equal, so $f=g=\sum_if(b_i)b_i^*$. <em>They are linearly independent:</em> if $\sum_i\lambda_ib_i^*$ is the zero functional, then evaluating at $b_j$ gives $0=\sum_i\lambda_i\delta_{ij}=\lambda_j$ for every $j$. Hence $b_1^*,\dots,b_n^*$ is a basis of $V^*$, and $\dim V^*=n=\dim V$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Fill in: $\Big(\sum_{i=1}^n\lambda_ib_i^*\Big)(b_j)$ $=\sum_{i=1}^n\lambda_i\,\underline{\quad}$ $=\underline{\quad}$, and name the rule used for the first equality.
+  <details><summary>Answer</summary><div><p>$\sum_i\lambda_i\,b_i^*(b_j)$ $=\sum_i\lambda_i\delta_{ij}$ $=\lambda_j$. The first equality is the definition of the operations in $V^*$ (sum and multiple of functionals are taken value by value).</p></div></details></li>
+  <li><strong>Rung 2.</strong> The script's version of the count (<a class="pl" href="linalg-script.html#p317">p. 317</a>): “we have $n$ spanning vectors in an $n$-dimensional space, so they form a basis.” Which fact is that, and why can HS24, 3.A2 not use it?
+  <details><summary>Answer</summary><div><p>“$n$ spanning vectors in a space of dimension $n$ form a basis” (<a class="xl" href="linalg-07.html">lesson 7</a>). It needs $\dim V^*=n$ in advance, and HS24, 3.A2 forbids any result on $\dim V^*$. Our proof shows independence directly, so it uses nothing about $\dim V^*$; that is the version to write in the exam.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof E from the frame alone, with both halves.</li>
+</ol></div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Define $b_i^*$ by $b_i^*(b_j)=\delta_{ij}$ “and extending linearly” (it exists and is unique since $b_1,\dots,b_n$ is a basis).</li>
+  <li>Spanning: for $f\in V^*$ compare $f$ and $\sum_if(b_i)b_i^*$ on each $b_j$; equal on a basis, so equal.</li>
+  <li>Independence: apply $\sum\lambda_ib_i^*=0$ to $b_j$, get $\lambda_j=0$.</li>
+  <li>Conclude: basis, $n$ elements, $\dim V^*=\dim V$.</li>
+</ol>
+<p><strong>In short:</strong> test everything on $b_j$, and let the delta do the work.</p></div>
+
+<h3 id="proof-f">Proof F: the coordinate formulas (Lemma 10.2.10, <a class="pl" href="linalg-script.html#p320">p. 320</a>; Proposition 10.2.5 (1), <a class="pl" href="linalg-script.html#p317">p. 317</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $B=(b_1,\dots,b_n)$ be a basis of $V$ with dual basis $B^*$. Then for all $v\in V$ and all $f\in V^*$:</p>
+<span class="math-display" style="display:block">$$v=\sum_{i=1}^nb_i^*(v)\,b_i,\qquad f=\sum_{i=1}^nf(b_i)\,b_i^*.$$</span>
+<p>In words: the coordinates of $v$ in $B$ are the numbers $b_1^*(v),\dots,b_n^*(v)$; the coordinates of $f$ in $B^*$ are the numbers $f(b_1),\dots,f(b_n)$. Moreover $f(v)=\sum_if(b_i)\,b_i^*(v)$.</p></div>
+<p><strong>The idea.</strong> This is the “what $b_i^*$ does” computation, made into a statement, plus the spanning formula of Proof E. Its use: to find coordinates, you can evaluate functionals; to find a functional's coordinates, you evaluate it on the basis. The two formulas mirror each other, vectors on one side and functionals on the other (the script's Note 10.1.8 calls this the duality between $V$ and $V^*$).</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $v\in V$ and write $v=\sum_j\alpha_jb_j$.” <strong>Last line:</strong> “so $\alpha_i=b_i^*(v)$, i.e. $v=\sum_ib_i^*(v)b_i$.”</li>
+  <li><strong>The gap:</strong> apply $b_i^*$ to $v$; the second formula is Proof E; the third combines the two.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Ask road $i$'s surveyor about a place, and you get the place's address on road $i$.</p></div><div class="sp-formal"><p>Let $v=\sum_{j=1}^n\alpha_jb_j$. Then $b_i^*(v)=\sum_j\alpha_jb_i^*(b_j)$ $=\sum_j\alpha_j\delta_{ij}$ $=\alpha_i$ (linearity of $b_i^*$, definition of $b_i^*$). So $v=\sum_ib_i^*(v)b_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A surveyor's weights in the team are their readings on the roads.</p></div><div class="sp-formal"><p>$f=\sum_if(b_i)b_i^*$ is the spanning part of Proof E; the coefficients are unique because $B^*$ is a basis.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So a reading is “weights times addresses”.</p></div><div class="sp-formal"><p>Applying $f$ to $v=\sum_ib_i^*(v)b_i$ gives $f(v)=\sum_ib_i^*(v)f(b_i)$ (linearity of $f$). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_delta">apply to a basis vector: the delta picks one term</a> <a class="mvl" href="linalg-moves.html#m-la_onbasis">two linear maps that agree on a basis are equal</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $v=\sum_j\alpha_jb_j$. By linearity and the definition of the dual basis, $b_i^*(v)=\sum_j\alpha_j\delta_{ij}$ $=\alpha_i$; hence $v=\sum_ib_i^*(v)\,b_i$. The formula $f=\sum_if(b_i)b_i^*$ was shown in the proof that the dual basis is a basis, and its coefficients are unique because $b_1^*,\dots,b_n^*$ is a basis. Finally $f(v)=f\big(\sum_ib_i^*(v)b_i\big)$ $=\sum_ib_i^*(v)f(b_i)$ by linearity. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In $\mathbb R^2$ with $B=(e_1,\,e_1+e_2)$, compute $b_1^*(3,5)$ and $b_2^*(3,5)$ and check $v=b_1^*(v)b_1+b_2^*(v)b_2$.
+  <details><summary>Answer</summary><div><p>From the note above, $b_1^*(x)=x_1-x_2$ and $b_2^*(x)=x_2$. So $b_1^*(3,5)=-2$, $b_2^*(3,5)=5$, and $-2(1,0)+5(1,1)=(3,5)$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Use the formula to show: if $v\in V$ satisfies $b_i^*(v)=0$ for all $i$, then $v=0$. Conclude: for every $v\ne0$ there is $f\in V^*$ with $f(v)\ne0$ ($V$ finite-dimensional).
+  <details><summary>Answer</summary><div><p>$v=\sum_ib_i^*(v)b_i=\sum_i0\cdot b_i=0$. Contrapositive: if $v\ne0$, some $b_i^*(v)\ne0$; take $f=b_i^*$. (Functionals “separate” vectors; this is the step that makes the bidual of lesson 14 work.)</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof F from the frame alone.</li>
+</ol></div>
+
+<div class="box"><h3 id="we-3">Worked example 3: the dual basis of $\mathrm{Fib}$ (lecture, example 1 after the definition)</h3>
+<p>$\mathrm{Fib}$ is the real vector space of sequences $(f_0,f_1,f_2,\dots)$ with $f_{n+2}=f_{n+1}+f_n$ (Serie 2, exercise 11; <a class="xl" href="linalg-05.html">lesson 5</a>). $F_{a,b}$ is the sequence that starts with $f_0=a$, $f_1=b$. By Serie 3, exercise 17 (<a class="xl" href="linalg-06.html">lesson 6</a>), $B=(F_{1,0},F_{0,1})$ is a basis and $F_{a,b}=aF_{1,0}+bF_{0,1}$.</p>
+<ol class="gq">
+  <li>Describe the dual basis $F_{1,0}^*,F_{0,1}^*$: what do they do to a sequence $F_{a,b}$?
+  <details><summary>Answer</summary><div><p>$F_{1,0}^*$ reads the first coordinate in $B$, so $F_{1,0}^*(F_{a,b})=a$: it is the functional “first term” $(f_n)\mapsto f_0$. Likewise $F_{0,1}^*(F_{a,b})=b$, the functional $(f_n)\mapsto f_1$. Check the deltas: $F_{1,0}^*(F_{1,0})=1$, $F_{1,0}^*(F_{0,1})=0$, and so on.</p></div></details></li>
+  <li>Let $F^*:=\lambda_1F_{1,0}^*+\lambda_2F_{0,1}^*$. Compute $F^*(F_{a,b})$ and write it as a row times a column, as the lecture does.
+  <details><summary>Answer</summary><div><p>$F^*(F_{a,b})=\lambda_1a+\lambda_2b$ $=\begin{pmatrix}\lambda_1&amp;\lambda_2\end{pmatrix}\begin{pmatrix}a\\b\end{pmatrix}$. The row stands for the functional, the column for the sequence.</p></div></details></li>
+  <li>The functional “third term”, $T(f):=f_2$. Write $T$ in the dual basis.
+  <details><summary>Answer</summary><div><p>By Proof F, $T$ $=T(F_{1,0})F_{1,0}^*+T(F_{0,1})F_{0,1}^*$. $F_{1,0}=(1,0,1,1,2,\dots)$ and $F_{0,1}=(0,1,1,2,3,\dots)$, so $T(F_{1,0})=1$, $T(F_{0,1})=1$ and $T=F_{1,0}^*+F_{0,1}^*$. Check: $T(F_{a,b})=a+b=f_2$.</p></div></details></li>
+  <li>And the functional $f\mapsto f_5$?
+  <details><summary>Answer</summary><div><p>$F_{1,0}=(1,0,1,1,2,3,\dots)$, $F_{0,1}=(0,1,1,2,3,5,\dots)$. So $f\mapsto f_5$ equals $3F_{1,0}^*+5F_{0,1}^*$: indeed $f_5=3f_0+5f_1$ for every Fibonacci-type sequence. The coefficients of a functional are its values on the basis.</p></div></details></li>
+</ol></div>
+
+<h2 id="s6-computing-a-dual-basis">6. Computing a dual basis</h2>
+<p>Exams ask for dual bases in $K^n$ and in small polynomial spaces. There are two ways, and both only need small linear systems.</p>
+<div class="box"><h3 id="the-method-script-example-10">The method (script Example 10.2.6, <a class="pl" href="linalg-script.html#p318">p. 318</a>, and the solution of Exercise 10.2.9, <a class="pl" href="linalg-script.html#p320">p. 320</a>)</h3>
+<p><strong>Way 1, row by row.</strong> In $K^n$ every functional is a row: $b_i^*(x)=c_{i1}x_1+\dots+c_{in}x_n$ (section 3). The conditions $b_i^*(b_j)=\delta_{ij}$ for $j=1,\dots,n$ are $n$ linear equations for the $n$ unknowns $c_{i1},\dots,c_{in}$. Solve one system for each $i$.</p>
+<p><strong>Way 2, coordinates.</strong> Write a general vector $x$ in the basis: solve $x=\alpha_1b_1+\dots+\alpha_nb_n$ for $\alpha_1,\dots,\alpha_n$ in terms of $x$. By Proof F, $b_i^*(x)=\alpha_i$. One system, solved once with a general right-hand side, gives all of $B^*$ at once. This is usually faster, and it is the way that works in every space (polynomials, sequences, matrices).</p>
+<p><strong>Check</strong> at the end: $b_i^*(b_j)=\delta_{ij}$ for all $i,j$ ($n^2$ tiny computations; do at least the diagonal and one off-diagonal).</p></div>
+<p class="small">The matrix view (Proposition 10.2.7 and Note 10.2.8, <a class="pl" href="linalg-script.html#p319">p. 319</a>; matrices of linear maps come in lessons 11–12): put the basis vectors $b_1,\dots,b_n$ as the columns of a matrix $P$ and the rows of $b_1^*,\dots,b_n^*$ as the rows of a matrix $Q$. The conditions $b_i^*(b_j)=\delta_{ij}$ say exactly $QP=I_n$, so $Q=P^{-1}$: <strong>the dual basis is the rows of the inverse matrix</strong>. You do not need this now; Way 1 and Way 2 are the same computation done by hand.</p>
+
+<div class="box"><h3 id="we-4">Worked example 4: two dual bases from the script (Example 10.2.6, <a class="pl" href="linalg-script.html#p318">p. 318</a>; Exercise 10.2.9, <a class="pl" href="linalg-script.html#p319">p. 319–320</a>)</h3>
+<p>(a) Find the dual basis of $b_1=(1,2)$, $b_2=(3,4)$ in $\mathbb R^2$. (b) In $V=\mathbb R[x]_{\le2}$, the polynomials of degree at most $2$, find the dual basis of $B=(1,\ 1+x,\ 1+x+x^2)$.</p>
+<ol class="gq">
+  <li>(a) Way 1: set $b_1^*(x)=ax_1+bx_2$. Which two equations determine $a,b$? Solve them.
+  <details><summary>Answer</summary><div><p>$b_1^*(b_1)=a+2b=1$ and $b_1^*(b_2)=3a+4b=0$. From the second, $a=-\frac43b$; then $-\frac43b+2b=\frac23b=1$, so $b=\frac32$ and $a=-2$. So $b_1^*(x)=-2x_1+\frac32x_2$.</p></div></details></li>
+  <li>(a) The same for $b_2^*(x)=cx_1+dx_2$, and the check.
+  <details><summary>Answer</summary><div><p>$c+2d=0$ and $3c+4d=1$. Then $c=-2d$ and $-6d+4d=1$, so $d=-\frac12$, $c=1$: $b_2^*(x)=x_1-\frac12x_2$. Check: $b_1^*(3,4)=-6+6=0$, $b_2^*(1,2)=1-1=0$, $b_2^*(3,4)=3-2=1$. The rows $(-2,\frac32)$ and $(1,-\frac12)$ are the rows of $\begin{pmatrix}1&amp;3\\2&amp;4\end{pmatrix}^{-1}$, as the script says.</p></div></details></li>
+  <li>(a) Use the dual basis to write $v=(5,6)$ in the basis $b_1,b_2$.
+  <details><summary>Answer</summary><div><p>By Proof F the coordinates are $b_1^*(v)=-10+9=-1$ and $b_2^*(v)=5-3=2$. Check: $-(1,2)+2(3,4)=(5,6)$.</p></div></details></li>
+  <li>(b) Way 2: write $p=c+bx+ax^2$ as $\alpha_1\cdot1+\alpha_2(1+x)+\alpha_3(1+x+x^2)$. Find $\alpha_1,\alpha_2,\alpha_3$.
+  <details><summary>Answer</summary><div><p>Compare coefficients: $x^2$: $\alpha_3=a$; $x$: $\alpha_2+\alpha_3=b$, so $\alpha_2=b-a$; constant: $\alpha_1+\alpha_2+\alpha_3=c$, so $\alpha_1=c-b$.</p></div></details></li>
+  <li>(b) Read off $B^*$ and check one delta.
+  <details><summary>Answer</summary><div><p>$b_1^*(c+bx+ax^2)=c-b$, $\ b_2^*(c+bx+ax^2)=b-a$, $\ b_3^*(c+bx+ax^2)=a$, as in the script's solution. In words: $b_3^*$ is “the coefficient of $x^2$”, $b_1^*(p)=p(0)-p'(0)$. Check: $b_2^*(1+x)=1-0=1$, $b_2^*(1+x+x^2)=1-1=0$, $b_1^*(1+x)=1-1=0$.</p></div></details></li>
+</ol>
+<p class="small">Notice in (b) that $b_3^*$ is the coefficient of $x^2$, the same as $(x^2)^*$ for the standard basis $(1,x,x^2)$, but $b_1^*\ne1^*$ although $b_1=1$: again Note 10.2.2.</p></div>
+
+<div class="explorer" id="du-ex">
+<span class="label">Try it: the dual basis explorer</span>
+<p>Type a basis $b_1,b_2$ of $\mathbb R^2$ (integers or fractions like <code>3/2</code>), a vector $v$ and a functional $f$ as a row. The explorer computes $b_1^*,b_2^*$ as rows, exactly, and checks both coordinate formulas of Proof F. In the picture, the thin lines are where $b_1^*$ (one colour) and $b_2^*$ (the other) take integer values: the grid that the dual basis draws on the plane. Switch to $\mathbb F_5^2$ or $\mathbb F_3^2$ to see the same computation in a finite field.</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label>field <select id="du-k" aria-label="field"><option value="0">ℝ (exact fractions)</option><option value="5">𝔽₅</option><option value="3">𝔽₃</option></select></label>
+  <button type="button" id="du-r">Example</button>
+</div>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">$b_1$ = (<input id="du-p" type="text" value="1" style="width:2.8em" aria-label="b1 first entry">, <input id="du-q" type="text" value="2" style="width:2.8em" aria-label="b1 second entry">)</label>
+  <label style="white-space:nowrap">$b_2$ = (<input id="du-r1" type="text" value="3" style="width:2.8em" aria-label="b2 first entry">, <input id="du-s" type="text" value="4" style="width:2.8em" aria-label="b2 second entry">)</label>
+</div>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">$v$ = (<input id="du-x" type="text" value="5" style="width:2.8em" aria-label="v first entry">, <input id="du-y" type="text" value="6" style="width:2.8em" aria-label="v second entry">)</label>
+  <label style="white-space:nowrap">$f$ = row (<input id="du-u" type="text" value="1" style="width:2.8em" aria-label="f first entry">, <input id="du-w" type="text" value="1" style="width:2.8em" aria-label="f second entry">)</label>
+</div>
+<svg id="du-svg" viewBox="-150 -150 300 300" width="100%" style="max-width:330px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="The basis, the grid of the dual basis and the vector v"></svg>
+<div id="du-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var ids=['p','q','r1','s','x','y','u','w'],E={};ids.forEach(function(k){E[k]=document.getElementById('du-'+k);});
+  var KS=document.getElementById('du-k');if(!KS)return;
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function Q(n,d){if(d<0){n=-n;d=-d;}var g=gcd(n,d);return {n:n/g,d:d/g};}
+  var R={zero:Q(0,1),one:Q(1,1),add:function(a,b){return Q(a.n*b.d+b.n*a.d,a.d*b.d);},sub:function(a,b){return Q(a.n*b.d-b.n*a.d,a.d*b.d);},
+    mul:function(a,b){return Q(a.n*b.n,a.d*b.d);},div:function(a,b){return Q(a.n*b.d,a.d*b.n);},isz:function(a){return a.n===0;},eq:function(a,b){return a.n===b.n&&a.d===b.d;},
+    fmt:function(a){var s=a.d===1?String(Math.abs(a.n)):Math.abs(a.n)+'/'+a.d;return (a.n<0?'−':'')+s;},num:function(a){return a.n/a.d;},
+    parse:function(t){t=String(t).replace(/\s+/g,'').replace('−','-');var m=t.match(/^(-?\d{1,6})(?:\/(\d{1,6}))?$/);if(m){var d=m[2]?+m[2]:1;if(d===0)return null;return Q(+m[1],d);}
+      m=t.match(/^(-?)(\d{0,5})\.(\d{1,4})$/);if(m){var k=Math.pow(10,m[3].length);return Q((m[1]?-1:1)*((+m[2]||0)*k+ +m[3]),k);}return null;}};
+  function F(p){function md(a){return ((a%p)+p)%p;}function inv(a){for(var i=1;i<p;i++)if(md(a*i)===1)return i;return 0;}
+    return {zero:0,one:1,add:function(a,b){return md(a+b);},sub:function(a,b){return md(a-b);},mul:function(a,b){return md(a*b);},div:function(a,b){return md(a*inv(b));},
+      isz:function(a){return a===0;},eq:function(a,b){return a===b;},fmt:function(a){return String(a);},num:function(a){return a;},
+      parse:function(t){t=String(t).replace(/\s+/g,'').replace('−','-');if(!/^-?\d{1,6}$/.test(t))return null;return md(+t);}};}
+  function row(K,a,b){return '('+K.fmt(a)+', '+K.fmt(b)+')';}
+  function lin(K,a,b){var s='';if(!K.isz(a))s+=(K.eq(a,K.one)?'':K.fmt(a)+'·')+'x₁';if(!K.isz(b)){var fb=K.fmt(b),neg=s&&fb.charAt(0)==='−';if(neg)fb=fb.slice(1);var t=(fb==='1'?'':fb+'·')+'x₂';s+=s?(neg?' − ':' + ')+t:t;}return s||'0';}
+  var CA='var(--k-c)',CB='var(--k-eps)';
+  function draw(){
+    var p=+KS.value,K=p?F(p):R,v={},bad=[];
+    ids.forEach(function(k){v[k]=K.parse(E[k].value);if(v[k]===null)bad.push(k);});
+    var out=document.getElementById('du-out'),svg=document.getElementById('du-svg');
+    if(bad.length){out.innerHTML='<p><strong>Please type numbers</strong> '+(p?'(integers; they are reduced mod '+p+')':'(integers, fractions like 3/2, or decimals)')+'.</p>';svg.innerHTML='';return;}
+    var D=K.sub(K.mul(v.p,v.s),K.mul(v.q,v.r1)),h='';
+    if(K.isz(D)){
+      out.innerHTML='<p><strong>Not a basis.</strong> b₁ = '+row(K,v.p,v.q)+' and b₂ = '+row(K,v.r1,v.s)+' are linearly dependent (p·s − q·r = '+K.fmt(v.p)+'·'+K.fmt(v.s)+' − '+K.fmt(v.q)+'·'+K.fmt(v.r1)+' = 0), so they do not span the plane. There is no dual basis: a functional with b₁*(b₁) = 1 and b₁*(b₂) = 0 cannot exist, because b₂ is a multiple of b₁ (or b₁ = 0), and a functional must respect that relation (Proof C needs a basis). Change one entry.</p>';
+    } else {
+      var c11=K.div(v.s,D),c12=K.div(K.sub(K.zero,v.r1),D),c21=K.div(K.sub(K.zero,v.q),D),c22=K.div(v.p,D);
+      function ev(a,b,x,y){return K.add(K.mul(a,x),K.mul(b,y));}
+      var al=ev(c11,c12,v.x,v.y),be=ev(c21,c22,v.x,v.y),fx=ev(v.u,v.w,v.p,v.q),fy=ev(v.u,v.w,v.r1,v.s);
+      var rx=K.add(K.mul(al,v.p),K.mul(be,v.r1)),ry=K.add(K.mul(al,v.q),K.mul(be,v.s));
+      var gx=K.add(K.mul(fx,c11),K.mul(fy,c21)),gy=K.add(K.mul(fx,c12),K.mul(fy,c22));
+      var t='<p><strong>Dual basis</strong>'+(p?' over 𝔽'+p:'')+': b₁* = row '+row(K,c11,c12)+', i.e. b₁*(x) = '+lin(K,c11,c12)+'; &nbsp; b₂* = row '+row(K,c21,c22)+', i.e. b₂*(x) = '+lin(K,c21,c22)+'.</p>';
+      t+='<p><strong>Check the deltas:</strong> b₁*(b₁) = '+K.fmt(ev(c11,c12,v.p,v.q))+', b₁*(b₂) = '+K.fmt(ev(c11,c12,v.r1,v.s))+', b₂*(b₁) = '+K.fmt(ev(c21,c22,v.p,v.q))+', b₂*(b₂) = '+K.fmt(ev(c21,c22,v.r1,v.s))+'.</p>';
+      t+='<p><strong>Coordinates of v</strong> = '+row(K,v.x,v.y)+': b₁*(v) = '+K.fmt(al)+', b₂*(v) = '+K.fmt(be)+'. Check: '+K.fmt(al)+'·b₁ + '+K.fmt(be)+'·b₂ = '+row(K,rx,ry)+(K.eq(rx,v.x)&&K.eq(ry,v.y)?' = v ✓':' ≠ v')+'.</p>';
+      t+='<p><strong>Coordinates of f</strong> = row '+row(K,v.u,v.w)+' in the dual basis: f(b₁) = '+K.fmt(fx)+', f(b₂) = '+K.fmt(fy)+'. Check: '+K.fmt(fx)+'·b₁* + '+K.fmt(fy)+'·b₂* = row '+row(K,gx,gy)+(K.eq(gx,v.u)&&K.eq(gy,v.w)?' = f ✓':' ≠ f')+'.</p>';
+      out.innerHTML=t;
+    }
+    if(!p){
+      var S=18,P=[R.num(v.p),R.num(v.q)],B2=[R.num(v.r1),R.num(v.s)],V=[R.num(v.x),R.num(v.y)];
+      function X(a){return (a*S).toFixed(1);}function Y(a){return (-a*S).toFixed(1);}
+      function ln(o,d,col,w,op){var L=Math.hypot(d[0],d[1])||1,k=40/L;return '<line x1="'+X(o[0]-k*d[0])+'" y1="'+Y(o[1]-k*d[1])+'" x2="'+X(o[0]+k*d[0])+'" y2="'+Y(o[1]+k*d[1])+'" style="stroke:'+col+'" stroke-width="'+w+'" opacity="'+op+'"/>';}
+      function arrow(a,col,lab){var ang=Math.atan2(-a[1],a[0]),tx=+X(a[0]),ty=+Y(a[1]);return '<line x1="0" y1="0" x2="'+tx+'" y2="'+ty+'" style="stroke:'+col+'" stroke-width="3"/><path d="M'+tx+' '+ty+' L'+(tx-10*Math.cos(ang)+5*Math.sin(ang)).toFixed(1)+' '+(ty-10*Math.sin(ang)-5*Math.cos(ang)).toFixed(1)+' L'+(tx-10*Math.cos(ang)-5*Math.sin(ang)).toFixed(1)+' '+(ty-10*Math.sin(ang)+5*Math.cos(ang)).toFixed(1)+' Z" style="fill:'+col+'"/><text x="'+(tx+6)+'" y="'+(ty-6)+'" font-size="13" style="fill:'+col+'">'+lab+'</text>';}
+      h+='<line x1="-150" y1="0" x2="150" y2="0" style="stroke:var(--rule)"/><line x1="0" y1="-150" x2="0" y2="150" style="stroke:var(--rule)"/>';
+      if(!R.isz(D)&&Math.hypot(P[0],P[1])>0.15&&Math.hypot(B2[0],B2[1])>0.15){
+        for(var k=-12;k<=12;k++){h+=ln([k*P[0],k*P[1]],B2,CA,1,k===0?.0:.25);h+=ln([k*B2[0],k*B2[1]],P,CB,1,k===0?.0:.25);}
+        var al2=R.num(al),be2=R.num(be);
+        h+='<line x1="0" y1="0" x2="'+X(al2*P[0])+'" y2="'+Y(al2*P[1])+'" style="stroke:'+CA+'" stroke-dasharray="4 3" stroke-width="2"/><line x1="'+X(al2*P[0])+'" y1="'+Y(al2*P[1])+'" x2="'+X(V[0])+'" y2="'+Y(V[1])+'" style="stroke:'+CB+'" stroke-dasharray="4 3" stroke-width="2"/>';
+      }
+      h+=arrow(P,CA,'b₁')+arrow(B2,CB,'b₂')+'<circle cx="'+X(V[0])+'" cy="'+Y(V[1])+'" r="4.5" style="fill:currentColor"/><text x="'+(+X(V[0])+7)+'" y="'+(+Y(V[1])+15)+'" font-size="13" style="fill:currentColor">v</text>';
+    } else {
+      var st=260/p,o=-130+st/2;function cx(i){return (o+i*st).toFixed(1);}function cy(j){return (130-st/2-j*st).toFixed(1);}
+      for(var i=0;i<p;i++)for(var j=0;j<p;j++){var isb1=(i===v.p&&j===v.q),isb2=(i===v.r1&&j===v.s),isv=(i===v.x&&j===v.y);
+        var col=isb1?CA:isb2?CB:isv?'currentColor':'var(--rule)';h+='<circle cx="'+cx(i)+'" cy="'+cy(j)+'" r="'+(isb1||isb2||isv?9:5)+'" style="fill:'+col+'"/>';
+        if(isb1||isb2||isv)h+='<text x="'+(+cx(i)+11)+'" y="'+(+cy(j)-9)+'" font-size="13" style="fill:'+col+'">'+(isb1?'b₁':isb2?'b₂':'v')+'</text>';}
+      h+='<text x="-140" y="146" font-size="11" style="fill:var(--muted)">the '+(p*p)+' vectors of 𝔽'+p+'², first entry → right, second ↑</text>';
+    }
+    svg.innerHTML=h;
+  }
+  ids.forEach(function(k){E[k].addEventListener('input',draw);});KS.addEventListener('change',draw);
+  var ex=[['1','2','3','4','5','6','1','1'],['1','0','1','1','3','5','2','-1'],['2','1','1','3','1/2','2','0','1'],['1','2','2','4','1','1','1','0']],ei=0;
+  document.getElementById('du-r').addEventListener('click',function(){ei=(ei+1)%ex.length;ids.forEach(function(k,i){E[k].value=ex[ei][i];});draw();});
+  draw();
+})();
+</script>
+<p class="small">Things to try: the script's basis $(1,2),(3,4)$ (the start values); $(1,0),(1,1)$ from Note 10.2.2; a dependent pair such as $(1,2),(2,4)$ (the “Example” button cycles through these); and the same numbers over $\mathbb F_5$, where $\frac1{-2}$ becomes $2$ because $-2\cdot2=-4=1$ in $\mathbb F_5$.</p>
+
+<h2 id="s7-infinite-dimension-the-dual-set">7. Infinite dimension: the dual set is not a basis</h2>
+<p>Everything so far used a <em>finite</em> basis. Two things survive in infinite dimension, and one breaks.</p>
+<div class="box">
+<p><strong>The space $c_{00}$ (lecture §6; Serie 6, exercise 27; script Example 10.1.3, <a class="pl" href="linalg-script.html#p314">p. 314</a>).</strong> $c_{00}=c_{00}(K)$ is the set of sequences $(a_1,a_2,a_3,\dots)$ in $K$ with only finitely many nonzero terms (finite <strong>support</strong>). It is a subspace of the sequence space $K^\infty$ (<a class="xl" href="linalg-05.html">lesson 5</a>), and the unit sequences $e_1,e_2,\dots$ form a basis of it: a sequence with support in $\{1,\dots,N\}$ is $\sum_{i\le N}a_ie_i$, a <em>finite</em> combination, and the $e_i$ are independent. (The script calls this space $\mathrm{Sp}(e_1,e_2,\dots)\subseteq K^\infty$; Exercise 3 below is the proof that $e_1,e_2,\dots$ is a basis.) But $e_1,e_2,\dots$ is <strong>not</strong> a basis of $K^\infty$: $(1,1,1,\dots)$ is no finite combination of them.</p>
+<p><strong>What survives (Proposition 10.1.1, <a class="pl" href="linalg-script.html#p314">p. 314</a>; stated).</strong> If $(b_i)_{i\in I}$ is any basis of $V$, Proofs B and C work word for word with finite combinations: a functional is determined by its values $f(b_i)$, and any family of values $(a_i)_{i\in I}$ is taken by exactly one functional. So $f\mapsto(f(b_i))_{i\in I}$ is a bijection $V^*\to K^I$, the set of <em>all</em> families. For $c_{00}$ with $I=\{1,2,3,\dots\}$: $c_{00}^*$ corresponds to <strong>all</strong> sequences $K^\infty$ (Example 10.1.3), while $c_{00}$ itself is only the sequences with finite support.</p></div>
+
+<h3 id="proof-g">Proof G: in infinite dimension the dual set is independent but does not span $V^*$ (Proposition 10.2.5 (2), <a class="pl" href="linalg-script.html#p317">p. 317</a>; Serie 6, exercise 27 (c))</h3>
+<div class="box"><p><strong>Claim.</strong> Let $(b_i)_{i\in I}$ be a basis of $V$ with $I$ infinite, and $(b_i^*)_{i\in I}$ its dual set. Then (a) the dual set is linearly independent; (b) every functional in $\mathrm{Sp}\big((b_i^*)_{i\in I}\big)$ vanishes on all but finitely many $b_j$; (c) the functional $s$ with $s(b_j)=1$ for all $j\in I$ is not in this span. So the dual set is <strong>not</strong> a basis of $V^*$.</p></div>
+<p><strong>The idea.</strong> A span only contains <em>finite</em> combinations. A finite combination $\sum_{i\in T}\lambda_ib_i^*$ only “sees” the finitely many basis vectors $b_i$ with $i\in T$; on all others it is $0$. But a functional may take the value $1$ on every basis vector at once (on $c_{00}$: the sum of all entries). That one is too big for any finite team. Independence is unaffected, because testing a finite combination on $b_j$ works as before.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(a) First line:</strong> “Let $T\subseteq I$ be finite and $\sum_{i\in T}\lambda_ib_i^*=0$.” <strong>Last line:</strong> “so $\lambda_j=0$ for all $j\in T$.”</li>
+  <li><strong>(b) First line:</strong> “Let $g\in\mathrm{Sp}((b_i^*)_{i\in I})$, so $g=\sum_{i\in T}\lambda_ib_i^*$ with $T$ finite.” <strong>Last line:</strong> “so $g(b_j)=0$ for all $j\notin T$.”</li>
+  <li><strong>(c) First line:</strong> “Assume, to the contrary, that $s\in\mathrm{Sp}((b_i^*)_{i\in I})$.” <strong>Last line:</strong> a contradiction.</li>
+  <li><strong>The gap:</strong> evaluate at a basis vector; for (c) pick $j\notin T$, which exists since $I$ is infinite.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A finite team of road surveyors that reads $0$ everywhere: on each road of the team, only that road's surveyor speaks.</p></div><div class="sp-formal"><p>(a) Let $T\subseteq I$ be finite with $\sum_{i\in T}\lambda_ib_i^*=0$. For $j\in T$: $0=\sum_{i\in T}\lambda_ib_i^*(b_j)$ $=\sum_{i\in T}\lambda_i\delta_{ij}$ $=\lambda_j$. So every finite subfamily is independent, i.e. the dual set is linearly independent.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A finite team is silent on every road where none of its members works.</p></div><div class="sp-formal"><p>(b) Let $g=\sum_{i\in T}\lambda_ib_i^*$ with $T$ finite. For $j\in I\setminus T$: $g(b_j)$ $=\sum_{i\in T}\lambda_i\delta_{ij}$ $=0$, because $i\ne j$ for all $i\in T$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The surveyor who counts every house reads $1$ on every road, so no finite team can imitate them: there is always a road the team ignores.</p></div><div class="sp-formal"><p>(c) $s$ exists by the extension principle for the basis $(b_i)_{i\in I}$. Assume $s=\sum_{i\in T}\lambda_ib_i^*$ with $T$ finite. Since $I$ is infinite, there is $j\in I\setminus T$. By (b), $s(b_j)=0$, but $s(b_j)=1$: a contradiction. So $s\notin\mathrm{Sp}((b_i^*)_{i\in I})$, and the dual set does not span $V^*$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_delta">apply to a basis vector: the delta picks one term</a> <a class="mvl" href="linalg-moves.html#m-la_contradiction">assume the opposite</a> <a class="mvl" href="linalg-moves.html#m-la_witness">name a witness</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(a) Let $T\subseteq I$ be finite and $\sum_{i\in T}\lambda_ib_i^*=0$. Evaluating at $b_j$ for $j\in T$ gives $0$ $=\sum_{i\in T}\lambda_i\delta_{ij}$ $=\lambda_j$. Hence the dual set is linearly independent.</p>
+<p>(b) Every $g$ in the span is a finite combination $g=\sum_{i\in T}\lambda_ib_i^*$, and for $j\notin T$ we get $g(b_j)$ $=\sum_{i\in T}\lambda_i\delta_{ij}$ $=0$.</p>
+<p>(c) Let $s\in V^*$ be the functional with $s(b_j)=1$ for all $j$, which exists by the extension principle. If $s$ were in the span, then by (b) there would be a finite $T$ with $s(b_j)=0$ for all $j\notin T$; since $I$ is infinite, such a $j$ exists, and $s(b_j)=1\ne0$. This contradiction shows that the dual set does not span $V^*$, so it is not a basis. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> For $V=c_{00}(\mathbb F_2)$ with basis $e_1,e_2,\dots$, what is $s$ explicitly, and why is it linear without the extension principle?
+  <details><summary>Answer</summary><div><p>$s(a)=\sum_na_n$, the parity of the number of $1$'s. The sum is finite because $a$ has finite support; and $\sum(a_n+b_n)=\sum a_n+\sum b_n$, $\sum\lambda a_n=\lambda\sum a_n$ for finite sums. This is the official solution's $f_{\mathbb N}$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Which functionals on $c_{00}$ are in $\mathrm{Sp}(e_1^*,e_2^*,\dots)$? Describe them by their sequence $(f(e_1),f(e_2),\dots)$.
+  <details><summary>Answer</summary><div><p>Exactly those with only finitely many nonzero values $f(e_j)$: if $f(e_j)=0$ for $j\notin T$ ($T$ finite), then $f$ and $\sum_{i\in T}f(e_i)e_i^*$ agree on the basis, so they are equal. Under the bijection $c_{00}^*\to K^\infty$, the span of the dual set corresponds to $c_{00}$ inside $K^\infty$.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof G from the frame alone.</li>
+</ol></div>
+
+<div class="box"><h3 id="over-what-is-proved-and">$\dim c_{00}&lt;\dim c_{00}^*$ over $\mathbb F_2$: what is proved and what is stated (lecture; Serie 6, exercise 27, remark)</h3>
+<p>For infinite-dimensional spaces, “dimension” means the size (cardinality, <a class="xl" href="linalg-03.html">lesson 3</a>) of a basis. The lecture states $\dim c_{00}&lt;\dim c_{00}^*$ for $K=\mathbb F_2$. Here is the argument, in three steps, with its status.</p>
+<ol>
+  <li><strong>$c_{00}(\mathbb F_2)$ has a countable basis</strong>, namely $e_1,e_2,\dots$ (proved: Exercise 3 (a)). So $c_{00}(\mathbb F_2)$ itself is countable: each element is a finite sum $\sum_{i\in T}e_i$, determined by the finite set $T$, and the finite subsets of $\mathbb N$ form a countable set (proved in the official solution: send $\{m_1,\dots,m_k\}$ to the product of the $m_1$-th, …, $m_k$-th primes, which is injective by unique prime factorisation).</li>
+  <li><strong>$c_{00}(\mathbb F_2)^*$ is uncountable</strong> (proved). For $S\subseteq\mathbb N$ let $f_S(a):=\sum_{n\in S}a_n$ (a finite sum; linear as in Rung 1). If $S\ne S'$, pick $j$ in exactly one of them; then $f_S(e_j)\ne f_{S'}(e_j)$. So $S\mapsto f_S$ is an injective map $\mathcal P(\mathbb N)\to c_{00}^*$, and $\mathcal P(\mathbb N)$ is uncountable by Cantor's theorem (<a class="xl" href="linalg-03.html">lesson 3</a>).</li>
+  <li><strong>So every basis of $c_{00}^*$ is uncountable</strong> (proved, given that one exists). A vector space over $\mathbb F_2$ with a countable basis is countable, by the argument of step 1. If $c_{00}^*$ had a countable basis, it would be countable, contradicting step 2.</li>
+</ol>
+<p><strong>Only stated, not proved here:</strong> that $c_{00}^*$ <em>has</em> a basis at all (every vector space has one, but in infinite dimension this needs the axiom of choice; nobody can write one down, <a class="xl" href="linalg-06.html">lesson 6</a>), and the general theory of comparing infinite cardinalities. Also stated: the script's version for any field (Example 10.1.3 and its footnote: $\dim K^\infty$ is uncountable). For the exam, what matters is Proof G and its message: <strong>$\dim V^*=\dim V$ and “the dual basis is a basis” are finite-dimensional facts.</strong></p></div>
+<p class="small">In the lecture this example is the warning that Satz 6.2 fails in infinite dimension; Serie 6, exercise 28 (Exercise 4 below) gives a second example from Analysis: the integral on step functions is a functional that no finite combination of the dual set reaches.</p>
+
+<div class="box"><h3 id="why-it-s-cool">Why it's cool</h3>
+<p>Take $n+1$ different numbers $t_0,\dots,t_n\in\mathbb R$ and the $n+1$ evaluation functionals $\mathrm{ev}_{t_i}(p)=p(t_i)$ on $V=\mathbb R[x]_{\le n}$. They are linearly independent: the polynomial $q_j(x)=\prod_{k\ne j}(x-t_k)$ has degree $n$, vanishes at every $t_k$ with $k\ne j$ and not at $t_j$, so applying $\sum_i\lambda_i\mathrm{ev}_{t_i}=0$ to $q_j$ gives $\lambda_jq_j(t_j)=0$, hence $\lambda_j=0$. Since $\dim V^*=n+1$ (Proof E), <strong>the evaluations form a basis of $V^*$</strong>. Which basis of $V$ is it dual to? We need polynomials $L_j$ with $L_j(t_i)=\delta_{ij}$, and $L_j=q_j/q_j(t_j)$ does it:</p>
+<span class="math-display" style="display:block">$$L_j(x)=\prod_{k\ne j}\frac{x-t_k}{t_j-t_k}.$$</span>
+<p>These are the <strong>Lagrange polynomials</strong>, and the coordinate formula of Proof F, $p=\sum_j\mathrm{ev}_{t_j}(p)\,L_j$, reads</p>
+<span class="math-display" style="display:block">$$p(x)=\sum_{j=0}^n p(t_j)\,L_j(x).$$</span>
+<p>That is <strong>Lagrange interpolation</strong>: a polynomial of degree $\le n$ is determined by its values at $n+1$ points, and here is the formula that rebuilds it. Halbeisen does this in §7 with Mathematica (lesson 12). Today you can see why it works: it is “a pair of dual bases”, nothing more.</p></div>
+
+<div class="box"><h3 id="for-wonder-the-dual-is">For wonder: the dual is always bigger in infinite dimension (optional, 5 min)</h3>
+<p>In finite dimension $V$ and $V^*$ have the same dimension, so they are “the same shape” (isomorphic), but you need a basis to match them up: the matching $b_i\leftrightarrow b_i^*$ changes when the basis changes (Note 10.2.2). The double dual $V^{**}$ is better: lesson 14 shows that $V\to V^{**}$, $v\mapsto(f\mapsto f(v))$, needs no choice at all. The script quotes a nice picture for this (<a class="pl" href="linalg-script.html#p322">p. 322</a>): functionals are <em>rulers</em>; there is no canonical ruler for a space, but there is a canonical way to measure rulers, namely by what they say about vectors.</p>
+<p>In infinite dimension the dual is not just different, it is <em>strictly bigger</em>, always. The Erdős–Kaplansky theorem says: if $V$ has an infinite basis, then $\dim V^*=|K|^{\dim V}$, the number of all families $(a_i)_{i\in I}$ in $K$. By Cantor's theorem (<a class="xl" href="linalg-03.html">lesson 3</a>) this is always larger than $\dim V$. For $c_{00}(\mathbb F_2)$ it gives $\dim c_{00}^*=2^{\aleph_0}$, the size of $\mathbb R$, against $\dim c_{00}=\aleph_0$. So no infinite-dimensional space is isomorphic to its dual, and $V\to V^{**}$ is never onto in infinite dimension. Analysis repairs this in its own way: it allows only <em>continuous</em> functionals, and then for nice spaces (Hilbert spaces) the dual is again “the same as” the space. That is the Riesz representation theorem the script mentions on <a class="pl" href="linalg-script.html#p313">p. 313</a>.</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</h2>
+<p>Try each in your head before opening the answers. Both are exam items.</p>
+
+<div class="box"><h3 id="we-5">Worked example 5: three functionals on $\mathbb R_2[X]$ (HS17, problem 4 (a) and (b), 11 points)</h3>
+<p>$V=\mathbb R_2[X]$, the real polynomials of degree at most $2$. For $p\in V$ let $\varphi_1(p)=\int_0^1p(t)\,dt$, $\varphi_2(p)=p'(0)$, $\varphi_3(p)=p(0)$. (a) Show that $(\varphi_1,\varphi_2,\varphi_3)$ is a basis of $V^*$. (b) Find the basis $B$ of $V$ whose dual basis is $(\varphi_1,\varphi_2,\varphi_3)$. (Part (c), a matrix of $p\mapsto p'$, is lesson 11.)</p>
+<ol class="gq">
+  <li>Why are $\varphi_1,\varphi_2,\varphi_3$ in $V^*$, and why is it enough to show independence in (a)?
+  <details><summary>Answer</summary><div><p>Integration, differentiation and evaluation are linear, so each $\varphi_i$ is a functional. $\dim V=3$, so $\dim V^*=3$ (the dual basis is a basis). Three linearly independent vectors in a $3$-dimensional space form a basis (<a class="xl" href="linalg-07.html">lesson 7</a>).</p></div></details></li>
+  <li>Compute the table $\varphi_i(X^k)$ for $k=0,1,2$.
+  <details><summary>Answer</summary><div><p>$\varphi_1$: $1,\ \frac12,\ \frac13$ (the integrals of $1,t,t^2$ over $[0,1]$). $\varphi_2$: $0,\ 1,\ 0$. $\varphi_3$: $1,\ 0,\ 0$. In general $\varphi_1(c+bX+aX^2)$ $=c+\frac b2+\frac a3$, $\varphi_2(\cdot)=b$, $\varphi_3(\cdot)=c$.</p></div></details></li>
+  <li>(a) Let $\lambda_1\varphi_1+\lambda_2\varphi_2+\lambda_3\varphi_3$ $=0$. Evaluate at $1$, $X$, $X^2$.
+  <details><summary>Answer</summary><div><p>At $X^2$: $\frac{\lambda_1}3=0$, so $\lambda_1=0$. At $X$: $\frac{\lambda_1}2+\lambda_2=0$, so $\lambda_2=0$. At $1$: $\lambda_1+\lambda_3=0$, so $\lambda_3=0$. Independent, hence a basis of $V^*$.</p></div></details></li>
+  <li>(b) We need $p_1,p_2,p_3$ with $\varphi_i(p_j)=\delta_{ij}$. Find $p_1=c+bX+aX^2$ from $\varphi_1(p_1)=1$, $\varphi_2(p_1)=0$, $\varphi_3(p_1)=0$.
+  <details><summary>Answer</summary><div><p>$\varphi_3(p_1)=c=0$, $\varphi_2(p_1)=b=0$, and $\varphi_1(p_1)=\frac a3=1$, so $a=3$: $p_1=3X^2$.</p></div></details></li>
+  <li>The same for $p_2$ and $p_3$, and the check.
+  <details><summary>Answer</summary><div><p>$p_2$: $c=0$, $b=1$, $\frac12+\frac a3=0$, so $a=-\frac32$: $p_2=X-\frac32X^2$. $p_3$: $c=1$, $b=0$, $1+\frac a3=0$, so $a=-3$: $p_3=1-3X^2$. Check the off-diagonal integrals: $\int_0^1(t-\frac32t^2)\,dt$ $=\frac12-\frac12=0$, $\int_0^1(1-3t^2)\,dt=1-1=0$. So <strong>$B=(3X^2,\ X-\tfrac32X^2,\ 1-3X^2)$</strong>.</p></div></details></li>
+  <li>Is $B$ really a basis of $V$? (The exam expects one sentence.)
+  <details><summary>Answer</summary><div><p>Yes: if $\mu_1p_1+\mu_2p_2+\mu_3p_3=0$, applying $\varphi_i$ gives $\mu_i=0$ (the delta picks one term). Three independent vectors in the $3$-dimensional $V$ form a basis. Then $(\varphi_1,\varphi_2,\varphi_3)$ satisfies the defining equations of the dual basis of $B$, so it <em>is</em> the dual basis (uniqueness in the extension principle).</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-6">Worked example 6: three quick exam items (HS24, 3.A3; FS25, MC6; mock exam HS20, 2 (d))</h3>
+<ol class="gq">
+  <li>HS24, 3.A3: on $V=\mathbb R[x]_{\le2}$ with $B=(1,x,x^2)$, write $L(p)$ $=\frac12\int_{-1}^1\big(p(t)+p'(t)\big)\,dt$ as a combination of the dual basis $B^*=(1^*,x^*,(x^2)^*)$.
+  <details><summary>Answer</summary><div><p>By Proof F the coefficients are the values on $B$. $L(1)=\frac12\int_{-1}^1 1\,dt=1$. $L(x)=\frac12\int_{-1}^1(t+1)\,dt$ $=\frac12(0+2)=1$. $L(x^2)$ $=\frac12\int_{-1}^1(t^2+2t)\,dt$ $=\frac12\cdot\frac23=\frac13$. So <strong>$L=1^*+x^*+\frac13(x^2)^*$</strong>.</p></div></details></li>
+  <li>FS25, MC6: on $\mathbb C[x]_{\le2}$, $g(p)$ $=\int_0^2\big(p''(x)\,x+2p(0)+p'(1)\,x\big)\,dx$. Coordinate vector of $g$ with respect to $B^*$? Options: (A) $(4,\frac12,16)$, (B) $(4,2,8)$, (C) $(8,1,2)$, (D) $(2,4,8)$.
+  <details><summary>Answer</summary><div><p>Evaluate on $1,x,x^2$. $p=1$: $\int_0^2 2\,dx=4$. $p=x$: $p''=0$, $p(0)=0$, $p'(1)=1$, so $\int_0^2x\,dx=2$. $p=x^2$: $p''=2$, $p(0)=0$, $p'(1)=2$, so $\int_0^2(2x+2x)\,dx=8$. <strong>(B) $(4,2,8)$.</strong></p></div></details></li>
+  <li>Mock exam HS20, 2 (d): $\dim\mathrm{Hom}(M_{3\times4}(\mathbb F_5),\mathbb F_5)$ over $\mathbb F_5$?
+  <details><summary>Answer</summary><div><p>$\mathrm{Hom}(V,\mathbb F_5)$ is the dual space $V^*$ of $V=M_{3\times4}(\mathbb F_5)$, and $\dim V=3\cdot4=12$ (the $12$ matrices with a single entry $1$ form a basis). So $\dim V^*=$ <strong>$12$</strong>, as in the official solution. (The field $\mathbb F_5$ plays no role in the dimension.)</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Each solution folds open under its exercise.</p>
+
+<h3 id="ex-1">Exercise 1 (Serie 5, exercise 26, and HS20, 2 (d))</h3>
+<p>(a) A functional $f:\mathbb F_{23}^2\to\mathbb F_{23}$ satisfies $f(22,2)=7$ and $f(1,22)=20$. Compute $f(11,3)$. (b) $T:\mathbb R^2\to\mathbb R[x]_{\le1}$ is the linear map with $T(5,2)=11+22x$ and $T(1,7)=33-11x$. Compute $T(1,4)$.</p>
+<details><summary>Hint</summary><div><p>(a) In $\mathbb F_{23}$, $22=-1$ and $20=-3$. Write $e_1$ and $e_2$ as combinations of $x_1=(22,2)$ and $x_2=(1,22)$ first. (b) Write $(1,4)$ in terms of $(5,2)$ and $(1,7)$; the same computation as for a functional.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> a functional is determined by its values on a basis, and $f(\lambda x+\mu y)$ $=\lambda f(x)+\mu f(y)$.</p>
+<p>(a) Let $x_1=(22,2)=(-1,2)$ and $x_2=(1,22)=(1,-1)$ in $\mathbb F_{23}^2$. They form a basis ($-1\cdot(-1)-2\cdot1=-1\ne0$; or: they are not multiples of each other). Solve $e_1=\lambda x_1+\mu x_2$: $-\lambda+\mu=1$ and $2\lambda-\mu=0$; adding gives $\lambda=1$, then $\mu=2$. So $e_1=x_1+2x_2$. Likewise $e_2=\lambda x_1+\mu x_2$: $-\lambda+\mu=0$, $2\lambda-\mu=1$, so $\lambda=\mu=1$ and $e_2=x_1+x_2$. By linearity, $f(e_1)=7+2\cdot20=47=1$ and $f(e_2)=7+20=27=4$ in $\mathbb F_{23}$. Hence $f(11,3)=11f(e_1)+3f(e_2)=11+12=23=$ <strong>$0$</strong>, as in the official solution. (The functional is $f(x)=x_1+4x_2$; check: $f(22,2)=22+8=30=7$, $f(1,22)=1+88=89=89-69=20$.)</p>
+<p>(b) Solve $(1,4)=\lambda(5,2)+\mu(1,7)$: $5\lambda+\mu=1$, $2\lambda+7\mu=4$. From the first, $\mu=1-5\lambda$; then $2\lambda+7-35\lambda=4$, so $\lambda=\frac1{11}$ and $\mu=\frac6{11}$. By linearity, $T(1,4)$ $=\frac1{11}(11+22x)+\frac6{11}(33-11x)$ $=1+2x+18-6x=$ <strong>$19-4x$</strong>. (Taking the constant coefficient and the coefficient of $x$ of $T$ gives two functionals on $\mathbb R^2$; each is computed exactly as in (a). Linear maps into bigger spaces are lesson 11.)</p>
+</div></details>
+
+<h3 id="ex-2">Exercise 2 (Serie 5, exercise 25)</h3>
+<p>Let $f:\mathbb R^n\to\mathbb R$ be a functional that is not the zero functional. (a) Show that the graph $U_f$ $=\{(x,f(x))\mid x\in\mathbb R^n\}\subseteq\mathbb R^{n+1}$ is a subspace different from $\{0\}$ and from $\mathbb R^{n+1}$. (b), (c) Find a basis of $U_f$ and its dimension. (d) Show: for $n\ge2$, $N_f=\{x\in\mathbb R^n\mid f(x)=0\}$ is a subspace different from $\{0\}$ and from $\mathbb R^n$. (e) For $f$ with $f(e_1)=1$, $f(e_2)=-1$, $f(e_3)=2$ on $\mathbb R^3$, find a basis of $N_f$.</p>
+<details><summary>Hint</summary><div><p>Put $c_i:=f(e_i)$; then $f(x)=c_1x_1+\dots+c_nx_n$ (Proof B), and some $c_j\ne0$. For (c) try $u_i=(e_i,c_i)$. For (d), $\{0\}\ne N_f$: find a nonzero $z$ with $f(z)=0$ using two indices $i\ne j$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> subspace test (contains $0$, closed under sums and multiples); a basis spans and is independent; $f(x)=\sum_ic_ix_i$ with $c_i=f(e_i)$, and since $f\ne0$ some $c_j\ne0$.</p>
+<p>(a) $(0,f(0))=(0,0)\in U_f$ since $f(0)=0$. For $x,y\in\mathbb R^n$, $\lambda\in\mathbb R$: $(x,f(x))+(y,f(y))=(x+y,f(x)+f(y))$ $=(x+y,f(x+y))\in U_f$ and $\lambda(x,f(x))$ $=(\lambda x,f(\lambda x))\in U_f$, by linearity. So $U_f$ is a subspace. $U_f\ne\{0\}$, since $(e_1,c_1)\in U_f$ has first entry $1$. $U_f\ne\mathbb R^{n+1}$, since $(0,\dots,0,1)\notin U_f$: the only element of $U_f$ with $x=0$ is $(0,f(0))=(0,0)$.</p>
+<p>(b), (c) Let $u_i=(e_i,c_i)\in U_f$. <em>Spanning:</em> for $x=(\alpha_1,\dots,\alpha_n)$, $\sum_i\alpha_iu_i$ $=\big(\sum_i\alpha_ie_i,\sum_i\alpha_ic_i\big)$ $=(x,f(x))$. <em>Independent:</em> if $\sum_i\lambda_iu_i=0$, the first $n$ entries say $(\lambda_1,\dots,\lambda_n)=0$. So $u_1,\dots,u_n$ is a basis and $\dim U_f=n$.</p>
+<p>(d) $N_f$ is a subspace: $f(0)=0$; if $f(x)=f(y)=0$ then $f(x+y)=0$ and $f(\lambda x)=\lambda\cdot0=0$. $N_f\ne\mathbb R^n$: since $f\ne0$ there is $x$ with $f(x)\ne0$, and $x\notin N_f$. $N_f\ne\{0\}$ for $n\ge2$: let $c_j\ne0$ and choose $i\ne j$ (possible as $n\ge2$). Put $z=c_je_i-c_ie_j$. Its $i$-th entry is $c_j\ne0$, so $z\ne0$, and $f(z)=c_jc_i-c_ic_j=0$.</p>
+<p>(e) $f(x)=x_1-x_2+2x_3$, so $x\in N_f\iff x_1=x_2-2x_3$, i.e. $x=(x_2-2x_3,x_2,x_3)$ $=x_2(1,1,0)+x_3(-2,0,1)$. Both vectors lie in $N_f$ ($1-1+0=0$, $-2-0+2=0$) and span it by this computation. They are independent: $\lambda(1,1,0)+\mu(-2,0,1)$ $=(\lambda-2\mu,\lambda,\mu)=0$ forces $\lambda=\mu=0$ (second and third entries). <strong>Basis of $N_f$: $(1,1,0),(-2,0,1)$</strong>; $\dim N_f=2=3-1$. ($N_f$ is the <em>kernel</em> of $f$; lesson 11. That $\dim N_f=n-1$ always holds is Exercise 6 (d).)</p>
+</div></details>
+
+<h3 id="ex-3">Exercise 3 (Serie 6, exercise 27)</h3>
+<p>Let $c_{00}(\mathbb F_2)$ be the space of sequences $(a_n)_{n\in\mathbb N}$ in $\mathbb F_2$ with only finitely many $a_n=1$. (a) Show that the unit sequences $e_i$ ($1$ at place $i$, $0$ elsewhere) form a basis. (b) Show that for every $S\subseteq\mathbb N$, $f_S(a):=\sum_{n\in S}a_n$ is a functional. (c) Show, without looking at Proof G, that $e_1^*,e_2^*,\dots$ do not span $c_{00}(\mathbb F_2)^*$.</p>
+<details><summary>Hint</summary><div><p>(a) For $a$ with support $T=\{n\mid a_n=1\}$, compare $a$ and $\sum_{i\in T}e_i$ term by term. (b) The sum is finite; on a common finite set outside of which $a$ and $b$ vanish, the rules for finite sums apply. (c) What does a finite combination of the $e_i^*$ do to $e_j$ for large $j$? Compare with $f_{\mathbb N}$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) spanning and independence; (b) the two rules of a functional; (c) a finite combination of the dual set vanishes on all but finitely many $e_j$.</p>
+<p>(a) Each $e_i\in c_{00}$ (support $\{i\}$). <em>Spanning:</em> let $a\in c_{00}$ with finite support $T$. The $n$-th term of $\sum_{i\in T}e_i$ is $1$ if $n\in T$ and $0$ otherwise, which is $a_n$. So $a=\sum_{i\in T}e_i$, a finite combination. <em>Independent:</em> let $i_1,\dots,i_m$ be distinct and $\sum_k\lambda_ke_{i_k}=0$; the $i_l$-th term of the left side is $\lambda_l$, so all $\lambda_l=0$. Hence $(e_i)_{i\in\mathbb N}$ is a basis; it is infinite, so $c_{00}$ is not finite-dimensional.</p>
+<p>(b) For $a\in c_{00}$ the sum $\sum_{n\in S}a_n$ has only finitely many nonzero terms (at most those with $n$ in the support of $a$), so $f_S(a)\in\mathbb F_2$ is well defined. Let $a,b\in c_{00}$, $\lambda\in\mathbb F_2$, and let $T$ be the union of the supports of $a$ and $b$ (finite). All terms of $a$, $b$, $a+b$, $\lambda a$ outside $T$ are $0$, so $f_S(a+b)$ $=\sum_{n\in S\cap T}(a_n+b_n)$ $=\sum_{n\in S\cap T}a_n+\sum_{n\in S\cap T}b_n$ $=f_S(a)+f_S(b)$ and $f_S(\lambda a)$ $=\sum_{n\in S\cap T}\lambda a_n$ $=\lambda f_S(a)$, by the rules for finite sums in $\mathbb F_2$. So $f_S\in c_{00}^*$. For example $f_{\{i\}}=e_i^*$.</p>
+<p>(c) Let $g$ be in the span of the $e_i^*$: $g=\sum_{i\in T}\lambda_ie_i^*$ with $T$ finite. For $j\notin T$, $g(e_j)$ $=\sum_{i\in T}\lambda_i\delta_{ij}$ $=0$. But $f_{\mathbb N}(e_j)=1$ for every $j$. Since $T$ is finite there is $j\notin T$, and there $g(e_j)=0\ne1=f_{\mathbb N}(e_j)$, so $g\ne f_{\mathbb N}$. Hence $f_{\mathbb N}$ is not in the span, and $e_1^*,e_2^*,\dots$ is not a basis of $c_{00}^*$ (although it is independent: Proof G (a)). So “the dual basis is a basis” and “$\dim V^*=\dim V$” fail in infinite dimension.</p>
+</div></details>
+
+<h3 id="ex-4">Exercise 4 (Serie 6, exercise 28: step functions)</h3>
+<p>Let $a&lt;b$ and let $TF([a,b])$ be the real vector space of step functions on $[a,b]$ (constant on the open pieces of a finite partition $a=t_0&lt;\dots&lt;t_k=b$, arbitrary values at the points $t_j$; Analysis). For $t\in(a,b]$ let $\chi_t$ be $1$ on $[a,t)$ and $0$ elsewhere; for $s\in[a,b]$ let $\chi_{\{s\}}$ be $1$ at $s$ and $0$ elsewhere. (a) Show that $B$ $=\{\chi_t\mid t\in(a,b]\}\cup\{\chi_{\{s\}}\mid s\in[a,b]\}$ is a basis. (b) Show that $F(f)=\int_a^bf\,dx$ is a functional. (c) Show that $F\notin\mathrm{Sp}\{\chi^*\mid\chi\in B\}$.</p>
+<details><summary>Hint</summary><div><p>(a) $\chi_t-\chi_u$ is the indicator of $[u,t)$; build the step part from these and correct the finitely many points with $\chi_{\{s\}}$. For independence, evaluate at well-chosen points, starting from the right. (c) Copy Exercise 3 (c): compute $F(\chi_t)$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) spanning and independence; (b) linearity of the integral; (c) a finite combination of the dual set vanishes on all but finitely many elements of $B$.</p>
+<p>(a) <em>Spanning.</em> Put $\chi_a:=0$. For $u&lt;t$, $\chi_t-\chi_u$ is $1$ exactly on $[u,t)$. Let $f$ have partition $a=t_0&lt;\dots&lt;t_k=b$ and value $c_j$ on $(t_{j-1},t_j)$. Then $g:=\sum_{j=1}^kc_j(\chi_{t_j}-\chi_{t_{j-1}})$ is a combination of elements of $B$ that equals $c_j$ on $[t_{j-1},t_j)$ and $0$ at $b$. So $h:=f-g$ vanishes except possibly at $t_0,\dots,t_k$, and $h=\sum_{j=0}^kh(t_j)\chi_{\{t_j\}}$ (both sides agree at every point). Thus $f=g+h$ is a finite combination of elements of $B$.</p>
+<p><em>Independence.</em> Take a finite combination $\sum_{i=1}^m\lambda_i\chi_{t_i}+\sum_{j=1}^l\mu_j\chi_{\{s_j\}}$ $=0$ with $a&lt;t_1&lt;\dots&lt;t_m\le b$ and distinct $s_j$; put $t_0=a$ and $E=\{s_1,\dots,s_l\}$. We show $\lambda_m=\dots=\lambda_1=0$ from the right: suppose $\lambda_{i+1}=\dots=\lambda_m=0$. The interval $[t_{i-1},t_i)$ is infinite, so it contains a point $r\notin E$. At $r$: $\chi_{\{s_j\}}(r)=0$, $\chi_{t_k}(r)=1$ for $k\ge i$ and $0$ for $k&lt;i$. So $0=\lambda_i+\dots+\lambda_m=\lambda_i$. Then $\sum\mu_j\chi_{\{s_j\}}=0$, and evaluating at $s_j$ gives $\mu_j=0$. So $B$ is a basis (an uncountable one).</p>
+<p>(b) For a step function with partition $t_0&lt;\dots&lt;t_k$ and values $c_j$, $\int_a^bf\,dx=\sum_jc_j(t_j-t_{j-1})$ (Analysis). Given $f,g$, refine to a common partition; then $f+g$ has values $c_j+d_j$ and $\lambda f$ has $\lambda c_j$, so $F(f+g)=\sum(c_j+d_j)(t_j-t_{j-1})$ $=F(f)+F(g)$ and $F(\lambda f)=\lambda F(f)$. So $F\in TF([a,b])^*$.</p>
+<p>(c) Every $G$ in the span is $\sum_{k=1}^m\lambda_k\chi_k^*$ with finitely many $\chi_k\in B$, so $G(\chi)=0$ for every $\chi\in B$ other than $\chi_1,\dots,\chi_m$. But $F(\chi_t)=t-a&gt;0$ for each of the infinitely many $t\in(a,b]$. Choosing $t$ with $\chi_t\notin\{\chi_1,\dots,\chi_m\}$ gives $G(\chi_t)=0\ne F(\chi_t)$. So $F\ne G$ for every $G$ in the span: <strong>$F\notin\mathrm{Sp}\{\chi^*\mid\chi\in B\}$</strong>. The integral is a functional that is no finite linear combination of the dual set.</p>
+</div></details>
+
+<h3 id="ex-5">Exercise 5 (FS17, problem 6 (a)–(d), 15 points)</h3>
+<p>$V$ is finite-dimensional over $K$, $W\subseteq V$ a subspace, and $W^\perp:=\{f\in V^*\mid f(w)=0$ for all $w\in W\}$. (a) Show that $W^\perp$ is a subspace of $V^*$. (b) Define $\Phi:W^\perp\to(V/W)^*$ by $\Phi(f)(v+W):=f(v)$. Show that $\Phi(f)$ is well defined and is a functional on $V/W$. (c) Show that $\Phi$ is linear. (d) Show that $\Phi$ is bijective.</p>
+<details><summary>Hint</summary><div><p>(b) is the well-definedness check of <a class="xl" href="linalg-09.html">lesson 9</a>: $v+W=v'+W$ means $v-v'\in W$. (d) Find the inverse: a functional $h$ on $V/W$ gives the functional $v\mapsto h(v+W)$ on $V$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) subspace test in $V^*$; (b) “let $v+W=v'+W$, i.e. $v-v'\in W$; show $f(v)=f(v')$”, then the two rules; (c) equality of functionals on $V/W$, value by value; (d) give a two-sided inverse.</p>
+<p>(a) The zero functional vanishes on $W$, so $0\in W^\perp$. If $f,g\in W^\perp$, $\lambda\in K$ and $w\in W$: $(f+g)(w)=0+0=0$ and $(\lambda f)(w)=\lambda\cdot0=0$. So $W^\perp$ is a subspace of $V^*$.</p>
+<p>(b) Let $f\in W^\perp$ and $v+W=v'+W$, i.e. $v-v'\in W$. Then $f(v)-f(v')=f(v-v')=0$, so $f(v)=f(v')$: the value does not depend on the representative. Linearity: $\Phi(f)\big((v+W)+(u+W)\big)$ $=\Phi(f)\big((v+u)+W\big)=f(v+u)$ $=f(v)+f(u)$ and $\Phi(f)\big(\lambda(v+W)\big)$ $=\Phi(f)(\lambda v+W)=\lambda f(v)$, by the definition of the operations of $V/W$. So $\Phi(f)\in(V/W)^*$.</p>
+<p>(c) For $f,g\in W^\perp$, $\lambda\in K$ and every $v+W$: $\Phi(f+g)(v+W)=(f+g)(v)=f(v)+g(v)$ $=\big(\Phi(f)+\Phi(g)\big)(v+W)$ and $\Phi(\lambda f)(v+W)=\lambda f(v)$ $=\big(\lambda\Phi(f)\big)(v+W)$. Functionals with the same values are equal, so $\Phi$ is linear.</p>
+<p>(d) For $h\in(V/W)^*$ define $\Psi(h):V\to K$, $\Psi(h)(v):=h(v+W)$. It is linear, since $v\mapsto v+W$ respects sums and multiples (definition of the operations on $V/W$) and $h$ is linear; and $\Psi(h)(w)=h(w+W)=h(0+W)=0$ for $w\in W$. So $\Psi(h)\in W^\perp$. Now $\Phi(\Psi(h))(v+W)=\Psi(h)(v)=h(v+W)$, so $\Phi\circ\Psi=\mathrm{id}$, and $\Psi(\Phi(f))(v)=\Phi(f)(v+W)=f(v)$, so $\Psi\circ\Phi=\mathrm{id}$. Hence $\Phi$ is bijective with inverse $\Psi$ (<a class="xl" href="linalg-03.html">lesson 3</a>), and $(V/W)^*$ and $W^\perp$ are isomorphic. The set $W^\perp$ is the <strong>annihilator</strong> of $W$; the script writes $W^0$ (lesson 14).</p>
+</div></details>
+
+<h3 id="ex-6">Exercise 6 (true or false)</h3>
+<p>(a) $\dim(\mathbb R^3)^*=3$. (b) If two bases $B,C$ of $V$ have the same first vector $b_1=c_1$, then $b_1^*=c_1^*$. (c) Every functional $f\ne0$ on $V$ is surjective onto $K$. (d) If $f\ne0$ is a functional on an $n$-dimensional $V$, then $\dim\{v\in V\mid f(v)=0\}=n-1$. (e) $x\mapsto x_1x_2$ is a functional on $\mathbb F_2^2$.</p>
+<details><summary>Hint</summary><div><p>(b) Note 10.2.2. (d) Pick $v_0$ with $f(v_0)=1$ and write every $v$ as $(v-f(v)v_0)+f(v)v_0$. (e) Over $\mathbb F_2$ test additivity on $e_1$ and $e_2$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> each answer is proved or refuted by one counterexample.</p>
+<p>(a) <strong>True</strong>: $\dim V^*=\dim V$ in finite dimension, by the dual basis.</p>
+<p>(b) <strong>False</strong>: $B=(e_1,e_2)$, $C=(e_1,e_1+e_2)$ in $\mathbb R^2$ give $b_1^*(x)=x_1$ but $c_1^*(x)=x_1-x_2$; they differ at $e_2$. The dual basis vector depends on the whole basis.</p>
+<p>(c) <strong>True</strong>: pick $v$ with $f(v)=c\ne0$. For $t\in K$, $f(tc^{-1}v)=tc^{-1}c=t$.</p>
+<p>(d) <strong>True</strong>. Let $N=\{v\mid f(v)=0\}$ (a subspace, Exercise 2 (d)). By (c) choose $v_0$ with $f(v_0)=1$. Every $v$ is $\big(v-f(v)v_0\big)+f(v)v_0$, and $f(v-f(v)v_0)=f(v)-f(v)=0$, so $V=N+\mathrm{Sp}(v_0)$. If $\lambda v_0\in N$ then $\lambda=f(\lambda v_0)=0$, so $N\cap\mathrm{Sp}(v_0)=\{0\}$. By the dimension formula (<a class="xl" href="linalg-08.html">lesson 8</a>), $n=\dim N+1-0$, so $\dim N=n-1$.</p>
+<p>(e) <strong>False</strong>: with $f(x)=x_1x_2$, $f(e_1)+f(e_2)=0+0=0$ but $f(e_1+e_2)=f(1,1)=1$. Not additive.</p>
+</div></details>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<ul>
+  <li><strong>The annihilator</strong> $U^0$ $=\{\varphi\in V^*\mid\varphi(u)=0\ \forall u\in U\}$ (Definition 10.5.1, <a class="pl" href="linalg-script.html#p327">p. 327</a>), Proposition 10.5.3 ($(V/U)^*\cong U^0$) and $\dim U^0=\dim V-\dim U$ (Section 10.5, <a class="pl" href="linalg-script.html#p327">pp. 327–330</a>): Halbeisen's §6 does not cover it; it comes in <strong>lesson 14</strong>. Exercise 5 already proves $(V/W)^*\cong W^\perp$ by hand.</li>
+  <li><strong>The bidual</strong> $V^{**}$ and canonical maps (Section 10.3, <a class="pl" href="linalg-script.html#p321">pp. 321–323</a>): lesson 14 (lecture §9).</li>
+  <li><strong>The dual map</strong> $T^*$ and functors (Section 10.4, <a class="pl" href="linalg-script.html#p323">pp. 323–327</a>): lesson 14 (lecture §9; FS18, problem 4; HS24, 3.A4).</li>
+  <li><strong>The exercise “Row and column space”</strong> (<a class="pl" href="linalg-script.html#p313">p. 313</a>, the isomorphism $D:K^n_{\text{row}}\to(K^n_{\text{col}})^*$) and the Note on the rank theorem: we used the row picture informally (section 3); the isomorphism and the rank theorem are lessons 11–12 and 15+.</li>
+  <li><strong>Proposition 10.1.1 and Example 10.1.2</strong> in general form ($V^*\cong K^I$, the row $[\varphi]^B_{E_1}$): stated in section 7; the matrix notation $[\varphi]^B_{E_1}$ comes with matrices of linear maps, lesson 11.</li>
+  <li><strong>Example 10.1.4, Exercises 10.1.5 and 10.1.6</strong> (functions with finite support $K^{(I)}$, $(K^{(I)})^*\cong K^I$, direct sums and products, <a class="pl" href="linalg-script.html#p315">p. 315</a>): the special case $c_{00}$ is section 7; the general versions are not needed for the exam.</li>
+  <li><strong>Notation 10.2.3 and Note 10.2.4</strong> (physicists' $v^i$, covectors; ordering, <a class="pl" href="linalg-script.html#p317">p. 317</a>): mentioned only.</li>
+  <li><strong>The lemma on transition matrices of dual bases</strong> ($[\mathrm{id}_{V^*}]^{C^*}_{B^*}$ $=(([\mathrm{id}_V]^B_C)^T)^{-1}$, <a class="pl" href="linalg-script.html#p318">pp. 318–319</a>): needs change of basis, <strong>lesson 13</strong>.</li>
+  <li><strong>Proposition 10.2.7 in matrix form</strong> (<a class="pl" href="linalg-script.html#p319">p. 319</a>): shown as a side note in section 6; it becomes a full tool once matrices are multiplied (lesson 12).</li>
+  <li><strong>Example 10.2.11</strong> (with a scalar product an orthonormal basis is its own dual basis, <a class="pl" href="linalg-script.html#p320">p. 320</a>): Linear Algebra II.</li>
+  <li><strong>HS17, problem 4 (c)</strong> (the matrix of $p\mapsto p'$ in the basis $B$ of Worked example 5): lesson 11.</li>
+</ul>
+<p><strong>Next:</strong> lesson 11: linear maps, $\mathrm{Hom}(V,W)$ and the matrix of a linear map.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg.html">Linear Algebra home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
