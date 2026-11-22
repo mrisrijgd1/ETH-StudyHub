@@ -38,8 +38,8 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
   want. New cards follow the lecture: a lesson's cards are offered once the lecture has covered it (planner's
   lecture-position table, or the student adds lessons by hand). Instead of a limit, the page shows the
   **workload forecast** for the next 7 days (see §4.1), so students see what many new cards will cost later.
-- **Load balancing:** FSRS "fuzz" spreads reviews so no day spikes. Daily review cap (default 100) so a
-  backlog never becomes a wall.
+- **Load balancing:** FSRS "fuzz" spreads reviews so no day spikes. Daily **review** cap of 100 (kept, decided by
+  Rachel, 23 Nov), so a backlog never becomes a wall. It limits reviews only, never new cards.
 - **Backlog recovery:** after missed days, overdue cards are sorted by how likely they are forgotten and
   spread over the next days within the cap. The message is "Welcome back: 3 short sessions catch you up",
   never a red number of 400.
@@ -156,7 +156,7 @@ scheduled job, so each step is asked first on #65 (AGENTS.md rule 3).
 2. Should "Got it / Again" stay the default, or should the 4-button version be default for everyone?
 
 Decided by Rachel (23 Nov): one schedule per card id regardless of language; default batch 20 cards;
-no daily limit on new cards; time estimate 1 min per new card, less with each repetition (§4.1).
+no daily limit on new cards; daily review cap of 100 stays; time estimate 1 min per new card, less with each repetition (§4.1).
 
 ## Sources
 - ts-fsrs (FSRS-6, MIT licence): https://github.com/open-spaced-repetition/ts-fsrs
