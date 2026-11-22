@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Two Mapmakers, One City">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=fix1120"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=fc1120"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two Mapmakers, One City</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=story1120">
+<link rel="stylesheet" href="assets/studyhub.css?v=bar1120">
+<script defer src="assets/studyhub.js?v=fix1120"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-subjects" aria-label="Subjects"><a href="analysis.html">Analysis I</a><a href="physics.html">Physics I</a><a href="chemie/">Chemie I (PC)</a><a href="linalg.html" aria-current="page">Linear Algebra I</a><a href="dive/" class="study-game"><span aria-hidden="true">🎮 </span>Exam Dive</a></nav><nav class="study-utilities" aria-label="Personal area"><a href="account.html" class="study-progress">Progress</a><a href="more.html">More</a><a href="linalg-13.html?lang=de" lang="de" hreflang="de">DE</a><details class="study-design"><summary>Design</summary></details></nav></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Linear Algebra I · Lesson 13</span>
+<h1>Two Mapmakers, One City</h1>
+<p class="lead">Change of basis: transition matrices translate coordinates, the matrix of a map changes as Q⁻¹AQ, similar matrices are one map seen in two bases, and dual bases change with the transpose.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-12-5">Recap of lesson 12 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-two-mapmakers-one-city">1. The story: two mapmakers, one city</a>
+</li>
+<li><a href="#s2-one-vector-two-coordinate-vectors">2. One vector, two coordinate vectors</a>
+<ol>
+<li><a href="#proof-a">Proof A: the transition matrix translates coordinates (lecture Lemma 8.0; script Proposition 3.3.8 for $T=\mathrm{Id}_V$)</a></li>
+<li><a href="#we-1">Worked example 1: writing down transition matrices</a></li>
+</ol></li>
+<li><a href="#s3-translating-back">3. Translating back: transition matrices are invertible</a>
+<ol>
+<li><a href="#proof-b">Proof B: transition matrices are invertible and inverse to each other (script Corollary 3.3.31, p. 92; lecture p. 47)</a></li>
+<li><a href="#proof-c">Proof C: every invertible matrix is a transition matrix (HS17, (xv); script Exercise 3.3.36 needs it)</a></li>
+<li><a href="#we-2">Worked example 2: coordinates in a basis, and between two bases</a></li>
+</ol></li>
+<li><a href="#s4-the-matrix-of-a-map-in-new-bases">4. The matrix of a map in new bases</a>
+<ol>
+<li><a href="#proof-d">Proof D: the change-of-basis formula (script Corollaries 3.3.30 and 3.3.32, pp. 91–92)</a></li>
+<li><a href="#we-3">Worked example 3: FS25, multiple choice (1 point)</a></li>
+<li><a href="#we-4">Worked example 4: building a matrix from a good basis</a></li>
+</ol></li>
+<li><a href="#s5-similar-and-equivalent-matrices">5. Similar and equivalent matrices</a>
+<ol>
+<li><a href="#proof-e">Proof E: similarity is an equivalence relation, and similar means “the same endomorphism” (script Exercise 3.3.36, p. 93)</a></li>
+<li><a href="#invariants-how-to-show-two-matrices-are-not-similar">Invariants: how to show that two matrices are not similar</a></li>
+</ol></li>
+<li><a href="#s6-changing-the-dual-basis">6. Changing the dual basis</a>
+<ol>
+<li><a href="#proof-f">Proof F: dual bases change with the transpose (script, Lemma on p. 318, proof on p. 319)</a></li>
+<li><a href="#why-it-s-cool">Why it&#x27;s cool</a></li>
+<li><a href="#for-wonder-why-physicists-put-indices-up-and-down">For wonder: why physicists put indices up and down</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-5">Worked example 5: quick exam items (HS17, (xv); FS17, (xxx); similarity checks)</a></li>
+<li><a href="#we-6">Worked example 6: the dual basis in two bases (script Example 10.2.6 and the Lemma on p. 318)</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (PVK HS20, set 3, exercise 2: a transition matrix in $\mathbb R^3$)</a></li>
+<li><a href="#ex-2">Exercise 2 (PVK HS20, set 3, exercise 4: a basis that makes a map simple)</a></li>
+<li><a href="#ex-3">Exercise 3 (FS20, problem 5 (a)–(b), 8 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (script Exercise 3.3.36, first and third part)</a></li>
+<li><a href="#ex-5">Exercise 5 (a map between different spaces, in new bases)</a></li>
+<li><a href="#ex-6">Exercise 6 (script Exercise 10.2.9 again, now with Proof F)</a></li>
+<li><a href="#ex-7">Exercise 7 (which matrices look the same in every basis?)</a></li>
+<li><a href="#ex-8">Exercise 8 (the trace as a tool; FS17 true/false)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) define the <strong>transition matrix</strong> (change-of-basis matrix) $[\mathrm{Id}_V]^B_{B'}$, say which basis goes on top and which below, and write it down column by column; (2) prove that it translates coordinates, $[v]_{B'}=[\mathrm{Id}_V]^B_{B'}[v]_B$; (3) prove that transition matrices are invertible and that $[\mathrm{Id}_V]^{B'}_B$ is the inverse, and that <em>every</em> invertible matrix is a transition matrix; (4) prove and use the change-of-basis formula $[T]^{B'}_{C'}=[\mathrm{Id}_W]^C_{C'}[T]^B_C[\mathrm{Id}_V]^{B'}_B$, and in particular $[T]_{B'}=Q^{-1}[T]_BQ$ for an endomorphism; (5) define <strong>equivalent</strong> and <strong>similar</strong> matrices, prove that similarity is an equivalence relation and that similar matrices are the matrices of one endomorphism in two bases, and rule out similarity with an invariant such as the trace; (6) prove that the dual bases change with the transposed matrix, $[\mathrm{id}_{V^*}]^{C^*}_{B^*}=([\mathrm{id}_V]^B_C)^T$.</dd></div>
+  <div><dt>Time</dt><dd>About 100 minutes. A natural break comes after section 3 (translating coordinates is done; maps in new bases, similarity and dual bases come next).</dd></div>
+  <div><dt>Script (English, printed pages)</dt><dd>Script EN 2023:
+    <ul>
+      <li><strong><a class="pl" href="linalg-script.html#p91">p. 91</a>:</strong> Corollary 3.3.30 (the change-of-basis formula for $T\in\mathrm{Hom}(V,W)$); Definition “Transition matrix”.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p92">p. 92</a>:</strong> Corollary 3.3.31 (transition matrices are invertible, $([\mathrm{Id}_V]^B_{B'})^{-1}=[\mathrm{Id}_V]^{B'}_B$); Corollary 3.3.32 (endomorphisms: $[T]_{B'}=([\mathrm{Id}_V]^{B'}_B)^{-1}[T]_B[\mathrm{Id}_V]^{B'}_B$); the Note $[T]_B:=[T]^B_B$.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p93">p. 93</a>:</strong> Definition 3.3.35 (equivalent and similar matrices); Exercise 3.3.36 (both are equivalence relations; what they mean for maps).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p153">p. 153</a>:</strong> Definition 4.7.6 (the trace) and Lemma 4.7.7 ($\mathrm{Tr}(AB)=\mathrm{Tr}(BA)$), used here as a tool to rule out similarity.</li>
+      <li><strong><a class="pl" href="linalg-script.html#p318">pp. 318–320</a>:</strong> Example 10.2.6 (dual bases through the inverse matrix), the Lemma on <a class="pl" href="linalg-script.html#p318">p. 318</a> ($[\mathrm{id}_{V^*}]^{C^*}_{B^*}=([\mathrm{id}_V]^B_C)^T$) with its proof on <a class="pl" href="linalg-script.html#p319">p. 319</a>, Proposition 10.2.7 and Lemma 10.2.10 (from <a class="xl" href="linalg-10.html">lesson 10</a>, now explained).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Prof. Halbeisen's §8 (9 Nov, notes <a class="pl" href="linalg-script.html#p46">pp. 46–47</a>): a vector $x=\sum_i\lambda_ix_i=\sum_i\mu_i\tilde x_i$ in two bases; the <strong>transition matrices</strong> $(\alpha^i_j)$ and $(\tilde\alpha^i_j)$ defined by $x_j=\sum_i\alpha^i_j\tilde x_i$ and $\tilde x_j=\sum_i\tilde\alpha^i_jx_i$, with the remark that they are the matrices of $\mathrm{id}$ with respect to the two bases; <strong>Lemma 8.0</strong> ($(\mu_i)=(\alpha^i_j)\cdot(\lambda_j)$, our Proof A); and the claim that the two transition matrices are inverse to each other, proved with Serie 7, exercise 32 (a) (our Proof B). The notes in our library end on <a class="pl" href="linalg-script.html#p47">p. 47</a>; <strong>Satz 8.1</strong> and the rest of §8 are not in them yet, so this lesson follows the script for them. There is no Serie for §8 in the library yet; the practice comes from the old exams and a PVK set.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Change of basis is the most common computation in Linear Algebra exams after the matrix of a map itself. FS25, multiple choice (1 point; Worked example 3) asks for $[T]^B_B$ from the standard matrix of $T$ and a basis $B$ of $\mathbb R^3$, with $[\mathrm{Id}]$ written the wrong way round among the options. The true/false blocks ask whether “every invertible matrix is a change-of-basis matrix” (HS17, (xv); Proof C) and whether an isomorphism $V\to V^*$ maps a basis to its dual basis (FS17, (xxx); Worked example 5). FS20, problem 5 (a)–(b) (8 points; Exercise 3) asks whether $AB$ and $BA$ are similar. The proof questions of the final exam on diagonalisation (Linear Algebra II) are all change-of-basis questions: “find a basis in which the matrix of $T$ is …” is $Q^{-1}AQ$ in disguise. The mock exam at the end of the course also has a change-of-basis problem.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-12-5">Recap of <a class="xl" href="linalg-12.html">lesson 12</a> (5 minutes)</h3>
+<p>The matrix of a composition is the product, $[S\circ T]^A_C=[S]^B_C[T]^A_B$; the product is associative but not commutative; $[T^{-1}]=[T]^{-1}$; $V\cong W$ iff $\dim V=\dim W$. Check yourself:</p>
+<ol>
+  <li>$T:V\to W$, $S:W\to U$ with bases $A,B,C$. Is $[S\circ T]^A_C$ equal to $[S]^B_C[T]^A_B$ or to $[T]^A_B[S]^B_C$?</li>
+  <li>Invert $\begin{pmatrix}1&amp;3\\2&amp;4\end{pmatrix}$.</li>
+  <li>What is $[\mathrm{Id}_V]^B_B$ for a basis $B$ of an $n$-dimensional space?</li>
+  <li>Let $T:V\to W$ be linear and $B$ a basis of $V$. If $T$ is an isomorphism, what can you say about $T(B)$?</li>
+</ol>
+<details><summary>Answers</summary><div><p>1. $[S]^B_C[T]^A_B$: the map applied first stands on the right. 2. $\frac1{1\cdot4-3\cdot2}\begin{pmatrix}4&amp;-3\\-2&amp;1\end{pmatrix}=\begin{pmatrix}-2&amp;3/2\\1&amp;-1/2\end{pmatrix}$. 3. $I_n$, since $\mathrm{Id}(v_j)=v_j$ has coordinates $e_j$. 4. $T(B)$ is a basis of $W$ (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof D). Today: what is $[\mathrm{Id}_V]^B_{B'}$ when the two bases are <em>different</em>? It is no longer $I_n$, and it is the key to everything in this lesson.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>change of basis</td><td>Basiswechsel</td></tr>
+    <tr><td>transition matrix, change-of-basis matrix</td><td>Basiswechselmatrix, Übergangsmatrix, Transformationsmatrix</td></tr>
+    <tr><td>coordinate vector</td><td>Koordinatenvektor</td></tr>
+    <tr><td>matrix of a linear map (representation matrix)</td><td>Darstellungsmatrix, darstellende Matrix</td></tr>
+    <tr><td>endomorphism</td><td>Endomorphismus</td></tr>
+    <tr><td>equivalent matrices</td><td>äquivalente Matrizen</td></tr>
+    <tr><td>similar matrices</td><td>ähnliche Matrizen</td></tr>
+    <tr><td>equivalence relation</td><td>Äquivalenzrelation</td></tr>
+    <tr><td>invariant</td><td>Invariante</td></tr>
+    <tr><td>trace</td><td>Spur</td></tr>
+    <tr><td>transpose</td><td>Transponierte</td></tr>
+    <tr><td>dual basis</td><td>duale Basis</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-two-mapmakers-one-city">1. The story: two mapmakers, one city</h2>
+<div class="story">
+<p>The Free City has two guilds of mapmakers. The old guild draws its grid along the two great roads that meet at the fountain. The new guild prefers the river and the old wall, which meet at the same fountain but at a slant. Every house now has two addresses: “3 along the road, 2 along the other road” on the old map, and different numbers on the new map. Neither map is wrong; they describe the same houses.</p>
+<p>The city clerks write a <em>translation table</em>: for each of the old guild's two reference roads, its address on the new map. With it, any old address can be turned into a new one: walk the old address step by step, and translate each step. Going back needs the other guild's table, and the two tables undo each other.</p>
+<p>The couriers of <a class="xl" href="linalg-11.html">lesson 11</a> keep their instruction tables in old addresses. A clerk who only reads the new map does not need a new courier: she translates the address into the old map, lets the courier run by his old table, and translates the result back. The courier is the same; only his table changes. And the clerks soon notice that some maps make a courier's table very simple: on the map along the river, the courier who mirrors everything in the river just keeps one road and turns the other round.</p>
+</div>
+<p>In mathematics: one vector space $V$ (the city) with two bases $B$ and $B'$ (the two grids). The <strong>transition matrix</strong> turns $B$-coordinates into $B'$-coordinates. A linear map $T$ (a courier) has a matrix in each basis, and the two matrices are related by a sandwich with transition matrices. Choosing a good basis makes the matrix simple, which is the central theme of Linear Algebra II.</p>
+
+<h2 id="s2-one-vector-two-coordinate-vectors">2. One vector, two coordinate vectors</h2>
+<p>Throughout, $V$ is a vector space of dimension $n$ over $K$ with two ordered bases $B=(v_1,\dots,v_n)$ and $B'=(v'_1,\dots,v'_n)$. Every $v\in V$ has a coordinate vector $[v]_B\in K^n$ and a coordinate vector $[v]_{B'}\in K^n$ (<a class="xl" href="linalg-11.html">lesson 11</a>). How are they related? The identity map $\mathrm{Id}_V$ does nothing to $v$, but its matrix with respect to <em>two different</em> bases records the translation.</p>
+<div class="box">
+<p><strong>Definition (transition matrix; script, Definition on <a class="pl" href="linalg-script.html#p91">p. 91</a>).</strong> The matrix $[\mathrm{Id}_V]^B_{B'}\in M_{n\times n}(K)$ is called the <strong>change-of-basis matrix</strong> or <strong>transition matrix</strong> from $B$ to $B'$. By the definition of the matrix of a map (column $j$ is the coordinate vector of the image of the $j$-th basis vector), its columns are</p>
+<span class="math-display" style="display:block">$$[\mathrm{Id}_V]^B_{B'}=\Big(\,[v_1]_{B'}\;\Big|\;[v_2]_{B'}\;\Big|\;\cdots\;\Big|\;[v_n]_{B'}\,\Big):$$</span>
+<p>the <strong>old</strong> basis vectors written in the <strong>new</strong> basis. For an endomorphism $T$ the script writes $[T]_B:=[T]^B_B$ (Note, <a class="pl" href="linalg-script.html#p92">p. 92</a>).</p></div>
+<div class="box"><p><strong>How to read the indices (the part everyone gets wrong once).</strong> In $[T]^B_C$ the upper basis $B$ belongs to the space the map <em>starts</em> in, the lower basis $C$ to the space it <em>lands</em> in: $[T]^B_C$ eats $B$-coordinates and returns $C$-coordinates. So $[\mathrm{Id}_V]^B_{B'}$ eats $B$-coordinates and returns $B'$-coordinates. Read “from top to bottom”: from $B$ to $B'$. Other books write $T^{B'}_{B}$, $M^B_{B'}$, $S_{B'\leftarrow B}$ or put the bases the other way round; the exams follow the script, and the PVK sets sometimes do not, so always check one column.</p>
+<p><strong>In the lecture's notation:</strong> with $B=(x_1,\dots,x_n)$, $B'=(\tilde x_1,\dots,\tilde x_n)$ and $x_j=\sum_i\alpha^i_j\tilde x_i$, the matrix $(\alpha^i_j)$ (row index $i$ up, column index $j$ down) is $[\mathrm{Id}_V]^B_{B'}$.</p></div>
+
+<h3 id="proof-a">Proof A: the transition matrix translates coordinates (lecture Lemma 8.0; script Proposition 3.3.8 for $T=\mathrm{Id}_V$)</h3>
+<div class="box"><p><strong>Claim.</strong> For every $v\in V$,</p>
+<span class="math-display" style="display:block">$$[v]_{B'}=[\mathrm{Id}_V]^B_{B'}\,[v]_B.$$</span></div>
+<p><strong>The idea.</strong> This is <a class="xl" href="linalg-11.html">lesson 11</a>'s rule $[T]^B_C[v]_B=[Tv]_C$ with $T=\mathrm{Id}_V$ and $C=B'$. It is worth proving once directly, as the lecture does, because the computation shows <em>why</em> the old basis vectors in new coordinates are the right columns: write $v$ in the old basis, replace each old basis vector by its expression in the new basis, and collect. Coordinates are unique, so what you collect <em>is</em> $[v]_{B'}$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $[v]_B=(\lambda_1,\dots,\lambda_n)$ and $[\mathrm{Id}_V]^B_{B'}=(a_{ij})$, i.e. $v=\sum_j\lambda_jv_j$ and $v_j=\sum_ia_{ij}v'_i$.”</li>
+  <li><strong>Last line:</strong> “So the $i$-th coordinate of $v$ in $B'$ is $\sum_ja_{ij}\lambda_j$, the $i$-th entry of $[\mathrm{Id}_V]^B_{B'}[v]_B$.”</li>
+  <li><strong>The gap:</strong> substitute, swap the two finite sums, use uniqueness of coordinates.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A house has an old address: so many steps along each old road.</p></div><div class="sp-formal"><p>Let $v\in V$ and $[v]_B=(\lambda_1,\dots,\lambda_n)^T$, so $v=\sum_{j=1}^n\lambda_jv_j$. Let $(a_{ij})=[\mathrm{Id}_V]^B_{B'}$; by definition its $j$-th column is $[v_j]_{B'}$, i.e. $v_j=\sum_{i=1}^na_{ij}v'_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Translate each old road into the new map and walk the steps there.</p></div><div class="sp-formal"><p>Substituting: $v=\sum_{j=1}^n\lambda_j\sum_{i=1}^na_{ij}v'_i$ $=\sum_{i=1}^n\Big(\sum_{j=1}^na_{ij}\lambda_j\Big)v'_i$ (finite sums can be swapped).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A house has only one new address, so this is it.</p></div><div class="sp-formal"><p>Coordinates with respect to $B'$ are unique, so the $i$-th entry of $[v]_{B'}$ is $\sum_ja_{ij}\lambda_j$, which is the $i$-th entry of $[\mathrm{Id}_V]^B_{B'}[v]_B$. As $i$ was arbitrary, $[v]_{B'}=[\mathrm{Id}_V]^B_{B'}[v]_B$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_twoways">compute one element in two ways</a> <a class="mvl" href="linalg-moves.html#m-la_colbycol">the matrix column by column</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $[v]_B=(\lambda_j)$ and $[\mathrm{Id}_V]^B_{B'}=(a_{ij})$, so $v=\sum_j\lambda_jv_j$ and $v_j=\sum_ia_{ij}v'_i$. Then $v=\sum_j\lambda_j\sum_ia_{ij}v'_i=\sum_i\big(\sum_ja_{ij}\lambda_j\big)v'_i$. By uniqueness of coordinates, $[v]_{B'}$ has the entries $\sum_ja_{ij}\lambda_j$, i.e. $[v]_{B'}=[\mathrm{Id}_V]^B_{B'}[v]_B$. (Alternatively: <a class="xl" href="linalg-11.html">lesson 11</a>, Proof E, with $T=\mathrm{Id}_V$.) <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Name the coordinates of $v$ in $B$ and the columns of the transition matrix by their defining equations.</li>
+  <li>Substitute and swap the sums.</li>
+  <li>Compare coefficients of $v'_i$ (uniqueness of coordinates).</li>
+</ol>
+<p><strong>In short:</strong> old basis vectors in new coordinates are the columns; then $[v]_{B'}=[\mathrm{Id}]^B_{B'}[v]_B$ is $[T][v]=[Tv]$ for $T=\mathrm{Id}$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In $V=K^n$ with the standard basis $E=(e_1,\dots,e_n)$ and another basis $B=(v_1,\dots,v_n)$: what is $[\mathrm{Id}]^B_E$?
+  <details><summary>Answer</summary><div><p>Its columns are $[v_j]_E=v_j$ (a column vector is its own coordinate vector in the standard basis). So $[\mathrm{Id}]^B_E=(v_1|\cdots|v_n)$, the matrix whose columns are the basis vectors. This is the one transition matrix you can write down without any computation.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Check Proof A on $V=K^2$, $B=(e_2,e_1)$, $B'=E=(e_1,e_2)$ and $v=(5,7)$.
+  <details><summary>Answer</summary><div><p>$[v]_B=(7,5)$, since $v=7e_2+5e_1$. $[\mathrm{Id}]^B_E=(e_2|e_1)=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}$, and $\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\begin{pmatrix}7\\5\end{pmatrix}=\begin{pmatrix}5\\7\end{pmatrix}=[v]_E$ ✓. Reordering a basis permutes the coordinates.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof A from the frame alone.</li>
+</ol></div>
+
+<div class="box"><h3 id="we-1">Worked example 1: writing down transition matrices</h3>
+<p>(a) In $\mathbb R^2$ let $B=(v_1,v_2)$ with $v_1=(1,2)$, $v_2=(3,4)$ (script Example 10.2.6), and $E$ the standard basis. Find $[\mathrm{Id}]^B_E$ and the vector $v$ with $[v]_B=(-1,2)$. (b) In $V=\mathbb R[x]_{\le2}$ let $E=(1,x,x^2)$ and $B'=(1,\,1+x,\,1+x+x^2)$ (script Exercise 10.2.9). Find $[\mathrm{Id}_V]^E_{B'}$ and $[p]_{B'}$ for $p=c+bx+ax^2$.</p>
+<ol class="gq">
+  <li>(a) Which coordinates do the columns of $[\mathrm{Id}]^B_E$ hold?
+  <details><summary>Answer</summary><div><p>The vectors of $B$ in the standard basis: $[\mathrm{Id}]^B_E=\begin{pmatrix}1&amp;3\\2&amp;4\end{pmatrix}$ (Rung 1).</p></div></details></li>
+  <li>(a) Find $v$.
+  <details><summary>Answer</summary><div><p>By Proof A, $[v]_E=\begin{pmatrix}1&amp;3\\2&amp;4\end{pmatrix}\begin{pmatrix}-1\\2\end{pmatrix}=\begin{pmatrix}5\\6\end{pmatrix}$. Directly: $-1\cdot(1,2)+2\cdot(3,4)=(5,6)$ ✓. The other direction, from $(5,6)$ to $(-1,2)$, needs the inverse matrix: section 3.</p></div></details></li>
+  <li>(b) Write each vector of $E$ in the basis $B'$.
+  <details><summary>Answer</summary><div><p>$1=1\cdot1$; $x=(1+x)-1$; $x^2=(1+x+x^2)-(1+x)$. So $[1]_{B'}=(1,0,0)$, $[x]_{B'}=(-1,1,0)$, $[x^2]_{B'}=(0,-1,1)$.</p></div></details></li>
+  <li>(b) Write down $[\mathrm{Id}_V]^E_{B'}$ and compute $[p]_{B'}$.
+  <details><summary>Answer</summary><div><p>The three coordinate vectors are the columns:</p>
+  <span class="math-display" style="display:block">$$[\mathrm{Id}_V]^E_{B'}=\begin{pmatrix}1&amp;-1&amp;0\\0&amp;1&amp;-1\\0&amp;0&amp;1\end{pmatrix},$$</span>
+  <span class="math-display" style="display:block">$$\begin{aligned}[p]_{B'}&amp;=\begin{pmatrix}1&amp;-1&amp;0\\0&amp;1&amp;-1\\0&amp;0&amp;1\end{pmatrix}\begin{pmatrix}c\\b\\a\end{pmatrix}\\ &amp;=\begin{pmatrix}c-b\\b-a\\a\end{pmatrix}.\end{aligned}$$</span>
+  <p>Check: $(c-b)\cdot1+(b-a)(1+x)+a(1+x+x^2)$ $=c+bx+ax^2$ ✓. These are exactly the values of the dual basis found in <a class="xl" href="linalg-10.html">lesson 10</a> (script Exercise 10.2.9: $v_1^*(p)=c-b$, $v_2^*(p)=b-a$, $v_3^*(p)=a$), as they must be: the dual basis reads off coordinates (Lemma 10.2.10).</p></div></details></li>
+</ol></div>
+
+<h2 id="s3-translating-back">3. Translating back: transition matrices are invertible</h2>
+<p>The clerks' two tables undo each other. In matrices: going from $B$ to $B'$ and back to $B$ is the identity, and <a class="xl" href="linalg-12.html">lesson 12</a>'s product rule turns this into a matrix equation.</p>
+
+<h3 id="proof-b">Proof B: transition matrices are invertible and inverse to each other (script Corollary 3.3.31, <a class="pl" href="linalg-script.html#p92">p. 92</a>; lecture <a class="pl" href="linalg-script.html#p47">p. 47</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> For two bases $B,B'$ of $V$ with $\dim V=n$,</p>
+<span class="math-display" style="display:block">$$[\mathrm{Id}_V]^B_{B'}\in\mathrm{GL}_n(K),$$</span>
+<p>and</p>
+<span class="math-display" style="display:block">$$\big([\mathrm{Id}_V]^B_{B'}\big)^{-1}=[\mathrm{Id}_V]^{B'}_B.$$</span></div>
+<p><strong>The idea.</strong> $\mathrm{Id}_V\circ\mathrm{Id}_V=\mathrm{Id}_V$. Read the left side through the bases $B\to B'\to B$ and take matrices with $[S\circ T]=[S][T]$ (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof A): the product of the two transition matrices is $[\mathrm{Id}_V]^B_B=I_n$. The same in the other order. A matrix with a two-sided inverse is invertible by definition.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “By Lemma 3.3.29, $[\mathrm{Id}_V]^{B'}_B[\mathrm{Id}_V]^B_{B'}=[\mathrm{Id}_V\circ\mathrm{Id}_V]^B_B$.”</li>
+  <li><strong>Last line:</strong> “Both products are $I_n$, so $[\mathrm{Id}_V]^B_{B'}$ is invertible with inverse $[\mathrm{Id}_V]^{B'}_B$.”</li>
+  <li><strong>The gap:</strong> $[\mathrm{Id}_V]^C_C=I_n$ for every basis $C$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Translating into the new map and back is a relay of two “do nothing” couriers.</p></div><div class="sp-formal"><p>By Lemma 3.3.29 (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof A), applied to $\mathrm{Id}_V:(V,B)\to(V,B')$ followed by $\mathrm{Id}_V:(V,B')\to(V,B)$: $[\mathrm{Id}_V]^{B'}_B\,[\mathrm{Id}_V]^B_{B'}=[\mathrm{Id}_V\circ\mathrm{Id}_V]^B_B=[\mathrm{Id}_V]^B_B$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Doing nothing on one map has the plain table.</p></div><div class="sp-formal"><p>For any basis $C=(c_1,\dots,c_n)$, $\mathrm{Id}_V(c_j)=c_j$ has $[c_j]_C=e_j$, so $[\mathrm{Id}_V]^C_C=I_n$. Hence $[\mathrm{Id}_V]^{B'}_B[\mathrm{Id}_V]^B_{B'}=I_n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The same relay the other way round.</p></div><div class="sp-formal"><p>Exchanging the roles of $B$ and $B'$: $[\mathrm{Id}_V]^B_{B'}[\mathrm{Id}_V]^{B'}_B=[\mathrm{Id}_V]^{B'}_{B'}=I_n$. So $[\mathrm{Id}_V]^B_{B'}\in\mathrm{GL}_n(K)$ with inverse $[\mathrm{Id}_V]^{B'}_B$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_matmap">turn matrices into maps and back</a> <a class="mvl" href="linalg-moves.html#m-la_isinverse">show it is the inverse: compose both ways</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>By Lemma 3.3.29, $[\mathrm{Id}_V]^{B'}_B[\mathrm{Id}_V]^B_{B'}=[\mathrm{Id}_V\circ\mathrm{Id}_V]^B_B=[\mathrm{Id}_V]^B_B=I_n$ and $[\mathrm{Id}_V]^B_{B'}[\mathrm{Id}_V]^{B'}_B=[\mathrm{Id}_V]^{B'}_{B'}=I_n$, because $\mathrm{Id}_V$ sends each basis vector to itself. Hence $[\mathrm{Id}_V]^B_{B'}$ is invertible with inverse $[\mathrm{Id}_V]^{B'}_B$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Write $\mathrm{Id}_V=\mathrm{Id}_V\circ\mathrm{Id}_V$ and choose the bases $B\to B'\to B$.</li>
+  <li>Apply the product rule and $[\mathrm{Id}]^C_C=I_n$.</li>
+  <li>Do both orders: “invertible” needs a two-sided inverse at this point of the course (one side suffices for square matrices, but that is lesson 15).</li>
+</ol>
+<p><strong>In short:</strong> $[\mathrm{Id}]^{B'}_B[\mathrm{Id}]^B_{B'}=[\mathrm{Id}]^B_B=I_n$, and the same the other way round.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In $K^n$ with $P=(v_1|\cdots|v_n)=[\mathrm{Id}]^B_E$: what is $[\mathrm{Id}]^E_B$, and how do you get $[v]_B$ from $v$?
+  <details><summary>Answer</summary><div><p>$[\mathrm{Id}]^E_B=P^{-1}$ by Proof B, and $[v]_B=P^{-1}v$ by Proof A. Finding coordinates in a basis of $K^n$ means inverting the matrix of basis vectors, or solving the system $Px=v$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Three bases $B,B',B''$ of $V$. Express $[\mathrm{Id}]^B_{B''}$ through the other transition matrices.
+  <details><summary>Answer</summary><div><p>$\mathrm{Id}=\mathrm{Id}\circ\mathrm{Id}$ through $B\to B'\to B''$: $[\mathrm{Id}]^B_{B''}=[\mathrm{Id}]^{B'}_{B''}[\mathrm{Id}]^B_{B'}$. The indices “cancel” like fractions: the lower $B'$ of the right factor meets the upper $B'$ of the left factor. This is how you translate between two non-standard bases of $K^n$: through $E$, $[\mathrm{Id}]^B_{B'}=[\mathrm{Id}]^E_{B'}[\mathrm{Id}]^B_E=P'^{-1}P$.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof B from the frame alone.</li>
+</ol></div>
+
+<p>Is every invertible matrix a transition matrix, or only some? HS17 asks exactly this in its true/false block. The answer is yes, and the proof is a good use of <a class="xl" href="linalg-12.html">lesson 12</a>: an invertible matrix belongs to an isomorphism, and isomorphisms map bases to bases.</p>
+
+<h3 id="proof-c">Proof C: every invertible matrix is a transition matrix (HS17, (xv); script Exercise 3.3.36 needs it)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $B'=(v'_1,\dots,v'_n)$ be a basis of $V$ and $P=(p_{ij})\in\mathrm{GL}_n(K)$. Put $v_j:=\sum_{i=1}^np_{ij}v'_i$ for $j=1,\dots,n$. Then $B=(v_1,\dots,v_n)$ is a basis of $V$, and $[\mathrm{Id}_V]^B_{B'}=P$.</p></div>
+<p><strong>The idea.</strong> The column $j$ of $P$ is meant to be $[v_j]_{B'}$, so $v_j$ is forced: it is the vector with those coordinates. The only question is whether these $v_j$ form a basis. Let $T$ be the endomorphism with $T(v'_j)=v_j$; its matrix is $P$. Since $P$ is invertible, $T$ is an isomorphism, and an isomorphism maps the basis $B'$ to a basis (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof D).</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $T\in\mathrm{End}(V)$ be the linear map with $T(v'_j)=v_j$ (<a class="xl" href="linalg-11.html">lesson 11</a>, Proof C). Then $[T]_{B'}=P$.”</li>
+  <li><strong>Last line:</strong> “$B=T(B')$ is a basis, and the $j$-th column of $[\mathrm{Id}_V]^B_{B'}$ is $[v_j]_{B'}=(p_{1j},\dots,p_{nj})$.”</li>
+  <li><strong>The gap:</strong> $T$ is an isomorphism, because the map with matrix $P^{-1}$ is its inverse.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A courier who carries each new road to the place the table names.</p></div><div class="sp-formal"><p>By <a class="xl" href="linalg-11.html">lesson 11</a>, Proof C, there is a unique linear $T:V\to V$ with $T(v'_j)=v_j$ for all $j$. The $j$-th column of $[T]_{B'}=[T]^{B'}_{B'}$ is $[T(v'_j)]_{B'}=[v_j]_{B'}=(p_{1j},\dots,p_{nj})^T$, so $[T]_{B'}=P$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The inverse table gives a courier who walks every route back.</p></div><div class="sp-formal"><p>Let $S\in\mathrm{End}(V)$ with $[S]_{B'}=P^{-1}$ (it exists, since $T\mapsto[T]_{B'}$ is bijective, <a class="xl" href="linalg-11.html">lesson 11</a>, Proof F). By <a class="xl" href="linalg-12.html">lesson 12</a>, Proof A, $[S\circ T]_{B'}=P^{-1}P=I_n=[\mathrm{Id}_V]_{B'}$ and $[T\circ S]_{B'}=PP^{-1}=I_n$. As $T\mapsto[T]_{B'}$ is injective, $S\circ T=T\circ S=\mathrm{Id}_V$: $T$ is an isomorphism.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A twin map sends a grid to a grid, and the table reads off as wanted.</p></div><div class="sp-formal"><p>An isomorphism maps a basis to a basis (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof D), so $B=(T(v'_1),\dots,T(v'_n))=(v_1,\dots,v_n)$ is a basis of $V$. Finally the $j$-th column of $[\mathrm{Id}_V]^B_{B'}$ is $[v_j]_{B'}=(p_{1j},\dots,p_{nj})^T$, the $j$-th column of $P$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_matmap">turn matrices into maps and back</a> <a class="mvl" href="linalg-moves.html#m-la_onbasis">two linear maps that agree on a basis are equal</a> <a class="mvl" href="linalg-moves.html#m-la_isinverse">show it is the inverse: compose both ways</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $T\in\mathrm{End}(V)$ with $T(v'_j)=v_j$; then $[T]_{B'}=P$. Let $S\in\mathrm{End}(V)$ with $[S]_{B'}=P^{-1}$. Then $[S\circ T]_{B'}=P^{-1}P=I_n$ and $[T\circ S]_{B'}=I_n$, so $S\circ T=T\circ S=\mathrm{Id}_V$ and $T$ is an isomorphism. Isomorphisms map bases to bases, so $B=T(B')$ is a basis, and $[\mathrm{Id}_V]^B_{B'}$ has the columns $[v_j]_{B'}$, the columns of $P$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Define the new vectors from the columns of $P$: $v_j=\sum_ip_{ij}v'_i$.</li>
+  <li>Show they form a basis. Here via the isomorphism $T$; alternatively directly: if $\sum_j\lambda_jv_j=0$, then $P\lambda=0$ (coordinates in $B'$), so $\lambda=P^{-1}P\lambda=0$; and $n$ independent vectors in an $n$-dimensional space form a basis.</li>
+  <li>Read off the columns of $[\mathrm{Id}]^B_{B'}$.</li>
+</ol>
+<p><strong>In short:</strong> the columns of $P$ define new vectors; $P$ invertible makes them independent; $n$ of them are a basis.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> In Proof C the basis $B'$ was fixed and $B$ was built. Given a basis $B$ and $P\in\mathrm{GL}_n(K)$, is there also a basis $B'$ with $[\mathrm{Id}]^B_{B'}=P$?
+  <details><summary>Answer</summary><div><p>Yes. Apply Proof C to $B$ (in the role of $B'$) and $P^{-1}$: there is a basis $B'$ with $[\mathrm{Id}]^{B'}_B=P^{-1}$. By Proof B, $[\mathrm{Id}]^B_{B'}=(P^{-1})^{-1}=P$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> In $K^2$ with $B'=E$ and $P=\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}$, which basis $B$ does Proof C produce?
+  <details><summary>Answer</summary><div><p>$v_1=1\cdot e_1+0\cdot e_2=(1,0)$ and $v_2=1\cdot e_1+1\cdot e_2=(1,1)$: the columns of $P$. With $B'=E$, Proof C says that the columns of an invertible matrix form a basis of $K^n$.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof C from the frame alone, once with the isomorphism and once with the direct argument from the exam box.</li>
+</ol></div>
+
+<div class="box"><p><strong>The working rule in $K^n$.</strong> For a basis $B=(v_1,\dots,v_n)$ of $K^n$ put $P:=(v_1|\cdots|v_n)$. Then</p>
+<span class="math-display" style="display:block">$$\begin{aligned}[\mathrm{Id}]^B_E&amp;=P, &amp; [\mathrm{Id}]^E_B&amp;=P^{-1},\\ [v]_B&amp;=P^{-1}v, &amp; [\mathrm{Id}]^B_{B'}&amp;=P'^{-1}P.\end{aligned}$$</span>
+<p>In words: going <em>into</em> the standard basis is free (read the columns), going <em>out of</em> it costs an inverse or a linear system. Between two non-standard bases, go through $E$ (Rung 2 of Proof B).</p></div>
+
+<div class="box"><h3 id="we-2">Worked example 2: coordinates in a basis, and between two bases</h3>
+<p>In $\mathbb R^2$ let $B=((1,2),(3,4))$ and $B'=((1,0),(1,1))$. (a) Find $[v]_B$ for $v=(5,6)$. (b) Find $[\mathrm{Id}]^B_{B'}$. (c) Find $[v]_{B'}$ in two ways.</p>
+<ol class="gq">
+  <li>(a) Which matrix do you need, and what is it?
+  <details><summary>Answer</summary><div><p>$[\mathrm{Id}]^E_B=P^{-1}$ with $P=\begin{pmatrix}1&amp;3\\2&amp;4\end{pmatrix}$, so $P^{-1}=\begin{pmatrix}-2&amp;3/2\\1&amp;-1/2\end{pmatrix}$ (recap question 2). Then $[v]_B=P^{-1}\begin{pmatrix}5\\6\end{pmatrix}=\begin{pmatrix}-10+9\\5-3\end{pmatrix}=\begin{pmatrix}-1\\2\end{pmatrix}$, which undoes Worked example 1 (a) ✓.</p></div></details></li>
+  <li>(b) Go through the standard basis.
+  <details><summary>Answer</summary><div><p>$P'=\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}$, $P'^{-1}=\begin{pmatrix}1&amp;-1\\0&amp;1\end{pmatrix}$, and</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}[\mathrm{Id}]^B_{B'}=P'^{-1}P&amp;=\begin{pmatrix}1&amp;-1\\0&amp;1\end{pmatrix}\begin{pmatrix}1&amp;3\\2&amp;4\end{pmatrix}\\ &amp;=\begin{pmatrix}-1&amp;-1\\2&amp;4\end{pmatrix}.\end{aligned}$$</span>
+  <p>Check one column, as always: column 1 says $(1,2)=-1\cdot(1,0)+2\cdot(1,1)$ ✓; column 2 says $(3,4)=-1\cdot(1,0)+4\cdot(1,1)$ ✓.</p></div></details></li>
+  <li>(c) Compute $[v]_{B'}$ from $[v]_B$, and directly.
+  <details><summary>Answer</summary><div><p>From (a) and (b) with Proof A: $[v]_{B'}=\begin{pmatrix}-1&amp;-1\\2&amp;4\end{pmatrix}\begin{pmatrix}-1\\2\end{pmatrix}=\begin{pmatrix}-1\\6\end{pmatrix}$. Directly: $P'^{-1}v=(5-6,\,6)=(-1,6)$, and indeed $-1\cdot(1,0)+6\cdot(1,1)=(5,6)$ ✓.</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-the-matrix-of-a-map-in-new-bases">4. The matrix of a map in new bases</h2>
+<p>A linear map $T:V\to W$ has one matrix for every choice of bases. If we know $[T]^B_C$ and want $[T]^{B'}_{C'}$, the clerk's recipe from the story works: translate the input from $B'$ to $B$, apply the old table, translate the output from $C$ to $C'$.</p>
+
+<h3 id="proof-d">Proof D: the change-of-basis formula (script Corollaries 3.3.30 and 3.3.32, <a class="pl" href="linalg-script.html#p91">pp. 91–92</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $T\in\mathrm{Hom}(V,W)$, let $B,B'$ be bases of $V$ and $C,C'$ bases of $W$. Then</p>
+<span class="math-display" style="display:block">$$[T]^{B'}_{C'}=[\mathrm{Id}_W]^C_{C'}\,[T]^B_C\,[\mathrm{Id}_V]^{B'}_B.$$</span>
+<p>In particular, for an endomorphism $T\in\mathrm{End}(V)$ and $Q:=[\mathrm{Id}_V]^{B'}_B$:</p>
+<span class="math-display" style="display:block">$$[T]_{B'}=Q^{-1}\,[T]_B\,Q.$$</span></div>
+<p><strong>The idea.</strong> $T=\mathrm{Id}_W\circ T\circ\mathrm{Id}_V$: a map does not change when you do nothing before and after it. But you may <em>read</em> each of the three factors with different bases: the first $\mathrm{Id}_V$ from $B'$ to $B$, then $T$ from $B$ to $C$, then $\mathrm{Id}_W$ from $C$ to $C'$. The product rule (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof A) applied twice gives the formula. Read the right side from right to left, like a composition: translate in, apply, translate out.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “$T=\mathrm{Id}_W\circ T\circ\mathrm{Id}_V$, and we read these maps as $(V,B')\to(V,B)\to(W,C)\to(W,C')$.”</li>
+  <li><strong>Last line:</strong> “With $C=B$, $C'=B'$, $W=V$ and Proof B: $[T]_{B'}=Q^{-1}[T]_BQ$.”</li>
+  <li><strong>The gap:</strong> Lemma 3.3.29 twice.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The courier is unchanged if clerks who do nothing stand before and after him.</p></div><div class="sp-formal"><p>$T=\mathrm{Id}_W\circ T\circ\mathrm{Id}_V$ as maps $V\to W$. Equip the domain of $\mathrm{Id}_V$ with $B'$ and its target with $B$; $T$ with $B$ and $C$; $\mathrm{Id}_W$ with $C$ and $C'$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The relay's table is the product of the three tables.</p></div><div class="sp-formal"><p>By Lemma 3.3.29 (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof A), applied twice: $[T]^{B'}_{C'}=[\mathrm{Id}_W\circ T\circ\mathrm{Id}_V]^{B'}_{C'}$ $=[\mathrm{Id}_W]^C_{C'}\,[T\circ\mathrm{Id}_V]^{B'}_C$ $=[\mathrm{Id}_W]^C_{C'}\,[T]^B_C\,[\mathrm{Id}_V]^{B'}_B$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>For a courier inside one city, the translation out is the translation in, undone.</p></div><div class="sp-formal"><p>Now let $W=V$, $C=B$, $C'=B'$. By Proof B, $[\mathrm{Id}_V]^B_{B'}=\big([\mathrm{Id}_V]^{B'}_B\big)^{-1}=Q^{-1}$. So $[T]_{B'}=Q^{-1}[T]_BQ$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_sandwich">sandwich the map between identities</a> <a class="mvl" href="linalg-moves.html#m-la_matmap">turn matrices into maps and back</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Since $T=\mathrm{Id}_W\circ T\circ\mathrm{Id}_V$, Lemma 3.3.29 applied twice, with the bases $B'\to B\to C\to C'$, gives $[T]^{B'}_{C'}=[\mathrm{Id}_W]^C_{C'}[T]^B_C[\mathrm{Id}_V]^{B'}_B$. For $T\in\mathrm{End}(V)$, $C=B$ and $C'=B'$, Corollary 3.3.31 gives $[\mathrm{Id}_V]^B_{B'}=Q^{-1}$ with $Q=[\mathrm{Id}_V]^{B'}_B$, hence $[T]_{B'}=Q^{-1}[T]_BQ$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Write $T=\mathrm{Id}\circ T\circ\mathrm{Id}$ and put the bases on the arrows: $B'\to B\to C\to C'$.</li>
+  <li>Take matrices; check that neighbouring indices match (lower of the right factor = upper of the left factor).</li>
+  <li>For endomorphisms: name $Q=[\mathrm{Id}]^{B'}_B$ (new basis in old coordinates) and use Proof B.</li>
+</ol>
+<p><strong>In short:</strong> translate in, apply the old matrix, translate out; in $K^n$ with the standard matrix $A$ and $P=(b_1|\cdots|b_n)$, $[T]_B=P^{-1}AP$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> $T=m_A:K^n\to K^n$ and $B=(b_1,\dots,b_n)$ with $P=(b_1|\cdots|b_n)$. Show $[T]_B=P^{-1}AP$, and say what is wrong with $PAP^{-1}$.
+  <details><summary>Answer</summary><div><p>$[T]_E=A$ (<a class="xl" href="linalg-11.html">lesson 11</a>). Use Proof D with $E$ as the old basis and $B$ as the new one: $Q=[\mathrm{Id}]^B_E=P$. So $[T]_B=P^{-1}AP$. The matrix $PAP^{-1}$ is $[T]_{B''}$ for the basis $B''$ with $[\mathrm{Id}]^{B''}_E=P^{-1}$, a different basis: right shape, wrong answer. Mixing up the two is the classic error that multiple-choice questions are built on.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Avoid the inverse: show that $M=[T]_B$ if and only if $PM=AP$.
+  <details><summary>Answer</summary><div><p>$P$ is invertible, so $M=P^{-1}AP\iff PM=AP$ (multiply by $P$ on the left, or by $P^{-1}$). In words, column $j$: $P\cdot(\text{column }j\text{ of }M)=Ab_j$, i.e. column $j$ of $M$ is $[T(b_j)]_B$: the definition of $[T]_B$. To <em>check</em> a candidate matrix you never need $P^{-1}$.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof D from the frame alone.</li>
+</ol></div>
+
+<div class="explorer" id="cb-ex">
+<span class="label">Try it: one map, two coordinate grids</span>
+<p>Type the standard matrix $A$ of a map $T:\mathbb R^2\to\mathbb R^2$ and a basis $B=(b_1,b_2)$ (integers, fractions like <code>3/5</code> or decimals). The explorer computes $P=[\mathrm{Id}]^B_E$, $P^{-1}=[\mathrm{Id}]^E_B$ and $[T]_B=P^{-1}AP$ exactly (Proof D), checks each column, and draws the grid of $B$ with $b_1,b_2$ (solid) and $T(b_1),T(b_2)$ (dashed).</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">$A$ = (<input id="cb-a11" type="text" value="2" style="width:2.6em" aria-label="a11">, <input id="cb-a12" type="text" value="1" style="width:2.6em" aria-label="a12"> ; <input id="cb-a21" type="text" value="1" style="width:2.6em" aria-label="a21">, <input id="cb-a22" type="text" value="2" style="width:2.6em" aria-label="a22">)</label>
+  <button type="button" id="cb-r">Example</button>
+</div>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">$b_1$ = (<input id="cb-b11" type="text" value="1" style="width:2.6em" aria-label="b1 first entry">, <input id="cb-b12" type="text" value="1" style="width:2.6em" aria-label="b1 second entry">)</label>
+  <label style="white-space:nowrap">$b_2$ = (<input id="cb-b21" type="text" value="1" style="width:2.6em" aria-label="b2 first entry">, <input id="cb-b22" type="text" value="-1" style="width:2.6em" aria-label="b2 second entry">)</label>
+</div>
+<svg id="cb-svg" viewBox="0 0 300 300" width="100%" style="max-width:320px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="The basis vectors, their images and the grid of the basis"></svg>
+<div id="cb-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var R=document.getElementById('cb-r');if(!R)return;
+  var ids=['a11','a12','a21','a22','b11','b12','b21','b22'];
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function Q(n,d){if(d<0){n=-n;d=-d;}var g=gcd(n,d);return {n:n/g,d:d/g};}
+  function add(a,b){return Q(a.n*b.d+b.n*a.d,a.d*b.d);}function sub(a,b){return Q(a.n*b.d-b.n*a.d,a.d*b.d);}
+  function mul(a,b){return Q(a.n*b.n,a.d*b.d);}function div(a,b){return Q(a.n*b.d,a.d*b.n);}
+  function isz(a){return a.n===0;}function num(a){return a.n/a.d;}function eq(a,b){return isz(sub(a,b));}
+  function fmt(a){var s=a.d===1?String(Math.abs(a.n)):Math.abs(a.n)+'/'+a.d;return (a.n<0?'−':'')+s;}
+  function par(a){return a.n<0?'('+fmt(a)+')':fmt(a);}
+  function parse(t){t=String(t).replace(/\s+/g,'').replace('−','-');var m=t.match(/^(-?\d{1,4})(?:\/(\d{1,4}))?$/);if(m){var d=m[2]?+m[2]:1;if(d===0)return null;return Q(+m[1],d);}
+    m=t.match(/^(-?)(\d{0,3})\.(\d{1,2})$/);if(m){var k=Math.pow(10,m[3].length);return Q((m[1]?-1:1)*((+m[2]||0)*k+ +m[3]),k);}return null;}
+  function mm(X,Y){return [[add(mul(X[0][0],Y[0][0]),mul(X[0][1],Y[1][0])),add(mul(X[0][0],Y[0][1]),mul(X[0][1],Y[1][1]))],[add(mul(X[1][0],Y[0][0]),mul(X[1][1],Y[1][0])),add(mul(X[1][0],Y[0][1]),mul(X[1][1],Y[1][1]))]];}
+  function M2(X){return '('+fmt(X[0][0])+', '+fmt(X[0][1])+' ; '+fmt(X[1][0])+', '+fmt(X[1][1])+')';}
+  function V2(v){return '('+fmt(v[0])+', '+fmt(v[1])+')';}
+  var ex=[['2','1','1','2','1','1','1','-1'],['-3/5','4/5','4/5','3/5','1','2','-2','1'],['1','1','0','1','0','1','1','0'],['0','-1','1','0','1','0','1','1'],['1','1','1','0','1','0','1','1'],['2','0','0','3','1','2','2','4']],ei=0;
+  var msg=['A symmetric map: in the basis (1,1), (1,−1) it only stretches, by 3 and by 1.','The reflection in the line y = 2x (Worked example 4): in a basis along and across the line its matrix is diagonal with 1 and −1.','A shear, read in the reordered basis (e₂, e₁): the matrix is the “transpose shear”, so the two shears are similar.','A rotation by 90°: no real basis makes it diagonal (no line through 0 is mapped to itself), but the trace 0 stays 0 in every basis.','The Fibonacci map of Serie 8, exercise 35, in another basis: the trace 1 stays the same.','b₁ and b₂ are dependent: not a basis, so there is no matrix [T]_B.'];
+  function draw(){
+    var v={},bad=false;ids.forEach(function(k){v[k]=parse(document.getElementById('cb-'+k).value);if(v[k]===null)bad=true;});
+    var out=document.getElementById('cb-out'),svg=document.getElementById('cb-svg');
+    if(bad){out.innerHTML='<p><strong>Please type numbers</strong> (integers, fractions like 3/5, or decimals).</p>';svg.innerHTML='';return;}
+    var A=[[v.a11,v.a12],[v.a21,v.a22]],P=[[v.b11,v.b21],[v.b12,v.b22]],b1=[v.b11,v.b12],b2=[v.b21,v.b22];
+    var det=sub(mul(P[0][0],P[1][1]),mul(P[0][1],P[1][0]));
+    var Tb1=[add(mul(A[0][0],b1[0]),mul(A[0][1],b1[1])),add(mul(A[1][0],b1[0]),mul(A[1][1],b1[1]))],Tb2=[add(mul(A[0][0],b2[0]),mul(A[0][1],b2[1])),add(mul(A[1][0],b2[0]),mul(A[1][1],b2[1]))];
+    var t='';
+    if(isz(det)){t='<p><strong>Not a basis:</strong> det P = '+fmt(P[0][0])+'·'+par(P[1][1])+' − '+par(P[0][1])+'·'+par(P[1][0])+' = 0, so b₁ = '+V2(b1)+' and b₂ = '+V2(b2)+' are linearly dependent. P = [Id]^B_E would not be invertible, and coordinates in B would not be unique (Proof C needs an invertible matrix).</p>';}
+    else{
+      var Pi=[[div(P[1][1],det),div(Q(-P[0][1].n,P[0][1].d),det)],[div(Q(-P[1][0].n,P[1][0].d),det),div(P[0][0],det)]];
+      var M=mm(Pi,mm(A,P));
+      t+='<p><strong>P = [Id]^B_E</strong> = '+M2(P)+' (columns b₁, b₂), det P = '+fmt(det)+' ≠ 0. <strong>P⁻¹ = [Id]^E_B</strong> = '+M2(Pi)+'.</p>';
+      t+='<p><strong>[T]_B = P⁻¹AP = '+M2(M)+'</strong> (rows separated by “;”).</p>';
+      t+='<p><strong>Column check:</strong> T(b₁) = A·b₁ = '+V2(Tb1)+' = '+par(M[0][0])+'·b₁ + '+par(M[1][0])+'·b₂, and T(b₂) = '+V2(Tb2)+' = '+par(M[0][1])+'·b₁ + '+par(M[1][1])+'·b₂. ';
+      var ok=eq(add(mul(M[0][0],b1[0]),mul(M[1][0],b2[0])),Tb1[0])&&eq(add(mul(M[0][0],b1[1]),mul(M[1][0],b2[1])),Tb1[1])&&eq(add(mul(M[0][1],b1[0]),mul(M[1][1],b2[0])),Tb2[0])&&eq(add(mul(M[0][1],b1[1]),mul(M[1][1],b2[1])),Tb2[1]);
+      t+=(ok?'✓':'✗')+'</p>';
+      t+='<p><strong>Invariant:</strong> Tr A = '+fmt(add(A[0][0],A[1][1]))+' and Tr [T]_B = '+fmt(add(M[0][0],M[1][1]))+' (section 5).';
+      if(isz(M[0][1])&&isz(M[1][0]))t+=' <strong>[T]_B is diagonal:</strong> T stretches b₁ by '+fmt(M[0][0])+' and b₂ by '+fmt(M[1][1])+'.';
+      t+='</p>';
+    }
+    var cur=ids.map(function(k){return document.getElementById('cb-'+k).value.trim();}).join(',');
+    ex.forEach(function(e,i){if(e.join(',')===cur)t+='<p class="small">'+msg[i]+'</p>';});
+    out.innerHTML=t;
+    var pts=[b1,b2,Tb1,Tb2].map(function(p){return [num(p[0]),num(p[1])];}),m=1;
+    pts.forEach(function(p){m=Math.max(m,Math.abs(p[0]),Math.abs(p[1]));});m*=1.15;
+    function X(x){return (150+140*x/m).toFixed(1);}function Y(y){return (150-140*y/m).toFixed(1);}
+    var h='<line x1="10" y1="150" x2="290" y2="150" style="stroke:var(--rule)"/><line x1="150" y1="10" x2="150" y2="290" style="stroke:var(--rule)"/>';
+    if(!isz(det)){var u=pts[0],w=pts[1];for(var k=-6;k<=6;k++){h+='<line x1="'+X(k*u[0]-8*w[0])+'" y1="'+Y(k*u[1]-8*w[1])+'" x2="'+X(k*u[0]+8*w[0])+'" y2="'+Y(k*u[1]+8*w[1])+'" style="stroke:var(--rule)" stroke-dasharray="2 3"/>';
+      h+='<line x1="'+X(k*w[0]-8*u[0])+'" y1="'+Y(k*w[1]-8*u[1])+'" x2="'+X(k*w[0]+8*u[0])+'" y2="'+Y(k*w[1]+8*u[1])+'" style="stroke:var(--rule)" stroke-dasharray="2 3"/>';}}
+    h='<defs><clipPath id="cb-clip"><rect x="0" y="0" width="300" height="300"/></clipPath></defs><g clip-path="url(#cb-clip)">'+h+'</g>';
+    function arrow(p,col,dash,lab){var s='<line x1="150" y1="150" x2="'+X(p[0])+'" y2="'+Y(p[1])+'" style="stroke:var('+col+')" stroke-width="2.5"'+(dash?' stroke-dasharray="6 4"':'')+'/><circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="4" style="fill:var('+col+')"/>';
+      var tx=+X(p[0]),ty=+Y(p[1])+(dash?16:-6),an=tx>220?'end':'start';tx+=an==='end'?-6:6;ty=Math.max(14,Math.min(294,ty));
+      s+='<text x="'+tx.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="'+an+'" font-size="13" style="fill:var('+col+')">'+lab+'</text>';return s;}
+    h+=arrow(pts[0],'--k-c',false,'b₁')+arrow(pts[1],'--k-c',false,'b₂')+arrow(pts[2],'--k-eps',true,'T(b₁)')+arrow(pts[3],'--k-eps',true,'T(b₂)');
+    svg.innerHTML=h;
+  }
+  ids.forEach(function(k){document.getElementById('cb-'+k).addEventListener('input',draw);});
+  R.addEventListener('click',function(){ei=(ei+1)%ex.length;ids.forEach(function(k,i){document.getElementById('cb-'+k).value=ex[ei][i];});draw();});
+  draw();
+})();
+</script>
+<p class="small">Things to try: the start values give $[T]_B=\mathrm{diag}(3,1)$: in this basis the map only stretches. The “Example” button cycles through the reflection of Worked example 4, a shear in the reordered basis, a rotation (never diagonal over $\mathbb R$), the Fibonacci map, and a dependent pair that is refused. Change $b_2$ a little and watch $[T]_B$ fill up while the trace stays the same.</p>
+
+<div class="box"><h3 id="we-3">Worked example 3: FS25, multiple choice (1 point)</h3>
+<p>Let $B=(v_1,v_2,v_3)$ with $v_1=(4,1,1)$, $v_2=(1,2,0)$, $v_3=(-1,1,-1)$ (a basis of $\mathbb R^3$), and let $T:\mathbb R^3\to\mathbb R^3$ have the standard matrix $A=\begin{pmatrix}2&amp;4&amp;0\\4&amp;8&amp;2\\0&amp;0&amp;4\end{pmatrix}$. Then $[T]^B_B$ is: (A) $\begin{pmatrix}4&amp;1&amp;-1\\1&amp;2&amp;1\\1&amp;0&amp;-1\end{pmatrix}$; (B) $\begin{pmatrix}4&amp;1&amp;1\\1&amp;2&amp;0\\-1&amp;1&amp;-1\end{pmatrix}$; (C) $\frac12\begin{pmatrix}-7&amp;0&amp;7\\37&amp;20&amp;-9\\-15&amp;0&amp;15\end{pmatrix}$; (D) $\frac1{14}\begin{pmatrix}2&amp;-2&amp;2\\-1&amp;3&amp;-1\\-3&amp;5&amp;-7\end{pmatrix}$.</p>
+<ol class="gq">
+  <li>What is the formula, and which options can you throw out at once?
+  <details><summary>Answer</summary><div><p>$[T]_B=P^{-1}AP$ with $P=(v_1|v_2|v_3)=\begin{pmatrix}4&amp;1&amp;-1\\1&amp;2&amp;1\\1&amp;0&amp;-1\end{pmatrix}$. Option (A) <em>is</em> $P$ and (B) is $P^T$: they do not involve $A$ at all, so they are traps for “the transition matrix is the answer”.</p></div></details></li>
+  <li>A ten-second filter: compare traces (section 5).
+  <details><summary>Answer</summary><div><p>Similar matrices have the same trace. $\mathrm{Tr}(A)=2+8+4=14$. (C): $\frac12(-7+20+15)=14$ ✓. (D): $\frac1{14}(2+3-7)=-\frac17$ ✗. Only (C) survives. In a multiple-choice question that is enough; in a written question, or to be sure, check a column.</p></div></details></li>
+  <li>Check (C) without inverting $P$ (Rung 2 of Proof D: column $j$ of $[T]_B$ is $[T(v_j)]_B$).
+  <details><summary>Answer</summary><div><p>$T(v_1)=Av_1=(8+4,\;16+8+2,\;4)=(12,26,4)$. Column 1 of (C) claims $T(v_1)=-\frac72v_1+\frac{37}2v_2-\frac{15}2v_3$ $=\big(-14+\frac{37}2+\frac{15}2,\;-\frac72+37-\frac{15}2,\;-\frac72+\frac{15}2\big)$ $=(12,26,4)$ ✓. Column 2: $Av_2=(2+8,\,4+16,\,0)=(10,20,0)=10v_2$, and column 2 of (C) is $(0,10,0)$ ✓: $v_2$ is only stretched. Column 3: $Av_3=(-2+4,\,-4+8-2,\,-4)=(2,2,-4)$ and $\frac72v_1-\frac92v_2+\frac{15}2v_3$ $=(14-\frac92-\frac{15}2,\;\frac72-9+\frac{15}2,\;\frac72-\frac{15}2)=(2,2,-4)$ ✓. <strong>Answer (C).</strong></p></div></details></li>
+  <li>(For the full computation) What is $P^{-1}$, and how could you find it before lesson 17?
+  <details><summary>Answer</summary><div><p>$P^{-1}=\frac14\begin{pmatrix}2&amp;-1&amp;-3\\-2&amp;3&amp;5\\2&amp;-1&amp;-7\end{pmatrix}$. Without Gaussian elimination: the columns of $P^{-1}$ are $[e_1]_B,[e_2]_B,[e_3]_B$, each found by solving a $3\times3$ system by substitution. Check one entry of $P\cdot P^{-1}=I_3$: first row of $P$ times first column of $P^{-1}$ is $\frac14\big(4\cdot2+1\cdot(-2)+(-1)\cdot2\big)=\frac14\cdot4=1$ ✓. Then $P^{-1}(Av_1)=\frac14(24-26-12,\,-24+78+20,\,24-26-28)=\frac14(-14,74,-30)$, column 1 of (C) ✓.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Worked example 4: building a matrix from a good basis</h3>
+<p>Let $S:\mathbb R^2\to\mathbb R^2$ be the reflection in the line $L=\mathrm{Sp}\big((1,2)\big)$, i.e. $S(b_1)=b_1$ for $b_1=(1,2)$ and $S(b_2)=-b_2$ for $b_2=(-2,1)$, which is perpendicular to $L$. Find the standard matrix of $S$.</p>
+<ol class="gq">
+  <li>What is $[S]_B$ for $B=(b_1,b_2)$?
+  <details><summary>Answer</summary><div><p>$S(b_1)=1\cdot b_1+0\cdot b_2$ and $S(b_2)=0\cdot b_1+(-1)\cdot b_2$, so $[S]_B=\begin{pmatrix}1&amp;0\\0&amp;-1\end{pmatrix}$. In the basis along and across the mirror the matrix is as simple as possible.</p></div></details></li>
+  <li>Solve $[S]_B=P^{-1}AP$ for $A$.
+  <details><summary>Answer</summary><div><p>$A=P[S]_BP^{-1}$ with $P=\begin{pmatrix}1&amp;-2\\2&amp;1\end{pmatrix}$, $P^{-1}=\frac15\begin{pmatrix}1&amp;2\\-2&amp;1\end{pmatrix}$. First $P[S]_B=\begin{pmatrix}1&amp;2\\2&amp;-1\end{pmatrix}$ (the second column changes sign), then</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}A&amp;=\frac15\begin{pmatrix}1&amp;2\\2&amp;-1\end{pmatrix}\begin{pmatrix}1&amp;2\\-2&amp;1\end{pmatrix}\\ &amp;=\frac15\begin{pmatrix}-3&amp;4\\4&amp;3\end{pmatrix}.\end{aligned}$$</span></div></details></li>
+  <li>Check it.
+  <details><summary>Answer</summary><div><p>$A(1,2)=\frac15(-3+8,\,4+6)=(1,2)$ ✓ and $A(-2,1)=\frac15(6+4,\,-8+3)=(2,-1)$ ✓. Also $A^2=\frac1{25}\begin{pmatrix}25&amp;0\\0&amp;25\end{pmatrix}=I_2$: reflecting twice does nothing. Computing $S(e_1)$ directly by geometry would have been much harder; the good basis did the work. This is the second Example in the explorer.</p></div></details></li>
+</ol></div>
+
+<h2 id="s5-similar-and-equivalent-matrices">5. Similar and equivalent matrices</h2>
+<p>Proof D says that the matrices of one endomorphism in different bases have the form $Q^{-1}AQ$, and the matrices of one map $V\to W$ have the form $PAQ$ with invertible $P,Q$. The script turns these shapes into definitions.</p>
+<div class="box">
+<p><strong>Definition (equivalent and similar matrices; script Definition 3.3.35, <a class="pl" href="linalg-script.html#p93">p. 93</a>).</strong></p>
+<ul>
+  <li>$A,B\in M_{m\times n}(K)$ are <strong>equivalent</strong> if there are $P\in\mathrm{GL}_m(K)$ and $Q\in\mathrm{GL}_n(K)$ with $PAQ=B$.</li>
+  <li>$A,B\in M_{n\times n}(K)$ are <strong>similar</strong> if there is $P\in\mathrm{GL}_n(K)$ with $P^{-1}AP=B$.</li>
+</ul>
+<p>Similar matrices are equivalent (take $P^{-1}$ and $P$), but not conversely: $I_2$ and $\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}$ are equivalent (both are invertible: $I_2\cdot I_2\cdot\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}$) but not similar (below).</p></div>
+
+<h3 id="proof-e">Proof E: similarity is an equivalence relation, and similar means “the same endomorphism” (script Exercise 3.3.36, <a class="pl" href="linalg-script.html#p93">p. 93</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> (a) Similarity is an equivalence relation on $M_{n\times n}(K)$. (b) $A,A'\in M_{n\times n}(K)$ are similar if and only if there are an $n$-dimensional vector space $V$, an endomorphism $T\in\mathrm{End}(V)$ and bases $B,B'$ of $V$ with $A=[T]_B$ and $A'=[T]_{B'}$.</p></div>
+<p><strong>The idea.</strong> (a) Each of the three properties is one line with $\mathrm{GL}_n(K)$ being a group (<a class="xl" href="linalg-12.html">lesson 12</a>): $I_n$ for reflexivity, the inverse for symmetry, the product for transitivity. (b) One direction is Proof D. For the other, $A'=P^{-1}AP$ must be read as a change of basis: take $T=m_A$ on $K^n$, start in the standard basis, and let the new basis be the columns of $P$, which is a basis by Proof C.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(a)</strong> “Reflexive: $A=I_n^{-1}AI_n$. Symmetric: if $A'=P^{-1}AP$, then $A=\dots$. Transitive: if $A'=P^{-1}AP$ and $A''=R^{-1}A'R$, then $A''=\dots$.”</li>
+  <li><strong>(b) ⇐</strong> “Put $Q=[\mathrm{Id}_V]^{B'}_B$; by Proof D, $A'=Q^{-1}AQ$.”</li>
+  <li><strong>(b) ⇒</strong> “Let $A'=P^{-1}AP$. Put $V=K^n$, $T=m_A$, $B=E$, and $B'=$ the columns of $P$.” … “so $[T]_{B'}=P^{-1}AP=A'$.”</li>
+  <li><strong>The gap:</strong> $(PR)^{-1}=R^{-1}P^{-1}$, and the columns of an invertible matrix form a basis.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Every table is a table of itself; translations can be undone and chained.</p></div><div class="sp-formal"><p>(a) Reflexive: $A=I_n^{-1}AI_n$ with $I_n\in\mathrm{GL}_n(K)$. Symmetric: if $A'=P^{-1}AP$, multiply by $P$ on the left and $P^{-1}$ on the right: $A=PA'P^{-1}=(P^{-1})^{-1}A'P^{-1}$ with $P^{-1}\in\mathrm{GL}_n(K)$. Transitive: if $A'=P^{-1}AP$ and $A''=R^{-1}A'R$, then $A''=R^{-1}P^{-1}APR=(PR)^{-1}A(PR)$ with $PR\in\mathrm{GL}_n(K)$ (<a class="xl" href="linalg-12.html">lesson 12</a>: $\mathrm{GL}_n(K)$ is a group, $(PR)^{-1}=R^{-1}P^{-1}$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two tables of one courier are related by a translation.</p></div><div class="sp-formal"><p>(b) “⇐”: let $A=[T]_B$, $A'=[T]_{B'}$ and $Q=[\mathrm{Id}_V]^{B'}_B$. By Proof B, $Q\in\mathrm{GL}_n(K)$, and by Proof D, $A'=Q^{-1}AQ$. So $A$ and $A'$ are similar.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Conversely, a translation recipe defines a second map of the city, and the courier's table on it is the translated one.</p></div><div class="sp-formal"><p>“⇒”: let $A'=P^{-1}AP$ with $P\in\mathrm{GL}_n(K)$. Let $V=K^n$, $T=m_A$ and $B=E$, so $[T]_E=A$. By Proof C (with $B'$ there $=E$), the columns $p_1,\dots,p_n$ of $P$ form a basis $B'$ of $K^n$ with $[\mathrm{Id}]^{B'}_E=P$. By Proof D, $[T]_{B'}=P^{-1}[T]_EP=P^{-1}AP=A'$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_check">check the axioms one by one</a> <a class="mvl" href="linalg-moves.html#m-la_sandwich">sandwich the map between identities</a> <a class="mvl" href="linalg-moves.html#m-la_matmap">turn matrices into maps and back</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(a) $A=I_n^{-1}AI_n$; if $A'=P^{-1}AP$ then $A=(P^{-1})^{-1}A'P^{-1}$; if moreover $A''=R^{-1}A'R$ then $A''=(PR)^{-1}A(PR)$; all matrices used are in the group $\mathrm{GL}_n(K)$. (b) If $A=[T]_B$ and $A'=[T]_{B'}$, then $A'=Q^{-1}AQ$ with the invertible $Q=[\mathrm{Id}]^{B'}_B$ (Proofs B and D). Conversely, if $A'=P^{-1}AP$, take $T=m_A$ on $K^n$, $B=E$ and $B'$ the columns of $P$ (a basis with $[\mathrm{Id}]^{B'}_E=P$ by Proof C); then $[T]_E=A$ and $[T]_{B'}=P^{-1}AP=A'$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>(a) Write the three properties as three lines; name the group facts you use.</li>
+  <li>(b) ⇐ is Proof D; ⇒: “$T=m_A$, $B=E$, $B'=$ columns of $P$”.</li>
+  <li>The same works for equivalence with $PAQ$ and two pairs of bases (Exercise 4).</li>
+</ol>
+<p><strong>In short:</strong> similar matrices are the tables of one endomorphism on two maps of the same city.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Which matrices are similar to $0$? To $I_n$? To $\lambda I_n$?
+  <details><summary>Answer</summary><div><p>Only themselves: $P^{-1}(\lambda I_n)P=\lambda P^{-1}P=\lambda I_n$ for every $P$. In map language: $\lambda\cdot\mathrm{id}_V$ has the matrix $\lambda I_n$ in <em>every</em> basis. (Exercise 7 shows that these are the only such matrices.)</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show: if $A$ and $A'$ are similar, then $A$ is invertible iff $A'$ is.
+  <details><summary>Answer</summary><div><p>If $A'=P^{-1}AP$ and $A$ is invertible, then $A'$ is a product of three invertible matrices, hence invertible, with $(A')^{-1}=P^{-1}A^{-1}P$. The converse follows by symmetry (Proof E (a)).</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof E from the frame alone.</li>
+</ol></div>
+
+<h3 id="invariants-how-to-show-two-matrices-are-not-similar">Invariants: how to show that two matrices are not similar</h3>
+<p>To show that $A$ and $A'$ <em>are</em> similar, you name a $P$ (or a basis). To show that they are <em>not</em>, you cannot try all $P$. Instead, find a quantity that is the same for similar matrices and differs for $A$ and $A'$: an <strong>invariant</strong>. So far we have: “is $0$”, “is $\lambda I_n$”, “is invertible” (Rungs 1–2 above). The most useful one for quick checks is the trace.</p>
+<div class="box">
+<p><strong>Definition and Lemma (trace; script Definition 4.7.6 and Lemma 4.7.7, <a class="pl" href="linalg-script.html#p153">p. 153</a>).</strong> The <strong>trace</strong> of $A\in M_{n\times n}(K)$ is $\mathrm{Tr}(A):=a_{11}+\dots+a_{nn}$. For $A,B\in M_{n\times n}(K)$, $\mathrm{Tr}(AB)=\mathrm{Tr}(BA)$.</p>
+<p><em>Proof.</em> $\mathrm{Tr}(AB)=\sum_i\sum_ka_{ik}b_{ki}=\sum_k\sum_ib_{ki}a_{ik}=\mathrm{Tr}(BA)$. <span class="qed">∎</span></p>
+<p><strong>Consequence.</strong> Similar matrices have the same trace: $\mathrm{Tr}(P^{-1}AP)=\mathrm{Tr}\big((AP)P^{-1}\big)=\mathrm{Tr}(A)$, using the Lemma with $P^{-1}$ and $AP$. So the trace of an endomorphism, $\mathrm{Tr}(T):=\mathrm{Tr}([T]_B)$, does not depend on the basis.</p></div>
+<p><strong>Careful:</strong> an invariant can only rule similarity <em>out</em>. $\begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}$ and $I_2$ have the same trace $2$, and both are invertible, but they are not similar: only $I_2$ is similar to $I_2$. Rank (lessons 15–16), determinant (lessons 18–20) and eigenvalues (lesson 21) are further invariants; even all of them together do not decide similarity in general, which is why Linear Algebra II needs normal forms. Equivalence, in contrast, is decided by one number: two $m\times n$ matrices are equivalent if and only if they have the same rank (script Proposition 3.3.37 and Corollary 3.3.40, <a class="pl" href="linalg-script.html#p93">pp. 93–94</a>; lesson 16).</p>
+
+<h2 id="s6-changing-the-dual-basis">6. Changing the dual basis</h2>
+<p>Every basis $B$ of $V$ has its dual basis $B^*$ of $V^*$ (<a class="xl" href="linalg-10.html">lesson 10</a>). If we change $B$ to $C$, the dual basis changes from $B^*$ to $C^*$. How are the two transition matrices related? The answer explains <a class="xl" href="linalg-10.html">lesson 10</a>'s recipe “the dual basis is in the rows of the inverse matrix”.</p>
+
+<h3 id="proof-f">Proof F: dual bases change with the transpose (script, Lemma on <a class="pl" href="linalg-script.html#p318">p. 318</a>, proof on <a class="pl" href="linalg-script.html#p319">p. 319</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $B=(v_1,\dots,v_n)$ and $C=(w_1,\dots,w_n)$ be bases of $V$ with dual bases $B^*=(v_1^*,\dots,v_n^*)$ and $C^*=(w_1^*,\dots,w_n^*)$. Then</p>
+<span class="math-display" style="display:block">$$[\mathrm{id}_{V^*}]^{C^*}_{B^*}=\big([\mathrm{id}_V]^B_C\big)^T=\Big(\big([\mathrm{id}_V]^C_B\big)^T\Big)^{-1}.$$</span></div>
+<p><strong>The idea.</strong> The columns we need are $[w_j^*]_{B^*}$, the new dual vectors in the old dual basis. <a class="xl" href="linalg-10.html">Lesson 10</a>'s Lemma 10.2.10 says that the coordinates of a functional in a dual basis are its <em>values</em> on the basis: $[w_j^*]_{B^*}=(w_j^*(v_1),\dots,w_j^*(v_n))$. And $w_j^*(v_i)$ is the $j$-th coordinate of $v_i$ in $C$, an entry of $[\mathrm{id}_V]^B_C$, but read along a <em>row</em>. Hence the transpose.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $A=(a_{ki}):=[\mathrm{id}_V]^B_C$, i.e. $v_i=\sum_ka_{ki}w_k$.”</li>
+  <li><strong>Last line:</strong> “So the $j$-th column of $[\mathrm{id}_{V^*}]^{C^*}_{B^*}$ is $(a_{j1},\dots,a_{jn})^T$, the $j$-th row of $A$: the matrix is $A^T$.”</li>
+  <li><strong>The gap:</strong> Lemma 10.2.10 for the coordinates of $w_j^*$, and $w_j^*(w_k)=\delta_{jk}$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Each old road, written on the new map.</p></div><div class="sp-formal"><p>Let $A=(a_{ki})=[\mathrm{id}_V]^B_C$. By definition, its $i$-th column is $[v_i]_C$: $v_i=\sum_{k=1}^na_{ki}w_k$ for $i=1,\dots,n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A new surveyor's reading of an old road is that road's address along her own road.</p></div><div class="sp-formal"><p>For all $i,j$: $w_j^*(v_i)=w_j^*\Big(\sum_ka_{ki}w_k\Big)=\sum_ka_{ki}w_j^*(w_k)=\sum_ka_{ki}\delta_{jk}=a_{ji}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A surveyor's coordinates in the old surveyor team are her readings of the old roads.</p></div><div class="sp-formal"><p>By Lemma 10.2.10, $[w_j^*]_{B^*}=\big(w_j^*(v_1),\dots,w_j^*(v_n)\big)^T=(a_{j1},\dots,a_{jn})^T$. This is the $j$-th column of $[\mathrm{id}_{V^*}]^{C^*}_{B^*}$, and it is the $j$-th row of $A$. Hence $[\mathrm{id}_{V^*}]^{C^*}_{B^*}=A^T$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The second form: undo the other translation, then transpose.</p></div><div class="sp-formal"><p>By Proof B, $A=\big([\mathrm{id}_V]^C_B\big)^{-1}$, and $(M^{-1})^T=(M^T)^{-1}$ for invertible $M$ (<a class="xl" href="linalg-12.html">lesson 12</a>, Exercise 5 (c); from $(XY)^T=Y^TX^T$). So $A^T=\big(([\mathrm{id}_V]^C_B)^T\big)^{-1}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_delta">apply to a basis vector: the delta picks one term</a> <a class="mvl" href="linalg-moves.html#m-la_colbycol">the matrix column by column</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Let $A=(a_{ki})=[\mathrm{id}_V]^B_C$, so $v_i=\sum_ka_{ki}w_k$. Then $w_j^*(v_i)=\sum_ka_{ki}\delta_{jk}=a_{ji}$. By Lemma 10.2.10, $[w_j^*]_{B^*}=(w_j^*(v_i))_i=(a_{j1},\dots,a_{jn})^T$, the $j$-th row of $A$ written as a column. So $[\mathrm{id}_{V^*}]^{C^*}_{B^*}=A^T$, and since $A=([\mathrm{id}_V]^C_B)^{-1}$ and $(M^{-1})^T=(M^T)^{-1}$, also $A^T=\big(([\mathrm{id}_V]^C_B)^T\big)^{-1}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Name $A=[\mathrm{id}]^B_C$ by its columns: $v_i=\sum_ka_{ki}w_k$.</li>
+  <li>Evaluate $w_j^*$ on $v_i$: the delta leaves $a_{ji}$.</li>
+  <li>Coordinates in a dual basis are values (Lemma 10.2.10): column $j$ is row $j$ of $A$.</li>
+</ol>
+<p><strong>In short:</strong> functionals change with the transposed matrix of the other direction; in $K^n$ with $C=E$ and $P=(v_1|\cdots|v_n)$, the coordinates of $v_j^*$ in $E^*$ are the rows of $P^{-1}$ (<a class="xl" href="linalg-10.html">lesson 10</a>, Proposition 10.2.7).</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Derive <a class="xl" href="linalg-10.html">lesson 10</a>'s recipe from Proof F: for a basis $B$ of $K^n$ and $P=(v_1|\cdots|v_n)$, the row vector of $v_j^*$ is the $j$-th row of $P^{-1}$.
+  <details><summary>Answer</summary><div><p>Apply Proof F with the roles $B\leftrightarrow E$: $[\mathrm{id}_{V^*}]^{B^*}_{E^*}=([\mathrm{id}_V]^E_B)^T=(P^{-1})^T$. Its $j$-th column is $[v_j^*]_{E^*}$, i.e. the $j$-th row of $P^{-1}$. And $[\varphi]_{E^*}=(\varphi(e_1),\dots,\varphi(e_n))$ is exactly the row vector of $\varphi$ in Example 10.1.7.</p></div></details></li>
+  <li><strong>Rung 2.</strong> $V=K^1$, $B=(1)$, $C=(2)$. Compute both sides of Proof F and explain in words.
+  <details><summary>Answer</summary><div><p>$1=\frac12\cdot2$, so $[\mathrm{id}]^B_C=(\tfrac12)$. The dual vectors: $v_1^*(x)=x$ and $w_1^*(x)=\frac x2$, so $w_1^*=\frac12v_1^*$ and $[\mathrm{id}_{V^*}]^{C^*}_{B^*}=(\tfrac12)=(\tfrac12)^T$ ✓. A longer ruler gives smaller coordinates, and its surveyor reads smaller numbers.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof F from the frame alone.</li>
+</ol></div>
+
+<h3 id="why-it-s-cool">Why it's cool</h3>
+<p>A matrix is a <em>picture</em> of a map taken from one viewpoint, and change of basis is moving the camera. Some viewpoints make the map look simple: the reflection of Worked example 4 is $\mathrm{diag}(1,-1)$ seen from the mirror, the symmetric map of the explorer is $\mathrm{diag}(3,1)$. Linear Algebra II is largely the search for the best viewpoint. In Physics I you meet the same idea as <em>principal axes</em>: the moment of inertia of a rigid body is a $3\times3$ matrix that becomes diagonal when you choose axes along the body's symmetry axes, and that is why a spinning top or a thrown book is analysed in those axes. For the Fibonacci map of Serie 8, exercise 35, the best basis gives a diagonal matrix with the entries $\frac{1\pm\sqrt5}2$, and the closed formula for the Fibonacci numbers falls out (lesson 21 and Linear Algebra II).</p>
+
+<h3 id="for-wonder-why-physicists-put-indices-up-and-down">For wonder: why physicists put indices up and down (optional, 5 min)</h3>
+<p>Prof. Halbeisen writes the transition matrix as $(\alpha^i_j)$ with one index up and one down, and you will see the same in physics as “contravariant” and “covariant”. Rung 2 of Proof F shows why. If every basis vector is doubled, the coordinates of a vector are <em>halved</em> (they change against the basis: contravariant, upper index, $v=\sum_iv^ie_i$), while the dual basis is halved and the coordinates of a functional are <em>doubled</em> (they change with the basis: covariant, lower index, $\varphi=\sum_j\varphi_je^j$). The value $\varphi(v)=\sum_i\varphi_iv^i$ does not depend on the basis at all: the two changes cancel, which is Proof F in one line ($A^T$ on one side, $A^{-1}$ on the other). Einstein's convention of summing over an index that appears once up and once down is built on exactly this bookkeeping, and it is how general relativity keeps track of coordinate changes.</p>
+
+<h2 id="worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</h2>
+
+<div class="box"><h3 id="we-5">Worked example 5: quick exam items (HS17, (xv); FS17, (xxx); similarity checks)</h3>
+<p>True or false? Give a one-line reason or a counterexample.</p>
+<ol class="gq">
+  <li>HS17, (xv): every invertible matrix is a change-of-basis matrix.
+  <details><summary>Answer</summary><div><p><strong>True.</strong> Proof C: for $P\in\mathrm{GL}_n(K)$ and any basis $B'$, the vectors $v_j=\sum_ip_{ij}v'_i$ form a basis $B$ with $[\mathrm{Id}]^B_{B'}=P$.</p></div></details></li>
+  <li>FS17, (xxx): let $T:V\to V^*$ be an isomorphism, $B$ an ordered basis of $V$ and $B^*$ the (dual) basis of $V^*$. Then $T(B)=B^*$.
+  <details><summary>Answer</summary><div><p><strong>False.</strong> $V=K^2$, $B=(e_1,e_2)$, and $T$ the linear map with $T(e_1)=e_2^*$, $T(e_2)=e_1^*$. It maps a basis to a basis, so it is an isomorphism (<a class="xl" href="linalg-12.html">lesson 12</a>, Proof D), but $T(B)=(e_2^*,e_1^*)\ne(e_1^*,e_2^*)=B^*$ as ordered bases. (Even $T(e_1)=2e_1^*$, $T(e_2)=e_2^*$ works when $2\ne1$, i.e. over every field.) Isomorphisms $V\to V^*$ exist, but none is attached to every basis at once: that is the “not canonical” of <a class="xl" href="linalg-10.html">lesson 10</a>.</p></div></details></li>
+  <li>$\begin{pmatrix}1&amp;0\\0&amp;2\end{pmatrix}$ and $\begin{pmatrix}2&amp;0\\0&amp;1\end{pmatrix}$ are similar.
+  <details><summary>Answer</summary><div><p><strong>True.</strong> They are the matrices of one map in the bases $(e_1,e_2)$ and $(e_2,e_1)$. With $P=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}=P^{-1}$: $P^{-1}\begin{pmatrix}1&amp;0\\0&amp;2\end{pmatrix}P=\begin{pmatrix}2&amp;0\\0&amp;1\end{pmatrix}$. Reordering a basis permutes the diagonal.</p></div></details></li>
+  <li>$\begin{pmatrix}1&amp;2\\3&amp;4\end{pmatrix}$ and $\begin{pmatrix}1&amp;0\\0&amp;3\end{pmatrix}$ are similar.
+  <details><summary>Answer</summary><div><p><strong>False.</strong> The traces are $5$ and $4$; similar matrices have equal traces.</p></div></details></li>
+  <li>$\begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}$ is similar to the zero matrix.
+  <details><summary>Answer</summary><div><p><strong>False.</strong> $P^{-1}0P=0$ for all $P$, so only $0$ is similar to $0$. (The trace, $0$, does not see the difference: invariants only rule out.)</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-6">Worked example 6: the dual basis in two bases (script Example 10.2.6 and the Lemma on <a class="pl" href="linalg-script.html#p318">p. 318</a>)</h3>
+<p>In $V=\mathbb R^2$ let $B=(v_1,v_2)=((1,2),(3,4))$ and $E=(e_1,e_2)$. (a) Write $e_1^*$ and $e_2^*$ in the basis $B^*$. (b) Write $v_1^*$ and $v_2^*$ in the basis $E^*$. (c) Check (b) on $v_1$ and $v_2$.</p>
+<ol class="gq">
+  <li>(a) Which matrix has the columns $[e_j^*]_{B^*}$, and what is it by Proof F?
+  <details><summary>Answer</summary><div><p>$[\mathrm{id}_{V^*}]^{E^*}_{B^*}=([\mathrm{id}_V]^B_E)^T=P^T=\begin{pmatrix}1&amp;2\\3&amp;4\end{pmatrix}$. So $e_1^*=1\cdot v_1^*+3\cdot v_2^*$ and $e_2^*=2v_1^*+4v_2^*$. Sanity check with values (Lemma 10.2.10): $e_1^*(v_1)=1$ and $e_1^*(v_2)=3$ ✓.</p></div></details></li>
+  <li>(b) Now the other direction.
+  <details><summary>Answer</summary><div><p>$[\mathrm{id}_{V^*}]^{B^*}_{E^*}=([\mathrm{id}_V]^E_B)^T=(P^{-1})^T=\begin{pmatrix}-2&amp;1\\3/2&amp;-1/2\end{pmatrix}$. Column 1: $v_1^*=-2e_1^*+\frac32e_2^*$, i.e. $v_1^*(x,y)=-2x+\frac32y$. Column 2: $v_2^*(x,y)=x-\frac12y$. These are the rows of $P^{-1}$, as in Example 10.2.6.</p></div></details></li>
+  <li>(c) Check.
+  <details><summary>Answer</summary><div><p>$v_1^*(1,2)=-2+3=1$, $v_1^*(3,4)=-6+6=0$, $v_2^*(1,2)=1-1=0$, $v_2^*(3,4)=3-2=1$ ✓. And (a) and (b) are inverse to each other: $P^T(P^{-1})^T=(P^{-1}P)^T=I_2$ ✓ (Proof B for $V^*$).</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Each solution folds open under its exercise. The old Linear Algebra I-only exams have no official solutions in our library: those answers were checked twice by hand, and it says so. The PVK set has an official solution; where it gives the answer, ours matches it.</p>
+
+<h3 id="ex-1">Exercise 1 (PVK HS20, set 3, exercise 2: a transition matrix in $\mathbb R^3$)</h3>
+<p>In $\mathbb R^3$ let $\mathcal A=(a_1,a_2,a_3)$ with $a_1=(1,-1,2)$, $a_2=(2,3,7)$, $a_3=(2,3,6)$ and $\mathcal B=(b_1,b_2,b_3)$ with $b_1=(1,2,2)$, $b_2=(-1,3,3)$, $b_3=(-2,7,6)$ (both are bases). (a) Compute the transition matrix $[\mathrm{Id}]^{\mathcal A}_{\mathcal B}$. (b) Find the coordinates of $v=2a_1+9a_2-8a_3$ with respect to $\mathcal B$.</p>
+<details><summary>Hint</summary><div><p>Column $j$ of $[\mathrm{Id}]^{\mathcal A}_{\mathcal B}$ is $[a_j]_{\mathcal B}$: solve $x b_1+y b_2+z b_3=a_j$. In this system, the second equation minus the third gives $z$ at once. (The PVK calls the matrix $T^{\mathcal A}_{\mathcal B}$ and computes it as $T^E_{\mathcal B}T^{\mathcal A}_E$; same thing.)</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> transition matrix = old basis vectors in new coordinates, column by column; then Proof A for (b).</p>
+<p>(a) For a right side $(r_1,r_2,r_3)$ the system $x(1,2,2)+y(-1,3,3)+z(-2,7,6)=(r_1,r_2,r_3)$ reads $x-y-2z=r_1$, $2x+3y+7z=r_2$, $2x+3y+6z=r_3$. Second minus third: $z=r_2-r_3$. Then $x-y=r_1+2z$ and $2x+3y=r_2-7z$.</p>
+<ul>
+  <li>$a_1=(1,-1,2)$: $z=-3$, $x-y=-5$, $2x+3y=20$, so $y=6$, $x=1$.</li>
+  <li>$a_2=(2,3,7)$: $z=-4$, $x-y=-6$, $2x+3y=31$, so $y=\frac{43}5$, $x=\frac{13}5$.</li>
+  <li>$a_3=(2,3,6)$: $z=-3$, $x-y=-4$, $2x+3y=24$, so $y=\frac{32}5$, $x=\frac{12}5$.</li>
+</ul>
+<span class="math-display" style="display:block">$$[\mathrm{Id}]^{\mathcal A}_{\mathcal B}=\frac15\begin{pmatrix}5&amp;13&amp;12\\30&amp;43&amp;32\\-15&amp;-20&amp;-15\end{pmatrix}.$$</span>
+<p>This matches the PVK solution. Check column 1: $b_1+6b_2-3b_3=(1-6+6,\;2+18-21,\;2+18-18)=(1,-1,2)=a_1$ ✓.</p>
+<p>(b) $[v]_{\mathcal A}=(2,9,-8)$, so by Proof A, $[v]_{\mathcal B}=[\mathrm{Id}]^{\mathcal A}_{\mathcal B}(2,9,-8)^T$ $=\frac15(10+117-96,\;60+387-256,\;-30-180+120)=\big(\tfrac{31}5,\tfrac{191}5,-18\big)$. Check directly: $v=(4,1,19)$, and $\frac{31}5b_1+\frac{191}5b_2-18b_3$ $=(-32+36,\;127-126,\;127-108)=(4,1,19)$ ✓.</p>
+</div></details>
+
+<h3 id="ex-2">Exercise 2 (PVK HS20, set 3, exercise 4: a basis that makes a map simple)</h3>
+<p>Let $F:\mathbb R^3\to\mathbb R^3$ have the standard matrix $A=\begin{pmatrix}2&amp;2&amp;-10\\1&amp;2&amp;-7\\0&amp;2&amp;-4\end{pmatrix}$. (a) Check that $F^2\ne0$ and $F^3=0$. (b) Find a basis $(u,v,w)$ with $F(u)=v$, $F(v)=w$, $F(w)=0$. (c) Write down the matrix of $F$ in this basis. (d) Prove in general: if $F\in\mathrm{End}(V)$, $F^2\ne0$ and $F^3=0$, then for any $u$ with $F^2(u)\ne0$ the vectors $u,F(u),F^2(u)$ are linearly independent.</p>
+<details><summary>Hint</summary><div><p>(b) Take $u$ with $A^2u\ne0$ and put $v=Au$, $w=Av$. (d) Apply $F^2$ to a relation $\lambda u+\mu F(u)+\nu F^2(u)=0$, then $F$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> compute powers; build the basis from one vector; columns are images in the new basis; for (d), kill terms by applying powers of $F$. Our $u$ is one valid choice among many. (The PVK's printed matrix for (c) has the columns $F(u),F(v),F(w)$ in <em>standard</em> coordinates; the question asks for coordinates in the basis $(u,v,w)$, which is what we give.)</p>
+<p>(a) $A^2=\begin{pmatrix}6&amp;-12&amp;6\\4&amp;-8&amp;4\\2&amp;-4&amp;2\end{pmatrix}\ne0$ and $A^3=A\cdot A^2=0$ (each column of $A^2$ is a multiple of $(3,2,1)$, and $A(3,2,1)=(6+4-10,\,3+4-7,\,4-4)=0$).</p>
+<p>(b) $A^2e_1=(6,4,2)\ne0$, so take $u=e_1=(1,0,0)$, $v=Au=(2,1,0)$, $w=Av=(6,4,2)$; then $F(w)=A^3e_1=0$. They form a basis by (d), or directly: the matrix $(u|v|w)$ is upper triangular with diagonal $1,1,2$.</p>
+<p>(c) $F(u)=v$, $F(v)=w$, $F(w)=0$, so the columns are $(0,1,0)$, $(0,0,1)$, $(0,0,0)$:</p>
+<span class="math-display" style="display:block">$$[F]_{(u,v,w)}=\begin{pmatrix}0&amp;0&amp;0\\1&amp;0&amp;0\\0&amp;1&amp;0\end{pmatrix}.$$</span>
+<p>(d) Let $\lambda u+\mu F(u)+\nu F^2(u)=0$. Apply $F^2$: $\lambda F^2(u)+\mu F^3(u)+\nu F^4(u)=\lambda F^2(u)=0$, so $\lambda=0$ since $F^2(u)\ne0$. Apply $F$ to $\mu F(u)+\nu F^2(u)=0$: $\mu F^2(u)=0$, so $\mu=0$. Then $\nu F^2(u)=0$ gives $\nu=0$.</p>
+</div></details>
+
+<h3 id="ex-3">Exercise 3 (FS20, problem 5 (a)–(b), 8 points)</h3>
+<p>Let $A,B\in M_{n\times n}(\mathbb R)$. (a) Assume that $A$ is invertible. Show that $AB$ and $BA$ are similar. (b) Are $AB$ and $BA$ similar for all $A$ and $B$? Prove it or give a counterexample.</p>
+<details><summary>Hint</summary><div><p>(a) Which $P$ turns $AB$ into $BA$? Try $P=A$. (b) Look for $2\times2$ matrices with $AB\ne0$ but $BA=0$; the matrices $E_{ij}$ of <a class="xl" href="linalg-12.html">lesson 12</a> are good candidates.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) exhibit $P$; (b) counterexample plus an invariant. (Checked twice, no official solution. Part (c) of the exam, on characteristic polynomials, is Linear Algebra II.)</p>
+<p>(a) $A^{-1}(AB)A=(A^{-1}A)BA=BA$, with $P=A\in\mathrm{GL}_n(\mathbb R)$. So $AB$ and $BA$ are similar.</p>
+<p>(b) No. Take $n=2$, $A=E_{11}=\begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}$, $B=E_{12}=\begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}$. Then $AB=E_{12}\ne0$ and $BA=E_{12}E_{11}=0$. Only the zero matrix is similar to $0$ (Proof E, Rung 1), so $AB$ and $BA$ are not similar. (Their traces agree, $0=0$, as they always do by Lemma 4.7.7: the trace cannot detect this.)</p>
+</div></details>
+
+<h3 id="ex-4">Exercise 4 (script Exercise 3.3.36, first and third part)</h3>
+<p>(a) Show that equivalence of matrices ($PAQ=B$ with invertible $P,Q$) is an equivalence relation on $M_{m\times n}(K)$. (b) Show: $A,A'\in M_{m\times n}(K)$ are equivalent if and only if there are vector spaces $V,W$, a map $T\in\mathrm{Hom}(V,W)$ and bases $B,B'$ of $V$ and $C,C'$ of $W$ with $A=[T]^B_C$ and $A'=[T]^{B'}_{C'}$.</p>
+<details><summary>Hint</summary><div><p>Copy Proof E. For “⇒” in (b): $T=m_A:K^n\to K^m$ with the standard bases; the columns of $Q$ give $B'$, and $C'$ must satisfy $[\mathrm{Id}]^{E_m}_{C'}=P$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> three properties with group facts; then Proof D one way and Proof C the other way.</p>
+<p>(a) Reflexive: $A=I_mAI_n$. Symmetric: $PAQ=A'$ gives $A=P^{-1}A'Q^{-1}$. Transitive: $PAQ=A'$ and $P'A'Q'=A''$ give $(P'P)A(QQ')=A''$, with $P'P\in\mathrm{GL}_m(K)$, $QQ'\in\mathrm{GL}_n(K)$.</p>
+<p>(b) “⇐”: by Proof D, $A'=[T]^{B'}_{C'}=PAQ$ with $P=[\mathrm{Id}_W]^C_{C'}$ and $Q=[\mathrm{Id}_V]^{B'}_B$, which are invertible by Proof B. “⇒”: let $A'=PAQ$. Take $V=K^n$, $W=K^m$, $T=m_A$, $B=E_n$, $C=E_m$, so $[T]^{E_n}_{E_m}=A$. By Proof C there is a basis $B'$ of $K^n$ with $[\mathrm{Id}]^{B'}_{E_n}=Q$ (the columns of $Q$) and a basis $C'$ of $K^m$ with $[\mathrm{Id}]^{C'}_{E_m}=P^{-1}$ (the columns of $P^{-1}$), so $[\mathrm{Id}]^{E_m}_{C'}=P$ by Proof B. Proof D gives $[T]^{B'}_{C'}=PAQ=A'$.</p>
+</div></details>
+
+<h3 id="ex-5">Exercise 5 (a map between different spaces, in new bases)</h3>
+<p>Let $T:\mathbb R[x]_{\le2}\to\mathbb R^2$, $T(p)=(p(0),p(1))$. (a) Find $[T]^E_{E_2}$ for $E=(1,x,x^2)$ and the standard basis $E_2$ of $\mathbb R^2$. (b) Let $B'=(1,\,1+x,\,1+x+x^2)$ and $C'=((1,1),(0,1))$. Compute $[T]^{B'}_{C'}$ with the change-of-basis formula. (c) Check (b) directly.</p>
+<details><summary>Hint</summary><div><p>(b) You need $[\mathrm{Id}]^{B'}_E$ (free: the vectors of $B'$ in $E$) and $[\mathrm{Id}]^{E_2}_{C'}$ (the inverse of a free one).</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> Proof D with $[T]^{B'}_{C'}=[\mathrm{Id}]^{E_2}_{C'}[T]^E_{E_2}[\mathrm{Id}]^{B'}_E$; check column by column.</p>
+<p>(a) $T(1)=(1,1)$, $T(x)=(0,1)$, $T(x^2)=(0,1)$: $[T]^E_{E_2}=\begin{pmatrix}1&amp;0&amp;0\\1&amp;1&amp;1\end{pmatrix}$.</p>
+<p>(b) $[\mathrm{Id}]^{B'}_E=\begin{pmatrix}1&amp;1&amp;1\\0&amp;1&amp;1\\0&amp;0&amp;1\end{pmatrix}$ and $[\mathrm{Id}]^{E_2}_{C'}=\begin{pmatrix}1&amp;0\\1&amp;1\end{pmatrix}^{-1}=\begin{pmatrix}1&amp;0\\-1&amp;1\end{pmatrix}$. First $[T]^E_{E_2}[\mathrm{Id}]^{B'}_E=\begin{pmatrix}1&amp;1&amp;1\\1&amp;2&amp;3\end{pmatrix}$, then</p>
+<span class="math-display" style="display:block">$$\begin{aligned}[T]^{B'}_{C'}&amp;=\begin{pmatrix}1&amp;0\\-1&amp;1\end{pmatrix}\begin{pmatrix}1&amp;1&amp;1\\1&amp;2&amp;3\end{pmatrix}\\ &amp;=\begin{pmatrix}1&amp;1&amp;1\\0&amp;1&amp;2\end{pmatrix}.\end{aligned}$$</span>
+<p>(c) $T(1)=(1,1)=1\cdot(1,1)+0\cdot(0,1)$ ✓; $T(1+x)=(1,2)=1\cdot(1,1)+1\cdot(0,1)$ ✓; $T(1+x+x^2)=(1,3)=1\cdot(1,1)+2\cdot(0,1)$ ✓.</p>
+</div></details>
+
+<h3 id="ex-6">Exercise 6 (script Exercise 10.2.9 again, now with Proof F)</h3>
+<p>Let $V=\mathbb R[x]_{\le2}$, $E=(1,x,x^2)$ and $C=(w_1,w_2,w_3)$ $=(1,\,1+x,\,1+x+x^2)$. (a) Use Proof F and Worked example 1 (b) to write $w_1^*,w_2^*,w_3^*$ in the basis $E^*=(1^*,x^*,(x^2)^*)$, and compare with <a class="xl" href="linalg-10.html">lesson 10</a>. (b) Let $\mathrm{ev}_1(p)=p(1)$. Find $[\mathrm{ev}_1]_{E^*}$ and $[\mathrm{ev}_1]_{C^*}$, once directly and once with a transition matrix.</p>
+<details><summary>Hint</summary><div><p>(a) $[\mathrm{id}_{V^*}]^{C^*}_{E^*}=([\mathrm{id}_V]^E_C)^T$, and $[\mathrm{id}_V]^E_C$ is in Worked example 1 (b). (b) Coordinates in a dual basis are values on the basis (Lemma 10.2.10).</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> transpose of a known transition matrix; then values on bases, checked against $[\mathrm{id}_{V^*}]^{E^*}_{C^*}$.</p>
+<p>(a) By Worked example 1 (b), $[\mathrm{id}_V]^E_C=\begin{pmatrix}1&amp;-1&amp;0\\0&amp;1&amp;-1\\0&amp;0&amp;1\end{pmatrix}$, so $[\mathrm{id}_{V^*}]^{C^*}_{E^*}=\begin{pmatrix}1&amp;0&amp;0\\-1&amp;1&amp;0\\0&amp;-1&amp;1\end{pmatrix}$. The columns: $w_1^*=1^*-x^*$, $w_2^*=x^*-(x^2)^*$, $w_3^*=(x^2)^*$. On $p=c+bx+ax^2$: $w_1^*(p)=c-b$, $w_2^*(p)=b-a$, $w_3^*(p)=a$, exactly the solution of Exercise 10.2.9 in <a class="xl" href="linalg-10.html">lesson 10</a> ✓.</p>
+<p>(b) Directly: $[\mathrm{ev}_1]_{E^*}=(\mathrm{ev}_1(1),\mathrm{ev}_1(x),\mathrm{ev}_1(x^2))=(1,1,1)$ and $[\mathrm{ev}_1]_{C^*}=(\mathrm{ev}_1(w_1),\mathrm{ev}_1(w_2),\mathrm{ev}_1(w_3))=(1,2,3)$. With Proof F: $[\mathrm{id}_{V^*}]^{E^*}_{C^*}=([\mathrm{id}_V]^C_E)^T=\begin{pmatrix}1&amp;1&amp;1\\0&amp;1&amp;1\\0&amp;0&amp;1\end{pmatrix}^T=\begin{pmatrix}1&amp;0&amp;0\\1&amp;1&amp;0\\1&amp;1&amp;1\end{pmatrix}$, and this matrix times $(1,1,1)^T$ is $(1,2,3)^T$ ✓.</p>
+</div></details>
+
+<h3 id="ex-7">Exercise 7 (which matrices look the same in every basis?)</h3>
+<p>Let $n\ge2$ and $A\in M_{n\times n}(K)$ with $P^{-1}AP=A$ for all $P\in\mathrm{GL}_n(K)$. Show that $A=\lambda I_n$ for some $\lambda\in K$. Conclude: an endomorphism $T$ of an $n$-dimensional space has the same matrix in every basis if and only if $T=\lambda\,\mathrm{id}_V$.</p>
+<details><summary>Hint</summary><div><p>$P^{-1}AP=A$ means $AP=PA$. For $i\ne j$ try $P=I_n+E_{ij}$; it is invertible with inverse $I_n-E_{ij}$ because $E_{ij}^2=0$. Compare the entries of $AE_{ij}$ and $E_{ij}A$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> test the condition on cleverly chosen $P$; compare entries; translate back with Proof E. (Checked twice, no official solution.)</p>
+<p>Let $i\ne j$. Since $E_{ij}E_{ij}=0$ (<a class="xl" href="linalg-12.html">lesson 12</a>, Worked example 1 (c) in general form), $(I_n+E_{ij})(I_n-E_{ij})=I_n-E_{ij}^2=I_n$ and likewise in the other order, so $P=I_n+E_{ij}\in\mathrm{GL}_n(K)$. From $AP=PA$ we get $AE_{ij}=E_{ij}A$. The matrix $AE_{ij}$ has column $i$ of $A$ in column $j$ and zeros elsewhere; $E_{ij}A$ has row $j$ of $A$ in row $i$ and zeros elsewhere. Comparing the entries in column $j$, row $k\ne i$: $a_{ki}=0$. Comparing the entry $(i,j)$: $a_{ii}=a_{jj}$. As $i\ne j$ were arbitrary, all off-diagonal entries vanish and all diagonal entries are equal: $A=\lambda I_n$ with $\lambda=a_{11}$.</p>
+<p>For $T$: if $T=\lambda\,\mathrm{id}_V$, then $[T]_B=\lambda I_n$ in every basis. Conversely, if $[T]_{B'}=[T]_B=:A$ for all bases $B'$, then by Proofs C and D every $P\in\mathrm{GL}_n(K)$ is some $[\mathrm{Id}]^{B'}_B$, so $P^{-1}AP=A$ for all $P$, hence $A=\lambda I_n$ and $T=\lambda\,\mathrm{id}_V$ (a map is determined by its matrix, <a class="xl" href="linalg-11.html">lesson 11</a>).</p>
+</div></details>
+
+<h3 id="ex-8">Exercise 8 (the trace as a tool; FS17 true/false)</h3>
+<p>(a) FS17: is $\mathrm{Tr}:M_{n\times n}(\mathbb R)\to\mathbb R$ an element of $M_{n\times n}(\mathbb R)^*$? (b) Show that there are no $A,B\in M_{n\times n}(\mathbb R)$ with $AB-BA=I_n$. (c) Over $\mathbb F_2$ there are such matrices for $n=2$: find them.</p>
+<details><summary>Hint</summary><div><p>(b) Take the trace of both sides. (c) What is $\mathrm{Tr}(I_2)$ in $\mathbb F_2$? Try $A=E_{12}$ and $B=E_{21}$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) linearity entry by entry; (b) apply an invariant to both sides; (c) the argument breaks where $n=0$ in $K$. (Checked twice, no official solution.)</p>
+<p>(a) <strong>Yes.</strong> $\mathrm{Tr}(A+\lambda B)=\sum_i(a_{ii}+\lambda b_{ii})=\mathrm{Tr}(A)+\lambda\mathrm{Tr}(B)$, so $\mathrm{Tr}$ is a linear functional on $M_{n\times n}(\mathbb R)$.</p>
+<p>(b) By (a) and Lemma 4.7.7, $\mathrm{Tr}(AB-BA)=\mathrm{Tr}(AB)-\mathrm{Tr}(BA)=0$, but $\mathrm{Tr}(I_n)=n\ne0$ in $\mathbb R$. Contradiction.</p>
+<p>(c) In $\mathbb F_2$, $\mathrm{Tr}(I_2)=1+1=0$, so (b) gives no contradiction. With $A=E_{12}$, $B=E_{21}$: $AB-BA=E_{11}-E_{22}=\begin{pmatrix}1&amp;0\\0&amp;-1\end{pmatrix}=\begin{pmatrix}1&amp;0\\0&amp;1\end{pmatrix}=I_2$, because $-1=1$ in $\mathbb F_2$ ✓. (In quantum mechanics, $AB-BA=I$ is the canonical commutation relation of position and momentum; (b) shows it can only hold for operators on infinite-dimensional spaces.)</p>
+</div></details>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<ul>
+  <li><strong>Proposition 3.3.37, Lemma 3.3.38, Proposition 3.3.39, Corollary 3.3.40, Note 3.3.41</strong> (every matrix is equivalent to $D_r=\begin{pmatrix}I_r&amp;0\\0&amp;0\end{pmatrix}$, equivalence classes are given by the rank; <a class="pl" href="linalg-script.html#p93">pp. 93–95</a>): they need the rank theorem, <strong>lessons 15–16</strong>. HS17 asks for exactly this normal form.</li>
+  <li><strong>Corollaries 3.3.33–3.3.34</strong> ($m_A\circ m_B=m_{AB}$, associativity) and <strong>Corollary 3.3.42</strong> ($[T^{-1}]=[T]^{-1}$): done in <a class="xl" href="linalg-12.html">lesson 12</a>.</li>
+  <li><strong>Exercise 3.3.36</strong>: parts (2) and (4) are Proof E, parts (1) and (3) are Exercise 4.</li>
+  <li><strong>The rest of Section 4.7</strong> (the determinant is invariant under similarity): lessons 18–20.</li>
+  <li><strong>Lecture §8 after <a class="pl" href="linalg-script.html#p47">p. 47</a></strong> (Satz 8.1 and what follows): not in our copy of the notes yet; when it arrives, the board-versus-script page will compare it with this lesson.</li>
+  <li><strong>Diagonalisation</strong> (finding a basis in which $[T]_B$ is diagonal, as in Worked example 4 and the explorer): eigenvalues in lesson 21, the full theory in Linear Algebra II.</li>
+</ul>
+<p><strong>Next:</strong> lesson 14: the bidual $V^{**}$, the dual map $T^*$ and its matrix (the transpose), and the annihilator.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg.html">Linear Algebra home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
