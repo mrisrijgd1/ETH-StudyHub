@@ -151,12 +151,23 @@
     '#sh-tip .b button{font:inherit;font-size:.85rem;font-weight:600;padding:.3rem .9rem;border-radius:999px;border:1px solid var(--accent,#5b5bd6);background:none;color:var(--accent,#5b5bd6);cursor:pointer}' +
     '#sh-tip .b button.y{background:var(--accent,#5b5bd6);color:#fff}#sh-tip .f{display:flex;justify-content:space-between;align-items:center;margin-top:.55rem}#sh-tip .nx{font:inherit;font-size:.8rem;font-weight:600;color:var(--accent,#5b5bd6);background:none;border:0;padding:0;cursor:pointer}#sh-tip .all{font-size:.8rem;font-weight:600;color:var(--accent,#5b5bd6)}#sh-tip .off{font:inherit;font-size:.72rem;color:var(--muted,#777);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}' +
     '@media(max-width:640px){#sh-tip{left:8px;right:8px;bottom:8px;width:auto;max-width:none;padding:.45rem 2rem .45rem .7rem;font-size:.82rem;line-height:1.35}#sh-tip .k{margin:0 0 .1rem}#sh-tip .t{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}#sh-tip .f{flex-wrap:wrap;gap:.1rem .6rem;margin-top:.3rem}#sh-tip .nx,#sh-tip .all,#sh-tip .off{font-size:.74rem}#sh-tip .b{margin-top:.35rem}}' +
+    '@media(max-width:640px){#sh-tip{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:100%;max-width:none;margin:1rem 0;z-index:auto;box-shadow:none}#sh-tip .t{display:block;-webkit-line-clamp:unset;overflow:visible}#sh-tip .x,#sh-tip .nx,#sh-tip .off{min-height:44px}}' +
     '@media print{#sh-tip{display:none}}';
+  function placeTip(box) {
+    var main = document.querySelector('main');
+    if (matchMedia('(max-width:640px)').matches && main) {
+      var intro = main.querySelector(':scope > header, :scope > .page-head, :scope > .hero, :scope > .app-heading');
+      if (intro) intro.after(box); else main.prepend(box);
+    } else document.body.appendChild(box);
+  }
   function show() {
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
     var box = document.createElement('aside'); box.id = 'sh-tip'; box.setAttribute('role', 'note');
-    document.body.appendChild(box);
-    function close() { box.classList.remove('on'); setTimeout(function () { box.remove(); }, 300); }
+    var phone = matchMedia('(max-width:640px)');
+    function reposition() { placeTip(box); }
+    placeTip(box);
+    phone.addEventListener('change', reposition);
+    function close() { phone.removeEventListener('change', reposition); box.classList.remove('on'); setTimeout(function () { box.remove(); }, 300); }
     function render() {
       var head = tip.news ? (de ? 'Neu' : 'New') : tip.q ? (de ? 'Kurze Frage' : 'Quick question') : (de ? 'Wusstest du?' : 'Did you know?');
       var html = '<div class="k">' + head + '</div><div class="t">' + (tip.q || tip.t) + '</div>';
