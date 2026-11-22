@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Measure of the Ledger">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=fix1120"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=fc1120"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Measure of the Ledger</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=story1120">
+<link rel="stylesheet" href="assets/studyhub.css?v=bar1120">
+<script defer src="assets/studyhub.js?v=fix1120"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-subjects" aria-label="Subjects"><a href="analysis.html">Analysis I</a><a href="physics.html">Physics I</a><a href="chemie/">Chemie I (PC)</a><a href="linalg.html" aria-current="page">Linear Algebra I</a><a href="dive/" class="study-game"><span aria-hidden="true">🎮 </span>Exam Dive</a></nav><nav class="study-utilities" aria-label="Personal area"><a href="account.html" class="study-progress">Progress</a><a href="more.html">More</a><a href="linalg-18.html?lang=de" lang="de" hreflang="de">DE</a><details class="study-design"><summary>Design</summary></details></nav></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Linear Algebra I · Lesson 18</span>
+<h1>The Measure of the Ledger</h1>
+<p class="lead">Determinants I: area with a sign, the three axioms, what row operations do to the determinant, the triangular rule, invertibility, the product rule, and why at most one determinant exists.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-17-5">Recap of lesson 17 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-measure-of-the-ledger">1. The story: the measure of the ledger</a>
+</li>
+<li><a href="#s2-two-by-two">2. The $2\times2$ case: area with a sign</a>
+</li>
+<li><a href="#s3-the-axioms">3. The axioms, and what row operations do</a>
+<ol>
+<li><a href="#proof-a">Proof A: how row operations change the determinant (script Propositions 4.2.2 and 4.2.3, p. 126)</a></li>
+<li><a href="#proof-b">Proof B: the determinant of a triangular matrix (script Proposition 4.2.5, p. 128)</a></li>
+</ol></li>
+<li><a href="#s4-invertible-multiplicative-unique">4. Invertible, multiplicative, unique</a>
+<ol>
+<li><a href="#proof-c">Proof C: $\det A\ne0$ if and only if $A$ is invertible (script Corollary 4.2.6, p. 128)</a></li>
+<li><a href="#proof-d">Proof D: $\det(AB)=\det A\cdot\det B$ (script Lemma 4.2.8 and Proposition 4.2.9, pp. 129–130)</a></li>
+<li><a href="#proof-e">Proof E: at most one function satisfies the axioms (script Corollary 4.2.10, p. 130)</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-1">Worked example 1: a determinant by elimination (script Example 4.2.7)</a></li>
+<li><a href="#we-2">Worked example 2: a multiple-choice determinant (FS20, (IX))</a></li>
+<li><a href="#we-3">Worked example 3: quick exam items (FS17, FS19, FS20, HS18, HS20)</a></li>
+<li><a href="#why-it-s-cool">Why it&#x27;s cool</a></li>
+<li><a href="#for-wonder-twenty-factorial">For wonder: elimination against $n!$</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (HS17, 6 (a); FS18, 6 (a); HS20, problem 2 (c))</a></li>
+<li><a href="#ex-2">Exercise 2 (HS17, 6 (b), 3 points; FS17, (xxv))</a></li>
+<li><a href="#ex-3">Exercise 3 (FS20, problem 6 (a), 9 points)</a></li>
+<li><a href="#ex-4">Exercise 4 (FS19, problem 3 (b)–(d), 14 points)</a></li>
+<li><a href="#ex-5">Exercise 5 (FS18, problem 6 (b), 6 points: Sylvester&#x27;s identity)</a></li>
+<li><a href="#ex-6">Exercise 6 (the $3\times3$ Vandermonde determinant)</a></li>
+<li><a href="#ex-7">Exercise 7 (HS17, (xxii) and (xxiii): inverses and similar matrices)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the story in section 1 and answer the recap questions at the top. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) explain the $2\times2$ determinant $ad-bc$ as a signed area; (2) state the three axioms of the determinant (multilinear in the rows, alternating, normalised); (3) derive from them how each row operation changes the determinant, and the determinant of a triangular matrix; (4) prove $\det A\ne0\iff A$ invertible; (5) prove $\det(AB)=\det A\det B$ and that at most one function satisfies the axioms; (6) compute determinants quickly by elimination, also with parameters.</dd></div>
+  <div><dt>Time</dt><dd>About 100 minutes. A natural break comes after section 3 (the axioms and the row-operation rules); invertibility, multiplicativity and uniqueness follow.</dd></div>
+  <div><dt>Script (English, printed pages)</dt><dd>Script EN 2023, sections 4.1–4.2:
+    <ul>
+      <li><strong><a class="pl" href="linalg-script.html#p121">pp. 121–123</a>:</strong> Proposition 4.1.1 (the $2\times2$ case), Proposition 4.1.2 (scaling the unit square), Notes 4.1.3–4.1.4 (orientation).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p124">pp. 124–126</a>:</strong> notation; Definition 4.2.1 (the determinant by the axioms (D1)–(D3)); Proposition 4.2.2 ((D4), (D5)); Proposition 4.2.3 ((D1b), (D6), (D7): Gauss and the determinant).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p127">pp. 127–128</a>:</strong> Note 4.2.4, Proposition 4.2.5 (triangular matrices), Corollary 4.2.6 ($\det A\ne0\iff A$ invertible).</li>
+      <li><strong><a class="pl" href="linalg-script.html#p129">pp. 129–130</a>:</strong> Example 4.2.7, Lemma 4.2.8 (elementary matrices), Proposition 4.2.9 (multiplicativity), Corollary 4.2.10 (uniqueness), Note 4.2.11.</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Expected as the start of the determinant chapter (our copy of Prof. Halbeisen's notes ends with §8 on <a class="pl" href="linalg-script.html#p47">p. 47</a>). Existence (the Leibniz formula) is lesson 19; $\det A^T=\det A$, expansion and Cramer's rule are lesson 20. The board-versus-script page will compare once the notes arrive.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Every Linear Algebra I exam has a determinant problem. “State the definition of the determinant” is worth 1–4 points almost every year (HS17, 6 (a); FS18, 6 (a); FS19, problem 3 (a)): today's axioms are one correct answer. Computations of structured determinants by row operations are worth up to 9 points (FS20, problem 6 (a); FS19, problem 3 (d); Exercises 3 and 4); the tridiagonal one of HS17, 6 (c) needs expansion along a row and waits for lesson 20. The rules $\det(AB)=\det A\det B$ and $\det A\ne0\iff A$ invertible decide many true/false items (FS17, (vi), (xxv), (xxvi); FS19, (IX); FS20, (VIII)–(IX); HS17, (xxii)–(xxiii); HS18, (IX); HS20, (13); Worked example 3), HS17, 6 (b) asks to prove $\det(AB^T)=0$ for $m&gt;n$ (Exercise 2), and FS18, 6 (b) asks for $\det(I_m+AB)=\det(I_n+BA)$ (Exercise 5).</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-17-5">Recap of <a class="xl" href="linalg-17.html">lesson 17</a> (5 minutes)</h3>
+<p>Row operations are left multiplications by elementary matrices $Q_{i,j}(\lambda)$ (add $\lambda\cdot L_j$ to $L_i$), $P_{i,j}$ (swap), $S_i(\mu)$ (scale, $\mu\ne0$). Every invertible matrix is a product of elementary matrices; $A$ is invertible iff $\mathrm{rank}(A)=n$ iff $A$ is row equivalent to $I_n$. Check yourself:</p>
+<ol>
+  <li>Which elementary matrix performs $L_3-5L_1\to L_3$ on a $3\times3$ matrix?</li>
+  <li>A square matrix in echelon form with a zero on the diagonal: invertible?</li>
+  <li>What is $\mathrm{rank}(AB)$ at most?</li>
+  <li>For the $2\times2$ matrix $\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}$, when is it invertible (<a class="xl" href="linalg-17.html">lesson 17</a>, Exercise 5)?</li>
+</ol>
+<details><summary>Answers</summary><div><p>1. $Q_{3,1}(-5)$. 2. No: fewer than $n$ pivots. 3. $\min(\mathrm{rank}\,A,\mathrm{rank}\,B)$ (<a class="xl" href="linalg-15.html">lesson 15</a>). 4. Iff $ad-bc\ne0$. Today: one number with this property for every $n$.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>determinant</td><td>Determinante</td></tr>
+    <tr><td>multilinear (in the rows)</td><td>multilinear (in den Zeilen)</td></tr>
+    <tr><td>alternating</td><td>alternierend</td></tr>
+    <tr><td>normalised</td><td>normiert</td></tr>
+    <tr><td>volume function</td><td>Volumenfunktion</td></tr>
+    <tr><td>orientation-preserving / -reversing</td><td>orientierungserhaltend / -umkehrend</td></tr>
+    <tr><td>triangular matrix</td><td>Dreiecksmatrix</td></tr>
+    <tr><td>multiplicative</td><td>multiplikativ</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-measure-of-the-ledger">1. The story: the measure of the ledger</h2>
+<div class="story">
+<p>Every ledger of the Free City turns the city's square plot into a parallelogram: its rows are the new edges. The surveyors want one number that says how much land the ledger produces, with a sign that says whether the plot was turned over. For two rows they find it at once: $ad-bc$.</p>
+<p>For larger ledgers nobody can draw the picture, so the surveyors write down what any honest measure of land must obey. Stretching one edge stretches the land by the same factor, and the land of two plots glued along an edge adds up. A plot whose two edges coincide is flat and has no land. And the city's own square plot has land $1$. These three rules are the axioms of the determinant.</p>
+<p>The surprise of this lesson: the three rules already decide everything. They say how each of the clerks' stamps from <a class="xl" href="linalg-17.html">lesson 17</a> changes the measure, so the measure of any ledger can be computed by tidying it. They show that a ledger has nonzero measure exactly when it is reversible, that measures multiply, and that at most one measure can obey the rules. That one exists is lesson 19.</p>
+</div>
+<p>In mathematics: $\det:M_{n\times n}(K)\to K$ is the unique function that is linear in each row, vanishes on matrices with two equal rows, and has $\det I_n=1$.</p>
+
+<h2 id="s2-two-by-two">2. The $2\times2$ case: area with a sign</h2>
+<p>By <a class="xl" href="linalg-17.html">lesson 17</a>, Exercise 5, $A=\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}$ is invertible iff $ad-bc\ne0$ (script Proposition 4.1.1). Write $\det A:=ad-bc$. Over $\mathbb R$ this number has a picture (script Proposition 4.1.2 and Notes 4.1.3–4.1.4, <a class="pl" href="linalg-script.html#p122">pp. 122–123</a>): $m_A$ maps the unit square to the parallelogram spanned by the columns $(a,c)$ and $(b,d)$, whose area is $|ad-bc|$. The sign records the orientation: $\det A&gt;0$ if the second edge lies to the left of the first, as for $e_1,e_2$; $\det A&lt;0$ if the picture is mirrored. A singular $A$ squashes the square into a segment or a point: area $0$.</p>
+
+<div class="explorer" id="dt-ex">
+<span class="label">Try it: the signed area</span>
+<p>Drag the sliders for the columns $(a,c)$ and $(b,d)$ of $A$. The parallelogram is the image of the unit square; its area is $|\det A|$, and its colour shows the sign.</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">a <input type="range" id="dt-a" min="-3" max="3" step="0.5" value="2" aria-label="a"></label>
+  <label style="white-space:nowrap">c <input type="range" id="dt-c" min="-3" max="3" step="0.5" value="0.5" aria-label="c"></label>
+  <label style="white-space:nowrap">b <input type="range" id="dt-b" min="-3" max="3" step="0.5" value="0.5" aria-label="b"></label>
+  <label style="white-space:nowrap">d <input type="range" id="dt-d" min="-3" max="3" step="0.5" value="1.5" aria-label="d"></label>
+  <button type="button" id="dt-r">Example</button>
+</div>
+<svg id="dt-svg" viewBox="0 0 300 300" width="100%" style="max-width:320px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="Unit square and its image parallelogram"></svg>
+<div id="dt-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var R=document.getElementById('dt-r');if(!R)return;
+  var ids=['a','c','b','d'],ex=[[2,0.5,0.5,1.5],[1,0,0,1],[0,1,1,0],[2,1,1,0.5],[1,0,1.5,1],[-1,0,0,1]],ei=0;
+  var msg=['A typical matrix: area ad − bc = 2.75, orientation kept.','The identity: the unit square itself, det = 1 (axiom D3).','The swap P₁,₂: the same square, mirrored: det = −1.','Columns (2, 1) and (1, 0.5) are parallel: the square is squashed flat, det = 0.','A shear Q₁,₂(1.5): the top edge slides, the area stays 1.','A reflection in the y-axis: det = −1.'];
+  function v(k){return +document.getElementById('dt-'+k).value;}
+  function f(x){return (Math.round(x*100)/100).toString().replace('-','−');}
+  function draw(){
+    var a=v('a'),c=v('c'),b=v('b'),d=v('d'),D=a*d-b*c,s=30,o=150;
+    function X(x){return o+s*x;}function Y(y){return o-s*y;}
+    var h='<line x1="0" y1="150" x2="300" y2="150" style="stroke:currentColor;opacity:.25"/><line x1="150" y1="0" x2="150" y2="300" style="stroke:currentColor;opacity:.25"/>';
+    h+='<polygon points="'+X(0)+','+Y(0)+' '+X(1)+','+Y(0)+' '+X(1)+','+Y(1)+' '+X(0)+','+Y(1)+'" style="fill:none;stroke:currentColor;stroke-dasharray:4 3;opacity:.6"/>';
+    var col=D>0?'--k-c':(D<0?'--k-eps':'--k-c');
+    h+='<polygon points="'+X(0)+','+Y(0)+' '+X(a)+','+Y(c)+' '+X(a+b)+','+Y(c+d)+' '+X(b)+','+Y(d)+'" style="fill:var('+col+');fill-opacity:'+(D===0?0:.3)+';stroke:var('+col+');stroke-width:2"/>';
+    h+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(a)+'" y2="'+Y(c)+'" style="stroke:var(--k-c);stroke-width:3"/><line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(b)+'" y2="'+Y(d)+'" style="stroke:var(--k-eps);stroke-width:3"/>';
+    function lab(x,y,t,cv){var px=Math.min(285,Math.max(15,X(x)+(x>=0?6:-6))),py=Math.min(290,Math.max(14,Y(y)-6));h+='<text x="'+px+'" y="'+py+'" font-size="13" text-anchor="'+(x>=0?'start':'end')+'" style="fill:var('+cv+')">'+t+'</text>';}
+    lab(a,c,'Ae₁','--k-c');lab(b,d,'Ae₂','--k-eps');
+    document.getElementById('dt-svg').innerHTML=h;
+    var s2='<p><strong>det A = ad − bc</strong> = '+f(a)+'·'+f(d)+' − '+f(b)+'·'+f(c)+' = <strong>'+f(D)+'</strong>. ';
+    s2+=D>0?'Area '+f(D)+', orientation preserved.':(D<0?'Area '+f(-D)+', orientation reversed (mirror image).':'Area 0: the columns are dependent, A is not invertible.');
+    s2+='</p>';var cur=[a,c,b,d].join(',');ex.forEach(function(e,q){if(e.join(',')===cur)s2+='<p class="small">'+msg[q]+'</p>';});
+    document.getElementById('dt-out').innerHTML=s2;}
+  ids.forEach(function(k){document.getElementById('dt-'+k).addEventListener('input',draw);});
+  R.addEventListener('click',function(){ei=(ei+1)%ex.length;ids.forEach(function(k,q){document.getElementById('dt-'+k).value=ex[ei][q];});draw();});
+  draw();
+})();
+</script>
+
+<h2 id="s3-the-axioms">3. The axioms, and what row operations do</h2>
+<div class="box">
+<p><strong>Definition (the determinant; script Definition 4.2.1, <a class="pl" href="linalg-script.html#p125">p. 125</a>).</strong> Write a matrix by its rows, $A=(v_1;\dots;v_n)$ with $v_i\in K^n$ as rows. A <strong>determinant</strong> is a function $\det:M_{n\times n}(K)\to K$ with</p>
+<ul>
+  <li><strong>(D1) multilinear in the rows:</strong> for each $i$, (a) $\det(\dots;v_i+w;\dots)=\det(\dots;v_i;\dots)+\det(\dots;w;\dots)$ and (b) $\det(\dots;\lambda v_i;\dots)=\lambda\det(\dots;v_i;\dots)$, the other rows fixed;</li>
+  <li><strong>(D2) alternating:</strong> if two rows of $A$ are equal, $\det A=0$;</li>
+  <li><strong>(D3) normalised:</strong> $\det I_n=1$.</li>
+</ul>
+<p>The script states as a theorem that exactly one such function exists. In this lesson, $\det$ is <em>any</em> function with (D1)–(D3); we derive its properties and prove there is at most one. Existence is lesson 19. We also write $|A|$ for $\det A$.</p></div>
+
+<h3 id="proof-a">Proof A: how row operations change the determinant (script Propositions 4.2.2 and 4.2.3, <a class="pl" href="linalg-script.html#p126">p. 126</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> Let $A\in M_{n\times n}(K)$ and $\lambda\in K$.</p>
+<ol>
+  <li>(D4) $\det(\lambda A)=\lambda^n\det A$; (D5) if $A$ has a zero row, $\det A=0$.</li>
+  <li>Scaling a row by $\lambda$ multiplies $\det$ by $\lambda$: $\det(S_i(\lambda)A)=\lambda\det A$.</li>
+  <li>(D6) Swapping two rows changes the sign: $\det(P_{i,j}A)=-\det A$.</li>
+  <li>(D7) Adding a multiple of one row to another does not change $\det$: $\det(Q_{i,j}(\lambda)A)=\det A$ for $i\ne j$.</li>
+</ol></div>
+<p><strong>The idea.</strong> (D4), (D5) and scaling are (D1)(b). For the swap, put $v_i+v_j$ into <em>both</em> places: the determinant is $0$ by (D2), and expanding by (D1)(a) gives four terms, two of which vanish; the other two are $\det A$ and the swapped determinant. For (D7), expand the new row $v_i+\lambda v_j$: the extra term has two equal rows.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(D6) First line:</strong> “Let $B$ have $v_i+v_j$ in rows $i$ and $j$. By (D2), $\det B=0$.” <strong>Last line:</strong> “so $\det A+\det(P_{i,j}A)=0$.”</li>
+  <li><strong>(D7) First line:</strong> “By (D1), $\det(\dots;v_i+\lambda v_j;\dots)=\det A+\lambda\det(\dots;v_j;\dots;v_j;\dots)$.”</li>
+  <li><strong>The gap:</strong> expand with (D1)(a); kill terms with two equal rows by (D2).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Stretch every edge by $\lambda$ and the land grows by $\lambda$ for each edge; an edge of length zero leaves no land.</p></div><div class="sp-formal"><p>(1) Apply (D1)(b) to each of the $n$ rows of $\lambda A$: $\det(\lambda A)=\lambda^n\det A$. If row $i$ is $0=0\cdot0$, (D1)(b) gives $\det A=0\cdot\det A=0$. (2) is (D1)(b) for row $i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A plot with the same diagonal edge twice is flat; split it, and the two mirror plots must cancel.</p></div><div class="sp-formal"><p>(3) Let $B$ have $v_i+v_j$ in rows $i$ and $j$, other rows as in $A$. By (D2), $\det B=0$. Expanding rows $i$ and $j$ by (D1)(a) gives four terms, with rows $(i,j)$ equal to $(v_i,v_i)$, $(v_i,v_j)$, $(v_j,v_i)$, $(v_j,v_j)$. The first and last are $0$ by (D2). So $0=\det A+\det(P_{i,j}A)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Sliding one edge along another (a shear) does not change the land.</p></div><div class="sp-formal"><p>(4) Row $i$ of $Q_{i,j}(\lambda)A$ is $v_i+\lambda v_j$. By (D1)(a) and (b), $\det(Q_{i,j}(\lambda)A)=\det A+\lambda\det C$, where $C$ has $v_j$ in rows $i$ and $j$. By (D2), $\det C=0$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_multilin">expand a row by multilinearity</a> <a class="mvl" href="linalg-moves.html#m-la_twoways">compute one element in two ways</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>(D1)(b) row by row gives $\det(\lambda A)=\lambda^n\det A$, and $\det A=0$ for a zero row; scaling one row is (D1)(b). Swap: with $B$ having $v_i+v_j$ in rows $i,j$, (D2) and (D1)(a) give $0=\det B=0+\det A+\det(P_{i,j}A)+0$. Adding: (D1) gives $\det(Q_{i,j}(\lambda)A)=\det A+\lambda\det C$ with $C$ having two equal rows, so $\det C=0$ by (D2). <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Scale: (D1)(b). Zero row: scale it by $0$.</li>
+  <li>Swap: put the sum into both places, expand, two terms die.</li>
+  <li>Add: expand, the extra term has two equal rows.</li>
+</ol>
+<p><strong>In short:</strong> scale ×λ, swap ×(−1), add ×1. So Gaussian elimination computes determinants: eliminate to a triangular matrix and keep track of swaps and scalings.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Is $\det(A+B)=\det A+\det B$?
+  <details><summary>Answer</summary><div><p>No: (D1) is linearity in <em>one row at a time</em>. $\det(I_2+I_2)=\det(2I_2)=4\ne2$ (by (D4)).</p></div></details></li>
+  <li><strong>Rung 2.</strong> Show the converse of the swap rule when $1+1\ne0$ in $K$: if $\det$ satisfies (D1) and changes sign under swaps, then (D2) holds.
+  <details><summary>Answer</summary><div><p>If rows $i$ and $j$ of $A$ are equal, swapping them does not change $A$, so $\det A=-\det A$, i.e. $2\det A=0$ and $\det A=0$, provided $2\ne0$ in $K$. Over $\mathbb F_2$ this fails: there $-1=1$.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof A from the frame alone.</li>
+</ol></div>
+
+<h3 id="proof-b">Proof B: the determinant of a triangular matrix (script Proposition 4.2.5, <a class="pl" href="linalg-script.html#p128">p. 128</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> If $A\in M_{n\times n}(K)$ is upper triangular with diagonal entries $a_1,\dots,a_n$, then $\det A=a_1a_2\cdots a_n$. The same holds for lower triangular matrices.</p></div>
+<p><strong>The idea.</strong> If all $a_i\ne0$, clear the entries above the diagonal from the bottom up, which does not change $\det$ (D7); then pull the diagonal entries out (D1)(b) and use $\det I_n=1$. If some $a_i=0$, clearing upwards from the rows below it produces a zero row.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>Case all $a_i\ne0$, first line:</strong> “Operations $L_i-\lambda L_j\to L_i$ with $j&gt;i$ turn $A$ into $\mathrm{diag}(a_1,\dots,a_n)$ without changing $\det$.”</li>
+  <li><strong>Case some $a_i=0$, first line:</strong> “Let $i_0$ be the largest index with $a_{i_0}=0$.” <strong>Last line:</strong> “row $i_0$ becomes zero, so $\det A=0=a_1\cdots a_n$.”</li>
+  <li><strong>The gap:</strong> Proof A (D7), (D1)(b), (D5), (D3).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A staircase plot can be sheared into a box without changing its land.</p></div><div class="sp-formal"><p>Let all $a_i\ne0$. Going from row $n$ up to row $1$, subtract multiples of row $j$ from the rows $i&lt;j$ to clear column $j$ above the diagonal. Rows below $j$ are already zero in column $j$, so nothing else changes, and $\det$ is unchanged (D7). The result is $D=\mathrm{diag}(a_1,\dots,a_n)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The land of a box is the product of its edge lengths.</p></div><div class="sp-formal"><p>By (D1)(b) in each row, $\det D=a_1\cdots a_n\det I_n=a_1\cdots a_n$ (D3).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A missing step flattens the plot.</p></div><div class="sp-formal"><p>If some $a_i=0$, let $i_0$ be the largest such index. The rows $i_0+1,\dots,n$ have nonzero diagonal entries; use them as above to clear row $i_0$ in the columns $&gt;i_0$ (D7). Row $i_0$ was zero in columns $\le i_0$, so it becomes a zero row, and $\det A=0=a_1\cdots a_n$ by (D5). For lower triangular matrices, clear downwards and take the smallest such index. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_rowopmat">write each row operation as a matrix</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>If all $a_i\ne0$: clearing upwards (D7) gives $\mathrm{diag}(a_1,\dots,a_n)$, and (D1)(b), (D3) give $\det A=a_1\cdots a_n$. If $a_{i_0}=0$ with $i_0$ maximal, clearing row $i_0$ with the rows below (D7) makes it a zero row, so $\det A=0$ (D5), which is the product. Lower triangular: the same downwards. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Nonzero diagonal: shear upwards to a diagonal matrix, pull out the entries.</li>
+  <li>A zero on the diagonal: the last one becomes a zero row.</li>
+</ol>
+<p><strong>In short:</strong> triangular $\Rightarrow$ product of the diagonal. Together with Proof A this is the standard way to compute any determinant.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> $\det\begin{pmatrix}2&amp;7&amp;-1\\0&amp;-3&amp;5\\0&amp;0&amp;4\end{pmatrix}$?
+  <details><summary>Answer</summary><div><p>$2\cdot(-3)\cdot4=-24$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Why do we clear <em>upwards</em> starting from the last row?
+  <details><summary>Answer</summary><div><p>Row $n$ has only one nonzero entry, $a_n$ in column $n$; subtracting multiples of it from rows above changes only column $n$. Then row $n-1$ has nonzero entries only in column $n-1$ (column $n$ is already cleared), and so on: no step destroys earlier work.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof B from the frame alone.</li>
+</ol></div>
+
+<div class="explorer" id="de-ex">
+<span class="label">Try it: a determinant by elimination</span>
+<p>Type a $3\times3$ matrix and press <em>Next step</em>. The explorer eliminates downwards to a triangular matrix, using only swaps (each flips the sign, D6) and additions of multiples of rows (no change, D7), and keeps a running factor. At the end, $\det A=$ factor $\times$ product of the diagonal (Proof B).</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">row 1: <input id="de-00" type="text" value="0" style="width:2.2em" aria-label="a11"> <input id="de-01" type="text" value="1" style="width:2.2em" aria-label="a12"> <input id="de-02" type="text" value="2" style="width:2.2em" aria-label="a13"></label>
+  <label style="white-space:nowrap">row 2: <input id="de-10" type="text" value="3" style="width:2.2em" aria-label="a21"> <input id="de-11" type="text" value="-2" style="width:2.2em" aria-label="a22"> <input id="de-12" type="text" value="0" style="width:2.2em" aria-label="a23"></label>
+  <label style="white-space:nowrap">row 3: <input id="de-20" type="text" value="4" style="width:2.2em" aria-label="a31"> <input id="de-21" type="text" value="1" style="width:2.2em" aria-label="a32"> <input id="de-22" type="text" value="4" style="width:2.2em" aria-label="a33"></label>
+</div>
+<div class="ex-nav"><button type="button" id="de-n">Next step</button> <button type="button" id="de-s">Restart</button> <button type="button" id="de-r">Example</button></div>
+<div id="de-m" style="overflow-x:auto"></div>
+<div id="de-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var N=document.getElementById('de-n');if(!N)return;
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function Q(n,d){if(d<0){n=-n;d=-d;}var g=gcd(n,d);return {n:n/g,d:d/g};}
+  function sub(a,b){return Q(a.n*b.d-b.n*a.d,a.d*b.d);}function add(a,b){return Q(a.n*b.d+b.n*a.d,a.d*b.d);}
+  function mul(a,b){return Q(a.n*b.n,a.d*b.d);}function div(a,b){return Q(a.n*b.d,a.d*b.n);}function isz(a){return a.n===0;}
+  function fmt(a){var s=a.d===1?String(Math.abs(a.n)):Math.abs(a.n)+'/'+a.d;return (a.n<0?'−':'')+s;}
+  function parse(t){t=String(t).replace(/\s+/g,'').replace('−','-');var m=t.match(/^(-?\d{1,4})(?:\/(\d{1,4}))?$/);if(m){var d=m[2]?+m[2]:1;if(d===0)return null;return Q(+m[1],d);}
+    m=t.match(/^(-?)(\d{0,3})\.(\d{1,2})$/);if(m){var k=Math.pow(10,m[3].length);return Q((m[1]?-1:1)*((+m[2]||0)*k+ +m[3]),k);}return null;}
+  var ex=[['0','1','2','3','-2','0','4','1','4'],['1','2','-3','-1','2','3','1','-2','3'],['2','1','1','1','2','1','1','1','2'],['1','2','3','4','5','6','7','8','9'],['0','0','1','0','1','0','1','0','0']],ei=0;
+  var msg=['Script Example 4.2.7 (Worked example 1): det = 10.','FS20, multiple choice (IX) (Worked example 2): det = 24.','The matrix of FS20, problem 6 (a) for n = 3, a = 2: (a − 1)²(a + 2) = 4 (Exercise 3).','Rank 2: a zero appears on the diagonal, det = 0 (Proof C).','The swap P₁,₃: one swap, det = −1.'];
+  var A=null,P=null,k=0;
+  function read(){var M=[],i,j;for(i=0;i<3;i++){M.push([]);for(j=0;j<3;j++){var x=parse(document.getElementById('de-'+i+j).value);if(x===null)return null;M[i].push(x);}}return M;}
+  function plan(A0){var M=A0.map(function(r){return r.slice();}),sg=Q(1,1),S=[{M:M.map(function(r){return r.slice();}),op:'Start: A. Running factor 1.',sg:sg}],c,i;
+    function snap(op){S.push({M:M.map(function(r){return r.slice();}),op:op,sg:sg});}
+    for(c=0;c<2;c++){var p=-1;for(i=c;i<3;i++)if(!isz(M[i][c])){p=i;break;}
+      if(p<0){snap('Column '+(c+1)+' has no nonzero entry on or below the diagonal: nothing to do; the diagonal entry stays 0.');continue;}
+      if(p!==c){var t=M[c];M[c]=M[p];M[p]=t;sg=Q(-sg.n,sg.d);snap('L'+(c+1)+' ↔ L'+(p+1)+': a swap flips the sign (D6). Running factor '+fmt(sg)+'.');}
+      for(i=c+1;i<3;i++)if(!isz(M[i][c])){var f=div(M[i][c],M[c][c]);M[i]=M[i].map(function(x,q){return sub(x,mul(f,M[c][q]));});snap('L'+(i+1)+(f.n>0?' − '+fmt(f):' + '+fmt(Q(-f.n,f.d)))+'·L'+(c+1)+' → L'+(i+1)+': no change (D7). Running factor '+fmt(sg)+'.');}}
+    return {S:S,R:M,sg:sg};}
+  function table(M){var h='<table style="border-collapse:collapse;margin:.6em auto;font-family:var(--font-util)">';for(var i=0;i<3;i++){h+='<tr>';for(var j=0;j<3;j++)h+='<td style="padding:.15em .55em;text-align:right;border-left:'+(j===0?'2px solid currentColor':'0')+';border-right:'+(j===2?'2px solid currentColor':'0')+(i===j?';font-weight:700;color:var(--k-c)':'')+'">'+fmt(M[i][j])+'</td>';h+='</tr>';}return h+'</table>';}
+  function show(){var m=document.getElementById('de-m'),out=document.getElementById('de-out');
+    if(!A){m.innerHTML='';out.innerHTML='<p><strong>Please type numbers</strong> (integers, fractions like 1/2, or decimals).</p>';return;}
+    var st=P.S[k],last=k===P.S.length-1;m.innerHTML=table(st.M);var s='<p><strong>Step '+k+' of '+(P.S.length-1)+'.</strong> '+st.op+'</p>';
+    if(last){var R=P.R,pr=mul(mul(R[0][0],R[1][1]),R[2][2]),D=mul(P.sg,pr);
+      var lz=mul(A[0][0],sub(mul(A[1][1],A[2][2]),mul(A[1][2],A[2][1]))),l2=mul(A[0][1],sub(mul(A[1][0],A[2][2]),mul(A[1][2],A[2][0]))),l3=mul(A[0][2],sub(mul(A[1][0],A[2][1]),mul(A[1][1],A[2][0]))),L=add(sub(lz,l2),l3);
+      s+='<p><strong>Triangular.</strong> det A = '+fmt(P.sg)+' · ('+fmt(R[0][0])+') · ('+fmt(R[1][1])+') · ('+fmt(R[2][2])+') = <strong>'+fmt(D)+'</strong>. '+(isz(D)?'So A is not invertible (Proof C).':'Nonzero, so A is invertible (Proof C).')+'</p>';
+      s+='<p class="small">Cross-check with the expansion formula of lesson 20: '+fmt(L)+' '+((L.n===D.n&&L.d===D.d)?'✓':'✗')+'</p>';
+      var cur=[];for(var i=0;i<3;i++)for(var j=0;j<3;j++)cur.push(document.getElementById('de-'+i+j).value.trim());cur=cur.join(',');ex.forEach(function(e,q){if(e.join(',')===cur)s+='<p class="small">'+msg[q]+'</p>';});
+    } else s+='<p class="small">Press Next step.</p>';out.innerHTML=s;}
+  function reset(){A=read();if(A)P=plan(A);k=0;show();}
+  for(var i=0;i<3;i++)for(var j=0;j<3;j++)document.getElementById('de-'+i+j).addEventListener('input',reset);
+  N.addEventListener('click',function(){if(A&&k<P.S.length-1){k++;show();}});
+  document.getElementById('de-s').addEventListener('click',function(){k=0;show();});
+  document.getElementById('de-r').addEventListener('click',function(){ei=(ei+1)%ex.length;for(var q=0;q<9;q++)document.getElementById('de-'+Math.floor(q/3)+(q%3)).value=ex[ei][q];reset();});
+  reset();
+})();
+</script>
+
+<h2 id="s4-invertible-multiplicative-unique">4. Invertible, multiplicative, unique</h2>
+
+<h3 id="proof-c">Proof C: $\det A\ne0$ if and only if $A$ is invertible (script Corollary 4.2.6, <a class="pl" href="linalg-script.html#p128">p. 128</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> For $A\in M_{n\times n}(K)$: $\det A\ne0\iff\mathrm{rank}(A)=n\iff A$ is invertible.</p></div>
+<p><strong>The idea.</strong> Row operations multiply $\det$ by nonzero numbers only ($\lambda\ne0$, $-1$, $1$), so they never turn a nonzero determinant into zero or back. An echelon form is triangular; its diagonal has a zero exactly when it has fewer than $n$ pivots.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Let $B$ be a row echelon form of $A$. By Proof A, $\det B=c\det A$ with $c\ne0$.”</li>
+  <li><strong>Last line:</strong> “$\det A\ne0\iff\det B\ne0\iff\mathrm{rank}(B)=n\iff\mathrm{rank}(A)=n$.”</li>
+  <li><strong>The gap:</strong> Proof B for the square echelon matrix $B$; <a class="xl" href="linalg-17.html">lesson 17</a>, Proof C for the second equivalence.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Tidying never creates or destroys land completely.</p></div><div class="sp-formal"><p>Let row operations turn $A$ into a row echelon form $B$. Each step multiplies $\det$ by $\lambda\ne0$, by $-1$ or by $1$ (Proof A), so $\det B=c\det A$ with $c\ne0$, and $\det A\ne0\iff\det B\ne0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A tidy ledger has land exactly when every step of the staircase is there.</p></div><div class="sp-formal"><p>$B$ is square and in echelon form, hence upper triangular. If $\mathrm{rank}(B)=n$, all $n$ diagonal entries are pivots, nonzero, and $\det B\ne0$ (Proof B). If $\mathrm{rank}(B)&lt;n$, the last row is zero and $\det B=0$ (D5).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>And full rank is reversibility.</p></div><div class="sp-formal"><p>$\mathrm{rank}(B)=\mathrm{rank}(A)$ (<a class="xl" href="linalg-16.html">lesson 16</a>), and $\mathrm{rank}(A)=n\iff A$ invertible (<a class="xl" href="linalg-17.html">lesson 17</a>, Proof C). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_rowopmat">write each row operation as a matrix</a> <a class="mvl" href="linalg-moves.html#m-la_chain">a chain of named equivalences</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Row operations multiply $\det$ by nonzero factors (Proof A), so $\det A\ne0$ iff $\det B\ne0$ for a row echelon form $B$. $B$ is upper triangular; it has $n$ nonzero pivots on the diagonal iff $\mathrm{rank}(B)=n$, and then $\det B\ne0$ (Proof B); otherwise its last row is zero and $\det B=0$. Finally $\mathrm{rank}(B)=\mathrm{rank}(A)$, and rank $n$ means invertible (<a class="xl" href="linalg-17.html">lesson 17</a>). <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Row operations: $\det$ changes by a nonzero factor.</li>
+  <li>Echelon form is triangular: zero on the diagonal iff rank $&lt;n$.</li>
+</ol>
+<p><strong>In short:</strong> $\det A\ne0\iff A$ invertible. This is the item that <a class="xl" href="linalg-17.html">lesson 17</a>'s list of equivalences was waiting for.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> For which $t$ is $\begin{pmatrix}1&amp;t\\t&amp;4\end{pmatrix}$ invertible?
+  <details><summary>Answer</summary><div><p>$\det=4-t^2\ne0$ iff $t\ne\pm2$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Why does the proof need that scaling is only by $\lambda\ne0$?
+  <details><summary>Answer</summary><div><p>Multiplying a row by $0$ is not a row operation (it is not reversible) and would set $\det$ to $0$; with $\lambda\ne0$ the factor $c$ is a product of nonzero numbers, hence nonzero, which is what “$\det A\ne0\iff\det B\ne0$” needs.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof C from the frame alone.</li>
+</ol></div>
+
+<h3 id="proof-d">Proof D: $\det(AB)=\det A\cdot\det B$ (script Lemma 4.2.8 and Proposition 4.2.9, <a class="pl" href="linalg-script.html#p129">pp. 129–130</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> (1) $\det S_i(\mu)=\mu$, $\det P_{i,j}=-1$, $\det Q_{i,j}(\lambda)=1$, and $\det(TB)=\det T\det B$ for every elementary $T$ and every $B$. (2) For all $A,B\in M_{n\times n}(K)$: $\det(AB)=\det A\det B$.</p></div>
+<p><strong>The idea.</strong> Proof A says exactly how an elementary $T$ changes $\det B$; applied to $B=I_n$ it gives $\det T$, and comparing yields (1). An invertible $A$ is a product of elementary matrices (<a class="xl" href="linalg-17.html">lesson 17</a>, Proof E), so (2) follows by induction on the number of factors. A non-invertible $A$ makes both sides $0$.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>(1) First line:</strong> “By Proof A with $B=I_n$: $\det S_i(\mu)=\mu\det I_n=\mu$.”</li>
+  <li><strong>(2) First line:</strong> “Case $\mathrm{rank}(A)&lt;n$.” Then: “Case $A$ invertible: $A=T_1\cdots T_k$.” <strong>Last line:</strong> “$=\det A\det B$.”</li>
+  <li><strong>The gap:</strong> $\mathrm{rank}(AB)\le\mathrm{rank}(A)$ (<a class="xl" href="linalg-15.html">lesson 15</a>) and induction on $k$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Each stamp has its own measure: stretch $\mu$, mirror $-1$, shear $1$.</p></div><div class="sp-formal"><p>(1) $S_i(\mu)=S_i(\mu)I_n$, so by Proof A $\det S_i(\mu)=\mu\det I_n=\mu$; likewise $\det P_{i,j}=-1$ and $\det Q_{i,j}(\lambda)=1$. Proof A says $\det(TB)=c_T\det B$ with exactly these factors $c_T$, so $\det(TB)=\det T\det B$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>If the first ledger flattens the land, so does the relay.</p></div><div class="sp-formal"><p>(2) If $\mathrm{rank}(A)&lt;n$, then $\mathrm{rank}(AB)\le\mathrm{rank}(A)&lt;n$ (<a class="xl" href="linalg-15.html">lesson 15</a>), so $\det(AB)=0=\det A\det B$ (Proof C).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>A reversible ledger is a pile of stamps, and measures of stamps multiply one by one.</p></div><div class="sp-formal"><p>If $A$ is invertible, $A=T_1\cdots T_k$ with elementary $T_s$ (<a class="xl" href="linalg-17.html">lesson 17</a>, Proof E). Induction on $k$: $k=1$ is (1). For $k&gt;1$: $\det(AB)=\det(T_1(T_2\cdots T_kB))=\det T_1\det(T_2\cdots T_kB)$ by (1), $=\det T_1\det(T_2\cdots T_k)\det B$ by the hypothesis, $=\det(T_1\cdots T_k)\det B$ by (1) again. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_rowopmat">write each row operation as a matrix</a> <a class="mvl" href="linalg-moves.html#m-la_induct">induction: base, hypothesis, step</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Proof A applied to $I_n$ gives $\det S_i(\mu)=\mu$, $\det P_{i,j}=-1$, $\det Q_{i,j}(\lambda)=1$, and then Proof A reads $\det(TB)=\det T\det B$ for elementary $T$. If $\mathrm{rank}(A)&lt;n$, then $\mathrm{rank}(AB)&lt;n$ and both sides are $0$ (Proof C). Otherwise $A=T_1\cdots T_k$, and induction on $k$ gives $\det(AB)=\det T_1\det(T_2\cdots T_kB)=\det T_1\det(T_2\cdots T_k)\det B=\det A\det B$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Determinants of the three elementary types.</li>
+  <li>Singular $A$: both sides $0$.</li>
+  <li>Invertible $A$: product of elementary matrices, induction.</li>
+</ol>
+<p><strong>In short:</strong> $\det$ is multiplicative. Consequences you use constantly: $\det(A^{-1})=1/\det A$, $\det(P^{-1}AP)=\det A$ (similar matrices have equal determinants), $\det(AB)=\det(BA)$.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Show $\det(A^{-1})=(\det A)^{-1}$.
+  <details><summary>Answer</summary><div><p>$1=\det I_n=\det(AA^{-1})=\det A\det A^{-1}$.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Is $\det(AB)=\det(BA)$ for square $A,B$? Is $\det(A+B)$ determined by $\det A$ and $\det B$?
+  <details><summary>Answer</summary><div><p>Yes: both are $\det A\det B$, products in the field commute. No: $\det(I_2+I_2)=4$, but $\det\big(I_2+(-I_2)\big)=0$, although $\det(-I_2)=1=\det I_2$.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof D from the frame alone.</li>
+</ol></div>
+
+<h3 id="proof-e">Proof E: at most one function satisfies the axioms (script Corollary 4.2.10, <a class="pl" href="linalg-script.html#p130">p. 130</a>)</h3>
+<div class="box"><p><strong>Claim.</strong> If $\det$ and $\widetilde{\det}$ both satisfy (D1)–(D3) on $M_{n\times n}(K)$, then $\det=\widetilde{\det}$.</p></div>
+<p><strong>The idea.</strong> Everything we proved used only (D1)–(D3), so it holds for both functions. Both vanish on singular matrices, and on an invertible matrix both equal the same product of the values on elementary matrices, which the axioms fix.</p>
+<div class="frame"><span class="label">What the definitions force (before any idea)</span>
+<ul>
+  <li><strong>First line:</strong> “Proofs A–D hold for both functions, since they use only (D1)–(D3).”</li>
+  <li><strong>Last line:</strong> “so $\det A=\widetilde{\det}A$ for all $A$.”</li>
+  <li><strong>The gap:</strong> the values on elementary matrices are forced (Proof D (1)).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">The story</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Two honest surveyors agree on flat land.</p></div><div class="sp-formal"><p>If $\mathrm{rank}(A)&lt;n$: $\det A=0=\widetilde{\det}A$ by Proof C for each function.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>And on every stamp, hence on every pile of stamps.</p></div><div class="sp-formal"><p>If $A$ is invertible, $A=T_1\cdots T_k$ (<a class="xl" href="linalg-17.html">lesson 17</a>). By Proof D for each function, $\det A=\det T_1\cdots\det T_k$ and $\widetilde{\det}A=\widetilde{\det}T_1\cdots\widetilde{\det}T_k$, and $\det T_s=\widetilde{\det}T_s\in\{\mu,-1,1\}$ by Proof D (1). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Moves used: <a class="mvl" href="linalg-moves.html#m-la_onbasis">two linear maps that agree on a basis are equal</a> <a class="mvl" href="linalg-moves.html#m-la_rowopmat">write each row operation as a matrix</a></p>
+<details><summary>The proof in one piece</summary><div>
+<p>Proofs A–D use only (D1)–(D3), so they hold for $\det$ and $\widetilde{\det}$. For $\mathrm{rank}(A)&lt;n$ both are $0$. Otherwise $A=T_1\cdots T_k$ with elementary $T_s$, and both functions give $\prod_s\det T_s$, where each factor is $\mu$, $-1$ or $1$ according to the type. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol>
+  <li>Both satisfy Proofs A–D.</li>
+  <li>Singular: both $0$. Invertible: same product over elementary factors.</li>
+</ol>
+<p><strong>In short:</strong> the axioms leave no freedom. The pill compares with “agree on a basis”: here the elementary matrices play the role of the generators.</p></div>
+<div class="ladder"><span class="label">Your turn: the proof-writing ladder</span>
+<ol>
+  <li><strong>Rung 1.</strong> Why does Proof E not prove that a determinant <em>exists</em>?
+  <details><summary>Answer</summary><div><p>It only compares two functions that are assumed to exist. Defining $\det A$ as “the product over an elimination” would need a proof that every elimination gives the same number (well-definedness), which is the hard part; lesson 19 avoids it with the Leibniz formula.</p></div></details></li>
+  <li><strong>Rung 2.</strong> Let $f:M_{n\times n}(K)\to K$ satisfy (D1) and (D2), but not necessarily (D3). Show $f(A)=f(I_n)\det A$.
+  <details><summary>Answer</summary><div><p>Proofs A–D (except the normalisation) hold for $f$ with $f(I_n)$ in place of $1$: $f(T)=c_Tf(I_n)$ and $f(TB)=c_Tf(B)$. So $f(T_1\cdots T_k)=c_{T_1}\cdots c_{T_k}f(I_n)=\det A\cdot f(I_n)$, and both sides are $0$ for singular $A$. If $f(I_n)\ne0$, then $f/f(I_n)$ satisfies (D1)–(D3) and Proof E applies.</p></div></details></li>
+  <li><strong>Rung 3.</strong> Write Proof E from the frame alone.</li>
+</ol></div>
+
+<h2 id="worked-examples-a-mixed-set">Worked examples: a mixed set before the exercises</h2>
+
+<div class="box"><h3 id="we-1">Worked example 1: a determinant by elimination (script Example 4.2.7)</h3>
+<p>Compute $\det A$ for $A=\begin{pmatrix}0&amp;1&amp;2\\3&amp;-2&amp;0\\4&amp;1&amp;4\end{pmatrix}$ using only Proofs A and B.</p>
+<ol class="gq">
+  <li>The $(1,1)$ entry is $0$. What is the first step, and what does it cost?
+  <details><summary>Answer</summary><div><p>Swap $L_1\leftrightarrow L_2$. A swap multiplies the determinant by $-1$ (Proof A), so keep a running sign $-1$. Rows now: $(3,-2,0)$, $(0,1,2)$, $(4,1,4)$.</p></div></details></li>
+  <li>Clear the rest of the first column and the second column.
+  <details><summary>Answer</summary><div><p>$L_3-\tfrac43L_1$: $(0,\tfrac{11}3,4)$. $L_3-\tfrac{11}3L_2$: $(0,0,4-\tfrac{22}3)=(0,0,-\tfrac{10}3)$. Adding a multiple of another row changes nothing (Proof A).</p></div></details></li>
+  <li>Read off the determinant, and check it.
+  <details><summary>Answer</summary><div><p>The result is upper triangular with diagonal $3,1,-\tfrac{10}3$, so by Proof B its determinant is $-10$, and $\det A=(-1)\cdot(-10)=10$. Check with the expansion formula for $3\times3$ matrices (proved in lesson 20): $0\cdot(-8-0)-1\cdot(12-0)+2\cdot(3+8)=-12+22=10$ ✓. The explorer above starts with this matrix.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-2">Worked example 2: a multiple-choice determinant (FS20, (IX))</h3>
+<p>The determinant of $\begin{pmatrix}1&amp;2&amp;-3\\-1&amp;2&amp;3\\1&amp;-2&amp;3\end{pmatrix}$ is (a) $0$; (b) $2$; (c) $12$; (d) $24$.</p>
+<ol class="gq">
+  <li>Eliminate.
+  <details><summary>Answer</summary><div><p>$L_2+L_1$: $(0,4,0)$. $L_3-L_1$: $(0,-4,6)$. $L_3+L_2$: $(0,0,6)$. No swaps, no scalings.</p></div></details></li>
+  <li>Answer.
+  <details><summary>Answer</summary><div><p>Diagonal $1,4,6$, so $\det=24$: <strong>(d)</strong>. Under exam pressure the elimination is safer than the formula with six products, because each step is one subtraction you can check.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-3">Worked example 3: quick exam items (FS17, FS19, FS20, HS18, HS20)</h3>
+<ol class="gq">
+  <li>FS19, (IX): which rule fails in general for $A,B\in M_{n\times n}$? (a) $\det(2A)=2\det A$; (b) $\det A\det B=\det(AB)$; (c) $\det(AB)=\det(BA)$; (d) $\det I_n=1$.
+  <details><summary>Answer</summary><div><p><strong>(a).</strong> $2A$ scales each of the $n$ rows by $2$, so $\det(2A)=2^n\det A$ (Proof A, $n$ times); for $n=2$, $\det(2I_2)=4\ne2$. (b) is Proof D, (c) follows from (b) since $\det A\det B=\det B\det A$, and (d) is (D3).</p></div></details></li>
+  <li>FS17, (vi): $\{A\in M_{n\times n}(K)\mid\det A=0\}$ is a subspace of $M_{n\times n}(K)$.
+  <details><summary>Answer</summary><div><p><strong>False</strong> for $n\ge2$: $E_{11}$ and $I_n-E_{11}$ both have a zero row, so determinant $0$, but their sum $I_n$ has determinant $1$. (For $n=1$ the set is $\{0\}$, which is a subspace.)</p></div></details></li>
+  <li>FS17, (xxvi), and FS20, (VIII): is $\det:M_{n\times n}(K)\to K$ linear? Is it surjective?
+  <details><summary>Answer</summary><div><p><strong>Not linear</strong> for $n\ge2$: $\det(2I_n)=2^n\ne2\det I_n$. It is linear in <em>each row separately</em> (D1), which is a different statement. <strong>Surjective:</strong> yes, $\det S_1(t)=t$ for every $t\ne0$ and $\det 0=0$. So in FS20, (VIII) the false statement is (c), linearity; (a) is Proof C and (b) is Proof B.</p></div></details></li>
+  <li>HS18, (IX): which property does the determinant <em>not</em> have? (a) invariance under swapping two columns; (b) $\det(AB)=\det A\det B$; (c) linearity in each column; (d) invariance under adding a column to another column.
+  <details><summary>Answer</summary><div><p><strong>(a):</strong> a swap changes the sign. Our axioms speak about rows; the column versions of (c) and (d) follow from $\det A^T=\det A$ (lesson 20), and (b) is Proof D.</p></div></details></li>
+  <li>HS20, (13): for all $A,B\in M_{n\times n}(\mathbb R)$, $\det(AB)-\det A-\det B+\det(A+B)=0$.
+  <details><summary>Answer</summary><div><p><strong>False.</strong> $n=2$, $A=B=I_2$: $1-1-1+4=3\ne0$. A test with the identity matrix is the fastest way to kill a false determinant identity.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Why it's cool</h3>
+<p>The determinant is the factor by which a linear map scales volumes, with a sign that says whether it flips orientation. In Analysis II this number returns as the <strong>Jacobian determinant</strong> in the change of variables formula: polar coordinates give $dx\,dy=r\,dr\,d\theta$ because $\det\begin{pmatrix}\cos\theta&amp;-r\sin\theta\\\sin\theta&amp;r\cos\theta\end{pmatrix}=r$. Computer graphics uses the sign every frame: a triangle whose $2\times2$ determinant turns negative has been flipped and faces away from the camera, so it is not drawn.</p></div>
+
+<div class="box"><h3 id="for-wonder-twenty-factorial">For wonder: elimination against $n!$ (optional, 5 min)</h3>
+<p>Lesson 19 writes the determinant as a sum over all permutations: $n!$ products of $n$ entries. For $n=20$ that is $20!\approx2.4\cdot10^{18}$ products; a computer doing a billion per second needs about 77 years. Elimination needs roughly $\tfrac13n^3\approx2700$ operations for the same matrix, a few microseconds. Same number, two routes: the formula is the one that proves existence, and the elimination of Proofs A and B is the one anybody actually uses.</p></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Each solution folds open under its exercise. The old Linear Algebra I-only exams have no official solutions in our library: those answers were checked twice by hand, and it says so.</p>
+
+<h3 id="ex-1">Exercise 1 (HS17, 6 (a); FS18, 6 (a); HS20, problem 2 (c))</h3>
+<p>(a) State the definition of the determinant of a matrix $A\in M_{n\times n}(K)$. (b) Compute $\det\begin{pmatrix}7&amp;6&amp;1\\5&amp;6&amp;6\\2&amp;4&amp;5\end{pmatrix}$ (in HS20 only the final number is marked).</p>
+<details><summary>Hint</summary><div><p>(a) Name the map, then the three properties. (b) First make a small pivot: $L_1-L_2$ gives $(2,0,-5)$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> (a) the axioms; (b) elimination with Proofs A and B, then a check. (Checked twice, no official solution.)</p>
+<p>(a) The determinant is the unique map $\det:M_{n\times n}(K)\to K$ such that (D1) $\det$ is linear in each row when the other rows are fixed, (D2) $\det A=0$ whenever two rows of $A$ are equal, and (D3) $\det I_n=1$. (Uniqueness is Proof E; existence is lesson 19.)</p>
+<p>(b) $L_1-L_2$: $(2,0,-5)$; determinant unchanged. $L_3-L_1$: $(0,4,10)$. $L_2-\tfrac52L_1$: $(0,6,\tfrac{37}2)$. $L_3-\tfrac23L_2$: $(0,0,10-\tfrac{37}3)=(0,0,-\tfrac73)$. Diagonal $2,6,-\tfrac73$, so $\det=-28$.</p>
+<p>Check with the $3\times3$ formula: $7(30-24)-6(25-12)+1(20-12)=42-78+8=-28$ ✓.</p>
+</div></details>
+
+<h3 id="ex-2">Exercise 2 (HS17, 6 (b), 3 points; FS17, (xxv))</h3>
+<p>Let $A,B\in M_{m\times n}(K)$ with $m&gt;n$. Show that $\det(AB^T)=0$.</p>
+<details><summary>Hint</summary><div><p>$AB^T$ is $m\times m$. Bound its rank by the rank of $A$, then use Proof C.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> rank of a product, then Proof C. (Checked twice, no official solution.)</p>
+<p>$AB^T\in M_{m\times m}(K)$. Every column of $AB^T$ is $A$ times a column of $B^T$, so it lies in the column space of $A$. Hence $\mathrm{rank}(AB^T)\le\mathrm{rank}(A)\le n&lt;m$ (the rank is at most the number of columns, <a class="xl" href="linalg-16.html">lesson 16</a>). So $AB^T$ is not invertible, and $\det(AB^T)=0$ by Proof C. $\blacksquare$</p>
+<p>The same argument shows: a product of an $m\times n$ and an $n\times m$ matrix with $m&gt;n$ is never invertible. So FS17, (xxv) is <strong>true</strong>.</p>
+</div></details>
+
+<h3 id="ex-3">Exercise 3 (FS20, problem 6 (a), 9 points)</h3>
+<p>For $n\ge1$ and $a\ne1$ let $A_n\in M_{n\times n}(\mathbb R)$ have entries $a$ on the diagonal and $1$ everywhere else. Show that $\det A_n=(a-1)^{n-1}(a+n-1)$.</p>
+<details><summary>Hint</summary><div><p>All row sums are equal. Add all rows to the first row, take the common factor out of row 1, then subtract row 1 from every other row.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> three row operations reach a triangular matrix; Proofs A and B. (Checked twice, no official solution.)</p>
+<ol>
+  <li>Add $L_2,\dots,L_n$ to $L_1$. Each step adds another row, so the determinant does not change (Proof A). Every entry of the new first row is $a+(n-1)$.</li>
+  <li>By linearity in row 1 (D1), $\det A_n=(a+n-1)\det A_n'$, where $A_n'$ has first row $(1,1,\dots,1)$ and the other rows of $A_n$. This uses only (D1), so it is valid even if $a+n-1=0$.</li>
+  <li>For $i=2,\dots,n$ replace $L_i$ by $L_i-L_1$ (determinant unchanged). Row $i$ of $A_n$ is $(1,\dots,1,a,1,\dots,1)$ with $a$ in place $i$, so it becomes $(0,\dots,0,a-1,0,\dots,0)$.</li>
+  <li>The result is upper triangular with diagonal $1,a-1,\dots,a-1$, so $\det A_n'=(a-1)^{n-1}$ (Proof B).</li>
+</ol>
+<p>Hence $\det A_n=(a-1)^{n-1}(a+n-1)$. $\blacksquare$ Check: $n=2$: $a^2-1=(a-1)(a+1)$ ✓; $n=3$, $a=2$: the explorer's third preset gives $4=1^2\cdot4$ ✓. (The assumption $a\ne1$ is not needed for the formula; for $a=1$ both sides are $0$ when $n\ge2$.)</p>
+</div></details>
+
+<h3 id="ex-4">Exercise 4 (FS19, problem 3 (b)–(d), 14 points)</h3>
+<p>For $n\ge1$ let $M_n=\big(2^{i+j}\big)_{i,j=1,\dots,n}\in M_{n\times n}(\mathbb R)$. (b) Write out $M_n$. (c) Compute $\det M_n$ for $n=1,2,3$. (d) Compute $\det M_n$ and $\mathrm{rank}\,M_n$ for all $n\ge1$.</p>
+<details><summary>Hint</summary><div><p>$2^{i+j}=2^i\cdot2^j$. Compare row $i$ with row $1$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> every row is a multiple of the first; Proof A (or Proof C). (Checked twice, no official solution.)</p>
+<p>(b) $M_n=\begin{pmatrix}4&amp;8&amp;\cdots&amp;2^{n+1}\\8&amp;16&amp;\cdots&amp;2^{n+2}\\\vdots&amp;&amp;&amp;\vdots\\2^{n+1}&amp;2^{n+2}&amp;\cdots&amp;2^{2n}\end{pmatrix}$, row $i$ equal to $2^{i-1}$ times row $1$.</p>
+<p>(c) $\det M_1=4$. $\det M_2=4\cdot16-8\cdot8=0$. For $n=3$: $L_2-2L_1$ is a zero row, so $\det M_3=0$ (a zero row gives determinant $0$ by (D1)).</p>
+<p>(d) Row $i=2^{i-1}\cdot$ row $1$, and row $1\ne0$, so the row space is spanned by row $1$: $\mathrm{rank}\,M_n=1$ for all $n$. Hence $\det M_1=4$ and $\det M_n=0$ for $n\ge2$ (Proof C, since the rank is $1&lt;n$).</p>
+</div></details>
+
+<h3 id="ex-5">Exercise 5 (FS18, problem 6 (b), 6 points: Sylvester's identity)</h3>
+<p>Show that $\det(I_m+AB)=\det(I_n+BA)$ for all $A\in M_{m\times n}(K)$, $B\in M_{n\times m}(K)$. You may use without proof that a block triangular matrix $\begin{pmatrix}M&amp;U\\0&amp;N\end{pmatrix}$ or $\begin{pmatrix}M&amp;0\\V&amp;N\end{pmatrix}$ with square blocks $M,N$ has determinant $\det M\det N$.</p>
+<details><summary>Hint</summary><div><p>Let $X=\begin{pmatrix}I_m&amp;-A\\B&amp;I_n\end{pmatrix}$ and $Y=\begin{pmatrix}I_m&amp;A\\0&amp;I_n\end{pmatrix}$. Compute $YX$ and $XY$ and use Proof D.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> one matrix $X$, two block triangular factorisations, Proof D. (Checked twice, no official solution.)</p>
+<p>Block multiplication gives</p>
+<p>$$YX=\begin{pmatrix}I_m+AB&amp;0\\B&amp;I_n\end{pmatrix},$$</p>
+<p>$$XY=\begin{pmatrix}I_m&amp;0\\B&amp;I_n+BA\end{pmatrix}.$$</p>
+<p>(Top right of $YX$: $-A+A=0$; top right of $XY$: $A-A=0$; bottom right of $XY$: $BA+I_n$.) By the hint, $\det Y=\det I_m\det I_n=1$. By Proof D, $\det(I_m+AB)=\det(YX)$ $=\det Y\det X=\det X$, and likewise $\det(I_n+BA)=\det(XY)$ $=\det X\det Y=\det X$. Both equal $\det X$, so $\det(I_m+AB)=\det(I_n+BA)$. $\blacksquare$</p>
+<p>Note that $YX\ne XY$ in general; only their determinants agree, because $\det$ turns products into products of numbers, and numbers commute.</p>
+</div></details>
+
+<h3 id="ex-6">Exercise 6 (the $3\times3$ Vandermonde determinant)</h3>
+<p>Show that</p>
+<p>$$\begin{aligned}&amp;\det\begin{pmatrix}1&amp;a&amp;a^2\\1&amp;b&amp;b^2\\1&amp;c&amp;c^2\end{pmatrix}\\&amp;\quad=(b-a)(c-a)(c-b).\end{aligned}$$</p>
+<p>Conclude: if $a,b,c$ are pairwise different, then for all $y_1,y_2,y_3$ there is exactly one polynomial $p$ of degree at most $2$ with $p(a)=y_1$, $p(b)=y_2$, $p(c)=y_3$.</p>
+<details><summary>Hint</summary><div><p>$L_2-L_1$ and $L_3-L_1$, then take $b-a$ out of row 2 and $c-a$ out of row 3. For the conclusion, write $p=x_0+x_1t+x_2t^2$: the conditions are a linear system for $(x_0,x_1,x_2)$.</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> elimination with factors taken out by (D1); then Proof C on a linear system.</p>
+<p>$L_2-L_1$: $(0,\,b-a,\,b^2-a^2)$; $L_3-L_1$: $(0,\,c-a,\,c^2-a^2)$. Since $b^2-a^2=(b-a)(b+a)$, (D1) in row 2 takes out $b-a$, leaving $(0,1,b+a)$; likewise row 3 gives the factor $c-a$ and $(0,1,c+a)$. Then $L_3-L_2$: $(0,0,c-b)$. Proof B: the determinant is $(b-a)(c-a)\cdot1\cdot1\cdot(c-b)$. $\blacksquare$</p>
+<p>The conditions read $V(x_0,x_1,x_2)^T=(y_1,y_2,y_3)^T$ with $V$ the matrix above. If $a,b,c$ are pairwise different, $\det V\ne0$, so $V$ is invertible (Proof C) and the system has exactly one solution (<a class="xl" href="linalg-17.html">lesson 17</a>, Proof C).</p>
+</div></details>
+
+<h3 id="ex-7">Exercise 7 (HS17, (xxii) and (xxiii): inverses and similar matrices)</h3>
+<p>(a) Show $\det(A^{-1})=\det(A)^{-1}$ for $A\in GL_n(K)$; is $\det(A^{-1})=-\det A$ (HS17, (xxii))? (b) Show that similar matrices ($B=S^{-1}AS$) have the same determinant. (c) HS17, (xxiii): two matrices are similar if and only if they have the same determinant. True or false?</p>
+<details><summary>Hint</summary><div><p>(a), (b): apply $\det$ to $AA^{-1}=I_n$ and to $S^{-1}AS$. (c) Which matrices are similar to $I_n$?</p></div></details>
+<details><summary>Solution</summary><div>
+<p><strong>Frame:</strong> Proof D three times; a counterexample with the identity.</p>
+<p>(a) $1=\det I_n=\det(AA^{-1})=\det A\det(A^{-1})$, so $\det(A^{-1})=\det(A)^{-1}$. HS17, (xxii) is <strong>false</strong>: for $A=I_n$, $\det(A^{-1})=1\ne-1$.</p>
+<p>(b) $\det(S^{-1}AS)=\det(S^{-1})\det A\det S=\det(S)^{-1}\det A\det S=\det A$.</p>
+<p>(c) <strong>False.</strong> The direction “similar $\Rightarrow$ same determinant” is (b), but the converse fails: $S^{-1}I_2S=I_2$ for every $S$, so $I_2$ is similar only to itself, while $\begin{pmatrix}2&amp;0\\0&amp;\tfrac12\end{pmatrix}\ne I_2$ also has determinant $1$.</p>
+</div></details>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<ul>
+  <li><strong>Note 4.1.4</strong> (the area interpretation for general regions, by cutting them into small squares): this is the change of variables formula of Analysis II, not Linear Algebra I exam material.</li>
+  <li><strong>The column versions</strong> of Proofs A–D (Note 4.2.11): they follow from $\det A^T=\det A$, proved in lesson 20. Until then we only use row operations.</li>
+  <li><strong>Existence of the determinant</strong> (section 4.3): today we only showed that at most one function satisfies the axioms. Lesson 19 builds one.</li>
+</ul>
+<p><strong>Next:</strong> lesson 19: permutations, the sign of a permutation, the Leibniz formula, and why the determinant exists.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg.html">Linear Algebra home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
