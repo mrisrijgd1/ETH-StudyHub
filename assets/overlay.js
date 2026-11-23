@@ -6,9 +6,7 @@
 (function () {
   var KEY = 'sh-design';
   var FONTS = { serif: '"EB Garamond",Georgia,serif', sans: 'Inter,system-ui,sans-serif', readable: 'Atkinson Hyperlegible,Verdana,system-ui,sans-serif', mono: '"IBM Plex Mono",ui-monospace,monospace' };
-  var HIDE = { badday: '.badday', listen: '.sh-listen', tips: '#sh-tip', comments: '.sh-comments', progress: '.sh-progress', story: '.sp-story,.story',
-    // Flashcards (on by default): hides the header entry, the course tab and the buttons/tool cards that open flashcards; inline text links stay.
-    flashcards: '.study-shell a[href*="Analysis_Lerplatform"],.study-shell [data-mode="cards"],.study-modes [data-mode="cards"],[class*="study-pop"] li:has(> a[href*="Analysis_Lerplatform"]),[class*="study-pop"] a[href*="Analysis_Lerplatform"],a.box.tool[href*="lashcards"],a.app-button[href*="lashcards"]' };
+  var HIDE = { badday: '.badday', listen: '.sh-listen', tips: '#sh-tip', comments: '.sh-comments', progress: '.sh-progress', story: '.sp-story,.story' };
   var HEX = /^#[0-9a-fA-F]{6}$/;
   function clean(t) {
     t = t || {}; var o = {};
@@ -18,7 +16,7 @@
     var s = Number(t.size); if (s >= 80 && s <= 150) o.size = Math.round(s);
     if (['compact', 'normal', 'airy'].indexOf(t.density) >= 0) o.density = t.density;
     if (['narrow', 'normal', 'wide'].indexOf(t.width) >= 0) o.width = t.width;
-    if (Object.prototype.toString.call(t.hide) === '[object Array]') o.hide = t.hide.filter(function (h) { return HIDE[h] || h === 'wonder'; });
+    if (Object.prototype.toString.call(t.hide) === '[object Array]') o.hide = t.hide.filter(function (h) { return HIDE[h] || h === 'wonder' || h === 'streak'; });
     return o;
   }
   function get() { try { return clean(JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { return {}; } }
@@ -43,6 +41,22 @@
     el.textContent = css;
     if (d.theme === 'light' || d.theme === 'dark') document.documentElement.setAttribute('data-theme', d.theme);
     if ((d.hide || []).indexOf('wonder') >= 0) hideWonder();
+    if ((d.hide || []).indexOf('streak') >= 0) hideStreak();
+  }
+  /* Streak off (Mridul, 23 Nov: shown by default, a quiet switch to turn it off). The flashcards app (Rachel's folder) keeps
+     its own "Show streak" setting in prefs.streak of each subject's synced key; this sets it to false for every profile in
+     this browser, so the flame, count and match disappear in all subjects. Unticking does not switch it back on by force:
+     the app's own "Show streak" link does that. */
+  var FC_KEYS = ['studyhub-analysis-flashcards-v1', 'studyhub-linalg-flashcards-v1'];
+  function hideStreak() {
+    FC_KEYS.forEach(function (k) {
+      try {
+        var st = JSON.parse(localStorage.getItem(k) || 'null'), changed = false;
+        if (!st || !st.users) return;
+        Object.keys(st.users).forEach(function (id) { var u = st.users[id]; if (u && typeof u === 'object') { u.prefs = u.prefs || {}; if (u.prefs.streak !== false) { u.prefs.streak = false; changed = true; } } });
+        if (changed) localStorage.setItem(k, JSON.stringify(st));
+      } catch (e) {}
+    });
   }
   function hideWonder() {
     var run = function () {
