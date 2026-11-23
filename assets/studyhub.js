@@ -2,11 +2,11 @@
 (function () {
   'use strict';
   const palettes = {
-    storybook: {"label": ["Mokka & Kiefer (Original)", "Mocha & pine (original)"], "swatches": ["#2f5a42", "#94692a"], "group": "story", "tints": ["#2f5a42", "#94692a", "#2f5a42", "#263a2e", "#e3cb93", "#6f6350"], "strength": ["14%", "16%"], "light": {"bg": "#ebe2d4", "surface": "#f5efe5", "raised": "#f8f4ea", "ink": "#2c251c", "muted": "#6f6350", "line": "#d6c8b2", "border": "#6f6350", "soft": "#e2e8da", "accent": "#2f5a42", "on-accent": "#f8f4ea", "accent-text": "#2f5a42", "accent-bright": "#2f5a42", "accent-soft": "#e2e8da", "secondary": "#94692a", "highlight": "#94692a", "on-highlight": "#f8f4ea", "highlight-soft": "#f2e6d0", "story": "#f2e6d0", "story-edge": "#94692a", "exam": "#e9e8dd", "exam-edge": "#2f5a42", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2f5a42", "head": "#263a2e", "glow": "rgba(150,110,50,.11)", "spark": "rgba(150,110,50,.4)", "brand": "#e3cb93"}, "dark": {"bg": "#15120f", "surface": "#1e1a15", "raised": "#1c1813", "ink": "#e6ddcd", "muted": "#a89c89", "line": "#36302a", "border": "#a89c89", "soft": "#1f2b23", "accent": "#86b394", "on-accent": "#10150f", "accent-text": "#86b394", "accent-bright": "#86b394", "accent-soft": "#1f2b23", "secondary": "#d4a961", "highlight": "#d4a961", "on-highlight": "#10150f", "highlight-soft": "#241d14", "story": "#241d14", "story-edge": "#d4a961", "exam": "#1a1d18", "exam-edge": "#86b394", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#86b394", "head": "#e0c48e", "glow": "rgba(212,169,97,.12)", "spark": "rgba(240,210,150,.75)", "brand": "#e0c48e"}},
-    "sb-coffee": {"label": ["Kaffeepapier", "Coffee paper"], "swatches": ["#7a4f2a", "#95662c"], "group": "story", "tints": ["#7a4f2a", "#95662c", "#4f6b47", "#4a3321", "#e9c995", "#75644f"], "strength": ["14%", "16%"], "light": {"bg": "#ede3d3", "surface": "#f6efe4", "raised": "#fff8ee", "ink": "#2e241b", "muted": "#75644f", "line": "#d6c6ad", "border": "#75644f", "soft": "#eadcc6", "accent": "#7a4f2a", "on-accent": "#fff8ee", "accent-text": "#7a4f2a", "accent-bright": "#7a4f2a", "accent-soft": "#eadcc6", "secondary": "#95662c", "highlight": "#95662c", "on-highlight": "#fff8ee", "highlight-soft": "#f3e6cf", "story": "#f3e6cf", "story-edge": "#95662c", "exam": "#ebe7dc", "exam-edge": "#4f6b47", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#7a4f2a", "head": "#4a3321", "glow": "rgba(160,110,50,.13)", "spark": "rgba(150,100,40,.45)", "brand": "#e9c995"}, "dark": {"bg": "#17120e", "surface": "#211912", "raised": "#201812", "ink": "#e8dccb", "muted": "#ad9d88", "line": "#3d3025", "border": "#ad9d88", "soft": "#33271b", "accent": "#d9a865", "on-accent": "#1a120b", "accent-text": "#d9a865", "accent-bright": "#d9a865", "accent-soft": "#33271b", "secondary": "#d9a865", "highlight": "#d9a865", "on-highlight": "#1a120b", "highlight-soft": "#261c13", "story": "#261c13", "story-edge": "#d9a865", "exam": "#1d1a16", "exam-edge": "#a9c2a0", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#d9a865", "head": "#ecd2a6", "glow": "rgba(217,168,101,.14)", "spark": "rgba(245,205,140,.75)", "brand": "#e2c08d"}},
-    "sb-taiga": {"label": ["Taigawald", "Taiga forest"], "swatches": ["#2f5a42", "#8a6d26"], "group": "story", "tints": ["#2f5a42", "#8a6d26", "#3c5b6e", "#24402f", "#dcc98f", "#5d6b62"], "strength": ["14%", "16%"], "light": {"bg": "#e8ebe3", "surface": "#f5f6f0", "raised": "#f7faf4", "ink": "#1f2722", "muted": "#5d6b62", "line": "#cdd5c8", "border": "#5d6b62", "soft": "#dde8dc", "accent": "#2f5a42", "on-accent": "#f7faf4", "accent-text": "#2f5a42", "accent-bright": "#2f5a42", "accent-soft": "#dde8dc", "secondary": "#8a6d26", "highlight": "#8a6d26", "on-highlight": "#f7faf4", "highlight-soft": "#eef0e3", "story": "#eef0e3", "story-edge": "#8a6d26", "exam": "#e5ebec", "exam-edge": "#3c5b6e", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2f5a42", "head": "#24402f", "glow": "rgba(47,90,66,.10)", "spark": "rgba(60,100,60,.4)", "brand": "#dcc98f"}, "dark": {"bg": "#0f1513", "surface": "#17201d", "raised": "#15201c", "ink": "#dfe4dc", "muted": "#94a39a", "line": "#283530", "border": "#94a39a", "soft": "#1c2c25", "accent": "#8fbf9a", "on-accent": "#0d1411", "accent-text": "#8fbf9a", "accent-bright": "#8fbf9a", "accent-soft": "#1c2c25", "secondary": "#d6b874", "highlight": "#d6b874", "on-highlight": "#0d1411", "highlight-soft": "#1b2420", "story": "#1b2420", "story-edge": "#d6b874", "exam": "#171f22", "exam-edge": "#9db8c9", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#8fbf9a", "head": "#cfdcc4", "glow": "rgba(143,191,154,.12)", "spark": "rgba(225,245,170,.75)", "brand": "#d6c48f"}},
-    "sb-misty": {"label": ["Nebeltaiga", "Misty taiga"], "swatches": ["#2b5d5a", "#85692a"], "group": "story", "tints": ["#2b5d5a", "#85692a", "#3e4f86", "#234046", "#cfdcdc", "#5a686d"], "strength": ["14%", "16%"], "light": {"bg": "#e6eaea", "surface": "#f4f6f6", "raised": "#f6fafa", "ink": "#1d2528", "muted": "#5a686d", "line": "#cbd4d6", "border": "#5a686d", "soft": "#dbe8e6", "accent": "#2b5d5a", "on-accent": "#f6fafa", "accent-text": "#2b5d5a", "accent-bright": "#2b5d5a", "accent-soft": "#dbe8e6", "secondary": "#85692a", "highlight": "#85692a", "on-highlight": "#f6fafa", "highlight-soft": "#edeee6", "story": "#edeee6", "story-edge": "#85692a", "exam": "#e3e7f0", "exam-edge": "#3e4f86", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2b5d5a", "head": "#234046", "glow": "rgba(43,93,90,.10)", "spark": "rgba(40,80,100,.4)", "brand": "#cfdcdc"}, "dark": {"bg": "#101418", "surface": "#182027", "raised": "#172027", "ink": "#dde4e6", "muted": "#93a1a7", "line": "#29343b", "border": "#93a1a7", "soft": "#1b2c2c", "accent": "#8cc0b5", "on-accent": "#0d1415", "accent-text": "#8cc0b5", "accent-bright": "#8cc0b5", "accent-soft": "#1b2c2c", "secondary": "#c9b27a", "highlight": "#c9b27a", "on-highlight": "#0d1415", "highlight-soft": "#1a2226", "story": "#1a2226", "story-edge": "#c9b27a", "exam": "#181e27", "exam-edge": "#a4b4dd", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#8cc0b5", "head": "#d4e0dc", "glow": "rgba(140,192,181,.12)", "spark": "rgba(215,240,245,.75)", "brand": "#c9d6d8"}},
-    "sb-starlit": {"label": ["Sternenindigo", "Starlit indigo"], "swatches": ["#2f45a8", "#946a12"], "group": "story", "tints": ["#2f45a8", "#946a12", "#2f45a8", "#1f2a6b", "#f0cf7d", "#595e82"], "strength": ["14%", "16%"], "light": {"bg": "#e9eaf3", "surface": "#f7f7fc", "raised": "#ffffff", "ink": "#191c33", "muted": "#595e82", "line": "#d0d3e6", "border": "#595e82", "soft": "#e0e4f8", "accent": "#2f45a8", "on-accent": "#ffffff", "accent-text": "#2f45a8", "accent-bright": "#2f45a8", "accent-soft": "#e0e4f8", "secondary": "#946a12", "highlight": "#946a12", "on-highlight": "#ffffff", "highlight-soft": "#f3eedf", "story": "#f3eedf", "story-edge": "#946a12", "exam": "#e6eaf8", "exam-edge": "#2f45a8", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2f45a8", "head": "#1f2a6b", "glow": "rgba(47,69,168,.10)", "spark": "rgba(40,60,140,.4)", "brand": "#f0cf7d"}, "dark": {"bg": "#0b0e1c", "surface": "#141a30", "raised": "#151a33", "ink": "#e3e5f1", "muted": "#9ca2c0", "line": "#262c4a", "border": "#9ca2c0", "soft": "#2a2a3a", "accent": "#f0c46a", "on-accent": "#0b0e1c", "accent-text": "#f0c46a", "accent-bright": "#f0c46a", "accent-soft": "#2a2a3a", "secondary": "#f0c46a", "highlight": "#f0c46a", "on-highlight": "#0b0e1c", "highlight-soft": "#1a1b2a", "story": "#1a1b2a", "story-edge": "#f0c46a", "exam": "#121a30", "exam-edge": "#8fc8ff", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#f0c46a", "head": "#f0d896", "glow": "rgba(240,196,106,.15)", "spark": "rgba(255,255,255,.8)", "brand": "#f0cf7d"}},
+    storybook: {"label": ["Mokka & Kiefer (Original)", "Mocha & pine (original)"], "swatches": ["#2f5a42", "#94692a"], "group": "story", "tints": ["#2f5a42", "#94692a", "#2f5a42", "#263a2e", "#e3cb93", "#6f6350"], "strength": ["14%", "16%"], "light": {"bg": "#ebe2d4", "surface": "#f5efe5", "raised": "#f8f4ea", "ink": "#2c251c", "muted": "#6d614e", "line": "#d6c8b2", "border": "#6d614e", "soft": "#e2e8da", "accent": "#2f5a42", "on-accent": "#f8f4ea", "accent-text": "#2f5a42", "accent-bright": "#2f5a42", "accent-soft": "#e2e8da", "secondary": "#815b25", "highlight": "#815b25", "on-highlight": "#f8f4ea", "highlight-soft": "#f2e6d0", "story": "#f2e6d0", "story-edge": "#815b25", "exam": "#e9e8dd", "exam-edge": "#2f5a42", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2f5a42", "head": "#263a2e", "glow": "rgba(150,110,50,.11)", "spark": "rgba(150,110,50,.4)", "brand": "#e3cb93"}, "dark": {"bg": "#15120f", "surface": "#1e1a15", "raised": "#1c1813", "ink": "#e6ddcd", "muted": "#a89c89", "line": "#36302a", "border": "#a89c89", "soft": "#1f2b23", "accent": "#86b394", "on-accent": "#10150f", "accent-text": "#86b394", "accent-bright": "#86b394", "accent-soft": "#1f2b23", "secondary": "#d4a961", "highlight": "#d4a961", "on-highlight": "#10150f", "highlight-soft": "#241d14", "story": "#241d14", "story-edge": "#d4a961", "exam": "#1a1d18", "exam-edge": "#86b394", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#86b394", "head": "#e0c48e", "glow": "rgba(212,169,97,.12)", "spark": "rgba(240,210,150,.75)", "brand": "#e0c48e"}},
+    "sb-coffee": {"label": ["Kaffeepapier", "Coffee paper"], "swatches": ["#7a4f2a", "#95662c"], "group": "story", "tints": ["#7a4f2a", "#95662c", "#4f6b47", "#4a3321", "#e9c995", "#75644f"], "strength": ["14%", "16%"], "light": {"bg": "#ede3d3", "surface": "#f6efe4", "raised": "#fff8ee", "ink": "#2e241b", "muted": "#6c5c49", "line": "#d6c6ad", "border": "#6c5c49", "soft": "#eadcc6", "accent": "#7a4f2a", "on-accent": "#fff8ee", "accent-text": "#7a4f2a", "accent-bright": "#7a4f2a", "accent-soft": "#eadcc6", "secondary": "#7f5725", "highlight": "#7f5725", "on-highlight": "#fff8ee", "highlight-soft": "#f3e6cf", "story": "#f3e6cf", "story-edge": "#7f5725", "exam": "#ebe7dc", "exam-edge": "#4f6b47", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#7a4f2a", "head": "#4a3321", "glow": "rgba(160,110,50,.13)", "spark": "rgba(150,100,40,.45)", "brand": "#e9c995"}, "dark": {"bg": "#17120e", "surface": "#211912", "raised": "#201812", "ink": "#e8dccb", "muted": "#ad9d88", "line": "#3d3025", "border": "#ad9d88", "soft": "#33271b", "accent": "#d9a865", "on-accent": "#1a120b", "accent-text": "#d9a865", "accent-bright": "#d9a865", "accent-soft": "#33271b", "secondary": "#d9a865", "highlight": "#d9a865", "on-highlight": "#1a120b", "highlight-soft": "#261c13", "story": "#261c13", "story-edge": "#d9a865", "exam": "#1d1a16", "exam-edge": "#a9c2a0", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#d9a865", "head": "#ecd2a6", "glow": "rgba(217,168,101,.14)", "spark": "rgba(245,205,140,.75)", "brand": "#e2c08d"}},
+    "sb-taiga": {"label": ["Taigawald", "Taiga forest"], "swatches": ["#2f5a42", "#8a6d26"], "group": "story", "tints": ["#2f5a42", "#8a6d26", "#3c5b6e", "#24402f", "#dcc98f", "#5d6b62"], "strength": ["14%", "16%"], "light": {"bg": "#e8ebe3", "surface": "#f5f6f0", "raised": "#f7faf4", "ink": "#1f2722", "muted": "#59675e", "line": "#cdd5c8", "border": "#59675e", "soft": "#dde8dc", "accent": "#2f5a42", "on-accent": "#f7faf4", "accent-text": "#2f5a42", "accent-bright": "#2f5a42", "accent-soft": "#dde8dc", "secondary": "#796021", "highlight": "#796021", "on-highlight": "#f7faf4", "highlight-soft": "#eef0e3", "story": "#eef0e3", "story-edge": "#796021", "exam": "#e5ebec", "exam-edge": "#3c5b6e", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2f5a42", "head": "#24402f", "glow": "rgba(47,90,66,.10)", "spark": "rgba(60,100,60,.4)", "brand": "#dcc98f"}, "dark": {"bg": "#0f1513", "surface": "#17201d", "raised": "#15201c", "ink": "#dfe4dc", "muted": "#94a39a", "line": "#283530", "border": "#94a39a", "soft": "#1c2c25", "accent": "#8fbf9a", "on-accent": "#0d1411", "accent-text": "#8fbf9a", "accent-bright": "#8fbf9a", "accent-soft": "#1c2c25", "secondary": "#d6b874", "highlight": "#d6b874", "on-highlight": "#0d1411", "highlight-soft": "#1b2420", "story": "#1b2420", "story-edge": "#d6b874", "exam": "#171f22", "exam-edge": "#9db8c9", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#8fbf9a", "head": "#cfdcc4", "glow": "rgba(143,191,154,.12)", "spark": "rgba(225,245,170,.75)", "brand": "#d6c48f"}},
+    "sb-misty": {"label": ["Nebeltaiga", "Misty taiga"], "swatches": ["#2b5d5a", "#85692a"], "group": "story", "tints": ["#2b5d5a", "#85692a", "#3e4f86", "#234046", "#cfdcdc", "#5a686d"], "strength": ["14%", "16%"], "light": {"bg": "#e6eaea", "surface": "#f4f6f6", "raised": "#f6fafa", "ink": "#1d2528", "muted": "#58666b", "line": "#cbd4d6", "border": "#58666b", "soft": "#dbe8e6", "accent": "#2b5d5a", "on-accent": "#f6fafa", "accent-text": "#2b5d5a", "accent-bright": "#2b5d5a", "accent-soft": "#dbe8e6", "secondary": "#796026", "highlight": "#796026", "on-highlight": "#f6fafa", "highlight-soft": "#edeee6", "story": "#edeee6", "story-edge": "#796026", "exam": "#e3e7f0", "exam-edge": "#3e4f86", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2b5d5a", "head": "#234046", "glow": "rgba(43,93,90,.10)", "spark": "rgba(40,80,100,.4)", "brand": "#cfdcdc"}, "dark": {"bg": "#101418", "surface": "#182027", "raised": "#172027", "ink": "#dde4e6", "muted": "#93a1a7", "line": "#29343b", "border": "#93a1a7", "soft": "#1b2c2c", "accent": "#8cc0b5", "on-accent": "#0d1415", "accent-text": "#8cc0b5", "accent-bright": "#8cc0b5", "accent-soft": "#1b2c2c", "secondary": "#c9b27a", "highlight": "#c9b27a", "on-highlight": "#0d1415", "highlight-soft": "#1a2226", "story": "#1a2226", "story-edge": "#c9b27a", "exam": "#181e27", "exam-edge": "#a4b4dd", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#8cc0b5", "head": "#d4e0dc", "glow": "rgba(140,192,181,.12)", "spark": "rgba(215,240,245,.75)", "brand": "#c9d6d8"}},
+    "sb-starlit": {"label": ["Sternenindigo", "Starlit indigo"], "swatches": ["#2f45a8", "#946a12"], "group": "story", "tints": ["#2f45a8", "#946a12", "#2f45a8", "#1f2a6b", "#f0cf7d", "#595e82"], "strength": ["14%", "16%"], "light": {"bg": "#e9eaf3", "surface": "#f7f7fc", "raised": "#ffffff", "ink": "#191c33", "muted": "#595e82", "line": "#d0d3e6", "border": "#595e82", "soft": "#e0e4f8", "accent": "#2f45a8", "on-accent": "#ffffff", "accent-text": "#2f45a8", "accent-bright": "#2f45a8", "accent-soft": "#e0e4f8", "secondary": "#825d10", "highlight": "#825d10", "on-highlight": "#ffffff", "highlight-soft": "#f3eedf", "story": "#f3eedf", "story-edge": "#825d10", "exam": "#e6eaf8", "exam-edge": "#2f45a8", "success": "#2f6b2f", "warning": "#8a5300", "danger": "#a02020", "focus": "#2f45a8", "head": "#1f2a6b", "glow": "rgba(47,69,168,.10)", "spark": "rgba(40,60,140,.4)", "brand": "#f0cf7d"}, "dark": {"bg": "#0b0e1c", "surface": "#141a30", "raised": "#151a33", "ink": "#e3e5f1", "muted": "#9ca2c0", "line": "#262c4a", "border": "#9ca2c0", "soft": "#2a2a3a", "accent": "#f0c46a", "on-accent": "#0b0e1c", "accent-text": "#f0c46a", "accent-bright": "#f0c46a", "accent-soft": "#2a2a3a", "secondary": "#f0c46a", "highlight": "#f0c46a", "on-highlight": "#0b0e1c", "highlight-soft": "#1a1b2a", "story": "#1a1b2a", "story-edge": "#f0c46a", "exam": "#121a30", "exam-edge": "#8fc8ff", "success": "#7fcf7f", "warning": "#e0a84a", "danger": "#ff8a80", "focus": "#f0c46a", "head": "#f0d896", "glow": "rgba(240,196,106,.15)", "spark": "rgba(255,255,255,.8)", "brand": "#f0cf7d"}},
     skymint: { label: ['Sky & Mint', 'Sky & mint'], swatches: ['#1865f2', '#14bf96'], group: 'fun', tints: ['#1865f2', '#14bf96', '#9059ff', '#ffb100', '#ff6b5b', '#00a8d6'],
       light: { 'bg': '#f7f8fa', 'surface': '#ffffff', 'raised': '#ffffff', 'ink': '#21242c', 'muted': '#5b616e', 'line': '#e1e5ec', 'border': '#8a909c', 'soft': '#eef3fd', 'accent': '#1865f2', 'on-accent': '#ffffff', 'accent-text': '#1865f2', 'accent-bright': '#1865f2', 'accent-soft': '#e5eefe', 'secondary': '#0a7558', 'highlight': '#14bf96', 'on-highlight': '#0b2a22', 'highlight-soft': '#ddf7ef', 'story': '#fff6e0', 'story-edge': '#c98700', 'exam': '#f1ebff', 'exam-edge': '#7a4ff0', 'success': '#1a7f37', 'warning': '#9a5b00', 'danger': '#c62828', 'focus': '#4255ff' },
       dark: { 'bg': '#121826', 'surface': '#1a2234', 'raised': '#222c42', 'ink': '#eef2f8', 'muted': '#b0b8c8', 'line': '#2e3a52', 'border': '#74809a', 'soft': '#1d2740', 'accent': '#6fa2ff', 'on-accent': '#0b1a36', 'accent-text': '#6fa2ff', 'accent-bright': '#6fa2ff', 'accent-soft': '#1f3561', 'secondary': '#3ddbb4', 'highlight': '#3ddbb4', 'on-highlight': '#0b2a22', 'highlight-soft': '#143a33', 'story': '#2f2918', 'story-edge': '#ffc44d', 'exam': '#28224a', 'exam-edge': '#b39dff', 'success': '#5fd38d', 'warning': '#ffc95c', 'danger': '#ff8a80', 'focus': '#9aa6ff' } },
@@ -80,6 +80,8 @@
     document.documentElement.dataset.appearancePalette = appearance.palette;
     document.documentElement.dataset.theme = appearance.theme;
     if (typeof storyMagic === 'function') storyMagic();
+    if (typeof syncPickers === 'function') syncPickers();
+    try { dispatchEvent(new CustomEvent('sh-appearance', { detail: { theme: appearance.theme, palette: appearance.palette } })); } catch (_) {}
     // Remember the exact tokens so the inline script in every page <head> can apply them before the first paint (no colour flash).
     try { localStorage.setItem('sh-appearance-css', JSON.stringify({ t: appearance.theme, p: appearance.palette, css: document.documentElement.getAttribute('style') || '' })); } catch (_) {}
     if (persist) {
@@ -87,26 +89,66 @@
       if (window.SHDesign) window.SHDesign.save({ ...window.SHDesign.get(), theme: appearance.theme, accent: values.accent, background: values.bg, text: values.ink, box: values.surface }).catch(() => {});
     }
   }
-  // Storybook schemes: Garamond fonts, lantern glow and fireflies (hub pages: whole screen; reading pages: only the top).
+  // Storybook schemes: Garamond fonts, lantern glow and fireflies. The layer is part of the page and scrolls with it:
+  // hub pages get it over the whole page height (behind the content), reading pages only inside the header.
   const hubPages = /(^|\/)(index|analysis|physics|linalg|practice|more|path|tips|help|download|account|community|credits|contribute|guest|realm|connect)\.html$|\/$/;
   function storyMagic() {
     const on = palettes[appearance.palette].group === 'story';
     const root = document.documentElement;
-    root.classList.toggle('sh-hub', on && hubPages.test(location.pathname));
+    const hub = hubPages.test(location.pathname);
+    root.classList.toggle('sh-hub', on && hub);
     if (on && !document.getElementById('sh-sb-fonts')) {
       const l = document.createElement('link'); l.id = 'sh-sb-fonts'; l.rel = 'stylesheet';
       l.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap';
       document.head.appendChild(l);
     }
     const put = () => {
+      const host = hub ? document.body : document.querySelector('header.study-shell');
       let ff = document.querySelector('.sh-ff');
-      if (on && !ff && document.body) { ff = document.createElement('div'); ff.className = 'sh-ff'; ff.setAttribute('aria-hidden', 'true'); ff.innerHTML = '<i></i>'.repeat(12); document.body.prepend(ff); }
-      if (!on && ff) ff.remove();
+      if (ff && (!on || ff.parentElement !== host)) { ff.remove(); ff = null; }
+      if (!on || !host) return;
+      ff = document.createElement('div'); ff.className = 'sh-ff' + (hub ? '' : ' sh-ff--head'); ff.setAttribute('aria-hidden', 'true');
+      // About one firefly per screen height on hubs (fewer on phones), each at a fixed spot of the page.
+      const phone = matchMedia('(max-width:600px)').matches;
+      const count = hub ? Math.min(phone ? 10 : 18, Math.max(6, Math.round(document.documentElement.scrollHeight / (phone ? 900 : 650)))) : (phone ? 3 : 6);
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement('i');
+        dot.style.setProperty('--x', ((i * 37 + 11) % 92 + 4) + '%');
+        dot.style.setProperty('--y', (hub ? (i + .5) / count * 100 : ((i * 29 + 17) % 80 + 10)) + '%');
+        dot.style.setProperty('--d', (i * 1.3 % 6.5).toFixed(1) + 's');
+        dot.style.setProperty('--s', (7 + i * 1.7 % 4).toFixed(1) + 's');
+        ff.append(dot);
+      }
+      if (hub) host.prepend(ff); else host.append(ff);
     };
-    if (document.body) put(); else document.addEventListener('DOMContentLoaded', put, { once: true });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', put, { once: true }); else put();
+  }
+  // Every Design picker on the page shows the current choice, at once and without a reload.
+  function syncPickers() {
+    document.querySelectorAll('[data-palette]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.palette === appearance.palette)));
+    document.querySelectorAll('[data-theme-choice]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === appearance.theme)));
+    document.querySelectorAll('input[name="study-design-theme"]').forEach(input => { input.checked = input.value === appearance.theme; });
+  }
+  // Read the saved choice again (other tab, or a page restored with the Back button).
+  function reloadAppearance() {
+    try {
+      const next = JSON.parse(localStorage.getItem(appearanceKey) || 'null');
+      if (next && ['light','dark'].includes(next.theme) && (next.theme !== appearance.theme || knownPalette(next.palette) !== appearance.palette)) {
+        appearance = { theme: next.theme, palette: knownPalette(next.palette) }; applyAppearance(false);
+      }
+    } catch (_) {}
+    syncPickers();
   }
   applyAppearance(false);
-  addEventListener('storage', event => { if (event.key === appearanceKey) { try { const next = JSON.parse(event.newValue); if (next && ['light','dark'].includes(next.theme)) { appearance = { theme: next.theme, palette: knownPalette(next.palette) }; applyAppearance(false); updateDesignPanel(); } } catch (_) {} } });
+  // One place to change the design from any script (Settings, My StudyHub, the AI connector page): every picker follows at once.
+  window.SHAppearance = {
+    get: () => ({ ...appearance }),
+    palettes: Object.keys(palettes),
+    setTheme(theme) { if (!['light', 'dark'].includes(theme)) return; appearance.theme = theme; applyAppearance(true); },
+    setPalette(id) { appearance.palette = knownPalette(id); applyAppearance(true); }
+  };
+  addEventListener('storage', event => { if (event.key === appearanceKey) reloadAppearance(); });
+  addEventListener('pageshow', event => { if (event.persisted) reloadAppearance(); });
   const source = document.currentScript;
   const base = new URL('../', source.src);
   const path = location.pathname.slice(base.pathname.length);
@@ -205,31 +247,99 @@
   const brand = link('StudyHub', prefix + 'index.html', 'study-brand');
   const star = document.createElement('span'); star.textContent = ' ✦'; star.setAttribute('aria-hidden', 'true'); brand.append(star);
   upper.append(brand);
-  const menu = document.createElement('button');
-  menu.type = 'button';
-  menu.className = 'study-mobile-menu';
-  menu.setAttribute('aria-label', L('Menü', 'Menu'));
-  menu.setAttribute('aria-expanded', 'false');
-  menu.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
-  upper.append(menu);
-  const courses = document.createElement('nav'); courses.className = 'study-subjects'; courses.setAttribute('aria-label', L('Fächer', 'Subjects'));
-  subjects.forEach(item => { const a = link(item.label, item.href); if (subject === item.id) a.setAttribute('aria-current', 'page'); if (item.id === 'chemie') { a.dataset.subj = 'chemie'; if (!showChemie(studyPath)) a.style.display = 'none'; } courses.append(a); });
-  // Picking a path on the home page updates the header at once (no reload needed); also follows other open tabs.
-  const pathChanged = p => document.querySelectorAll('[data-subj="chemie"]').forEach(a => { a.style.display = showChemie(p) ? '' : 'none'; });
+  // Header (Nov 2026 redesign): StudyHub | Subjects ▾ | Practice | About ▾ on the left; search, language, account and Design on the right.
+  // Phones: the same three entries sit in a second row under StudyHub | search | account, so nothing hides behind a ☰.
+  const icon = paths => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + paths + '</svg>';
+  const ICONS = {
+    search: icon('<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>'),
+    chevron: icon('<path d="m7 10 5 5 5-5"/>'),
+    palette: icon('<path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.3-1.1-1.6-1.1-2.8 0-1 .8-1.8 1.9-1.8h2.1a3.8 3.8 0 0 0 3.8-3.8C20.5 6.6 16.7 3.5 12 3.5Z"/><circle cx="7.6" cy="11" r="1.1"/><circle cx="10.4" cy="7.4" r="1.1"/><circle cx="14.8" cy="7.6" r="1.1"/>')
+  };
+  const nav = document.createElement('nav'); nav.className = 'study-nav'; nav.setAttribute('aria-label', L('Hauptmenü', 'Main'));
+  const pops = [];
+  function popover(id, label, current) {
+    const wrap = document.createElement('div'); wrap.className = 'study-pop';
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'study-nav-item study-pop-button';
+    button.id = 'study-' + id + '-button'; button.setAttribute('aria-expanded', 'false'); button.setAttribute('aria-controls', 'study-' + id + '-panel');
+    button.innerHTML = '<span></span>' + ICONS.chevron; button.firstChild.textContent = label;
+    if (current) button.setAttribute('aria-current', 'true');
+    const panelEl = document.createElement('div'); panelEl.className = 'study-pop-panel'; panelEl.id = 'study-' + id + '-panel'; panelEl.hidden = true;
+    panelEl.setAttribute('role', 'region'); panelEl.setAttribute('aria-labelledby', button.id);
+    wrap.append(button, panelEl);
+    const set = open => { button.setAttribute('aria-expanded', String(open)); panelEl.hidden = !open; wrap.classList.toggle('study-pop-open', open); };
+    button.addEventListener('click', () => { const open = button.getAttribute('aria-expanded') !== 'true'; pops.forEach(p => p.set(false)); if (design.open) design.open = false; set(open); if (open) panelEl.querySelector('a')?.focus({ preventScroll: true }); });
+    pops.push({ wrap, button, panel: panelEl, set });
+    return { wrap, panel: panelEl };
+  }
+  function group(title, items) {
+    const box = document.createElement('div'); box.className = 'study-pop-group';
+    if (title) { const h = document.createElement('p'); h.className = 'study-pop-label'; h.textContent = title; box.append(h); }
+    const ul = document.createElement('ul');
+    items.forEach(item => { const li = document.createElement('li'); li.append(item); ul.append(li); });
+    box.append(ul); return box;
+  }
+  function richLink(text, href, note, extra) {
+    const a = link(text, href); if (extra) Object.entries(extra).forEach(([k, v]) => a.setAttribute(k, v));
+    if (note) { const s = document.createElement('span'); s.className = 'study-pop-note'; s.textContent = note; a.append(s); }
+    return a;
+  }
+  // Subjects: the learner's own subjects first (from the path picked on the home page), then everything else.
+  const subjectNotes = { analysis: L('22 Lektionen', '22 lessons'), linalg: L('21 Lektionen', '21 lessons'), physics: L('16 Lektionen', '16 lessons'), chemie: L('27 Lektionen, auf Deutsch', '27 lessons, in German') };
+  const subjectsPop = popover('subjects', L('Fächer', 'Subjects'), !!subject);
+  function renderSubjects(p) {
+    const mine = ['analysis', 'linalg', 'physics'].concat(showChemie(p) ? ['chemie'] : []);
+    const others = subjects.filter(s => !mine.includes(s.id));
+    const item = s => { const a = richLink(s.label, s.href, subjectNotes[s.id]); if (subject === s.id) a.setAttribute('aria-current', 'page'); if (s.id === 'chemie') a.dataset.subj = 'chemie'; return a; };
+    const ordered = mine.map(id => subjects.find(s => s.id === id));
+    subjectsPop.panel.replaceChildren(
+      group(p ? L('Deine Fächer', 'Your subjects') : L('Fächer im ersten Jahr', 'First-year subjects'), ordered.map(item)),
+      group(L('Alle Fächer entdecken', 'Explore all subjects'), others.map(item).concat([
+        richLink('Informatik', 'contribute.html', L('Noch nicht hier: bring deinen Kurs mit', 'Not here yet: bring your course')),
+        richLink(L('Deinen Weg wählen', 'Choose your path'), prefix + 'index.html#' + (p || 'math'), L('Mathematik, Physik oder Interdisziplinär', 'Mathematics, Physics or Interdisciplinary'))
+      ])),
+      group(L('Auch', 'Also'), [
+        richLink(L('Mein StudyHub', 'My StudyHub'), prefix + 'account.html', L('Dein Fortschritt und deine Notizen', 'Your progress and notes')),
+        richLink('Exam Dive', 'dive/', L('Das Prüfungsspiel', 'The exam game'))
+      ])
+    );
+  }
+  renderSubjects(studyPath);
+  nav.append(subjectsPop.wrap);
+  const practiceLink = link(L('Üben', 'Practice'), prefix + 'practice.html', 'study-nav-item');
+  if (file === 'practice.html' || file === 'mock.html') practiceLink.setAttribute('aria-current', 'page');
+  nav.append(practiceLink);
+  const aboutPop = popover('about', L('Über', 'About'), false);
+  aboutPop.panel.append(
+    group(L('Über StudyHub', 'About StudyHub'), [
+      richLink(L('Über diesen Hub', 'About this hub'), prefix + 'index.html#about', L('Wer ihn macht, und was er nicht ist', 'Who makes it, and what it is not')),
+      richLink(L('Team und Dank', 'Team and credits'), 'credits.html')
+    ]),
+    group(L('Hilfe und Mitmachen', 'Help and joining in'), [
+      richLink(L('Brauchst du Hilfe?', 'Need help?'), prefix + 'help.html', L('An der ETH und in Zürich, heute', 'At ETH and in Zurich, today')),
+      richLink('Community', prefix + 'community.html', L('Forum und Fragen', 'Forum and questions')),
+      richLink(L('Unterlagen beitragen', 'Contribute notes'), 'contribute.html'),
+      richLink(L('Mit deiner KI lernen', 'Study with your AI'), prefix + 'connect.html', L('In 2 Minuten eingerichtet', 'Set up in 2 minutes'))
+    ]),
+    group('', [richLink(L('Alle Seiten', 'All pages'), prefix + 'more.html', L('Werkzeugkasten, Karten, Downloads', 'Toolbox, maps, downloads'))])
+  );
+  nav.append(aboutPop.wrap);
+  upper.append(nav);
+  // Picking a path on the home page updates the Subjects panel at once (no reload needed); also follows other open tabs.
+  const pathChanged = p => { studyPath = p; renderSubjects(p); };
   addEventListener('sh-path', e => pathChanged(e.detail));
   addEventListener('storage', e => { if (e.key === 'sh-path') pathChanged(e.newValue); });
-  // Exam Dive (Rachel's game, dive/): a game, not a course, so it gets its own marker
-  const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); const brk = document.createElement('span'); brk.className = 'study-break'; brk.setAttribute('aria-hidden', 'true'); courses.append(brk);
-  courses.append(dive);
-  courses.append(link(L('Üben', 'Practice'), prefix + 'practice.html', 'study-practice'));
-  courses.append(link(L('Werkzeugkasten', 'Search'), prefix + 'toolbox.html', 'study-search'));
-  courses.append(link(L('Über', 'About'), prefix + 'index.html#about', 'study-about'));
-  // Phones: 'More' sits in the subject bar next to Exam Dive (the utility row keeps My StudyHub, language and Design)
-  courses.append(link(L('Mehr', 'More'), prefix + 'more.html', 'study-more-sub'));
-  upper.append(courses);
-  const utilities = document.createElement('nav'); utilities.className = 'study-utilities'; utilities.setAttribute('aria-label', L('Persönlicher Bereich', 'Personal area'));
-  utilities.append(link(L('Fortschritt', 'My StudyHub'), prefix + 'account.html', 'study-progress'));
-  utilities.append(link(L('Mehr', 'More'), prefix + 'more.html'));
+  document.addEventListener('pointerdown', event => { pops.forEach(p => { if (!p.wrap.contains(event.target)) p.set(false); }); });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    pops.forEach(p => { if (p.button.getAttribute('aria-expanded') === 'true') { p.set(false); p.button.focus(); } });
+  });
+
+  const utilities = document.createElement('div'); utilities.className = 'study-utilities';
+  const searchButton = document.createElement('button'); searchButton.type = 'button'; searchButton.className = 'study-icon-button study-search-button';
+  searchButton.setAttribute('aria-label', L('Suchen', 'Search')); searchButton.setAttribute('aria-haspopup', 'dialog');
+  searchButton.title = L('Suchen (Strg+K)', 'Search (Ctrl+K)');
+  searchButton.innerHTML = ICONS.search;
+  utilities.append(searchButton);
   const activityHash = /access_token=|error_description=/.test(location.hash) ? returnHash : location.hash;
   const language = de ? 'en' : 'de';
   const currentApp = file + '?lang=' + language + activityHash;
@@ -238,22 +348,24 @@
   languageLink.lang = de ? 'en' : 'de';
   languageLink.setAttribute('aria-label', de ? 'English' : 'Deutsch');
   utilities.append(languageLink);
-  const login = link(L('Anmelden', 'Log in'), prefix + 'account.html', 'study-login');
+  const login = link('', prefix + 'account.html', 'study-login');
+  login.innerHTML = icon('<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>') + '<span class="study-login-word"></span>';
+  login.lastChild.textContent = L('Anmelden', 'Log in'); login.setAttribute('aria-label', L('Anmelden', 'Log in'));
   utilities.append(login);
   const design = document.createElement('details'); design.className = 'study-design';
   design.hidden = true;
   const toggle = document.createElement('summary');
-  toggle.className = 'study-profile-toggle';
-  toggle.setAttribute('aria-label', L('Kontoeinstellungen', 'Account settings'));
-  toggle.innerHTML = '<span class="study-profile-icon" aria-hidden="true"></span>';
+  toggle.className = 'study-design-toggle';
+  toggle.setAttribute('aria-label', 'Design');
+  toggle.innerHTML = ICONS.palette + '<span class="study-design-word">Design</span>';
   design.append(toggle);
   const panel = document.createElement('div'); panel.className = 'study-design-panel';
-  const heading = document.createElement('h2'); heading.textContent = L('Einstellungen', 'Settings'); panel.append(heading);
+  const heading = document.createElement('h2'); heading.textContent = 'Design'; panel.append(heading);
   const profileForm = document.createElement('form');
   profileForm.className = 'study-profile-form';
   profileForm.innerHTML = '<label>' + L('Benutzername für die Bestenliste', 'Leaderboard username') + '<input name="nickname" type="text" maxlength="30" autocomplete="nickname"></label>' +
     '<label class="study-profile-optin"><input name="leaderboard" type="checkbox">' + L('In der Bestenliste anzeigen', 'Show me on the leaderboard') + '</label>' +
-    '<button type="submit">' + L('Speichern', 'Save') + '</button><p role="status"></p>';
+    '<button type="submit" class="study-button-secondary">' + L('Speichern', 'Save') + '</button><p role="status"></p>';
   const profileName = profileForm.elements.nickname;
   const profileOptIn = profileForm.elements.leaderboard;
   const profileMessage = profileForm.querySelector('[role="status"]');
@@ -274,42 +386,41 @@
   switchLanguage.lang = de ? 'en' : 'de';
   choices.append(switchLanguage);
   panel.append(choices);
-  const appearanceDisclosure = document.createElement('details');
-  appearanceDisclosure.className = 'study-profile-appearance';
-  const appearanceToggle = document.createElement('summary');
-  appearanceToggle.textContent = 'Design';
-  appearanceDisclosure.append(appearanceToggle);
-  const themes = document.createElement('fieldset');
-  const themeLegend = document.createElement('legend'); themeLegend.textContent = L('Darstellung', 'Appearance'); themes.append(themeLegend);
+  // The Design chooser is always open (no dropdown inside the panel): two theme tiles, then one tile per palette.
+  const chooser = document.createElement('section'); chooser.className = 'design-chooser'; chooser.setAttribute('aria-label', 'Design');
+  const themeTitle = document.createElement('p'); themeTitle.className = 'design-group'; themeTitle.textContent = L('Hell oder dunkel', 'Light or dark');
   const themeOptions = document.createElement('div'); themeOptions.className = 'design-theme-options';
   [['light', L('Hell', 'Light')], ['dark', L('Dunkel', 'Dark')]].forEach(([value, text]) => {
-    const label = document.createElement('label'); const input = document.createElement('input'); input.type = 'radio'; input.name = 'study-design-theme'; input.value = value;
-    input.addEventListener('change', () => { appearance.theme = value; applyAppearance(true); updateDesignPanel(); }); label.append(input, document.createTextNode(text)); themeOptions.append(label);
-  }); themes.append(themeOptions); appearanceDisclosure.append(themes);
-  const colours = document.createElement('fieldset'); const colourLegend = document.createElement('legend'); colourLegend.textContent = L('Farbwelt', 'Colour palette'); colours.append(colourLegend);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'design-theme-tile'; b.dataset.themeChoice = value;
+    b.innerHTML = '<span class="design-theme-dot" aria-hidden="true"></span><span></span>'; b.lastChild.textContent = text;
+    b.addEventListener('click', () => window.SHAppearance.setTheme(value));
+    themeOptions.append(b);
+  });
+  chooser.append(themeTitle, themeOptions);
   const colourOptions = document.createElement('div'); colourOptions.className = 'design-colours';
   const groups = { story: L('Märchenbuch', 'Storybook'), fun: L('Bunt', 'Bright'), classic: L('Klassisch', 'Classic'), calm: L('Ruhig', 'Calm'), picked: L('Deine Auswahl', 'Your picks'), access: L('Barrierearm', 'Accessible') };
   let lastGroup = '';
   Object.entries(palettes).forEach(([id, value]) => {
     if (value.group !== lastGroup) { lastGroup = value.group; const h = document.createElement('p'); h.className = 'design-group'; h.textContent = groups[value.group] || ''; colourOptions.append(h); }
-    const button = document.createElement('button'); button.type = 'button'; button.dataset.palette = id;
-    const swatch = document.createElement('span'); swatch.className = 'design-swatch'; swatch.setAttribute('aria-hidden', 'true'); swatch.style.background = 'linear-gradient(135deg,' + value.swatches[0] + ' 50%,' + value.swatches[1] + ' 50%)';
-    button.append(swatch, document.createTextNode(value.label[de ? 0 : 1])); button.addEventListener('click', () => { appearance.palette = id; applyAppearance(true); updateDesignPanel(); }); colourOptions.append(button);
-  }); colours.append(colourOptions); appearanceDisclosure.append(colours);
-  const hint = document.createElement('p'); hint.className = 'design-save-hint'; hint.textContent = L('Wird für alle Fächer in diesem Browser gespeichert.', 'Saved for all subjects in this browser.'); appearanceDisclosure.append(hint);
-  panel.append(appearanceDisclosure, link(L('Mein StudyHub', 'My StudyHub'), prefix + 'account.html'));
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'design-tile'; button.dataset.palette = id;
+    const swatch = document.createElement('span'); swatch.className = 'design-swatch'; swatch.setAttribute('aria-hidden', 'true');
+    swatch.style.setProperty('--sw-bg', value.light.bg); swatch.style.setProperty('--sw-a', value.swatches[0]); swatch.style.setProperty('--sw-b', value.swatches[1]);
+    const name = document.createElement('span'); name.className = 'design-tile-name'; name.textContent = value.label[de ? 0 : 1];
+    button.append(swatch, name); button.addEventListener('click', () => window.SHAppearance.setPalette(id)); colourOptions.append(button);
+  });
+  chooser.append(colourOptions);
+  const hint = document.createElement('p'); hint.className = 'design-save-hint'; hint.textContent = L('Wird für alle Fächer in diesem Browser gespeichert.', 'Saved for all subjects in this browser.'); chooser.append(hint);
+  panel.append(chooser, link(L('Mein StudyHub', 'My StudyHub'), prefix + 'account.html', 'study-design-my'));
   design.append(panel); utilities.append(design);
-  function updateDesignPanel() {
-    design.querySelectorAll('input[name="study-design-theme"]').forEach(input => { input.checked = input.value === appearance.theme; });
-    design.querySelectorAll('[data-palette]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.palette === appearance.palette)));
-  }
+  // Every picker on the page (header panel, settings, My StudyHub) shows the same choice at once, without a reload.
+  function updateDesignPanel() { syncPickers(); }
   updateDesignPanel();
   function positionDesignPanel() {
     if (!design.open || innerWidth > 600) return;
     const top = Math.max(16, Math.min(toggle.getBoundingClientRect().bottom + 8, innerHeight - 160));
     design.style.setProperty('--study-design-top', top + 'px');
   }
-  design.addEventListener('toggle', positionDesignPanel);
+  design.addEventListener('toggle', () => { if (design.open) pops.forEach(p => p.set(false)); positionDesignPanel(); });
   addEventListener('resize', positionDesignPanel);
   document.addEventListener('pointerdown', event => { if (!design.contains(event.target)) design.open = false; });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && design.open) { design.open = false; toggle.focus(); } });
@@ -322,15 +433,120 @@
   // Generated pages already contain this header (make_github.py writes the same markup); swap in the live one without a layout jump.
   const prebuilt = document.querySelector('header.study-shell');
   if (prebuilt) prebuilt.replaceWith(shell); else document.body.prepend(shell);
-  menu.addEventListener('click', () => {
-    const open = menu.getAttribute('aria-expanded') !== 'true';
-    menu.setAttribute('aria-expanded', String(open));
-    shell.classList.toggle('study-menu-open', open);
+  shell.querySelectorAll('.study-pop-panel a').forEach(a => a.addEventListener('click', () => pops.forEach(p => p.set(false))));
+  // Storybook fireflies on reading pages live inside the header, so they scroll away with it.
+  if (typeof storyMagic === 'function') storyMagic();
+
+  // Search: the magnifier (or Ctrl/Cmd+K, or "/") opens a search box over the page. Results come from the Toolbox index, grouped by type.
+  let searchDialog = null;
+  function openSearch() {
+    if (!searchDialog) searchDialog = buildSearch();
+    pops.forEach(p => p.set(false)); design.open = false;
+    if (typeof searchDialog.showModal === 'function') searchDialog.showModal(); else searchDialog.setAttribute('open', '');
+    document.documentElement.classList.add('study-search-on');
+    const input = searchDialog.querySelector('input'); input.focus(); input.select();
+  }
+  searchButton.addEventListener('click', openSearch);
+  document.addEventListener('keydown', event => {
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable;
+    if ((event.key === 'k' || event.key === 'K') && (event.metaKey || event.ctrlKey) && !event.altKey) { event.preventDefault(); openSearch(); }
+    else if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey && !document.querySelector('dialog[open]')) { event.preventDefault(); openSearch(); }
   });
-  shell.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-    menu.setAttribute('aria-expanded', 'false');
-    shell.classList.remove('study-menu-open');
-  }));
+  function buildSearch() {
+    const dialog = document.createElement('dialog'); dialog.className = 'study-search-dialog'; dialog.setAttribute('aria-label', L('Suche', 'Search'));
+    dialog.innerHTML = '<form method="dialog" class="study-search-form" role="search"><label class="study-search-field"><span class="study-visually-hidden"></span>' + ICONS.search +
+      '<input type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"></label><button type="submit" class="study-search-close"></button></form>' +
+      '<p class="study-search-status" role="status" aria-live="polite"></p><div class="study-search-results"></div>';
+    const input = dialog.querySelector('input'); const status = dialog.querySelector('.study-search-status'); const results = dialog.querySelector('.study-search-results');
+    dialog.querySelector('.study-visually-hidden').textContent = L('Suchbegriff', 'Search for');
+    input.placeholder = L('Lektion, Satz, Aufgabe, Seite …', 'Lesson, theorem, exercise, page …');
+    const close = dialog.querySelector('.study-search-close'); close.textContent = L('Schliessen', 'Close'); close.setAttribute('aria-label', L('Suche schliessen', 'Close search'));
+    dialog.addEventListener('close', () => { document.documentElement.classList.remove('study-search-on'); searchButton.focus({ preventScroll: true }); });
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+    const pageBase = new URL(prefix, base);
+    const quick = [
+      [L('Üben', 'Practice'), prefix + 'practice.html'], [L('Probeprüfungen', 'Mock exams'), prefix + 'mock.html'],
+      [L('Lernkarten', 'Flashcards'), fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en')], ['Exam Dive', 'dive/'],
+      [L('Weltkarte', 'Realm map'), prefix + 'realm.html'], [L('Stammbaum der Sätze', 'Theorem tree'), prefix + 'tree.html'],
+      [L('Werkzeugkasten', 'Toolbox'), prefix + 'toolbox.html'], [L('Mein StudyHub', 'My StudyHub'), prefix + 'account.html']
+    ];
+    const GROUPS = [
+      ['lessons', L('Lektionen', 'Lessons'), ['sec']],
+      ['exercises', L('Aufgaben und Beweise', 'Exercises and proofs'), ['ex', 'proof']],
+      ['practice', L('Üben: Definitionen, Sätze, Kniffe', 'Practice: definitions, theorems, moves'), ['def', 'thm', 'move', 'recipe', 'word']],
+      ['pages', L('Seiten', 'Pages'), ['page']]
+    ];
+    const SUBJ = { a: 'Analysis I', p: L('Physik I', 'Physics I'), g: 'StudyHub' };
+    const fold = s => String(s).toLowerCase().replace(/ß/g, 'ss').normalize('NFKD').replace(/[̀-ͯ]/g, '');
+    const TEX = { alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', varepsilon: 'ε', epsilon: 'ε', lambda: 'λ', mu: 'μ', pi: 'π', sigma: 'σ', omega: 'ω', infty: '∞', forall: '∀', exists: '∃', in: '∈', subseteq: '⊆', to: '→', le: '≤', leq: '≤', ge: '≥', geq: '≥', neq: '≠', cdot: '·', sum: 'Σ', int: '∫', sqrt: '√', mathbb: '', mathrm: '', operatorname: '', emptyset: '∅', times: '×', partial: '∂', nabla: '∇', vec: '', frac: '', dot: '', ddot: '', bar: '', hat: '', left: '', right: '', quad: ' ', qquad: ' ', iff: '⇔', implies: '⇒', approx: '≈' };
+    const plain = s => String(s).replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, '’')
+      .replace(/\$+([^$]*)\$+/g, (m, tex) => tex.replace(/\\([a-zA-Z]+)/g, (x, n) => n in TEX ? TEX[n] : n).replace(/\\[,;:! ]/g, ' ').replace(/[{}]/g, '').replace(/\\\\/g, ' ').replace(/\^/g, '^').replace(/_/g, '')).replace(/\s+/g, ' ').trim();
+    let index = null, loading = null;
+    function load() {
+      if (loading) return loading;
+      status.textContent = L('Suche wird geladen …', 'Loading the search …');
+      const src = new URL('assets/search-' + (de ? 'de' : 'en') + '.json', base);
+      loading = fetch(src).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(data => {
+        index = data.map(e => { const title = plain(e[2]); return { e, title, where: plain(e[3]), t: fold(title), w: ' ' + fold(e[6] || '') + ' ' }; });
+        status.textContent = ''; run();
+      }).catch(() => { status.textContent = L('Die Suche konnte nicht geladen werden. Versuch es im Werkzeugkasten.', 'The search could not be loaded. Try the Toolbox instead.'); loading = null; });
+      return loading;
+    }
+    function score(x, words, phrase) {
+      let s = 0;
+      for (const w of words) {
+        if (x.t.includes(w)) s += (' ' + x.t).includes(' ' + w) ? 6 : 4;
+        else if (x.w.includes(' ' + w)) s += 2;
+        else return 0;
+      }
+      if (words.length > 1 && x.t.includes(phrase)) s += 6;
+      return s + ({ page: 3, def: 2, thm: 2, sec: 1 }[x.e[0]] || 0);
+    }
+    function entry(text, href, meta) {
+      const a = document.createElement('a'); a.className = 'study-search-hit'; a.href = href;
+      const t = document.createElement('span'); t.className = 'study-search-title'; t.textContent = text; a.append(t);
+      if (meta) { const m = document.createElement('span'); m.className = 'study-search-meta'; m.textContent = meta; a.append(m); }
+      return a;
+    }
+    function section(title, nodes) {
+      const s = document.createElement('section'); s.className = 'study-search-group';
+      const h = document.createElement('h3'); h.textContent = title; s.append(h);
+      const ul = document.createElement('ul'); nodes.forEach(n => { const li = document.createElement('li'); li.append(n); ul.append(li); }); s.append(ul);
+      return s;
+    }
+    function run() {
+      const raw = input.value.trim(); const phrase = fold(raw); const words = phrase.split(/[^a-z0-9]+/).filter(w => w.length > 1 || /\d/.test(w));
+      if (!words.length) {
+        status.textContent = '';
+        results.replaceChildren(section(L('Direkt zu', 'Go straight to'), quick.map(([t, h]) => entry(t, url(h)))));
+        return;
+      }
+      if (!index) { load(); return; }
+      const hits = index.map(x => ({ x, s: score(x, words, phrase) })).filter(h => h.s).sort((a, b) => b.s - a.s);
+      const groupsOut = GROUPS.map(([id, title, kinds]) => {
+        const list = hits.filter(h => kinds.includes(h.x.e[0])).slice(0, 6);
+        return list.length ? section(title, list.map(h => entry(h.x.title, new URL(h.x.e[4], pageBase).href, [SUBJ[h.x.e[1]], h.x.where].filter(Boolean).join(' · ')))) : null;
+      }).filter(Boolean);
+      const all = entry(L('Alle Treffer im Werkzeugkasten', 'All results in the Toolbox'), url(prefix + 'toolbox.html') + '?q=' + encodeURIComponent(raw) + '#search');
+      all.classList.add('study-search-all');
+      status.textContent = hits.length ? (hits.length === 1 ? L('1 Treffer', '1 result') : hits.length + L(' Treffer', ' results')) : L('Nichts gefunden. Versuch weniger Wörter oder den Wortanfang.', 'Nothing found. Try fewer words or the start of a word.');
+      results.replaceChildren(...groupsOut, all);
+    }
+    let timer; input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 120); });
+    input.addEventListener('focus', () => { if (input.value.trim()) load(); }, { once: true });
+    dialog.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      const links = Array.from(results.querySelectorAll('a')); if (!links.length) return;
+      event.preventDefault();
+      const at = links.indexOf(document.activeElement);
+      const next = event.key === 'ArrowDown' ? (at < 0 ? 0 : Math.min(at + 1, links.length - 1)) : (at <= 0 ? -1 : at - 1);
+      if (next < 0) input.focus(); else links[next].focus();
+    });
+    input.addEventListener('keydown', event => { if (event.key === 'Enter') { const first = results.querySelector('a'); if (first && input.value.trim()) { event.preventDefault(); location.href = first.href; } } });
+    document.body.append(dialog);
+    run();
+    return dialog;
+  }
   function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
   const main = document.querySelector('main');
@@ -468,9 +684,8 @@
     choices.hidden = !signedIn;
     heading.textContent = signedIn ? L('Einstellungen', 'Settings') : 'Design';
     toggle.classList.toggle('study-profile-toggle', signedIn);
-    toggle.setAttribute('aria-label', signedIn ? L('Kontoeinstellungen', 'Account settings') : 'Design');
-    toggle.innerHTML = signedIn ? '<span class="study-profile-icon" aria-hidden="true"></span>' : 'Design';
-    if (!signedIn) appearanceDisclosure.open = true;
+    toggle.setAttribute('aria-label', signedIn ? L('Konto und Design', 'Account and design') : 'Design');
+    toggle.innerHTML = signedIn ? '<span class="study-profile-icon" aria-hidden="true"></span>' : ICONS.palette + '<span class="study-design-word">Design</span>';
     login.hidden = signedIn;
     languageLink.hidden = signedIn;
 
@@ -571,9 +786,7 @@
     intro.before(hero); hero.append(intro, graphic);
     drawCourseGraphic(canvas);
     toggle.addEventListener('click', () => requestAnimationFrame(() => drawCourseGraphic(canvas)));
-    design.addEventListener('change', () => drawCourseGraphic(canvas));
-    colourOptions.addEventListener('click', () => drawCourseGraphic(canvas));
-    addEventListener('storage', event => { if (event.key === appearanceKey) drawCourseGraphic(canvas); });
+    addEventListener('sh-appearance', () => drawCourseGraphic(canvas));
 
     function renderProgress() {
       const signedIn = !!window.SH?.user;
