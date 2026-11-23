@@ -374,7 +374,7 @@ html body.sh-unified main>header .lead{margin:0;max-width:66ch}
 html body.sh-unified .lesson-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin:1.25rem 0 0}
 html body.sh-unified .lesson-actions .sh-pdf{margin:0}
 /* Lessons, refresher units, sheets: ONE reading column. Text, boxes, proofs and the bottom bar all share the same width (Rachel, 23 Nov). */
-body.sh-unified[data-subject] main:has(> header .eyebrow){max-width:48rem}
+body.sh-unified[data-subject] main:has(> header .eyebrow):has(> details.toc){max-width:48rem}
 body.sh-unified[data-subject] main:has(> header .eyebrow) header .lead{max-width:none}
 body.sh-unified[data-subject] main:has(> header .eyebrow)>:is(.lessons,.hubgrid,.blocklegend){max-width:none}
 
@@ -439,3 +439,27 @@ html body .study-shell .design-tile{flex-direction:row;align-items:center;gap:10
 html body .study-shell .design-tile[aria-pressed=true]{padding:7px 32px 7px 11px}
 html body .study-shell :is(.design-theme-tile,.design-tile)[aria-pressed=true]::after{top:50%;right:8px;transform:translateY(-50%)}
 html body .study-shell .design-swatch{flex:none;width:22px;height:22px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--sw-a) 50%,var(--sw-b) 50%);box-shadow:0 0 0 2px var(--sw-bg),0 0 0 3px color-mix(in srgb,var(--design-ink) 22%,transparent)}
+
+/* Desktop (Mridul, 23 Nov: "on the computer it looks like a phone site"). Hub pages use the same 1160px width as the
+   header; reading pages (lessons, refreshers, sheets, guides) keep their 48rem reading column, and from 1200px the
+   contents move into a sticky side rail on the left that follows you and marks where you are (overlay.js). */
+html body.sh-unified.studyhub-app main:not(.learning-app){max-width:1160px}
+html body.sh-unified main>p{max-width:72ch}
+.sh-rail{display:none}
+@media (min-width:1200px){
+  body.sh-unified[data-subject]>main:has(> header .eyebrow):has(> details.toc){margin-left:calc(max(24px,(100% - 1160px) / 2) + 16.5rem);margin-right:auto;width:calc(100% - max(48px,100% - 1160px) - 16.5rem)}
+  html body.sh-unified .sh-read{display:flex;align-items:flex-start;gap:2.5rem;width:calc(100% - 48px);max-width:1160px;margin:0 auto}
+  html body.sh-unified .sh-read>main{flex:0 1 48rem;min-width:0;width:auto;margin:32px 0 0}
+  html.sh-has-rail main>details.toc{display:none}
+  .sh-rail{display:block;flex:0 0 14rem;position:sticky;top:1.25rem;margin-top:40px;max-height:calc(100vh - 2.5rem);overflow-y:auto;overscroll-behavior:contain;padding:0 .25rem 1rem 0;font:500 14px/1.4 system-ui,-apple-system,'Segoe UI',sans-serif;scrollbar-width:thin}
+  .sh-rail-h{margin:0 0 .6rem;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--design-muted)}
+  .sh-rail ol{list-style:none;margin:0;padding:0}
+  .sh-rail ol ol{display:none;margin:.15rem 0 .35rem .75rem;border-left:1px solid var(--design-line);padding-left:.5rem}
+  .sh-rail li.is-open>ol,.sh-rail>ol>ol{display:block}
+  html body.sh-unified .sh-rail a{display:block;padding:.3rem .5rem;border-radius:6px;color:var(--design-muted);text-decoration:none}
+  html body.sh-unified .sh-rail a:hover{color:var(--design-ink);background:color-mix(in srgb,var(--design-accent) 8%,transparent)}
+  html body.sh-unified .sh-rail a:focus-visible{outline:2px solid var(--design-accent);outline-offset:1px}
+  html body.sh-unified .sh-rail a[aria-current]{color:var(--design-accent);font-weight:650;background:color-mix(in srgb,var(--design-accent) 10%,transparent)}
+  .sh-rail mjx-container{font-size:100%!important}
+}
+@media print{html body.sh-unified .sh-read{display:block;width:auto;max-width:none}.sh-rail{display:none!important}}
