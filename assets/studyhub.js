@@ -221,6 +221,9 @@
   // Exam Dive (Rachel's game, dive/): a game, not a course, so it gets its own marker
   const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); const brk = document.createElement('span'); brk.className = 'study-break'; brk.setAttribute('aria-hidden', 'true'); courses.append(brk);
   courses.append(dive);
+  courses.append(link(L('Üben', 'Practice'), prefix + 'practice.html', 'study-practice'));
+  courses.append(link(L('Werkzeugkasten', 'Search'), prefix + 'toolbox.html', 'study-search'));
+  courses.append(link(L('Über', 'About'), prefix + 'index.html#about', 'study-about'));
   // Phones: 'More' sits in the subject bar next to Exam Dive (the utility row keeps My StudyHub, language and Design)
   courses.append(link(L('Mehr', 'More'), prefix + 'more.html', 'study-more-sub'));
   upper.append(courses);
