@@ -96,6 +96,11 @@ Export/import as JSON on the overview page. No server sync yet: that needs a Sup
   and a "Streak anzeigen" link. On: wording stays energetic without loss: an ended streak is a "Neuer Start heute!" with
   the sleeping (not the extinguished) creature, the risk button is "Flamme anfachen", a day off is "Einen Tag Pause
   gemacht? Zünd dein Streichholz".
+- StudyHub's own switch (My StudyHub → Your design → Hide → "Flashcards streak", or the student's AI via the connector,
+  `hide: streak`) is stored by the hub in localStorage `sh-design` (`hide: [..., "streak"]`). `streakOn()` and the start page
+  read it directly and treat it as "off", also on the first view before the hub's `overlay.js` has written `prefs.streak`.
+  While it is on, the panel shows "Ausgeschaltet in Mein StudyHub → Dein Design" (a link to `account.html#my-design`)
+  instead of the "Streak anzeigen" button.
 - Order (session toolbar, "Reihenfolge ▾"): Chronologisch (script order) or Gemischt; weak and rescue decks also offer
   "Schwächste zuerst". Chapter/proof decks remember the choice (`prefs.shuffle`). The data files are not always in
   script order, so `chronoKeys()` sorts by section, then the script's item number in the title/meta (Definition 3.12 → 12),
