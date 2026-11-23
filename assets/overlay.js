@@ -6,7 +6,9 @@
 (function () {
   var KEY = 'sh-design';
   var FONTS = { serif: '"EB Garamond",Georgia,serif', sans: 'Inter,system-ui,sans-serif', readable: 'Atkinson Hyperlegible,Verdana,system-ui,sans-serif', mono: '"IBM Plex Mono",ui-monospace,monospace' };
-  var HIDE = { badday: '.badday', listen: '.sh-listen', tips: '#sh-tip', comments: '.sh-comments', progress: '.sh-progress', story: '.sp-story,.story' };
+  var HIDE = { badday: '.badday', listen: '.sh-listen', tips: '#sh-tip', comments: '.sh-comments', progress: '.sh-progress', story: '.sp-story,.story',
+    // Flashcards (on by default): hides the header entry, the course tab and the buttons/tool cards that open flashcards; inline text links stay.
+    flashcards: '.study-shell a[href*="Analysis_Lerplatform"],.study-shell [data-mode="cards"],.study-modes [data-mode="cards"],[class*="study-pop"] li:has(> a[href*="Analysis_Lerplatform"]),[class*="study-pop"] a[href*="Analysis_Lerplatform"],a.box.tool[href*="lashcards"],a.app-button[href*="lashcards"]' };
   var HEX = /^#[0-9a-fA-F]{6}$/;
   function clean(t) {
     t = t || {}; var o = {};
