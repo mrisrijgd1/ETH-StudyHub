@@ -108,14 +108,15 @@
       if (ff && (!on || ff.parentElement !== host)) { ff.remove(); ff = null; }
       if (!on || !host) return;
       ff = document.createElement('div'); ff.className = 'sh-ff' + (hub ? '' : ' sh-ff--head'); ff.setAttribute('aria-hidden', 'true');
-      // About one firefly per screen height on hubs (fewer on phones), each at a fixed spot of the page.
+      // A small swarm: about ten fireflies per screen height on hubs (four or five on phones), each at a fixed spot of the page,
+      // and a dozen in the header of reading pages (Mridul, 23 Nov: "very few fireflies").
       const phone = matchMedia('(max-width:600px)').matches;
-      const count = hub ? Math.min(phone ? 10 : 18, Math.max(6, Math.round(document.documentElement.scrollHeight / (phone ? 900 : 650)))) : (phone ? 3 : 6);
+      const count = hub ? Math.min(phone ? 40 : 90, Math.max(phone ? 12 : 24, Math.round(document.documentElement.scrollHeight / (phone ? 200 : 90)))) : (phone ? 6 : 12);
       for (let i = 0; i < count; i++) {
         const dot = document.createElement('i');
         dot.style.setProperty('--x', ((i * 37 + 11) % 92 + 4) + '%');
-        dot.style.setProperty('--y', (hub ? (i + .5) / count * 100 : ((i * 29 + 17) % 80 + 10)) + '%');
-        dot.style.setProperty('--d', (i * 1.3 % 6.5).toFixed(1) + 's');
+        dot.style.setProperty('--y', (hub ? Math.min(99, (i + .5 + ((i * 7) % 5 - 2) * .18) / count * 100) : ((i * 29 + 17) % 80 + 10)) + '%');
+        dot.style.setProperty('--d', '-' + (i * 1.3 % 6.5).toFixed(1) + 's'); // negative delay: every firefly is already glowing when the page opens
         dot.style.setProperty('--s', (7 + i * 1.7 % 4).toFixed(1) + 's');
         ff.append(dot);
       }
