@@ -214,7 +214,7 @@
     ] },
     linalg: { overview: prefix + 'linalg.html', lessons: prefix + 'linalg.html#lessons', practice: prefix + 'practice.html#linalg', resources: [
       [L('Mehr üben', 'Practise more'), [[L('Lernkarten', 'Flashcards'), fcDeck('linalg'), L('123 Karten zum Skript', '123 cards on the script')], [L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'], [L('Serien erklärt', 'Serien explained'), 'serie-l00.html'], [L('Rezepte', 'Recipes'), 'linalg-recipes.html', L('16 Rechnungen Schritt für Schritt', '16 calculations step by step')], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
-      [L('Kursmaterial', 'Course material'), [[L('Plan und Prüfungslandkarte', 'Plan and exam map'), 'linalg-plan.html'], [L('Prüfungen', 'Exams'), 'linalg-exams.html'], [L('Skript', 'Script'), 'linalg-script.html'], [L('Ausgelassene Themen', 'Skipped topics'), 'skipped.html#linalg']]]
+      [L('Kursmaterial', 'Course material'), [[L('Plan und Prüfungslandkarte', 'Plan and exam map'), 'linalg-plan.html'], [L('Prüfungen', 'Exams'), 'linalg-exams.html'], [L('Tafel & Skript', 'Board & script'), 'linalg-board.html'], [L('Skript', 'Script'), 'linalg-script.html'], [L('Ausgelassene Themen', 'Skipped topics'), 'skipped.html#linalg']]]
     ] },
     informatik: { overview: 'informatik.html', lessons: 'informatik.html#lessons', practice: 'inf-method.html', resources: [
       [L('Mehr üben', 'Practise more'), [[L('Aufgabenmethode', 'Task method'), 'inf-method.html']]],
