@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Serie 0 explained · Linear Algebra I">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=la1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serie 0 explained · Linear Algebra I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=la1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.task{border-left:4px solid var(--accent,#5b5bd6)}.task>p:first-child{margin-top:0}
+.sv-fig{display:block;margin:.7rem auto;max-width:100%;height:auto}.sv-cap{text-align:center;font-size:.9rem;opacity:.85;margin-top:0}
+details.sol .sp{margin:.6rem 0}.trapbox{margin-top:.8rem}.tsum{font-size:.95rem;opacity:.9;margin:.2rem 0 0}
+.tbl{border-collapse:collapse;margin:.6rem 0;font-size:.95rem}.tbl th,.tbl td{border:1px solid color-mix(in srgb,currentColor 25%,transparent);padding:.3rem .55rem;text-align:center}
+.tblwrap{overflow-x:auto;max-width:100%}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Serien explained</span>
+<h1>Serie 0, explained: Abelian groups</h1>
+<p class="lead">Six structures, one checklist: a trivial group, the rationals under multiplication, integer vectors, sequences and Fibonacci sequences, sets under symmetric difference, and the clock $\mathbb Z_m$. For every task: the idea, hints on the hard ones, the solution with every step explained next to what you write, and the trap.</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do Aufgabe 2 only: write out the five checks (closed, associative, commutative, neutral element, inverses) for integer vectors. That counts. Next time, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can (1) list the five things to check for an abelian group and check each one in a new example; (2) show that a subset of a known group is again a group by checking only closure, the neutral element and inverses; (3) prove associativity of the symmetric difference by counting in how many sets an element lies; (4) explain why the sum on $\mathbb Z_m$ is well defined (exactly one remainder).</dd></div>
+<div><dt>Time</dt><dd>About 90 minutes: 20 for Aufgaben 0 to 2, 25 for Aufgabe 3, 45 for Aufgaben 4 and 5.</dd></div>
+<div><dt>Lessons</dt><dd><a href="linalg-01.html#s3-neutral-elements-inverses-groups">Lesson 1, section 3</a> (groups) and <a href="linalg-01.html#s4-the-clock-residue-classes">section 4</a> (the clock $\mathbb Z_m$); <a href="linalg-03.html#s2-sets">lesson 3, section 2</a> (sets).</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong></p>
+<ol>
+<li>Read the task and try it on paper for 10 minutes.</li>
+<li>Stuck on where to start? Read <em>The idea</em> and open <em>You need</em>: it links the lesson section with the theory.</li>
+<li>Hard tasks have hints. Open Hint 1, try again, then Hint 2, then Hint 3; each gives away a little more. Easy tasks go straight to the solution.</li>
+<li>Only then open the solution. The left column says <em>why</em> each step is there, the right column is what you write.</li>
+</ol>
+<p><strong>Source.</strong> The solutions follow Prof. Halbeisen's official Musterlösung to Serie 0 (HS26), translated and explained by StudyHub; where StudyHub adds a different route or a correction, it says so. The official solution numbers results as in the lecture; here every result is named in words. With the <a href="connect.html">StudyHub connector</a>, your own AI can check your attempt before you look.</p>
+<p>Recommended order: the tasks as numbered. Other sheets: <strong>0</strong> · <a href="serie-l01.html">1</a> · <a href="serie-l02.html">2</a> · <a href="serie-l03.html">3</a> · <a href="serie-l04.html">4</a> · <a href="serie-l05.html">5</a> · <a href="serie-l06.html">6</a></p></div>
+<p class="toc"><strong>Tasks:</strong> <a href="#a0">0 The trivial group</a> · <a href="#a1">1 $\mathbb Q^+$ and $\mathbb Q\setminus\{0\}$</a> · <a href="#a2">2 Integer vectors</a> · <a href="#a3">3 Sequences, Fibonacci</a> · <a href="#a4">4 Symmetric difference</a> · <a href="#a5">5 The clock $\mathbb Z_m$</a></p>
+
+<!-- ============ Aufgabe 0 ============ -->
+<h2 id="a0">Aufgabe 0 · The trivial group</h2>
+<div class="box task"><p>Show: if $G:=\{0\}$ and $0\circ0:=0$, then $(G,\circ)$ is an abelian group.</p></div>
+<p class="tsum"><strong>In short:</strong> One element, one product. Check the list anyway.</p>
+<div class="story"><span class="label">The idea</span>
+<p>With only one element there is only one pair to multiply, so every rule of the checklist turns into the single equation $0\circ0=0$. The point of the task is to see the checklist once in its simplest form.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s3-neutral-elements-inverses-groups">Lesson 1, section 3</a>: an abelian group is a set $G$ with an operation $\circ$ that is (0) a 2-place operation on $G$ ($x\circ y\in G$), (1) associative, (2) commutative, with (3) a neutral element and (4) an inverse for every element.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>First check that $\circ$ really is an operation on $G$: the only pair is $(0,0)$.</p></div><div class="sp-formal"><p>Since $G=\{0\}$, the only pair of elements is $(0,0)$, and $0\circ0=0\in G$. So $\circ$ is a 2-place operation on $G$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Associativity: both bracketings reduce to $0\circ0$.</p></div><div class="sp-formal"><p>$(0\circ0)\circ0=0\circ0=0=0\circ0=0\circ(0\circ0)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Commutativity: both arguments are the same element.</p></div><div class="sp-formal"><p>$0\circ0=0\circ0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Neutral element and inverse: $0$ does both jobs.</p></div><div class="sp-formal"><p>$0$ is neutral, since $0\circ0=0$. And $0$ is its own inverse, since $0\circ0=0$ is the neutral element. Hence $(G,\circ)$ is an abelian group (the trivial group). <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Forgetting the first check. “Operation on $G$” means the result lands in $G$ again; in every later task this is the step that can actually fail.</p></div>
+
+<!-- ============ Aufgabe 1 ============ -->
+<h2 id="a1">Aufgabe 1 · The rationals under multiplication</h2>
+<div class="box task"><p>(a) Show that $(\mathbb Q^+,\cdot)$ is an abelian group, where $\mathbb Q^+:=\{q\in\mathbb Q: q>0\}$.</p><p>(b) Show that $(\mathbb Q\setminus\{0\},\cdot)$ is an abelian group.</p></div>
+<p class="tsum"><strong>In short:</strong> Multiplication of positive (or non-zero) fractions: show it stays inside, and that $\frac ab$ has the inverse $\frac ba$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Associativity and commutativity come for free: they hold for all rationals, so in particular for the ones in our subset. What really has to be shown is that the subset is <em>closed</em> (a product of two positive numbers is positive; a product of two non-zero numbers is non-zero) and that the inverse $\frac ba$ of $\frac ab$ is again in the subset.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s3-neutral-elements-inverses-groups">Lesson 1, section 3</a>: an abelian group is a set $G$ with an operation $\circ$ that is (0) a 2-place operation on $G$ ($x\circ y\in G$), (1) associative, (2) commutative, with (3) a neutral element and (4) an inverse for every element. For (b): a product of non-zero numbers is non-zero (<a href="linalg-04.html#s4-calculation-rules-in-every-field">lesson 4, section 4</a>, calculation rules in a field).</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Closure: product of two positive rationals.</p></div><div class="sp-formal"><p><strong>(a)</strong> If $p,q\in\mathbb Q^+$, then $p\cdot q\in\mathbb Q$ and $p\cdot q>0$ as a product of positive numbers, so $p\cdot q\in\mathbb Q^+$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The laws that hold in all of $\mathbb Q$ hold in the subset.</p></div><div class="sp-formal"><p>For all $p,q,r\in\mathbb Q^+\subseteq\mathbb Q$: $(p\cdot q)\cdot r=p\cdot(q\cdot r)$ and $p\cdot q=q\cdot p$, since multiplication of rationals is associative and commutative.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Neutral element: $1$, and check it lies in the subset.</p></div><div class="sp-formal"><p>$1>0$, so $1\in\mathbb Q^+$, and $1\cdot q=q$ for all $q\in\mathbb Q^+$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inverse: flip the fraction, and check it is still positive.</p></div><div class="sp-formal"><p>Let $q\in\mathbb Q^+$, $q=\frac ab$ with positive $a,b\in\mathbb Z$. Put $q^{-1}:=\frac ba$. Then $q^{-1}\in\mathbb Q^+$ and $q\cdot q^{-1}=\frac ab\cdot\frac ba=1$. So $(\mathbb Q^+,\cdot)$ is an abelian group.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Closure is the only real step: suppose a product were $0$ and divide.</p></div><div class="sp-formal"><p><strong>(b)</strong> Let $p,q\in\mathbb Q\setminus\{0\}$. If $p\cdot q=0$, then, since $p\ne0$, $q=\frac1p\cdot(p\cdot q)=\frac1p\cdot0=0$, a contradiction. So $p\cdot q\in\mathbb Q\setminus\{0\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Everything else as in (a).</p></div><div class="sp-formal"><p>Associativity and commutativity carry over from $\mathbb Q$. $1\in\mathbb Q\setminus\{0\}$ is neutral. For $q=\frac ab$ with $a,b\in\mathbb Z\setminus\{0\}$, $q^{-1}:=\frac ba\in\mathbb Q\setminus\{0\}$ satisfies $q\cdot q^{-1}=1$. So $(\mathbb Q\setminus\{0\},\cdot)$ is an abelian group. <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Taking all of $\mathbb Q$: $(\mathbb Q,\cdot)$ is <em>not</em> a group, because $0$ has no inverse. That is exactly why (a) and (b) remove $0$ first. Also, in (a) writing $q^{-1}=\frac1q$ without saying why it is positive.</p></div>
+
+<!-- ============ Aufgabe 2 ============ -->
+<h2 id="a2">Aufgabe 2 · Vectors with integer entries</h2>
+<div class="box task"><p>Let $V$ be the set of all 4-tuples $(a,b,c,d)^T$ with $a,b,c,d\in\mathbb Z$, with entrywise addition $+_V$: $(a,b,c,d)^T+_V(a',b',c',d')^T:=(a+a',b+b',c+c',d+d')^T$. Show that $(V,+_V)$ is an abelian group.</p></div>
+<p class="tsum"><strong>In short:</strong> Add four integers at once. Every law is the law in $\mathbb Z$, entry by entry.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Two vectors are equal exactly when all four entries agree. So every rule we want for vectors can be checked entry by entry, where it is a rule we already know for integers. Write $v_i$ for the $i$-th entry; then $(v+_Vw)_i=v_i+w_i$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s3-neutral-elements-inverses-groups">Lesson 1, section 3</a>: an abelian group is a set $G$ with an operation $\circ$ that is (0) a 2-place operation on $G$ ($x\circ y\in G$), (1) associative, (2) commutative, with (3) a neutral element and (4) an inverse for every element.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Name the entries so that “entry by entry” can be written down.</p></div><div class="sp-formal"><p>For $v\in V$ write $v_1,\dots,v_4\in\mathbb Z$ for its entries. Two vectors $v,w$ are equal iff $v_i=w_i$ for $i=1,\dots,4$, and $(v+_Vw)_i=v_i+w_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Closure: sums of integers are integers.</p></div><div class="sp-formal"><p>For $v,w\in V$, every $v_i+w_i\in\mathbb Z$, so $v+_Vw\in V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Associativity: in each entry it is associativity in $\mathbb Z$.</p></div><div class="sp-formal"><p>For $u,v,w\in V$ and each $i$: $((u+_Vv)+_Vw)_i=(u_i+v_i)+w_i=u_i+(v_i+w_i)=(u+_V(v+_Vw))_i$. All four entries agree, so $(u+_Vv)+_Vw=u+_V(v+_Vw)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Commutativity, the same way.</p></div><div class="sp-formal"><p>$(v+_Vw)_i=v_i+w_i=w_i+v_i=(w+_Vv)_i$ for each $i$, so $v+_Vw=w+_Vv$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Neutral element: the zero vector, which lies in $V$.</p></div><div class="sp-formal"><p>$0_V:=(0,0,0,0)^T\in V$ and $(0_V+_Vv)_i=0+v_i=v_i$, so $0_V+_Vv=v$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inverse: negate every entry.</p></div><div class="sp-formal"><p>For $v\in V$ let $-v:=(-v_1,-v_2,-v_3,-v_4)^T\in V$. Then $(v+_V(-v))_i=v_i-v_i=0$, so $v+_V(-v)=0_V$. Hence $(V,+_V)$ is an abelian group. <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Writing “$(u+v)+w=u+(v+w)$ because addition is associative” for vectors. That is the statement to prove; the reason is associativity in $\mathbb Z$, used in each entry. Say which addition you mean.</p></div>
+
+<!-- ============ Aufgabe 3 ============ -->
+<h2 id="a3">Aufgabe 3 · Sequences and Fibonacci sequences</h2>
+<div class="box task"><p>Let $S$ be the set of all real sequences $(a_0,a_1,\dots)$, with termwise addition $(a_n)+_S(b_n):=(a_n+b_n)$. Let $\mathrm{Fib}\subseteq S$ be the set of sequences $(f_n)$ with $f_{i+2}=f_{i+1}+f_i$ for all $i\in\mathbb N$.</p><p>(a) Show that $(S,+_S)$ is an abelian group.</p><p>(b) Show that $(\mathrm{Fib},+_S)$ is an abelian group. <em>Official hint: with (a) it is enough to show that $+_S$ is an operation on $\mathrm{Fib}$.</em></p></div>
+<p class="tsum"><strong>In short:</strong> (a) is Aufgabe 2 with infinitely many entries. (b): a sum of two Fibonacci-type sequences obeys the same recursion.</p>
+<div class="story"><span class="label">The idea</span>
+<p>(a) works exactly like the integer vectors, term by term. For (b), $\mathrm{Fib}$ sits inside the group $S$. Laws like associativity hold for all of $S$, so they hold inside $\mathrm{Fib}$ for free. What can fail is staying inside: is the sum of two sequences with $f_{i+2}=f_{i+1}+f_i$ again such a sequence? And are the zero sequence and $-f$ in $\mathrm{Fib}$? This “check only closure, zero and inverses” pattern is the subgroup test, and it returns as the subspace test in lesson 5.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s3-neutral-elements-inverses-groups">Lesson 1, section 3</a>: an abelian group is a set $G$ with an operation $\circ$ that is (0) a 2-place operation on $G$ ($x\circ y\in G$), (1) associative, (2) commutative, with (3) a neutral element and (4) an inverse for every element. Subgroups: <a href="linalg-01.html#s5-subgroups-and-structure-preserving-maps">lesson 1, section 5</a>.</p></div></details>
+<details><summary>Hint 1</summary><div><p>For (b), let $h_n:=f_n+g_n$ and compute $h_{i+2}$ using the recursions for $f$ and for $g$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Term by term, like Aufgabe 2.</p></div><div class="sp-formal"><p><strong>(a)</strong> Two sequences are equal iff they agree in every term, and $(a_n)+_S(b_n)=(a_n+b_n)$. Sums of reals are real, so $+_S$ is an operation on $S$. For each $n$: $(a_n+b_n)+c_n=a_n+(b_n+c_n)$ and $a_n+b_n=b_n+a_n$, so $+_S$ is associative and commutative.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Neutral element and inverses, termwise.</p></div><div class="sp-formal"><p>The zero sequence $0=(0,0,\dots)$ lies in $S$ and $0+_S(a_n)=(a_n)$. For $(a_n)\in S$, also $(-a_n)\in S$ and $(a_n)+_S(-a_n)=(0)=0$. So $(S,+_S)$ is an abelian group.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Associativity and commutativity hold in all of $S$, hence in the subset. What is left: closure, zero, inverses.</p></div><div class="sp-formal"><p><strong>(b)</strong> $\mathrm{Fib}\subseteq S$, so by (a) $+_S$ is associative and commutative on $\mathrm{Fib}$. It remains to show that $+_S$ is an operation on $\mathrm{Fib}$ and that $0$ and the inverses lie in $\mathrm{Fib}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Closure: add the two recursions.</p></div><div class="sp-formal"><p>Let $(f_n),(g_n)\in\mathrm{Fib}$ and $h_n:=f_n+g_n$. For every $i\in\mathbb N$: $$\begin{aligned}h_{i+2}&amp;=f_{i+2}+g_{i+2}\\&amp;=(f_{i+1}+f_i)+(g_{i+1}+g_i)\\&amp;=(f_{i+1}+g_{i+1})+(f_i+g_i)\\&amp;=h_{i+1}+h_i,\end{aligned}$$ using associativity and commutativity in $\mathbb R$. So $(h_n)\in\mathrm{Fib}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zero sequence: $0=0+0$.</p></div><div class="sp-formal"><p>The zero sequence satisfies $0=0+0$ in every term, so $0\in\mathrm{Fib}$; it is neutral in $S$, hence in $\mathrm{Fib}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inverses: negate the recursion.</p></div><div class="sp-formal"><p>If $(f_n)\in\mathrm{Fib}$, then $-f_{i+2}=-(f_{i+1}+f_i)=(-f_{i+1})+(-f_i)$, so $(-f_n)\in\mathrm{Fib}$, and by (a) it is the inverse of $(f_n)$. Hence $(\mathrm{Fib},+_S)$ is an abelian group. <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Checking the recursion only for the first few terms, for example $h_2=h_1+h_0$. The recursion must hold for <em>every</em> $i$, so compute with a general $i$. And forgetting that $0$ and $-f$ must lie in $\mathrm{Fib}$ too, not only in $S$.</p></div>
+
+<!-- ============ Aufgabe 4 ============ -->
+<h2 id="a4">Aufgabe 4 · Sets under symmetric difference</h2>
+<div class="box task"><p>For a set $M$ let $\mathcal P(M)$ be the set of all subsets of $M$ (including $\emptyset$ and $M$). For $x,y\in\mathcal P(M)$ let $$\begin{aligned}x\mathbin\triangle y&amp;:=(x\setminus y)\cup(y\setminus x)\\&amp;=(x\cup y)\setminus(x\cap y).\end{aligned}$$ Show: if $M$ is non-empty, then $(\mathcal P(M),\triangle)$ is an abelian group.</p></div>
+<p class="tsum"><strong>In short:</strong> “In exactly one of the two sets” is an addition on subsets. The empty set is zero, every set is its own inverse, and associativity is the real work.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Think of $x\mathbin\triangle y$ as a light switch: an element $t$ is in $x\mathbin\triangle y$ when it is in <em>exactly one</em> of $x,y$. Applying a second $\triangle$ flips once more. So $t$ lies in $(x\mathbin\triangle y)\mathbin\triangle z$ exactly when it lies in an <em>odd</em> number of the three sets, and “odd number of $x,y,z$” does not care about order or brackets. That one sentence is the whole associativity proof; the rest of the task is quick.</p></div>
+<svg class="sv-fig" viewBox="0 0 300 150" width="300" height="150" role="img" aria-label="Three overlapping discs x, y, z. The regions in exactly one disc and the centre region in all three are shaded: that is (x △ y) △ z.">
+<defs><clipPath id="cx"><circle cx="115" cy="60" r="45"/></clipPath><clipPath id="cy"><circle cx="185" cy="60" r="45"/></clipPath><clipPath id="cz"><circle cx="150" cy="105" r="45"/></clipPath></defs>
+<g fill="var(--accent,#5b5bd6)" fill-opacity=".28" fill-rule="evenodd"><path d="M70,60a45,45 0 1,0 90,0a45,45 0 1,0 -90,0 M140,60a45,45 0 1,0 90,0a45,45 0 1,0 -90,0 M105,105a45,45 0 1,0 90,0a45,45 0 1,0 -90,0"/></g>
+<g fill="none" stroke="currentColor" stroke-opacity=".7"><circle cx="115" cy="60" r="45"/><circle cx="185" cy="60" r="45"/><circle cx="150" cy="105" r="45"/></g>
+<g font-size="14" fill="currentColor"><text x="70" y="25">x</text><text x="222" y="25">y</text><text x="196" y="145">z</text></g></svg>
+<p class="sv-cap">Shaded: the points that lie in an odd number of the sets $x,y,z$ (exactly one, or all three). That is $(x\mathbin\triangle y)\mathbin\triangle z$, and the picture is symmetric in $x,y,z$.</p>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s3-neutral-elements-inverses-groups">Lesson 1, section 3</a>: an abelian group is a set $G$ with an operation $\circ$ that is (0) a 2-place operation on $G$ ($x\circ y\in G$), (1) associative, (2) commutative, with (3) a neutral element and (4) an inverse for every element. Sets, difference, union, and equality of sets by “same elements” (<a href="linalg-03.html#s2-sets">lesson 3, section 2</a>).</p></div></details>
+<details><summary>Hint 1</summary><div><p>First note: $t\in x\mathbin\triangle y$ iff $t$ lies in exactly one of $x$ and $y$. Then the neutral element and the inverses are one line each. Which set changes nothing? What is $x\mathbin\triangle x$?</p></div></details>
+<details><summary>Hint 2</summary><div><p>For associativity, fix $t\in M$ and split into two cases: $t\in z$ and $t\notin z$. In each case, when is $t\in(x\mathbin\triangle y)\mathbin\triangle z$?</p></div></details>
+<details><summary>Hint 3</summary><div><p>Show: $t\in(x\mathbin\triangle y)\mathbin\triangle z$ iff $t$ lies in an odd number of the sets $x,y,z$. The right-hand side does not depend on the order, so with commutativity, $x\mathbin\triangle(y\mathbin\triangle z)=(y\mathbin\triangle z)\mathbin\triangle x$ has the same elements.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Closure: both differences lie inside $x\cup y\subseteq M$.</p></div><div class="sp-formal"><p>For $x,y\in\mathcal P(M)$: $x\mathbin\triangle y=(x\setminus y)\cup(y\setminus x)\subseteq x\cup y\subseteq M$, so $x\mathbin\triangle y\in\mathcal P(M)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The working tool: membership in $x\mathbin\triangle y$ in words. The two parts cannot overlap.</p></div><div class="sp-formal"><p>For all $x,y\in\mathcal P(M)$ and $t\in M$: $$\begin{aligned}&amp;t\in x\mathbin\triangle y\iff\\&amp;t\text{ lies in exactly one of }x,y.\quad(*)\end{aligned}$$ Indeed $t\in x\setminus y$ means $t\in x,t\notin y$, and $t\in y\setminus x$ means $t\in y,t\notin x$; these cases exclude each other.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Commutativity: union is commutative.</p></div><div class="sp-formal"><p>$x\mathbin\triangle y=(x\setminus y)\cup(y\setminus x)=(y\setminus x)\cup(x\setminus y)=y\mathbin\triangle x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Neutral element: the empty set changes nothing.</p></div><div class="sp-formal"><p>$\emptyset\in\mathcal P(M)$ and $\emptyset\mathbin\triangle x=(\emptyset\setminus x)\cup(x\setminus\emptyset)=\emptyset\cup x=x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inverses: every set cancels itself.</p></div><div class="sp-formal"><p>$x\mathbin\triangle x=(x\setminus x)\cup(x\setminus x)=\emptyset$, so each $x$ is its own inverse.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Associativity, step 1: describe $(x\mathbin\triangle y)\mathbin\triangle z$ by counting. Case $t\in z$.</p></div><div class="sp-formal"><p>Claim: for all $x,y,z\in\mathcal P(M)$ and $t\in M$, $$\begin{aligned}&amp;t\in(x\mathbin\triangle y)\mathbin\triangle z\iff\\&amp;t\text{ is in an odd number}\\&amp;\text{of the sets }x,y,z.\quad(**)\end{aligned}$$ If $t\in z$: by $(*)$, $t\in(x\mathbin\triangle y)\mathbin\triangle z$ iff $t\notin x\mathbin\triangle y$, i.e. iff $t$ lies in none or both of $x,y$. Together with $t\in z$: in exactly one or in all three sets.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Case $t\notin z$.</p></div><div class="sp-formal"><p>If $t\notin z$: by $(*)$, $t\in(x\mathbin\triangle y)\mathbin\triangle z$ iff $t\in x\mathbin\triangle y$, i.e. iff $t$ lies in exactly one of $x,y$. Together with $t\notin z$: in exactly one of the three sets. In both cases this means an odd number, which proves $(**)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Step 2: the count does not care about order. Use commutativity to move $x$ to the end, then $(**)$ for $y,z,x$.</p></div><div class="sp-formal"><p>For every $t\in M$: $$\begin{aligned}&amp;t\in x\mathbin\triangle(y\mathbin\triangle z)\\\iff&amp;t\in(y\mathbin\triangle z)\mathbin\triangle x\\\iff&amp;t\text{ is in an odd number}\\&amp;\text{of the sets }y,z,x\\\iff&amp;t\in(x\mathbin\triangle y)\mathbin\triangle z.\end{aligned}$$ Both sets are subsets of $M$ with the same elements, so $(x\mathbin\triangle y)\mathbin\triangle z=x\mathbin\triangle(y\mathbin\triangle z)$. Hence $(\mathcal P(M),\triangle)$ is an abelian group. <span class="qed">∎</span></p></div></div>
+</div>
+<details><summary>Another way: a membership table</summary><div><p>For a fixed $t$ there are only $2^3=8$ possibilities for ($t\in x$?, $t\in y$?, $t\in z$?). Write 1 for “in” and 0 for “out”; then membership in $x\mathbin\triangle y$ is addition in $\mathbb Z_2$. A table with 8 rows shows that both bracketings give the same column. This is the same argument as $(**)$, written as a truth table (<a href="linalg-02.html#s4-logical-equivalence">lesson 2, section 4</a>).</p></div></details>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Trying to prove associativity by drawing one Venn diagram and saying “see”. A picture is a good guide, but the proof must say for every element $t$ why it is on both sides. The case split $t\in z$ / $t\notin z$ does that.</p></div>
+
+<!-- ============ Aufgabe 5 ============ -->
+<h2 id="a5">Aufgabe 5 · The clock $\mathbb Z_m$</h2>
+<div class="box task"><p>For a positive integer $m$ let $\mathbb Z_m:=\{\bar0,\bar1,\dots,\overline{m-1}\}$. For $\bar k,\bar l\in\mathbb Z_m$ define $\bar k+_m\bar l:=\bar a$, where $0\le a\lt m$ and there is a non-negative $q\in\mathbb Z$ with $m\cdot q+a=k+l$.</p><p>(a) Show that for any two $\bar k,\bar l\in\mathbb Z_m$ there is exactly one $a\in\mathbb Z$ with $\bar k+_m\bar l=\bar a$.</p><p>(b) Show that $(\mathbb Z_m,+_m)$ is an abelian group for every positive $m$.</p></div>
+<p class="tsum"><strong>In short:</strong> Addition on a clock with $m$ hours: add, then take the remainder. (a) the remainder exists and is unique; (b) the five checks.</p>
+<div class="story"><span class="label">The idea</span>
+<p>On a clock with $m$ hours you add and then go round once if you passed $m$. Part (a) makes sure that “the remainder” is one definite number, so $+_m$ really is an operation. For (b) the trick is a small helper: write $\rho(n)$ for the remainder of $n$ when divided by $m$. Then $\bar k+_m\bar l=\overline{\rho(k+l)}$, and the one fact that does all the work is <em>“you may take the remainder early”</em>: $\rho(r+s)=\rho(\rho(r)+s)$.</p></div>
+<svg class="sv-fig" viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="A clock with 5 hours labelled 0 to 4. An arrow from 3 goes 4 steps forward, passing 0, and lands on 2: 3 + 4 = 2 in Z_5.">
+<circle cx="80" cy="80" r="56" fill="none" stroke="currentColor" stroke-opacity=".5"/>
+<g fill="currentColor" font-size="14" text-anchor="middle"><text x="80" y="18">0</text><text x="141" y="64">1</text><text x="118" y="140">2</text><text x="42" y="140">3</text><text x="19" y="64">4</text></g>
+<g fill="var(--accent,#5b5bd6)"><circle cx="80" cy="24" r="4"/><circle cx="133" cy="63" r="4"/><circle cx="113" cy="125" r="5"/><circle cx="47" cy="125" r="5"/><circle cx="27" cy="63" r="4"/></g>
+<path d="M44,116 C10,80 30,30 80,30 C130,30 150,80 118,118" fill="none" stroke="var(--accent,#5b5bd6)" stroke-width="2" marker-end="url(#ar5)"/>
+<defs><marker id="ar5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="var(--accent,#5b5bd6)"/></marker></defs></svg>
+<p class="sv-cap">In $\mathbb Z_5$: $\bar3+_5\bar4=\bar2$, because $3+4=7=5\cdot1+2$.</p>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s4-the-clock-residue-classes">Lesson 1, section 4</a> (the clock, residue classes). <a href="linalg-01.html#s3-neutral-elements-inverses-groups">Lesson 1, section 3</a>: an abelian group is a set $G$ with an operation $\circ$ that is (0) a 2-place operation on $G$ ($x\circ y\in G$), (1) associative, (2) commutative, with (3) a neutral element and (4) an inverse for every element. For uniqueness: a multiple of $m$ that lies between $0$ and $m-1$ is $0$.</p></div></details>
+<details><summary>Hint 1</summary><div><p>(a) Existence: with $0\le k,l\le m-1$ you have $0\le k+l\le2m-2$. So you need to go round at most once: try $q=0$ and $q=1$. Uniqueness: if $mq+a=mq'+a'$, what is $a-a'$?</p></div></details>
+<details><summary>Hint 2</summary><div><p>(b) Define $\rho(n)$ as the unique remainder of $n\ge0$ (the proof of (a) works for any $n\ge0$). Prove the helper $\rho(r+s)=\rho(\rho(r)+s)$: write $r=mq+\rho(r)$ and $\rho(r)+s=mq'+\rho(\rho(r)+s)$, add, and use uniqueness.</p></div></details>
+<details><summary>Hint 3</summary><div><p>Associativity: $(\bar k+_m\bar l)+_m\bar n=\overline{\rho(\rho(k+l)+n)}=\overline{\rho((k+l)+n)}$, and the same for the other bracketing. Inverse of $\bar k\ne\bar0$: $\overline{m-k}$, since $\rho(m)=0$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Pick the representatives $0\le k,l\lt m$. Then the sum is between $0$ and $2m-2$.</p></div><div class="sp-formal"><p><strong>(a)</strong> Let $\bar k,\bar l\in\mathbb Z_m$ with $0\le k,l\lt m$. We show there is exactly one $a\in\mathbb Z$ with $0\le a\lt m$ and $mq+a=k+l$ for some $q\ge0$. Since $0\le k,l\le m-1$, $0\le k+l\le2m-2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Existence: no wrap-around or one wrap-around.</p></div><div class="sp-formal"><p>If $k+l\lt m$: take $q:=0$, $a:=k+l$. If $k+l\ge m$: take $q:=1$, $a:=k+l-m$; then $0\le a\le m-2\lt m$ and $m\cdot1+a=k+l$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Uniqueness: two remainders differ by a multiple of $m$, which must be $0$.</p></div><div class="sp-formal"><p>Let $mq+a=k+l=mq'+a'$ with $0\le a,a'\lt m$ and $q,q'\ge0$; without loss of generality $a\ge a'$. Then $a-a'=m(q'-q)$ is a multiple of $m$ with $0\le a-a'\lt m$, so $a-a'=0$. Then $mq=mq'$ and, since $m>0$, $q=q'$. So $+_m$ is a well-defined operation on $\mathbb Z_m$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Name the remainder. The proof of (a) works for any $n\ge0$.</p></div><div class="sp-formal"><p><strong>(b)</strong> For every $n\in\mathbb Z$, $n\ge0$, there is exactly one $a$ with $0\le a\lt m$ and $mq+a=n$ for some $q\ge0$ (existence: subtract $m$ until the result is below $m$; uniqueness as in (a)). Write $\rho(n):=a$. For $0\le n\lt m$, $\rho(n)=n$. Then $\bar k+_m\bar l=\overline{\rho(k+l)}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The helper: taking the remainder early does not change the final remainder.</p></div><div class="sp-formal"><p><strong>Helper.</strong> For all $r,s\ge0$: $\rho(r+s)=\rho(\rho(r)+s)$. Proof: $r=mq+\rho(r)$ and $\rho(r)+s=mq'+\rho(\rho(r)+s)$ with $q,q'\ge0$. Adding, $r+s=m(q+q')+\rho(\rho(r)+s)$ with $q+q'\ge0$ and $0\le\rho(\rho(r)+s)\lt m$. By uniqueness, $\rho(r+s)=\rho(\rho(r)+s)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Associativity: both bracketings become “remainder of $k+l+n$”.</p></div><div class="sp-formal"><p>For $0\le k,l,n\lt m$, by the helper and commutativity in $\mathbb Z$: $$\begin{aligned}(\bar k+_m\bar l)+_m\bar n&amp;=\overline{\rho(\rho(k+l)+n)}\\&amp;=\overline{\rho((k+l)+n)},\\ \bar k+_m(\bar l+_m\bar n)&amp;=\overline{\rho(\rho(l+n)+k)}\\&amp;=\overline{\rho((l+n)+k)}.\end{aligned}$$ Since $(k+l)+n=(l+n)+k$ in $\mathbb Z$, the two agree.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Commutativity and the neutral element come from $\mathbb Z$.</p></div><div class="sp-formal"><p>$\bar k+_m\bar l=\overline{\rho(k+l)}=\overline{\rho(l+k)}=\bar l+_m\bar k$. And $\bar0+_m\bar k=\overline{\rho(k)}=\bar k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Inverses: $\bar0$ is its own inverse; otherwise go the rest of the way round, $m-k$.</p></div><div class="sp-formal"><p>$\bar0+_m\bar0=\bar0$. For $1\le k\le m-1$ put $a:=m-k$; then $1\le a\le m-1$, so $\bar a\in\mathbb Z_m$, and since $m=m\cdot1+0$, $\rho(m)=0$, so $\bar k+_m\bar a=\overline{\rho(m)}=\bar0$. Hence $(\mathbb Z_m,+_m)$ is an abelian group. <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Using the representative $\overline{m}$ or negative numbers: in this definition the elements are $\bar0,\dots,\overline{m-1}$ and the remainder must satisfy $0\le a\lt m$. So the inverse of $\bar k$ is $\overline{m-k}$, not $\overline{-k}$. And in (a), proving only existence: “exactly one” always means existence <em>and</em> uniqueness.</p></div>
+<nav class="site foot" aria-label="Sheet navigation">
+<a href="linalg.html#serien">Linear Algebra home</a>
+<a href="serie-l01.html">Serie 1: Rings and fields →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

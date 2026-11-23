@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Serie 5 explained · Linear Algebra I">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=la1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serie 5 explained · Linear Algebra I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=la1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.task{border-left:4px solid var(--accent,#5b5bd6)}.task>p:first-child{margin-top:0}
+.sv-fig{display:block;margin:.7rem auto;max-width:100%;height:auto}.sv-cap{text-align:center;font-size:.9rem;opacity:.85;margin-top:0}
+details.sol .sp{margin:.6rem 0}.trapbox{margin-top:.8rem}.tsum{font-size:.95rem;opacity:.9;margin:.2rem 0 0}
+.tbl{border-collapse:collapse;margin:.6rem 0;font-size:.95rem}.tbl th,.tbl td{border:1px solid color-mix(in srgb,currentColor 25%,transparent);padding:.3rem .55rem;text-align:center}
+.tblwrap{overflow-x:auto;max-width:100%}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Serien explained</span>
+<h1>Serie 5, explained: Well-definedness and functionals</h1>
+<p class="lead">An equivalence relation whose classes cannot be added, the graph and the kernel of a linear functional, and a functional on $\mathbb F_{23}^2$ computed from two values. The common thread: what a definition through representatives needs, and how linearity lets two values determine everything.</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do Aufgabe 26 only: write $(1,0)$ and $(0,1)$ as combinations of the two given vectors, then compute $f(11,3)$ in $\mathbb F_{23}$. That counts. Next time, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can (1) check reflexive, symmetric, transitive for a concrete relation; (2) show that an operation on classes is <em>not</em> well defined with one explicit pair of representatives; (3) show that the graph and the kernel of a functional are subspaces and find bases; (4) compute a functional on any vector from its values on a basis, also over $\mathbb F_p$.</dd></div>
+<div><dt>Time</dt><dd>About 80 minutes: 20 for Aufgabe 24, 40 for Aufgabe 25, 20 for Aufgabe 26.</dd></div>
+<div><dt>Lessons</dt><dd><a href="linalg-03.html#s8-equivalence-relations">Lesson 3, section 8</a> (equivalence relations); <a href="linalg-09.html#s4-the-quotient-space">lesson 9, section 4</a> (well-definedness, quotient spaces); <a href="linalg-10.html#s2-linear-functionals">lesson 10, sections 2–3</a> (functionals, determined by a basis). Lesson 9 uses Aufgabe 24 as an exercise, lesson 10 uses 25 and 26.</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong></p>
+<ol>
+<li>Read the task and try it on paper for 10 minutes.</li>
+<li>Stuck on where to start? Read <em>The idea</em> and open <em>You need</em>: it links the lesson section with the theory.</li>
+<li>Hard tasks have hints. Open Hint 1, try again, then Hint 2, then Hint 3; each gives away a little more. Easy tasks go straight to the solution.</li>
+<li>Only then open the solution. The left column says <em>why</em> each step is there, the right column is what you write.</li>
+</ol>
+<p><strong>Source.</strong> The solutions follow Prof. Halbeisen's official Musterlösung to Serie 5 (HS26), translated and explained by StudyHub; where StudyHub adds a different route or a correction, it says so. The official solution numbers results as in the lecture; here every result is named in words. With the <a href="connect.html">StudyHub connector</a>, your own AI can check your attempt before you look.</p>
+<p>Recommended order: the tasks as numbered. Other sheets: <a href="serie-l00.html">0</a> · <a href="serie-l01.html">1</a> · <a href="serie-l02.html">2</a> · <a href="serie-l03.html">3</a> · <a href="serie-l04.html">4</a> · <strong>5</strong> · <a href="serie-l06.html">6</a></p></div>
+<p class="toc"><strong>Tasks:</strong> <a href="#a24">24 A sum that is not well defined</a> · <a href="#a25">25 Graph and kernel of a functional</a> · <a href="#a26">26 A functional on $\mathbb F_{23}^2$</a></p>
+
+<!-- ============ Aufgabe 24 ============ -->
+<h2 id="a24">Aufgabe 24 · Lines through the origin cannot be added</h2>
+<div class="box task"><p>On $V:=\mathbb R^2$ define $x\sim y:\iff\exists\lambda\in\mathbb R\setminus\{0\}\ (\lambda x=y)$, and on $V/\!\sim$ define $[a]_\sim+_\sim[b]_\sim:=[a+b]_\sim$.</p><p>(a) Show that $\sim$ is an equivalence relation. (b) Show that $+_\sim$ is not well defined.</p></div>
+<p class="tsum"><strong>In short:</strong> Classes are the punctured lines through $0$ (and $\{0\}$). Adding representatives depends on which ones you pick: $[(1,0)]=[(-1,0)]$ but $(1,0)+(1,0)$ and $(1,0)+(-1,0)$ land in different classes.</p>
+<div class="story"><span class="label">The idea</span>
+<p>$x\sim y$ means $y$ is a non-zero multiple of $x$: same line through the origin. (a) is three short checks using $1$, $\lambda^{-1}$ and $\mu\lambda$. For (b): an operation on classes defined through representatives is well defined only if every choice of representatives gives the same class. So one counterexample suffices. The class of $(1,0)$ also contains $(-1,0)$, and adding $(1,0)$ to each gives $(2,0)$ and $(0,0)$, which are in different classes.</p></div>
+<svg class="sv-fig" viewBox="0 0 240 110" width="240" height="110" role="img" aria-label="The x-axis without the origin is one class. (1,0) and (-1,0) are in the same class; adding (1,0) to each gives (2,0) and (0,0), which are in different classes.">
+<line x1="10" y1="55" x2="230" y2="55" stroke="var(--accent,#5b5bd6)" stroke-width="3"/>
+<circle cx="120" cy="55" r="5" fill="var(--bg,#fff)" stroke="currentColor"/>
+<g fill="currentColor"><circle cx="160" cy="55" r="4"/><circle cx="80" cy="55" r="4"/><circle cx="200" cy="55" r="4"/></g>
+<g font-size="11" fill="currentColor" text-anchor="middle"><text x="160" y="78">(1,0)</text><text x="80" y="78">(−1,0)</text><text x="200" y="40">(2,0)</text><text x="120" y="96">(0,0): its own class</text></g></svg>
+<p class="sv-cap">The class $[(1,0)]$ is the $x$-axis without the origin. $(1,0)+(1,0)=(2,0)$ stays on it, $(1,0)+(-1,0)=(0,0)$ does not.</p>
+<details><summary>You need</summary><div><p><a href="linalg-03.html#s8-equivalence-relations">Lesson 3, section 8</a> (equivalence relations, classes). <a href="linalg-09.html#s4-the-quotient-space">Lesson 9, section 4</a> (well-definedness: the result must not depend on the representatives).</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Reflexive: $\lambda=1$.</p></div><div class="sp-formal"><p><strong>(a)</strong> $1\cdot x=x$ with $1\ne0$, so $x\sim x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Symmetric: undo the scaling with $\lambda^{-1}$.</p></div><div class="sp-formal"><p>If $\lambda x=y$ with $\lambda\ne0$, then $\lambda^{-1}\ne0$ and $\lambda^{-1}y=\lambda^{-1}(\lambda x)=x$, so $y\sim x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Transitive: compose the scalings; a product of non-zero reals is non-zero.</p></div><div class="sp-formal"><p>If $\lambda x=y$ and $\mu y=z$ with $\lambda,\mu\ne0$, then $\mu\lambda\ne0$ and $(\mu\lambda)x=\mu(\lambda x)=z$, so $x\sim z$. Hence $\sim$ is an equivalence relation.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Say what well defined would mean, then break it with one example.</p></div><div class="sp-formal"><p><strong>(b)</strong> $+_\sim$ is well defined iff $a\sim a'$ and $b\sim b'$ always imply $[a+b]=[a'+b']$. Take $a=b=(1,0)$ and $b'=(-1,0)$. Then $b\sim b'$, since $(-1)\cdot b=b'$, so $[b]=[b']$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The two representatives give different classes: nothing non-zero times $(2,0)$ is $(0,0)$.</p></div><div class="sp-formal"><p>But $[a+b]=[(2,0)]$ and $[a+b']=[(0,0)]$, and $(0,0)\not\sim(2,0)$, since $\lambda(2,0)=(2\lambda,0)\ne(0,0)$ for $\lambda\ne0$. So $[(1,0)]+_\sim[(1,0)]$ would be both $[(2,0)]$ and $[(0,0)]$: $+_\sim$ is not well defined. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> $[(0,0)]=\{(0,0)\}$, and for $x\ne0$, $[x]$ is the line through $0$ and $x$ without the origin; in particular $[x]=[-x]$. Compare the quotient space $V/U$ of lesson 9, where the classes $x+U$ <em>can</em> be added.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Trying to show “not well defined” with a general argument. A single concrete pair of representatives with different results is the whole proof; a general argument is neither needed nor easier.</p></div>
+
+<!-- ============ Aufgabe 25 ============ -->
+<h2 id="a25">Aufgabe 25 · The graph and the kernel of a functional</h2>
+<div class="box task"><p>Let $f:\mathbb R^n\to\mathbb R$ be a functional other than the zero functional.</p><p>(a) Show that $U_f:=\{(\alpha_1,\dots,\alpha_n,f(\alpha_1,\dots,\alpha_n)):\alpha_i\in\mathbb R\}\subseteq\mathbb R^{n+1}$ is a non-trivial subspace. (b) Determine $\dim U_f$. (c) Find a basis of $U_f$. (d) Let $N_f:=\{x\in\mathbb R^n:f(x)=0\}$. Show: for $n\ge2$, $N_f$ is a non-trivial subspace of $\mathbb R^n$. (e) Let $f:\mathbb R^3\to\mathbb R$ with $f(1,0,0)=1$, $f(0,1,0)=-1$, $f(0,0,1)=2$. Find a basis of $N_f$.</p></div>
+<p class="tsum"><strong>In short:</strong> $U_f$ is the graph of $f$: one free point $x\in\mathbb R^n$ gives one point $(x,f(x))$, so $\dim U_f=n$. $N_f$ is the kernel. In (e), $f(x)=x_1-x_2+2x_3$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Write $c_i:=f(e_i)$; then $f(x)=c_1\alpha_1+\dots+c_n\alpha_n$, so $f$ is “a row of numbers”. $U_f$ is the graph of $f$, a copy of $\mathbb R^n$ sitting tilted in $\mathbb R^{n+1}$: the vectors $(e_i,c_i)$ are a basis, so $\dim U_f=n$. $N_f$ is where $f$ vanishes, a hyperplane: not everything (since $f\ne0$), not just $0$ when $n\ge2$ (there is room to cancel). Linearity is all you need in each step.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-10.html#s2-linear-functionals">Lesson 10, section 2</a>: a functional $f:V\to K$ is a linear map: $f(x+y)=f(x)+f(y)$ and $f(\lambda x)=\lambda f(x)$. Then $f(0)=0$ and $f(\sum\alpha_ie_i)=\sum\alpha_if(e_i)$. The subspace test (<a href="linalg-05.html#s6-subspaces">lesson 5, section 6</a>). <a href="linalg-10.html#s3-a-functional-is-determined-by">Lesson 10, section 3</a> (a functional is determined by its values on a basis).</p></div></details>
+<details><summary>Hint 1</summary><div><p>Write $c_i:=f(e_i)$ and $f(x)=\sum c_i\alpha_i$. Then $U_f=\{(x,f(x)):x\in\mathbb R^n\}$. For (a) use linearity: $(x,f(x))+(y,f(y))=(x+y,f(x+y))$. Non-trivial: is $(0,\dots,0,1)$ in $U_f$?</p></div></details>
+<details><summary>Hint 2</summary><div><p>(c) Try $u_i:=(e_i,c_i)$, $i=1,\dots,n$. (d) For $N_f\ne\{0\}$: pick $j$ with $c_j\ne0$ and $i\ne j$, and look at $z:=c_je_i-c_ie_j$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Set up: a functional on $\mathbb R^n$ is given by its values on the standard basis.</p></div><div class="sp-formal"><p>Let $c_i:=f(e_i)$. For $x=(\alpha_1,\dots,\alpha_n)=\sum\alpha_ie_i$: $f(x)=\sum\alpha_if(e_i)=\sum c_i\alpha_i$. $(*)$ Since $f\ne0$, some $c_j\ne0$. Write $(x,t)\in\mathbb R^{n+1}$; then $U_f=\{(x,f(x)):x\in\mathbb R^n\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Subspace test, using linearity of $f$.</p></div><div class="sp-formal"><p><strong>(a)</strong> $(0,f(0))=(0,0)\in U_f$. $(x,f(x))+(y,f(y))=(x+y,f(x+y))\in U_f$ and $\lambda(x,f(x))=(\lambda x,f(\lambda x))\in U_f$. So $U_f$ is a subspace.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Non-trivial: it contains a non-zero vector, and misses $(0,\dots,0,1)$.</p></div><div class="sp-formal"><p>$(e_1,c_1)\in U_f$ is non-zero. And $(0,\dots,0,1)\notin U_f$: the only vector of $U_f$ with first part $0$ is $(0,f(0))=(0,0)$. So $\{0\}\ne U_f\ne\mathbb R^{n+1}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(c) The graph points over the standard basis span (by $(*)$) and are independent (look at the first $n$ coordinates).</p></div><div class="sp-formal"><p><strong>(c)</strong> Let $u_i:=(e_i,c_i)\in U_f$. For $(x,f(x))\in U_f$: $\sum\alpha_iu_i=(\sum\alpha_ie_i,\sum\alpha_ic_i)=(x,f(x))$ by $(*)$, so they span. If $\sum\lambda_iu_i=0$, the first $n$ coordinates give $(\lambda_1,\dots,\lambda_n)=0$. So $\{(e_1,c_1),\dots,(e_n,c_n)\}$ is a basis of $U_f$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Count the basis.</p></div><div class="sp-formal"><p><strong>(b)</strong> Hence $\dim U_f=n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(d) Subspace by linearity; not everything since $f\ne0$.</p></div><div class="sp-formal"><p><strong>(d)</strong> $f(0)=0$, and $f(x)=f(y)=0$ gives $f(x+y)=0$, $f(\lambda x)=0$; so $N_f$ is a subspace. Some $x$ has $f(x)\ne0$, so $N_f\ne\mathbb R^n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Not $\{0\}$ for $n\ge2$: two coordinates can cancel.</p></div><div class="sp-formal"><p>Let $c_j\ne0$ and, since $n\ge2$, $i\ne j$. Put $z:=c_je_i-c_ie_j$. Its $i$-th coordinate is $c_j\ne0$, so $z\ne0$, and $f(z)=c_jc_i-c_ic_j=0$. So $N_f\ne\{0\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(e) Read off $f$, solve for $x_1$, take the free variables.</p></div><div class="sp-formal"><p><strong>(e)</strong> By $(*)$, $f(x_1,x_2,x_3)=x_1-x_2+2x_3$. So $x\in N_f\iff x_1=x_2-2x_3$, and $x=x_2(1,1,0)+x_3(-2,0,1)$. Both lie in $N_f$ ($1-1=0$, $-2+2=0$), and $\lambda(1,1,0)+\mu(-2,0,1)=0$ forces $\lambda=\mu=0$ (second and third coordinates). Basis: $\{(1,1,0),(-2,0,1)\}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> $N_f$ is the kernel of $f$. By rank–nullity (lesson 15), $\dim N_f=n-1$ for every non-zero functional.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>In (d), forgetting $n\ge2$: for $n=1$, $f(x)=c_1x$ with $c_1\ne0$ has $N_f=\{0\}$, which is trivial. And in (a), checking only closure: “non-trivial” needs both a non-zero vector in $U_f$ and a vector outside it.</p></div>
+
+<!-- ============ Aufgabe 26 ============ -->
+<h2 id="a26">Aufgabe 26 · A functional over $\mathbb F_{23}$</h2>
+<div class="box task"><p>Let $f:\mathbb F_{23}^2\to\mathbb F_{23}$ be the functional with $f(22,2)=7$ and $f(1,22)=20$. Compute $f(11,3)$. <em>Official hint: write $(1,0)$ and $(0,1)$ as linear combinations of $(22,2)$ and $(1,22)$, and compute $f(1,0)$ and $f(0,1)$ first.</em></p></div>
+<p class="tsum"><strong>In short:</strong> In $\mathbb F_{23}$, $22=-1$ and $20=-3$. Then $(1,0)=x_1+2x_2$, $(0,1)=x_1+x_2$, so $f(1,0)=1$, $f(0,1)=4$, and $f(11,3)=11+12=23=0$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>A functional is fixed by its values on a basis. You know it on the basis $x_1=(22,2)$, $x_2=(1,22)$, but to evaluate at $(11,3)$ it is easiest to know it on the standard basis. So translate: express $e_1,e_2$ in terms of $x_1,x_2$ (a $2\times2$ system over $\mathbb F_{23}$), apply linearity, and finish with $f(11,3)=11f(e_1)+3f(e_2)$. Writing $22$ as $-1$ and $20$ as $-3$ makes the arithmetic small.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-10.html#s2-linear-functionals">Lesson 10, section 2</a>: a functional $f:V\to K$ is a linear map: $f(x+y)=f(x)+f(y)$ and $f(\lambda x)=\lambda f(x)$. Then $f(0)=0$ and $f(\sum\alpha_ie_i)=\sum\alpha_if(e_i)$. Arithmetic in $\mathbb F_p=\mathbb Z_p$ (<a href="serie-l01.html#a8">Serie 1, Aufgabe 8</a>); <a href="linalg-10.html#s3-a-functional-is-determined-by">lesson 10, section 3</a>.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Rename the vectors and use $22=-1$, $20=-3$ in $\mathbb F_{23}$.</p></div><div class="sp-formal"><p>Let $x_1:=(22,2)=(-1,2)$, $x_2:=(1,22)=(1,-1)$, $e_1=(1,0)$, $e_2=(0,1)$. Then $f(x_1)=7$, $f(x_2)=20=-3$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Solve $e_1=\lambda x_1+\mu x_2$: two equations, add them.</p></div><div class="sp-formal"><p>$e_1=\lambda x_1+\mu x_2$ means $-\lambda+\mu=1$, $2\lambda-\mu=0$; adding gives $\lambda=1$, then $\mu=2$. So $e_1=x_1+2x_2$. Likewise $-\lambda+\mu=0$, $2\lambda-\mu=1$ give $\lambda=\mu=1$: $e_2=x_1+x_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Apply linearity.</p></div><div class="sp-formal"><p>$f(e_1)=f(x_1)+2f(x_2)=7+2\cdot(-3)=1$ and $f(e_2)=f(x_1)+f(x_2)=7-3=4$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Evaluate and reduce mod 23.</p></div><div class="sp-formal"><p>$f(11,3)=11f(e_1)+3f(e_2)=11+12=23=0$ in $\mathbb F_{23}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Check:</strong> $x_1+2x_2=(-1+2,2-2)=(1,0)$ and $x_1+x_2=(0,1)$. Also $f(x_1)=-1\cdot1+2\cdot4=7$ ✓ and $f(x_2)=1-4=-3=20$ ✓.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Computing over $\mathbb R$ and reducing only at the end with fractions: in $\mathbb F_{23}$ division means multiplying by an inverse mod 23. Here no division is needed if you write $22=-1$; with other numbers, find inverses mod 23 first.</p></div>
+<nav class="site foot" aria-label="Sheet navigation">
+<a href="serie-l04.html">← Serie 4: Subspaces, affine spaces, Latin squares</a>
+<a href="linalg.html#serien">Linear Algebra home</a>
+<a href="serie-l06.html">Serie 6: The dual space and Fibonacci →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Serie 6 explained · Linear Algebra I">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=la1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serie 6 explained · Linear Algebra I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=la1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.task{border-left:4px solid var(--accent,#5b5bd6)}.task>p:first-child{margin-top:0}
+.sv-fig{display:block;margin:.7rem auto;max-width:100%;height:auto}.sv-cap{text-align:center;font-size:.9rem;opacity:.85;margin-top:0}
+details.sol .sp{margin:.6rem 0}.trapbox{margin-top:.8rem}.tsum{font-size:.95rem;opacity:.9;margin:.2rem 0 0}
+.tbl{border-collapse:collapse;margin:.6rem 0;font-size:.95rem}.tbl th,.tbl td{border:1px solid color-mix(in srgb,currentColor 25%,transparent);padding:.3rem .55rem;text-align:center}
+.tblwrap{overflow-x:auto;max-width:100%}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Serien explained</span>
+<h1>Serie 6, explained: The dual space and Fibonacci</h1>
+<p class="lead">Two infinite-dimensional spaces where the “dual basis” fails to be a basis of the dual space, and the Fibonacci recursion turned into a matrix whose special vectors give the closed formula. The point: in finite dimension $V^*$ looks like $V$; in infinite dimension it is much bigger.</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do Aufgabe 29 (b) only: solve $M\binom1x=\lambda\binom1x$ for $M=\begin{pmatrix}0&amp;1\\1&amp;1\end{pmatrix}$. That counts. Next time, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can (1) find a basis of the space of finitely supported sequences, and of step functions; (2) prove that a given map (a parity count, an integral) is a functional; (3) explain why the functionals $e_i^*$ span only functionals that vanish on all but finitely many basis vectors, and give a functional outside their span; (4) turn the Fibonacci recursion into $M^n\binom ab$ and find the vectors that $M$ only stretches.</dd></div>
+<div><dt>Time</dt><dd>About 110 minutes: 35 for Aufgabe 27, 45 for Aufgabe 28, 30 for Aufgabe 29.</dd></div>
+<div><dt>Lessons</dt><dd><a href="linalg-10.html#s4-the-dual-space">Lesson 10, sections 4–7</a> (dual space, dual basis, infinite dimension); <a href="linalg-11.html#s6-coordinates-and-the-matrix">lesson 11, section 6</a> (the matrix of a map); <a href="linalg-21.html#s2-eigenvectors-and-diagonalisability">lesson 21</a> (eigenvectors). Lesson 10 uses Aufgaben 27 and 28 as exercises.</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong></p>
+<ol>
+<li>Read the task and try it on paper for 10 minutes.</li>
+<li>Stuck on where to start? Read <em>The idea</em> and open <em>You need</em>: it links the lesson section with the theory.</li>
+<li>Hard tasks have hints. Open Hint 1, try again, then Hint 2, then Hint 3; each gives away a little more. Easy tasks go straight to the solution.</li>
+<li>Only then open the solution. The left column says <em>why</em> each step is there, the right column is what you write.</li>
+</ol>
+<p><strong>Source.</strong> The solutions follow Prof. Halbeisen's official Musterlösung to Serie 6 (HS26), translated and explained by StudyHub; where StudyHub adds a different route or a correction, it says so. The official solution numbers results as in the lecture; here every result is named in words. With the <a href="connect.html">StudyHub connector</a>, your own AI can check your attempt before you look.</p>
+<p>Recommended order: the tasks as numbered. Other sheets: <a href="serie-l00.html">0</a> · <a href="serie-l01.html">1</a> · <a href="serie-l02.html">2</a> · <a href="serie-l03.html">3</a> · <a href="serie-l04.html">4</a> · <a href="serie-l05.html">5</a> · <strong>6</strong></p></div>
+<p class="toc"><strong>Tasks:</strong> <a href="#a27">27 $c_{00}(\mathbb F_2)$</a> · <a href="#a28">28 Step functions</a> · <a href="#a29">29 The Fibonacci matrix</a></p>
+
+<!-- ============ Aufgabe 27 ============ -->
+<h2 id="a27">Aufgabe 27 · Finitely supported sequences over $\mathbb F_2$</h2>
+<div class="box task"><p>Let $c_{00}(\mathbb F_2)$ be the set of all sequences $(a_n:n\in\mathbb N)$ in $\mathbb F_2$ such that $\{n:a_n=1\}$ is finite.</p><p>(a) Show that $B=\{e_i:i\in\mathbb N\}$, with $e_i$ the sequence with a $1$ in place $i$ and $0$ elsewhere, is a basis of $c_{00}(\mathbb F_2)$.</p><p>(b) Show that for every $S\subseteq\mathbb N$, $f_S\big((a_n)\big):=\sum_{n\in S}a_n$ defines a functional $f_S:c_{00}(\mathbb F_2)\to\mathbb F_2$.</p><p>(c) Show that $\langle\{e_i^*:i\in\mathbb N\}\rangle\ne c_{00}(\mathbb F_2)^*$, i.e. $\{e_i^*\}$ is not a basis of the dual space.</p><p><em>Official remark: one can show $c_{00}(\mathbb F_2)^*$ has uncountable dimension, while $c_{00}(\mathbb F_2)$ has countable dimension; the dual basis theorem fails in infinite dimension.</em></p></div>
+<p class="tsum"><strong>In short:</strong> (a) A sequence with finitely many $1$s is the sum of the $e_i$ at those places. (b) The sum has only finitely many non-zero terms, and is linear. (c) $f_{\mathbb N}$ (parity of the number of $1$s) is $1$ on every $e_j$, but each combination of the $e_i^*$ is $0$ on almost all $e_j$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>A sequence in $c_{00}$ is a finite set of positions with a $1$. (a) It is the sum of the unit sequences at those positions, and that sum is unique. (b) $f_S$ counts the $1$s inside $S$ mod 2; only finitely many are $1$, so the sum makes sense, and counting is additive. (c) The dual functionals $e_i^*$ read off one position each, and a finite combination reads off finitely many positions. The parity functional $f_{\mathbb N}$ needs all positions at once.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-10.html#s5-the-kronecker-delta-and-the">Lesson 10, section 5</a>: for a basis $(b_i)$ the dual functionals $b_i^*$ are defined by $b_i^*(b_j)=\delta_{ij}$ and linear extension. In finite dimension they form a basis of $V^*$; <a href="linalg-10.html#s7-infinite-dimension-the-dual-set">section 7</a> shows why this fails in infinite dimension. Bases (<a href="linalg-06.html#s5-bases-and-coordinates">lesson 6, section 5</a>). In $\mathbb F_2$: $1+1=0$.</p></div></details>
+<details><summary>Hint 1</summary><div><p>(a) For $a\in c_{00}$ let $T:=\{n:a_n=1\}$ (finite) and compare $a$ with $\sum_{i\in T}e_i$ term by term. (b) Only $n\in S\cap T$ contribute, a finite sum. For linearity let $T$ contain the supports of both $a$ and $b$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>(c) What is $g(e_j)$ for $g=\sum_{i\in T}\lambda_ie_i^*$ and $j\notin T$? And what is $f_{\mathbb N}(e_j)$?</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Spanning: a sequence with $1$s at the finite set $T$ is the sum of the $e_i$, $i\in T$. Compare term $n$.</p></div><div class="sp-formal"><p><strong>(a)</strong> $e_i\in V:=c_{00}(\mathbb F_2)$, since it has one $1$. For $a\in V$ let $T:=\{n:a_n=1\}$, finite. The $n$-th term of $\sum_{i\in T}e_i$ is $1$ if $n\in T$ (exactly one summand contributes) and $0$ otherwise, i.e. $a_n$. So $a=\sum_{i\in T}e_i$ and $\langle B\rangle=V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Independence: in a combination of distinct $e_{i_k}$, position $i_l$ only sees $\lambda_l$.</p></div><div class="sp-formal"><p>If $\sum_{k=1}^m\lambda_ke_{i_k}=0$ with distinct $i_k$, the $i_l$-th term is $\lambda_l$, so $\lambda_l=0$. Hence $B$ is a basis (and $V$ is infinite-dimensional).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Well defined: only finitely many non-zero terms.</p></div><div class="sp-formal"><p><strong>(b)</strong> For $a\in V$ only $n\in S\cap T$ give $a_n\ne0$, so $f_S(a)=\sum_{n\in S\cap T}a_n\in\mathbb F_2$ is a finite sum.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Linear: on a common finite set the sum splits.</p></div><div class="sp-formal"><p>For $a,b\in V$, $\lambda\in\mathbb F_2$, let $T$ be the (finite) union of their supports. Then $f_S(a+b)=\sum_{n\in S\cap T}(a_n+b_n)=f_S(a)+f_S(b)$ and $f_S(\lambda a)=\lambda f_S(a)$. So $f_S\in V^*$. (E.g. $f_{\{i\}}=e_i^*$.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(c) Everything in the span of the $e_i^*$ vanishes on almost all $e_j$.</p></div><div class="sp-formal"><p><strong>(c)</strong> Let $W:=\langle e_i^*:i\in\mathbb N\rangle$. Each $g\in W$ is $g=\sum_{i\in T}\lambda_ie_i^*$ with $T$ finite, and for $j\notin T$: $g(e_j)=\sum_{i\in T}\lambda_ie_i^*(e_j)=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The parity functional is $1$ on every $e_j$: not in $W$.</p></div><div class="sp-formal"><p>But $f_{\mathbb N}(e_j)=1$ for all $j$. If $f_{\mathbb N}\in W$, it would vanish on all $e_j$ outside a finite set, a contradiction. So $f_{\mathbb N}\notin W$, $W\ne V^*$, and $\{e_i^*\}$ is not a basis of $V^*$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>The key observation for (c):</strong> a finite combination $g=\sum_{i\in T}\lambda_ib_i^*$ vanishes on every basis vector $b_j$ with $j\notin T$. So everything in $\langle b_i^*\rangle$ is zero on all but finitely many basis vectors. A functional that is non-zero on infinitely many basis vectors is therefore outside the span.</p><details><summary>For wonder: the dual is uncountably big (official remark)</summary><div><p>$W$ is countable (each element is fixed by a finite set of indices). But $S\mapsto f_S$ is injective from $\mathcal P(\mathbb N)$ to $V^*$ (if $j$ is in exactly one of $S,S'$, then $f_S(e_j)\ne f_{S'}(e_j)$), and $\mathcal P(\mathbb N)$ is uncountable by Cantor. So $V^*$ is uncountable and far bigger than $W$.</p></div></details>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Arguing “$f_{\mathbb N}=\sum_{i\in\mathbb N}e_i^*$, so it is in the span”. A span contains only <em>finite</em> combinations; an infinite sum is not a linear combination. That is exactly why the dual basis fails here.</p></div>
+
+<!-- ============ Aufgabe 28 ============ -->
+<h2 id="a28">Aufgabe 28 · Step functions and the integral</h2>
+<div class="box task"><p>For $a\lt b$ let $\mathrm{TF}([a,b])$ be the vector space of step functions $f:[a,b]\to\mathbb R$ (constant on finitely many open intervals, arbitrary at the finitely many points in between). For $t\in(a,b]$ and $s\in[a,b]$ let $\chi_t(r)=1$ for $a\le r\lt t$ and $0$ otherwise, and $\chi_{\{s\}}(r)=1$ for $r=s$ and $0$ otherwise.</p><p>(a) Show that $B:=\{\chi_t:t\in(a,b]\}\cup\{\chi_{\{s\}}:s\in[a,b]\}$ is a basis of $\mathrm{TF}([a,b])$.</p><p>(b) Show that $F:\mathrm{TF}([a,b])\to\mathbb R$, $f\mapsto\int_a^bf\,dx$ is a functional.</p><p>(c) Show: $F\notin\langle\{\chi^*:\chi\in B\}\rangle$.</p></div>
+<p class="tsum"><strong>In short:</strong> Steps $\chi_t-\chi_u=\mathbf 1_{[u,t)}$ build the plateaus, point functions $\chi_{\{s\}}$ fix the values at the jumps. The integral is linear and is non-zero on every $\chi_t$, infinitely many basis vectors.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The functions $\chi_t$ are “staircase from the left”: $1$ on $[a,t)$. Differences of two of them give a single plateau $\mathbf 1_{[u,t)}$, so they build every step function up to finitely many points; the point functions $\chi_{\{s\}}$ repair those points. Independence: evaluate at cleverly chosen points, from the right end inwards. (b) is the linearity of the integral from Analysis. (c) is the same idea as Aufgabe 27 (c): $F(\chi_t)=t-a\gt0$ for infinitely many basis vectors.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-10.html#s5-the-kronecker-delta-and-the">Lesson 10, section 5</a>: for a basis $(b_i)$ the dual functionals $b_i^*$ are defined by $b_i^*(b_j)=\delta_{ij}$ and linear extension. In finite dimension they form a basis of $V^*$; <a href="linalg-10.html#s7-infinite-dimension-the-dual-set">section 7</a> shows why this fails in infinite dimension. Step functions and their integral: Analysis I (<a href="lesson-15.html">Analysis lesson 15</a>). <a href="#a27">Aufgabe 27</a> (c) for the key observation.</p></div></details>
+<details><summary>Hint 1</summary><div><p>Useful: for $a\le u\lt t\le b$, $\chi_t-\chi_u=\mathbf 1_{[u,t)}$ (with $\chi_a:=0$). For $f$ with partition $a=t_0\lt\dots\lt t_k=b$ and value $c_j$ on $(t_{j-1},t_j)$, set $g:=\sum_jc_j(\chi_{t_j}-\chi_{t_{j-1}})$. What is $f-g$?</p></div></details>
+<details><summary>Hint 2</summary><div><p>Independence: order $t_1\lt\dots\lt t_m$ and the points $s_1,\dots,s_l$. Pick $r\in[t_{m-1},t_m)$ not equal to any $s_j$ and evaluate: you get $\lambda_m=0$. Repeat downwards.</p></div></details>
+<details><summary>Hint 3</summary><div><p>(c) Every $G\in\langle\chi^*\rangle$ vanishes on all but finitely many elements of $B$. Compute $F(\chi_t)$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) The plateau identity: two staircases differ by one plateau.</p></div><div class="sp-formal"><p><strong>(a)</strong> For $a\le u\lt t\le b$ (with $\chi_a:=0$): $\chi_t-\chi_u=\mathbf 1_{[u,t)}$, since for $r\lt u$ both are $1$, for $u\le r\lt t$ only $\chi_t$ is $1$, and for $r\ge t$ both are $0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Spanning: build the plateaus with staircases, then repair the finitely many jump points.</p></div><div class="sp-formal"><p>Let $f$ have partition $a=t_0\lt\dots\lt t_k=b$ and value $c_j$ on $(t_{j-1},t_j)$. Put $g:=\sum_{j=1}^kc_j(\chi_{t_j}-\chi_{t_{j-1}})$, a combination of elements of $B$; then $g=c_j$ on $[t_{j-1},t_j)$. So $h:=f-g$ is $0$ except possibly at $t_0,\dots,t_k$, and $h=\sum_{j=0}^kh(t_j)\chi_{\{t_j\}}$. Hence $f=g+h\in\langle B\rangle$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Independence: a finite combination; evaluate at points avoiding the $s_j$, from the right.</p></div><div class="sp-formal"><p>Let $\sum_{i=1}^m\lambda_i\chi_{t_i}+\sum_{j=1}^l\mu_j\chi_{\{s_j\}}=0$ with $a\lt t_1\lt\dots\lt t_m\le b$, distinct $s_j$, and $t_0:=a$. Suppose $\lambda_{i+1}=\dots=\lambda_m=0$. The interval $[t_{i-1},t_i)$ is infinite, so pick $r$ in it with $r\ne s_j$ for all $j$. There $\chi_{t_k}(r)=1$ for $k\ge i$ and $0$ for $k\lt i$, so $0=\lambda_i+\dots+\lambda_m=\lambda_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Then only point functions remain; evaluate at each $s_j$.</p></div><div class="sp-formal"><p>By downward induction all $\lambda_i=0$. Then $\sum\mu_j\chi_{\{s_j\}}=0$, and evaluating at $s_j$ gives $\mu_j=0$. So $B$ is a basis of $\mathrm{TF}([a,b])$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) The integral of a step function is a finite sum; refine to a common partition to see linearity.</p></div><div class="sp-formal"><p><strong>(b)</strong> For $f$ as above, $\int_a^bf\,dx=\sum_{j=1}^kc_j(t_j-t_{j-1})$; the values at the points do not matter. For $f,g$ use a common refinement, with values $c_j,d_j$: $F(f+g)=\sum(c_j+d_j)(t_j-t_{j-1})=F(f)+F(g)$ and $F(\lambda f)=\lambda F(f)$. So $F$ is a functional.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(c) The key observation from Aufgabe 27: the span of the $\chi^*$ only contains functionals that vanish on almost all of $B$.</p></div><div class="sp-formal"><p><strong>(c)</strong> If $G=\sum_{k=1}^m\lambda_k\chi_k^*$ with $\chi_k\in B$, then $G(\chi')=0$ for every $\chi'\in B\setminus\{\chi_1,\dots,\chi_m\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The integral is non-zero on every staircase.</p></div><div class="sp-formal"><p>But $F(\chi_t)=\int_a^b\chi_t\,dx=t-a\gt0$ for every $t\in(a,b]$, infinitely many elements of $B$. So $F\notin\langle\chi^*:\chi\in B\rangle$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>The key observation for (c):</strong> a finite combination $g=\sum_{i\in T}\lambda_ib_i^*$ vanishes on every basis vector $b_j$ with $j\notin T$. So everything in $\langle b_i^*\rangle$ is zero on all but finitely many basis vectors. A functional that is non-zero on infinitely many basis vectors is therefore outside the span.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Using $\{\mathbf 1_{[u,t)}\}$ for all $u\lt t$ as a “basis”: these span, but they are not independent ($\mathbf 1_{[a,c)}=\mathbf 1_{[a,b')}+\mathbf 1_{[b',c)}$). The staircases $\chi_t$ avoid this because each is fixed by one number $t$.</p></div>
+
+<!-- ============ Aufgabe 29 ============ -->
+<h2 id="a29">Aufgabe 29 · The Fibonacci matrix and its special vectors</h2>
+<div class="box task"><p>Let $\varphi_{\mathrm{Fib}}:\mathrm{Fib}\to\mathrm{Fib}$ be the linear map with $\varphi_{\mathrm{Fib}}(F_{1,0}):=F_{0,1}$, $\varphi_{\mathrm{Fib}}(F_{0,1}):=F_{1,0}+F_{0,1}$, and let $M_{\mathrm{Fib}}=\begin{pmatrix}0&amp;1\\1&amp;1\end{pmatrix}$ be its matrix in the basis $\{F_{1,0},F_{0,1}\}$.</p><p>(a) For $F_{a,b}=(f_0,f_1,\dots)$ (so $f_0=a$, $f_1=b$), show for all $n\in\mathbb N$: $M_{\mathrm{Fib}}^n\binom ab=\binom{f_n}{f_{n+1}}$, where $M^0:=I$.</p><p>(b) Find two different vectors $\binom1{x_1},\binom1{x_2}$ and $\lambda_1,\lambda_2\in\mathbb R$ with $M_{\mathrm{Fib}}\binom1{x_i}=\lambda_i\binom1{x_i}$.</p></div>
+<p class="tsum"><strong>In short:</strong> $M$ shifts a window of two consecutive terms: $\binom uv\mapsto\binom v{u+v}$. Induction gives (a). For (b), $\binom1x\mapsto\binom x{1+x}$ is a multiple of $\binom1x$ iff $x^2=x+1$: $x=\varphi,\psi$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>$M\binom uv=\binom v{u+v}$: it slides a window of two consecutive Fibonacci terms one step forward. Applying it $n$ times slides $n$ steps: that is (a). In (b) you look for windows that are only <em>stretched</em> by one step, i.e. geometric sequences $1,x,x^2,\dots$; that happens exactly when $x^2=x+1$. These are the two sequences of the basis $B_3$ from <a href="serie-l03.html#a17">Serie 3, Aufgabe 17</a>, and the special vectors are the eigenvectors of lesson 21.</p></div>
+<details><summary>You need</summary><div><p>The matrix–vector product and $M^{n+1}=M\cdot M^n$ (<a href="linalg-12.html#s2-the-matrix-product">lesson 12, section 2</a>); induction (<a href="linalg-03.html#s5-induction">lesson 3, section 5</a>); eigenvectors (<a href="linalg-21.html#s2-eigenvectors-and-diagonalisability">lesson 21, section 2</a>).</p></div></details>
+<details><summary>Hint 1</summary><div><p>(a) Induction on $n$. For the step, $M^{n+1}\binom ab=M\big(M^n\binom ab\big)=M\binom{f_n}{f_{n+1}}$; compute with $M\binom uv=\binom v{u+v}$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The one computation everything uses.</p></div><div class="sp-formal"><p>For $u,v\in\mathbb R$: $\begin{pmatrix}0&amp;1\\1&amp;1\end{pmatrix}\binom uv=\binom v{u+v}$. Write $M:=M_{\mathrm{Fib}}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Base case $n=0$.</p></div><div class="sp-formal"><p><strong>(a)</strong> $M^0\binom ab=I\binom ab=\binom ab=\binom{f_0}{f_1}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Step: apply $M$ once more and use the recursion.</p></div><div class="sp-formal"><p>If $M^n\binom ab=\binom{f_n}{f_{n+1}}$, then $$\begin{aligned}M^{n+1}\tbinom ab&amp;=M\tbinom{f_n}{f_{n+1}}\\&amp;=\tbinom{f_{n+1}}{f_n+f_{n+1}}=\tbinom{f_{n+1}}{f_{n+2}}.\end{aligned}$$</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Write out $M\binom1x=\lambda\binom1x$ coordinatewise.</p></div><div class="sp-formal"><p><strong>(b)</strong> $M\binom1x=\binom x{1+x}$. So $M\binom1x=\lambda\binom1x$ means $x=\lambda$ and $1+x=\lambda x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Substitute $\lambda=x$: the golden-ratio equation.</p></div><div class="sp-formal"><p>With $\lambda=x$: $x^2=x+1$, i.e. $x^2-x-1=0$, with the two different real solutions $x_1=\frac{1+\sqrt5}2=:\varphi$ and $x_2=\frac{1-\sqrt5}2=:\psi$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Check: with $\lambda_i:=x_i$ the equation holds.</p></div><div class="sp-formal"><p>With $\lambda_1:=\varphi$, $\lambda_2:=\psi$: $M\binom1{x_i}=\binom{x_i}{1+x_i}=\binom{x_i}{x_i^2}=x_i\binom1{x_i}=\lambda_i\binom1{x_i}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> by (a) and (b), $M^n\binom1{x_i}=\lambda_i^n\binom1{x_i}=\binom{x_i^n}{x_i^{n+1}}$, so $F_{1,x_i}=(1,x_i,x_i^2,\dots)$: the basis $B_3$ of Aufgabe 17. Writing $\binom01=\frac1{\sqrt5}\binom1\varphi-\frac1{\sqrt5}\binom1\psi$ and applying $M^n$ gives Binet's formula $f_n=\frac1{\sqrt5}(\varphi^n-\psi^n)$ again. In the language of <a href="linalg-21.html">lesson 21</a>: $\binom1\varphi,\binom1\psi$ are eigenvectors of $M$ for the eigenvalues $\varphi,\psi$.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>In (b), solving $x=\lambda$ and stopping, or allowing $\binom1x$ with any $x$ and $\lambda=0$. The two coordinates give two equations, and both must hold. Also note the task asks for vectors with first entry $1$, which rules out the zero vector.</p></div>
+<nav class="site foot" aria-label="Sheet navigation">
+<a href="serie-l05.html">← Serie 5: Well-definedness and functionals</a>
+<a href="linalg.html#serien">Linear Algebra home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

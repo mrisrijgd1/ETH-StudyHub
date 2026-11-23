@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Serie 1 explained · Linear Algebra I">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=la1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serie 1 explained · Linear Algebra I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=la1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.task{border-left:4px solid var(--accent,#5b5bd6)}.task>p:first-child{margin-top:0}
+.sv-fig{display:block;margin:.7rem auto;max-width:100%;height:auto}.sv-cap{text-align:center;font-size:.9rem;opacity:.85;margin-top:0}
+details.sol .sp{margin:.6rem 0}.trapbox{margin-top:.8rem}.tsum{font-size:.95rem;opacity:.9;margin:.2rem 0 0}
+.tbl{border-collapse:collapse;margin:.6rem 0;font-size:.95rem}.tbl th,.tbl td{border:1px solid color-mix(in srgb,currentColor 25%,transparent);padding:.3rem .55rem;text-align:center}
+.tblwrap{overflow-x:auto;max-width:100%}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Serien explained</span>
+<h1>Serie 1, explained: Rings and fields</h1>
+<p class="lead">Four rings: subsets under symmetric difference and intersection, polynomials over $\mathbb Q$, the clock $\mathbb Z_m$ with multiplication, and a field with four elements built by hand. Which of them are fields, and why not the others?</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do Aufgabe 7 (b) only: show that $X$ has no inverse in $\mathbb Q[X]$ by looking at the constant coefficient. That counts. Next time, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can (1) list what a commutative ring needs beyond an abelian group (associative, commutative multiplication with a one, distributive law); (2) show that a ring is <em>not</em> a field by exhibiting one non-zero element without an inverse, or two non-zero elements with product $0$; (3) prove that $\mathbb Z_m$ is a field exactly when $m$ is prime; (4) check a small field from its addition and multiplication tables.</dd></div>
+<div><dt>Time</dt><dd>About 100 minutes: 25 for Aufgabe 6, 20 for Aufgabe 7, 35 for Aufgabe 8, 20 for Aufgabe 9.</dd></div>
+<div><dt>Lessons</dt><dd><a href="linalg-01.html#s6-rings-two-operations-that-must">Lesson 1, sections 6–7</a> (rings, fields); <a href="linalg-04.html#s5-which-clocks-are-fields-and">lesson 4, sections 5–8</a> (which clocks are fields, $\mathbb F_4$); <a href="linalg-03.html#s7-the-pigeonhole-principle">lesson 3, section 7</a> (pigeonhole).</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong></p>
+<ol>
+<li>Read the task and try it on paper for 10 minutes.</li>
+<li>Stuck on where to start? Read <em>The idea</em> and open <em>You need</em>: it links the lesson section with the theory.</li>
+<li>Hard tasks have hints. Open Hint 1, try again, then Hint 2, then Hint 3; each gives away a little more. Easy tasks go straight to the solution.</li>
+<li>Only then open the solution. The left column says <em>why</em> each step is there, the right column is what you write.</li>
+</ol>
+<p><strong>Source.</strong> The solutions follow Prof. Halbeisen's official Musterlösung to Serie 1 (HS26), translated and explained by StudyHub; where StudyHub adds a different route or a correction, it says so. The official solution numbers results as in the lecture; here every result is named in words. With the <a href="connect.html">StudyHub connector</a>, your own AI can check your attempt before you look.</p>
+<p>Recommended order: the tasks as numbered. Other sheets: <a href="serie-l00.html">0</a> · <strong>1</strong> · <a href="serie-l02.html">2</a> · <a href="serie-l03.html">3</a> · <a href="serie-l04.html">4</a> · <a href="serie-l05.html">5</a> · <a href="serie-l06.html">6</a></p></div>
+<p class="toc"><strong>Tasks:</strong> <a href="#a6">6 Subsets as a ring</a> · <a href="#a7">7 Polynomials</a> · <a href="#a8">8 $\mathbb Z_m$ with multiplication</a> · <a href="#a9">9 A field with four elements</a></p>
+
+<!-- ============ Aufgabe 6 ============ -->
+<h2 id="a6">Aufgabe 6 · Subsets with $\triangle$ and $\cap$</h2>
+<div class="box task"><p>As in Aufgabe 4, $\mathcal P(M)$ is the set of all subsets of $M$ and $x\mathbin\triangle y:=(x\setminus y)\cup(y\setminus x)$.</p><p>(a) Show: if $M$ is non-empty, then $(\mathcal P(M),\triangle,\cap)$ is a commutative ring.</p><p>(b) Show that $(\mathcal P(M),\triangle,\cap)$ is not a field as soon as $|M|\gt1$.</p></div>
+<p class="tsum"><strong>In short:</strong> Symmetric difference is the addition, intersection the multiplication. Zero is $\emptyset$, one is $M$. A proper non-empty subset has no inverse.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The addition is already done: Aufgabe 4 showed $(\mathcal P(M),\triangle)$ is an abelian group with zero $\emptyset$. Intersection is the multiplication. Its one is the whole set $M$, because $M\cap x=x$. The only real work is the distributive law, and it is proved like associativity in Aufgabe 4: fix an element $t$ and ask where it lies. For (b): intersecting can only make a set smaller, so a set $x\subsetneq M$ can never be multiplied up to $M$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s6-rings-two-operations-that-must">Lesson 1, section 6</a>: a commutative ring $(R,+,\cdot)$ is an abelian group $(R,+)$ with a second operation $\cdot$ that is associative and commutative, has a one ($1\cdot x=x$), and is distributive: $x\cdot(y+z)=x\cdot y+x\cdot z$. <a href="linalg-01.html#s7-fields-everything-except-zero-can">Lesson 1, section 7</a>: a field is a commutative ring in which $(K\setminus\{0\},\cdot)$ is an abelian group. In particular $0\ne1$, every $x\ne0$ has an inverse, and a product of non-zero elements is non-zero. The membership rule from <a href="serie-l00.html#a4">Serie 0, Aufgabe 4</a>: $t\in u\mathbin\triangle v$ iff $t$ lies in exactly one of $u,v$.</p></div></details>
+<details><summary>Hint 1</summary><div><p>Ring: (P(M),△) is a group by Aufgabe 4. For $\cap$ check closure, associativity, commutativity and the one ($M$). For the distributive law $x\cap(y\mathbin\triangle z)=(x\cap y)\mathbin\triangle(x\cap z)$, fix $t\in M$ and split into $t\notin x$ and $t\in x$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>If $t\in x$, then $t\in x\cap y$ iff $t\in y$, and $t\in x\cap z$ iff $t\in z$. So “exactly one of $x\cap y$, $x\cap z$” becomes “exactly one of $y,z$”.</p></div></details>
+<details><summary>Hint 3</summary><div><p>(b) The one is $M$. Take $x=\{t_1\}$ with $t_1\ne t_2$ in $M$. What can $x\cap y$ be?</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) The addition part is Aufgabe 4. Say what is left.</p></div><div class="sp-formal"><p><strong>(a)</strong> By Aufgabe 4, $(\mathcal P(M),\triangle)$ is an abelian group with zero $\emptyset$. It remains to show that $\cap$ is an associative, commutative operation on $\mathcal P(M)$ with a one, and the distributive laws. We use: $t\in u\mathbin\triangle v$ iff $t$ lies in exactly one of $u,v$. $(*)$</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Closure, associativity, commutativity of $\cap$: membership is “and”.</p></div><div class="sp-formal"><p>$x\cap y\subseteq x\subseteq M$, so $x\cap y\in\mathcal P(M)$. For $t\in M$: $t\in(x\cap y)\cap z$ iff $t\in x$ and $t\in y$ and $t\in z$ iff $t\in x\cap(y\cap z)$; and $t\in x\cap y$ iff $t\in y\cap x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The one: the whole set.</p></div><div class="sp-formal"><p>$M\in\mathcal P(M)$ and $M\cap x=x$ for every $x\subseteq M$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Distributive law, case $t\notin x$: neither side contains $t$.</p></div><div class="sp-formal"><p>We show $x\cap(y\mathbin\triangle z)=(x\cap y)\mathbin\triangle(x\cap z)$. Let $t\in M$. If $t\notin x$: then $t\notin x\cap(y\mathbin\triangle z)$, and $t$ lies in neither $x\cap y$ nor $x\cap z$, so by $(*)$ $t\notin(x\cap y)\mathbin\triangle(x\cap z)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Case $t\in x$: intersecting with $x$ changes nothing for $t$.</p></div><div class="sp-formal"><p>If $t\in x$: then $t\in x\cap y\iff t\in y$ and $t\in x\cap z\iff t\in z$, so $$\begin{aligned}&amp;t\in(x\cap y)\mathbin\triangle(x\cap z)\\\iff&amp;t\text{ in exactly one of }y,z\\\iff&amp;t\in y\mathbin\triangle z\\\iff&amp;t\in x\cap(y\mathbin\triangle z).\end{aligned}$$</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Conclude; the other distributive law follows by commutativity.</p></div><div class="sp-formal"><p>Both sides have the same elements, so they are equal. The law $(y\mathbin\triangle z)\cap x=(y\cap x)\mathbin\triangle(z\cap x)$ follows by commutativity of $\cap$. So $(\mathcal P(M),\triangle,\cap)$ is a commutative ring with zero $\emptyset$ and one $M$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) In a field every non-zero element has an inverse. Find a non-zero element whose products never reach the one $M$.</p></div><div class="sp-formal"><p><strong>(b)</strong> Let $t_1\ne t_2$ in $M$ and $x:=\{t_1\}$. Then $x\ne\emptyset$, and $x\ne M$ since $t_2\notin x$. For every $y\in\mathcal P(M)$: $x\cap y\subseteq x\subsetneq M$, so $x\cap y\ne M$. Thus $x$ has no multiplicative inverse, and the ring is not a field. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Another way (also in the official solution):</strong> $\{t_1\}\cap\{t_2\}=\emptyset$ although both are non-zero. In a field a product of non-zero elements is never $0$. <strong>Remark:</strong> for $M=\{t\}$ the claim is false: $\mathcal P(M)=\{\emptyset,M\}$ is the field with two elements. That is why (b) needs $|M|\gt1$.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Taking $\emptyset$ as the one because it is “neutral” for $\triangle$. Each operation has its own neutral element: $\emptyset$ for $\triangle$ (the zero), $M$ for $\cap$ (the one). And in (b), showing only that $\emptyset$ has no inverse: zero never needs one.</p></div>
+
+<!-- ============ Aufgabe 7 ============ -->
+<h2 id="a7">Aufgabe 7 · Polynomials over $\mathbb Q$</h2>
+<div class="box task"><p>Let $\mathbb Q[X]$ be the set of all polynomials $a_0+a_1X+\dots+a_nX^n$ with $n\in\mathbb N$ and $a_i\in\mathbb Q$.</p><p>(a) Show that $\mathbb Q[X]$ with the usual addition and multiplication of polynomials is a commutative ring.</p><p>(b) Show that $\mathbb Q[X]$ is not a field.</p></div>
+<p class="tsum"><strong>In short:</strong> Compute with coefficients: the $k$-th coefficient of $p\cdot q$ is $\sum_{i+j=k}a_ib_j$. Every ring law becomes a law in $\mathbb Q$. $X$ has no inverse.</p>
+<div class="story"><span class="label">The idea</span>
+<p>A polynomial is just its list of coefficients, with only finitely many non-zero. Addition is coefficientwise, so the group laws come from $\mathbb Q$ exactly as for vectors. For multiplication, the $k$-th coefficient of $p\cdot q$ collects all products $a_ib_j$ with $i+j=k$. Every law then turns into a statement about such sums. For (b), look at the constant term: $X\cdot q$ always has constant term $0$, but $1$ has constant term $1$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s6-rings-two-operations-that-must">Lesson 1, section 6</a>: a commutative ring $(R,+,\cdot)$ is an abelian group $(R,+)$ with a second operation $\cdot$ that is associative and commutative, has a one ($1\cdot x=x$), and is distributive: $x\cdot(y+z)=x\cdot y+x\cdot z$. <a href="linalg-01.html#s7-fields-everything-except-zero-can">Lesson 1, section 7</a>: a field is a commutative ring in which $(K\setminus\{0\},\cdot)$ is an abelian group. In particular $0\ne1$, every $x\ne0$ has an inverse, and a product of non-zero elements is non-zero. Polynomials and their coefficients: <a href="linalg-05.html#s4-the-standard-examples">lesson 5, section 4</a>.</p></div></details>
+<details><summary>Hint 1</summary><div><p>Write $p=\sum_{i\ge0}a_iX^i$ with $a_i=0$ for all but finitely many $i$, and $(p)_k:=a_k$. Then $(p+q)_k=a_k+b_k$ and $(p\cdot q)_k=\sum_{i+j=k}a_ib_j$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>Associativity of $\cdot$: both $((p\cdot q)\cdot r)_k$ and $(p\cdot(q\cdot r))_k$ equal $\sum_{i+j+l=k}a_ib_jc_l$. (b): compute $(X\cdot q)_0$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Set up notation: a polynomial is its coefficient list, finitely many non-zero.</p></div><div class="sp-formal"><p><strong>(a)</strong> Write $p=\sum_{i\ge0}a_iX^i$ with $a_i\in\mathbb Q$, $a_i=0$ for all but finitely many $i$, and $(p)_i:=a_i$. Two polynomials are equal iff all coefficients agree. For $q=\sum b_jX^j$: $$\begin{aligned}(p+q)_k&amp;=a_k+b_k,\\(p\cdot q)_k&amp;=\sum_{i+j=k}a_ib_j\\&amp;=\sum_{i=0}^ka_ib_{k-i}.\end{aligned}$$</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Closure: if $p$ stops at degree $n$ and $q$ at $l$, the sum stops at $\max$ and the product at $n+l$.</p></div><div class="sp-formal"><p>Let $a_i=0$ for $i\gt n$ and $b_j=0$ for $j\gt l$. For $k\gt\max\{n,l\}$, $a_k+b_k=0$. If $k\gt n+l$ and $i+j=k$, then $i\gt n$ or $j\gt l$, so $a_ib_j=0$ and $(p\cdot q)_k=0$. So $p+q,p\cdot q\in\mathbb Q[X]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$(\mathbb Q[X],+)$: coefficientwise, as for vectors.</p></div><div class="sp-formal"><p>For each $k$: $(a_k+b_k)+c_k=a_k+(b_k+c_k)$ and $a_k+b_k=b_k+a_k$. The zero polynomial is neutral, and $-p:=\sum(-a_i)X^i$ is the inverse of $p$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Commutativity of $\cdot$: swapping $i$ and $j$ maps the index set to itself.</p></div><div class="sp-formal"><p>$(p\cdot q)_k=\sum_{i+j=k}a_ib_j=\sum_{i+j=k}b_ja_i=(q\cdot p)_k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Associativity of $\cdot$: both sides become one sum over triples.</p></div><div class="sp-formal"><p>For $r=\sum c_lX^l$, using the laws of $\mathbb Q$: $$\begin{aligned}&amp;((p\cdot q)\cdot r)_k\\&amp;=\sum_{s+l=k}\Big(\sum_{i+j=s}a_ib_j\Big)c_l\\&amp;=\sum_{i+j+l=k}a_ib_jc_l,\\&amp;(p\cdot(q\cdot r))_k\\&amp;=\sum_{i+s=k}a_i\Big(\sum_{j+l=s}b_jc_l\Big)\\&amp;=\sum_{i+j+l=k}a_ib_jc_l.\end{aligned}$$</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The one: the constant polynomial $1$.</p></div><div class="sp-formal"><p>$1$ has $e_0=1$, $e_i=0$ for $i\ge1$, so $(1\cdot p)_k=\sum_{i+j=k}e_ia_j=e_0a_k=a_k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Distributive law, coefficientwise.</p></div><div class="sp-formal"><p>$(p\cdot(q+r))_k=\sum_{i+j=k}a_i(b_j+c_j)=\sum_{i+j=k}(a_ib_j+a_ic_j)=(p\cdot q+p\cdot r)_k$. The other law follows by commutativity. So $\mathbb Q[X]$ is a commutative ring.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) One non-zero element without an inverse is enough. Look at the constant coefficient.</p></div><div class="sp-formal"><p><strong>(b)</strong> $X$ (with $a_1=1$, all other $a_i=0$) is not the zero polynomial. For any $q=\sum b_jX^j$: $(X\cdot q)_0=\sum_{i+j=0}a_ib_j=a_0b_0=0$, since $i+j=0$ forces $i=j=0$ and $a_0=0$. But $(1)_0=1\ne0$. So $X\cdot q\ne1$ for every $q$, and $\mathbb Q[X]$ is not a field. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Another way (official remark):</strong> for non-zero $p,q$ with leading coefficients $a_n,b_l\ne0$, the coefficient of $X^{n+l}$ in $pq$ is $a_nb_l\ne0$, so $\deg(pq)=\deg p+\deg q$. Then $X\cdot q=1$ would give $0=1+\deg q\ge1$.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Saying “$\frac1X$ is the inverse”. $\frac1X$ is not a polynomial, and the question is exactly whether an inverse exists <em>inside</em> $\mathbb Q[X]$. Also: a statement like “$\mathbb Q[X]$ is not a field because it is infinite” is wrong ($\mathbb Q$ is infinite and a field).</p></div>
+
+<!-- ============ Aufgabe 8 ============ -->
+<h2 id="a8">Aufgabe 8 · The clock $\mathbb Z_m$ as a ring, and when it is a field</h2>
+<div class="box task"><p>$(\mathbb Z_m,+_m)$ is as in Aufgabe 5. Define $\bar k\cdot_m\bar l:=\bar a$, where $0\le a\lt m$ and $mq+a=k\cdot l$ for some non-negative $q\in\mathbb Z$.</p><p>(a) Show that for any $\bar k,\bar l$ there is exactly one $a$ with $\bar k\cdot_m\bar l=\bar a$.</p><p>(b) Show that $(\mathbb Z_m,+_m,\cdot_m)$ is a commutative ring. <em>Official hint: show $\bar n\cdot_m(\bar k+_m\bar l)=(\bar n\cdot_m\bar k)+_m(\bar n\cdot_m\bar l)$.</em></p><p>(c) Show: if $m$ is not prime, then $(\mathbb Z_m,+_m,\cdot_m)$ is not a field.</p><p>(d)* Show: if $m$ is prime, then $(\mathbb Z_m,+_m,\cdot_m)$ is a field. <em>Official hint: the pigeonhole example in the notes of 23.09.2026.</em></p></div>
+<p class="tsum"><strong>In short:</strong> Multiply, then take the remainder. All laws come from $\mathbb Z$ through one helper: you may take remainders early. $\mathbb Z_6$ has $\bar2\cdot\bar3=\bar0$; for prime $m$, multiplying by $\bar k\ne\bar0$ is injective, hence hits $\bar1$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Write $\rho(n)$ for the remainder of $n\ge0$ (Aufgabe 5). Then $\bar k\cdot_m\bar l=\overline{\rho(kl)}$, and everything follows from one helper: <em>taking remainders early does not change the final remainder</em>, for sums and for products. For (c): if $m=k\cdot l$ with $1\lt k,l\lt m$, then $\bar k\cdot\bar l=\bar0$, which never happens in a field. For (d): multiplying by a fixed $\bar k\ne\bar0$ is injective when $m$ is prime, and an injective map from a finite set to itself is surjective (pigeonhole), so something hits $\bar1$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s6-rings-two-operations-that-must">Lesson 1, section 6</a>: a commutative ring $(R,+,\cdot)$ is an abelian group $(R,+)$ with a second operation $\cdot$ that is associative and commutative, has a one ($1\cdot x=x$), and is distributive: $x\cdot(y+z)=x\cdot y+x\cdot z$. <a href="linalg-01.html#s7-fields-everything-except-zero-can">Lesson 1, section 7</a>: a field is a commutative ring in which $(K\setminus\{0\},\cdot)$ is an abelian group. In particular $0\ne1$, every $x\ne0$ has an inverse, and a product of non-zero elements is non-zero. <a href="serie-l00.html#a5">Serie 0, Aufgabe 5</a> (remainders). <a href="linalg-04.html#s5-which-clocks-are-fields-and">Lesson 4, section 5</a> (which clocks are fields) and <a href="linalg-03.html#s7-the-pigeonhole-principle">lesson 3, section 7</a> (pigeonhole). A prime $p$ that divides a product $ab$ divides $a$ or $b$ (Euclid's lemma).</p></div></details>
+<details><summary>Hint 1</summary><div><p>(a) is Aufgabe 5 (a) again, now with $n=kl\ge0$. Existence: among the numbers $n-mq\ge0$ take the smallest. (b) Helper: if $n=mQ+Y$ with $n,Y,Q\ge0$, then $\rho(n)=\rho(Y)$. Deduce $\rho(r+s)=\rho(\rho(r)+\rho(s))$ and $\rho(rs)=\rho(\rho(r)\rho(s))$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>(c) Two cases: $m=1$ ($\mathbb Z_1$ has only one element) and $m=kl$ with $1\lt k,l\lt m$. (d) Fix $\bar k\ne\bar0$ and look at $r_k:\bar x\mapsto\bar x\cdot_m\bar k$ on $\mathbb Z_m$. If $\bar x\bar k=\bar y\bar k$ with $x\ge y$, then $m$ divides $(x-y)k$.</p></div></details>
+<details><summary>Hint 3</summary><div><p>(d) Since $m$ is prime and does not divide $k$, it divides $x-y$, and $0\le x-y\lt m$ forces $x=y$. So $r_k$ is injective on the finite set $\mathbb Z_m$, hence surjective; some $\bar c$ has $\bar c\cdot\bar k=\bar1$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Existence: the smallest non-negative number of the form $n-mq$ is the remainder.</p></div><div class="sp-formal"><p><strong>(a)</strong> Let $0\le k,l\lt m$ and $n:=kl\ge0$. The set $A:=\{n-mq:q\in\mathbb Z,q\ge0,n-mq\ge0\}$ contains $n$, so it has a smallest element $a=n-mq_0$. If $a\ge m$, then $a-m=n-m(q_0+1)\in A$ is smaller, a contradiction. So $0\le a\lt m$ and $mq_0+a=n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Uniqueness exactly as in Aufgabe 5.</p></div><div class="sp-formal"><p>If $mq+a=n=mq'+a'$ with $0\le a,a'\lt m$, then $a-a'$ is a multiple of $m$ of absolute value $\lt m$, so $a=a'$ and $q=q'$. So $\cdot_m$ is a well-defined operation on $\mathbb Z_m$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Name the remainder $\rho(n)$ for any $n\ge0$; the proof of (a) used only $n\ge0$.</p></div><div class="sp-formal"><p><strong>(b)</strong> For $n\ge0$ let $\rho(n)$ be the unique $a$ from (a). Then $\rho(n)=n$ for $0\le n\lt m$, and $\bar k+_m\bar l=\overline{\rho(k+l)}$, $\bar k\cdot_m\bar l=\overline{\rho(kl)}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Helper 1: adding multiples of $m$ does not change the remainder.</p></div><div class="sp-formal"><p><strong>Helper 1.</strong> If $n=mQ+Y$ with $n,Y,Q\ge0$, then $\rho(n)=\rho(Y)$. Indeed $Y=mQ'+\rho(Y)$, so $n=m(Q+Q')+\rho(Y)$ with $0\le\rho(Y)\lt m$; uniqueness gives $\rho(n)=\rho(Y)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Helper 2: remainders may be taken early, in sums and products. Expand and apply Helper 1.</p></div><div class="sp-formal"><p><strong>Helper 2.</strong> For $r,s\ge0$: $\rho(r+s)=\rho(\rho(r)+\rho(s))$ and $\rho(rs)=\rho(\rho(r)\rho(s))$. Write $r=mq_1+\rho(r)$, $s=mq_2+\rho(s)$. Then $r+s=m(q_1+q_2)+(\rho(r)+\rho(s))$ and $rs=m(mq_1q_2+q_1\rho(s)+q_2\rho(r))+\rho(r)\rho(s)$, all terms $\ge0$; apply Helper 1.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Commutativity and associativity of $\cdot_m$: both sides are the remainder of the same integer.</p></div><div class="sp-formal"><p>$\bar k\cdot_m\bar l=\overline{\rho(kl)}=\overline{\rho(lk)}=\bar l\cdot_m\bar k$. For $0\le k,l,n\lt m$: $(\bar k\cdot_m\bar l)\cdot_m\bar n=\overline{\rho(\rho(kl)\rho(n))}=\overline{\rho((kl)n)}$ and $\bar k\cdot_m(\bar l\cdot_m\bar n)=\overline{\rho(k(ln))}$, and $(kl)n=k(ln)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Distributive law (the official hint): both sides become $\rho(nk+nl)$.</p></div><div class="sp-formal"><p>$\bar n\cdot_m(\bar k+_m\bar l)=\overline{\rho(\rho(n)\rho(k+l))}=\overline{\rho(n(k+l))}=\overline{\rho(nk+nl)}$, and $(\bar n\cdot_m\bar k)+_m(\bar n\cdot_m\bar l)=\overline{\rho(\rho(nk)+\rho(nl))}=\overline{\rho(nk+nl)}$. The other law follows by commutativity.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The one. ($\mathbb Z_1=\{\bar0\}$ is the zero ring, where $\bar0$ is also the one.)</p></div><div class="sp-formal"><p>For $m\ge2$, $\bar1\cdot_m\bar k=\overline{\rho(k)}=\bar k$. For $m=1$, $\bar0$ is both zero and one. With Aufgabe 5, $(\mathbb Z_m,+_m,\cdot_m)$ is a commutative ring.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(c) A field has $0\ne1$ and no two non-zero elements with product $0$. Split $m=1$ and composite $m$.</p></div><div class="sp-formal"><p><strong>(c)</strong> If $m=1$, $\mathbb Z_1=\{\bar0\}$ has zero $=$ one, but a field has at least two elements. If $m\ge2$ is not prime, $m=kl$ with $1\lt k,l\lt m$. Then $\bar k,\bar l\ne\bar0$, but $\bar k\cdot_m\bar l=\overline{\rho(m)}=\bar0$. Either way $\mathbb Z_m$ is not a field.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(d) What is left for a field: $\bar0\ne\bar1$, inverses, and closure of $\mathbb Z_m\setminus\{\bar0\}$. Start with inverses via pigeonhole (the official hint).</p></div><div class="sp-formal"><p><strong>(d)</strong> Let $m$ be prime, so $m\ge2$ and $\bar0\ne\bar1$. Fix $\bar k\ne\bar0$, i.e. $1\le k\le m-1$, and let $r_k:\mathbb Z_m\to\mathbb Z_m$, $\bar x\mapsto\bar x\cdot_m\bar k$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Injective: equal products mean $m$ divides $(x-y)k$; a prime that does not divide $k$ divides $x-y$.</p></div><div class="sp-formal"><p>If $\bar x\cdot_m\bar k=\bar y\cdot_m\bar k$ with $0\le y\le x\lt m$, then $xk$ and $yk$ have the same remainder, so $m$ divides $xk-yk=(x-y)k$. Since $m$ is prime and $m\nmid k$, $m\mid x-y$. With $0\le x-y\lt m$ this gives $x=y$. So $r_k$ is injective.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Pigeonhole: injective on a finite set means surjective. So $\bar1$ is hit.</p></div><div class="sp-formal"><p>An injective map from the finite set $\mathbb Z_m$ to itself is surjective (pigeonhole principle). So there is $\bar c$ with $\bar c\cdot_m\bar k=\bar1$: every $\bar k\ne\bar0$ has an inverse.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Closure: a product of non-zero elements is non-zero, else multiply by an inverse.</p></div><div class="sp-formal"><p>If $\bar k,\bar l\ne\bar0$ and $\bar k\cdot_m\bar l=\bar0$, then with $\bar c\bar k=\bar1$: $\bar l=(\bar c\bar k)\bar l=\bar c(\bar k\bar l)=\bar c\cdot_m\bar0=\bar0$, a contradiction. So $(\mathbb Z_m\setminus\{\bar0\},\cdot_m)$ is an abelian group, and $\mathbb Z_m$ is a field. <span class="qed">∎</span></p></div></div>
+</div>
+<details><summary>The official route for (d): Bézout</summary><div><p>The official solution builds the inverse directly. Let $d$ be the smallest positive number of the form $uk+vm$ ($u,v\in\mathbb Z$). Division with remainder shows that $d$ divides $k$ and $m$; since $m$ is prime and $m\nmid k$, $d=1$. So $uk+vm=1$, and after shifting $u$ by a multiple of $m$ to make it non-negative, $\overline{\rho(u)}$ is the inverse of $\bar k$. The official solution also mentions the pigeonhole route used above. Both are correct; the pigeonhole route is shorter and is the one the lecture hinted at.</p></div></details>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>In (d), using Euclid's lemma for $m$ but forgetting that it needs $m$ prime: in $\mathbb Z_6$, $\bar2\cdot\bar3=\bar0=\bar0\cdot\bar3$, so $r_3$ is not injective: $6$ divides $(2-0)\cdot3$ without dividing $2$. And in (c), forgetting the case $m=1$.</p></div>
+
+<!-- ============ Aufgabe 9 ============ -->
+<h2 id="a9">Aufgabe 9 · A field with four elements</h2>
+<div class="box task"><p>Define on $K=\{0,1,a,b\}$ two operations $+$ and $\cdot$ such that $(K,+,\cdot)$ is a field with $0$ and $1$ as neutral elements for $+$ and $\cdot$.</p></div>
+<p class="tsum"><strong>In short:</strong> Not $\mathbb Z_4$! Addition: every element is its own negative. Multiplication: $a\cdot a=b$, $a\cdot b=1$, $b\cdot b=a$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The obvious guess, the clock $\mathbb Z_4$, fails: $\bar2\cdot\bar2=\bar0$ (Aufgabe 8 (c)). The right field adds like two light switches ($\mathcal P(\{1,2\})$ under $\triangle$, so $x+x=0$) and multiplies like a three-hour clock on the non-zero elements ($1,a,b$ behave like $\bar0,\bar1,\bar2$ in $(\mathbb Z_3,+)$). Matching the tables to known groups proves the group axioms without checking all 64 triples; only the distributive law needs a short check by hand.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-01.html#s7-fields-everything-except-zero-can">Lesson 1, section 7</a>: a field is a commutative ring in which $(K\setminus\{0\},\cdot)$ is an abelian group. In particular $0\ne1$, every $x\ne0$ has an inverse, and a product of non-zero elements is non-zero. <a href="linalg-04.html#s8-two-more-fields-and">Lesson 4, section 8</a> ($\mathbb F_4$). <a href="serie-l00.html#a4">Serie 0, Aufgabe 4</a> and <a href="serie-l00.html#a5">Aufgabe 5</a>.</p></div></details>
+<details><summary>Hint 1</summary><div><p>Not $\mathbb Z_4$: there $\bar2\cdot\bar2=\bar0$ (Aufgabe 8 (c)). Instead make every element its own negative, $x+x=0$ (a field with four elements must have characteristic 2, <a href=\"linalg-04.html#s7-the-characteristic-of-a-field\">lesson 4, section 7</a>). Then $1+a$ can only be $b$, and the addition table is fixed.</p></div></details>
+<details><summary>Hint 2</summary><div><p>Multiplication on $\{1,a,b\}$ is a group with 3 elements, so it must be $a\cdot a=b$, $a\cdot b=1$, $b\cdot b=a$ (if $a\cdot a=1$, then $a\cdot b$ has nowhere to go). Then prove the group laws by matching with $\mathcal P(\{1,2\})$ and $\mathbb Z_3$, and check distributivity by cases.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="tblwrap"><table class="tbl" aria-label="Addition table of K"><tr><th>$+$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr><tr><th>$0$</th><td>$0$</td><td>$1$</td><td>$a$</td><td>$b$</td></tr><tr><th>$1$</th><td>$1$</td><td>$0$</td><td>$b$</td><td>$a$</td></tr><tr><th>$a$</th><td>$a$</td><td>$b$</td><td>$0$</td><td>$1$</td></tr><tr><th>$b$</th><td>$b$</td><td>$a$</td><td>$1$</td><td>$0$</td></tr></table>
+<table class="tbl" aria-label="Multiplication table of K"><tr><th>$\cdot$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr><tr><th>$0$</th><td>$0$</td><td>$0$</td><td>$0$</td><td>$0$</td></tr><tr><th>$1$</th><td>$0$</td><td>$1$</td><td>$a$</td><td>$b$</td></tr><tr><th>$a$</th><td>$0$</td><td>$a$</td><td>$b$</td><td>$1$</td></tr><tr><th>$b$</th><td>$0$</td><td>$b$</td><td>$1$</td><td>$a$</td></tr></table></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Define the two tables. Both are symmetric, so both operations are commutative; $0$ and $1$ are neutral by the first rows.</p></div><div class="sp-formal"><p>Define $+$ and $\cdot$ by the two tables above. Both tables are symmetric about the diagonal, so $+$ and $\cdot$ are commutative; $0$ is neutral for $+$ and $1$ for $\cdot$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$(K,+)$: the table is the table of $\triangle$ on $\mathcal P(\{1,2\})$ under a renaming. Group laws transfer through a bijection.</p></div><div class="sp-formal"><p>Let $\varphi:K\to\mathcal P(\{1,2\})$, $\varphi(0)=\emptyset$, $\varphi(1)=\{1\}$, $\varphi(a)=\{2\}$, $\varphi(b)=\{1,2\}$. Comparing tables, $\varphi(x+y)=\varphi(x)\mathbin\triangle\varphi(y)$ for all $x,y$. Since $(\mathcal P(\{1,2\}),\triangle)$ is an abelian group (Serie 0, Aufgabe 4) and $\varphi$ is bijective, $(K,+)$ is one too; e.g. $\varphi((x+y)+z)=\varphi(x)\mathbin\triangle\varphi(y)\mathbin\triangle\varphi(z)=\varphi(x+(y+z))$, and $\varphi$ is injective.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$(K\setminus\{0\},\cdot)$: the table on $\{1,a,b\}$ is $(\mathbb Z_3,+_3)$ under a renaming.</p></div><div class="sp-formal"><p>Let $\psi:K\setminus\{0\}\to\mathbb Z_3$, $\psi(1)=\bar0$, $\psi(a)=\bar1$, $\psi(b)=\bar2$. Then $\psi(x\cdot y)=\psi(x)+_3\psi(y)$ for all $x,y\ne0$ (e.g. $a\cdot b=1$ and $\bar1+\bar2=\bar0$). No $0$ appears in those rows, so $K\setminus\{0\}$ is closed, and as above $(K\setminus\{0\},\cdot)$ is an abelian group by Aufgabe 5.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Associativity of $\cdot$ on all of $K$: any product with a $0$ is $0$ on both sides.</p></div><div class="sp-formal"><p>Since $0\cdot x=x\cdot0=0$, if one of $x,y,z$ is $0$ then $(x\cdot y)\cdot z=0=x\cdot(y\cdot z)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Distributive law: reduce the cases, then check the six that are left.</p></div><div class="sp-formal"><p>We show $x(y+z)=xy+xz$. It holds if $x\in\{0,1\}$; if $y=z$ (both sides $0$, since $u+u=0$); if $y=0$ or $z=0$; and it is symmetric in $y,z$. Left: $x\in\{a,b\}$, $\{y,z\}\in\{\{1,a\},\{1,b\},\{a,b\}\}$: </p><div class="tblwrap"><table class="tbl"><tr><th>$x$</th><th>$y$</th><th>$z$</th><th>$x(y+z)$</th><th>$xy+xz$</th></tr><tr><td>$a$</td><td>$1$</td><td>$a$</td><td>$a\cdot b=1$</td><td>$a+b=1$</td></tr><tr><td>$a$</td><td>$1$</td><td>$b$</td><td>$a\cdot a=b$</td><td>$a+1=b$</td></tr><tr><td>$a$</td><td>$a$</td><td>$b$</td><td>$a\cdot1=a$</td><td>$b+1=a$</td></tr><tr><td>$b$</td><td>$1$</td><td>$a$</td><td>$b\cdot b=a$</td><td>$b+1=a$</td></tr><tr><td>$b$</td><td>$1$</td><td>$b$</td><td>$b\cdot a=1$</td><td>$b+a=1$</td></tr><tr><td>$b$</td><td>$a$</td><td>$b$</td><td>$b\cdot1=b$</td><td>$1+a=b$</td></tr></table></div><p> In each row the two results agree.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Finally $0\ne1$.</p></div><div class="sp-formal"><p>And $0\ne1$. So $(K,+,\cdot)$ is a field with four elements. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> $\{0,1\}$ is the field $\mathbb Z_2$, and $a\cdot a=b=a+1$, so $a$ is a zero of $X^2+X+1$. The field $\mathbb F_4$ is $\mathbb Z_2$ with such a zero added, like $\mathbb C$ is $\mathbb R$ with a zero of $X^2+1$ added.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Answering with $\mathbb Z_4$: it is a ring, but $\bar2\cdot\bar2=\bar0$, so $\bar2$ has no inverse. Also: giving tables without checking distributivity; the group laws alone do not make a field.</p></div>
+<nav class="site foot" aria-label="Sheet navigation">
+<a href="serie-l00.html">← Serie 0: Abelian groups</a>
+<a href="linalg.html#serien">Linear Algebra home</a>
+<a href="serie-l02.html">Serie 2: Vector spaces →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
