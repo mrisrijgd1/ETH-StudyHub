@@ -92,7 +92,7 @@
    with every solution and hint unfolded (the browser's print dialog offers "Save as PDF"). */
 (function () {
   var page = (location.pathname.split('/').pop() || '');
-  if (!/^(lesson|phys|refresher|serie|linalg|inf)-[a-z0-9]+\.html$/.test(page) || page === 'inf-method.html' || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html' || page === 'linalg-plan.html' || page === 'linalg-script.html') return;
+  if (!/^(lesson|phys|refresher|serie|linalg|inf)-[a-z0-9]+\.html$/.test(page) || page === 'inf-method.html' || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html' || page === 'linalg-plan.html' || page === 'linalg-script.html' || page === 'linalg-exams.html') return;
   var DE = document.documentElement.lang === 'de';
   function go() {
     var main = document.querySelector('main'); if (!main) return;

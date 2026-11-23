@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Linear Algebra recipes">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=prv1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=pri1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linear Algebra recipes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=pri1123">
+<script defer src="assets/studyhub.js?v=la1123d"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.rcard{border-left:4px solid var(--accent,#5b5bd6);margin:1rem 0}.rcard h3{margin-top:0}.rcard ol{padding-left:1.3rem}.rcard ol li{margin:.3rem 0}
+.rwhen{font-size:.95rem}.rsee{font-size:.9rem;opacity:.9;margin-bottom:0}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}
+.gl{border-collapse:collapse;width:100%;font-size:.95rem}.gl td,.gl th{border-bottom:1px solid color-mix(in srgb,currentColor 14%,transparent);padding:.35rem .4rem;text-align:left;vertical-align:top}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Recipes</span>
+<h1>Linear Algebra recipes</h1>
+<p class="lead">16 calculations the exams ask again and again, each as a short recipe: when you need it, the steps, a check, and one small example. The proofs and the theory are in the lessons; this page is for doing.</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read one recipe and redo its example on paper without looking. Five minutes. That counts.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can do each example from the steps alone, and for each exam problem you can name which recipe it needs.</dd></div>
+<div><dt>Time</dt><dd>About 10 minutes per recipe; all 16 in three or four sittings.</dd></div>
+<div><dt>When</dt><dd>Each recipe after its lesson (named on the card), then all of them before the <a href="linalg-exams.html">old exams</a>.</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong> Recommended: find the words of the exam question in the table, open that recipe, and follow the steps. The recipes follow the methods of the lessons and of Script EN 2023; the examples are written by StudyHub and checked by computer.</p>
+<table class="gl"><thead><tr><th>The exam says</th><th>Recipe</th></tr></thead><tbody><tr><td>Zeigen Sie, dass … ein Unterraum ist</td><td><a href="#recipe-subspace">Is it a subspace?</a></td></tr><tr><td>linear unabhängig? Basis? im Erzeugnis?</td><td><a href="#recipe-independent">Independent? A basis? In the span?</a></td></tr><tr><td>Koordinaten, $[v]_B$</td><td><a href="#recipe-coordinates">Coordinates in a basis</a></td></tr><tr><td>Ergänzen Sie zu einer Basis</td><td><a href="#recipe-extend">Extend to a basis</a></td></tr><tr><td>$U\cap W$, $U+W$</td><td><a href="#recipe-sumint">Sum and intersection of two subspaces</a></td></tr><tr><td>Zeigen Sie, dass $T$ linear ist</td><td><a href="#recipe-islinear">Is the map linear?</a></td></tr><tr><td>$T(b_1)=\dots$ gegeben, bestimmen Sie $T(v)$</td><td><a href="#recipe-value">The value of a map known on a basis</a></td></tr><tr><td>Darstellungsmatrix</td><td><a href="#recipe-matrix">The matrix of a linear map</a></td></tr><tr><td>Basiswechsel</td><td><a href="#recipe-changebasis">Change of basis</a></td></tr><tr><td>Kern, Bild, Rang</td><td><a href="#recipe-kerim">Kernel, image and rank</a></td></tr><tr><td>duale Basis, Annullator</td><td><a href="#recipe-dualbasis">Dual basis and annihilator</a></td></tr><tr><td>für welche $\lambda$ lösbar? Rang in Abhängigkeit von $t$</td><td><a href="#recipe-param">A system or a rank with a parameter</a></td></tr><tr><td>Inverse</td><td><a href="#recipe-inverse">The inverse matrix (Gauss–Jordan)</a></td></tr><tr><td>LR-Zerlegung</td><td><a href="#recipe-lr">LR decomposition</a></td></tr><tr><td>Determinante</td><td><a href="#recipe-det">Computing a determinant</a></td></tr><tr><td>Eigenwerte, diagonalisierbar</td><td><a href="#recipe-eigen">Eigenvalues, eigenvectors, diagonalising</a></td></tr></tbody></table></div>
+<h2 id="vectors">Vectors and subspaces</h2>
+<p>The first half of the course: almost every exam has at least one of these.</p>
+<div class="box rcard"><h3 id="recipe-subspace">Is it a subspace?</h3>
+<p class="rwhen"><strong>When:</strong> “Show that $U$ is a subspace” (“Zeigen Sie, dass … ein Unterraum ist”), or a true/false statement about a set.</p>
+<ol><li>Check $0\in U$. If $0\notin U$, stop: it is not a subspace.</li><li>Take arbitrary $u,w\in U$ and show $u+w\in U$, using only what membership in $U$ means.</li><li>Take arbitrary $u\in U$, $\lambda\in K$ and show $\lambda u\in U$.</li><li>To show it is <em>not</em> a subspace: one concrete counterexample to one of the three conditions is enough.</li></ol>
+<p><strong>Check:</strong> Kernels, preimages of subspaces, intersections and spans are always subspaces; a union of two subspaces almost never is.</p>
+<details><summary>Example</summary><div><p>$U=\{(x,y,z)\in\mathbb R^3: x+2y-z=0\}$.</p><ol><li>$0+0-0=0$, so $0\in U$.</li><li>If $x+2y-z=0$ and $x'+2y'-z'=0$, adding gives $(x+x')+2(y+y')-(z+z')=0$.</li><li>Multiplying $x+2y-z=0$ by $\lambda$ gives $\lambda x+2\lambda y-\lambda z=0$. So $U$ is a subspace.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-05.html#s6-subspaces">lesson 5, section 6</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-independent">Independent? A basis? In the span?</h3>
+<p class="rwhen"><strong>When:</strong> “Show that $v_1,\dots,v_k$ form a basis”, “is $w$ in the span?”, “are these linearly independent?”</p>
+<ol><li>Write the vectors as the columns of a matrix (polynomials or matrices: use their coordinate vectors in a standard basis).</li><li>Row reduce to echelon form.</li><li>Independent $\iff$ every column has a pivot. In the span of the columns: append $w$ as an extra column and check that it gets no pivot.</li><li>A basis of $K^n$: $n$ vectors that are independent (or that span). With exactly $n=\dim V$ vectors, one of the two is enough.</li></ol>
+<p><strong>Check:</strong> If a column has no pivot, read off the dependence from the reduced form and test it on the original vectors.</p>
+<details><summary>Example</summary><div><p>$v_1=(1,2,1)$, $v_2=(2,1,0)$, $v_3=(0,3,2)$ in $\mathbb R^3$.</p><ol><li>Columns $v_1,v_2,v_3$; after elimination only two pivots, so the rank is 2.</li><li>The third column is not a pivot column: $v_3=2v_1-v_2$ (check: $(2,4,2)-(2,1,0)=(0,3,2)$).</li><li>Dependent, so not a basis of $\mathbb R^3$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-06.html#s3-is-in-the-span-solve">lesson 6, sections 3–4</a>, <a href="linalg-16.html#s6-one-elimination-four-answers">lesson 16, section 6</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-coordinates">Coordinates in a basis</h3>
+<p class="rwhen"><strong>When:</strong> “Determine $[v]_B$”, or the first step of almost every matrix-of-a-map question.</p>
+<ol><li>Write $v=a_1b_1+\dots+a_nb_n$ with unknown $a_i$.</li><li>Compare components: this is a linear system in $a_1,\dots,a_n$.</li><li>Solve it. Because $B$ is a basis, the solution exists and is unique.</li></ol>
+<p><strong>Check:</strong> Put the numbers back: $a_1b_1+\dots+a_nb_n$ must give $v$.</p>
+<details><summary>Example</summary><div><p>$B=((1,1),(1,-1))$, $v=(3,1)$.</p><ol><li>$a(1,1)+b(1,-1)=(3,1)$ gives $a+b=3$, $a-b=1$.</li><li>$a=2$, $b=1$, so $[v]_B=(2,1)$. Check: $2(1,1)+(1,-1)=(3,1)$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-06.html#s5-bases-and-coordinates">lesson 6, section 5</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-extend">Extend to a basis</h3>
+<p class="rwhen"><strong>When:</strong> “Ergänzen Sie zu einer Basis”: complete given independent vectors to a basis of $V$.</p>
+<ol><li>Count: you need $\dim V-k$ more vectors.</li><li>Try standard basis vectors (or $1,x,x^2,\dots$) one at a time; keep a vector if it is not in the span of the ones you have.</li><li>Faster: write your $k$ vectors as rows, row reduce; the columns <em>without</em> a pivot tell you which standard vectors $e_j$ to add.</li></ol>
+<p><strong>Check:</strong> With $n$ vectors in an $n$-dimensional space, independence is enough: check the determinant of the square matrix is not $0$.</p>
+<details><summary>Example</summary><div><p>Extend $(1,1,0),(0,1,1)$ to a basis of $\mathbb R^3$.</p><ol><li>One vector is missing. As rows, the two vectors are already in echelon form, with pivots in columns 1 and 2. Column 3 has none, so add $e_3=(0,0,1)$.</li><li>Check: the three rows form a triangular matrix with diagonal $1,1,1$, so the determinant is $1\neq0$ and they are a basis.</li><li>Also fine: $e_1=(1,0,0)$, since $\det\begin{pmatrix}1&amp;1&amp;0\\0&amp;1&amp;1\\1&amp;0&amp;0\end{pmatrix}=1\neq0$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-07.html#s4-dimension">lesson 7, section 4</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-sumint">Sum and intersection of two subspaces</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie eine Basis von $U\cap W$ und $U+W$.”</p>
+<ol><li>Intersection: put the equations of $U$ and of $W$ together and solve the joint system. If a subspace is given by a spanning set, first turn it into equations, or solve $\sum a_iu_i=\sum b_jw_j$.</li><li>Sum: put all spanning vectors of $U$ and $W$ together and thin them out to a basis (recipe “Independent?”).</li><li>Use the dimension formula $\dim(U+W)=\dim U+\dim W-\dim(U\cap W)$ to check, or to skip one of the two computations.</li></ol>
+<p><strong>Check:</strong> The dimensions must satisfy the formula, and $\dim(U+W)\le\dim V$.</p>
+<details><summary>Example</summary><div><p>$U:x+y+z=0$ and $W:x-y=0$ in $\mathbb R^3$.</p><ol><li>Joint system: $x=y$ and $z=-2x$, so $U\cap W=\langle(1,1,-2)\rangle$, dimension 1.</li><li>Formula: $\dim(U+W)=2+2-1=3$, so $U+W=\mathbb R^3$ without any further work.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-08.html#s3-the-dimension-formula">lesson 8, sections 2–3</a>.</p></div>
+<h2 id="maps">Linear maps and matrices</h2>
+<p>The middle of the course: the matrix of a map is the most frequent single exam task.</p>
+<div class="box rcard"><h3 id="recipe-islinear">Is the map linear?</h3>
+<p class="rwhen"><strong>When:</strong> “Zeigen Sie, dass $T$ linear ist.” Usually 2–4 points, often the first part of a longer problem.</p>
+<ol><li>Quick test first: if $T(0)\neq0$, it is not linear, done.</li><li>Take arbitrary $v,w$ and show $T(v+w)=T(v)+T(w)$ by writing out the definition of $T$.</li><li>Take arbitrary $v$, $\lambda$ and show $T(\lambda v)=\lambda T(v)$.</li><li>Write each step as a chain of equalities and say which rule you use (derivative of a sum, matrix product distributes, …).</li></ol>
+<p><strong>Check:</strong> Squares, products of two coordinates, constants and absolute values usually break linearity.</p>
+<details><summary>Example</summary><div><p>$T:\mathbb R[x]_{\le3}\to\mathbb R[x]_{\le3}$, $T(p)=x\,p'$ (FS17, problem 3).</p><ol><li>$T(p+q)=x(p+q)'=x\,p'+x\,q'=T(p)+T(q)$, since the derivative of a sum is the sum of the derivatives.</li><li>$T(\lambda p)=x(\lambda p)'=\lambda\,x\,p'=\lambda T(p)$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-11.html#s2-linear-maps">lesson 11, section 2</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-value">The value of a map known on a basis</h3>
+<p class="rwhen"><strong>When:</strong> “$T$ is the linear map with $T(b_1)=\dots$, $T(b_2)=\dots$. Determine $T(v)$.” (HS20, 2 (d))</p>
+<ol><li>Write $v$ in the basis: $v=a_1b_1+\dots+a_nb_n$ (recipe “Coordinates”).</li><li>By linearity, $T(v)=a_1T(b_1)+\dots+a_nT(b_n)$.</li></ol>
+<p><strong>Check:</strong> Test with $v=b_1$: you must get $T(b_1)$ back.</p>
+<details><summary>Example</summary><div><p>$T(1,1)=(2,0)$ and $T(1,-1)=(0,4)$. Find $T(3,1)$.</p><ol><li>$(3,1)=2(1,1)+1(1,-1)$.</li><li>$T(3,1)=2(2,0)+(0,4)=(4,4)$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-10.html#s3-a-functional-is-determined-by">lesson 10, section 3</a>, <a href="linalg-11.html#s3-a-linear-map-is-determined">lesson 11, section 3</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-matrix">The matrix of a linear map</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie die Darstellungsmatrix $[T]^B_C$.” In almost every exam, 4–6 points.</p>
+<ol><li>Apply $T$ to the first basis vector $b_1$ of $B$.</li><li>Write $T(b_1)$ in the basis $C$ (recipe “Coordinates”). These coordinates are the <strong>first column</strong>.</li><li>Repeat for $b_2,\dots,b_n$: column $j$ is $[T(b_j)]_C$.</li><li>The matrix has $\dim W$ rows and $\dim V$ columns.</li></ol>
+<p><strong>Check:</strong> Pick one vector $v$ and test $[T]^B_C[v]_B=[T(v)]_C$.</p>
+<details><summary>Example</summary><div><p>$T(p)=p'$ on $\mathbb R[x]_{\le2}$, $B=C=(1,x,x^2)$.</p><ol><li>$T(1)=0$, $T(x)=1$, $T(x^2)=2x$.</li><li>In $C$: $(0,0,0)$, $(1,0,0)$, $(0,2,0)$. So $$[T]^B_B=\begin{pmatrix}0&amp;1&amp;0\\0&amp;0&amp;2\\0&amp;0&amp;0\end{pmatrix}.$$</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-11.html#s6-coordinates-and-the-matrix">lesson 11, section 6</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-changebasis">Change of basis</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie die Basiswechselmatrix”, or the matrix of $T$ in a new basis.</p>
+<ol><li>The transition matrix $Q=[\mathrm{Id}]^{B'}_B$ has the <strong>new</strong> basis vectors, written in the old basis, as its columns.</li><li>For a map $T:V\to V$: $[T]_{B'}=Q^{-1}[T]_BQ$. Read right to left: translate in, apply, translate out.</li><li>Between two spaces: $[T]^{B'}_{C'}=[\mathrm{Id}_W]^C_{C'}[T]^B_C[\mathrm{Id}_V]^{B'}_B$.</li></ol>
+<p><strong>Check:</strong> The trace and the determinant do not change: $[T]_{B'}$ and $[T]_B$ must have the same ones.</p>
+<details><summary>Example</summary><div><p>$A=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}$ in the standard basis, new basis $B'=((1,1),(1,-1))$.</p><ol><li>$Q=\begin{pmatrix}1&amp;1\\1&amp;-1\end{pmatrix}$ and $Q^{-1}=\tfrac12\begin{pmatrix}1&amp;1\\1&amp;-1\end{pmatrix}$.</li><li>$Q^{-1}AQ=\begin{pmatrix}3&amp;0\\0&amp;1\end{pmatrix}$. Trace $4$ and determinant $3$ on both sides.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-13.html#s4-the-matrix-of-a-map-in-new-bases">lesson 13, sections 2–4</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-kerim">Kernel, image and rank</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie Kern und Bild”, “den Rang”, “eine Basis des Kerns”. In every exam.</p>
+<ol><li>Row reduce $A$ to (reduced) echelon form.</li><li>Rank = number of pivots.</li><li>Kernel: solve $Ax=0$ from the echelon form; one basis vector per free variable (set it to 1, the other free ones to 0).</li><li>Image: the columns of the <strong>original</strong> $A$ at the pivot positions are a basis of $\mathrm{Im}\,A$.</li></ol>
+<p><strong>Check:</strong> Rank–nullity: $\dim\mathrm{Ker}+\mathrm{rank}=$ number of columns. And $A$ times each kernel vector must be $0$.</p>
+<details><summary>Example</summary><div><p>$A=\begin{pmatrix}1&amp;2&amp;1\\2&amp;4&amp;0\end{pmatrix}$.</p><ol><li>Reduced form $\begin{pmatrix}1&amp;2&amp;0\\0&amp;0&amp;1\end{pmatrix}$: pivots in columns 1 and 3, rank 2.</li><li>Free variable $x_2=1$: kernel $\langle(-2,1,0)\rangle$.</li><li>Image: columns 1 and 3 of $A$, $(1,2)$ and $(1,0)$, so $\mathrm{Im}\,A=\mathbb R^2$. Check: $1+2=3$ columns.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-15.html#s3-the-rank-nullity-theorem">lesson 15, section 3</a>, <a href="linalg-16.html#s6-one-elimination-four-answers">lesson 16, section 6</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-dualbasis">Dual basis and annihilator</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie die duale Basis”, “the basis $B$ whose dual basis is …”, “a basis of $U^0$”.</p>
+<ol><li>Dual basis of a basis of $K^n$: put the basis vectors as the columns of $P$. The rows of $P^{-1}$ are the dual basis functionals.</li><li>Given functionals, find the basis they are dual to: put the functionals as the rows of a matrix $F$; the columns of $F^{-1}$ are the basis.</li><li>Annihilator of $U=\langle u_1,\dots,u_k\rangle\subseteq K^n$: functionals $f(x)=a_1x_1+\dots+a_nx_n$ with $f(u_i)=0$ for all $i$. Solve for $a$; $\dim U^0=n-\dim U$.</li></ol>
+<p><strong>Check:</strong> Each dual functional must give $1$ on its own basis vector and $0$ on the others.</p>
+<details><summary>Example</summary><div><p>Dual basis of $((1,1),(1,-1))$.</p><ol><li>$P=\begin{pmatrix}1&amp;1\\1&amp;-1\end{pmatrix}$, $P^{-1}=\tfrac12\begin{pmatrix}1&amp;1\\1&amp;-1\end{pmatrix}$.</li><li>$f_1(x,y)=\tfrac12(x+y)$, $f_2(x,y)=\tfrac12(x-y)$. Check: $f_1(1,1)=1$, $f_1(1,-1)=0$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-10.html#s6-computing-a-dual-basis">lesson 10, section 6</a>, <a href="linalg-14.html#s5-the-annihilator">lesson 14, section 5</a>.</p></div>
+<h2 id="systems">Linear systems</h2>
+<p>Pure calculation, so these are the safest points in the exam.</p>
+<div class="box rcard"><h3 id="recipe-param">A system or a rank with a parameter</h3>
+<p class="rwhen"><strong>When:</strong> “Für welche Werte von $\lambda$ ist das System lösbar / eindeutig lösbar?”, “den Rang in Abhängigkeit von $t$”. 7–15 points.</p>
+<ol><li>Write the augmented matrix $(A\,|\,b)$ and eliminate. Swap rows so the parameter ends up as late as possible.</li><li>Never divide by an expression that can be $0$ (like $t-1$) without splitting into cases first.</li><li>Solvable $\iff$ no row $(0\cdots0\,|\,c)$ with $c\neq0$, that is $\mathrm{rank}\,A=\mathrm{rank}(A|b)$. Unique $\iff$ also rank $=$ number of unknowns.</li><li>All solutions $=$ one particular solution $+$ the kernel of $A$.</li><li>Answer each case separately, in a sentence.</li></ol>
+<p><strong>Check:</strong> Plug the special values back into the original system.</p>
+<details><summary>Example</summary><div><p>$x+y=1$, $x+ty=2$.</p><ol><li>Second row minus first: $(t-1)y=1$.</li><li>Case $t=1$: $0=1$, no solution.</li><li>Case $t\neq1$: $y=\frac1{t-1}$, $x=1-y=\frac{t-2}{t-1}$, exactly one solution.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-17.html#s2-solution-sets">lesson 17, section 2</a>, <a href="linalg-16.html#s3-echelon-form">lesson 16, section 3</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-inverse">The inverse matrix (Gauss–Jordan)</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie die Inverse”, often as a 4-point short answer.</p>
+<ol><li>Write $(A\,|\,I_n)$.</li><li>Row reduce the left half to $I_n$, doing every operation on the whole row.</li><li>The right half is now $A^{-1}$. If a zero row appears on the left, $A$ is not invertible.</li></ol>
+<p><strong>Check:</strong> Multiply: $AA^{-1}=I_n$. For $2\times2$: $\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}^{-1}=\frac1{ad-bc}\begin{pmatrix}d&amp;-b\\-c&amp;a\end{pmatrix}$.</p>
+<details><summary>Example</summary><div><p>$A=\begin{pmatrix}1&amp;2\\3&amp;5\end{pmatrix}$.</p><ol><li>$R_2-3R_1$: $\left(\begin{smallmatrix}1&amp;2&amp;|&amp;1&amp;0\\0&amp;-1&amp;|&amp;-3&amp;1\end{smallmatrix}\right)$; then $R_2\cdot(-1)$ and $R_1-2R_2$.</li><li>$A^{-1}=\begin{pmatrix}-5&amp;2\\3&amp;-1\end{pmatrix}$. Check with the $2\times2$ formula: $ad-bc=-1$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-17.html#proof-f">lesson 17, Proof F</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-lr">LR decomposition</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie eine LR-Zerlegung und lösen Sie damit $Av=b$.” (FS18, problem 5)</p>
+<ol><li>Eliminate below the diagonal without swapping rows. $R$ is the upper triangular result.</li><li>$L$ is lower triangular with 1 on the diagonal; below it, entry $(i,j)$ is the multiple of row $j$ you subtracted from row $i$.</li><li>To solve $Av=b$: first $Ly=b$ from the top down, then $Rv=y$ from the bottom up.</li></ol>
+<p><strong>Check:</strong> Multiply $LR$: you must get $A$ back.</p>
+<details><summary>Example</summary><div><p>$A=\begin{pmatrix}2&amp;1\\4&amp;5\end{pmatrix}$.</p><ol><li>$R_2-2R_1$ gives $R=\begin{pmatrix}2&amp;1\\0&amp;3\end{pmatrix}$; the multiplier 2 goes into $L=\begin{pmatrix}1&amp;0\\2&amp;1\end{pmatrix}$.</li><li>Check: $LR=\begin{pmatrix}2&amp;1\\4&amp;5\end{pmatrix}=A$.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-17.html#s4-elementary-matrices">lesson 17, section 4</a>.</p></div>
+<h2 id="det">Determinants and eigenvalues</h2>
+<p>The end of the course; every exam has a determinant, about half have eigenvalues.</p>
+<div class="box rcard"><h3 id="recipe-det">Computing a determinant</h3>
+<p class="rwhen"><strong>When:</strong> “Berechnen Sie $\det A$”, a short answer, or an $n\times n$ pattern to prove.</p>
+<ol><li>Small matrix: $2\times2$ formula, or Sarrus for $3\times3$.</li><li>Larger: row reduce to triangular form. Adding a multiple of a row changes nothing; a swap changes the sign; multiplying a row by $c$ multiplies the determinant by $c$. Then multiply the diagonal.</li><li>A row or column with many zeros: expand along it, with signs $(-1)^{i+j}$.</li><li>Pattern “$a$ on the diagonal, $b$ elsewhere”: add all columns to the first (every entry becomes $a+(n-1)b$), pull that out, subtract the first row from the others.</li><li>$n\times n$ with $n$ in it: compute $n=1,2,3$, guess, prove by induction with an expansion.</li></ol>
+<p><strong>Check:</strong> $\det(AB)=\det A\det B$, $\det A^T=\det A$, $\det(A^{-1})=1/\det A$; a matrix with two equal rows has determinant 0.</p>
+<details><summary>Example</summary><div><p>$A=\begin{pmatrix}a&amp;1&amp;1\\1&amp;a&amp;1\\1&amp;1&amp;a\end{pmatrix}$.</p><ol><li>Add columns 2 and 3 to column 1: every entry of column 1 is $a+2$; pull it out.</li><li>Subtract row 1 from rows 2 and 3: the triangular matrix has diagonal $1,\,a-1,\,a-1$.</li><li>$\det A=(a+2)(a-1)^2$. Check $a=1$: three equal rows, determinant 0.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-18.html#s3-the-axioms">lesson 18, section 3</a>, <a href="linalg-20.html#s3-expansion-adjugate-cramer">lesson 20, section 3</a>.</p></div>
+<div class="box rcard"><h3 id="recipe-eigen">Eigenvalues, eigenvectors, diagonalising</h3>
+<p class="rwhen"><strong>When:</strong> “Bestimmen Sie das charakteristische Polynom, die Eigenwerte und Eigenvektoren”, “ist $A$ diagonalisierbar?”</p>
+<ol><li>Characteristic polynomial: $p_A(x)=\det(A-xI_n)$. Its zeros in $K$ are the eigenvalues.</li><li>For each eigenvalue $\lambda$: the eigenspace is $\mathrm{Ker}(A-\lambda I_n)$ (recipe “Kernel”).</li><li>Diagonalisable $\iff$ there is a basis of eigenvectors, that is the eigenspace dimensions add up to $n$. $n$ different eigenvalues is enough.</li><li>Then $P$ = eigenvectors as columns, and $P^{-1}AP$ is diagonal with the eigenvalues in the same order.</li></ol>
+<p><strong>Check:</strong> Sum of the eigenvalues (with multiplicity) $=$ trace, product $=$ determinant. And $Av=\lambda v$ for each eigenvector you found.</p>
+<details><summary>Example</summary><div><p>$A=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}$.</p><ol><li>$p_A(x)=(2-x)^2-1=(x-1)(x-3)$, eigenvalues 1 and 3.</li><li>$\mathrm{Ker}(A-I_2)=\langle(1,-1)\rangle$, $\mathrm{Ker}(A-3I_2)=\langle(1,1)\rangle$.</li><li>Two different eigenvalues, so diagonalisable. Check: $1+3=4$ is the trace, $1\cdot3=3$ the determinant.</li></ol></div></details>
+<p class="rsee"><strong>Learn it in:</strong> <a href="linalg-21.html#the-recipe">lesson 21, the recipe</a>.</p></div>
+<nav class="site foot" aria-label="Page navigation">
+<a href="linalg-moves.html">← Proof techniques</a>
+<a href="linalg.html">Linear Algebra home</a>
+<a href="linalg-exams.html">Old exams →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
