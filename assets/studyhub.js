@@ -212,7 +212,8 @@
       [L('Kursmaterial', 'Course material'), [[L('Plan und Prüfungslandkarte', 'Plan and exam map'), 'linalg-plan.html'], [L('Skript', 'Script'), 'linalg-script.html']]]
     ] },
     informatik: { overview: 'informatik.html', lessons: 'informatik.html#lessons', practice: 'inf-method.html', resources: [
-      [L('Mehr üben', 'Practise more'), [[L('Aufgabenmethode', 'Task method'), 'inf-method.html']]]
+      [L('Mehr üben', 'Practise more'), [[L('Aufgabenmethode', 'Task method'), 'inf-method.html']]],
+      [L('Kursmaterial', 'Course material'), [[L('Ausgelassene Themen', 'Skipped topics'), 'skipped.html#informatik']]]
     ] },
     chemie: { lessons: 'chemie/#home', practice: 'chemie/#exams', resources: [
       ['', [[L('Wiederholen', 'Refresher'), 'chemie/#review'], [L('Materialien', 'Library'), 'chemie/#library']]]
@@ -548,7 +549,7 @@
   function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', a.tagName === 'A' ? 'page' : 'true'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
   const main = document.querySelector('main');
-  const lessonMatch = /^(lesson|phys|refresher|linalg|serie)-[ap]?\d+\.html$/.test(file);
+  const lessonMatch = /^(lesson|phys|refresher|linalg|serie|inf)-[ap]?\d+\.html$/.test(file);
   const publicLearningPage = fcApp || lessonMatch || /^(flashcards|practice|mock|moves|linalg-moves|tree|toolbox|skipped)\.html$/.test(file);
   const gate = document.createElement('section');
   gate.className = 'study-login-prompt';
@@ -629,10 +630,10 @@
     addEventListener('hashchange', () => requestAnimationFrame(rememberLesson));
   }
 
-  const continueKinds = ['analysis-lesson', 'physics-lesson', 'linalg-lesson', 'chemie-lesson', 'analysis-cards', 'physics-cards', 'chemie-cards', 'dive'];
+  const continueKinds = ['analysis-lesson', 'physics-lesson', 'linalg-lesson', 'informatik-lesson', 'chemie-lesson', 'analysis-cards', 'physics-cards', 'chemie-cards', 'dive'];
   const continueLabels = {
     'analysis-lesson': 'Analysis I', 'physics-lesson': L('Physik I', 'Physics I'),
-    'linalg-lesson': L('Lineare Algebra I', 'Linear Algebra I'), 'chemie-lesson': 'Chemie I (PC)',
+    'linalg-lesson': L('Lineare Algebra I', 'Linear Algebra I'), 'informatik-lesson': 'Informatik', 'chemie-lesson': 'Chemie I (PC)',
     'analysis-cards': L('Analysis-Lernkarten', 'Analysis flashcards'), 'physics-cards': L('Physik-Lernkarten', 'Physics flashcards'),
     'chemie-cards': L('Chemie-Lernkarten', 'Chemistry flashcards'), dive: 'Exam Dive'
   };
@@ -713,7 +714,8 @@
   const courseArt = {
     analysis: L('Eine Funktion und ihre Tangente', 'A function and its tangent'),
     physics: L('Wurfparabeln mit gleicher Anfangsgeschwindigkeit', 'Projectile paths at the same launch speed'),
-    linalg: L('Wie eine lineare Abbildung ein Gitter verändert', 'How a linear map transforms a grid')
+    linalg: L('Wie eine lineare Abbildung ein Gitter verändert', 'How a linear map transforms a grid'),
+    informatik: L('Ein Aufrufbaum: jeder Aufruf teilt sich in zwei kleinere', 'A call tree: each call splits into two smaller ones')
   };
 
   function drawCourseGraphic(canvas) {
@@ -736,9 +738,20 @@
     ctx.globalAlpha = 1;
     const axisX = subject === 'physics' ? 46 : 206;
     const axisY = subject === 'physics' ? 196 : 116;
-    trace([[26, axisY], [386, axisY]], muted);
-    trace([[axisX, 16], [axisX, 216]], muted);
-    if (subject === 'analysis') {
+    if (subject !== 'informatik') {
+      trace([[26, axisY], [386, axisY]], muted);
+      trace([[axisX, 16], [axisX, 216]], muted);
+    }
+    if (subject === 'informatik') {
+      // a binary call tree, three levels deep, with the path of one call highlighted
+      const node = (x, y, on) => { ctx.beginPath(); ctx.arc(x, y, on ? 7 : 5.5, 0, 2 * Math.PI); ctx.fillStyle = on ? accent : secondary; ctx.fill(); };
+      const grow = (x, y, dx, depth, on) => {
+        if (depth === 3) return node(x, y, on);
+        [-1, 1].forEach(s => { const lit = on && s < 0; trace([[x, y], [x + s * dx, y + 52]], lit ? accent : secondary, lit ? 3 : 1.5); grow(x + s * dx, y + 52, dx / 2, depth + 1, lit); });
+        node(x, y, on);
+      };
+      grow(206, 40, 88, 0, true);
+    } else if (subject === 'analysis') {
       const f = x => 126 - 40 * Math.tanh((x - 200) / 60) - .0007 * (x - 200) ** 2;
       trace(Array.from({ length: 71 }, (_, i) => [36 + 5 * i, f(36 + 5 * i)]), accent, 3);
       const x = 204, y = f(x), slope = (f(x + .01) - f(x - .01)) / .02;
@@ -764,9 +777,9 @@
   }
 
   function makeCourseOverview() {
-    if (!main || !courseArt[subject] || file !== ({ analysis: 'analysis.html', physics: 'physics.html', linalg: 'linalg.html' })[subject]) return;
+    if (!main || !courseArt[subject] || file !== ({ analysis: 'analysis.html', physics: 'physics.html', linalg: 'linalg.html', informatik: 'informatik.html' })[subject]) return;
     const intro = main.querySelector(':scope > header');
-    const lessonName = { analysis: 'lesson', physics: 'phys', linalg: 'linalg' }[subject];
+    const lessonName = { analysis: 'lesson', physics: 'phys', linalg: 'linalg', informatik: 'inf' }[subject];
     const lessonPath = new RegExp('/' + lessonName + '-\\d+\\.html$');
     const lessons = Array.from(main.querySelectorAll('.lessons > .lcard > a[href]')).filter(a => lessonPath.test(new URL(a.href).pathname));
     if (!intro || !lessons.length) return;

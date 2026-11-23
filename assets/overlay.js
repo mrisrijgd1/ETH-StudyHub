@@ -76,7 +76,7 @@
    with every solution and hint unfolded (the browser's print dialog offers "Save as PDF"). */
 (function () {
   var page = (location.pathname.split('/').pop() || '');
-  if (!/^(lesson|phys|refresher|serie|linalg)-[a-z0-9]+\.html$/.test(page) || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html' || page === 'linalg-plan.html' || page === 'linalg-script.html') return;
+  if (!/^(lesson|phys|refresher|serie|linalg|inf)-[a-z0-9]+\.html$/.test(page) || page === 'inf-method.html' || page === 'phys-docs.html' || page === 'phys-plan.html' || page === 'phys-script.html' || page === 'linalg-plan.html' || page === 'linalg-script.html') return;
   var DE = document.documentElement.lang === 'de';
   function go() {
     var main = document.querySelector('main'); if (!main) return;
@@ -211,9 +211,9 @@
      them (Analysis lessons); otherwise it builds them from the file name and only shows "next" if that page exists.
      "Mark done" is the same tick as "I finished this lesson" in the progress box below (account.js). */
   function lessonBar(main) {
-    var m = /^(lesson-|phys-|linalg-|refresher-|serie-a|serie-p)(\d+)\.html$/.exec(page); if (!m) return;
+    var m = /^(lesson-|phys-|linalg-|inf-|refresher-|serie-a|serie-p)(\d+)\.html$/.exec(page); if (!m) return;
     var kind = m[1], n = +m[2], w = m[2].length;
-    var name = { 'lesson-': T('Lesson', 'Lektion'), 'phys-': T('Lesson', 'Lektion'), 'linalg-': T('Lesson', 'Lektion'), 'refresher-': T('Unit', 'Einheit'), 'serie-a': 'Übungsblatt', 'serie-p': 'Serie' }[kind];
+    var name = { 'lesson-': T('Lesson', 'Lektion'), 'phys-': T('Lesson', 'Lektion'), 'linalg-': T('Lesson', 'Lektion'), 'inf-': T('Lesson', 'Lektion'), 'refresher-': T('Unit', 'Einheit'), 'serie-a': 'Übungsblatt', 'serie-p': 'Serie' }[kind];
     function href(k) { var s = String(k); while (s.length < w) s = '0' + s; return kind + s + '.html'; }
     var foot = main.querySelector('nav.site.foot');
     function footLink(k) { return foot && foot.querySelector('a[href="' + href(k) + '"]'); }
