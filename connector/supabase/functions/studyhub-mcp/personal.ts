@@ -27,7 +27,7 @@ const histKey = (k: unknown) => String(k ?? "").startsWith("progress:") ? "progr
 
 // ---- design overlay: only safe tokens, never code ----
 const FONTS = ["default", "serif", "sans", "readable", "mono"];
-const HIDE = ["badday", "listen", "tips", "comments", "progress", "wonder", "story", "flashcards"];
+const HIDE = ["badday", "listen", "tips", "comments", "progress", "wonder", "story", "streak"];
 export function cleanDesign(t: any) {
   const out: Record<string, unknown> = {};
   const hex = (v: any) => typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v) ? v : undefined;

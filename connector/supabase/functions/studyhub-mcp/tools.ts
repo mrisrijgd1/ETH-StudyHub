@@ -80,7 +80,7 @@ export const TOOLS = [
   { name: "design", title: "My StudyHub design", annotations: W,
     description: "Get or set the student's personal design for the site (safe settings only: theme, colours, font, size, density, width, hidden sections). It survives content updates.",
     inputSchema: S("", { action: str("get, set or reset", ["get", "set", "reset"]),
-      tokens: { type: "object", description: "theme light|dark|auto; accent/background/text/box #rrggbb; font default|serif|sans|readable|mono; size 80-150; density compact|normal|airy; width narrow|normal|wide; hide [badday, listen, tips, comments, progress, wonder, story, flashcards] (flashcards hides the flashcards buttons and tabs, e.g. if the student finds them too much)" } }) },
+      tokens: { type: "object", description: "theme light|dark|auto; accent/background/text/box #rrggbb; font default|serif|sans|readable|mono; size 80-150; density compact|normal|airy; width narrow|normal|wide; hide [badday, listen, tips, comments, progress, wonder, story, streak] (streak turns off the flashcards streak: flame, count, match; e.g. if it feels like pressure)" } }) },
   { name: "suggest", title: "Suggest a fix or addition", annotations: W,
     description: "File a suggestion for a StudyHub page on the student's behalf (a mistake, something unclear, or an addition). Only when the student asks. Nothing changes on the site until the site owner reviews it. Also lists the student's own suggestions and their status (action 'list').",
     inputSchema: S("", { action: str("add (default) or list", ["add", "list"]), page: str("Page id, e.g. lesson-08 or serie-a03"), section: str("Section heading, if known"),
