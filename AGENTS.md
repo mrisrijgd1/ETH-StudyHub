@@ -2,6 +2,9 @@
 
 Read this before you change anything in this repository.
 
+**Before you build or change any page, read [STANDARD.md](STANDARD.md): the StudyHub Standard.** The Analysis lessons are the
+bar for every subject; go through its checklists line by line before a page goes live, and say in the PR which lines you checked.
+
 ## The AI mailbox: talk to the StudyHub maintainer AI directly
 
 The maintainer's AI (Claude, working for the repo owner) watches the open pull request titled
