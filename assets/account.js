@@ -14,7 +14,7 @@
   var BASE = (function () { var s = document.querySelector('script[src*="assets/account.js"]'); return s ? s.getAttribute('src').replace(/account\.js.*$/, '') : 'assets/'; })();
   var ROOT = BASE.replace(/assets\/$/, '');           // '' or '../'
   function L(en, de) { return DE ? de : en; }
-  (function () { var o = document.createElement('script'); o.src = BASE + 'overlay.js?v=prb1123'; document.head.appendChild(o); })(); // personal design overlay
+  (function () { var o = document.createElement('script'); o.src = BASE + 'overlay.js?v=prc1123'; document.head.appendChild(o); })(); // personal design overlay
   (function () { // "Suggest a fix or addition" box on content pages (suggest.js)
     var pg = (location.pathname.split('/').pop() || '').replace(/\.html.*$/, '');
     if (!/^(lesson|phys|refresher|serie|linalg)-[a-z]?\d+$|^(toolbox|moves|tree|flashcards)$/.test(pg)) return;
@@ -287,6 +287,7 @@
     panel.querySelectorAll('.shp-stars button').forEach(function (b) { b.onclick = function () { var r = +b.dataset.r; if ((load()[page] || {}).rating === r) r = 0; save(page, { rating: r }); paintRate(r); track('rating', { p: page, r: r }); }; });
     var nt; ta.oninput = function () { clearTimeout(nt); nt = setTimeout(function () { save(page, { note: ta.value }); }, 500); };
     status();
+    document.dispatchEvent(new CustomEvent('sh-progress'));
   }
   function paintRate(r) { panel.querySelectorAll('.shp-stars button').forEach(function (b) { b.classList.toggle('on', +b.dataset.r === r); b.setAttribute('aria-pressed', +b.dataset.r === r); }); }
   function refreshPanel() {
@@ -294,6 +295,7 @@
     panel.querySelector('input').checked = !!e.done;
     var ta = panel.querySelector('textarea'); if (document.activeElement !== ta) ta.value = e.note || '';
     paintRate(e.rating || 0); status();
+    document.dispatchEvent(new CustomEvent('sh-progress'));
   }
 
   /* ---------- ticks on lesson lists ---------- */
