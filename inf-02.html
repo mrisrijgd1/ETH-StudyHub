@@ -220,6 +220,26 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 .task h3 { margin: 0; }
 .pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
 .small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+.ide { display: flex; flex-direction: column; gap: .45rem; }
+.ide textarea.ide-edit { width: 100%; box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; line-height: 1.5; padding: .75rem .9rem; border: 1px solid var(--accent); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--ink); tab-size: 2; white-space: pre; overflow-x: auto; resize: vertical; min-height: 6rem; }
+.ide-bar { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.ide .ide-btn { font: inherit; font-size: .85rem; padding: .3rem .8rem; border-radius: 999px; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); cursor: pointer; }
+.ide .ide-btn.ide-main { background: var(--accent); color: var(--surface); }
+.ide .ide-btn.ide-quiet { border-color: var(--rule); color: var(--muted); }
+.ide-btn:disabled { opacity: .55; cursor: wait; }
+.ide-in { font-size: .85rem; color: var(--muted); display: inline-flex; align-items: center; gap: .3rem; flex: 1 1 10rem; }
+.ide .ide-in input { font-family: ui-monospace, Menlo, monospace; font-size: .84rem; flex: 1; min-width: 0; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+.ide-result:empty { display: none; }
+.ide-result { display: flex; flex-direction: column; gap: .35rem; }
+.ide-tests { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .3rem; }
+.ide-diff { display: grid; gap: .2rem; margin-top: .3rem; }
+.run-good { color: #2e7d32; } .run-bad { color: #c62828; }
+pre.run-err { margin: 0; padding: .6rem .8rem; border-radius: 8px; background: var(--surface); border: 1px solid #c62828; font-size: .8rem; overflow-x: auto; white-space: pre; }
+@media (prefers-color-scheme: dark) { .run-good { color: #81c784; } .run-bad { color: #ef9a9a; } }
+@media (max-width: 480px) { .ide textarea.ide-edit { font-size: .74rem; padding: .6rem .65rem; } }
 @media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
 </style>
 
@@ -301,7 +321,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 </ol></li>
 <li><a href="#summary">Summary: what to keep from lesson 2</a>
 </li>
-<li><a href="#for-wonder">For wonder: unsigned int is a ring</a>
+<li><a href="#for-wonder">For wonder: unsigned int is a ring <span class="small">(optional, 5 min)</span></a>
 </li>
 <li><a href="#what-we-skipped">What we skipped</a>
 </li>
@@ -400,7 +420,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 
 <h3 id="integer-division">Integer division: the lost remainder</h3>
 <p>If both operands are integers, <code>/</code> is <strong>integer division</strong>: it drops the remainder (rounds towards 0). So <code>5 / 2</code> is 2. This breaks a mathematical identity (script Example 3.1, p. 35):</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">const</span> <span class="tk-k">int</span> celsius = 15;
@@ -439,7 +459,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <tr><td><code>++x</code> (pre-increment)</td><td>x increases by 1</td><td>the <strong>new</strong> value</td><td>yes (it is x itself)</td></tr>
 <tr><td><code>x++</code> (post-increment)</td><td>x increases by 1</td><td>the <strong>old</strong> value</td><td>no</td></tr>
 </tbody></table></div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> a = 7;
@@ -472,7 +492,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <tbody><tr><td>$x\ge0$</td><td>$x$</td></tr><tr><td>$x&lt;0$</td><td>$x+2^B$</td></tr></tbody></table></div>
 <p>For example, −1 becomes $2^{32}-1$. The other way, <code>int a = 3u;</code> converts back and keeps the value as long as it fits.</p>
 <div class="box"><h3 id="we-2">Worked example 2: why the script says "avoid unsigned" (Example 4.4, p. 39)</h3>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">unsigned</span> <span class="tk-k">int</span> a = 10;
@@ -605,7 +625,30 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <p class="small">All six answers match the official solution of IFMP_2018_Exam_IFMP_2018_01, and were also checked by compiling them.</p></div>
 
 <div class="task" id="task-1"><h3 id="ct-1">Coding task 1: seconds to hours, minutes and seconds</h3>
-<p>The reverse of lesson 1's coding task 2. Read a number of seconds <code>t</code> (0 ≤ t &lt; 86400) and print it as <code>h:m:s</code>, for example 3725 as <code>1:2:5</code>.</p>
+<p>The reverse of <a class="xl" href="inf-01.html#ct-2">lesson 1's coding task 2</a>. Read a number of seconds <code>t</code> (0 ≤ t &lt; 86400) and print it as <code>h:m:s</code>, for example 3725 as <code>1:2:5</code>.</p>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> one <code>int</code> t with $0\le t&lt;86400$.</li>
+  <li><strong>Must hold at the end:</strong> the line <code>h:m:s</code> with $t=3600h+60m+s$, $0\le m,s\le59$.</li>
+  <li><strong>The gap to fill:</strong> split one number into "how many full hours", "how many full minutes", "what's left".</li>
+</ul></div>
+<p><strong>Try it yourself</strong> in the editor, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;3725&quot;,&quot;out&quot;:&quot;1:2:5&quot;},{&quot;in&quot;:&quot;59&quot;,&quot;out&quot;:&quot;0:0:59&quot;},{&quot;in&quot;:&quot;0&quot;,&quot;out&quot;:&quot;0:0:0&quot;},{&quot;in&quot;:&quot;3600&quot;,&quot;out&quot;:&quot;1:0:0&quot;},{&quot;in&quot;:&quot;86399&quot;,&quot;out&quot;:&quot;23:59:59&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input: seconds since midnight</span>
+  <span class="tk-k">int</span> t;
+  <span class="tk-k">std</span>::cin &gt;&gt; t;
+
+  <span class="tk-c">// computation</span>
+  <span class="tk-k">int</span> h = 0;   <span class="tk-c">// replace these three lines</span>
+  <span class="tk-k">int</span> m = 0;
+  <span class="tk-k">int</span> s = 0;
+
+  <span class="tk-c">// output</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; h &lt;&lt; <span class="tk-s">":"</span> &lt;&lt; m &lt;&lt; <span class="tk-s">":"</span> &lt;&lt; s &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <ol class="gq">
   <li><strong>What goes in, what comes out?</strong>
   <details><summary>My answer</summary><div><p>In: one <code>int</code> t in [0, 86400). Out: three numbers separated by colons (no leading zeros needed).</p></div></details></li>
@@ -617,7 +660,27 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
   <details><summary>My answer</summary><div><p>t = 0 gives <code>0:0:0</code>. Negative t is excluded by the contract (it would give negative parts, since <code>%</code> keeps the sign).</p></div></details></li>
   <li><strong>Code.</strong>
   <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Read the seconds into box <code>t</code>.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> t;
+<span class="tk-k">std</span>::cin &gt;&gt; t;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>How often does 3600 fit into t? That many full hours. Keep what's left.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> h = t / 3600;
+<span class="tk-k">const</span> <span class="tk-k">int</span> rest = t % 3600;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>The same with 60 on what's left: full minutes, and the seconds that remain.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> m = rest / 60;
+<span class="tk-k">const</span> <span class="tk-k">int</span> s = rest % 60;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Write the three numbers with colons between them.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">std</span>::cout &lt;&lt; h &lt;&lt; <span class="tk-s">":"</span> &lt;&lt; m &lt;&lt; <span class="tk-s">":"</span>
+          &lt;&lt; s &lt;&lt; <span class="tk-s">"\n"</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="3725"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// input: seconds since midnight</span>
@@ -635,25 +698,88 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
   <span class="tk-k">return</span> 0;
 }</code></pre>
 <pre class="out"><code>1:2:5</code></pre>
+</div></details>
   <p>Check with the div-mod identity: $1\cdot3600 + 125 = 3725$ and $2\cdot60+5=125$. ✓</p></div></details></li>
   <li><strong>Tests.</strong>
   <details><summary>My answer</summary><div><p>3725, 59, 0, 3600 (<code>1:0:0</code>), 86399. And lesson 1's program run on the output should give back the input.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-frame">input · compute · output</a> <a class="mvl" href="inf-method.html#p-divmod">/ for "how often", % for "what's left"</a> <a class="mvl" href="inf-method.html#p-const">one named const per step</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Largest unit first:</strong> <code>h = t / 3600</code>, <code>rest = t % 3600</code>.</li>
+  <li><strong>Then the next unit on the rest:</strong> <code>m = rest / 60</code>, <code>s = rest % 60</code>.</li>
+  <li><strong>Check with the identity</strong> $3600h+60m+s=t$ on one example.</li>
+</ol>
+<p>In short: "divide for the count, modulo for the rest, unit by unit".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which two lines give the full minutes and the seconds left, from <code>rest</code>?</p>
+  <details><summary>Answer</summary><div><p><code>const int m = rest / 60;</code> and <code>const int s = rest % 60;</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change the program for t up to a week, printing <code>d:h:m:s</code>. What comes first?</p>
+  <details><summary>Answer</summary><div><p>First <code>d = t / 86400</code> and <code>rest = t % 86400</code>; then the hours, minutes and seconds exactly as before, on <code>rest</code>.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> With the answers closed, fill in the computation in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
 </ol></div>
+</div>
 
 <div class="task" id="task-2"><h3 id="ct-2">Coding task 2: equivalent resistance, rounded (Code Expert Exercise 2, Task 3)</h3>
 <p>Resistors R1 and R2 are in series, R3 and R4 are in series, and these two pairs are in parallel. Read four positive <code>int</code>s and print the equivalent resistance <strong>rounded to the nearest integer</strong>. Only <code>int</code> is allowed, and no if-statements. Physics: in series $R=R_a+R_b$; in parallel $R=\frac{R_aR_b}{R_a+R_b}$.</p>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> four positive <code>int</code>s $R_1,\dots,R_4$.</li>
+  <li><strong>Must hold at the end:</strong> one number, $\frac{R_{12}R_{34}}{R_{12}+R_{34}}$ rounded to the nearest integer.</li>
+  <li><strong>Allowed:</strong> <code>int</code> only, no <code>if</code>.</li>
+  <li><strong>The gap to fill:</strong> rounding to nearest, when integer division always rounds down.</li>
+</ul></div>
+<p><strong>Try it yourself</strong> in the editor, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;1 1 1 1&quot;,&quot;out&quot;:&quot;1&quot;},{&quot;in&quot;:&quot;1 2 3 4&quot;,&quot;out&quot;:&quot;2&quot;},{&quot;in&quot;:&quot;1 2 1 2&quot;,&quot;out&quot;:&quot;2&quot;},{&quot;in&quot;:&quot;3 4 1 1&quot;,&quot;out&quot;:&quot;2&quot;},{&quot;in&quot;:&quot;10 20 30 40&quot;,&quot;out&quot;:&quot;21&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input</span>
+  <span class="tk-k">int</span> r1, r2, r3, r4;
+  <span class="tk-k">std</span>::cin &gt;&gt; r1 &gt;&gt; r2 &gt;&gt; r3 &gt;&gt; r4;
+
+  <span class="tk-c">// computation (int only, no if)</span>
+  <span class="tk-k">int</span> r = 0;   <span class="tk-c">// replace this line</span>
+
+  <span class="tk-c">// output</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; r &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <ol class="gq">
   <li><strong>What goes in, what comes out?</strong>
   <details><summary>My answer</summary><div><p>In: four positive <code>int</code>s. Out: $\frac{R_{12}R_{34}}{R_{12}+R_{34}}$ rounded to the nearest integer, where $R_{12}=R_1+R_2$, $R_{34}=R_3+R_4$.</p></div></details></li>
   <li><strong>Examples by hand.</strong> R = 1, 1, 1, 1? And 1, 2, 3, 4?
   <details><summary>My answer</summary><div><p>$R_{12}=R_{34}=2$: $\frac{4}{4}=1$. And $R_{12}=3$, $R_{34}=7$: $\frac{21}{10}=2.1$, rounded 2. A case that must round up: $R_{12}=3$, $R_{34}=3$ (e.g. 1, 2, 1, 2): $\frac{9}{6}=1.5$, rounded 2.</p></div></details></li>
   <li><strong>Steps in words.</strong> The magic step is "round to nearest". How do you do it with integer division, which always rounds down for positive numbers?
+  <details class="hint"><summary>Hint 1</summary><div><p>Rounding to nearest is the same as adding one half and then rounding down.</p></div></details>
+  <details class="hint"><summary>Hint 2</summary><div><p>Write $\frac pq+\frac12$ as one fraction with denominator $q$.</p></div></details>
   <details><summary>My answer</summary><div><p>Rounding $p/q$ to nearest is rounding $p/q + \tfrac12$ down. And $\frac pq+\frac12=\frac{p+q/2}{q}$. So compute <code>(p + q / 2) / q</code>. For odd $q$, <code>q / 2</code> loses a half, which is fine: $p/q$ can then never be exactly halfway.</p></div></details></li>
   <li><strong>Check the plan on the examples.</strong>
   <details><summary>My answer</summary><div><p>$p=21, q=10$: $(21+5)/10 = 2$ ✓. $p=9,q=6$: $(9+3)/6=2$ ✓. $p=4,q=4$: $(4+2)/4=1$ ✓.</p></div></details></li>
   <li><strong>Code.</strong>
   <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Read the four resistances.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> r1, r2, r3, r4;
+<span class="tk-k">std</span>::cin &gt;&gt; r1 &gt;&gt; r2 &gt;&gt; r3 &gt;&gt; r4;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Each pair in series: just add.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> r12 = r1 + r2;
+<span class="tk-k">const</span> <span class="tk-k">int</span> r34 = r3 + r4;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>The parallel formula as a fraction p over q, kept as two whole numbers.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> p = r12 * r34;
+<span class="tk-k">const</span> <span class="tk-k">int</span> q = r12 + r34;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Add half of q before dividing: that turns "round down" into "round to nearest".</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> r = (p + q / 2) / q;
+<span class="tk-k">std</span>::cout &lt;&lt; r &lt;&lt; <span class="tk-s">"\n"</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="1 2 1 2"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// input</span>
@@ -673,10 +799,30 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
   <span class="tk-k">return</span> 0;
 }</code></pre>
 <pre class="out"><code>2</code></pre>
+</div></details>
   </div></details></li>
   <li><strong>Tests.</strong>
   <details><summary>My answer</summary><div><p>1 1 1 1 → 1; 1 2 3 4 → 2; 1 2 1 2 → 2. Big values: $R_{12}R_{34}$ must stay below $2^{31}$, so resistances up to about 20000 each are safe. That is the overflow question from section 4 in practice.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-frame">input · compute · output</a> <a class="mvl" href="inf-method.html#p-round">round to nearest: (p + q/2) / q</a> <a class="mvl" href="inf-method.html#p-const">one named const per step</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Keep the fraction as two ints</strong> p and q; never divide early.</li>
+  <li><strong>Round to nearest:</strong> <code>(p + q / 2) / q</code> (positive numbers only).</li>
+  <li><strong>Test one case that must round up</strong> (1.5 → 2) and one that must round down (2.1 → 2).</li>
+  <li><strong>Overflow:</strong> say in one sentence how big the inputs may be.</li>
+</ol>
+<p>In short: "numerator, denominator, add half, divide last".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the line that rounds <code>p / q</code> to the nearest integer.</p>
+  <details><summary>Answer</summary><div><p><code>const int r = (p + q / 2) / q;</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Now R1, R2 and R3 are in series, and R4 is in parallel to that whole chain. Which lines change?</p>
+  <details><summary>Answer</summary><div><p>Only p and q: with $R_{123}=R_1+R_2+R_3$, <code>p = r123 * r4</code> and <code>q = r123 + r4</code>. The rounding line stays the same.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> With the answers closed, fill in the computation in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
 </ol></div>
+</div>
 
 <h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
 <div class="box"><h3 id="we-5">Worked example 5: IFMP January 2016, task 1 (official exam)</h3>
@@ -700,17 +846,22 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 </ol></div>
 
 <h2 id="exercises">Exercises</h2>
-<p>All from official IFMP exams (answers from the official solutions, explanations by StudyHub, every one checked by compiling). <strong>Score yourself</strong> the exam way: 0.5 for the type, 1 for the value. Each exercise is 9 points; 7 or more per exercise is exam level.</p>
+<p>All from official IFMP exams (answers from the official solutions, explanations by StudyHub, every one checked by compiling). Each solution starts from the five steps of <a class="xl" href="#type-and-value-method">section 7</a>.</p>
+<div class="check">
+  <p><strong>Scoring yourself</strong> the exam way: 0.5 for the type, 1 for the value of each part. Exercises 1–6 make 37 points. <strong>28 of 37 (three quarters) and you're done</strong> with lesson 2; that is exam level for this task type.</p>
+</div>
 
 <h3 id="ex-1">Exercise 1 (IFMP January 2017, task 1, without (b)) · 7.5 points</h3>
 <p>(a) <code>5 / 2 * 2.0</code> (c) <code>0 / 1 == 0 || 1 / 0 == 1</code> (d) <code>1.0e4f / 1.0e2f</code> (e) <code>3 + 17 % 4</code> (f) <code>0.1f == 0.1</code>. (Part (b) uses hexadecimal literals: lesson 8.) (c) and (f) were worked above, so do them fast.</p>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> the five steps of section 7: parentheses by the binding ladder, then for each operator the type, then the value.</p>
 <p>(a) <code>(5 / 2) * 2.0</code>: integer division first, 2, then <code>2 * 2.0</code>: <strong>double, 4</strong>. The trap is computing 2.5 · 2 = 5.</p>
 <p>(c) <strong>bool, true</strong> (short circuit). (d) Both <code>float</code>: <strong>float, 100</strong>. (e) <code>3 + (17 % 4)</code> = 3 + 1: <strong>int, 4</strong>. (f) <strong>bool, false</strong>.</p></div></details>
 
 <h3 id="ex-2">Exercise 2 (IFMP August 2017, task 1, without (c)) · 7.5 points</h3>
 <p>(a) <code>(1 || 1) &amp;&amp; !(1 &amp;&amp; 1)</code> (b) <code>1.0e2f / 2.0e3f</code> (d) <code>1.0f == 1</code> (e) <code>10 % 4 * 5</code> (f) <code>15 / 2 / 5 * 2</code></p>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> the five steps of section 7: parentheses by the binding ladder, then for each operator the type, then the value.</p>
 <p>(a) The ints 1 are converted to <code>true</code>: <code>true &amp;&amp; !true</code> = <code>true &amp;&amp; false</code>: <strong>bool, false</strong>. (It is XOR of 1 and 1, from the completeness section.)</p>
 <p>(b) float / float: $100/2000$: <strong>float, 0.05</strong>. (d) 1 is converted to float, 1.0f == 1.0f, exact: <strong>bool, true</strong>.</p>
 <p>(e) <code>%</code> and <code>*</code> have the same rank, left to right: <code>(10 % 4) * 5</code> = 2 · 5: <strong>int, 10</strong>. (f) <code>((15 / 2) / 5) * 2</code> = (7 / 5) · 2 = 1 · 2: <strong>int, 2</strong>.</p></div></details>
@@ -718,20 +869,26 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <h3 id="ex-3">Exercise 3 (IFMP January 2015, task 1) · 6 points</h3>
 <p>With <code>int x = 5; int y = 2; double z = 1.5;</code> (each expression starting from these values): (a) <code>x / y + z</code> (b) <code>++y % --x / z</code> (c) <code>x++ * 6 &gt; y * z * 10</code></p>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> the five steps, and each part starts again from the given values; for <code>++</code> and <code>--</code>, ask "old value or new value?".</p>
 <p>(a) <code>(x / y) + z</code> = 2 + 1.5: <strong>double, 3.5</strong>.</p>
 <p>(b) <code>((++y) % (--x)) / z</code> = (3 % 4) / 1.5 = 3 / 1.5: <strong>double, 2</strong>.</p>
 <p>(c) <code>(x++ * 6) &gt; ((y * z) * 10)</code>. <code>x++</code> has the old value 5, so the left is 30; the right is 2 · 1.5 · 10 = 30. 30 &gt; 30 is false: <strong>bool, false</strong>.</p></div></details>
 
 <h3 id="ex-4">Exercise 4 (IFMP August 2015, task 1) · 6 points</h3>
 <p>With <code>unsigned int u = 5; int i = -10; float f = 0.25f;</code>: (a) <code>f * 0.5 * 0.32e2 == u / 2 * 2</code> (b) <code>u * -i * f</code> (c) <code>++u - ++i + 10</code></p>
+<details class="hint"><summary>Hint 1</summary><div><p>In (b) and (c), find the first operator where an <code>int</code> meets the <code>unsigned int</code>. From there on, everything is computed modulo $2^{32}$.</p></div></details>
+<details class="hint"><summary>Hint 2</summary><div><p>For (c): $6 - (-9) = 15$ also holds modulo $2^{32}$, so you don't need the big number to get the final value.</p></div></details>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> the five steps, with one extra question at each operator: does an <code>int</code> meet an <code>unsigned int</code> here?</p>
 <p>(a) Left: 0.25 · 0.5 · 32 = 4 (double, since 0.5 is a double). Right: <code>(u / 2) * 2</code> = 2 · 2 = 4 (unsigned int). 4.0 == 4: <strong>bool, true</strong>.</p>
 <p>(b) <code>(u * (-i)) * f</code>: <code>-i</code> is the int 10; <code>u * 10</code> is unsigned int 50; <code>50 * f</code> is float 12.5. <strong>float, 12.5</strong>.</p>
 <p>(c) <code>((++u) - (++i)) + 10</code> = (6u − (−9)) + 10. Unsigned: −9 becomes $2^{32}-9$, and $6-(2^{32}-9) \equiv 15$, then +10: <strong>unsigned int, 25</strong>.</p></div></details>
 
 <h3 id="ex-5">Exercise 5 (IFMP August 2016, task 2) · 6 points</h3>
 <p>With <code>int n = 9; int f = 5; unsigned int u = 8; bool a = false; bool b = true;</code>: (a) <code>-n - ++f</code> (b) <code>u-7 == -1</code> (c) <code>a || !b &amp;&amp; !a || b</code></p>
+<details class="hint"><summary>Hint 1</summary><div><p>In (b), what type is <code>u-7</code>? What happens to −1 when it is compared with that type?</p></div></details>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> the five steps of section 7: parentheses by the binding ladder, then for each operator the type, then the value.</p>
 <p>(a) <code>(-n) - (++f)</code> = −9 − 6: <strong>int, −15</strong>.</p>
 <p>(b) <code>(u - 7) == (-1)</code>. Left: unsigned 1. Right: −1 is converted to unsigned for the comparison: $2^{32}-1$. 1 == 4294967295 is false: <strong>bool, false</strong>. (A mathematician says true; the golem pours −1 into a clock box.)</p>
 <p>(c) <code>a || (!b &amp;&amp; !a) || b</code> = false || (false &amp;&amp; true) || true: <strong>bool, true</strong>.</p></div></details>
@@ -739,6 +896,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <h3 id="ex-6">Exercise 6 (true or false, Code Expert Exercise 2, Task 2) · 4 points</h3>
 <p>With <code>int a = 3;</code>: (1) <code>true || false &amp;&amp; false</code> (2) <code>(true || false) &amp;&amp; false</code> (3) <code>3 &gt; (1 &lt; true)</code> (4) <code>2 &lt; a &lt; 4</code></p>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> parentheses first (<code>&amp;&amp;</code> before <code>||</code>, comparisons left to right), then evaluate.</p>
 <p>(1) <strong>true</strong>: <code>true || (false &amp;&amp; false)</code>, and short circuit stops at <code>true</code>. (2) <strong>false</strong>: the parentheses force <code>true &amp;&amp; false</code>. (3) <strong>true</strong>: <code>1 &lt; 1</code> is false = 0, and 3 &gt; 0. (4) <strong>true</strong>, but for the wrong reason: <code>(2 &lt; a) &lt; 4</code> is <code>1 &lt; 4</code>. It would be true for every a, even a = 100. Write <code>2 &lt; a &amp;&amp; a &lt; 4</code>.</p></div></details>
 
 <h2 id="summary">Summary: what to keep from lesson 2</h2>
@@ -751,19 +909,22 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
   <li><strong>Method:</strong> type and value in five steps (section 7).</li>
 </ul></div>
 
-<h2 id="for-wonder">For wonder: unsigned int is a ring</h2>
+<h2 id="for-wonder">For wonder: unsigned int is a ring <span class="small">(optional, 5 min)</span></h2>
 <p>The clock boxes are not a defect but a piece of algebra. <code>unsigned int</code> with <code>+</code> and <code>*</code> is exactly the ring $\mathbb Z/2^{32}$ from <a class="xl" href="linalg-01.html">Linear Algebra lesson 1</a>: every law you proved there holds, for every pair of values, with no exceptions. It is not a field, since 2 has no inverse (there's no $x$ with $2x\equiv1$). But every <em>odd</em> number has one. For example, $3\cdot2863311531 \equiv 1 \pmod{2^{32}}$, so in C++ <code>3u * 2863311531u</code> is <code>1u</code>. Compilers use exactly this trick to replace a slow division by a constant with a fast multiplication.</p>
 
 <h2 id="what-we-skipped">What we skipped</h2>
+<p>Also on the <a class="xl" href="skipped.html#informatik">skip list</a>.</p>
 <ul>
-  <li><strong>The complete precedence table</strong> (cppreference): the binding ladder covers everything this course uses.</li>
-  <li><strong>How <code>int</code> stores negative numbers</strong> (two's complement) and <strong>how floats are built</strong> (mantissa and exponent, IEEE 754): lesson 8, script chapter 11. The script says you don't need the internal representation for the conversion rules here.</li>
-  <li><strong>Hexadecimal literals</strong> like <code>0xa</code> (they appear in old exam type-and-value tasks): lesson 8.</li>
+  <li><strong>The complete precedence table</strong> (cppreference). Priority: low. The binding ladder covers everything this course uses.</li>
 </ul>
-<p><strong>Next:</strong> lesson 3, control statements: <code>if</code>, <code>while</code>, <code>for</code>, <code>do</code>, <code>break</code> and <code>continue</code>, scope, and the exam's second favourite task, "what does this loop print?".</p>
+<p><strong>Next:</strong> <a href="inf-03.html">lesson 3</a>, control statements: <code>if</code>, <code>while</code>, <code>for</code>, <code>do</code>, <code>break</code> and <code>continue</code>, scope, and the exam's second favourite task, "what does this loop print?".</p>
+
+<script src="assets/inf-run.js?v=inf1123c" defer></script>
 
 <nav class="site foot" aria-label="Lesson navigation">
+<a href="inf-01.html">← Lesson 1: The Workshop of the Literal Golem</a>
 <a href="informatik.html">Informatik home</a>
+<a href="inf-03.html">Lesson 3: The Golem Turns Back →</a>
 <span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
 </nav>
 </main>
