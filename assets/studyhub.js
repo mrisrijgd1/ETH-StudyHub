@@ -166,6 +166,8 @@
   const file = path.split('/').pop() || 'index.html';
   const L = (german, english) => de ? german : english;
   const sharedPages = new Set(['linalg-moves.html', 'linalg-plan.html', 'linalg-script.html', 'linalg-01.html', 'linalg-02.html', 'linalg-03.html', 'linalg-04.html', 'linalg-05.html', 'linalg-06.html', 'linalg-07.html', 'linalg-08.html', 'linalg-09.html', 'linalg-10.html', 'linalg-11.html', 'linalg-12.html', 'script.html', 'phys-script.html', 'pdf.html']);
+  // Informatik is English only: its pages stay the same page, only the header switches language.
+  ['informatik.html', 'inf-method.html'].concat(Array.from({ length: 14 }, (_, i) => 'inf-' + String(i + 1).padStart(2, '0') + '.html')).forEach(f => sharedPages.add(f));
   const url = value => { const target = new URL(value, base); if (de && sharedPages.has(value)) target.searchParams.set('lang', 'de'); return target.href; };
   // The header follows the path picked on the home page (sh-path): Chemie only on the Interdisciplinary path.
   let studyPath = null; try { studyPath = localStorage.getItem('sh-path'); } catch (_) {}
@@ -173,7 +175,8 @@
     { id: 'analysis', label: 'Analysis I', href: prefix + 'analysis.html' },
     { id: 'physics', label: L('Physik I', 'Physics I'), href: prefix + 'physics.html' },
     { id: 'chemie', label: 'Chemie I (PC)', href: 'chemie/' },
-    { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' }
+    { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' },
+    { id: 'informatik', label: 'Informatik', href: 'informatik.html' }
   ];
   const showChemie = p => p === 'inter' || chemistry;
   // flashcards.html#p1-16 is the Physics deck (StudyHub's own cards); it stays on this page.
@@ -184,7 +187,7 @@
   } catch (_) {}
   const physCards = !fcApp && !de && file === 'flashcards.html' && (/^#p\d/.test(location.hash) || /^#p\d/.test(returnHash));
   const practiceFor = file === 'practice.html' ? ({ '#analysis': 'analysis', '#physics': 'physics', '#linalg': 'linalg' })[location.hash] : null;
-  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(informatik\.html|inf-)/.test(file) ? 'informatik' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
   if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
@@ -203,6 +206,9 @@
       [L('Mehr üben', 'Practise more'), [[L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
       [L('Kursmaterial', 'Course material'), [[L('Plan und Prüfungslandkarte', 'Plan and exam map'), 'linalg-plan.html'], [L('Skript', 'Script'), 'linalg-script.html']]]
     ] },
+    informatik: { overview: 'informatik.html', lessons: 'informatik.html#lessons', practice: 'inf-method.html', resources: [
+      [L('Mehr üben', 'Practise more'), [[L('Aufgabenmethode', 'Task method'), 'inf-method.html']]]
+    ] },
     chemie: { lessons: 'chemie/#home', practice: 'chemie/#exams', resources: [
       ['', [[L('Wiederholen', 'Refresher'), 'chemie/#review'], [L('Materialien', 'Library'), 'chemie/#library']]]
     ] }
@@ -212,9 +218,9 @@
       const route = location.hash.slice(1).split('/')[0];
       return ({ review: 'resources', library: 'resources', sources: 'resources', exams: 'practice', training: 'practice' })[route] || 'lessons';
     }
-    const hub = { analysis: 'analysis.html', physics: 'physics.html', linalg: 'linalg.html' }[subject];
+    const hub = { analysis: 'analysis.html', physics: 'physics.html', linalg: 'linalg.html', informatik: 'informatik.html' }[subject];
     if (file === hub) return location.hash === '#lessons' ? 'lessons' : location.hash === '#tools' ? 'practice' : location.hash === '#refresher' ? 'resources' : 'overview';
-    if (/^(lesson|phys|linalg)-\d+\.html$/.test(file)) return 'lessons';
+    if (/^(lesson|phys|linalg|inf)-\d+\.html$/.test(file)) return 'lessons';
     if (/script\.html$|docs\.html$|plan\.html$|board\.html$|exam-map\.html$|skipped\.html$/.test(file)) return 'resources';
     return 'practice';
   }
@@ -265,17 +271,16 @@
     return a;
   }
   // Subjects: the learner's own subjects first (from the path picked on the home page), then everything else.
-  const subjectNotes = { analysis: L('22 Lektionen', '22 lessons'), linalg: L('21 Lektionen', '21 lessons'), physics: L('16 Lektionen', '16 lessons'), chemie: L('27 Lektionen, auf Deutsch', '27 lessons, in German') };
+  const subjectNotes = { analysis: L('22 Lektionen', '22 lessons'), linalg: L('21 Lektionen', '21 lessons'), physics: L('16 Lektionen', '16 lessons'), chemie: L('27 Lektionen, auf Deutsch', '27 lessons, in German'), informatik: L('2 Lektionen bisher, auf Englisch', '2 lessons so far') };
   const subjectsPop = popover('subjects', L('Fächer', 'Subjects'), !!subject);
   function renderSubjects(p) {
-    const mine = ['analysis', 'linalg', 'physics'].concat(showChemie(p) ? ['chemie'] : []);
+    const mine = ['analysis', 'linalg', 'physics'].concat(p === 'inter' ? [] : ['informatik']).concat(showChemie(p) ? ['chemie'] : []);
     const others = subjects.filter(s => !mine.includes(s.id));
     const item = s => { const a = richLink(s.label, s.href, subjectNotes[s.id]); if (subject === s.id) a.setAttribute('aria-current', 'page'); if (s.id === 'chemie') a.dataset.subj = 'chemie'; return a; };
     const ordered = mine.map(id => subjects.find(s => s.id === id));
     subjectsPop.panel.replaceChildren(
       group(p ? L('Deine Fächer', 'Your subjects') : L('Fächer im ersten Jahr', 'First-year subjects'), ordered.map(item)),
       group(L('Alle Fächer entdecken', 'Explore all subjects'), others.map(item).concat([
-        richLink('Informatik', 'contribute.html', L('Noch nicht hier: bring deinen Kurs mit', 'Not here yet: bring your course')),
         richLink(L('Deinen Weg wählen', 'Choose your path'), prefix + 'index.html#' + (p || 'math'), L('Mathematik, Physik oder Interdisziplinär', 'Mathematics, Physics or Interdisciplinary'))
       ])),
       group(L('Auch', 'Also'), [
