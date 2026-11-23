@@ -173,7 +173,8 @@
     try { tests = JSON.parse(pre.getAttribute('data-tests') || '[]'); } catch (e) { tests = []; }
     var wrap = el('div', 'ide ide-task');
     pre.parentNode.insertBefore(wrap, pre);
-    pre.remove();
+    pre.classList.add('ide-print');   // stays for printing and the PDF; hidden on screen
+    wrap.appendChild(pre);
     var ed = makeEditor(original);
     wrap.appendChild(ed.ta);
     var b = bar(), check = btn('✓ Check (' + tests.length + ' tests)', 'ide-main'), run = btn('▶ Run'), reset = btn('Reset', 'ide-quiet');
