@@ -220,6 +220,26 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 .task h3 { margin: 0; }
 .pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
 .small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+.ide { display: flex; flex-direction: column; gap: .45rem; }
+.ide textarea.ide-edit { width: 100%; box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; line-height: 1.5; padding: .75rem .9rem; border: 1px solid var(--accent); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--ink); tab-size: 2; white-space: pre; overflow-x: auto; resize: vertical; min-height: 6rem; }
+.ide-bar { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.ide .ide-btn { font: inherit; font-size: .85rem; padding: .3rem .8rem; border-radius: 999px; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); cursor: pointer; }
+.ide .ide-btn.ide-main { background: var(--accent); color: var(--surface); }
+.ide .ide-btn.ide-quiet { border-color: var(--rule); color: var(--muted); }
+.ide-btn:disabled { opacity: .55; cursor: wait; }
+.ide-in { font-size: .85rem; color: var(--muted); display: inline-flex; align-items: center; gap: .3rem; flex: 1 1 10rem; }
+.ide .ide-in input { font-family: ui-monospace, Menlo, monospace; font-size: .84rem; flex: 1; min-width: 0; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+.ide-result:empty { display: none; }
+.ide-result { display: flex; flex-direction: column; gap: .35rem; }
+.ide-tests { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .3rem; }
+.ide-diff { display: grid; gap: .2rem; margin-top: .3rem; }
+.run-good { color: #2e7d32; } .run-bad { color: #c62828; }
+pre.run-err { margin: 0; padding: .6rem .8rem; border-radius: 8px; background: var(--surface); border: 1px solid #c62828; font-size: .8rem; overflow-x: auto; white-space: pre; }
+@media (prefers-color-scheme: dark) { .run-good { color: #81c784; } .run-bad { color: #ef9a9a; } }
+@media (max-width: 480px) { .ide textarea.ide-edit { font-size: .74rem; padding: .6rem .65rem; } }
 @media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
 </style>
 
@@ -294,7 +314,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 </ol></li>
 <li><a href="#summary">Summary: what to keep from lesson 1</a>
 </li>
-<li><a href="#for-wonder">For wonder: the question no compiler can answer</a>
+<li><a href="#for-wonder">For wonder: the question no compiler can answer <span class="small">(optional, 5 min)</span></a>
 </li>
 <li><a href="#what-we-skipped">What we skipped</a>
 </li>
@@ -397,7 +417,7 @@ Result: a</code></pre>
 <ol start="3">
   <li><strong>Implementation</strong> (fully detailed, for humans <em>and</em> the computer). Here is the C++ version, which you'll be able to read completely after lesson 3:</li>
 </ol>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> a = 12;           <span class="tk-c">// the two lengths</span>
@@ -452,7 +472,7 @@ Result: a</code></pre>
 
 <h2 id="s5-anatomy-of-a-program">5. Anatomy of a C++ program</h2>
 <p>Here is the script's first program (Code 2.1, p. 18), with a comment on every line:</p>
-<pre class="code"><code><span class="tk-c">// Program: power8.cpp</span>
+<pre class="code" data-run="1" data-stdin="2"><code><span class="tk-c">// Program: power8.cpp</span>
 <span class="tk-c">// Raise a number to the eighth power.</span>
 <span class="tk-p">#include &lt;iostream&gt;</span>   <span class="tk-c">// make std::cin, std::cout available</span>
 
@@ -485,7 +505,7 @@ Result: a</code></pre>
 
 <h3 id="output">Output with std::cout</h3>
 <p><code>std::cout &lt;&lt; x</code> prints the value of <code>x</code> on the console (p. 20–21). You can print numbers, text in double quotes, and the result of a computation, and you can chain several <code>&lt;&lt;</code> in one statement. Text is printed exactly as written: <strong>no space and no new line are added for you</strong>. A new line comes only from <code>"\n"</code>.</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"the eighth power of two:\n"</span>;
@@ -571,7 +591,7 @@ b = c;</code></pre>
   <span class="tk-k">return</span> 0;
 }</code></pre>
 <p>The script's second version of power8 (p. 25) fills the frame with one well-named variable per intermediate result instead of reusing <code>b</code>. Both versions compile to equivalent programs; choose whichever is easier to read (p. 26).</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1" data-stdin="3"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// 1. input</span>
@@ -591,6 +611,29 @@ b = c;</code></pre>
 
 <div class="task" id="task-1"><h3 id="ct-1">Coding task 1: multiply by 29 with additions only (Code Expert, Exercise 1, Task 2)</h3>
 <p>Read an integer <code>a</code> and print <code>29 * a</code>, using <strong>only additions and assignments</strong>: no <code>*</code>, no loops. Use as few additions as you can (the task allows at most 27). This is the first time we use the six questions, so each one is folded out below. Try to answer each yourself before opening it.</p>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> one <code>int</code> a, read from the input.</li>
+  <li><strong>Must hold at the end:</strong> the line <code>29 * a = r</code> is printed with $r=29a$.</li>
+  <li><strong>Allowed:</strong> <code>+</code> and <code>=</code> only.</li>
+  <li><strong>The gap to fill:</strong> reach $29a$ from $a$ in few additions.</li>
+</ul></div>
+<p><strong>Try it yourself.</strong> The input and output lines are already there; fill in the computation and press <em>Check</em>. (The tests can only see the result: that you used no <code>*</code> is yours to check.)</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;3&quot;,&quot;out&quot;:&quot;a = ? 29 * 3 = 87&quot;},{&quot;in&quot;:&quot;0&quot;,&quot;out&quot;:&quot;a = ? 29 * 0 = 0&quot;},{&quot;in&quot;:&quot;-1&quot;,&quot;out&quot;:&quot;a = ? 29 * -1 = -29&quot;},{&quot;in&quot;:&quot;1000&quot;,&quot;out&quot;:&quot;a = ? 29 * 1000 = 29000&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"a = ? "</span>;
+  <span class="tk-k">int</span> a;
+  <span class="tk-k">std</span>::cin &gt;&gt; a;
+
+  <span class="tk-c">// computation: only + and = allowed</span>
+  <span class="tk-k">int</span> result = 0;   <span class="tk-c">// replace this line</span>
+
+  <span class="tk-c">// output</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"29 * "</span> &lt;&lt; a &lt;&lt; <span class="tk-s">" = "</span> &lt;&lt; result &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <ol class="gq">
   <li><strong>What goes in, what comes out?</strong>
   <details><summary>My answer</summary><div><p>In: one <code>int</code> a. Out: $29a$, printed. Restriction: only <code>+</code> and <code>=</code>.</p></div></details></li>
@@ -602,7 +645,29 @@ b = c;</code></pre>
   <details><summary>My answer</summary><div><p>$a=0$: every step gives 0, result 0 ✓. $a=-1$: $-2,-4,-8,-16$, then $-16-8-4-1=-29$ ✓. Negative numbers work, because doubling works for them too.</p></div></details></li>
   <li><strong>Which pattern?</strong> Write the code in the input · compute · output frame.
   <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Ask for a number and put it in box <code>a</code>.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"a = ? "</span>;
+<span class="tk-k">int</span> a;
+<span class="tk-k">std</span>::cin &gt;&gt; a;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Double it four times, each result in its own box behind glass.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> a2  = a + a;    <span class="tk-c">//  2a</span>
+<span class="tk-k">const</span> <span class="tk-k">int</span> a4  = a2 + a2;  <span class="tk-c">//  4a</span>
+<span class="tk-k">const</span> <span class="tk-k">int</span> a8  = a4 + a4;  <span class="tk-c">//  8a</span>
+<span class="tk-k">const</span> <span class="tk-k">int</span> a16 = a8 + a8;  <span class="tk-c">// 16a</span></code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Add the four boxes that make 29: 16 + 8 + 4 + 1.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> result = a16 + a8 + a4 + a;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Write the result on the board.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"29 * "</span> &lt;&lt; a &lt;&lt; <span class="tk-s">" = "</span>
+          &lt;&lt; result &lt;&lt; <span class="tk-s">"\n"</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="3"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// input</span>
@@ -624,10 +689,30 @@ b = c;</code></pre>
   <span class="tk-k">return</span> 0;
 }</code></pre>
 <pre class="out"><code>a = ? 29 * 3 = 87</code></pre>
+</div></details>
   <p>Every intermediate value is a <code>const</code>, because none of them changes after it is computed (section 9 explains why that is good style).</p></div></details></li>
   <li><strong>How do I know it works?</strong>
   <details><summary>My answer</summary><div><p>Test 3 (87), 0 (0), −1 (−29), 1 (29), and a big one like 1000 (29000). In Code Expert, run the visible tests too. Could 6 additions be enough? No: with $k$ additions the largest multiple you can reach is $2^k a$, and the numbers reachable in 6 steps do not include 29 (mathematicians call this the length of the shortest <em>addition chain</em>, which is 7 for 29). So 7 is optimal.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-frame">input · compute · output</a> <a class="mvl" href="inf-method.html#p-const">one named const per step</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Write 29 in powers of two:</strong> 16 + 8 + 4 + 1.</li>
+  <li><strong>Double up to the largest power:</strong> a2, a4, a8, a16 (one addition each).</li>
+  <li><strong>Add the needed powers:</strong> a16 + a8 + a4 + a.</li>
+  <li><strong>Test 0 and a negative number</strong> before submitting.</li>
+</ol>
+<p>In short: "binary digits of the factor, doubling, then add".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which line computes $8a$ from $4a$?</p>
+  <details><summary>Answer</summary><div><p><code>const int a8 = a4 + a4;</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change the plan for $13a$: which powers of two, and which line replaces the last addition?</p>
+  <details><summary>Answer</summary><div><p>$13=8+4+1$, so double three times (a2, a4, a8) and write <code>const int result = a8 + a4 + a;</code>: 5 additions.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> Close the answers and write the whole computation for $29a$ in the editor above from the contract alone, then press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above. All four tests should pass.</p></div></details></li>
 </ol></div>
+</div>
 
 <h2 id="s8-expressions">8. Expressions, statements and effects</h2>
 <p>We've been using <strong>expressions</strong> all along: <code>a * a</code>, <code>x + 2</code>, <code>3</code>. The script's definition (p. 26):</p>
@@ -659,7 +744,7 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
 
 <h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
 <div class="box"><h3 id="we-3">Worked example 3: what does this print?</h3>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> x = 2;
@@ -690,8 +775,31 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
 </ol>
 <p class="small">This is Code Expert Exercise 2, Task 1 in miniature. That exercise also asks for "lvalue or rvalue" of each valid expression: <code>a = b = 5</code> is an lvalue (it is the box <code>a</code>).</p></div>
 
-<div class="task"><h3 id="ct-2">Coding task 2: seconds since midnight</h3>
+<div class="task" id="task-2"><h3 id="ct-2">Coding task 2: seconds since midnight</h3>
 <p>Read three integers <code>h m s</code> (a time of day: hours 0–23, minutes and seconds 0–59) and print how many seconds have passed since midnight, as <code>seconds since midnight: …</code>. Use the six questions; the answers fold out.</p>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> three <code>int</code>s h, m, s with $0\le h\le23$, $0\le m,s\le59$.</li>
+  <li><strong>Must hold at the end:</strong> the line <code>seconds since midnight: t</code> with $t$ the number of seconds from 00:00:00.</li>
+  <li><strong>The gap to fill:</strong> turn hours and minutes into seconds.</li>
+</ul></div>
+<p><strong>Try it yourself</strong> in the editor, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;1 0 0&quot;,&quot;out&quot;:&quot;seconds since midnight: 3600&quot;},{&quot;in&quot;:&quot;0 2 5&quot;,&quot;out&quot;:&quot;seconds since midnight: 125&quot;},{&quot;in&quot;:&quot;23 59 59&quot;,&quot;out&quot;:&quot;seconds since midnight: 86399&quot;},{&quot;in&quot;:&quot;0 0 0&quot;,&quot;out&quot;:&quot;seconds since midnight: 0&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input: a time of day h:m:s</span>
+  <span class="tk-k">int</span> h;
+  <span class="tk-k">int</span> m;
+  <span class="tk-k">int</span> s;
+  <span class="tk-k">std</span>::cin &gt;&gt; h &gt;&gt; m &gt;&gt; s;
+
+  <span class="tk-c">// computation</span>
+  <span class="tk-k">int</span> total = 0;   <span class="tk-c">// replace this line</span>
+
+  <span class="tk-c">// output</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"seconds since midnight: "</span> &lt;&lt; total &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <ol class="gq">
   <li><strong>What goes in, what comes out?</strong>
   <details><summary>My answer</summary><div><p>In: three <code>int</code>s in the given ranges. Out: one line with one number. No restrictions on operators.</p></div></details></li>
@@ -703,7 +811,29 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
   <details><summary>My answer</summary><div><p>00:00:00 gives 0 ✓. The largest value 86399 fits easily into an <code>int</code> (lesson 2: up to about 2.1 billion).</p></div></details></li>
   <li><strong>Code.</strong>
   <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Read three numbers into three boxes.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> h;
+<span class="tk-k">int</span> m;
+<span class="tk-k">int</span> s;
+<span class="tk-k">std</span>::cin &gt;&gt; h &gt;&gt; m &gt;&gt; s;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Two fixed rates, behind glass: seconds per hour, seconds per minute.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> seconds_per_hour = 3600;
+<span class="tk-k">const</span> <span class="tk-k">int</span> seconds_per_minute = 60;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Hours times the hour rate, plus minutes times the minute rate, plus the seconds.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">int</span> total = h * seconds_per_hour
+                + m * seconds_per_minute + s;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Write the line.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"seconds since midnight: "</span>
+          &lt;&lt; total &lt;&lt; <span class="tk-s">"\n"</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="23 59 59"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// input: a time of day h:m:s</span>
@@ -724,18 +854,42 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
   <span class="tk-k">return</span> 0;
 }</code></pre>
 <pre class="out"><code>seconds since midnight: 86399</code></pre>
+</div></details>
   <p>Named constants instead of bare 3600 and 60 make the formula read like the plan in step 3.</p></div></details></li>
   <li><strong>Tests.</strong>
   <details><summary>My answer</summary><div><p>The three examples above (3600, 125, 86399) and 0 0 0. In lesson 2 you'll write the reverse direction, seconds to h:m:s, which needs integer division and <code>%</code>.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-frame">input · compute · output</a> <a class="mvl" href="inf-method.html#p-const">one named const per step</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Units first:</strong> 1 h = 3600 s, 1 min = 60 s, as named constants.</li>
+  <li><strong>One formula:</strong> $3600h+60m+s$.</li>
+  <li><strong>Copy the output format exactly</strong>, colon and space included.</li>
+  <li><strong>Sanity check:</strong> 23 59 59 must give 86399.</li>
+</ol>
+<p>In short: "convert every unit to the smallest one, then add".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the line that computes <code>total</code>.</p>
+  <details><summary>Answer</summary><div><p><code>const int total = h * seconds_per_hour + m * seconds_per_minute + s;</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change the program to also read days <code>d</code> (seconds since the start of the week). Which two lines change?</p>
+  <details><summary>Answer</summary><div><p>Read <code>d</code> as well (<code>std::cin &gt;&gt; d &gt;&gt; h &gt;&gt; m &gt;&gt; s;</code>) and add <code>d * 86400</code> to the total, best as a constant <code>seconds_per_day = 86400</code>. The largest value, $7\cdot86400-1=604799$, still fits in an <code>int</code>.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> With the answers closed, fill in the computation in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
 </ol></div>
+</div>
 
 <h2 id="exercises">Exercises</h2>
-<p>Each solution folds open under its exercise. <strong>Score yourself:</strong> 1 point per exercise part you got fully right before opening the solution. 9 of 12 or more: you're ready for lesson 2.</p>
+<p>Each solution folds open under its exercise. Try each one before opening it.</p>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> Exercises 1–5 make 12 points; give yourself a point only for what you had fully right before opening the solution. <strong>9 of 12 and you're done</strong> with lesson 1. Exercise 5 is also a writing exercise: if you typed it into the editor and all tests pass, count both points.</p>
+</div>
 
 <h3 id="ex-1">Exercise 1 (Hello World, Code Expert Exercise 1, Task 1) · 1 point</h3>
 <p>Write a complete program that prints <code>Hello World!</code> followed by a new line.</p>
 <details><summary>Solution (StudyHub, compiled)</summary><div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<p><em>Frame:</em> no input; output exactly <code>Hello World!</code> and a line break; the program frame is the whole task.</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"Hello World!\n"</span>;
@@ -745,7 +899,7 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
 
 <h3 id="ex-2">Exercise 2 (trace and output) · 2 points</h3>
 <p>What does this program print? Give the exact output, spaces and line breaks included.</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> a = 7;
@@ -757,6 +911,7 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
   <span class="tk-k">return</span> 0;
 }</code></pre>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> two boxes, four statements in order, then two output statements; a trace table with one row per statement.</p>
 <div class="table-wrap"><table class="trace"><thead><tr><th>after line</th><th>a</th><th>b</th></tr></thead><tbody>
 <tr><td><code>int a = 7;</code></td><td>7</td><td></td></tr>
 <tr><td><code>int b = a - 2;</code></td><td>7</td><td>5</td></tr>
@@ -778,7 +933,10 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
   <span class="tk-k">std</span>::cout &lt;&lt; area &lt;&lt; <span class="tk-s">"\n"</span>;
   <span class="tk-k">return</span> 0;
 }</code></pre>
+<details class="hint"><summary>Hint 1</summary><div><p>Read the program as the golem does: top to bottom. At each line, which boxes already hold a value?</p></div></details>
+<details class="hint"><summary>Hint 2</summary><div><p>One problem is about order, one about <code>const</code>, one about spelling. Only two of them stop the compiler.</p></div></details>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> for each line, ask: does the gatekeeper accept it (syntax, names, const), and if yes, does it read a box before it has a value?</p>
 <ol>
   <li><code>int Area = side * side;</code> comes <strong>before</strong> <code>std::cin &gt;&gt; side;</code>, so it reads an uninitialized variable: <strong>undefined behavior</strong> (it compiles; the compiler may warn). Fix: read first, compute after. The golem runs top to bottom; the order of statements is the order of events.</li>
   <li><code>factor = 2;</code> assigns to a constant: <strong>compiler error</strong>.</li>
@@ -789,13 +947,25 @@ speed_of_light = 300000;      <span class="tk-c">// compiler error</span></code>
 <h3 id="ex-4">Exercise 4 (true or false, old exam style) · 4 points</h3>
 <p>(a) A program that compiles always terminates. (b) Comments change what the compiled program does. (c) After <code>int x = -3.7;</code> the value of x is −3. (d) <code>x = y = 0;</code> sets both x and y to 0.</p>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> each statement is about one rule of this lesson: compile vs run, comments, conversion to <code>int</code>, assignment as an expression.</p>
 <p>(a) <strong>False.</strong> Compiling only checks syntax (and a few semantic things); at run time a program can still loop forever or crash (script p. 17). (b) <strong>False.</strong> The compiler ignores comments completely. (c) <strong>True.</strong> Conversion to <code>int</code> cuts towards 0 (script p. 23). (d) <strong>True.</strong> It is <code>x = (y = 0)</code>; the inner assignment has value 0.</p></div></details>
 
 <h3 id="ex-5">Exercise 5 (write it: sum and difference) · 2 points</h3>
-<p>Read two <code>int</code>s and print their sum and their difference (first minus second) on two lines, as <code>sum: …</code> and <code>difference: …</code>. Use the six questions; at least write down the contract and two hand examples before coding.</p>
+<p>Read two <code>int</code>s and print their sum and their difference (first minus second) on two lines, as <code>sum: …</code> and <code>difference: …</code>. Use the six questions; at least write down the contract and two hand examples before coding. Then write it in the editor and press Check.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;5 3&quot;,&quot;out&quot;:&quot;sum: 8\ndifference: 2&quot;},{&quot;in&quot;:&quot;3 5&quot;,&quot;out&quot;:&quot;sum: 8\ndifference: -2&quot;},{&quot;in&quot;:&quot;0 0&quot;,&quot;out&quot;:&quot;sum: 0\ndifference: 0&quot;},{&quot;in&quot;:&quot;-4 -6&quot;,&quot;out&quot;:&quot;sum: -10\ndifference: 2&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input</span>
+
+  <span class="tk-c">// computation</span>
+
+  <span class="tk-c">// output</span>
+
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <details><summary>Solution (StudyHub, compiled and tested)</summary><div>
-<p>Contract: in two <code>int</code>s a, b; out two lines. Examples: 5 3 gives 8 and 2; 3 5 gives 8 and −2 (the order matters for the difference: that is the edge to check).</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<p><em>Frame:</em> in two <code>int</code>s a, b; out two lines. Examples: 5 3 gives 8 and 2; 3 5 gives 8 and −2 (the order matters for the difference: that is the edge to check).</p>
+<pre class="code" data-run="1" data-stdin="3 5"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// input</span>
@@ -827,20 +997,23 @@ difference: -2</code></pre>
   <li><strong>Method:</strong> the six questions for writing, the variable table for reading.</li>
 </ul></div>
 
-<h2 id="for-wonder">For wonder: the question no compiler can answer</h2>
+<h2 id="for-wonder">For wonder: the question no compiler can answer <span class="small">(optional, 5 min)</span></h2>
 <p>Exercise 4 (a) said a compiled program might never stop. Couldn't a clever compiler check for that, and warn us? Turing, the same man as the machine, proved in 1936 that <strong>no</strong> program can decide, for every program and input, whether it terminates. The idea is a paradox: if such a checker existed, you could build a program that asks the checker about itself and then does the opposite of the answer. This is why an old IFMP exam (August 2016, task 1c) could ask "There are compilers that detect whether every program is free from infinite loops" and expect <strong>false</strong>. The gatekeeper is our friend, but some things it can never know.</p>
 
 <h2 id="what-we-skipped">What we skipped</h2>
+<p>All of this is also on the <a class="xl" href="skipped.html#informatik">skip list</a>.</p>
 <ul>
-  <li><strong>The box computer's instructions in detail</strong> (script p. 11–12): read it once and play it with 12 and 8 if you enjoy it; it isn't examined.</li>
-  <li><strong>Von Neumann architecture and computing speeds</strong> (p. 13–14, marked * in the script): background only.</li>
-  <li><strong>History</strong> (al-Khwarizmi, Zuse, Babbage, Pascal): nice, not examined.</li>
-  <li><strong>The full list of operators</strong>: lesson 2 (script chapter 3).</li>
+  <li><strong>The box computer's instructions in detail</strong> (script p. 11–12). Priority: low. Read it once and play it with 12 and 8 if you enjoy it; it isn't examined.</li>
+  <li><strong>Von Neumann architecture and computing speeds</strong> (p. 13–14, marked * in the script). Priority: low, background only.</li>
+  <li><strong>History</strong> (al-Khwarizmi, Zuse, Babbage, Pascal). Priority: low, not examined.</li>
 </ul>
 <p><strong>Next:</strong> <a href="inf-02.html">lesson 2</a>, expressions and types: in which order C++ evaluates <code>32 + 9 * c / 5</code>, why <code>9 / 5</code> is 1, what <code>int</code>, <code>unsigned int</code>, <code>double</code> and <code>bool</code> really hold, and the exam's favourite task, "give the type and value of this expression".</p>
 
+<script src="assets/inf-run.js?v=inf1123c" defer></script>
+
 <nav class="site foot" aria-label="Lesson navigation">
 <a href="informatik.html">Informatik home</a>
+<a href="inf-02.html">Lesson 2: Boxes of Different Shapes →</a>
 <span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
 </nav>
 </main>

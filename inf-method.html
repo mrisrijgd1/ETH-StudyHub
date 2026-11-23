@@ -220,6 +220,26 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 .task h3 { margin: 0; }
 .pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
 .small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+.ide { display: flex; flex-direction: column; gap: .45rem; }
+.ide textarea.ide-edit { width: 100%; box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; line-height: 1.5; padding: .75rem .9rem; border: 1px solid var(--accent); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--ink); tab-size: 2; white-space: pre; overflow-x: auto; resize: vertical; min-height: 6rem; }
+.ide-bar { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.ide .ide-btn { font: inherit; font-size: .85rem; padding: .3rem .8rem; border-radius: 999px; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); cursor: pointer; }
+.ide .ide-btn.ide-main { background: var(--accent); color: var(--surface); }
+.ide .ide-btn.ide-quiet { border-color: var(--rule); color: var(--muted); }
+.ide-btn:disabled { opacity: .55; cursor: wait; }
+.ide-in { font-size: .85rem; color: var(--muted); display: inline-flex; align-items: center; gap: .3rem; flex: 1 1 10rem; }
+.ide .ide-in input { font-family: ui-monospace, Menlo, monospace; font-size: .84rem; flex: 1; min-width: 0; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+.ide-result:empty { display: none; }
+.ide-result { display: flex; flex-direction: column; gap: .35rem; }
+.ide-tests { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .3rem; }
+.ide-diff { display: grid; gap: .2rem; margin-top: .3rem; }
+.run-good { color: #2e7d32; } .run-bad { color: #c62828; }
+pre.run-err { margin: 0; padding: .6rem .8rem; border-radius: 8px; background: var(--surface); border: 1px solid #c62828; font-size: .8rem; overflow-x: auto; white-space: pre; }
+@media (prefers-color-scheme: dark) { .run-good { color: #81c784; } .run-bad { color: #ef9a9a; } }
+@media (max-width: 480px) { .ide textarea.ide-edit { font-size: .74rem; padding: .6rem .65rem; } }
 @media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
 </style>
 
@@ -272,13 +292,22 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <div class="table-wrap"><table>
 <thead><tr><th>pattern</th><th>what it does</th><th>lesson</th></tr></thead>
 <tbody>
-<tr><td>input · compute · output</td><td>the frame of every <code>main</code></td><td><a href="inf-01.html#s7-input">1</a></td></tr>
-<tr><td>swap with a helper variable</td><td><code>int tmp = x; x = y; y = tmp;</code></td><td><a href="inf-01.html#we-2">1</a></td></tr>
-<tr><td>one named <code>const</code> per step</td><td>makes the code read like the plan</td><td><a href="inf-01.html#ct-1">1</a></td></tr>
-<tr><td>"how often" and "what's left"</td><td><code>t / d</code> and <code>t % d</code></td><td><a href="inf-02.html#ct-1">2</a></td></tr>
-<tr><td>round <code>p / q</code> to nearest (p, q &gt; 0)</td><td><code>(p + q / 2) / q</code></td><td><a href="inf-02.html#ct-2">2</a></td></tr>
-<tr><td>mathematical <code>a mod m</code> (m &gt; 0)</td><td><code>(a % m + m) % m</code></td><td><a href="inf-02.html#modulo">2</a></td></tr>
-<tr><td>guard with short circuit</td><td><code>x != 0 &amp;&amp; z / x &gt; y</code></td><td><a href="inf-02.html#short-circuit">2</a></td></tr>
+<tr id="p-frame"><td>input · compute · output</td><td>the frame of every <code>main</code></td><td><a href="inf-01.html#s7-input">1</a></td></tr>
+<tr id="p-swap"><td>swap with a helper variable</td><td><code>int tmp = x; x = y; y = tmp;</code></td><td><a href="inf-01.html#we-2">1</a></td></tr>
+<tr id="p-const"><td>one named <code>const</code> per step</td><td>makes the code read like the plan</td><td><a href="inf-01.html#ct-1">1</a></td></tr>
+<tr id="p-divmod"><td>"how often" and "what's left"</td><td><code>t / d</code> and <code>t % d</code></td><td><a href="inf-02.html#ct-1">2</a></td></tr>
+<tr id="p-round"><td>round <code>p / q</code> to nearest (p, q &gt; 0)</td><td><code>(p + q / 2) / q</code></td><td><a href="inf-02.html#ct-2">2</a></td></tr>
+<tr id="p-mod"><td>mathematical <code>a mod m</code> (m &gt; 0)</td><td><code>(a % m + m) % m</code></td><td><a href="inf-02.html#modulo">2</a></td></tr>
+<tr id="p-guard"><td>guard with short circuit</td><td><code>x != 0 &amp;&amp; z / x &gt; y</code></td><td><a href="inf-02.html#short-circuit">2</a></td></tr>
+<tr id="p-acc"><td>accumulator</td><td><code>int s = 0; for (…) { s += …; }</code> (products start at 1)</td><td><a href="inf-03.html#s3-for">3</a></td></tr>
+<tr id="p-digit"><td>peel off the last digit</td><td><code>while (n &gt; 0) { d = n % 10; …; n /= 10; }</code></td><td><a href="inf-03.html#ct-1">3</a></td></tr>
+<tr id="p-search"><td>search until found</td><td><code>int d = 2; while (n % d != 0) { ++d; }</code> (needs a guarantee it is found)</td><td><a href="inf-03.html#we-1">3</a></td></tr>
+<tr id="p-overflow"><td>stop before overflow</td><td><code>if (a &gt; m - b) break;</code> instead of testing <code>a + b &gt; m</code></td><td><a href="inf-03.html#ct-3">3</a></td></tr>
+<tr id="p-half"><td>loop-and-a-half</td><td><code>while (true) { read; if (end) break; work; }</code></td><td><a href="inf-03.html#s7-jumps">3</a></td></tr>
+<tr id="p-contract"><td>contract first</td><td><code>// PRE: …</code> and <code>// POST: …</code> above the signature, before the body</td><td><a href="inf-04.html#s6-pre-post">4</a></td></tr>
+<tr id="p-assert"><td>PRE as code</td><td><code>assert(…);</code> as the first line of the body</td><td><a href="inf-04.html#assert">4</a></td></tr>
+<tr id="p-retcond"><td>return the condition</td><td><code>return a &lt; b;</code> instead of <code>if … return true; else return false;</code></td><td><a href="inf-04.html#s5-void-and-return">4</a></td></tr>
+<tr id="p-refine"><td>magic step → function</td><td>stub <code>return false; // todo</code>, then refine (stepwise refinement)</td><td><a href="inf-04.html#ct-1">4</a></td></tr>
 </tbody></table></div>
 
 <h2 id="b-reading">B. Reading a program: the trace table</h2>
@@ -291,6 +320,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
   <li><strong>Stop signs:</strong> a name with no row (compiler error), an empty value being read (undefined behavior), a division by zero, a value leaving the range of its type.</li>
   <li><strong>Expressions:</strong> use the five steps of <a href="inf-02.html#type-and-value-method">lesson 2</a> for type and value.</li>
 </ol>
+<p><strong>Function calls</strong> (<a href="inf-04.html#call-trace-method">lesson 4</a>): a new table for every call, starting with the parameters as copies of the argument values; cross it out at the <code>return</code> and write the returned value in place of the call.</p>
 <p class="small">Check a trace with C++ Tutor (pythontutor.com, language C++): step forward and compare its "Stack" with your table. Loops, function calls and recursion extend the table; each lesson shows how when it gets there.</p></div>
 
 <h2 id="c-testing">C. Testing: the cases the visible tests don't show</h2>
@@ -329,6 +359,8 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
   <li>Type and adapt the code yourself, and be able to explain every line.</li>
   <li>Afterwards, close the chat and redo a small related problem or trace from memory. That is the real exam check.</li>
 </ol>
+
+<script src="assets/inf-run.js?v=inf1123c" defer></script>
 
 <nav class="site foot" aria-label="Lesson navigation">
 <a href="informatik.html">Informatik home</a>
