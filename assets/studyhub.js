@@ -159,9 +159,13 @@
   const base = new URL('../', source.src);
   const path = location.pathname.slice(base.pathname.length);
   const chemistry = path.startsWith('chemie/');
-  // Rachel's flashcards app (synced from her repo). The Analysis "Flashcards" tab opens it.
+  // Rachel's flashcards app (synced from her repo). Analysis_Lerplatform/ is the Lernkarten start page (one tile per subject);
+  // each subject lives in its own folder: analysis/ (also classic.html), linalg/.
   const fcAppPath = 'FlashcardsAnalysis_designspace/Analysis_Lerplatform/';
   const fcApp = path.startsWith(fcAppPath);
+  const fcRel = fcApp ? path.slice(fcAppPath.length) : '';
+  const fcStart = fcApp && /^(index\.html)?$/.test(fcRel);
+  const fcSubject = !fcApp || fcStart ? null : /^linalg[/.]/.test(fcRel) ? 'linalg' : 'analysis';
   // The Chemie course itself is German; its header follows the language of the last StudyHub page (sh-lang).
   let lastLang = null; try { lastLang = localStorage.getItem('sh-lang'); } catch (_) {}
   const langParam = new URLSearchParams(location.search).get('lang');
@@ -192,15 +196,16 @@
   } catch (_) {}
   const physCards = !fcApp && !de && file === 'flashcards.html' && (/^#p\d/.test(location.hash) || /^#p\d/.test(returnHash));
   const practiceFor = file === 'practice.html' ? ({ '#analysis': 'analysis', '#physics': 'physics', '#linalg': 'linalg' })[location.hash] : null;
-  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(informatik\.html|inf-)/.test(file) ? 'informatik' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
-  if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en') + '#/proof-practice', base).href); return; }
+  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? fcSubject : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(informatik\.html|inf-)/.test(file) ? 'informatik' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'analysis/index.html?lang=' + (de ? 'de' : 'en') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
   // Course tabs: the same four everywhere (Overview | Lessons | Practice | Resources); Resources opens a small panel.
-  const fcHref = fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en');
+  const fcHref = fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en');   // the start page
+  const fcDeck = id => fcAppPath + id + '/index.html?lang=' + (de ? 'de' : 'en');   // one subject's cards
   const courseTabs = {
     analysis: { overview: prefix + 'analysis.html', lessons: prefix + 'analysis.html#lessons', practice: prefix + 'practice.html#analysis', resources: [
-      [L('Mehr üben', 'Practise more'), [[L('Repetition', 'Refresher'), prefix + 'analysis.html#refresher', L('12 Einheiten, eine pro Tag', '12 units, one a day')], [L('Lernkarten', 'Flashcards'), fcHref], [L('Beweiskniffe', 'Proof moves'), prefix + 'moves.html'], [L('Stammbaum der Sätze', 'Theorem tree'), prefix + 'tree.html'], [L('Übungsblätter erklärt', 'Übungsblätter explained'), prefix + 'serie-a01.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
+      [L('Mehr üben', 'Practise more'), [[L('Repetition', 'Refresher'), prefix + 'analysis.html#refresher', L('12 Einheiten, eine pro Tag', '12 units, one a day')], [L('Lernkarten', 'Flashcards'), fcDeck('analysis')], [L('Beweiskniffe', 'Proof moves'), prefix + 'moves.html'], [L('Stammbaum der Sätze', 'Theorem tree'), prefix + 'tree.html'], [L('Übungsblätter erklärt', 'Übungsblätter explained'), prefix + 'serie-a01.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
       [L('Kursmaterial', 'Course material'), [[L('Prüfungsplan', 'Exam plan'), prefix + 'exam-map.html'], [L('Skript', 'Script'), 'script.html'], [L('Prüfungen und Formelsammlung', 'Exams and formula sheets'), prefix + 'docs.html'], [L('Ausgelassene Themen', 'Skipped topics'), prefix + 'skipped.html']]]
     ] },
     physics: { overview: prefix + 'physics.html', lessons: prefix + 'physics.html#lessons', practice: prefix + 'physics.html#tools', resources: [
@@ -208,7 +213,7 @@
       [L('Kursmaterial', 'Course material'), [[L('Prüfungsplan', 'Exam plan'), prefix + 'phys-plan.html'], [L('Tafel & Skript', 'Board & script'), prefix + 'phys-board.html'], [L('Skript', 'Script'), 'phys-script.html'], [L('Prüfungen', 'Exams'), prefix + 'phys-docs.html']]]
     ] },
     linalg: { overview: prefix + 'linalg.html', lessons: prefix + 'linalg.html#lessons', practice: prefix + 'practice.html#linalg', resources: [
-      [L('Mehr üben', 'Practise more'), [[L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
+      [L('Mehr üben', 'Practise more'), [[L('Lernkarten', 'Flashcards'), fcDeck('linalg'), L('123 Karten zum Skript', '123 cards on the script')], [L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
       [L('Kursmaterial', 'Course material'), [[L('Plan und Prüfungslandkarte', 'Plan and exam map'), 'linalg-plan.html'], [L('Skript', 'Script'), 'linalg-script.html']]]
     ] },
     informatik: { overview: 'informatik.html', lessons: 'informatik.html#lessons', practice: 'inf-method.html', resources: [
@@ -297,6 +302,10 @@
   }
   renderSubjects(studyPath);
   nav.append(subjectsPop.wrap);
+  // Flashcards for all subjects: one entry next to the subjects, opening the Lernkarten start page.
+  const cardsLink = link(L('Lernkarten', 'Flashcards'), fcHref, 'study-nav-item');
+  if (fcApp) cardsLink.setAttribute('aria-current', 'page');
+  nav.append(cardsLink);
   const practiceLink = link(L('Üben', 'Practice'), prefix + 'practice.html', 'study-nav-item');
   if (file === 'practice.html' || file === 'mock.html') practiceLink.setAttribute('aria-current', 'page');
   nav.append(practiceLink);
@@ -335,7 +344,7 @@
   const activityHash = /access_token=|error_description=/.test(location.hash) ? returnHash : location.hash;
   const language = de ? 'en' : 'de';
   const currentApp = file + '?lang=' + language + activityHash;
-  const languageTarget = chemistry ? 'chemie/?lang=' + language + activityHash : physCards ? 'de/index.html' : fcApp ? fcAppPath + currentApp : sharedPages.has(file) ? currentApp : (de ? file : 'de/' + file);
+  const languageTarget = chemistry ? 'chemie/?lang=' + language + activityHash : physCards ? 'de/index.html' : fcApp ? fcAppPath + fcRel.replace(/[^/]*$/, '') + currentApp : sharedPages.has(file) ? currentApp : (de ? file : 'de/' + file);
   const languageLink = link(de ? 'EN' : 'DE', languageTarget, 'study-guest-language');
   languageLink.lang = de ? 'en' : 'de';
   languageLink.setAttribute('aria-label', de ? 'English' : 'Deutsch');
@@ -652,7 +661,7 @@
       const deck = JSON.parse(localStorage.getItem('studyhub-analysis-flashcards-v1'));
       const value = deck?.users?.[user.id]?.lastSession;
       if (!value?.hash?.startsWith('#/')) return null;
-      return { href: new URL(fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en') + value.hash, base).href, at: value.at };
+      return { href: new URL(fcDeck('analysis') + value.hash, base).href, at: value.at };
     } catch (_) { return null; }
   }
   function renderContinue() {
