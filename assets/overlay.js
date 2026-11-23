@@ -82,8 +82,8 @@
     var main = document.querySelector('main'); if (!main) return;
     var h1 = main.querySelector('h1'); if (!h1) return;
     var css = document.createElement('style');
-    css.textContent = '.sh-pdf{font:inherit;font-size:.88rem;padding:.3rem .9rem;border-radius:999px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer;margin:.3rem 0 .6rem}' +
-      '@media print{.study-shell,#sh-tip,.sh-listen,.sh-comments,.sh-progress,.sh-pdf,.badday,footer,nav.toc,iframe{display:none!important}' +
+    css.textContent = '.sh-pdf{cursor:pointer}' +
+      '@media print{.study-shell,#sh-tip,.sh-listen,.sh-comments,.sh-progress,.sh-pdf,.lesson-actions,.badday,footer,nav.toc,iframe{display:none!important}' +
       'body,main{background:#fff!important;color:#000!important}main{max-width:none!important;margin:0!important;padding:0!important}' +
       'details{border:none!important}details>summary{list-style:none;font-weight:600}details>summary::-webkit-details-marker{display:none}' +
       '.box,.exam,.story,details{break-inside:auto}h2,h3{break-after:avoid}mjx-container[display="true"]{overflow:visible!important}mjx-container svg g[stroke]{stroke:none!important}a{color:inherit!important;text-decoration:none!important}}';
@@ -92,10 +92,17 @@
     var b = document.createElement('a'); b.className = 'sh-pdf';
     b.href = (DE ? '../' : '') + 'pdf/' + (DE ? 'de/' : 'en/') + page.replace(/\.html$/, '.pdf');
     b.setAttribute('download', 'StudyHub-' + (DE ? 'de-' : '') + page.replace(/\.html$/, '.pdf'));
-    b.style.display = 'inline-block'; b.style.textDecoration = 'none';
+    b.className = 'sh-pdf btn-secondary';
     b.textContent = DE ? 'PDF herunterladen (mit allen Lösungen)' : 'Download PDF (with all solutions)';
     b.title = DE ? 'Fertiges PDF im Stil des Skripts, alle Lösungen aufgeklappt.' : 'Ready-made PDF in the style of the script, every solution unfolded.';
-    h1.insertAdjacentElement('afterend', b);
+    // Lesson intro: eyebrow, title, lead, then the actions (one primary "start reading", one secondary PDF).
+    var head = h1.closest('header') || h1.parentNode;
+    var actions = document.createElement('div'); actions.className = 'lesson-actions';
+    var first = main.querySelector('h2[id]');
+    if (first) { var go1 = document.createElement('a'); go1.className = 'btn-primary btn'; go1.href = '#' + first.id; go1.textContent = DE ? 'Mit dem Lesen beginnen' : 'Start reading'; actions.appendChild(go1); }
+    actions.appendChild(b);
+    var lead = head.querySelector('.lead');
+    (lead || h1).insertAdjacentElement('afterend', actions);
     var closed = [], theme = null, on = false;
     function before() {
       if (on) return; on = true;
