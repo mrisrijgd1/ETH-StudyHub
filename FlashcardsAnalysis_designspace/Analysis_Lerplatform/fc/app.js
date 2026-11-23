@@ -161,7 +161,11 @@
   /* "Show streak" (Mridul's wish, 23 Nov): a per-user setting in prefs (so the account sync carries it). It counts for
      ALL subjects, so it is also written into the other subjects' storage (fc/subjects.js) for the same user. Off: no
      flame, no streak count, no match, no streak greetings. Everything else stays as it is. */
-  const streakOn = () => prefs().streak !== false;
+  // StudyHub's own switch (My StudyHub → Your design → Hide → "Flashcards streak", or the student's AI via the connector)
+  // lives in the hub's design tokens (localStorage "sh-design", hide: [..., "streak"]). It wins over prefs.streak, also on the
+  // very first view, before the hub's assets/overlay.js has written prefs.streak = false.
+  const designHidesStreak = () => { try { const h = (JSON.parse(localStorage.getItem("sh-design") || "{}") || {}).hide; return Array.isArray(h) && h.indexOf("streak") >= 0; } catch (e) { return false; } };
+  const streakOn = () => !designHidesStreak() && prefs().streak !== false;
   function setStreak(on) {
     prefs().streak = on; save();
     (window.FC_SUBJECTS || []).forEach(s => {
@@ -498,7 +502,9 @@
   function streakPanel(si) {
     if (!streakOn()) return `<div class="fc-panel fc-streak off" aria-label="${L("Heute", "Today")}"><div><strong>${si.today} ${si.today === 1 ? L("Karte", "card") : L("Karten", "cards")}</strong>
       <div class="fc-streak-sub">${L("heute geübt", "practised today")}</div>
-      <button type="button" class="fc-linkbtn fc-streak-toggle" data-streak="on">${L("Streak anzeigen", "Show streak")}</button></div></div>`;
+      ${designHidesStreak()
+        ? `<div class="fc-streak-sub">${L("Ausgeschaltet in", "Turned off in")} <a href="${esc(hubLink("accountPage"))}#my-design">${L("Mein StudyHub → Dein Design", "My StudyHub → Your design")}</a></div>`
+        : `<button type="button" class="fc-linkbtn fc-streak-toggle" data-streak="on">${L("Streak anzeigen", "Show streak")}</button>`}</div></div>`;
     const flags = U().flags;
     let cls = "lvl" + si.level + (si.doneToday ? " happy" : ""), msg = "", extra = "";
     const rs = si.restore, total = rs.prevLen + 2;   // the restored day + today
@@ -1115,7 +1121,7 @@
       el.style.cssText += ";" + window.FC_FLAME_STYLE(SUBJ); el.setAttribute("data-flame", SUBJ.id);   // colours of fc/subjects.js
     });
     loadStore(); U(); initLang(); migrateLegacy(); hookAccount(); writeSummary(); render(true);
-    window.addEventListener("storage", e => { if (e.key === C.storageKey) { loadStore(); render(); } });
+    window.addEventListener("storage", e => { if (e.key === C.storageKey) { loadStore(); render(); } else if (e.key === "sh-design") { greetCache = null; render(); } });
   }
   window.__fc = { stats, isWeak, isMastered, streakInfo, rate: (id, r) => rate(byId.get(id), r), store: () => store, chapters, lesson, loadLessons, render };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();
