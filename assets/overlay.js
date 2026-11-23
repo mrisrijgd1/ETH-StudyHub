@@ -258,3 +258,44 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 })();
+
+/* Desktop contents rail (from 1200px wide; CSS in studyhub.css): a copy of the page's "Contents" box sits in a sticky
+   column left of the reading column, follows you while you scroll and marks the section you are in. Below 1200px
+   nothing changes: the normal Contents box stays at the top. Works on every reading page with a Contents box. */
+(function () {
+  function go() {
+    var main = document.querySelector('main'); if (!main || main.closest('.sh-read')) return;
+    var toc = main.querySelector(':scope > details.toc'), head = main.querySelector(':scope > header .eyebrow');
+    if (!toc || !head || !document.body.hasAttribute('data-subject')) return;
+    var list = toc.querySelector(':scope > ol'); if (!list) return;
+    var DE = document.documentElement.lang === 'de';
+    var rail = document.createElement('nav'); rail.className = 'sh-rail'; rail.setAttribute('aria-label', DE ? 'Inhalt' : 'Contents');
+    var h = document.createElement('p'); h.className = 'sh-rail-h'; h.textContent = DE ? 'Inhalt' : 'Contents';
+    rail.appendChild(h); rail.appendChild(list.cloneNode(true));
+    var wrap = document.createElement('div'); wrap.className = 'sh-read';
+    main.parentNode.insertBefore(wrap, main); wrap.appendChild(rail); wrap.appendChild(main);
+    document.documentElement.classList.add('sh-has-rail');
+    if (/\$|\\\(/.test(rail.textContent) && window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([rail]).catch(function () {});
+    // Where am I: the last linked heading above the top fifth of the screen.
+    var links = [].slice.call(rail.querySelectorAll('a[href^="#"]')), items = [];
+    links.forEach(function (a) { var t = document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1))); if (t) items.push({ a: a, t: t }); });
+    var cur = null, queued = false;
+    function mark() {
+      queued = false; if (!rail.offsetParent) return;
+      var line = innerHeight * 0.2, best = null;
+      for (var i = 0; i < items.length; i++) { var r = items[i].t.getBoundingClientRect(); if (!r.height && !r.width) continue; if (r.top <= line) best = items[i]; else break; }
+      if (best === cur) return; cur = best;
+      links.forEach(function (a) { a.removeAttribute('aria-current'); });
+      [].forEach.call(rail.querySelectorAll('li.is-open'), function (li) { li.classList.remove('is-open'); });
+      if (!best) return;
+      best.a.setAttribute('aria-current', 'location');
+      for (var li = best.a.closest('li'); li && rail.contains(li); li = li.parentNode.closest('li')) li.classList.add('is-open');
+      var ar = best.a.getBoundingClientRect(), rr = rail.getBoundingClientRect();
+      if (ar.top < rr.top + 30 || ar.bottom > rr.bottom - 10) rail.scrollTop += ar.top - rr.top - rr.height / 3;
+    }
+    function queue() { if (!queued) { queued = true; requestAnimationFrame(mark); } }
+    addEventListener('scroll', queue, { passive: true }); addEventListener('resize', queue); addEventListener('hashchange', queue);
+    mark();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+})();
