@@ -1,9 +1,10 @@
 /* =========================================================================
-   Analysis I – Lernkarten: configuration
+   Analysis I – Lernkarten: configuration (loaded by analysis/index.html)
    Everything that is meant to be tuned lives here: chapters, icons,
    thresholds, kaomojis and the greeting pool.
    ========================================================================= */
 window.FC_CONFIG = {
+  subjectId: "analysis",         // entry in fc/subjects.js (flame colour, start page)
   storageKey: "studyhub-analysis-flashcards-v1",
   schemaVersion: 1,
 
@@ -33,6 +34,8 @@ window.FC_CONFIG = {
   streakLevels: [3, 7, 30],  // flame grows at these lengths
   milestones: [7, 30, 100],  // celebrated once each
   rescueSize: 10,            // cards in "Streak retten"
+  restoreSize: 10,           // the match (Streichholz): cards to practise to restore a streak after ONE missed day
+  restoreCooldownDays: 7,    // a used match grows back after this many days
   timeZone: "Europe/Zurich",
   // Activity heatmap: the exam season Nov–Feb (month numbers). Outside it (Mar–Oct) the last 4 months are shown.
   heatmapFromMonth: 11,
@@ -43,8 +46,26 @@ window.FC_CONFIG = {
   courseProgressThreshold: 0.8,
 
   /* Proof practice: the hub's lesson cards. Read from these pages until a JSON export exists. */
-  lessonSources: { en: "../../flashcards.html", de: "../../de/flashcards.html" },
+  lessonSources: { en: "../../../flashcards.html", de: "../../../de/flashcards.html" },
   lessonCount: 22,
+
+  /* Comments under each card. They become forum threads in the StudyHub forum (table forum_threads, one topic per
+     deck: <topicPrefix>k<N> or <topicPrefix>proof), where the team reads them. Signed-in users only (hub RLS).
+     notifyUrl: optional endpoint that also receives each comment as JSON (e.g. a Supabase Edge Function that emails
+     the team). Empty = forum only. */
+  comments: {
+    enabled: true,
+    topicPrefix: "fc-analysis-",
+    maxLength: 2000,
+    notifyUrl: "",
+    forumPage: { en: "../../../community.html", de: "../../../de/community.html" },
+    accountPage: { en: "../../../account.html", de: "../../../de/account.html" },
+    kinds: [
+      { id: "example", de: "Beispiel", en: "Example", ph: ["Ein zusätzliches Beispiel oder Gegenbeispiel zu dieser Karte …", "An extra example or counterexample for this card …"] },
+      { id: "wish",    de: "Wunsch",   en: "Wish",    ph: ["Was würde dir bei dieser Karte helfen?", "What would make this card more helpful?"] },
+      { id: "unclear", de: "Unklarheit", en: "Unclear", ph: ["Was ist unklar oder vielleicht falsch?", "What is unclear or maybe wrong?"] }
+    ]
+  },
 
   /* Rating buttons, in my app's kaomoji style */
   ratings: {
@@ -70,9 +91,11 @@ window.FC_CONFIG = {
       { t: "Abendschicht, {name}? Ein paar Karten gehen immer.", tag: "evening" },
       { t: "Wow, {name}: {streak} Tage am Stück! Weiter so.", tag: "streak" },
       { t: "{streak} Tage in Folge, {name}. Die Flamme brennt!", tag: "streak" },
-      { t: "{name}, deine Serie wartet: eine Karte reicht, um sie zu retten.", tag: "risk" },
-      { t: "Achtung {name}, die Flamme flackert! Kurz üben?", tag: "risk" },
-      { t: "Neue Serie, neues Glück, {name}. Heute ist Tag 1.", tag: "lost" },
+      { t: "{name}, deine Flamme hat Hunger: ein paar Karten, und sie lodert!", tag: "risk" },
+      { t: "Noch ein Sprint heute, {name}? Deine Flamme ist bereit.", tag: "risk" },
+      { t: "Frischer Start, {name}: heute zündet Tag 1!", tag: "lost" },
+      { t: "{name}, ein Tag Pause? Zünd dein Streichholz, und weiter geht's!", tag: "restore" },
+      { t: "Nur ein Tag Pause, {name}: zünde das Streichholz und die Flamme brennt weiter.", tag: "restore" },
       { t: "Lange nicht gesehen, {name}! Fangen wir sanft wieder an.", tag: "away" },
       { t: "Willkommen zurück nach der Pause, {name}.", tag: "away" },
       { t: "Erster Besuch heute, {name}? Starte mit deinen schwachen Karten.", tag: "firstToday" },
@@ -92,9 +115,11 @@ window.FC_CONFIG = {
       { t: "Evening shift, {name}? A few cards always fit.", tag: "evening" },
       { t: "Wow, {name}: {streak} days in a row! Keep going.", tag: "streak" },
       { t: "{streak} days straight, {name}. The flame is burning!", tag: "streak" },
-      { t: "{name}, your streak is waiting: one card saves it.", tag: "risk" },
-      { t: "Careful {name}, the flame is flickering! Quick practice?", tag: "risk" },
-      { t: "New streak, new luck, {name}. Today is day 1.", tag: "lost" },
+      { t: "{name}, your flame is hungry: a few cards and it blazes!", tag: "risk" },
+      { t: "One more sprint today, {name}? Your flame is ready.", tag: "risk" },
+      { t: "Fresh start, {name}: day 1 ignites today!", tag: "lost" },
+      { t: "{name}, took a day off? Strike your match and off you go!", tag: "restore" },
+      { t: "Just one day off, {name}: light the match and the flame keeps burning.", tag: "restore" },
       { t: "Long time no see, {name}! Let's start gently.", tag: "away" },
       { t: "Welcome back after the break, {name}.", tag: "away" },
       { t: "First visit today, {name}? Start with your weak cards.", tag: "firstToday" },
