@@ -11,7 +11,7 @@
 <script defer src="assets/umami-kit.js?v=79d39d59"></script>
 <script defer src="assets/tips.js?v=pra1123"></script>
 <script defer src="assets/listen.js?v=427792c7"></script>
-<script defer src="assets/account.js?v=prg1123"></script>
+<script defer src="assets/account.js?v=prh1123"></script>
 <script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Golem Turns Back</title>
@@ -220,11 +220,31 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 .task h3 { margin: 0; }
 .pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
 .small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+.ide { display: flex; flex-direction: column; gap: .45rem; }
+.ide textarea.ide-edit { width: 100%; box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; line-height: 1.5; padding: .75rem .9rem; border: 1px solid var(--accent); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--ink); tab-size: 2; white-space: pre; overflow-x: auto; resize: vertical; min-height: 6rem; }
+.ide-bar { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.ide .ide-btn { font: inherit; font-size: .85rem; padding: .3rem .8rem; border-radius: 999px; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); cursor: pointer; }
+.ide .ide-btn.ide-main { background: var(--accent); color: var(--surface); }
+.ide .ide-btn.ide-quiet { border-color: var(--rule); color: var(--muted); }
+.ide-btn:disabled { opacity: .55; cursor: wait; }
+.ide-in { font-size: .85rem; color: var(--muted); display: inline-flex; align-items: center; gap: .3rem; flex: 1 1 10rem; }
+.ide .ide-in input { font-family: ui-monospace, Menlo, monospace; font-size: .84rem; flex: 1; min-width: 0; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+.ide-result:empty { display: none; }
+.ide-result { display: flex; flex-direction: column; gap: .35rem; }
+.ide-tests { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .3rem; }
+.ide-diff { display: grid; gap: .2rem; margin-top: .3rem; }
+.run-good { color: #2e7d32; } .run-bad { color: #c62828; }
+pre.run-err { margin: 0; padding: .6rem .8rem; border-radius: 8px; background: var(--surface); border: 1px solid #c62828; font-size: .8rem; overflow-x: auto; white-space: pre; }
+@media (prefers-color-scheme: dark) { .run-good { color: #81c784; } .run-bad { color: #ef9a9a; } }
+@media (max-width: 480px) { .ide textarea.ide-edit { font-size: .74rem; padding: .6rem .65rem; } }
 @media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
 </style>
 
 <link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
-<link rel="stylesheet" href="assets/appearance.css?v=prg1123">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
 <link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
 <script defer src="assets/studyhub.js?v=inf1123"></script>
 </head>
@@ -292,7 +312,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 </ol></li>
 <li><a href="#summary">Summary: what to keep from lesson 3</a>
 </li>
-<li><a href="#for-wonder">For wonder: a three-line loop nobody understands</a>
+<li><a href="#for-wonder">For wonder: a three-line loop nobody understands <span class="small">(optional, 5 min)</span></a>
 </li>
 <li><a href="#what-we-skipped">What we skipped</a>
 </li>
@@ -356,7 +376,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <p><strong>if</strong> (script p. 49): <code>if (condition) statement</code>. The condition is any expression convertible to <code>bool</code>; the statement is the <em>body</em>. The body runs <strong>if and only if</strong> the condition is true.</p>
 <p><strong>if-else</strong> (p. 49–50): <code>if (condition) statement1 else statement2</code>. If the condition is true, <code>statement1</code> runs, otherwise <code>statement2</code>. Exactly one of the two.</p>
 </div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1" data-stdin="7"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> a;
@@ -389,7 +409,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 </ol>
 </div>
 <p>The script's example (Code 5.1, p. 51) sums $1+2+\dots+n$:</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1" data-stdin="4"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// input</span>
@@ -512,7 +532,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <tr><td>the body must run at least once before the check makes sense</td><td><code>do</code></td><td>the calculator that reads until 0</td></tr>
 </tbody></table></div>
 <p><strong>The Collatz sequence</strong> (p. 58–59): from $n$, halve if even, otherwise go to $3n+1$; stop at 1. As a <code>while</code> loop it reads like its definition:</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1" data-stdin="5"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> n;
@@ -578,7 +598,7 @@ pre.out::before { content: "Output"; display: block; font-family: var(--font-uti
 <p><code>continue;</code> skips the rest of the body of the current round and goes on with the next round: in a <code>for</code> loop to the expression, then the condition; in <code>while</code> and <code>do</code> to the condition (p. 63).</p>
 </div>
 <p>The script improves the calculator with them (p. 61–63). The 0 that ends the input shouldn't be added; and negative numbers should be ignored:</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1" data-stdin="3 -2 4 0"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> summand;
@@ -611,7 +631,7 @@ next number = ?</code></pre>
 
 <h2 id="s8-switch">8. The switch statement</h2>
 <p>For a case distinction over many values of one integer, <code>switch</code> is clearer than a chain of <code>if</code>s (p. 68–70). The script's grades example (6: "Excellent … You passed!", 5 and 4: "You passed!", 3: "Close, but … You failed!", 2 and 1: "You failed!", otherwise "Error!"):</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<pre class="code" data-run="1" data-stdin="3"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> grade;
@@ -646,6 +666,28 @@ next number = ?</code></pre>
 
 <div class="task" id="task-1"><h3 id="ct-1">Coding task 1: digit sum</h3>
 <p>Read a non-negative <code>int n</code> and print the sum of its decimal digits. Example: 4096 gives 19.</p>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> one <code>int</code> n with $n\ge0$.</li>
+  <li><strong>Must hold at the end:</strong> one number printed, the sum of n's decimal digits.</li>
+  <li><strong>The gap to fill:</strong> the computer has no "digits", only the number. How do you get them out one by one?</li>
+</ul></div>
+<p><strong>Try it yourself</strong> in the editor, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;4096&quot;,&quot;out&quot;:&quot;19&quot;},{&quot;in&quot;:&quot;7&quot;,&quot;out&quot;:&quot;7&quot;},{&quot;in&quot;:&quot;0&quot;,&quot;out&quot;:&quot;0&quot;},{&quot;in&quot;:&quot;10&quot;,&quot;out&quot;:&quot;1&quot;},{&quot;in&quot;:&quot;2147483647&quot;,&quot;out&quot;:&quot;46&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input. PRE: n &gt;= 0</span>
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+
+  <span class="tk-c">// computation</span>
+  <span class="tk-k">int</span> sum = 0;
+  <span class="tk-c">// your loop here</span>
+
+  <span class="tk-c">// output</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; sum &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <ol class="gq">
   <li><strong>What goes in, what comes out?</strong>
   <details><summary>My answer</summary><div><p>In: an <code>int</code> n ≥ 0 (precondition). Out: one number, the digit sum, and a line break.</p></div></details></li>
@@ -657,7 +699,25 @@ next number = ?</code></pre>
   <details><summary>My answer</summary><div><p>n = 0: the loop <code>while (n &gt; 0)</code> doesn't run, the sum stays 0 ✓. Termination: n ≥ 0 and <code>n /= 10</code> makes a positive n strictly smaller, so n reaches 0 after as many rounds as it has digits.</p></div></details></li>
   <li><strong>Which pattern? Code.</strong>
   <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Read n. Start an empty sum box.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> n;
+<span class="tk-k">std</span>::cin &gt;&gt; n;
+<span class="tk-k">int</span> sum = 0;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>As long as something is left: take the last digit, add it, and cut it off.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">while</span> (n &gt; 0) {
+  sum += n % 10;
+  n /= 10;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Nothing left: write the sum.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">std</span>::cout &lt;&lt; sum &lt;&lt; <span class="tk-s">"\n"</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="4096"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-c">// input. PRE: n &gt;= 0</span>
@@ -676,10 +736,30 @@ next number = ?</code></pre>
   <span class="tk-k">return</span> 0;
 }</code></pre>
 <pre class="out"><code>19</code></pre>
+</div></details>
   <p>A <code>while</code> fits: we don't know the number of rounds in advance (it's the number of digits).</p></div></details></li>
   <li><strong>Tests.</strong>
   <details><summary>My answer</summary><div><p>4096 → 19, 7 → 7, 0 → 0, 10 → 1, 2147483647 → 46 (the largest <code>int</code>).</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-acc">accumulator</a> <a class="mvl" href="inf-method.html#p-digit">peel off the last digit: % 10, / 10</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Accumulator first:</strong> <code>int sum = 0;</code> before the loop.</li>
+  <li><strong>Loop while something is left:</strong> <code>while (n &gt; 0)</code>.</li>
+  <li><strong>Body in two lines:</strong> use the last digit (<code>n % 10</code>), then remove it (<code>n /= 10</code>).</li>
+  <li><strong>Check n = 0</strong> by hand: the loop must not run.</li>
+</ol>
+<p>In short: "start at 0, peel digits until nothing is left".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the loop body that adds the last digit and removes it.</p>
+  <details><summary>Answer</summary><div><p><code>sum += n % 10; n /= 10;</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change the program to count the digits instead (0 has one digit). What changes, and which loop fits now?</p>
+  <details><summary>Answer</summary><div><p><code>++count;</code> instead of <code>sum += n % 10;</code>, and a <code>do</code>-<code>while</code>, so that the body runs once even for n = 0: <code>do { ++count; n /= 10; } while (n &gt; 0);</code></p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> With the answers closed, write the loop in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
 </ol></div>
+</div>
 
 <div class="task" id="task-2"><h3 id="ct-2">Coding task 2: prime factorization (IFMP January 2017, task 3, official exam, 6 points)</h3>
 <p>The exam gave this skeleton with four gaps; your job is to fill them so that it prints the prime factors of $n\ge2$ in nondecreasing order with multiplicity. For 24: <code>2 2 2 3</code>.</p>
@@ -698,19 +778,96 @@ next number = ?</code></pre>
   }
 }</code></pre>
 <p class="small">(<code>void</code> and functions are lesson 4; read it as "the code that runs for a given n".)</p>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> n ≥ 2 (the precondition), and the skeleton: one loop, one <code>if</code>-<code>else</code>, a candidate d starting at 2.</li>
+  <li><strong>Must hold at the end:</strong> the printed numbers are primes, nondecreasing, and their product is n.</li>
+  <li><strong>The gap to fill:</strong> when to stop, when d is a factor, what to do in each case.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> fill the four gaps in the editor (the <code>main</code> reads n and calls the function), then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;24&quot;,&quot;out&quot;:&quot;2 2 2 3&quot;},{&quot;in&quot;:&quot;90&quot;,&quot;out&quot;:&quot;2 3 3 5&quot;},{&quot;in&quot;:&quot;13&quot;,&quot;out&quot;:&quot;13&quot;},{&quot;in&quot;:&quot;2&quot;,&quot;out&quot;:&quot;2&quot;},{&quot;in&quot;:&quot;32&quot;,&quot;out&quot;:&quot;2 2 2 2 2&quot;},{&quot;in&quot;:&quot;91&quot;,&quot;out&quot;:&quot;7 13&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-c">// PRE: n &gt;= 2</span>
+<span class="tk-c">// POST: outputs the prime factorization of n</span>
+<span class="tk-k">void</span> prime_factors (<span class="tk-k">unsigned</span> <span class="tk-k">int</span> n)
+{
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> d = 2;
+  <span class="tk-k">while</span> (<span class="tk-k">false</span> <span class="tk-c">/* (1) */</span>) {
+    <span class="tk-k">if</span> (<span class="tk-k">false</span> <span class="tk-c">/* (2) */</span>) {
+      <span class="tk-k">std</span>::cout &lt;&lt; d &lt;&lt; <span class="tk-s">" "</span>;
+      <span class="tk-c">/* (3) */</span> ;
+    } <span class="tk-k">else</span> {
+      <span class="tk-c">/* (4) */</span> ;
+    }
+  }
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  prime_factors(n);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <ol class="gq">
   <li><strong>What goes in, what comes out?</strong>
   <details><summary>My answer</summary><div><p>In: n ≥ 2. Out: the primes whose product is n, smallest first, each as often as it divides n.</p></div></details></li>
   <li><strong>By hand: 24, and 90.</strong> What do you do, exactly?
   <details><summary>My answer</summary><div><p>24: 2 divides it → write 2, go on with 12; 2 divides → 2, 6; 2 → 2, 3; 2 doesn't divide 3 → try 3: divides → 3, 1. Done: <code>2 2 2 3</code>. 90: 2 → 45; 2 no, 3 → 15; 3 → 5; 3 no, 4 no, 5 → 1. <code>2 3 3 5</code>.</p></div></details></li>
   <li><strong>Steps in words.</strong>
+  <details class="hint"><summary>Hint 1</summary><div><p>Look at your hand computation for 24: after printing a 2, did you move on to 3, or try 2 again?</p></div></details>
+  <details class="hint"><summary>Hint 2</summary><div><p>You were done when the number left over was 1.</p></div></details>
   <details><summary>My answer</summary><div><p>Keep a candidate d, starting at 2. As long as there's something left to factor (n &gt; 1): if d divides n, print d and divide it out (and <em>try the same d again</em>); otherwise move on to d + 1.</p></div></details></li>
   <li><strong>Check: does it ever print a non-prime, like 4?</strong>
   <details><summary>My answer</summary><div><p>No: when d reaches 4, every factor 2 has already been divided out, so 4 can't divide n any more. The same argument works for every composite d. And it stops: each round either n shrinks (and stays ≥ 1) or d grows, and d never passes n while n &gt; 1, because n itself is a divisor.</p></div></details></li>
   <li><strong>Fill the gaps.</strong>
   <details><summary>Answer (official solution, checked by compiling)</summary><div>
-<p>(1) <code>n &gt; 1</code> (the official solution also accepts <code>d &lt;= n</code>) · (2) <code>n % d == 0</code> · (3) <code>n /= d</code> · (4) <code>++d</code>.</p>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<p><em>Frame:</em> the loop runs while there is something left to factor; the <code>if</code> asks "is d a factor?".</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(1) Keep going while something other than 1 is left.</p></div><div class="sp-formal">
+<pre class="code"><code>n &gt; 1</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>(2) Does the candidate divide what is left?</p></div><div class="sp-formal">
+<pre class="code"><code>n % d == 0</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>(3) Yes: it was printed; divide it out and keep the same candidate.</p></div><div class="sp-formal">
+<pre class="code"><code>n /= d</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>(4) No: try the next candidate.</p></div><div class="sp-formal">
+<pre class="code"><code>++d</code></pre>
+</div></div>
+</div>
+<p>The official solution also accepts <code>d &lt;= n</code> for (1).</p>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="24"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-c">// PRE: n &gt;= 2</span>
+<span class="tk-c">// POST: outputs the prime factorization of n</span>
+<span class="tk-k">void</span> prime_factors (<span class="tk-k">unsigned</span> <span class="tk-k">int</span> n)
+{
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> d = 2;      <span class="tk-c">// candidate divisor</span>
+  <span class="tk-k">while</span> (n &gt; 1) {          <span class="tk-c">// something left to factor</span>
+    <span class="tk-k">if</span> (n % d == 0) {      <span class="tk-c">// d divides n:</span>
+      <span class="tk-k">std</span>::cout &lt;&lt; d &lt;&lt; <span class="tk-s">" "</span>;
+      n /= d;              <span class="tk-c">// divide it out, keep d</span>
+    } <span class="tk-k">else</span> {
+      ++d;                 <span class="tk-c">// next candidate</span>
+    }
+  }
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  prime_factors(n);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>2 2 2 3</code></pre>
+</div></details>
+<p>And the version that runs both examples at once:</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-c">// PRE: n &gt;= 2</span>
 <span class="tk-c">// POST: outputs the prime factorization of n</span>
@@ -739,10 +896,52 @@ next number = ?</code></pre>
   </div></details></li>
   <li><strong>Tests.</strong>
   <details><summary>My answer</summary><div><p>A prime (13 → <code>13</code>), a prime power (32 → five 2s), the smallest input (2), a product of two primes (91 → <code>7 13</code>).</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-search">search with a candidate</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Do 24 by hand first</strong> and say out loud what you do each time.</li>
+  <li><strong>The guard is "something left":</strong> <code>n &gt; 1</code>.</li>
+  <li><strong>Found a factor:</strong> divide it out, and <em>don't</em> move d.</li>
+  <li><strong>Not a factor:</strong> <code>++d</code>.</li>
+  <li><strong>Check a prime</strong> (13) and a prime power (8) in your head.</li>
+</ol>
+<p>In short: "divide out while it fits, then next candidate".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Why does gap (3) not also increase d?</p>
+  <details><summary>Answer</summary><div><p>Because the same prime may divide n again (24 has three 2s).</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change the function so that each prime is printed only once (24 → <code>2 3</code>). Which gap changes?</p>
+  <details><summary>Answer</summary><div><p>Gap (3): divide out <em>all</em> copies at once, <code>while (n % d == 0) n /= d;</code>, and the print stays where it is.</p></div></details></li>
+  <li><p><strong>Rung 3 (5 min).</strong> With the answers closed, fill the four gaps in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
 </ol></div>
+</div>
 
 <div class="task" id="task-3"><h3 id="ct-3">Coding task 3: Fibonacci primes (Code Expert Exercise 3, Task 2a)</h3>
 <p>The Fibonacci numbers are 1, 1, 2, 3, 5, 8, 13, …; each is the sum of the two before. Read an <code>int m</code> and print, one per line, every Fibonacci number in $[2, m]$ that is prime, then <code>Found N Fibonacci primes</code>. Only <code>int</code>.</p>
+<div class="need"><span class="label">You'll need these</span><p>The prime test of <a class="xl" href="#we-1">Worked example 1</a> (search for the smallest divisor), and overflow from <a class="xl" href="inf-02.html#range-of-int">lesson 2</a>.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> one <code>int</code> m, any value.</li>
+  <li><strong>Must hold at the end:</strong> every prime Fibonacci number in $[2,m]$ printed once, in order, then the count line word for word.</li>
+  <li><strong>Allowed:</strong> <code>int</code> only, so no number may ever pass $2^{31}-1$.</li>
+  <li><strong>The gap to fill:</strong> two jobs in one, and a stop that never overflows.</li>
+</ul></div>
+<p><strong>Try it yourself</strong> in the editor, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;20&quot;,&quot;out&quot;:&quot;2\n3\n5\n13\nFound 4 Fibonacci primes&quot;},{&quot;in&quot;:&quot;1&quot;,&quot;out&quot;:&quot;Found 0 Fibonacci primes&quot;},{&quot;in&quot;:&quot;-5&quot;,&quot;out&quot;:&quot;Found 0 Fibonacci primes&quot;},{&quot;in&quot;:&quot;2&quot;,&quot;out&quot;:&quot;2\nFound 1 Fibonacci primes&quot;},{&quot;in&quot;:&quot;1000&quot;,&quot;out&quot;:&quot;2\n3\n5\n13\n89\n233\nFound 6 Fibonacci primes&quot;},{&quot;in&quot;:&quot;2147483647&quot;,&quot;out&quot;:&quot;2\n3\n5\n13\n89\n233\n1597\n28657\n514229\n433494437\nFound 10 Fibonacci primes&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> m;
+  <span class="tk-k">std</span>::cin &gt;&gt; m;
+
+  <span class="tk-k">int</span> count = 0;
+  <span class="tk-c">// your loops here</span>
+
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"Found "</span> &lt;&lt; count
+            &lt;&lt; <span class="tk-s">" Fibonacci primes\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
 <ol class="gq">
   <li><strong>What goes in, what comes out?</strong>
   <details><summary>My answer</summary><div><p>In: an <code>int</code> m (could be anything up to the largest <code>int</code>). Out: the qualifying numbers, one per line, then the count line.</p></div></details></li>
@@ -751,10 +950,38 @@ next number = ?</code></pre>
   <li><strong>Steps in words.</strong> Two jobs are hiding in one task. Which?
   <details><summary>My answer</summary><div><p>Job 1: walk through the Fibonacci numbers up to m (keep the last two, a and b; next is a + b). Job 2: for each one ≥ 2, test whether it is prime (the search-until-found pattern of Worked example 1), and count. So: an outer loop over Fibonacci numbers, an inner loop for the prime test.</p></div></details></li>
   <li><strong>Edge cases.</strong> m &lt; 2? m = the largest <code>int</code>?
+  <details class="hint"><summary>Hint 1</summary><div><p>For m = 2147483647, what is the first Fibonacci number above m? Can an <code>int</code> hold it?</p></div></details>
+  <details class="hint"><summary>Hint 2</summary><div><p>Test "would the next one be too big?" <em>before</em> adding, and rearrange the test so it only subtracts.</p></div></details>
   <details><summary>My answer</summary><div><p>m &lt; 2: nothing printed, then <code>Found 0 Fibonacci primes</code>. m = 2147483647: the largest Fibonacci number below it is 1836311903; computing the <em>next</em> one, 2971215073, would <strong>overflow</strong> (undefined behavior, lesson 2). So stop before adding when the next number would exceed m: <code>a + b &gt; m</code> is the same as <code>a &gt; m - b</code>, and <code>m - b</code> can't overflow. The prime test has the same danger with <code>d * d &lt;= k</code>; <code>d &lt;= k / d</code> avoids it.</p></div></details></li>
   <li><strong>Code.</strong>
   <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
-<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Keep the last two Fibonacci numbers in two boxes.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> a = 1;  <span class="tk-c">// previous</span>
+<span class="tk-k">int</span> b = 1;  <span class="tk-c">// current</span></code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Before stepping on: would the next one pass m? Then stop. The test only subtracts, so it can't overflow.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (a &gt; m - b) <span class="tk-k">break</span>;
+<span class="tk-k">const</span> <span class="tk-k">int</span> next = a + b;
+a = b;
+b = next;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Job 2: search for the smallest divisor of b, up to its square root.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> d = 2;
+<span class="tk-k">while</span> (d &lt;= b / d &amp;&amp; b % d != 0) {
+  ++d;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>The search ran out without finding one: b is prime. Write it and count it.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (d &gt; b / d) {
+  <span class="tk-k">std</span>::cout &lt;&lt; b &lt;&lt; <span class="tk-s">"\n"</span>;
+  ++count;
+}</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="2147483647"><code><span class="tk-p">#include &lt;iostream&gt;</span>
 
 <span class="tk-k">int</span> main() {
   <span class="tk-k">int</span> m;
@@ -797,10 +1024,30 @@ next number = ?</code></pre>
 514229
 433494437
 Found 10 Fibonacci primes</code></pre>
+</div></details>
   <p>Why only up to the square root: if <code>b = d · e</code> with <code>d ≤ e</code>, then <code>d · d ≤ b</code>. So if no divisor up to $\sqrt b$ exists, none exists at all. For $b\approx4\cdot10^8$ that is 20000 tries instead of 400 million.</p></div></details></li>
   <li><strong>Tests.</strong>
   <details><summary>My answer</summary><div><p>m = 20 (4 numbers), m = 1 and m = −5 (0), m = 2 (just <code>2</code>), m = 13 (2, 3, 5, 13: is the bound inclusive?), and the largest <code>int</code> (above). The exact output format matters on Code Expert: one number per line, and the final line word for word.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-search">search with a candidate</a> <a class="mvl" href="inf-method.html#p-acc">accumulator (the count)</a> <a class="mvl" href="inf-method.html#p-overflow">stop before overflow</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Split the jobs:</strong> outer loop over Fibonacci numbers, inner loop for the prime test.</li>
+  <li><strong>Outer loop:</strong> two boxes a, b; stop with <code>if (a &gt; m - b) break;</code> before adding.</li>
+  <li><strong>Inner loop:</strong> <code>while (d &lt;= b / d &amp;&amp; b % d != 0) ++d;</code>, prime if <code>d &gt; b / d</code>.</li>
+  <li><strong>Copy the final line</strong> word for word, and test m = 1.</li>
+</ol>
+<p>In short: "walk the sequence safely, test each with a search, count".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the stop test for "a + b would be bigger than m" without computing a + b.</p>
+  <details><summary>Answer</summary><div><p><code>if (a &gt; m - b) break;</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change the program to print the Fibonacci numbers in $[2,m]$ that are <em>even</em>. Which part goes, which comes?</p>
+  <details><summary>Answer</summary><div><p>The inner prime-test loop goes; the condition becomes <code>if (b % 2 == 0)</code>. The outer loop and the count stay (and the final line would say "even" instead).</p></div></details></li>
+  <li><p><strong>Rung 3 (8 min).</strong> With the answers closed, write both loops in the editor above and press Check. All six tests, including the largest <code>int</code>, must pass.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
 </ol></div>
+</div>
 
 <h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
 <div class="box"><h3 id="we-5">Worked example 5: IFMP January 2016, task 2 (b) (official exam)</h3>
@@ -838,7 +1085,10 @@ Found 10 Fibonacci primes</code></pre>
 </ol></div>
 
 <h2 id="exercises">Exercises</h2>
-<p>Exam loops: answers from the official solutions, explanations by StudyHub, all checked by compiling. <strong>Score yourself</strong> with the points given. 80% or more: ready for lesson 4.</p>
+<p>Exam loops: answers from the official solutions, explanations by StudyHub, all checked by compiling.</p>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> use the points given; exercises 1–6 make 19 points. A loop-output part counts only if the output is exact, spaces included. <strong>15 of 19 and you're done</strong> with lesson 3.</p>
+</div>
 
 <h3 id="ex-1">Exercise 1 (IFMP January 2016, task 2 (a)) · 2 points</h3>
 <pre class="code"><code><span class="tk-k">double</span> x = 2;
@@ -846,7 +1096,7 @@ Found 10 Fibonacci primes</code></pre>
   <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
   x /= 2;
 } <span class="tk-k">while</span> (x &gt; 0.1);</code></pre>
-<details><summary>Solution</summary><div><p><code>do</code>: print first, then halve, then check. Values printed: 2, 1, 0.5, 0.25, 0.125; after printing 0.125, x becomes 0.0625 &lt; 0.1: stop. Output <code>2 1 0.5 0.25 0.125 </code>. (Halving is exact for doubles, so no rounding surprises.)</p></div></details>
+<details><summary>Solution</summary><div><p><em>Frame:</em> a trace table with one row at every condition check (<a class="xl" href="#s4-tracing-loops">section 4</a>).</p><p><code>do</code>: print first, then halve, then check. Values printed: 2, 1, 0.5, 0.25, 0.125; after printing 0.125, x becomes 0.0625 &lt; 0.1: stop. Output <code>2 1 0.5 0.25 0.125 </code>. (Halving is exact for doubles, so no rounding surprises.)</p></div></details>
 
 <h3 id="ex-2">Exercise 2 (IFMP January 2017, task 2 (b), (c), (d)) · 6 points</h3>
 <pre class="code"><code><span class="tk-c">// (b)</span>
@@ -870,6 +1120,7 @@ Found 10 Fibonacci primes</code></pre>
   <span class="tk-k">std</span>::cout &lt;&lt; n &lt;&lt; <span class="tk-s">' '</span>;
 }</code></pre>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> a trace table with one row at every condition check (<a class="xl" href="#s4-tracing-loops">section 4</a>).</p>
 <p>(b) n: 32, 16, 8, 4, 2, 1, then 0 stops. Remainders mod 3: 2, 1, 2, 1, 2, 1. Output <code>2 1 2 1 2 1 </code>.</p>
 <p>(c) 1, 0.5, 0.25 are printed; then d = 0.125 and the check fails. Output <code>1 0.5 0.25 </code>. (The comparison is exact: powers of 2.)</p>
 <p>(d) n = 0, 2, 4, 6, 8, 10. Multiples of 3 (0 and 6) are skipped by <code>continue</code>, and the <code>n += 2</code> still runs. Output <code>2 4 8 10 </code>.</p></div></details>
@@ -887,7 +1138,10 @@ Found 10 Fibonacci primes</code></pre>
   <span class="tk-k">std</span>::cout &lt;&lt; d &lt;&lt; <span class="tk-s">" "</span>;
   d -= 0.1;
 }</code></pre>
+<details class="hint"><summary>Hint 1</summary><div><p>In (a), <code>--d</code> returns d itself (an lvalue), so <code>(--d)++</code> is allowed. Which value does the postfix <code>++</code> hand to the output?</p></div></details>
+<details class="hint"><summary>Hint 2</summary><div><p>In (b), is 0.1 one of the values a <code>double</code> can store exactly (<a class="xl" href="inf-02.html#holes">lesson 2, holes</a>)?</p></div></details>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> a trace table with one row at every condition check (<a class="xl" href="#s4-tracing-loops">section 4</a>).</p>
 <p>(a) <code>--d</code> makes d 1.0 and <em>is</em> d; <code>(…)++</code> prints the old value 1 and makes d 2.0 again. The check <code>2.0 &lt; 2.0</code> is false. Output <code>1</code>.</p>
 <p>(b) <strong>Infinite loop.</strong> 0.1 is not exact in binary, so after five subtractions d is very close to 1 but not equal, and <code>!=</code> stays true; d keeps falling forever. Rule: never stop a floating point loop with <code>!=</code> unless every value is exact; use <code>d &gt; 1.05</code> or count with an <code>int</code>.</p></div></details>
 
@@ -897,7 +1151,7 @@ Found 10 Fibonacci primes</code></pre>
   <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
   x = (2 * x + 3) % 17;
 } <span class="tk-k">while</span> (x != 0);</code></pre>
-<details><summary>Solution</summary><div><p>4 → (11 % 17) = 11 → 25 % 17 = 8 → 19 % 17 = 2 → 7 % 17 = 7 → 17 % 17 = 0: stop. Output <code>4 11 8 2 7 </code>.</p></div></details>
+<details><summary>Solution</summary><div><p><em>Frame:</em> a trace table with one row at every condition check (<a class="xl" href="#s4-tracing-loops">section 4</a>).</p><p>4 → (11 % 17) = 11 → 25 % 17 = 8 → 19 % 17 = 2 → 7 % 17 = 7 → 17 % 17 = 0: stop. Output <code>4 11 8 2 7 </code>.</p></div></details>
 
 <h3 id="ex-5">Exercise 5 (loop mix-up, Code Expert Exercise 4, Task 1) · 3 points</h3>
 <pre class="code"><code><span class="tk-k">int</span> f = 1;
@@ -910,6 +1164,7 @@ Found 10 Fibonacci primes</code></pre>
 <span class="tk-k">std</span>::cout &lt;&lt; f;</code></pre>
 <p>(a) What does it compute? (b) Which loop fits best, and why? (c) Rewrite it.</p>
 <details><summary>Solution</summary><div>
+<p><em>Frame:</em> what is known before the loop starts: a fixed number of rounds (<code>for</code>), an unknown number (<code>while</code>), or at least one round (<code>do</code>)?</p>
 <p>(a) $n!$ for $n\ge1$, and 1 for $n\le0$. (b) The <code>if</code> exists only because <code>do</code> would run once even for n ≤ 0: a sign that <code>do</code> is the wrong loop. A fixed count from n down to 1 is a counting loop: <code>for</code>. (c) Written by StudyHub:</p>
 <pre class="code"><code><span class="tk-k">int</span> f = 1;
 <span class="tk-k">for</span> (<span class="tk-k">int</span> i = n; i &gt; 0; --i) {
@@ -920,7 +1175,7 @@ Found 10 Fibonacci primes</code></pre>
 
 <h3 id="ex-6">Exercise 6 (switch) · 2 points</h3>
 <p>In the grades switch of section 8, what is printed for grade 6? And for grade 0?</p>
-<details><summary>Solution</summary><div><p>6: <code>Excellent ... You passed!</code> (falls through cases 5 and 4 to the <code>break</code>). 0: no case matches, so <code>default</code>: <code>Error!</code>.</p></div></details>
+<details><summary>Solution</summary><div><p><em>Frame:</em> find the matching <code>case</code>, then run down until the first <code>break</code>.</p><p>6: <code>Excellent ... You passed!</code> (falls through cases 5 and 4 to the <code>break</code>). 0: no case matches, so <code>default</code>: <code>Error!</code>.</p></div></details>
 
 <h2 id="summary">Summary: what to keep from lesson 3</h2>
 <div class="box"><ul>
@@ -932,20 +1187,24 @@ Found 10 Fibonacci primes</code></pre>
   <li><strong>Method:</strong> loop output in five steps, a row at every condition check. <strong>Patterns:</strong> accumulator, peel off a digit, search until found, loop-and-a-half.</li>
 </ul></div>
 
-<h2 id="for-wonder">For wonder: a three-line loop nobody understands</h2>
+<h2 id="for-wonder">For wonder: a three-line loop nobody understands <span class="small">(optional, 5 min)</span></h2>
 <p>The Collatz loop of section 5 is three lines long. It has been run for every starting value up to about $2.95\cdot10^{20}$, and every one reaches 1. Yet nobody can prove that all of them do. Paul Erdős said that mathematics "is not yet ready for such problems". Try 27 (script p. 59): it climbs as high as 9232 and takes 111 steps before it comes down to 1. A loop's behaviour can be far deeper than its code.</p>
 
 <h2 id="what-we-skipped">What we skipped</h2>
+<p>Also on the <a class="xl" href="skipped.html#informatik">skip list</a>.</p>
 <ul>
-  <li><strong>Flow diagrams in detail</strong> (script Figures 5.4–5.11, p. 64–70): read them once as pictures of the rules above. Drawing them isn't examined.</li>
-  <li><strong>goto</strong> (p. 66–67): mentioned to show that all control statements are conditional jumps underneath; never use it.</li>
-  <li><strong>Approximating π</strong> with series (Code Expert Exercise 3, Task 3): a good accumulator exercise with <code>double</code>; do it on Code Expert.</li>
-  <li><strong>Fibonacci overflow check</strong> (Exercise 3, Task 2b): its key idea, <code>a &gt; INT_MAX - b</code>, is in Coding task 3.</li>
+  <li><strong>Approximating π</strong> with series (Code Expert Exercise 3, Task 3). Priority: medium. A good accumulator exercise with <code>double</code>; do it on Code Expert when you have 20 minutes.</li>
+  <li><strong>Flow diagrams in detail</strong> (script Figures 5.4–5.11, p. 64–70). Priority: low. Read them once as pictures of the rules above; drawing them isn't examined.</li>
+  <li><strong>goto</strong> (p. 66–67). Priority: low. Mentioned to show that all control statements are conditional jumps underneath; never use it.</li>
 </ul>
-<p><strong>Next:</strong> lesson 4, functions: how to give a piece of code a name, parameters and a return value, how pre- and postconditions describe what it does, and how stepwise refinement turns a big task into small ones.</p>
+<p><strong>Next:</strong> <a href="inf-04.html">lesson 4</a>, functions: how to give a piece of code a name, parameters and a return value, how pre- and postconditions describe what it does, and how stepwise refinement turns a big task into small ones.</p>
+
+<script src="assets/inf-run.js?v=inf1123c" defer></script>
 
 <nav class="site foot" aria-label="Lesson navigation">
+<a href="inf-02.html">← Lesson 2: Boxes of Different Shapes</a>
 <a href="informatik.html">Informatik home</a>
+<a href="inf-04.html">Lesson 4: The Golem&#x27;s Book of Spells →</a>
 <span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
 </nav>
 </main>
