@@ -175,7 +175,8 @@
       b.innerHTML = svg(name) + (text ? '<span class="lbl">' + text + '</span>' : '');
       top.appendChild(b); return b;
     }
-    var check = opts.task ? iconBtn('check', 'check primary', 'Check: run the tests', 'Check (' + opts.tests.length + ')') : null;
+    var check = opts.task ? iconBtn('check', 'check', 'Check: run the ' + opts.tests.length + ' tests', 'Check') : null;
+    if (check) { check.appendChild(el('span', 'count', String(opts.tests.length))); top.appendChild(el('span', 'ide-sep')); }
     var run = iconBtn('run', 'run', 'Run (Ctrl+Enter)', 'Run');
     var stop = iconBtn('stop', 'stop', 'Stop'); stop.disabled = true;
     var reset = iconBtn('reset', 'reset', 'Reset to the original code');
@@ -336,8 +337,8 @@
       });
     });
     if (!cells.length) return;
-    tw.appendChild(t); box.appendChild(tw);
-    var bar = el('div', 'fill-bar'); var chk = el('button', 'primary', 'Check'); chk.type = 'button';
+    tw.appendChild(t); box.appendChild(tw); box.classList.add('fill-card');
+    var bar = el('div', 'fill-bar'); var chk = el('button', 'primary', '✓ Check'); chk.type = 'button';
     var showA = el('button', null, 'Show answers'); showA.type = 'button'; var clr = el('button', null, 'Clear'); clr.type = 'button';
     var msg = el('span', 'fill-msg'); msg.setAttribute('role', 'status');
     bar.appendChild(chk); bar.appendChild(showA); bar.appendChild(clr); bar.appendChild(msg); box.appendChild(bar);
