@@ -182,60 +182,40 @@
     if (destination?.path === location.pathname && /access_token=|[?&]code=/.test(location.hash + location.search)) returnHash = destination.hash;
   } catch (_) {}
   const physCards = !fcApp && !de && file === 'flashcards.html' && (/^#p\d/.test(location.hash) || /^#p\d/.test(returnHash));
-  const practiceFor = file === 'practice.html' ? ({ '#physics': 'physics', '#linalg': 'linalg' })[location.hash] : null;
-  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|practice\.html|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  const practiceFor = file === 'practice.html' ? ({ '#analysis': 'analysis', '#physics': 'physics', '#linalg': 'linalg' })[location.hash] : null;
+  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? 'analysis' : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
   if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
-  const modes = {
-    analysis: [
-      ['lessons', L('Lektionen', 'Lessons'), prefix + 'analysis.html#lessons'],
-      ['revision', L('Repetition', 'Refresher'), prefix + 'analysis.html#refresher'],
-      ['practice', L('Üben', 'Practice'), prefix + 'practice.html#analysis'],
-      ['cards', L('Lernkarten', 'Flashcards'), fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en')],
-      ['plan', L('Prüfungsplan', 'Exam plan'), prefix + 'exam-map.html'],
-      ['script', L('Skript', 'Script'), 'script.html'],
-      ['exams', L('Prüfungen', 'Exams'), prefix + 'docs.html']
-    ],
-    physics: [
-      ['lessons', L('Lektionen', 'Lessons'), prefix + 'physics.html#lessons'],
-      ['practice', L('Üben', 'Practice'), prefix + 'physics.html#tools'],
-      // the Physics deck exists in English only so far
-      ...(de ? [] : [['cards', 'Flashcards', 'flashcards.html#p1-16']]),
-      ['plan', L('Prüfungsplan', 'Exam plan'), prefix + 'phys-plan.html'],
-      ['script', L('Skript', 'Script'), 'phys-script.html'],
-      ['board', L('Tafel & Skript', 'Board & script'), prefix + 'phys-board.html'],
-      ['exams', L('Prüfungen', 'Exams'), prefix + 'phys-docs.html']
-    ],
-    linalg: [
-      ['lessons', L('Lektionen', 'Lessons'), prefix + 'linalg.html#lessons'],
-      ['practice', L('Üben', 'Practice'), 'practice.html#linalg'],
-      ['moves', L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'],
-      ['plan', L('Prüfungsplan', 'Exam plan'), 'linalg-plan.html'],
-      ['script', L('Skript', 'Script'), 'linalg-script.html']
-    ],
-    chemie: [
-      ['lessons', L('Lektionen', 'Lessons'), 'chemie/#home'],
-      ['review', L('Wiederholen', 'Refresher'), 'chemie/#review'],
-      ['exams', L('Üben & Prüfungen', 'Practice'), 'chemie/#exams'],
-      ['library', L('Materialien', 'Library'), 'chemie/#library']
-    ]
+  // Course tabs: the same four everywhere (Overview | Lessons | Practice | Resources); Resources opens a small panel.
+  const fcHref = fcAppPath + 'index.html?lang=' + (de ? 'de' : 'en');
+  const courseTabs = {
+    analysis: { overview: prefix + 'analysis.html', lessons: prefix + 'analysis.html#lessons', practice: prefix + 'practice.html#analysis', resources: [
+      [L('Mehr üben', 'Practise more'), [[L('Repetition', 'Refresher'), prefix + 'analysis.html#refresher', L('12 Einheiten, eine pro Tag', '12 units, one a day')], [L('Lernkarten', 'Flashcards'), fcHref], [L('Beweiskniffe', 'Proof moves'), prefix + 'moves.html'], [L('Stammbaum der Sätze', 'Theorem tree'), prefix + 'tree.html'], [L('Übungsblätter erklärt', 'Übungsblätter explained'), prefix + 'serie-a01.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
+      [L('Kursmaterial', 'Course material'), [[L('Prüfungsplan', 'Exam plan'), prefix + 'exam-map.html'], [L('Skript', 'Script'), 'script.html'], [L('Prüfungen und Formelsammlung', 'Exams and formula sheets'), prefix + 'docs.html'], [L('Ausgelassene Themen', 'Skipped topics'), prefix + 'skipped.html']]]
+    ] },
+    physics: { overview: prefix + 'physics.html', lessons: prefix + 'physics.html#lessons', practice: prefix + 'physics.html#tools', resources: [
+      [L('Mehr üben', 'Practise more'), [...(de ? [] : [['Flashcards', 'flashcards.html#p1-16']]), [L('Serien erklärt', 'Serien explained'), prefix + 'serie-p01.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
+      [L('Kursmaterial', 'Course material'), [[L('Prüfungsplan', 'Exam plan'), prefix + 'phys-plan.html'], [L('Tafel & Skript', 'Board & script'), prefix + 'phys-board.html'], [L('Skript', 'Script'), 'phys-script.html'], [L('Prüfungen', 'Exams'), prefix + 'phys-docs.html']]]
+    ] },
+    linalg: { overview: prefix + 'linalg.html', lessons: prefix + 'linalg.html#lessons', practice: prefix + 'practice.html#linalg', resources: [
+      [L('Mehr üben', 'Practise more'), [[L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
+      [L('Kursmaterial', 'Course material'), [[L('Plan und Prüfungslandkarte', 'Plan and exam map'), 'linalg-plan.html'], [L('Skript', 'Script'), 'linalg-script.html']]]
+    ] },
+    chemie: { lessons: 'chemie/#home', practice: 'chemie/#exams', resources: [
+      ['', [[L('Wiederholen', 'Refresher'), 'chemie/#review'], [L('Materialien', 'Library'), 'chemie/#library']]]
+    ] }
   };
   function activeMode() {
     if (subject === 'chemie') {
       const route = location.hash.slice(1).split('/')[0];
-      return ({ review: 'review', exams: 'exams', training: 'exams', library: 'library', sources: 'library' })[route] || 'lessons';
+      return ({ review: 'resources', library: 'resources', sources: 'resources', exams: 'practice', training: 'practice' })[route] || 'lessons';
     }
-    if (location.hash === '#tools' && subject === 'physics') return 'practice';
-    if (file === 'linalg-moves.html') return 'moves';
-    if (location.hash === '#refresher' || /^refresher-/.test(file)) return 'revision';
-    if (/script\.html$/.test(file)) return 'script';
-    if (/docs\.html$/.test(file)) return 'exams';
-    if (/plan\.html$|exam-map\.html$/.test(file)) return 'plan';
-    if (/board\.html$/.test(file)) return 'board';
-    if (fcApp || /flashcards\.html$/.test(file)) return 'cards';
-    if (/practice\.html$|mock\.html$|moves\.html$|tree\.html$|^serie-/.test(file)) return 'practice';
-    return 'lessons';
+    const hub = { analysis: 'analysis.html', physics: 'physics.html', linalg: 'linalg.html' }[subject];
+    if (file === hub) return location.hash === '#lessons' ? 'lessons' : location.hash === '#tools' ? 'practice' : location.hash === '#refresher' ? 'resources' : 'overview';
+    if (/^(lesson|phys|linalg)-\d+\.html$/.test(file)) return 'lessons';
+    if (/script\.html$|docs\.html$|plan\.html$|board\.html$|exam-map\.html$|skipped\.html$/.test(file)) return 'resources';
+    return 'practice';
   }
   function link(text, href, className) {
     const a = document.createElement('a');
@@ -427,7 +407,14 @@
   upper.append(utilities); shell.append(upper);
   if (subject) {
     const lower = document.createElement('nav'); lower.className = 'study-modes'; lower.setAttribute('aria-label', L('Bereiche im Fach', 'Subject modes'));
-    modes[subject].forEach(([id, label, href]) => { const a = link(label, href); a.dataset.mode = id; lower.append(a); });
+    const t = courseTabs[subject];
+    [['overview', L('Übersicht', 'Overview')], ['lessons', L('Lektionen', 'Lessons')], ['practice', L('Üben', 'Practice')]].forEach(([id, label]) => {
+      if (!t[id]) return; const a = link(label, t[id]); a.dataset.mode = id; lower.append(a);
+    });
+    const res = popover('resources-' + subject, L('Materialien', 'Resources'), false);
+    res.wrap.classList.add('study-mode-pop'); res.wrap.querySelector('button').className = 'study-mode-button study-pop-button'; res.wrap.querySelector('button').dataset.mode = 'resources';
+    t.resources.forEach(([title, items]) => res.panel.append(group(title, items.map(([label, href, note]) => richLink(label, href, note)))));
+    lower.append(res.wrap);
     shell.append(lower);
   }
   // Generated pages already contain this header (make_github.py writes the same markup); swap in the live one without a layout jump.
@@ -547,7 +534,7 @@
     run();
     return dialog;
   }
-  function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
+  function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', a.tagName === 'A' ? 'page' : 'true'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
   const main = document.querySelector('main');
   const lessonMatch = /^(lesson|phys|refresher|linalg|serie)-[ap]?\d+\.html$/.test(file);

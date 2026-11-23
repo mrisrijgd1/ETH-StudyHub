@@ -196,14 +196,12 @@ html body .study-home .app-button{box-sizing:border-box;display:inline-flex;alig
 .study-home .home-extras{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0 0 16px}
 .study-home .home-help>* ,.study-home .home-extras>*{box-sizing:border-box;min-width:0;padding:22px;border:1px solid var(--design-line);border-radius:12px;background:var(--design-surface)}
 .study-home .home-help h2,.study-home .home-extras h2{margin:0 0 8px;font-size:19px}
-.study-home .help-ai{border-top:3px solid var(--design-accent)}
-.study-home .dive-card{border-top:3px solid var(--design-secondary)}
 .study-home .dive-card .dive-icon{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-bottom:10px;border:1px solid var(--design-line);border-radius:8px;color:var(--design-accent)}
 .study-home svg{width:18px;height:18px;box-sizing:border-box;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
 .study-home .hero-symbol svg,.study-home .dive-icon svg{width:24px;height:24px}
 .study-home .card-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
 .study-home .card-actions a{display:inline-flex;align-items:center;gap:.35rem;font-weight:700;text-decoration:none}
-.study-home .home-start,.study-home .home-news{box-sizing:border-box;margin:16px 0;padding:22px;border:1px solid var(--design-line);border-radius:12px;background:var(--design-surface)}
+.study-home .home-start,.study-home .home-news{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--design-line)}
 .study-home .home-start h2,.study-home .home-news h2{margin:0 0 8px;font-size:19px}.study-home .home-start p{margin:0 0 14px}
 .study-home .home-footer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:40px;padding:28px 0 8px;border-top:1px solid var(--design-line)}
 .study-home .home-footer section{min-width:0}.study-home .home-footer h2{margin:0 0 10px;font-size:16px}.study-home .home-footer p{margin:.35rem 0;line-height:1.6}.study-home .home-footer a{overflow-wrap:anywhere}
@@ -315,3 +313,89 @@ html body.sh-unified :is(.app-button,.study-action,.study-sync-dismiss){max-widt
 .study-shell nav.study-subjects,.study-shell nav.study-utilities{display:none}
 /* Safety net only (clip, not hidden, so sticky elements keep working); real overflow is fixed at the source. */
 html,body{overflow-x:clip}
+
+/* ===== Design batch 1, PR 2: one card system, one button system, calm pages ===== */
+html body.sh-unified{--page-gutter:clamp(16px,4vw,28px);--card-bg:var(--design-surface);--card-line:color-mix(in srgb,var(--design-border) 45%,var(--design-surface));--card-radius:14px;--card-pad:clamp(18px,2.4vw,24px);--card-shadow:var(--design-shadow-card)}
+html body.sh-unified main,html body.sh-unified main *,html body.sh-unified main *::before,html body.sh-unified main *::after{box-sizing:border-box}
+html body.sh-unified main mjx-container,html body.sh-unified main mjx-container *{box-sizing:content-box}
+html body.sh-unified main{width:calc(100% - 2 * var(--page-gutter))}
+
+/* One card. Side-by-side cards always match: same background, border, radius and padding. */
+html body.sh-unified :is(.subject-card,.lcard,.lesson-card,.box,.panel,.card,.hero-study,.sh-progress,.sh-post,.doc-card,.timer-card,.exercise,.quizbox,.catalog-entry,.home-help>*,.home-extras>*,.study-continue a,.course-progress-panel,.session-panel,.feedback-panel,.ranking-panel,.stat){background:var(--card-bg);color:var(--design-ink);border:1px solid var(--card-line);border-radius:var(--card-radius);box-shadow:var(--card-shadow);min-width:0;overflow-wrap:break-word}
+html body.sh-unified :is(.subject-card,.lcard,.box,.hero-study,.home-help>*,.home-extras>*){padding:var(--card-pad)}
+html body.sh-unified :is(.toc,.meta,.mcard,.explorer,.fc-stage,.table-wrap,.study-course-graphic){border:1px solid var(--card-line);border-radius:12px;box-shadow:none}
+html body.sh-unified .hero-study{background:var(--card-bg)}
+/* Clickable cards lift a little; nothing else moves. */
+html body.sh-unified :is(a.subject-card,.lesson-card,.lcard,a.box,.box.tool,.catalog-entry,.study-continue a){transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+html body.sh-unified :is(a.subject-card,.lesson-card,.lcard,a.box,.box.tool,.catalog-entry,.study-continue a):hover{transform:translateY(-2px);box-shadow:var(--design-shadow-lift);border-color:var(--design-accent);background:var(--card-bg)}
+/* Lesson cards: the topic block shows on the number badge only (legend above the list). */
+html body.sh-unified .lessons>.lcard[data-block] .lnum{background:color-mix(in srgb,var(--t,var(--design-accent)) 18%,var(--card-bg));color:color-mix(in srgb,var(--t,var(--design-accent)) 45%,var(--design-ink))}
+html body.sh-unified .lessons>.lcard[data-block="0"] .lnum{background:var(--design-soft);color:var(--design-muted)}
+/* The two allowed variants: story and exam differ only by a thin edge colour. */
+html body.sh-unified :is(.story,.exam){border:1px solid var(--card-line);border-inline-start:4px solid var(--story-edge);border-radius:0 var(--card-radius) var(--card-radius) 0;box-shadow:none}
+html body.sh-unified .exam{border-inline-start-color:var(--exam-edge)}
+/* Course icons share the accent tint. */
+html body.sh-unified .subject-card .course-icon{background:var(--design-soft);color:var(--design-accent);border-color:transparent}
+/* Hub grids: cards in a row share one height; actions sit at the bottom. */
+html body.sh-unified .hubgrid{align-items:stretch}
+html body.sh-unified .hubgrid>.box{display:flex;flex-direction:column;gap:.35rem;margin:0}
+html body.sh-unified .box.tool strong{color:var(--design-ink)}
+html body.sh-unified .box.tool span{color:var(--design-muted)}
+
+/* One button system: primary (filled), secondary (outlined), text link. 44px tall, left-aligned text, never full width. */
+html body.sh-unified :is(.btn,.app-button,.study-action,.start-btn,.primary,.sh-pdf,.study-sync-dismiss,.sh-plain,.btn-secondary,.study-button-secondary){display:inline-flex;align-items:center;justify-content:flex-start;gap:.45rem;box-sizing:border-box;min-height:44px;width:fit-content;max-width:100%;padding:10px 18px;border-radius:10px;font:650 15px/1.3 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:0;text-align:left;text-decoration:none;white-space:normal;cursor:pointer;transition:filter .15s ease,background .15s ease,border-color .15s ease}
+html body.sh-unified :is(.btn-primary,.app-button,.study-action,.start-btn,.primary){background:var(--design-accent);border:1px solid var(--design-accent);color:var(--design-on-accent);box-shadow:var(--design-shadow-button)}
+html body.sh-unified :is(.btn-primary,.app-button,.study-action,.start-btn,.primary):hover{filter:brightness(.94);color:var(--design-on-accent)}
+html body.sh-unified :is(.btn-secondary,.sh-pdf,.study-sync-dismiss,.sh-plain,.study-button-secondary,.secondary-button){background:var(--card-bg);border:1px solid var(--design-border);color:var(--design-accent-text,var(--design-accent));box-shadow:none}
+html body.sh-unified :is(.btn-secondary,.sh-pdf,.study-sync-dismiss,.sh-plain,.study-button-secondary,.secondary-button):hover{background:var(--design-soft);border-color:var(--design-accent)}
+html body.sh-unified .btn-link{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;color:var(--design-accent-text,var(--design-accent));font-weight:650;text-decoration:underline;text-underline-offset:3px}
+html body.sh-unified :is(.app-button,.study-action,.btn,.sh-pdf) svg{width:18px;height:18px;flex:none}
+/* One filled button per section: card actions on the home page are secondary; the section's main action stays filled. */
+html body.sh-unified .study-home :is(.subject-card,.home-extras>*) .app-button{background:var(--card-bg);border:1px solid var(--design-border);color:var(--design-accent-text,var(--design-accent));box-shadow:none}
+html body.sh-unified .study-home :is(.subject-card,.home-extras>*) .app-button:hover{background:var(--design-soft);border-color:var(--design-accent);filter:none}
+html body.sh-unified .study-home .home-help .card-actions a,html body.sh-unified .study-course-actions .study-action+a{min-height:44px}
+
+/* Home: equal-height cards, no orphan in the extras row, calm sections without boxes. */
+.study-home .home-extras,.study-home .home-help,.study-home .course-grid{align-items:stretch}
+.study-home .home-extras{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.study-home :is(.home-extras,.home-help)>*,.study-home .subject-card{display:flex;flex-direction:column;gap:10px}
+.study-home :is(.home-extras,.home-help)>*>:is(.app-button,.card-actions):last-child,.study-home .subject-card>.app-button{margin-top:auto}
+.study-home :is(.home-extras,.home-help) p{margin:0}
+.study-home .path-quiz{display:inline-flex;align-items:center;min-height:44px;font-weight:650}
+html body.sh-unified .study-home .home-footer section{padding:0;border:0;background:none;box-shadow:none}
+
+/* Course hubs: the intro is short and the cards come right after it. */
+html body.sh-unified .study-course-intro{margin-bottom:1.5rem}
+
+/* Lessons: one intro (eyebrow, title, lead, actions) and a calm reading column. */
+html body.sh-unified main>header .eyebrow{display:block;margin:0 0 .5rem}
+html body.sh-unified main>header h1{margin:0 0 .75rem}
+html body.sh-unified main>header .lead{margin:0;max-width:66ch}
+html body.sh-unified .lesson-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin:1.25rem 0 0}
+html body.sh-unified .lesson-actions .sh-pdf{margin:0}
+body.sh-unified[data-subject] main:has(> header .eyebrow)>:is(p,ul,ol,dl,h2,h3,h4,blockquote),body.sh-unified[data-subject] main:has(> header .eyebrow) :is(.box,.story,.exam,details)>:is(p,ul,ol){max-width:66ch}
+body.sh-unified[data-subject] main:has(> header .eyebrow)>:is(.lessons,.hubgrid,.blocklegend){max-width:none}
+
+/* Calm: help, news, the sync hint and the tip sit on the page, separated by whitespace and a hairline. */
+html body.sh-unified .study-login-prompt.study-sync-hint{background:transparent;border:0;border-block:1px solid var(--design-line);border-radius:0;box-shadow:none;padding:1rem 0;width:calc(100% - 2 * var(--page-gutter));max-width:1160px}
+
+/* Numbers line up in lists and grids. */
+html body.sh-unified :is(.lnum,.bignum,.countline,.study-course-count,.pace,[data-chemie-progress],.sh-progress,table,.num,.badge){font-variant-numeric:tabular-nums}
+
+/* Chemie: sidebar cards and buttons follow the shared system (shared CSS only, chemie/ internals untouched). */
+html body.sh-unified[data-subject=chemie] :is(.catalog-entry,.course-progress-panel,.session-panel){border-radius:var(--card-radius)}
+html body.sh-unified[data-subject=chemie] :is(button,.app-primary):not(.study-shell *){min-height:44px;border-radius:10px}
+
+/* Course tabs: Overview | Lessons | Practice | Resources, all visible (they wrap, never hide off-screen). */
+.study-modes{flex-wrap:wrap;overflow:visible}
+html body .study-shell .study-mode-button{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;min-height:44px;padding:0 16px;border:0;border-radius:24px;background:none;color:var(--design-muted);font:550 14px/1.3 var(--study-ui);cursor:pointer;box-shadow:none}
+html body .study-shell .study-mode-button svg{width:16px;height:16px;transition:transform .15s}
+html body .study-shell .study-mode-button[aria-expanded=true] svg{transform:rotate(180deg)}
+html body .study-shell .study-mode-button:hover,html body .study-shell .study-mode-button[aria-expanded=true]{background:var(--design-soft);color:var(--design-ink)}
+html body .study-shell .study-mode-button[aria-current]{background:var(--design-accent);color:var(--design-on-accent)}
+html body .study-shell .study-modes a{min-height:44px}
+@media(max-width:600px){.study-modes{gap:2px}html body .study-shell .study-modes a,html body .study-shell .study-mode-button{padding:0 11px;font-size:13.5px}}
+@media(max-width:860px){.study-mode-pop{position:static}}
+/* Lesson lists: two or three cards per row on wide screens, one on phones. */
+html body.sh-unified .lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:14px;list-style:none;padding:0}
+html body.sh-unified .lessons>.lcard{display:flex;flex-direction:column;gap:8px;margin:0}
