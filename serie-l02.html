@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Serie 2 explained · Linear Algebra I">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=la1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serie 2 explained · Linear Algebra I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=la1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.task{border-left:4px solid var(--accent,#5b5bd6)}.task>p:first-child{margin-top:0}
+.sv-fig{display:block;margin:.7rem auto;max-width:100%;height:auto}.sv-cap{text-align:center;font-size:.9rem;opacity:.85;margin-top:0}
+details.sol .sp{margin:.6rem 0}.trapbox{margin-top:.8rem}.tsum{font-size:.95rem;opacity:.9;margin:.2rem 0 0}
+.tbl{border-collapse:collapse;margin:.6rem 0;font-size:.95rem}.tbl th,.tbl td{border:1px solid color-mix(in srgb,currentColor 25%,transparent);padding:.3rem .55rem;text-align:center}
+.tblwrap{overflow-x:auto;max-width:100%}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Serien explained</span>
+<h1>Serie 2, explained: Vector spaces</h1>
+<p class="lead">First calculation rules straight from the axioms, then four vector spaces you already met as groups: Fibonacci sequences, polynomials, $\mathbb Z_p^n$ and all functions $\mathbb R\to\mathbb R$. The pattern to learn: define the scalar multiplication, check it stays inside, check the four axioms coordinatewise.</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do Aufgabe 13 only: count the elements of $\mathbb Z_p^n$ and compute $\bar7\cdot(\bar0,\dots,\overline{10})$ in $\mathbb Z_{11}^{11}$. That counts. Next time, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can (1) prove $0\cdot x=0_V$, $\lambda\cdot0_V=0_V$, $(-1)\cdot x=-x$ and “$\lambda x=0_V$ implies $\lambda=0$ or $x=0_V$” from the axioms, naming the axiom in each step; (2) show that a given set with termwise or pointwise operations is a vector space by checking (V1) to (V4) entry by entry; (3) compute in $\mathbb Z_p^n$.</dd></div>
+<div><dt>Time</dt><dd>About 75 minutes: 30 for Aufgabe 10, 30 for Aufgaben 11, 12 and 14 (the same pattern three times), 15 for Aufgabe 13.</dd></div>
+<div><dt>Lessons</dt><dd><a href="linalg-05.html#s2-the-definition">Lesson 5, sections 2–4</a> (definition, calculation rules, standard examples).</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong></p>
+<ol>
+<li>Read the task and try it on paper for 10 minutes.</li>
+<li>Stuck on where to start? Read <em>The idea</em> and open <em>You need</em>: it links the lesson section with the theory.</li>
+<li>Hard tasks have hints. Open Hint 1, try again, then Hint 2, then Hint 3; each gives away a little more. Easy tasks go straight to the solution.</li>
+<li>Only then open the solution. The left column says <em>why</em> each step is there, the right column is what you write.</li>
+</ol>
+<p><strong>Source.</strong> The solutions follow Prof. Halbeisen's official Musterlösung to Serie 2 (HS26), translated and explained by StudyHub; where StudyHub adds a different route or a correction, it says so. The official solution numbers results as in the lecture; here every result is named in words. With the <a href="connect.html">StudyHub connector</a>, your own AI can check your attempt before you look.</p>
+<p>Recommended order: the tasks as numbered. Other sheets: <a href="serie-l00.html">0</a> · <a href="serie-l01.html">1</a> · <strong>2</strong> · <a href="serie-l03.html">3</a> · <a href="serie-l04.html">4</a> · <a href="serie-l05.html">5</a> · <a href="serie-l06.html">6</a></p></div>
+<p class="toc"><strong>Tasks:</strong> <a href="#a10">10 Rules from the axioms</a> · <a href="#a11">11 Fib over $\mathbb R$</a> · <a href="#a12">12 $\mathbb Q[X]$ over $\mathbb Q$</a> · <a href="#a13">13 $\mathbb Z_p^n$</a> · <a href="#a14">14 Functions $\mathbb R\to\mathbb R$</a></p>
+
+<!-- ============ Aufgabe 10 ============ -->
+<h2 id="a10">Aufgabe 10 · Calculation rules from the axioms</h2>
+<div class="box task"><p>Let $(V,+_V,0_V)$ be a vector space over the field $(K,+,\cdot,0,1)$. Show: (a) $\forall x\in V\ (0\cdot x=0_V)$; (b) $\forall\lambda\in K\ (\lambda\cdot0_V=0_V)$; (c) $\forall x\in V\ ((-1)\cdot x=-x)$; (d) $\forall\lambda\in K\ \forall x\in V\ (\lambda\cdot x=0_V\to(\lambda=0\lor x=0_V))$.</p></div>
+<p class="tsum"><strong>In short:</strong> Four rules everyone uses without thinking. Here you derive each one from (V1) to (V4) and the group axioms.</p>
+<div class="story"><span class="label">The idea</span>
+<p>One small helper does most of the work: <em>if $u+u=u$, then $u=0_V$</em> (add $-u$ on both sides). For (a), split $0=0+0$ in the field and use (V2): $0x=0x+0x$. For (b), split $0_V=0_V+0_V$ and use (V1). (c) shows that $(-1)x$ does the job of an inverse, and inverses in a group are unique. (d) is the only one with a case split: if $\lambda\ne0$, multiply by $\lambda^{-1}$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-05.html#s2-the-definition">Lesson 5, section 2</a>: a vector space over $K$ is an abelian group $(V,+_V,0_V)$ with a scalar multiplication $K\times V\to V$ such that for all $\lambda,\mu\in K$, $x,y\in V$: (V1) $\lambda(x+_Vy)=\lambda x+_V\lambda y$; (V2) $(\lambda+\mu)x=\lambda x+_V\mu x$; (V3) $(\lambda\mu)x=\lambda(\mu x)$; (V4) $1\cdot x=x$. <a href="linalg-05.html#s3-calculation-rules-from-the-axioms">Lesson 5, section 3</a> does the same rules with proofs. Inverses in a group are unique (<a href="linalg-01.html#s3-neutral-elements-inverses-groups">lesson 1, section 3</a>).</p></div></details>
+<details><summary>Hint 1</summary><div><p>Prove first: if $u\in V$ and $u+_Vu=u$, then $u=0_V$. Then (a): $0\cdot x=(0+0)\cdot x$. (b): $\lambda\cdot0_V=\lambda\cdot(0_V+_V0_V)$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>(c): compute $x+_V(-1)\cdot x$ using (V4), (V2) and (a). (d): if $\lambda\ne0$, write $x=1\cdot x=(\lambda^{-1}\lambda)\cdot x$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The helper: a vector that equals its own double is the zero vector. Add $-u$ and regroup.</p></div><div class="sp-formal"><p><strong>Helper.</strong> If $u\in V$ with $u+_Vu=u$, then $u=0_V$: $$\begin{aligned}0_V&amp;=u+_V(-u)\\&amp;=(u+_Vu)+_V(-u)\\&amp;=u+_V(u+_V(-u))\\&amp;=u+_V0_V=u.\end{aligned}$$</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Split the scalar $0=0+0$ in $K$ and use (V2).</p></div><div class="sp-formal"><p><strong>(a)</strong> Since $0+0=0$ in $K$, (V2) gives $0\cdot x=(0+0)\cdot x=0\cdot x+_V0\cdot x$. The helper with $u:=0\cdot x$ gives $0\cdot x=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Split the vector $0_V=0_V+0_V$ and use (V1).</p></div><div class="sp-formal"><p><strong>(b)</strong> Since $0_V+_V0_V=0_V$, (V1) gives $\lambda\cdot0_V=\lambda\cdot(0_V+_V0_V)=\lambda\cdot0_V+_V\lambda\cdot0_V$. The helper gives $\lambda\cdot0_V=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(c) Show that $(-1)x$ behaves like an inverse of $x$.</p></div><div class="sp-formal"><p><strong>(c)</strong> By (V4), (V2) and (a): $x+_V(-1)\cdot x=1\cdot x+_V(-1)\cdot x=(1+(-1))\cdot x=0\cdot x=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>In a group the inverse is unique, so $(-1)x$ is <em>the</em> inverse.</p></div><div class="sp-formal"><p>If $y$ and $y'$ are both inverses of $x$, then $y=y+_V(x+_Vy')=(y+_Vx)+_Vy'=y'$. So $(-1)\cdot x=-x$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(d) Case split on $\lambda$. If $\lambda\ne0$, it has an inverse in the field; use (V4), (V3) and (b).</p></div><div class="sp-formal"><p><strong>(d)</strong> Let $\lambda\cdot x=0_V$. If $\lambda=0$ we are done. If $\lambda\ne0$, then $\lambda^{-1}\in K$ exists, and $$\begin{aligned}x&amp;=1\cdot x=(\lambda^{-1}\lambda)\cdot x\\&amp;=\lambda^{-1}\cdot(\lambda\cdot x)\\&amp;=\lambda^{-1}\cdot0_V=0_V.\end{aligned}$$ So $\lambda=0$ or $x=0_V$. <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Writing $0\cdot x=(1-1)\cdot x=x-x=0_V$ in (a). It is not wrong as an idea, but “$1\cdot x-1\cdot x$” already uses $(-1)\cdot x=-x$, which is (c), proved later from (a). Keep the order: (a) and (b) from the helper, then (c), then (d). Also note: there are two zeros, $0\in K$ and $0_V\in V$; say which one you mean.</p></div>
+
+<!-- ============ Aufgabe 11 ============ -->
+<h2 id="a11">Aufgabe 11 · Fibonacci sequences form a vector space</h2>
+<div class="box task"><p>Let $(\mathrm{Fib},+)$ be as in Aufgabe 3 (b). Show that $(\mathrm{Fib},+)$ is a vector space over $\mathbb R$.</p></div>
+<p class="tsum"><strong>In short:</strong> Multiply every term by $\lambda$. The recursion survives, and the axioms hold term by term.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The group part is already done in Serie 0, so only the scalar multiplication is new. Define it the natural way (multiply every term), check that the result is still in the set, and then check (V1) to (V4) in each term, where they are rules of the field you already know.</p><p>Here: $\lambda\cdot(f_n):=(\lambda f_n)$. The recursion survives scaling: $\lambda f_{i+2}=\lambda(f_{i+1}+f_i)=\lambda f_{i+1}+\lambda f_i$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-05.html#s2-the-definition">Lesson 5, section 2</a>: a vector space over $K$ is an abelian group $(V,+_V,0_V)$ with a scalar multiplication $K\times V\to V$ such that for all $\lambda,\mu\in K$, $x,y\in V$: (V1) $\lambda(x+_Vy)=\lambda x+_V\lambda y$; (V2) $(\lambda+\mu)x=\lambda x+_V\mu x$; (V3) $(\lambda\mu)x=\lambda(\mu x)$; (V4) $1\cdot x=x$. <a href="serie-l00.html#a3">Serie 0, Aufgabe 3</a> for the group.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The group part is Aufgabe 3 (b).</p></div><div class="sp-formal"><p>By Aufgabe 3 (b), $(\mathrm{Fib},+)$ is an abelian group with zero $(0,0,\dots)$ and inverse $(-f_n)$ of $(f_n)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Define the scalar multiplication termwise.</p></div><div class="sp-formal"><p>For $\lambda\in\mathbb R$ and $(f_n)\in\mathrm{Fib}$ set $\lambda\cdot(f_n):=(\lambda f_n)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>It stays in $\mathrm{Fib}$: the recursion survives by the distributive law in $\mathbb R$.</p></div><div class="sp-formal"><p>For every $i$: $\lambda f_{i+2}=\lambda(f_{i+1}+f_i)=\lambda f_{i+1}+\lambda f_i$. So $(\lambda f_n)\in\mathrm{Fib}$, and $\cdot$ is a map $\mathbb R\times\mathrm{Fib}\to\mathrm{Fib}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(V1) to (V4) term by term: sequences are equal when all terms are equal.</p></div><div class="sp-formal"><p>For $\lambda,\mu\in\mathbb R$, $(f_n),(g_n)\in\mathrm{Fib}$ and every $n$: $\lambda(f_n+g_n)=\lambda f_n+\lambda g_n$, $(\lambda+\mu)f_n=\lambda f_n+\mu f_n$, $(\lambda\mu)f_n=\lambda(\mu f_n)$, $1\cdot f_n=f_n$. These are (V1) to (V4) in each term, so $\mathrm{Fib}$ is a vector space over $\mathbb R$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> the same computation shows that all real sequences $S$ form a vector space; $\mathrm{Fib}$ is a subset closed under both operations, a <em>subspace</em> (<a href="linalg-05.html#s6-subspaces">lesson 5, section 6</a>).</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Only checking (V1) to (V4) and forgetting that $\lambda\cdot(f_n)$ must again be a Fibonacci-type sequence. Without that step the scalar multiplication is not even a map into $\mathrm{Fib}$.</p></div>
+
+<!-- ============ Aufgabe 12 ============ -->
+<h2 id="a12">Aufgabe 12 · Polynomials form a vector space</h2>
+<div class="box task"><p>Let $(\mathbb Q[X],+)$ be as in Aufgabe 7. Show that $(\mathbb Q[X],+)$ is a vector space over $\mathbb Q$.</p><p><em>Official remark: since $\mathbb Q[X]$ is a ring and not only an abelian group, $\mathbb Q[X]$ over $\mathbb Q$ is a so-called algebra.</em></p></div>
+<p class="tsum"><strong>In short:</strong> Multiply every coefficient by $\lambda$; only finitely many stay non-zero; axioms coefficientwise.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The group part is already done in Serie 0, so only the scalar multiplication is new. Define it the natural way (multiply every term), check that the result is still in the set, and then check (V1) to (V4) in each term, where they are rules of the field you already know.</p><p>Here: $\lambda\cdot\sum a_iX^i:=\sum(\lambda a_i)X^i$. If $a_i=0$ for $i\gt n$, then also $\lambda a_i=0$, so the result is again a polynomial.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-05.html#s2-the-definition">Lesson 5, section 2</a>: a vector space over $K$ is an abelian group $(V,+_V,0_V)$ with a scalar multiplication $K\times V\to V$ such that for all $\lambda,\mu\in K$, $x,y\in V$: (V1) $\lambda(x+_Vy)=\lambda x+_V\lambda y$; (V2) $(\lambda+\mu)x=\lambda x+_V\mu x$; (V3) $(\lambda\mu)x=\lambda(\mu x)$; (V4) $1\cdot x=x$. <a href="serie-l01.html#a7">Serie 1, Aufgabe 7</a> for the group.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The group part is Aufgabe 7 (a).</p></div><div class="sp-formal"><p>Write $p=\sum_{i\ge0}a_iX^i$ with $a_i=0$ for all but finitely many $i$. By Aufgabe 7 (a), $(\mathbb Q[X],+)$ is an abelian group.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Define the scalar multiplication coefficientwise and check it is a polynomial again.</p></div><div class="sp-formal"><p>For $\lambda\in\mathbb Q$ set $\lambda\cdot p:=\sum_{i\ge0}(\lambda a_i)X^i$. If $a_i=0$ for $i\gt n$, then $\lambda a_i=0$ for $i\gt n$, and all $\lambda a_i\in\mathbb Q$. So $\lambda\cdot p\in\mathbb Q[X]$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(V1) to (V4) coefficientwise.</p></div><div class="sp-formal"><p>For $\lambda,\mu\in\mathbb Q$, $p=\sum a_iX^i$, $q=\sum b_iX^i$ and every $k$: $\lambda(a_k+b_k)=\lambda a_k+\lambda b_k$, $(\lambda+\mu)a_k=\lambda a_k+\mu a_k$, $(\lambda\mu)a_k=\lambda(\mu a_k)$, $1\cdot a_k=a_k$. So $\mathbb Q[X]$ is a vector space over $\mathbb Q$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> viewing $\lambda$ as the constant polynomial ($e_0=\lambda$, $e_i=0$ otherwise), the product formula gives $(\lambda\cdot p)_k=\sum_{i+j=k}e_ia_j=\lambda a_k$. So scalar multiplication is just multiplication by constant polynomials in the ring.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Mixing up the two multiplications: $\lambda\cdot p$ (a number times a polynomial, the vector space structure) and $p\cdot q$ (two polynomials, the ring structure). For the vector space you only need the first.</p></div>
+
+<!-- ============ Aufgabe 13 ============ -->
+<h2 id="a13">Aufgabe 13 · Counting and computing in $\mathbb Z_p^n$</h2>
+<div class="box task"><p>Let $p$ be prime, $\mathbb Z_p$ the field from Aufgabe 8, and $n\in\mathbb N$. (a) How many elements does the vector space $\mathbb Z_p^n$ over $\mathbb Z_p$ have? (b) For $p=11$, $n=11$ compute $\bar7\cdot(\bar0,\bar1,\bar2,\bar3,\bar4,\bar5,\bar6,\bar7,\bar8,\bar9,\overline{10})$.</p></div>
+<p class="tsum"><strong>In short:</strong> (a) $p$ choices in each of $n$ places: $p^n$. (b) Multiply each entry by $7$ and take the remainder mod $11$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>$\mathbb Z_p^n$ is the set of $n$-tuples with entries in $\mathbb Z_p$. For counting, the operations do not matter: each of the $n$ entries is one of $p$ values, chosen independently. For (b), scalar multiplication is entrywise, and in each entry you compute $7k$ and reduce mod $11$.</p></div>
+<details><summary>You need</summary><div><p>The vector space $K^n$ (<a href="linalg-05.html#s4-the-standard-examples">lesson 5, section 4</a>); $\mathbb Z_p$ has exactly $p$ elements (<a href="serie-l00.html#a5">Serie 0, Aufgabe 5</a>); multiplication in $\mathbb Z_m$ (<a href="serie-l01.html#a8">Serie 1, Aufgabe 8</a>).</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) First $|\mathbb Z_p|=p$: every class has exactly one representative $0\le k\lt p$.</p></div><div class="sp-formal"><p><strong>(a)</strong> $\mathbb Z_p=\{\bar0,\dots,\overline{p-1}\}$, and these $p$ elements are distinct, since every element has exactly one representative $k$ with $0\le k\lt p$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Then count tuples: independent choices multiply.</p></div><div class="sp-formal"><p>An element of $\mathbb Z_p^n$ is a tuple $(a_1,\dots,a_n)$ with each $a_i\in\mathbb Z_p$, and two tuples are equal iff all entries agree. Each entry can take $p$ values independently, so $|\mathbb Z_p^n|=p\cdot p\cdots p=p^n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Entrywise: $7k$ and its remainder mod $11$, for $k=0,\dots,10$.</p></div><div class="sp-formal"><p><strong>(b)</strong> $7k$ for $k=0,\dots,10$ is $0,7,14,21,28,35,42,49,56,63,70$, with remainders mod $11$: $0,7,3,10,6,2,9,5,1,8,4$. So $$\begin{aligned}&amp;\bar7\cdot(\bar0,\bar1,\dots,\overline{10})\\&amp;=(\bar0,\bar7,\bar3,\overline{10},\bar6,\bar2,\bar9,\bar5,\bar1,\bar8,\bar4).\end{aligned}$$</p></div></div>
+</div>
+<p><strong>Notice:</strong> the answer in (b) contains every element of $\mathbb Z_{11}$ exactly once. That is the pigeonhole argument of <a href="serie-l01.html#a8">Serie 1, Aufgabe 8 (d)</a> in action: multiplying by $\bar7\ne\bar0$ is injective, so it permutes $\mathbb Z_{11}$.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Answering $n^p$ or $p\cdot n$ in (a). Each of the $n$ places has $p$ options: $p$ multiplied $n$ times. And in (b), forgetting to reduce: $\bar7\cdot\bar3=\overline{21}$ is not in the list $\bar0,\dots,\overline{10}$; write $\overline{10}$.</p></div>
+
+<!-- ============ Aufgabe 14 ============ -->
+<h2 id="a14">Aufgabe 14 · All functions $\mathbb R\to\mathbb R$</h2>
+<div class="box task"><p>Let $V$ be the set of all functions $f:\mathbb R\to\mathbb R$, with addition $f+g:\mathbb R\to\mathbb R$, $x\mapsto f(x)+g(x)$. Show that $(V,+)$ is a vector space over $\mathbb R$.</p></div>
+<p class="tsum"><strong>In short:</strong> Everything pointwise: two functions are equal when they agree at every $x$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The group part is already done in Serie 0, so only the scalar multiplication is new. Define it the natural way (multiply every term), check that the result is still in the set, and then check (V1) to (V4) in each term, where they are rules of the field you already know.</p><p>Here the “terms” are the values $f(x)$, one for each $x\in\mathbb R$. Define $(\lambda f)(x):=\lambda f(x)$; then each axiom at the point $x$ is a rule of $\mathbb R$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-05.html#s2-the-definition">Lesson 5, section 2</a>: a vector space over $K$ is an abelian group $(V,+_V,0_V)$ with a scalar multiplication $K\times V\to V$ such that for all $\lambda,\mu\in K$, $x,y\in V$: (V1) $\lambda(x+_Vy)=\lambda x+_V\lambda y$; (V2) $(\lambda+\mu)x=\lambda x+_V\mu x$; (V3) $(\lambda\mu)x=\lambda(\mu x)$; (V4) $1\cdot x=x$. Two functions are equal iff they have the same value at every point (<a href="linalg-03.html#s3-maps">lesson 3, section 3</a>).</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Equality of functions and the definition of the sum.</p></div><div class="sp-formal"><p>$f,g\in V$ are equal iff $f(x)=g(x)$ for all $x\in\mathbb R$, and $(f+g)(x)=f(x)+g(x)$. Define $(\lambda\cdot f)(x):=\lambda\cdot f(x)$ for $\lambda\in\mathbb R$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Both operations give functions $\mathbb R\to\mathbb R$ again.</p></div><div class="sp-formal"><p>For every $x$, $f(x)+g(x)\in\mathbb R$ and $\lambda f(x)\in\mathbb R$, so $f+g\in V$ and $\lambda\cdot f\in V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Group laws pointwise.</p></div><div class="sp-formal"><p>For all $x$: $((f+g)+h)(x)=(f(x)+g(x))+h(x)=f(x)+(g(x)+h(x))=(f+(g+h))(x)$ and $(f+g)(x)=(g+f)(x)$. The zero function $0_V(x)=0$ is neutral, and $(-f)(x):=-f(x)$ gives $f+(-f)=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(V1) to (V4) pointwise.</p></div><div class="sp-formal"><p>For all $\lambda,\mu$, $f,g$ and $x$: $\lambda(f(x)+g(x))=\lambda f(x)+\lambda g(x)$, $(\lambda+\mu)f(x)=\lambda f(x)+\mu f(x)$, $(\lambda\mu)f(x)=\lambda(\mu f(x))$, $1\cdot f(x)=f(x)$. Since functions are equal when equal at every point, (V1) to (V4) hold, and $V$ is a vector space over $\mathbb R$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> a sequence is a function $\mathbb N\to\mathbb R$, so Aufgabe 11 and this task are the same fact with different domains. For every set $M$, the functions $M\to\mathbb R$ form a vector space.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Writing $f+g=g+f$ “because addition is commutative” without saying where: it is commutativity in $\mathbb R$, applied at each point $x$. The proof of every axiom must pass through the values $f(x)$.</p></div>
+<nav class="site foot" aria-label="Sheet navigation">
+<a href="serie-l01.html">← Serie 1: Rings and fields</a>
+<a href="linalg.html#serien">Linear Algebra home</a>
+<a href="serie-l03.html">Serie 3: Bases →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

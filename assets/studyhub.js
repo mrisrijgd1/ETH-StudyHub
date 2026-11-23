@@ -196,7 +196,7 @@
   } catch (_) {}
   const physCards = !fcApp && !de && file === 'flashcards.html' && (/^#p\d/.test(location.hash) || /^#p\d/.test(returnHash));
   const practiceFor = file === 'practice.html' ? ({ '#analysis': 'analysis', '#physics': 'physics', '#linalg': 'linalg' })[location.hash] : null;
-  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? fcSubject : physCards ? 'physics' : /^linalg(?:-|\.)/.test(file) ? 'linalg' : /^(informatik\.html|inf-)/.test(file) ? 'informatik' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
+  const subject = chemistry ? 'chemie' : practiceFor ? practiceFor : fcApp ? fcSubject : physCards ? 'physics' : /^(linalg(?:-|\.)|serie-l)/.test(file) ? 'linalg' : /^(informatik\.html|inf-)/.test(file) ? 'informatik' : /^(physics\.html|phys-|serie-p)/.test(file) ? 'physics' : /^(analysis\.html|lesson-|refresher-|serie-a|mock\.html|flashcards\.html|moves\.html|tree\.html|exam-map\.html|skipped\.html|script\.html|docs\.html)$/.test(file) || /^(lesson-|refresher-|serie-a)/.test(file) ? 'analysis' : null;
   if (!fcApp && file === 'flashcards.html' && !physCards) { location.replace(new URL(fcAppPath + 'analysis/index.html?lang=' + (de ? 'de' : 'en') + '#/proof-practice', base).href); return; }
   document.body.classList.add('studyhub-app', 'sh-unified');
   if (subject) document.body.dataset.subject = subject;
@@ -213,7 +213,7 @@
       [L('Kursmaterial', 'Course material'), [[L('Prüfungsplan', 'Exam plan'), prefix + 'phys-plan.html'], [L('Tafel & Skript', 'Board & script'), prefix + 'phys-board.html'], [L('Skript', 'Script'), 'phys-script.html'], [L('Prüfungen', 'Exams'), prefix + 'phys-docs.html']]]
     ] },
     linalg: { overview: prefix + 'linalg.html', lessons: prefix + 'linalg.html#lessons', practice: prefix + 'practice.html#linalg', resources: [
-      [L('Mehr üben', 'Practise more'), [[L('Lernkarten', 'Flashcards'), fcDeck('linalg'), L('123 Karten zum Skript', '123 cards on the script')], [L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
+      [L('Mehr üben', 'Practise more'), [[L('Lernkarten', 'Flashcards'), fcDeck('linalg'), L('123 Karten zum Skript', '123 cards on the script')], [L('Beweistechnik', 'Proof techniques'), 'linalg-moves.html'], [L('Serien erklärt', 'Serien explained'), 'serie-l00.html'], [L('Probeprüfungen', 'Timed mocks'), prefix + 'mock.html']]],
       [L('Kursmaterial', 'Course material'), [[L('Plan und Prüfungslandkarte', 'Plan and exam map'), 'linalg-plan.html'], [L('Skript', 'Script'), 'linalg-script.html']]]
     ] },
     informatik: { overview: 'informatik.html', lessons: 'informatik.html#lessons', practice: 'inf-method.html', resources: [

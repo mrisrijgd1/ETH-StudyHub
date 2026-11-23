@@ -227,9 +227,10 @@
      them (Analysis lessons); otherwise it builds them from the file name and only shows "next" if that page exists.
      "Mark done" is the same tick as "I finished this lesson" in the progress box below (account.js). */
   function lessonBar(main) {
-    var m = /^(lesson-|phys-|linalg-|inf-|refresher-|serie-a|serie-p)(\d+)\.html$/.exec(page); if (!m) return;
+    var m = /^(lesson-|phys-|linalg-|inf-|refresher-|serie-a|serie-p|serie-l)(\d+)\.html$/.exec(page); if (!m) return;
     var kind = m[1], n = +m[2], w = m[2].length;
-    var name = { 'lesson-': T('Lesson', 'Lektion'), 'phys-': T('Lesson', 'Lektion'), 'linalg-': T('Lesson', 'Lektion'), 'inf-': T('Lesson', 'Lektion'), 'refresher-': T('Unit', 'Einheit'), 'serie-a': 'Übungsblatt', 'serie-p': 'Serie' }[kind];
+    var name = { 'lesson-': T('Lesson', 'Lektion'), 'phys-': T('Lesson', 'Lektion'), 'linalg-': T('Lesson', 'Lektion'), 'inf-': T('Lesson', 'Lektion'), 'refresher-': T('Unit', 'Einheit'), 'serie-a': 'Übungsblatt', 'serie-p': 'Serie', 'serie-l': 'Serie' }[kind];
+    var lo = kind === 'serie-l' ? 0 : 1;
     function href(k) { var s = String(k); while (s.length < w) s = '0' + s; return kind + s + '.html'; }
     var foot = main.querySelector('nav.site.foot');
     function footLink(k) { return foot && foot.querySelector('a[href="' + href(k) + '"]'); }
@@ -243,8 +244,8 @@
       return a;
     }
     var bar = document.createElement('nav'); bar.className = 'sh-lessonbar'; bar.setAttribute('aria-label', T('Previous and next', 'Zurück und weiter'));
-    var prev = n > 1 ? cell(n - 1, 'prev') : document.createElement('span');
-    if (n <= 1) prev.className = 'sh-lb-prev';
+    var prev = n > lo ? cell(n - 1, 'prev') : document.createElement('span');
+    if (n <= lo) prev.className = 'sh-lb-prev';
     var done = document.createElement('button'); done.type = 'button'; done.className = 'sh-lb-done';
     var next = document.createElement('span'); next.className = 'sh-lb-next';
     bar.appendChild(prev); bar.appendChild(done); bar.appendChild(next);

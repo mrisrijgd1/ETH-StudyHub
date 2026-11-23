@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Serie 4 explained · Linear Algebra I">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=la1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serie 4 explained · Linear Algebra I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=la1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.task{border-left:4px solid var(--accent,#5b5bd6)}.task>p:first-child{margin-top:0}
+.sv-fig{display:block;margin:.7rem auto;max-width:100%;height:auto}.sv-cap{text-align:center;font-size:.9rem;opacity:.85;margin-top:0}
+details.sol .sp{margin:.6rem 0}.trapbox{margin-top:.8rem}.tsum{font-size:.95rem;opacity:.9;margin:.2rem 0 0}
+.tbl{border-collapse:collapse;margin:.6rem 0;font-size:.95rem}.tbl th,.tbl td{border:1px solid color-mix(in srgb,currentColor 25%,transparent);padding:.3rem .55rem;text-align:center}
+.tblwrap{overflow-x:auto;max-width:100%}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Serien explained</span>
+<h1>Serie 4, explained: Subspaces, affine spaces, Latin squares</h1>
+<p class="lead">When a subset is a subspace, why subspaces of finite-dimensional spaces are finite-dimensional, bases of planes and their intersections in $\mathbb R^3$, all the lines of the tiny plane $\mathbb F_4^2$, and a card puzzle that those lines solve.</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do Aufgabe 21 (a) only: find a basis of the plane $x_1+2x_2+3x_3=0$. That counts. Next time, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can (1) prove that $W$ is a subspace iff $\langle W\rangle=W$; (2) find a basis of a plane or a line given by equations, by solving for some coordinates; (3) list all lines through $0$ in $\mathbb F_4^2$ and count all lines; (4) explain how parallel classes of lines give orthogonal Latin squares.</dd></div>
+<div><dt>Time</dt><dd>About 110 minutes: 25 for Aufgabe 20, 20 for Aufgabe 21, 35 for Aufgabe 22, 30 for Aufgabe 23.</dd></div>
+<div><dt>Lessons</dt><dd><a href="linalg-05.html#s6-subspaces">Lesson 5, section 6</a> (subspaces); <a href="linalg-06.html#s2-linear-combinations-and-the-span">lesson 6</a> (span, bases); <a href="linalg-07.html#s4-dimension">lesson 7, section 4</a> (dimension); <a href="linalg-08.html#s2-intersection-union-and-sum">lesson 8, section 2</a> (intersections); <a href="linalg-09.html#s2-affine-subspaces">lesson 9, section 2</a> (affine subspaces). Lesson 8 uses Aufgaben 20–22 (a, b) as exercises, lesson 9 uses 22 (c) and 23.</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong></p>
+<ol>
+<li>Read the task and try it on paper for 10 minutes.</li>
+<li>Stuck on where to start? Read <em>The idea</em> and open <em>You need</em>: it links the lesson section with the theory.</li>
+<li>Hard tasks have hints. Open Hint 1, try again, then Hint 2, then Hint 3; each gives away a little more. Easy tasks go straight to the solution.</li>
+<li>Only then open the solution. The left column says <em>why</em> each step is there, the right column is what you write.</li>
+</ol>
+<p><strong>Source.</strong> The solutions follow Prof. Halbeisen's official Musterlösung to Serie 4 (HS26), translated and explained by StudyHub; where StudyHub adds a different route or a correction, it says so. The official solution numbers results as in the lecture; here every result is named in words. With the <a href="connect.html">StudyHub connector</a>, your own AI can check your attempt before you look.</p>
+<p>Recommended order: the tasks as numbered. Other sheets: <a href="serie-l00.html">0</a> · <a href="serie-l01.html">1</a> · <a href="serie-l02.html">2</a> · <a href="serie-l03.html">3</a> · <strong>4</strong> · <a href="serie-l05.html">5</a> · <a href="serie-l06.html">6</a></p></div>
+<p class="toc"><strong>Tasks:</strong> <a href="#a20">20 Subspaces and spans</a> · <a href="#a21">21 Planes in $\mathbb R^3$</a> · <a href="#a22">22 Lines in $\mathbb F_4^2$</a> · <a href="#a23">23 Latin squares</a></p>
+
+<!-- ============ Aufgabe 20 ============ -->
+<h2 id="a20">Aufgabe 20 · Subspaces and spans; finite dimension is inherited</h2>
+<div class="box task"><p>(a) Show: if $V$ is a vector space over $K$ and $W\subseteq V$, then $W$ is a subspace of $V$ iff $\langle W\rangle=W$.</p><p>(b) Show: if $V$ is finite-dimensional and $W\subseteq V$ is a subspace, then $W$ is finite-dimensional.</p></div>
+<p class="tsum"><strong>In short:</strong> (a) A subspace contains all combinations of its vectors, and a set that equals its span passes the subspace test. (b) Keep adding vectors of $W$ not yet spanned; independence in $V$ stops you after at most $\dim V$ steps.</p>
+<div class="story"><span class="label">The idea</span>
+<p>(a) “Closed under $+$ and scaling” is the same as “closed under all finite linear combinations”, by induction on the number of terms. One direction uses that, the other just checks (U0) to (U2) using that $0_V$, $x+y$ and $\lambda x$ are combinations. (b) Build a basis of $W$ greedily: pick $y_1\ne0$ in $W$, then $y_2$ in $W$ outside $\langle y_1\rangle$, and so on. Each new vector keeps the list independent, and an independent list in $V$ has at most $\dim V$ vectors, so the process must stop with a list that spans $W$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-05.html#s6-subspaces">Lesson 5, section 6</a>: $W\subseteq V$ is a subspace iff (U0) $W\ne\emptyset$, (U1) $x+y\in W$ for $x,y\in W$, (U2) $\lambda x\in W$ for $\lambda\in K$, $x\in W$. <a href="linalg-06.html#s2-linear-combinations-and-the-span">Lesson 6, section 2</a>: $\langle W\rangle$ is the set of all finite linear combinations of vectors of $W$; the empty combination is $0_V$. For (b): an independent list in $V$ has at most $\dim V$ elements (<a href="linalg-07.html#s3-the-exchange-spanning-lists-are">lesson 7, section 3</a>), and adding a vector outside the span keeps a list independent (<a href="linalg-07.html#s2-two-small-tools">lesson 7, section 2</a>).</p></div></details>
+<details><summary>Hint 1</summary><div><p>(a) “$\Rightarrow$”: $W\subseteq\langle W\rangle$ always ($x=1\cdot x$). For $\langle W\rangle\subseteq W$ use induction on the number $n$ of terms in $\sum_{i=1}^n\lambda_ix_i$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>(b) If $W\ne\{0_V\}$, choose $y_1\in W\setminus\{0_V\}$. If $\langle y_1,\dots,y_k\rangle\ne W$, choose $y_{k+1}\in W\setminus\langle y_1,\dots,y_k\rangle$. Why does this stop?</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) “$\Rightarrow$”, first inclusion: every vector is a one-term combination of itself.</p></div><div class="sp-formal"><p><strong>(a)</strong> ($\Rightarrow$) Let $W$ be a subspace. $W\subseteq\langle W\rangle$, since $x=1\cdot x$ for $x\in W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Second inclusion: combinations of vectors of $W$ stay in $W$, by induction on the number of terms.</p></div><div class="sp-formal"><p>$\langle W\rangle\subseteq W$: by induction on $n$, $\sum_{i=1}^n\lambda_ix_i\in W$ for all $\lambda_i\in K$, $x_i\in W$. For $n=0$ the empty sum is $0_V\in W$. If true for $n$, then $\sum_{i=1}^{n+1}\lambda_ix_i=\sum_{i=1}^n\lambda_ix_i+\lambda_{n+1}x_{n+1}\in W$ by (U2) and (U1). So $\langle W\rangle=W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>“$\Leftarrow$”: check (U0) to (U2); each required vector is a linear combination.</p></div><div class="sp-formal"><p>($\Leftarrow$) Let $\langle W\rangle=W$. (U0): the empty combination $0_V\in\langle W\rangle=W$. (U1): for $x,y\in W$, $x+y=1\cdot x+1\cdot y\in\langle W\rangle=W$. (U2): $\lambda x\in\langle W\rangle=W$. So $W$ is a subspace.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Build an independent list in $W$ greedily.</p></div><div class="sp-formal"><p><strong>(b)</strong> If $W=\{0_V\}$, $\emptyset$ is a basis. Otherwise choose $y_1\in W\setminus\{0_V\}$. As long as $\langle y_1,\dots,y_k\rangle\ne W$, choose $y_{k+1}\in W\setminus\langle y_1,\dots,y_k\rangle$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Each step keeps independence; independent lists in $V$ have at most $\dim V$ vectors. So it stops, and when it stops the list spans $W$.</p></div><div class="sp-formal"><p>By induction, every list $y_1,\dots,y_k$ is linearly independent (a vector outside the span of independent vectors keeps them independent). Independent vectors in $V$ number at most $d:=\dim V$, so the process stops after $k\le d$ steps, and then $\langle y_1,\dots,y_k\rangle=W$. So $\{y_1,\dots,y_k\}$ is a finite basis of $W$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Remark (official):</strong> if $\dim W=\dim V$, then $W=V$: a basis of $W$ is independent in $V$ with $\dim V$ elements, hence already a basis of $V$. So a subspace $W\ne V$ has smaller dimension. This is used in Aufgabe 22.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>In (b), writing “take a basis of $W$; it has at most $\dim V$ elements”. That assumes $W$ already has a (finite) basis, which is what you are proving. Build the basis inside $W$ and use the bound from $V$ to stop.</p></div>
+
+<!-- ============ Aufgabe 21 ============ -->
+<h2 id="a21">Aufgabe 21 · Bases of planes and their intersections</h2>
+<div class="box task"><p>For $\lambda\in\mathbb R$ and $(\alpha,\beta,\gamma)\ne(0,0,0)$ let $U_{\lambda;\alpha,\beta,\gamma}:=\{(x_1,x_2,x_3)\in\mathbb R^3:\alpha x_1+\beta x_2+\gamma x_3=\lambda\}$; it is a subspace iff $\lambda=0$.</p><p>(a) Find a basis of each of $U_{0;1,2,3}$, $U_{0;2,0,1}$, $U_{0;2,0,0}$.</p><p>(b) Find a basis of each of $U_{0;1,2,3}\cap U_{0;2,0,1}$, $U_{0;2,0,1}\cap U_{0;2,0,0}$, $U_{0;2,0,0}\cap U_{0;1,2,3}$.</p></div>
+<p class="tsum"><strong>In short:</strong> Solve each equation for one coordinate; the free coordinates give the basis vectors. Two different planes through $0$ meet in a line.</p>
+<div class="story"><span class="label">The idea</span>
+<p>One equation in three unknowns leaves two free choices, so each $E_i$ is a plane and gets two basis vectors: solve for one variable, set one free variable to $1$ and the other to $0$, and vice versa. An intersection means both equations at once; two independent equations leave one free choice, a line, with one basis vector.</p></div>
+<details><summary>You need</summary><div><p>Bases from free variables (<a href="linalg-06.html#s5-bases-and-coordinates">lesson 6, section 5</a>), intersections of subspaces (<a href="linalg-08.html#s2-intersection-union-and-sum">lesson 8, section 2</a>).</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<p>Write $E_1:=U_{0;1,2,3}$, $E_2:=U_{0;2,0,1}$, $E_3:=U_{0;2,0,0}$.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>$E_1$: solve for $x_1$; $x_2,x_3$ are free.</p></div><div class="sp-formal"><p>$x\in E_1\iff x_1=-2x_2-3x_3$, so $x=x_2(-2,1,0)+x_3(-3,0,1)$. Both vectors lie in $E_1$ ($-2+2=0$, $-3+3=0$), so they span $E_1$; and $\lambda(-2,1,0)+\mu(-3,0,1)=(-2\lambda-3\mu,\lambda,\mu)=0$ forces $\lambda=\mu=0$. Basis: $\{(-2,1,0),(-3,0,1)\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$E_2$: solve for $x_3$.</p></div><div class="sp-formal"><p>$x\in E_2\iff x_3=-2x_1$, so $x=x_1(1,0,-2)+x_2(0,1,0)$; independent by the first two coordinates. Basis: $\{(1,0,-2),(0,1,0)\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$E_3$: the equation says $x_1=0$.</p></div><div class="sp-formal"><p>$x\in E_3\iff x_1=0$, so $x=x_2(0,1,0)+x_3(0,0,1)$. Basis: $\{(0,1,0),(0,0,1)\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) $E_1\cap E_2$: substitute $x_3=-2x_1$ into the first equation.</p></div><div class="sp-formal"><p><strong>(b)</strong> $x_3=-2x_1$ and $x_1+2x_2-6x_1=0$, so $x_2=\frac52x_1$ and $x=\frac{x_1}2(2,5,-4)$. Conversely $(2,5,-4)$ satisfies both ($2+10-12=0$, $4-4=0$). One non-zero vector is independent, so $\{(2,5,-4)\}$ is a basis of $E_1\cap E_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$E_2\cap E_3$: $x_1=0$, then $x_3=0$.</p></div><div class="sp-formal"><p>$x_1=0$ and then $x_3=0$; $x_2$ is free. Basis: $\{(0,1,0)\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$E_3\cap E_1$: $x_1=0$, then $2x_2+3x_3=0$.</p></div><div class="sp-formal"><p>$x_1=0$ and $x_2=-\frac32x_3$, so $x=-\frac{x_3}2(0,3,-2)$, and $(0,3,-2)$ satisfies both. Basis: $\{(0,3,-2)\}$.</p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Giving vectors that span but forgetting to check that each lies in the subspace, or giving a basis with the wrong number of vectors. A plane in $\mathbb R^3$ needs exactly two, a line exactly one. Quick check: plug each basis vector into the equation(s).</p></div>
+
+<!-- ============ Aufgabe 22 ============ -->
+<h2 id="a22">Aufgabe 22 · All lines of the plane $\mathbb F_4^2$</h2>
+<div class="box task"><p>Let $\mathbb F_4=\{0,1,a,b\}$ be the field from Aufgabe 9. (a) Find a basis of every non-trivial subspace of $\mathbb F_4^2$. (b) List all elements of the non-trivial subspace containing $(1,b)$. (c) How many non-trivial affine spaces are there in $\mathbb F_4^2$?</p></div>
+<p class="tsum"><strong>In short:</strong> $\mathbb F_4^2$ has 16 points. The non-trivial subspaces are the 5 lines through $0$, each with 4 points. Each line has 4 parallel copies: 20 lines in total.</p>
+<div class="story"><span class="label">The idea</span>
+<p>$\mathbb F_4^2$ is a plane with $4^2=16$ points. A non-trivial subspace has dimension 1 (not 0, not 2), so it is a line $\langle v\rangle$ through $0$ with 4 points. The 15 non-zero points split into these lines, 3 non-zero points each, so there are 5 lines through $0$: one for each “slope” $0,1,a,b$, plus the vertical line. Each line has 4 parallel translates that tile the plane, so there are $5\cdot4=20$ lines (non-trivial affine spaces) in total.</p></div>
+<svg class="sv-fig" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="The 16 points of F4 squared in a 4 by 4 grid. The 4 points of the line through 0 and (1,b) are highlighted.">
+<g font-size="11" fill="currentColor" text-anchor="middle"><text x="40" y="192">0</text><text x="80" y="192">1</text><text x="120" y="192">a</text><text x="160" y="192">b</text><text x="12" y="164">0</text><text x="12" y="124">1</text><text x="12" y="84">a</text><text x="12" y="44">b</text></g>
+<g fill="currentColor" fill-opacity=".35"><circle cx="40" cy="160" r="4"/><circle cx="40" cy="120" r="4"/><circle cx="40" cy="80" r="4"/><circle cx="40" cy="40" r="4"/><circle cx="80" cy="160" r="4"/><circle cx="80" cy="120" r="4"/><circle cx="80" cy="80" r="4"/><circle cx="80" cy="40" r="4"/><circle cx="120" cy="160" r="4"/><circle cx="120" cy="120" r="4"/><circle cx="120" cy="80" r="4"/><circle cx="120" cy="40" r="4"/><circle cx="160" cy="160" r="4"/><circle cx="160" cy="120" r="4"/><circle cx="160" cy="80" r="4"/><circle cx="160" cy="40" r="4"/></g>
+<g fill="var(--accent,#5b5bd6)"><circle cx="40" cy="160" r="7"/><circle cx="80" cy="40" r="7"/><circle cx="120" cy="120" r="7"/><circle cx="160" cy="80" r="7"/></g></svg>
+<p class="sv-cap">The 16 points of $\mathbb F_4^2$ (horizontal: $x$, vertical: $y$). Highlighted: the line $g_3=\langle(1,b)\rangle$, with points $(0,0)$, $(1,b)$, $(a,1)$, $(b,a)$. Lines over $\mathbb F_4$ do not look straight in a picture.</p>
+<details><summary>You need</summary><div><p><a href="serie-l01.html#a9">Serie 1, Aufgabe 9</a> (the tables of $\mathbb F_4$: $x+x=0$, $1+a=b$, $a\cdot a=b$, $a\cdot b=1$, $b\cdot b=a$). <a href="#a20">Aufgabe 20</a> (dimension of a subspace). <a href="linalg-09.html#s2-affine-subspaces">Lesson 9, section 2</a> (affine subspaces $v+U$) and <a href="linalg-09.html#s3-cosets-are-equivalence-classes">section 3</a> (translates are equal or disjoint).</p></div></details>
+<details><summary>Hint 1</summary><div><p>A non-trivial subspace $U$ of the 2-dimensional $\mathbb F_4^2$ has dimension 1 (Aufgabe 20), so $U=\langle v\rangle=\{0,v,av,bv\}$ for any $v\ne0$ in $U$. Normalise $v$: if its first entry $s\ne0$, use $s^{-1}v=(1,\ast)$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>(c) For a line $U$: each translate $v+U$ has 4 points, two translates are equal or disjoint, so the 16 points split into exactly 4 translates. Different lines give different translates, since $U=\{p-p':p,p'\in v+U\}$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A subspace that is neither $\{0\}$ nor everything has dimension 1, so it is spanned by any of its non-zero vectors.</p></div><div class="sp-formal"><p><strong>(a)</strong> $V:=\mathbb F_4^2$ has 16 elements and dimension 2. A non-trivial subspace $U$ has a basis with fewer than 2 and more than 0 vectors (Aufgabe 20), so $U=\langle u\rangle$ with $u\ne0$; and for any $v\in U\setminus\{0\}$, $U=\langle v\rangle$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Normalise the spanning vector: first entry $1$, or the vector $(0,1)$.</p></div><div class="sp-formal"><p>For $v=(s,t)\ne0$: if $s\ne0$, then $s^{-1}v=(1,s^{-1}t)\in\langle v\rangle$; if $s=0$, then $t^{-1}v=(0,1)$. So $\langle v\rangle$ is one of</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>List the five lines, writing $0v,1v,av,bv$.</p></div><div class="sp-formal"><p>$$\begin{aligned}g_0&amp;=\{(0,0),(1,0),(a,0),(b,0)\},\\g_1&amp;=\{(0,0),(1,1),(a,a),(b,b)\},\\g_2&amp;=\{(0,0),(1,a),(a,b),(b,1)\},\\g_3&amp;=\{(0,0),(1,b),(a,1),(b,a)\},\\g_\infty&amp;=\{(0,0),(0,1),(0,a),(0,b)\}.\end{aligned}$$ (E.g. $a(1,a)=(a,b)$, $b(1,a)=(b,1)$.) No non-zero vector occurs twice ($5\cdot3=15$ non-zero vectors in all), so these are 5 different subspaces, with bases $\{(1,0)\},\{(1,1)\},\{(1,a)\},\{(1,b)\},\{(0,1)\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Only one line contains $(1,b)$: $g_3$.</p></div><div class="sp-formal"><p><strong>(b)</strong> $(1,b)$ lies in exactly one non-trivial subspace, $g_3=\langle(1,b)\rangle$: $0(1,b)=(0,0)$, $1(1,b)=(1,b)$, $a(1,b)=(a,ab)=(a,1)$, $b(1,b)=(b,bb)=(b,a)$. So $g_3=\{(0,0),(1,b),(a,1),(b,a)\}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(c) Each line $U$ has exactly 4 translates: each has 4 points, translates are equal or disjoint, 16 points in all.</p></div><div class="sp-formal"><p><strong>(c)</strong> Fix a line $U$. Each $v+U$ has 4 elements ($v+u=v+u'\Rightarrow u=u'$) and contains $v$. If $v+U$ and $w+U$ share a point $v+u_1=w+u_2$, then $v+U=w+U$. So the 16 points split into disjoint translates of size 4: exactly $16:4=4$ translates.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Different lines give different translates, so count $5\cdot4$.</p></div><div class="sp-formal"><p>A translate $A=v+U$ determines $U=\{p-p':p,p'\in A\}$, so translates of different lines differ. Hence there are $5\cdot4=20$ non-trivial affine spaces in $\mathbb F_4^2$: the 5 lines through $0$ and 15 lines not through $0$. <span class="qed">∎</span></p></div></div>
+</div>
+<p>Explicitly: for $m\in\mathbb F_4$ and $q\in\mathbb F_4$, the lines $\{(x,y):y=m\cdot x+q\}$ (16 of them), and the vertical lines $\{(x,y):x=q\}$ (4 of them).</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Counting lines by choosing two points: $\binom{16}2=120$ pairs, but each line contains $\binom42=6$ pairs, so $120:6=20$. If you count pairs, divide; if you count spanning vectors, remember that $v$, $av$, $bv$ span the same line.</p></div>
+
+<!-- ============ Aufgabe 23 ============ -->
+<h2 id="a23">Aufgabe 23 · Orthogonal Latin squares and a card puzzle</h2>
+<div class="box task"><p>A <em>Latin square</em> of order 4 is a $4\times4$ array in which each of $\alpha,\beta,\gamma,\delta$ occurs exactly once in every row and every column. Two Latin squares $Q,R$ are <em>orthogonal</em> if, writing their entries side by side, all 16 pairs are different.</p><p>(a) Find three pairwise orthogonal Latin squares of order 4. <em>Official hint: take three suitable lines through $0$ in $\mathbb F_4^2$; label the points of the line with $\alpha$ and the points of its three translates with $\beta,\gamma,\delta$.</em></p><p>(b) Arrange the 4 jacks (Bauern), 4 queens (Damen), 4 kings (Könige) and 4 aces (Asse) of a Jass deck in a $4\times4$ square so that every row and every column contains all four values and all four suits $\clubsuit,\diamondsuit,\heartsuit,\spadesuit$.</p></div>
+<p class="tsum"><strong>In short:</strong> Each slanted line class of $\mathbb F_4^2$ gives a Latin square. Two different line classes give orthogonal squares, because two non-parallel lines meet in exactly one point.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Put the 16 cells of the square on the 16 points of $\mathbb F_4^2$: column $x$, row $y$. Take a slope $m\in\{1,a,b\}$ and colour the 4 parallel lines $y=mx+q$ with four letters. Every row ($y$ fixed) meets each slanted line exactly once, and so does every column, so the colouring is a Latin square. For two different slopes, a line of one class and a line of the other meet in exactly one point: that is orthogonality. (b) is (a) with values and suits as the letters.</p></div>
+<details><summary>You need</summary><div><p><a href="#a22">Aufgabe 22</a> (the lines of $\mathbb F_4^2$ and their translates). Two different lines through $0$ meet only in $0$ (<a href="linalg-08.html#s2-intersection-union-and-sum">lesson 8, section 2</a>).</p></div></details>
+<details><summary>Hint 1</summary><div><p>For $m\in\{1,a,b\}$ write in cell $(x,y)$ the letter $\alpha,\beta,\gamma,\delta$ according to $q=y-mx\in\{0,1,a,b\}$. Why is every row and every column a permutation of the letters?</p></div></details>
+<details><summary>Hint 2</summary><div><p>Orthogonality: let $A$ be a translate of $g_i$ and $A'$ a translate of $g_j$, $i\ne j$. Show $|A\cap A'|=1$: at most one (the difference of two common points lies in $g_i\cap g_j=\{0\}$), and at least one (the 4 points of $A$ lie in 4 different translates of $g_j$).</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<p>Cells: column $x$, row $y$ (rows listed from $y=b$ at the top to $y=0$ at the bottom). In $Q_i$, cell $(x,y)$ gets $\alpha,\beta,\gamma,\delta$ according to $q=y-m_ix=0,1,a,b$, with slopes $m_1=1$, $m_2=a$, $m_3=b$.</p><div class="tblwrap"><table class="tbl" aria-label="Latin square Q1"><tr><th>$y\backslash x$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr><tr><th>$b$</th><td>δ</td><td>γ</td><td>β</td><td>α</td></tr><tr><th>$a$</th><td>γ</td><td>δ</td><td>α</td><td>β</td></tr><tr><th>$1$</th><td>β</td><td>α</td><td>δ</td><td>γ</td></tr><tr><th>$0$</th><td>α</td><td>β</td><td>γ</td><td>δ</td></tr></table><table class="tbl" aria-label="Latin square Q2"><tr><th>$y\backslash x$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr><tr><th>$b$</th><td>δ</td><td>β</td><td>α</td><td>γ</td></tr><tr><th>$a$</th><td>γ</td><td>α</td><td>β</td><td>δ</td></tr><tr><th>$1$</th><td>β</td><td>δ</td><td>γ</td><td>α</td></tr><tr><th>$0$</th><td>α</td><td>γ</td><td>δ</td><td>β</td></tr></table><table class="tbl" aria-label="Latin square Q3"><tr><th>$y\backslash x$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr><tr><th>$b$</th><td>δ</td><td>α</td><td>γ</td><td>β</td></tr><tr><th>$a$</th><td>γ</td><td>β</td><td>δ</td><td>α</td></tr><tr><th>$1$</th><td>β</td><td>γ</td><td>α</td><td>δ</td></tr><tr><th>$0$</th><td>α</td><td>δ</td><td>β</td><td>γ</td></tr></table></div><p class="sv-cap">$Q_1$, $Q_2$, $Q_3$ (official solution; checked by StudyHub: every pair of squares gives 16 different pairs).</p>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Each square is well defined: every point lies in exactly one translate of the line.</p></div><div class="sp-formal"><p><strong>(a)</strong> For a line $g_i=\{(x,y):y=m_ix\}$ with $m_i\in\{1,a,b\}$, its translates are $h_{i,q}=\{(x,y):y=m_ix+q\}$, $q\in\mathbb F_4$ (Aufgabe 22). Every point lies in exactly one of them, so $Q_i$ has exactly one letter in each cell.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Latin: a row ($y$ fixed) or a column ($x$ fixed) meets each slanted line exactly once.</p></div><div class="sp-formal"><p>In row $y$, the cell $x$ has letter $q=y-m_ix$, and $x\mapsto y-m_ix$ is a bijection of $\mathbb F_4$ since $m_i\ne0$. In column $x$, $y\mapsto y-m_ix$ is a bijection. So each letter occurs once per row and once per column.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Orthogonal: two non-parallel lines meet in exactly one point. At most one:</p></div><div class="sp-formal"><p>Let $i\ne j$, $A$ a translate of $g_i$, $A'$ a translate of $g_j$. First $g_i\cap g_j=\{0\}$: a common $z\ne0$ would give $g_i=\langle z\rangle=g_j$. If $p,p'\in A\cap A'$, then $p-p'\in g_i\cap g_j=\{0\}$, so $p=p'$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>At least one: the 4 points of $A$ fall into the 4 translates of $g_j$, one each.</p></div><div class="sp-formal"><p>By the previous step, no two points of $A$ lie in the same translate of $g_j$. So the 4 points of $A$ lie in 4 different translates of $g_j$, i.e. in all of them, in particular in $A'$. So $|A\cap A'|=1$: each pair of letters (one from $Q_i$, one from $Q_j$) occurs in exactly one cell. $Q_1,Q_2,Q_3$ are pairwise orthogonal.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Use $Q_1$ for the values and $Q_3$ for the suits.</p></div><div class="sp-formal"><p><strong>(b)</strong> Values from $Q_1$ ($\alpha$ = jack J, $\beta$ = queen Q, $\gamma$ = king K, $\delta$ = ace A) and suits from $Q_3$ ($\alpha=\clubsuit$, $\beta=\diamondsuit$, $\gamma=\heartsuit$, $\delta=\spadesuit$). Since $Q_1,Q_3$ are Latin, every row and column has all values and all suits; since they are orthogonal, all 16 cards are different. <span class="qed">∎</span></p></div></div>
+</div>
+<div class="tblwrap"><table class="tbl" aria-label="Card square"><tr><th>$y\backslash x$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr><tr><th>$b$</th><td>A♠</td><td>K♣</td><td>Q♡</td><td>J♢</td></tr><tr><th>$a$</th><td>K♡</td><td>A♢</td><td>J♠</td><td>Q♣</td></tr><tr><th>$1$</th><td>Q♢</td><td>J♡</td><td>A♣</td><td>K♠</td></tr><tr><th>$0$</th><td>J♣</td><td>Q♠</td><td>K♢</td><td>A♡</td></tr></table></div><p class="sv-cap">One solution of (b), written out by StudyHub (the official solution gives the method; the table is not in our copy). Check any row or column: four values, four suits.</p><p><strong>For wonder (official remark):</strong> Euler asked whether 36 officers from six regiments and six ranks can stand in a $6\times6$ square with every regiment and every rank once per row and column, i.e. two orthogonal Latin squares of order 6. He found none and guessed none exist. That is true for 6, but it was proved only much later that orthogonal Latin squares exist for every order except 2 and 6.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Using the horizontal lines ($m=0$) or the vertical lines: their colourings are constant along rows or columns, so they are not Latin squares. Only the three slanted classes $m=1,a,b$ work. And in (b), checking rows and columns but not that the 16 cards are all different (orthogonality).</p></div>
+<nav class="site foot" aria-label="Sheet navigation">
+<a href="serie-l03.html">← Serie 3: Bases</a>
+<a href="linalg.html#serien">Linear Algebra home</a>
+<a href="serie-l05.html">Serie 5: Well-definedness and functionals →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

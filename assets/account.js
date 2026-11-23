@@ -14,7 +14,7 @@
   var BASE = (function () { var s = document.querySelector('script[src*="assets/account.js"]'); return s ? s.getAttribute('src').replace(/account\.js.*$/, '') : 'assets/'; })();
   var ROOT = BASE.replace(/assets\/$/, '');           // '' or '../'
   function L(en, de) { return DE ? de : en; }
-  (function () { var o = document.createElement('script'); o.src = BASE + 'overlay.js?v=stk1123'; document.head.appendChild(o); })(); // personal design overlay
+  (function () { var o = document.createElement('script'); o.src = BASE + 'overlay.js?v=la1123'; document.head.appendChild(o); })(); // personal design overlay
   (function () { // "Suggest a fix or addition" box on content pages (suggest.js)
     var pg = (location.pathname.split('/').pop() || '').replace(/\.html.*$/, '');
     if (!/^(lesson|phys|refresher|serie|linalg)-[a-z]?\d+$|^(toolbox|moves|tree|flashcards)$/.test(pg)) return;
@@ -27,7 +27,7 @@
   function load() { try { return JSON.parse(localStorage.getItem('sh-progress') || '{}') || {}; } catch (e) { return {}; } }
   function store(p) { try { localStorage.setItem('sh-progress', JSON.stringify(p)); } catch (e) {} }
   var page = (location.pathname.split('/').pop() || 'index.html').replace(/\?.*$/, '');
-  var isLesson = /^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[ap]\d+\.html$/.test(page), isSheet = /^serie-/.test(page);
+  var isLesson = /^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[apl]\d+\.html$/.test(page), isSheet = /^serie-/.test(page);
 
   /* ---------- Supabase (lazy) ---------- */
   var sb = null, user = null, profile = null, ready;
@@ -306,7 +306,7 @@
     var p = load();
     document.querySelectorAll('main a[href]').forEach(function (a) {
       var h = (a.getAttribute('href') || '').split('#')[0].split('/').pop();
-      if (!/^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[ap]\d+\.html$/.test(h) || a.closest('nav') || a.closest('.sh-progress')) return;
+      if (!/^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[apl]\d+\.html$/.test(h) || a.closest('nav') || a.closest('.sh-progress')) return;
       var done = p[h] && p[h].done, t = a.querySelector('.sh-tick');
       if (done && !t) { t = document.createElement('span'); t.className = 'sh-tick'; t.textContent = '✓'; t.title = L('Done', 'Erledigt'); a.insertBefore(t, a.firstChild); }
       else if (!done && t) t.remove();
@@ -374,7 +374,7 @@
         [L('Analysis I', 'Analysis I'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
         ['Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
         [L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
-        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 21, L('Lessons (so far)', 'Lektionen (bisher)')]]],
+        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 21, L('Lessons (so far)', 'Lektionen (bisher)')], ['serie-l', 7, L('Serien explained', 'Serien erklärt')]]],
         ['Informatik', 'informatik.html', [['inf-', 4, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
       function nameOf(k) {
         var n = (k.match(/(\d+)\.html$/) || [])[1]; n = n ? String(+n) : k;
@@ -384,11 +384,12 @@
         if (/^chemie-/.test(k)) return 'Chemie I (PC) · ' + L('Lesson ', 'Lektion ') + n;
         if (/^phys-/.test(k)) return L('Physics lesson ', 'Physik-Lektion ') + n;
         if (/^serie-p/.test(k)) return L('Physics Serie ', 'Physik-Serie ') + n;
+        if (/^serie-l/.test(k)) return L('Linear Algebra Serie ', 'Lineare Algebra, Serie ') + n;
         if (/^linalg-/.test(k)) return L('Linear Algebra lesson ', 'Lineare Algebra, Lektion ') + n;
         if (/^inf-/.test(k)) return L('Informatik lesson ', 'Informatik-Lektion ') + n;
         return k.replace('.html', '');
       }
-      var keys = Object.keys(p).filter(function (k) { return /^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[ap]\d+\.html$/.test(k); });
+      var keys = Object.keys(p).filter(function (k) { return /^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[apl]\d+\.html$/.test(k); });
       var any = keys.some(function (k) { return p[k].done; }), html = '';
       GROUPS.forEach(function (g) {
         var rows = '', fin = [];

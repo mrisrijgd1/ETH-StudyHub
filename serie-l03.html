@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Serie 3 explained · Linear Algebra I">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=la1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serie 3 explained · Linear Algebra I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=la1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="linalg.html#lessons" data-mode="lessons">Lessons</a><a href="linalg-moves.html" data-mode="practice">Proof techniques</a><a href="linalg-plan.html" data-mode="plan">Exam plan</a><a href="linalg-script.html" data-mode="script">Script</a></nav></header>
+
+<main>
+<style>main mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}@media(max-width:600px){main mjx-container:not([display]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}}
+.task{border-left:4px solid var(--accent,#5b5bd6)}.task>p:first-child{margin-top:0}
+.sv-fig{display:block;margin:.7rem auto;max-width:100%;height:auto}.sv-cap{text-align:center;font-size:.9rem;opacity:.85;margin-top:0}
+details.sol .sp{margin:.6rem 0}.trapbox{margin-top:.8rem}.tsum{font-size:.95rem;opacity:.9;margin:.2rem 0 0}
+.tbl{border-collapse:collapse;margin:.6rem 0;font-size:.95rem}.tbl th,.tbl td{border:1px solid color-mix(in srgb,currentColor 25%,transparent);padding:.3rem .55rem;text-align:center}
+.tblwrap{overflow-x:auto;max-width:100%}
+.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<header>
+<span class="eyebrow">StudyHub · Linear Algebra I · Serien explained</span>
+<h1>Serie 3, explained: Bases</h1>
+<p class="lead">Why a basis gives every vector exactly one set of coordinates, the Steinitz exchange done by hand, three different bases of the Fibonacci space, an unusual basis of the polynomials, and one set of numbers that is a vector space over four different fields, with a different basis each time.</p>
+</header>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do Aufgabe 16 only: run the Steinitz exchange on the given vectors, two steps. That counts. Next time, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<dl class="meta">
+<div><dt>You're done when</dt><dd>you can (1) prove that coordinates with respect to a basis are unique; (2) carry out the Steinitz exchange step by step on concrete vectors; (3) find a basis of a space of sequences by looking at what determines a sequence; (4) prove that a family of polynomials is independent and spanning by looking at degrees; (5) explain why the same set can have different bases, and even different dimensions, over different fields.</dd></div>
+<div><dt>Time</dt><dd>About 110 minutes: 15 for Aufgabe 15, 15 for Aufgabe 16, 20 for Aufgabe 17, 25 for Aufgabe 18, 35 for Aufgabe 19.</dd></div>
+<div><dt>Lessons</dt><dd><a href="linalg-06.html#s4-linear-independence">Lesson 6, sections 4–5</a> (independence, bases, coordinates); <a href="linalg-07.html#s3-the-exchange-spanning-lists-are">lesson 7, sections 3–4</a> (the exchange, dimension). Lesson 6 also uses Aufgaben 15, 17, 18 (a) and 19 (b) as exercises, lesson 7 uses Aufgabe 16.</dd></div>
+</dl>
+<div class="box"><p><strong>How to use this page.</strong></p>
+<ol>
+<li>Read the task and try it on paper for 10 minutes.</li>
+<li>Stuck on where to start? Read <em>The idea</em> and open <em>You need</em>: it links the lesson section with the theory.</li>
+<li>Hard tasks have hints. Open Hint 1, try again, then Hint 2, then Hint 3; each gives away a little more. Easy tasks go straight to the solution.</li>
+<li>Only then open the solution. The left column says <em>why</em> each step is there, the right column is what you write.</li>
+</ol>
+<p><strong>Source.</strong> The solutions follow Prof. Halbeisen's official Musterlösung to Serie 3 (HS26), translated and explained by StudyHub; where StudyHub adds a different route or a correction, it says so. The official solution numbers results as in the lecture; here every result is named in words. With the <a href="connect.html">StudyHub connector</a>, your own AI can check your attempt before you look.</p>
+<p>Recommended order: the tasks as numbered. Other sheets: <a href="serie-l00.html">0</a> · <a href="serie-l01.html">1</a> · <a href="serie-l02.html">2</a> · <strong>3</strong> · <a href="serie-l04.html">4</a> · <a href="serie-l05.html">5</a> · <a href="serie-l06.html">6</a></p></div>
+<p class="toc"><strong>Tasks:</strong> <a href="#a15">15 Unique coordinates</a> · <a href="#a16">16 Steinitz by hand</a> · <a href="#a17">17 Three bases of Fib</a> · <a href="#a18">18 An unusual basis of $\mathbb Q[X]$</a> · <a href="#a19">19 One space, four fields</a></p>
+
+<!-- ============ Aufgabe 15 ============ -->
+<h2 id="a15">Aufgabe 15 · Coordinates in a basis are unique</h2>
+<div class="box task"><p>Let $B\subseteq V$ be a basis of the vector space $V$ over $K$. Show: every $x\in V$ can be written in exactly one way (up to the order of the summands) as a linear combination of vectors of $B$ with non-zero coefficients.</p></div>
+<p class="tsum"><strong>In short:</strong> Existence is “$B$ spans”. Uniqueness: subtract two expressions and use independence.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Two ways of writing the same vector give, after subtraction, a way of writing $0$. Independence says the only way to write $0$ is with all coefficients $0$. The only fiddly part is bookkeeping: the two expressions may use different basis vectors. Put all vectors that occur in either expression into one list $z_1,\dots,z_k$, with coefficient $0$ where a vector does not occur.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-06.html#s4-linear-independence">Lesson 6, section 4</a>: vectors $v_1,\dots,v_n$ are linearly independent iff $\sum\lambda_iv_i=0$ forces all $\lambda_i=0$; equivalently, no $v_k$ lies in the span of the others (or of the earlier ones). <a href="linalg-06.html#s5-bases-and-coordinates">Lesson 6, section 5</a>: a basis is a linearly independent spanning set.</p></div></details>
+<details><summary>Hint 1</summary><div><p>Let $x=\sum_{i=1}^n\lambda_ix_i=\sum_{j=1}^m\mu_jy_j$ with $x_i,y_j\in B$ and all coefficients non-zero. List the distinct vectors of $\{x_i\}\cup\{y_j\}$ as $z_1,\dots,z_k$ and rewrite both sums over the $z_l$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Existence: $B$ spans $V$. The zero vector is the empty combination.</p></div><div class="sp-formal"><p>Since $\langle B\rangle=V$, every $x\in V$ is a linear combination of vectors of $B$; dropping terms with coefficient $0$ leaves non-zero coefficients. For $x=0_V$ this is the empty combination, which is unique.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Uniqueness: take two expressions and put all occurring vectors in one list.</p></div><div class="sp-formal"><p>Let $x\ne0_V$ and $x=\sum_{i=1}^n\lambda_ix_i=\sum_{j=1}^m\mu_jy_j$ with distinct $x_i\in B$, distinct $y_j\in B$, and $\lambda_i,\mu_j\in K\setminus\{0\}$. Let $z_1,\dots,z_k$ be the distinct vectors in $\{x_1,\dots,x_n\}\cup\{y_1,\dots,y_m\}$, and let $\alpha_l:=\lambda_i$ if $z_l=x_i$, else $0$; $\beta_l:=\mu_j$ if $z_l=y_j$, else $0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Subtract: a combination of distinct basis vectors equal to $0$.</p></div><div class="sp-formal"><p>Then $x=\sum_{l=1}^k\alpha_lz_l=\sum_{l=1}^k\beta_lz_l$, so $0_V=\sum_{l=1}^k(\alpha_l-\beta_l)z_l$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Independence forces equal coefficients. Non-zero coefficients then match the same vectors.</p></div><div class="sp-formal"><p>The $z_l$ are distinct elements of the basis $B$, hence linearly independent, so $\alpha_l=\beta_l$ for all $l$. Since all $\lambda_i,\mu_j\ne0$, a vector $z_l$ occurs in the first sum iff $\alpha_l\ne0$ iff $\beta_l\ne0$ iff it occurs in the second, with the same coefficient. So $n=m$ and the two expressions agree up to order. <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Writing both expressions with the <em>same</em> vectors $b_1,\dots,b_n$ from the start (“$x=\sum\lambda_ib_i=\sum\mu_ib_i$”). That is the right idea, but you must say why you may: pad with zero coefficients. And “non-zero coefficients” matters: without it, $x=1\cdot b_1=1\cdot b_1+0\cdot b_2$ would be two different expressions.</p></div>
+
+<!-- ============ Aufgabe 16 ============ -->
+<h2 id="a16">Aufgabe 16 · The Steinitz exchange by hand</h2>
+<div class="box task"><p>In $V=\mathbb Q^4$ let $x_1,x_2,x_3,x_4$ be the standard basis vectors, $y_1:=(1,1,1,0)^T$, $y_2:=(0,1,1,0)^T$. Then $\{x_1,x_2,x_3,x_4\}$ is a basis and $y_1,y_2$ are independent. Using the <strong>Steinitz exchange theorem</strong>, replace two of $x_1,\dots,x_4$ by $y_1,y_2$ so that $\{y_1,y_2,x_{i_1},x_{i_2}\}$ is a basis. <em>Official hint: start with the sequence $S_2=(y_2,x_1,x_2,x_3,x_4)$.</em></p></div>
+<p class="tsum"><strong>In short:</strong> Put $y_2$ in front, delete the first $x_i$ that depends on the vectors before it; then put $y_1$ in front and repeat. Result: $\{y_1,y_2,x_2,x_4\}$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The exchange in the lecture works like a queue. Put the new vector at the front of a spanning list. The list is now dependent, so some vector depends on the ones before it, and the first such vector is never a $y$ (the $y$'s are independent). Delete that vector: the span does not change. Repeat with the next $y$. You only need to test, left to right, whether each $x_i$ is a combination of what comes before it.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-07.html#s3-the-exchange-spanning-lists-are">Lesson 7, section 3</a> (the exchange: spanning lists are at least as long as independent lists). Deleting a vector that is a combination of the others keeps the span (<a href="linalg-07.html#s2-two-small-tools">lesson 7, section 2</a>).</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Step 1: the official hint. $y_2$ is a combination of the $x$'s, so the list is dependent. Test left to right.</p></div><div class="sp-formal"><p><strong>Step 1.</strong> $S_2:=(y_2,x_1,x_2,x_3,x_4)$ spans $V$ and is dependent. $\{y_2,x_1\}$ and $\{y_2,x_1,x_2\}$ are independent, but $y_2=(0,1,1,0)^T=x_2+x_3$, so $x_3=y_2-x_2$ is a combination of the vectors before it.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Delete it: the span stays $V$.</p></div><div class="sp-formal"><p>Delete $x_3$: $S_2'=(y_2,x_1,x_2,x_4)$ and $\langle S_2'\rangle=\langle S_2\rangle=V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Step 2: put $y_1$ in front and test again.</p></div><div class="sp-formal"><p><strong>Step 2.</strong> $S_1:=(y_1,y_2,x_1,x_2,x_4)$ spans $V$ and is dependent. Already $\{y_1,y_2,x_1\}$ is dependent: $y_1=(1,1,1,0)^T=x_1+y_2$, so $x_1=y_1-y_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Delete $x_1$. Four vectors spanning a 4-dimensional space form a basis.</p></div><div class="sp-formal"><p>Delete $x_1$: $S_1'=(y_1,y_2,x_2,x_4)$ with $\langle S_1'\rangle=V$. Four vectors spanning the 4-dimensional space $V$ are a basis, so $\{y_1,y_2,x_2,x_4\}$ is a basis of $V$. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Correction to the official solution:</strong> the Musterlösung writes “$x_3=y_2-x_3$” in step 1; it should be $x_3=y_2-x_2$, since $y_2=x_2+x_3$. Check: $y_2-x_2=(0,0,1,0)^T=x_3$.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Deleting a <em>$y$</em>, or deleting any dependent vector instead of following the rule. The exchange always removes an $x$: the first vector (from the left) that is a combination of the ones before it. In step 2, $x_2$ is not removed because $\{y_1,y_2,x_1\}$ is already dependent, so $x_1$ goes first.</p></div>
+
+<!-- ============ Aufgabe 17 ============ -->
+<h2 id="a17">Aufgabe 17 · Three bases of the Fibonacci space</h2>
+<div class="box task"><p>Find 3 different bases of the vector space $\mathrm{Fib}$ from Aufgabe 11.</p></div>
+<p class="tsum"><strong>In short:</strong> A Fibonacci-type sequence is fixed by its first two terms. So two sequences whose starting pairs are independent in $\mathbb R^2$ form a basis.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Once you know $f_0$ and $f_1$, the recursion $f_{n+2}=f_{n+1}+f_n$ fixes everything else. So $\mathrm{Fib}$ “is” $\mathbb R^2$ in disguise: the map $(f_n)\mapsto(f_0,f_1)$ is a bijection that respects addition and scaling. A basis of $\mathbb R^2$ therefore gives a basis of $\mathrm{Fib}$. The most interesting choice uses the two solutions $\varphi,\psi$ of $t^2=t+1$: the geometric sequences $(1,t,t^2,\dots)$ are Fibonacci-type, and in that basis you get the closed formula for the Fibonacci numbers.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-06.html#s5-bases-and-coordinates">Lesson 6, section 5</a>: a basis is a linearly independent spanning set. <a href="serie-l02.html#a11">Serie 2, Aufgabe 11</a> ($\mathrm{Fib}$ is a vector space). <a href="linalg-06.html#s5-bases-and-coordinates">Lesson 6, section 5</a>.</p></div></details>
+<details><summary>Hint 1</summary><div><p>Write $F_{a,b}$ for the sequence in $\mathrm{Fib}$ with $f_0=a$, $f_1=b$. Show it exists and is unique (induction). Then show: if $(a,b),(c,d)$ are independent in $\mathbb R^2$, $\{F_{a,b},F_{c,d}\}$ is a basis.</p></div></details>
+<details><summary>Hint 2</summary><div><p>Candidates: $\{F_{1,0},F_{0,1}\}$, $\{F_{1,1},F_{2,1}\}$, and $\{F_{1,\varphi},F_{1,\psi}\}$ with $\varphi,\psi=\frac{1\pm\sqrt5}2$. Why is $F_{1,t}=(1,t,t^2,\dots)$ for $t^2=t+1$?</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A Fibonacci-type sequence is determined by its first two terms.</p></div><div class="sp-formal"><p><strong>Lemma.</strong> For $a,b\in\mathbb R$ there is exactly one $F_{a,b}=(f_n)\in\mathrm{Fib}$ with $f_0=a$, $f_1=b$. Existence: define recursively $f_{i+2}:=f_{i+1}+f_i$. Uniqueness: if $(f_n),(g_n)\in\mathrm{Fib}$ agree at $0$ and $1$, induction on $n$ shows $f_n=g_n$ and $f_{n+1}=g_{n+1}$, since $f_{n+2}=f_{n+1}+f_n=g_{n+1}+g_n=g_{n+2}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Independent starting pairs give a basis: coordinates of any $f$ come from solving for its first two terms.</p></div><div class="sp-formal"><p><strong>Claim.</strong> If $(a,b),(c,d)$ are linearly independent in $\mathbb R^2$, then $\{F_{a,b},F_{c,d}\}$ is a basis of $\mathrm{Fib}$. Spanning: for $f\in\mathrm{Fib}$ choose $\lambda,\mu$ with $\lambda(a,b)+\mu(c,d)=(f_0,f_1)$ (possible, as the pairs span $\mathbb R^2$). Then $\lambda F_{a,b}+\mu F_{c,d}$ and $f$ are in $\mathrm{Fib}$ with the same first two terms, so they are equal. Independence: $\lambda F_{a,b}+\mu F_{c,d}=0$ gives $\lambda(a,b)+\mu(c,d)=(0,0)$ in the first two terms, so $\lambda=\mu=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Two easy bases: standard starting pairs, and $(1,1),(2,1)$.</p></div><div class="sp-formal"><p>$B_1:=\{F_{1,0},F_{0,1}\}=\{(1,0,1,1,2,3,\dots),(0,1,1,2,3,5,\dots)\}$ and $B_2:=\{F_{1,1},F_{2,1}\}=\{(1,1,2,3,5,\dots),(2,1,3,4,7,\dots)\}$; the pairs $(1,0),(0,1)$ and $(1,1),(2,1)$ are independent.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>The geometric basis: $t^2=t+1$ makes $(t^n)$ Fibonacci-type.</p></div><div class="sp-formal"><p>Let $\varphi:=\frac{1+\sqrt5}2$, $\psi:=\frac{1-\sqrt5}2$, the solutions of $t^2=t+1$. For these $t$: $t^{i+2}=t^it^2=t^i(t+1)=t^{i+1}+t^i$, so $(t^n)\in\mathrm{Fib}$, and by the lemma $(t^n)=F_{1,t}$. Since $\varphi\ne\psi$, $(1,\varphi),(1,\psi)$ are independent, and $B_3:=\{F_{1,\varphi},F_{1,\psi}\}$ is a basis.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>They are different: no two of the six sequences have the same starting pair.</p></div><div class="sp-formal"><p>The six sequences have distinct starting pairs, so $B_1,B_2,B_3$ are three different bases. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Why $B_3$ is worth it (official remark):</strong> writing the Fibonacci numbers $F_{0,1}$ in the basis $B_3$ gives $F_{0,1}=\frac1{\sqrt5}F_{1,\varphi}-\frac1{\sqrt5}F_{1,\psi}$, and reading off the $n$-th term: $$f_n=\frac1{\sqrt5}\Big(\varphi^n-\psi^n\Big).$$ This is Binet's formula. So $\mathrm{Fib}$ has dimension 2, and infinitely many bases. Serie 6, Aufgabe 29 finds $\varphi,\psi$ again as eigenvalues.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Giving two bases that are the same set in a different order, or a “basis” like $\{F_{1,1},F_{2,2}\}$ whose starting pairs are proportional. And checking only that each sequence lies in $\mathrm{Fib}$: you must also show they span and are independent; the claim about starting pairs does both.</p></div>
+
+<!-- ============ Aufgabe 18 ============ -->
+<h2 id="a18">Aufgabe 18 · An unusual basis of the polynomials</h2>
+<div class="box task"><p>In $V:=\mathbb Q[X]$ let $x_0:=1$, $x_1:=1+2X$, $x_2:=1+3X+3X^2$, $x_3:=1+4X+4X^2+4X^3$, …, in general $x_n:=1+(n+1)\sum_{i=1}^nX^i$. (a) Show that $\mathcal X=\{x_n:n\in\mathbb N\}$ is linearly independent. (b) Show that $\langle\mathcal X\rangle=\mathbb Q[X]$. <em>So $\mathcal X$ is a basis of $\mathbb Q[X]$.</em></p></div>
+<p class="tsum"><strong>In short:</strong> $x_n$ has degree exactly $n$. (a) the highest-degree vector in a combination cannot be cancelled; (b) by induction every $X^n$ is a combination of $x_0,\dots,x_n$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>Look at degrees. $x_n$ has degree $n$, with top coefficient $n+1\ne0$, and it is the only vector in the family that contains $X^n$ among $x_0,\dots,x_n$. So in a combination $\sum_{i\le n}\lambda_ix_i$ with $\lambda_n\ne0$, the $X^n$ term cannot cancel. For (b), climb a ladder: if $1,X,\dots,X^n$ are already combinations of $x_0,\dots,x_n$, then $x_{n+1}$ minus known pieces leaves $(n+2)X^{n+1}$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-06.html#s4-linear-independence">Lesson 6, section 4</a>: vectors $v_1,\dots,v_n$ are linearly independent iff $\sum\lambda_iv_i=0$ forces all $\lambda_i=0$; equivalently, no $v_k$ lies in the span of the others (or of the earlier ones). <a href="linalg-06.html#s5-bases-and-coordinates">Lesson 6, section 5</a>: a basis is a linearly independent spanning set. The monomials $1,X,X^2,\dots$ form a basis of $\mathbb Q[X]$ (<a href="linalg-06.html#s5-bases-and-coordinates">lesson 6, section 5</a>). Induction (<a href="linalg-03.html#s5-induction">lesson 3, section 5</a>).</p></div></details>
+<details><summary>Hint 1</summary><div><p>(a) Suppose $\sum_{i=0}^n\lambda_ix_i=0$ with $\lambda_n\ne0$. Which of $x_0,\dots,x_n$ contain $X^n$? What is the coefficient of $X^n$ in the sum?</p></div></details>
+<details><summary>Hint 2</summary><div><p>(b) It is enough to get every $X^k$ (they span $\mathbb Q[X]$). Induction on $n$: assume $1,X,\dots,X^n\in\langle x_0,\dots,x_n\rangle$ and write $x_{n+1}=1+(n+2)(X+\dots+X^n)+(n+2)X^{n+1}$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>(a) It is enough to show every finite part $x_0,\dots,x_n$ is independent. Look at the top degree.</p></div><div class="sp-formal"><p><strong>(a)</strong> It suffices to show that $x_0,\dots,x_n$ are independent for every $n$. Suppose $\sum_{i=0}^k\lambda_ix_i=0$ with $k\le n$ and $\lambda_k\ne0$ (the highest index with non-zero coefficient).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Only $x_k$ contains $X^k$ among $x_0,\dots,x_k$; its coefficient is $k+1$ (or $1$ for $k=0$).</p></div><div class="sp-formal"><p>If $k=0$: $\lambda_0\cdot1=0$, so $\lambda_0=0$, a contradiction. If $k\ge1$: among $x_0,\dots,x_k$ only $x_k$ has a term $X^k$, with coefficient $k+1$. So the coefficient of $X^k$ in the sum is $\lambda_k(k+1)\ne0$, a contradiction. Hence all $\lambda_i=0$, and $\mathcal X$ is linearly independent.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) The monomials span, so it is enough to reach each $X^n$. Induction on $n$.</p></div><div class="sp-formal"><p><strong>(b)</strong> Since $\{X^k:k\in\mathbb N\}$ spans $\mathbb Q[X]$ and $\langle\mathcal X\rangle$ is a subspace, it suffices to show $X^k\in\langle\mathcal X\rangle$ for all $k$. We prove by induction: $1,X,\dots,X^n\in\langle x_0,\dots,x_n\rangle$. For $n=0$: $1=x_0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Step: peel off the known terms of $x_{n+1}$.</p></div><div class="sp-formal"><p>Assume it for $n$, and let $y:=1+(n+2)(X+\dots+X^n)$. Then $$(n+2)X^{n+1}=x_{n+1}-y,$$ and $y\in\langle x_0,\dots,x_n\rangle$ by the hypothesis, so the right side lies in $\langle x_0,\dots,x_{n+1}\rangle$. Dividing by $n+2\ne0$ gives $X^{n+1}\in\langle x_0,\dots,x_{n+1}\rangle$. So $\langle\mathcal X\rangle=\mathbb Q[X]$, and $\mathcal X$ is a basis. <span class="qed">∎</span></p></div></div>
+</div>
+<p><strong>Source:</strong> this follows the official solution (independence via “$x_{n+1}$ is not in the span of $x_0,\dots,x_n$”, spanning by induction), written more compactly.</p>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>In (a), checking only that no single $x_n$ is a multiple of another. Independence is about all finite combinations. And in (b), forgetting that you need <em>every</em> polynomial: the induction gives the monomials, and the monomials give everything.</p></div>
+
+<!-- ============ Aufgabe 19 ============ -->
+<h2 id="a19">Aufgabe 19 · One space, four fields</h2>
+<div class="box task"><p>Let $V:=\{q_0+q_1\sqrt2+q_2\sqrt3+q_3\sqrt6:q_0,\dots,q_3\in\mathbb Q\}$ with the addition of $\mathbb R$. Let $K_0:=\mathbb Q$, $K_1:=\mathbb Q(\sqrt2)$, $K_2:=\mathbb Q(\sqrt3)$, $K_3:=\mathbb Q(\sqrt6)$, and $V_i$ the vector space $V$ over $K_i$.</p><p>(a) Find a basis $B_0$ of $V_0$. (b) Find a basis $B_1$ of $V_1$ that is not a basis of $V_2$. (c) Find a basis $B_3$ of $V_3$. (d) Find a basis $B_{2,3}$ of $V_1$ that is also a basis of $V_2$ but not of $V_3$.</p></div>
+<p class="tsum"><strong>In short:</strong> Over $\mathbb Q$: $\{1,\sqrt2,\sqrt3,\sqrt6\}$. Over the bigger fields the dimension is 2: (b) $\{1,\sqrt3\}$, (c) $\{\sqrt2,\sqrt6\}$, (d) $\{\sqrt2,\sqrt3\}$.</p>
+<div class="story"><span class="label">The idea</span>
+<p>The vectors are the same numbers each time; only the scalars change. With bigger scalars you need fewer basis vectors: over $\mathbb Q(\sqrt2)$, the scalar $a+b\sqrt2$ times $1$ already gives $a+b\sqrt2$, so $\{1,\sqrt3\}$ covers all four rational coordinates. Everything rests on one fact: $1,\sqrt2,\sqrt3,\sqrt6$ are independent over $\mathbb Q$. Then every check is “multiply out, compare the four rational coordinates”. A set stops being a basis when one of its vectors becomes a scalar multiple of another, as $\sqrt3=\sqrt3\cdot1$ does over $\mathbb Q(\sqrt3)$.</p></div>
+<details><summary>You need</summary><div><p><a href="linalg-06.html#s4-linear-independence">Lesson 6, section 4</a>: vectors $v_1,\dots,v_n$ are linearly independent iff $\sum\lambda_iv_i=0$ forces all $\lambda_i=0$; equivalently, no $v_k$ lies in the span of the others (or of the earlier ones). <a href="linalg-06.html#s5-bases-and-coordinates">Lesson 6, section 5</a>: a basis is a linearly independent spanning set. Fields like $\mathbb Q(\sqrt2)=\{a+b\sqrt2:a,b\in\mathbb Q\}$ (<a href="linalg-04.html#s8-two-more-fields-and">lesson 4, section 8</a>). $\sqrt2,\sqrt3,\sqrt6$ are irrational.</p></div></details>
+<details><summary>Hint 1</summary><div><p>Key lemma: if $q_0+q_1\sqrt2+q_2\sqrt3+q_3\sqrt6=0$ with $q_i\in\mathbb Q$, all $q_i=0$. First show $\sqrt3\notin\mathbb Q(\sqrt2)$ by squaring $\sqrt3=a+b\sqrt2$.</p></div></details>
+<details><summary>Hint 2</summary><div><p>With the lemma: write $\alpha:=q_0+q_1\sqrt2$, $\beta:=q_2+q_3\sqrt2$; the sum is $\alpha+\beta\sqrt3$. If $\beta\ne0$, then $\sqrt3=-\alpha/\beta\in\mathbb Q(\sqrt2)$.</p></div></details>
+<details><summary>Hint 3</summary><div><p>For (b)–(d), multiply out a general combination, e.g. $(a+b\sqrt2)\cdot1+(c+d\sqrt2)\sqrt3=a+b\sqrt2+c\sqrt3+d\sqrt6$, and use the lemma for both spanning and independence. Use $\sqrt2\sqrt3=\sqrt6$, $\sqrt2\sqrt6=2\sqrt3$, $\sqrt3\sqrt6=3\sqrt2$.</p></div></details>
+<details class="sol"><summary>Solution</summary><div>
+<div class="sp">
+<div class="sp-head"><span class="label">Why this step</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The key lemma, part 1: $\sqrt3$ is not in $\mathbb Q(\sqrt2)$. Square and use irrationality.</p></div><div class="sp-formal"><p><strong>Lemma.</strong> If $q_0+q_1\sqrt2+q_2\sqrt3+q_3\sqrt6=0$ with $q_i\in\mathbb Q$, then all $q_i=0$. First, $\sqrt3\notin\mathbb Q(\sqrt2)$: if $\sqrt3=a+b\sqrt2$ with $a,b\in\mathbb Q$, then $3=a^2+2b^2+2ab\sqrt2$. If $ab\ne0$, $\sqrt2=\frac{3-a^2-2b^2}{2ab}\in\mathbb Q$; if $b=0$, $\sqrt3=a\in\mathbb Q$; if $a=0$, $\sqrt6=\sqrt2\sqrt3=2b\in\mathbb Q$. All contradict irrationality.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Part 2: group the sum as $\alpha+\beta\sqrt3$ with $\alpha,\beta\in\mathbb Q(\sqrt2)$.</p></div><div class="sp-formal"><p>Let $\alpha:=q_0+q_1\sqrt2$, $\beta:=q_2+q_3\sqrt2$, so the sum is $\alpha+\beta\sqrt3=0$. If $\beta\ne0$, then $\sqrt3=-\alpha\beta^{-1}\in\mathbb Q(\sqrt2)$ (a field), impossible. So $\beta=0$, hence $\alpha=0$. From $q_2+q_3\sqrt2=0$: $q_3=0$ (else $\sqrt2\in\mathbb Q$), then $q_2=0$; likewise $q_0=q_1=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(a) Over $\mathbb Q$: the four numbers span by definition of $V$ and are independent by the lemma.</p></div><div class="sp-formal"><p><strong>(a)</strong> $B_0=\{1,\sqrt2,\sqrt3,\sqrt6\}$: every element of $V$ is a $\mathbb Q$-combination of these, and by the lemma they are independent over $\mathbb Q$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(b) Over $\mathbb Q(\sqrt2)$: multiply out a combination of $1,\sqrt3$; the four rational coordinates are free.</p></div><div class="sp-formal"><p><strong>(b)</strong> $B_1=\{1,\sqrt3\}$. For $\lambda=a+b\sqrt2$, $\mu=c+d\sqrt2\in K_1$: $\lambda\cdot1+\mu\sqrt3=a+b\sqrt2+c\sqrt3+d\sqrt6$. Any $v=q_0+q_1\sqrt2+q_2\sqrt3+q_3\sqrt6$ is reached with $a,b,c,d=q_0,q_1,q_2,q_3$; and $\lambda\cdot1+\mu\sqrt3=0$ forces $a=b=c=d=0$ by the lemma, i.e. $\lambda=\mu=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Not a basis over $\mathbb Q(\sqrt3)$: there $\sqrt3$ is a scalar.</p></div><div class="sp-formal"><p>Over $K_2=\mathbb Q(\sqrt3)$: $\sqrt3=\sqrt3\cdot1$, so $\sqrt3\cdot1+(-1)\cdot\sqrt3=0$ is a non-trivial relation, and $B_1$ is dependent in $V_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(c) Over $\mathbb Q(\sqrt6)$: same method with $\sqrt2,\sqrt6$.</p></div><div class="sp-formal"><p><strong>(c)</strong> $B_3=\{\sqrt2,\sqrt6\}$. For $\lambda=a+b\sqrt6$, $\mu=c+d\sqrt6$: $\lambda\sqrt2+\mu\sqrt6=6d+a\sqrt2+2b\sqrt3+c\sqrt6$. Any $v$ is reached with $a=q_1$, $b=\frac{q_2}2$, $c=q_3$, $d=\frac{q_0}6$; and $=0$ forces $6d=a=2b=c=0$. So $B_3$ is a basis of $V_3$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>(d) $\{\sqrt2,\sqrt3\}$ over $\mathbb Q(\sqrt2)$ and over $\mathbb Q(\sqrt3)$.</p></div><div class="sp-formal"><p><strong>(d)</strong> $B_{2,3}=\{\sqrt2,\sqrt3\}$. Over $K_1$: $(a+b\sqrt2)\sqrt2+(c+d\sqrt2)\sqrt3=2b+a\sqrt2+c\sqrt3+d\sqrt6$. Over $K_2$: $(a+b\sqrt3)\sqrt2+(c+d\sqrt3)\sqrt3=3d+a\sqrt2+c\sqrt3+b\sqrt6$. In both cases all four rational coordinates can be hit, and $=0$ forces $a=b=c=d=0$ by the lemma, so $B_{2,3}$ is a basis of $V_1$ and of $V_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Not over $\mathbb Q(\sqrt6)$: $\frac{\sqrt6}2$ is a scalar that turns $\sqrt2$ into $\sqrt3$.</p></div><div class="sp-formal"><p>Over $K_3$: $\frac12\sqrt6\in K_3$ and $\frac12\sqrt6\cdot\sqrt2=\frac12\cdot2\sqrt3=\sqrt3$, so $\sqrt3$ is a $K_3$-multiple of $\sqrt2$, and $B_{2,3}$ is dependent in $V_3$. <span class="qed">∎</span></p></div></div>
+</div>
+</div></details>
+<div class="exam trapbox"><span class="label">Trap</span><p>Proving independence of $\{1,\sqrt3\}$ over $\mathbb Q(\sqrt2)$ by saying “$\sqrt3$ is irrational”. Over $\mathbb Q(\sqrt2)$ the scalars are not rational; you need that $\sqrt3$ is not in $\mathbb Q(\sqrt2)$, which is the lemma. In general: always ask which field the scalars come from.</p></div>
+<nav class="site foot" aria-label="Sheet navigation">
+<a href="serie-l02.html">← Serie 2: Vector spaces</a>
+<a href="linalg.html#serien">Linear Algebra home</a>
+<a href="serie-l04.html">Serie 4: Subspaces, affine spaces, Latin squares →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Upload your lecture notes (Analysis, Linear Algebra) to the shared Polybox run by the Linear Algebra group">Contribute notes</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
