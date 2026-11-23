@@ -1,12 +1,23 @@
 /* =========================================================================
-   Analysis I – Lernkarten (StudyHub)
+   Lernkarten (StudyHub): one engine for all subjects (analysis/, linalg/; start page ../index.html)
    Overview with streak, stats, heatmap and radar charts; script-chapter
    decks; Proof practice (the hub's lesson cards); Weak cards.
-   Vanilla JS, no build step. Configuration: fc/config.js.
+   Vanilla JS, no build step. Configuration: fc/config.js (Analysis) or
+   fc/config_linalg.js (Lineare Algebra); subject-specific keys default to Analysis.
    ========================================================================= */
 (function () {
   "use strict";
   const C = window.FC_CONFIG;
+  /* Subject settings (defaults = Analysis I, so the Analysis page behaves exactly as before) */
+  const PROOF = C.proofPractice !== false;                 // the hub's lesson cards belong to Analysis
+  const SUBJECT = C.subject || "Analysis I";
+  const COURSES = C.courses || [{ id: "A1", title: "Analysis I" }, { id: "A2", title: "Analysis II" }];
+  const LEGACY_PREFIX = C.legacyPrefix === undefined ? "analysis1-flashcards-k" : C.legacyPrefix;
+  /* The subject's entry in fc/subjects.js: flame colour and the way back to the start page */
+  const SUBJ = (window.FC_SUBJECTS || []).find(s => s.id === C.subjectId) || null;
+  const HUB = C.hubLink === undefined ? "../" : C.hubLink;    // the Lernkarten start page (all subjects)
+  if (!(C.restoreSize > 0)) C.restoreSize = 10;                 // the match: defaults if a subject config lacks them
+  if (!(C.restoreCooldownDays > 0)) C.restoreCooldownDays = 7;
   const $ = (s, el) => (el || document).querySelector(s);
   const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -31,6 +42,7 @@
   const TYPE_LABEL = {
     definition: ["Definition", "Definition"], satz: ["Satz", "Theorem"], lemma: ["Lemma", "Lemma"],
     proposition: ["Proposition", "Proposition"], beweis: ["Beweis", "Proof"], beispiel: ["Beispiel", "Example"],
+    aufgabe: ["Aufgabe", "Exercise"],
     def: ["Definition", "Definition"], thm: ["Satz", "Theorem"], move: ["Kniff", "Move"], recipe: ["Rezept", "Recipe"]
   };
   const typeLabel = t => (TYPE_LABEL[t] ? L(TYPE_LABEL[t][0], TYPE_LABEL[t][1]) : t || "");
@@ -64,14 +76,50 @@
       meta: c.meta || "", explanation: c.explanation || "", example: c.example || "", counterexample: c.counterexample || ""
     })) : null;
     const cats = cards ? [...new Set(cards.map(c => c.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "de", { numeric: true })) : [];
+    if (cards) chronoKeys(cards, ch.id, cats);
     return Object.assign({}, ch, { cards, cats });
   });
   const scriptCards = chapters.flatMap(ch => ch.cards || []);
   const byId = new Map(scriptCards.map(c => [c.id, c]));
 
+  /* Chronological order (as in the script). The data files are not always in script order, so each card gets
+     a key: section, then the script's item number (Definition 3.12 → 12), then file order. A card without an
+     item number follows the card before it; if it opens a new subsection (Abschnitt 2.5.3), it sits just before
+     that subsection's first numbered card. */
+  function itemNo(text, ch) {
+    const re = /(\d+)\.(\d+)(?![.\d])/g; let m;
+    while ((m = re.exec(text || ""))) {
+      const before = text.slice(0, m.index);
+      if (+m[1] !== ch || /[\d.§(]$/.test(before) || /(Abschnitt|Kapitel|Section|Chapter)\s*$/i.test(before)) continue;
+      return +m[2];
+    }
+    return null;
+  }
+  function subNo(text, ch) { const m = new RegExp("(?:^|[^\\d.])" + ch + "\\.(\\d+\\.\\d+)").exec(text || ""); return m ? m[1] : null; }
+  function chronoKeys(cards, ch, cats) {
+    const items = cards.map(c => { const t = itemNo(c.title, ch); return t != null ? t : itemNo(c.meta, ch); });
+    const subs = cards.map(c => subNo(c.title + " " + c.meta, ch));
+    const subMin = {};
+    cards.forEach((c, i) => { if (items[i] != null && subs[i]) subMin[subs[i]] = Math.min(subMin[subs[i]] == null ? Infinity : subMin[subs[i]], items[i]); });
+    const last = {};   // per section: { k, sub } of the previous card in file order
+    cards.forEach((c, i) => {
+      const prev = last[c.category], sub = subs[i];
+      let k = items[i];
+      if (k == null && sub && subMin[sub] != null && (!prev || prev.sub !== sub)) k = subMin[sub] - .5;
+      if (k == null) k = prev ? prev.k + .001 : -1;   // -1: before a "Satz 4.0"
+      last[c.category] = { k, sub };
+      c.ord = [cats.indexOf(c.category), k, i];
+    });
+  }
+  function chrono(cards) {
+    const key = c => c.src === "lesson" ? [1, c.lesson, 0, c.ord || 0] : [0, c.chapter].concat(c.ord || [0, 0, 0]);
+    return cards.slice().sort((a, b) => { const x = key(a), y = key(b); for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0; });
+  }
+
   /* Proof practice: the hub's lesson cards, read from its flashcards pages */
   const lesson = { en: null, de: null, state: { en: "idle", de: "idle" } };
   function loadLessons(lang) {
+    if (!PROOF) { lesson.state[lang] = "ok"; lesson[lang] = []; return Promise.resolve([]); }
     if (lesson.state[lang] !== "idle") return lesson.state[lang] === "ok" ? Promise.resolve(lesson[lang]) : lesson["p_" + lang];
     lesson.state[lang] = "loading";
     lesson["p_" + lang] = fetch(C.lessonSources[lang], { credentials: "same-origin" })
@@ -86,7 +134,7 @@
           if (!l || !q || !a) return;
           const k = l + "-" + t; counters[k] = (counters[k] || 0) + 1;
           out.push({ id: "L" + pad(l) + "-" + t + "-" + pad(counters[k]) + "-" + lang, src: "lesson", deck: "proof", lesson: l,
-            type: t, title: L("Lektion ", "Lesson ") + l, front: q.innerHTML, back: a.innerHTML, meta: "", lang });
+            type: t, title: L("Lektion ", "Lesson ") + l, front: q.innerHTML, back: a.innerHTML, meta: "", lang, ord: out.length });
         });
         lesson[lang] = out; lesson.state[lang] = "ok"; out.forEach(c => byId.set(c.id, c)); return out;
       })
@@ -110,6 +158,22 @@
   }
   const prefs = () => U().prefs;
   let saveT = null;
+  /* "Show streak" (Mridul's wish, 23 Nov): a per-user setting in prefs (so the account sync carries it). It counts for
+     ALL subjects, so it is also written into the other subjects' storage (fc/subjects.js) for the same user. Off: no
+     flame, no streak count, no match, no streak greetings. Everything else stays as it is. */
+  const streakOn = () => prefs().streak !== false;
+  function setStreak(on) {
+    prefs().streak = on; save();
+    (window.FC_SUBJECTS || []).forEach(s => {
+      if (!s.storageKey || s.storageKey === C.storageKey) return;
+      try {
+        const st = JSON.parse(localStorage.getItem(s.storageKey)); const u = st && st.users && st.users[uid];
+        if (u) { u.prefs = u.prefs || {}; u.prefs.streak = on; localStorage.setItem(s.storageKey, JSON.stringify(st)); }
+      } catch (e) { /* that subject keeps its own setting */ }
+    });
+    greetCache = null; render();
+    toast(on ? L("Streak ist wieder da – die Flamme freut sich!", "Streak is back – the flame is happy!") : L("Streak ausgeblendet – mit „Streak anzeigen“ holst du ihn jederzeit zurück.", "Streak hidden – “Show streak” brings it back any time."));
+  }
   function save() {
     clearTimeout(saveT);
     saveT = setTimeout(() => { try { localStorage.setItem(C.storageKey, JSON.stringify(store)); } catch (e) { toast(L("Speichern im Browser nicht möglich – nutze den Export.", "Cannot save in this browser – use the export.")); } }, 150);
@@ -117,11 +181,11 @@
 
   /* Migration of the original app's ratings (analysis1-flashcards-k<N>) */
   function migrateLegacy() {
-    if (store.legacyMigrated) return;
+    if (store.legacyMigrated || !LEGACY_PREFIX) return;
     const u = U(); let n = 0;
     chapters.forEach(ch => {
       if (!ch.cards) return;
-      let raw = null; try { raw = JSON.parse(localStorage.getItem("analysis1-flashcards-k" + ch.id)); } catch (e) {}
+      let raw = null; try { raw = JSON.parse(localStorage.getItem(LEGACY_PREFIX + ch.id)); } catch (e) {}
       if (!raw || !raw.ratings) return;
       if (raw.shuffled) u.prefs.shuffle = true;
       Object.keys(raw.ratings).forEach(key => {
@@ -162,19 +226,36 @@
     s.h.push(r); if (s.h.length > C.historyLength) s.h = s.h.slice(-C.historyLength);
     s.n++; if (r === "a") s.wrong++; if (r === "u") s.unsure++; s.last = now; delete s.migrated;
     const u = U(); u.log.push([now, card.id, r]); if (u.log.length > 50000) u.log = u.log.slice(-40000);
-    save(); reportCourse(card);
+    save(); reportCourse(card); writeSummary();
+  }
+  /* Small summary per user for the start page (it cannot load every subject's decks at once) */
+  function writeSummary() {
+    const st = stats(scriptCards);
+    U().summary = { total: st.total, mastered: st.mastered, weak: st.weak, at: NOW() }; save();
   }
 
   /* ------------------------------------------------------------------ */
   /* Streak                                                              */
   /* ------------------------------------------------------------------ */
   function dayCounts() { const m = {}; U().log.forEach(e => { const k = dayKey(e[0]); m[k] = (m[k] || 0) + 1; }); return m; }
+  /* A match (Streichholz) restores the streak after exactly one missed day: finish a short session today and the
+     missed day counts. One match, which grows back C.restoreCooldownDays days after it was used. */
+  const repairs = () => U().flags.repairs || (U().flags.repairs = []);
   function streakInfo() {
     const counts = dayCounts(), now = NOW(), today = dayKey(now);
-    const ok = k => (counts[k] || 0) >= C.streakMinReviews;
+    const fixed = new Set(repairs().map(r => r.day));
+    const ok = k => (counts[k] || 0) >= C.streakMinReviews || fixed.has(k);
     let cur = 0, k = ok(today) ? today : addDays(today, -1);
     while (ok(k)) { cur++; k = addDays(k, -1); }
-    const days = Object.keys(counts).filter(ok).sort();
+    const yesterday = addDays(today, -1);
+    let prevLen = 0; for (let j = addDays(today, -2); ok(j); j = addDays(j, -1)) prevLen++;
+    const lastUse = repairs().reduce((m, r) => (r.used > m ? r.used : m), "");
+    const readyOn = lastUse ? addDays(lastUse, C.restoreCooldownDays) : today;
+    const matchReady = readyOn <= today;
+    const restore = { day: yesterday, prevLen, ready: matchReady, readyIn: matchReady ? 0 : Math.round((Date.parse(readyOn) - Date.parse(today)) / 864e5),
+      possible: !ok(yesterday) && prevLen > 0 };
+    restore.available = restore.possible && matchReady;
+    const days = Object.keys(counts).concat([...fixed]).filter(ok).filter((d, i, a) => a.indexOf(d) === i).sort();
     let longest = 0, run = 0, prev = null;
     days.forEach(d => { run = prev && addDays(prev, 1) === d ? run + 1 : 1; longest = Math.max(longest, run); prev = d; });
     const doneToday = ok(today);
@@ -184,7 +265,15 @@
     if (!cur && lastDay) { let j = lastDay; while (ok(j)) { lostLen++; j = addDays(j, -1); } if (lostLen < 2) lostLen = 0; }
     const risk = cur > 0 && !doneToday && zHour(now) >= C.streakRiskHour;
     const level = C.streakLevels.filter(x => cur >= x).length;
-    return { cur, longest, doneToday, risk, level, lostLen, lastDay, today: counts[today] || 0, counts };
+    return { cur, longest, doneToday, risk, level, lostLen, lastDay, today: counts[today] || 0, counts, restore, fixed };
+  }
+  function applyRestore(day) {
+    const si = streakInfo();
+    if (!si.restore.available || si.restore.day !== day) { toast(L("Das Streichholz passt nicht mehr – der verpasste Tag liegt zu weit zurück.", "Too late for the match – the missed day is too far back.")); return false; }
+    repairs().push({ day, used: dayKey(NOW()) }); save();
+    const n = streakInfo().cur;
+    setTimeout(() => toast(L(`Streichholz entzündet! Deine Serie brennt wieder: ${n} Tage.`, `Match lit! Your streak is burning again: ${n} days.`)), 300);
+    return true;
   }
 
   /* ------------------------------------------------------------------ */
@@ -197,7 +286,7 @@
       const next = user && user.id ? user.id : "guest";
       if (next !== uid) {
         const wasGuest = uid === "guest"; const guest = store.users.guest;
-        uid = next; U();
+        uid = next; U(); writeSummary();
         if (wasGuest && next !== "guest" && guest && guest.log.length && !U().log.length && !store.offered) {
           store.offered = true;
           if (confirm(L("Deinen Fortschritt als Gast in dein Konto übernehmen?", "Carry your guest progress over to your account?"))) {
@@ -225,7 +314,7 @@
     if (!C.reportCourseProgress || card.src !== "script" || !window.SH || !window.SH.saveCourseProgress) return;
     const ch = chapters.find(c => c.id === card.chapter); if (!ch || !ch.cards) return;
     const st = stats(ch.cards);
-    try { window.SH.saveCourseProgress({ ["analysis-fc-k" + ch.id]: { done: st.mastered / st.total >= C.courseProgressThreshold } }); } catch (e) {}
+    try { window.SH.saveCourseProgress({ [(C.courseProgressPrefix || "analysis-fc-k") + ch.id]: { done: st.mastered / st.total >= C.courseProgressThreshold } }); } catch (e) {}
   }
 
   /* ------------------------------------------------------------------ */
@@ -249,6 +338,17 @@
 
   /* Icons: currentColor line drawings, one per chapter */
   const ICONS = {
+    /* Lineare Algebra I */
+    groupop: '<circle cx="20" cy="20" r="6" stroke="currentColor" stroke-width="2.4" fill="none"/><text x="2" y="26" font-size="15" font-family="Georgia,serif" fill="currentColor" font-style="italic">a</text><text x="30" y="26" font-size="15" font-family="Georgia,serif" fill="currentColor" font-style="italic">b</text>',
+    axioms: '<text x="3" y="27" font-size="16" font-family="Georgia,serif" fill="currentColor" font-style="italic">e</text><circle cx="18" cy="21" r="3" stroke="currentColor" stroke-width="1.8" fill="none"/><text x="23" y="27" font-size="16" font-family="Georgia,serif" fill="currentColor" font-style="italic">x</text><text x="10" y="12" font-size="9" font-family="Georgia,serif" fill="currentColor">G₀ G₁ G₂</text>',
+    vectors: '<path d="M6 34 L30 12 M30 12 L22 13 M30 12 L28 20" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M6 34 L34 30 M34 30 L28 26 M34 30 L28 34" stroke="currentColor" stroke-width="2.2" fill="none"/><circle cx="6" cy="34" r="2" fill="currentColor"/>',
+    basis: '<path d="M8 32 H34 M8 32 V6" stroke="currentColor" stroke-width="1" opacity=".5" fill="none"/><path d="M8 32 L22 32 M22 32 L17 28 M22 32 L17 36" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M8 32 L8 18 M8 18 L4 23 M8 18 L12 23" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M8 32 L30 10" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 3" fill="none"/>',
+    subspace: '<line x1="4" y1="34" x2="36" y2="6" stroke="currentColor" stroke-width="2.4"/><line x1="4" y1="22" x2="24" y2="4" stroke="currentColor" stroke-width="1.6" stroke-dasharray="4 3"/><circle cx="20" cy="20" r="2.4" fill="currentColor"/>',
+    dual: '<text x="5" y="29" font-size="22" font-family="Georgia,serif" fill="currentColor" font-style="italic">V</text><text x="22" y="20" font-size="16" font-family="Georgia,serif" fill="currentColor">∗</text>',
+    matrix: '<path d="M9 6 H5 V34 H9 M31 6 H35 V34 H31" stroke="currentColor" stroke-width="2.2" fill="none"/><circle cx="13" cy="13" r="2" fill="currentColor"/><circle cx="13" cy="20" r="2" fill="currentColor"/><circle cx="13" cy="27" r="2" fill="currentColor"/><circle cx="20" cy="13" r="2" fill="currentColor"/><circle cx="20" cy="20" r="2" fill="currentColor"/><circle cx="20" cy="27" r="2" fill="currentColor"/><circle cx="27" cy="13" r="2" fill="currentColor"/><circle cx="27" cy="20" r="2" fill="currentColor"/><circle cx="27" cy="27" r="2" fill="currentColor"/>',
+    basischange: '<path d="M5 33 H22 M5 33 V16" stroke="currentColor" stroke-width="2" fill="none"/><path d="M18 22 L35 13 M18 22 L27 6" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20 30 C28 30 31 26 31 20" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M28 22 L31 19 L33 23" stroke="currentColor" stroke-width="1.4" fill="none"/>',
+    transpose: '<text x="4" y="29" font-size="22" font-family="Georgia,serif" fill="currentColor" font-style="italic">A</text><text x="22" y="17" font-size="14" font-family="Georgia,serif" fill="currentColor" font-style="italic">t</text><text x="22" y="34" font-size="9" font-family="Georgia,serif" fill="currentColor">V∗∗</text>',
+    kernel: '<text x="3" y="25" font-size="13" font-family="Georgia,serif" fill="currentColor">Ker</text><circle cx="32" cy="20" r="5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M27 15 L37 25" stroke="currentColor" stroke-width="2"/>',
     quantifiers: '<text x="6" y="31" font-size="22" font-family="Georgia,serif" fill="currentColor">∀</text><text x="22" y="31" font-size="22" font-family="Georgia,serif" fill="currentColor">∃</text>',
     supremum: '<line x1="3" y1="27" x2="37" y2="27" stroke="currentColor" stroke-width="2"/><path d="M8 22 V32 M8 22 H11 M8 32 H11" stroke="currentColor" stroke-width="2" fill="none"/><path d="M26 22 V32 M26 22 H23 M26 32 H23" stroke="currentColor" stroke-width="2" fill="none"/><line x1="11" y1="27" x2="23" y2="27" stroke="currentColor" stroke-width="4"/><text x="18" y="15" font-size="10" font-family="Georgia,serif" fill="currentColor">sup</text><line x1="26" y1="17" x2="26" y2="21" stroke="currentColor" stroke-width="1.6"/>',
     mapping: '<text x="2" y="27" font-size="15" font-family="Georgia,serif" font-style="italic" fill="currentColor">X</text><text x="28" y="27" font-size="15" font-family="Georgia,serif" font-style="italic" fill="currentColor">Y</text><path d="M13 22 H27 M23 18 L27 22 L23 26" stroke="currentColor" stroke-width="2" fill="none"/><text x="17" y="15" font-size="10" font-family="Georgia,serif" font-style="italic" fill="currentColor">f</text>',
@@ -279,9 +379,10 @@
     const weakN = scriptCards.concat(lessonCards()).filter(c => isWeak(c.id)).length;
     const link = (h, key, label, badge) => `<a href="${h}"${active === key ? ' aria-current="page"' : ""}>${label}${badge ? `<span class="fc-badge" aria-label="${badge} ${L("schwache Karten", "weak cards")}">${badge}</span>` : ""}</a>`;
     $("#fc-nav").innerHTML =
+      (HUB ? `<a href="${esc(HUB)}" class="fc-hubback">‹ ${L("Alle Fächer", "All subjects")}</a>` : "") +
       link("#/", "home", L("Übersicht", "Overview")) +
       link("#/kapitel", "chapters", L("Kapitel", "Chapters")) +
-      link("#/proof-practice", "proof", L("Beweistraining", "Proof practice")) +
+      (PROOF ? link("#/proof-practice", "proof", L("Beweistraining", "Proof practice")) : "") +
       link("#/weak", "weak", L("Schwache Karten", "Weak cards"), weakN || "") +
       `<span class="fc-lang" role="group" aria-label="Sprache / Language"><button data-lang="de" aria-pressed="${LANG === "de"}">DE</button><button data-lang="en" aria-pressed="${LANG === "en"}">EN</button></span>`;
     $$("#fc-nav [data-lang]").forEach(b => b.onclick = () => { LANG = b.dataset.lang; prefs().lang = LANG; document.documentElement.lang = LANG; save(); render(); });
@@ -299,7 +400,7 @@
     if (p[0] === "session" || (p.length >= 2 && p[p.length - 1] === "session")) { renderSession(r); }
     else if (p[0] && /^kapitel-\d+$/.test(p[0])) { renderNav("chapters"); renderChapter(parseInt(p[0].split("-")[1], 10)); }
     else if (p[0] === "kapitel") { renderNav("chapters"); renderChapterList(); }
-    else if (p[0] === "proof-practice") { renderNav("proof"); renderProof(); }
+    else if (p[0] === "proof-practice" && PROOF) { renderNav("proof"); renderProof(); }
     else if (p[0] === "weak") { renderNav("weak"); renderWeak(); }
     else { renderNav("home"); renderHome(); }
     if (fromHash && key !== lastRouteKey) { window.scrollTo(0, 0); view.focus({ preventScroll: true }); }
@@ -314,8 +415,10 @@
     const fill = t => name ? t.replace("{name}", name) : t.replace(/^\{name\}, (.)/, (m, c) => c.toUpperCase()).replace(/,? \{name\}/, "");
     const h = zHour(NOW()); const tags = [];
     if (h >= 5 && h < 11) tags.push("morning"); if (h >= 18 || h < 2) tags.push("evening");
-    if (si.risk) tags.push("risk"); else if (si.cur >= 2) tags.push("streak");
-    if (si.lostLen) tags.push("lost");
+    if (streakOn()) {
+      if (si.restore.available) tags.push("restore"); else if (si.risk) tags.push("risk"); else if (si.cur >= 2) tags.push("streak");
+      if (si.lostLen && !si.restore.available) tags.push("lost");
+    }
     if (si.lastDay && addDays(si.lastDay, 3) < dayKey(NOW())) tags.push("away");
     if (si.lastDay && !si.doneToday) tags.push("firstToday");
     if (st.mastered >= 25) tags.push("milestone");
@@ -329,31 +432,109 @@
     return esc(fill(g.t).replace("{streak}", si.cur).replace("{mastered}", st.mastered));
   }
   let greetCache = null;
+  /* The streak flame: a small fire creature. Layered tongues (red → orange → yellow → white-hot core), each
+     swaying on its own clock, a noise filter for the flicker, embers, and a face that shows the streak's mood:
+     happy (done today), calm (not yet), worried (at risk), asleep (no streak) or out (streak ended). */
+  const reducedMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   function flameSvg(cls) {
-    return `<svg class="fc-ui fc-flame ${cls}" viewBox="0 0 76 92" aria-hidden="true"><g class="body"><path class="outer" d="M38 4 C46 22 64 30 64 56 C64 74 52 88 38 88 C24 88 12 74 12 56 C12 40 22 32 26 20 C30 30 34 34 36 34 C36 22 34 14 38 4 Z"/><path class="inner" d="M38 40 C44 50 52 56 52 66 C52 76 46 84 38 84 C30 84 24 76 24 66 C24 58 30 54 33 48 C35 54 37 56 38 56 C38 50 36 46 38 40 Z"/></g><circle class="spark" cx="18" cy="30" r="3"/><circle class="spark" cx="60" cy="24" r="2.5"/><circle class="spark" cx="50" cy="12" r="2"/></svg>`;
+    const T = {   // tongues, drawn from the base (60,132) upwards
+      body: "M60 133 C33 133 21 115 23 96 C25 78 40 66 60 64 C80 66 95 78 97 96 C99 115 87 133 60 133 Z",
+      c: "M40 96 C36 72 50 52 54 30 C55 22 54 15 57 6 C63 22 72 36 76 54 C80 70 80 84 78 96 Z",
+      l: "M26 104 C19 88 22 72 28 58 C30 52 30 46 29 40 C37 50 45 62 48 80 C49 88 48 96 46 104 Z",
+      r: "M72 102 C72 86 78 72 86 62 C90 56 92 50 92 42 C99 56 102 72 98 88 C96 96 94 102 90 106 Z",
+      ll: "M30 118 C22 112 18 102 19 92 C20 86 19 80 17 74 C25 82 31 92 34 104 Z",
+      rr: "M88 118 C94 110 98 100 98 90 C98 84 100 80 103 76 C106 90 104 104 96 116 Z"
+    };
+    const layer = (n, s) => `<g class="ly ly${n}" transform="translate(60 133) scale(${s}) translate(-60 -133)" fill="url(#fcf-g${n})">` +
+      `<path class="tg body-t" d="${T.body}"/><path class="tg t-ll" d="${T.ll}"/><path class="tg t-rr" d="${T.rr}"/><path class="tg t-l" d="${T.l}"/><path class="tg t-r" d="${T.r}"/><path class="tg t-c" d="${T.c}"/></g>`;
+    const anim = reducedMotion() ? "" : `<animate attributeName="baseFrequency" dur="2.6s" values="0.018 0.055;0.024 0.075;0.016 0.065;0.018 0.055" repeatCount="indefinite"/>`;
+    return `<svg class="fc-ui fc-flame ${cls}" viewBox="0 0 120 142" aria-hidden="true">
+      <defs>
+        <radialGradient id="fcf-glow" cx="50%" cy="62%" r="50%"><stop offset="0" style="stop-color:var(--fg)" stop-opacity=".55"/><stop offset=".55" style="stop-color:var(--fg)" stop-opacity=".18"/><stop offset="1" style="stop-color:var(--fg)" stop-opacity="0"/></radialGradient>
+        <linearGradient id="fcf-g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--fo)" stop-opacity="0"/><stop offset=".16" style="stop-color:var(--fo)" stop-opacity=".8"/><stop offset=".55" style="stop-color:var(--fo2)"/><stop offset="1" style="stop-color:var(--fo3)"/></linearGradient>
+        <linearGradient id="fcf-g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--fm)" stop-opacity="0"/><stop offset=".22" style="stop-color:var(--fm)" stop-opacity=".9"/><stop offset="1" style="stop-color:var(--fm2)"/></linearGradient>
+        <linearGradient id="fcf-g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--fi)" stop-opacity="0"/><stop offset=".3" style="stop-color:var(--fi)"/><stop offset="1" style="stop-color:var(--fi2)"/></linearGradient>
+        <radialGradient id="fcf-g4" cx="50%" cy="70%" r="55%"><stop offset="0" style="stop-color:var(--fc0)"/><stop offset=".6" style="stop-color:var(--fc1)"/><stop offset="1" style="stop-color:var(--fi)" stop-opacity="0"/></radialGradient>
+        <filter id="fcf-wobble" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.055" numOctaves="1" seed="4" result="n">${anim}</feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter>
+      </defs>
+      <ellipse class="glow" cx="60" cy="98" rx="58" ry="48" fill="url(#fcf-glow)"/>
+      <g class="creature">
+        <g class="fire">${layer(1, 1)}${layer(2, .8)}${layer(3, .6)}<ellipse class="core" cx="60" cy="112" rx="22" ry="20" fill="url(#fcf-g4)"/></g>
+        <g class="face">
+          <ellipse class="cheek" cx="40" cy="108" rx="5.5" ry="3.2"/><ellipse class="cheek" cx="80" cy="108" rx="5.5" ry="3.2"/>
+          <g class="eyes"><g class="eye"><ellipse class="white" cx="48" cy="96" rx="8" ry="9.5"/><g class="pupil"><ellipse cx="49" cy="98" rx="4" ry="4.6"/><circle class="hl" cx="50.6" cy="96" r="1.5"/></g></g>
+            <g class="eye"><ellipse class="white" cx="72" cy="96" rx="8" ry="9.5"/><g class="pupil"><ellipse cx="71" cy="98" rx="4" ry="4.6"/><circle class="hl" cx="72.6" cy="96" r="1.5"/></g></g></g>
+          <g class="lids"><path d="M41 97 Q48 102 55 97"/><path d="M65 97 Q72 102 79 97"/></g>
+          <g class="brows"><path d="M41 87 Q47 83 54 83"/><path d="M79 87 Q73 83 66 83"/></g>
+          <path class="mouth m-calm" d="M54 110 Q60 115 66 110"/>
+          <path class="mouth m-happy" d="M51.5 108.5 Q60 121 68.5 108.5 Q60 112 51.5 108.5 Z"/>
+          <path class="mouth m-worry" d="M53 113 Q56.5 109.5 60 112.5 Q63.5 115.5 67 112"/>
+          <path class="mouth m-sleep" d="M57 112 Q60 114 63 112"/>
+          <path class="drop" d="M85 84 C83 88 82 90 82 92 A3 3 0 0 0 88 92 C88 90 87 88 85 84 Z"/>
+        </g>
+      </g>
+      <g class="embers"><circle cx="44" cy="70" r="1.6"/><circle cx="74" cy="64" r="1.3"/><circle cx="60" cy="40" r="1.1"/><circle cx="86" cy="80" r="1.2"/><circle cx="34" cy="84" r="1"/></g>
+      <g class="zz"><text x="84" y="70">z</text><text x="92" y="58">z</text></g>
+      <g class="smoke"><path d="M58 70 C52 60 64 54 58 44 C54 36 62 30 60 22"/><path d="M66 74 C72 64 62 58 68 48"/></g>
+      <g class="sparks"><circle cx="20" cy="50" r="3"/><circle cx="100" cy="40" r="2.6"/><circle cx="84" cy="16" r="2.2"/><circle cx="32" cy="22" r="2"/></g>
+    </svg>`;
+  }
+  /* The match: a small vector illustration. ready = red head, used = charred and burnt down. */
+  function matchSvg(state) {
+    const id = state.replace(/\s+/g, "-");
+    return `<svg class="fc-ui fc-match ${state}" viewBox="0 0 64 26" aria-hidden="true">
+      <defs><linearGradient id="fcm-wood-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d3a1"/><stop offset=".55" stop-color="#e2b277"/><stop offset="1" stop-color="#c48e52"/></linearGradient>
+        <radialGradient id="fcm-head-${id}" cx="38%" cy="35%" r="70%"><stop offset="0" stop-color="#f2665a"/><stop offset=".6" stop-color="#cf2d22"/><stop offset="1" stop-color="#8e1a14"/></radialGradient></defs>
+      <g transform="rotate(-14 32 13)">
+        <rect class="stick" x="6" y="11" width="44" height="4.6" rx="1.4" fill="url(#fcm-wood-${id})"/>
+        <path class="grain" d="M12 13.2 H30 M34 14 H44"/>
+        <rect class="burnt" x="38" y="11" width="13" height="4.6" rx="1.4"/>
+        <ellipse class="head" cx="52" cy="13.3" rx="6.2" ry="5" fill="url(#fcm-head-${id})"/>
+        <ellipse class="shine" cx="50.5" cy="11.4" rx="2" ry="1.1"/>
+      </g>
+      <path class="wisp" d="M56 6 C53 3 58 1 55 -2"/>
+    </svg>`;
   }
   function streakPanel(si) {
+    if (!streakOn()) return `<div class="fc-panel fc-streak off" aria-label="${L("Heute", "Today")}"><div><strong>${si.today} ${si.today === 1 ? L("Karte", "card") : L("Karten", "cards")}</strong>
+      <div class="fc-streak-sub">${L("heute geübt", "practised today")}</div>
+      <button type="button" class="fc-linkbtn fc-streak-toggle" data-streak="on">${L("Streak anzeigen", "Show streak")}</button></div></div>`;
     const flags = U().flags;
-    let cls = "lvl" + si.level, msg = "", extra = "";
+    let cls = "lvl" + si.level + (si.doneToday ? " happy" : ""), msg = "", extra = "";
+    const rs = si.restore, total = rs.prevLen + 2;   // the restored day + today
     if (!si.cur && !si.lastDay) { cls = "none"; msg = L("Bewerte heute eine Karte und starte deine Serie.", "Rate one card today to start your streak."); }
+    else if (rs.available) {
+      cls = si.cur ? "lvl0" : "out";
+      msg = L(`Einen Tag Pause gemacht? Zünd dein Streichholz: ${C.restoreSize} Karten, und deine ${rs.prevLen}-Tage-Flamme lodert weiter (dann ${total}).`,
+              `Took a day off? Strike your match: ${C.restoreSize} cards and your ${rs.prevLen}-day flame blazes on (then ${total}).`);
+    }
     else if (!si.cur && si.lostLen) {
       const lostKey = si.lastDay;
-      cls = flags.lostSeen === lostKey ? "none" : "out";
+      cls = "none";   // no extinguished, sad flame: a fresh start, not a loss
       flags.lostSeen = lostKey; save();
-      msg = L(`Deine Serie von ${si.lostLen} Tagen ist vorbei – kein Problem, heute beginnt eine neue.`, `Your ${si.lostLen}-day streak ended – no worries, a new one starts today.`);
-    } else if (!si.cur) { cls = "none"; msg = L("Heute üben startet eine neue Serie.", "Practising today starts a new streak."); }
+      msg = L("Neuer Start heute! Eine Karte, und deine Flamme ist wieder da.", "Fresh start today! One card and your flame is back.");
+    } else if (!si.cur) { cls = "none"; msg = L("Eine Karte heute – und deine Flamme zündet!", "One card today – and your flame ignites!"); }
     else if (si.risk) {
       cls = "risk lvl" + si.level;
       const ms = msToZurichMidnight(NOW()); const hh = Math.floor(ms / 3600e3), mm = Math.floor(ms % 3600e3 / 60e3);
-      msg = L(`Heute noch nicht geübt – noch ${hh} h ${mm} min bis Mitternacht.`, `Not practised today – ${hh} h ${mm} min left until midnight.`);
-      extra = `<a class="fc-btn primary" href="#/session/rescue" style="margin-top:10px">${L("Streak retten", "Save your streak")} (${C.rescueSize})</a>`;
+      msg = L(`Tag ${si.cur + 1} wartet auf dich! Noch ${hh} h ${mm} min – ein paar Karten, und die Flamme lodert.`, `Day ${si.cur + 1} is waiting for you! ${hh} h ${mm} min to go – a few cards and the flame blazes.`);
+      extra = `<a class="fc-btn primary" href="#/session/rescue" style="margin-top:10px">${L("Flamme anfachen", "Fan the flame")} (${C.rescueSize})</a>`;
     } else if (si.doneToday) msg = L("Heute erledigt. Die Flamme brennt weiter!", "Done for today. The flame keeps burning!");
-    else msg = L("Übe heute, um die Serie zu verlängern.", "Practise today to extend the streak.");
+    else msg = L(`Auf zu Tag ${si.cur + 1}! Ein paar Karten, und die Flamme wächst.`, `On to day ${si.cur + 1}! A few cards and the flame grows.`);
     const ms = C.milestones.filter(m => si.cur >= m && !(flags.milestones || []).includes(m));
     if (ms.length) { cls += " celebrate"; flags.milestones = (flags.milestones || []).concat(ms); save(); setTimeout(() => toast(L(`${ms[ms.length - 1]} Tage am Stück! ｡^‿^｡`, `${ms[ms.length - 1]} days in a row! ｡^‿^｡`)), 400); }
-    return `<div class="fc-panel fc-streak" aria-label="${L("Serie", "Streak")}">${flameSvg(cls)}<div><strong>${si.cur} ${si.cur === 1 ? L("Tag", "day") : L("Tage", "days")}</strong>
-      <div class="fc-streak-sub">${L("Längste Serie", "Longest streak")}: ${si.longest} · ${L("heute", "today")}: ${si.today} ${L("Karten", "cards")}</div>
-      <div class="${si.risk ? "fc-risk" : "fc-streak-sub"}" role="${si.risk ? "alert" : "status"}">${msg}</div>${extra}</div></div>`;
+    // the match under the flame: ready (red head), glowing when it can save the streak, or burnt while it grows back
+    const mState = rs.available ? "ready lit" : rs.ready ? "ready" : "used";
+    const mTitle = rs.available ? L("Streichholz anzünden: Serie wiederherstellen", "Light the match: restore your streak")
+      : rs.ready ? L(`Streichholz bereit: Machst du mal einen Tag Pause, zündet es deine Flamme wieder an (dann ${C.restoreSize} Karten üben).`, `Match ready: if you take a day off, it relights your flame (then practise ${C.restoreSize} cards).`)
+      : L(`Streichholz verbraucht – wächst in ${rs.readyIn} ${rs.readyIn === 1 ? "Tag" : "Tagen"} nach.`, `Match used – grows back in ${rs.readyIn} ${rs.readyIn === 1 ? "day" : "days"}.`);
+    const match = !si.lastDay ? "" : rs.available
+      ? `<a class="fc-matchbtn lit" href="#/session/restore" title="${esc(mTitle)}" aria-label="${esc(mTitle)}">${matchSvg(mState)}<span>${L("Anzünden", "Light it")}</span></a>`
+      : `<span class="fc-matchbtn" role="img" title="${esc(mTitle)}" aria-label="${esc(mTitle)}">${matchSvg(mState)}${rs.ready ? "" : `<span>${L("in", "in")} ${rs.readyIn} ${L("T.", "d")}</span>`}</span>`;
+    if (rs.available) extra = `<a class="fc-btn primary" href="#/session/restore" style="margin-top:10px">${L("Serie wiederherstellen", "Restore streak")} (${C.restoreSize})</a>`;
+    return `<div class="fc-panel fc-streak${rs.available ? " can-restore" : ""}" aria-label="${L("Serie", "Streak")}"><div class="fc-flamecol">${flameSvg(cls)}${match}</div><div><strong>${si.cur} ${si.cur === 1 ? L("Tag", "day") : L("Tage", "days")}</strong>
+      <div class="fc-streak-sub">${L("Längste Serie", "Longest streak")}: ${si.longest} · ${L("heute", "today")}: ${si.today} ${L("Karten", "cards")} · <button type="button" class="fc-linkbtn fc-streak-toggle" data-streak="off" title="${L("Flamme, Serie und Streichholz ausblenden (für alle Fächer)", "Hide flame, streak and match (for all subjects)")}">${L("ausblenden", "hide")}</button></div>
+      <div class="${si.risk || rs.available ? "fc-risk" : "fc-streak-sub"}" role="${si.risk || rs.available ? "alert" : "status"}">${msg}</div>${extra}</div></div>`;
   }
   const MONTHS = () => LANG === "de" ? ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"] : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   // Range of the heatmap: Nov 1 – end of Feb of the current exam season; Mar–Oct: the last 4 months.
@@ -379,7 +560,7 @@
       if (k > today) { cells += `<rect class="fut" x="${x + .5}" y="${y + .5}" width="${cell - 1}" height="${cell - 1}" rx="3"/>`; }
       else {
         const n = si.counts[k] || 0; const lvl = n === 0 ? 0 : Math.min(4, 1 + Math.floor(3 * n / max));
-        cells += `<rect class="d${lvl}${k === today ? " today" : ""}" x="${x}" y="${y}" width="${cell}" height="${cell}" rx="3"><title>${k}: ${n} ${L("Karten", "cards")}</title></rect>`;
+        cells += `<rect class="d${lvl}${k === today ? " today" : ""}${si.fixed.has(k) ? " fix" : ""}" x="${x}" y="${y}" width="${cell}" height="${cell}" rx="3"><title>${k}: ${n} ${L("Karten", "cards")}${si.fixed.has(k) ? " · " + L("mit Streichholz gerettet", "saved with a match") : ""}</title></rect>`;
       }
       const m = k.slice(5, 7); if (m !== lastM && (d === 0 || k === first)) { lastM = m; months += `<text x="${x}" y="11">${MONTHS()[parseInt(m, 10) - 1]}</text>`; }
     }
@@ -441,11 +622,12 @@
     return `<svg class="fc-ui" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(chTitle(ch))}: ${L("Beherrschung pro Abschnitt", "mastery per section")}">${g}</svg>`;
   }
   function chapterBox(ch) {
-    if (!ch.cards) return `<div class="fc-chapter disabled fc-t${(ch.id - 1) % 6 + 1}" aria-disabled="true"><div class="fc-icon course-icon">${icon(ch.icon)}</div><div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${L("Noch keine Karten", "No cards yet")}</div></div>`;
+    if (!ch.cards) return `<div class="fc-chapter disabled fc-t${((ch.id - 1) % 6 + 6) % 6 + 1}" aria-disabled="true"><div class="fc-icon course-icon">${icon(ch.icon)}</div><div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${L("Noch keine Karten", "No cards yet")}</div></div>`;
     const st = stats(ch.cards);
-    return `<a class="fc-chapter subject-card fc-t${(ch.id - 1) % 6 + 1}" href="#/kapitel-${ch.id}"><div class="fc-icon course-icon">${icon(ch.icon)}</div>${bar(st)}<div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${st.total} ${L("Karten", "cards")}${st.weak ? " · " + st.weak + " " + L("schwach", "weak") : ""}</div></a>`;
+    return `<a class="fc-chapter subject-card fc-t${((ch.id - 1) % 6 + 6) % 6 + 1}" href="#/kapitel-${ch.id}"><div class="fc-icon course-icon">${icon(ch.icon)}</div>${bar(st)}<div class="fc-label">${esc(chTitle(ch))}</div><div class="fc-sub">${st.total} ${L("Karten", "cards")}${st.weak ? " · " + st.weak + " " + L("schwach", "weak") : ""}</div></a>`;
   }
   function proofBox() {
+    if (!PROOF) return "";
     const cards = proofDeckAll(); const st = stats(cards);
     const lang = proofLang(); const state = lesson.state[lang];
     const counts = {}; cards.forEach(c => counts[c.type] = (counts[c.type] || 0) + 1);
@@ -462,17 +644,16 @@
     const greet = (greetCache && greetCache.uid === uid && greetCache.lang === LANG && greetCache.name === name) ? greetCache.html : (greetCache = { uid, lang: LANG, name, html: pickGreeting(si, st) }).html;
     const askName = !name && !(window.SH && window.SH.user);
     const lastS = U().lastSession;
-    const a1 = chapters.filter(c => c.course === "A1"), a2 = chapters.filter(c => c.course === "A2");
     const withCards = chapters.filter(c => c.cards && c.cards.length);
     const tab = Math.max(0, withCards.findIndex(c => c.id === (prefs().radarTab || (withCards[0] || {}).id)));
     const rch = withCards[tab];
     const everReviewed = U().log.length > 0 || Object.keys(U().cards).length > 0;
     $("#fc-view").innerHTML = `
       <section class="fc-hero">
-        <div class="fc-greet"><span class="fc-eyebrow">Analysis I · ${L("Lernkarten", "Flashcards")}</span><h1>${greet}</h1>
+        <div class="fc-greet"><span class="fc-eyebrow">${esc(SUBJECT)} · ${L("Lernkarten", "Flashcards")}</span><h1>${greet}</h1>
           ${askName ? `<form class="fc-namebox" id="fc-nameform"><label for="fc-name">${L("Wie heisst du?", "What's your name?")}</label><input id="fc-name" maxlength="30" autocomplete="given-name"><button class="fc-btn" type="submit">OK</button></form>`
                     : (!(window.SH && window.SH.user) ? `<a href="#/" role="button" class="fc-linkbtn" id="fc-rename">${L("Name ändern", "Change name")}</a>` : "")}
-          <div class="fc-row">${lastS ? `<a class="fc-btn primary" href="${esc(lastS.hash)}">${L("Weiter, wo du aufgehört hast", "Continue where you left off")}</a>` : `<a class="fc-btn primary" href="#/kapitel-${(withCards[0] || {}).id || 1}">${L("Loslegen", "Start learning")}</a>`}
+          <div class="fc-row">${lastS ? `<a class="fc-btn primary" href="${esc(lastS.hash)}">${L("Weiter, wo du aufgehört hast", "Continue where you left off")}</a>` : `<a class="fc-btn primary" href="#/kapitel-${(withCards[0] || {}).id ?? 1}">${L("Loslegen", "Start learning")}</a>`}
           <a class="fc-btn" href="#/weak">${L("Schwache Karten", "Weak cards")} (${st.weak})</a></div>
         </div>
         ${streakPanel(si)}
@@ -489,12 +670,12 @@
       <section class="fc-section"><h2>${L("Stärken pro Abschnitt", "Strength per section")}</h2><div class="fc-panel fc-radar">
         ${everReviewed && rch ? `<div class="fc-tabs" role="tablist">${withCards.map((c, i) => `<button role="tab" data-rt="${c.id}" aria-selected="${i === tab}">${L("Kap.", "Ch.")} ${c.id}</button>`).join("")}</div>${radar(rch)}`
           : `<div class="fc-empty"><span class="kao">(｀・ω・´)</span>${L("Die Netzdiagramme füllen sich, sobald du Karten bewertest.", "The radar charts fill up as you rate cards.")}</div>`}</div></section>
-      <section class="fc-section"><h2>${L("Kapitel", "Chapters")} · Analysis I</h2><div class="fc-grid course-grid">${a1.map(chapterBox).join("")}${proofBox()}</div></section>
-      ${a2.length ? `<section class="fc-section"><h2>Analysis II</h2><div class="fc-grid course-grid">${a2.map(chapterBox).join("")}</div></section>` : ""}
+      ${courseSections(true)}
       ${footer()}`;
     $$("[data-rt]").forEach(b => b.onclick = () => { prefs().radarTab = parseInt(b.dataset.rt, 10); save(); render(); });
     const nf = $("#fc-nameform"); if (nf) nf.onsubmit = e => { e.preventDefault(); const v = $("#fc-name").value.trim(); if (v) { U().name = v; save(); greetCache = null; render(); } };
     const rn = $("#fc-rename"); if (rn) rn.onclick = e => { e.preventDefault(); const v = prompt(L("Dein Name:", "Your name:"), U().name || ""); if (v != null) { U().name = v.trim(); save(); greetCache = null; render(); } };
+    $$("[data-streak]").forEach(b => b.onclick = () => setStreak(b.dataset.streak === "on"));
     wireFooter(); wireWeek();
     $$(".fc-list").forEach(typeset);
     if (lesson.state[proofLang()] === "idle") loadLessons(proofLang()).then(() => { if (route().parts.length === 0) render(); });
@@ -502,13 +683,13 @@
   function footer() {
     return `<div class="fc-foot"><button class="fc-btn" id="fc-export">${L("Fortschritt exportieren", "Export progress")}</button>
       <label class="fc-btn" for="fc-import">${L("Importieren", "Import")}</label><input type="file" id="fc-import" accept="application/json" hidden>
-      <span>${L("Karten von Kapitel 1–5 nach dem Skript von Einsiedler–Wieser; Fehler bitte immer mit dem Skript abgleichen.", "Chapter 1–5 cards follow the Einsiedler–Wieser script; always check against the script.")}</span>
-      <a href="classic.html">${L("Alte Ansicht", "Classic view")}</a></div>`;
+      <span>${C.footerNote ? L(C.footerNote.de, C.footerNote.en) : L("Karten von Kapitel 1–5 nach dem Skript von Einsiedler–Wieser; Fehler bitte immer mit dem Skript abgleichen.", "Chapter 1–5 cards follow the Einsiedler–Wieser script; always check against the script.")}</span>
+      ${C.classicLink === null ? "" : `<a href="${esc(C.classicLink || "classic.html")}">${L("Alte Ansicht", "Classic view")}</a>`}</div>`;
   }
   function wireFooter() {
     const ex = $("#fc-export"); if (ex) ex.onclick = () => {
-      const blob = new Blob([JSON.stringify({ app: "studyhub-analysis-flashcards", v: C.schemaVersion, exported: new Date().toISOString(), data: U() }, null, 1)], { type: "application/json" });
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "analysis-lernkarten-" + dayKey(NOW()) + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      const blob = new Blob([JSON.stringify({ app: C.exportApp || "studyhub-analysis-flashcards", v: C.schemaVersion, exported: new Date().toISOString(), data: U() }, null, 1)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = (C.exportFile || "analysis-lernkarten-") + dayKey(NOW()) + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     };
     const im = $("#fc-import"); if (im) im.onchange = () => {
       const f = im.files[0]; if (!f) return; const rd = new FileReader();
@@ -526,11 +707,17 @@
   /* ------------------------------------------------------------------ */
   /* Chapter list and chapter page                                       */
   /* ------------------------------------------------------------------ */
+  /* One box grid per course (config: courses); the proof-practice box joins the first course */
+  function courseSections(onHome) {
+    return COURSES.map((co, i) => {
+      const chs = chapters.filter(c => c.course === co.id); if (!chs.length) return "";
+      const head = i === 0 ? (onHome ? `<h2>${L("Kapitel", "Chapters")} · ${esc(co.title)}</h2>` : "") : `<h2>${esc(co.title)}</h2>`;
+      return `<section class="fc-section">${head}<div class="fc-grid course-grid">${chs.map(chapterBox).join("")}${i === 0 ? proofBox() : ""}</div></section>`;
+    }).join("");
+  }
   function renderChapterList() {
-    const a1 = chapters.filter(c => c.course === "A1"), a2 = chapters.filter(c => c.course === "A2");
     $("#fc-view").innerHTML = crumbs([[L("Lernkarten", "Flashcards"), "#/"], [L("Kapitel", "Chapters"), ""]]) +
-      `<h1>${L("Kapitel", "Chapters")}</h1><section class="fc-section"><div class="fc-grid course-grid">${a1.map(chapterBox).join("")}${proofBox()}</div></section>` +
-      (a2.length ? `<section class="fc-section"><h2>Analysis II</h2><div class="fc-grid course-grid">${a2.map(chapterBox).join("")}</div></section>` : "");
+      `<h1>${L("Kapitel", "Chapters")}</h1>` + courseSections(false);
     if (lesson.state[proofLang()] === "idle") loadLessons(proofLang()).then(() => { if (route().parts[0] === "kapitel") render(); });
   }
   function renderChapter(id) {
@@ -562,7 +749,7 @@
   function renderProof() {
     const lang = proofLang(), p = proofPrefs();
     const head = crumbs([[L("Lernkarten", "Flashcards"), "#/"], [L("Beweistraining", "Proof practice"), ""]]) +
-      `<h1>${L("Beweistraining", "Proof practice")}</h1><p class="fc-muted" style="margin:6px 0 18px">${L("Definitionen, Sätze, Kniffe und Rezepte aus den 22 Lektionen – in deiner Kartenumgebung.", "Definitions, theorems, moves and recipes from the 22 lessons – in your card environment.")}</p>`;
+      `<h1>${L("Beweistraining", "Proof practice")}</h1><p class="fc-muted" style="margin:6px 0 18px">${L("Definitionen, Sätze, Kniffe und Rezepte aus den 22 Lektionen – in deinen Karten.", "Definitions, theorems, moves and recipes from the 22 lessons – in your flashcards.")}</p>`;
     if (lesson.state[lang] !== "ok") {
       $("#fc-view").innerHTML = head + `<div class="fc-panel fc-empty">${lesson.state[lang] === "error" ? `<span class="kao">(´･_･\`)</span>${L("Die Lektionskarten werden aus dem StudyHub geladen und sind nur dort verfügbar.", "The lesson cards are loaded from StudyHub and are only available there.")}` : L("Karten werden geladen …", "Loading cards …")}</div>`;
       if (lesson.state[lang] === "idle" || lesson.state[lang] === "loading") loadLessons(lang).then(() => { if (route().parts[0] === "proof-practice") render(); });
@@ -600,7 +787,7 @@
   function renderWeak() {
     if (lesson.state[proofLang()] === "idle") loadLessons(proofLang()).then(() => { if (route().parts[0] === "weak") render(); });
     const w = weakPrefs(), deck = weakDeck();
-    const decks = [["", L("Alle Decks", "All decks")]].concat(chapters.filter(c => c.cards).map(c => ["k" + c.id, L("Kapitel ", "Chapter ") + c.id]), [["proof", L("Beweistraining", "Proof practice")]]);
+    const decks = [["", L("Alle Decks", "All decks")]].concat(chapters.filter(c => c.cards).map(c => ["k" + c.id, L("Kapitel ", "Chapter ") + c.id]), PROOF ? [["proof", L("Beweistraining", "Proof practice")]] : []);
     const types = [["", L("Alle Typen", "All types")]].concat(Object.keys(TYPE_LABEL).map(t => [t, typeLabel(t)]));
     $("#fc-view").innerHTML = crumbs([[L("Lernkarten", "Flashcards"), "#/"], [L("Schwache Karten", "Weak cards"), ""]]) +
       `<h1>${L("Schwache Karten", "Weak cards")}</h1><p class="fc-muted" style="margin:6px 0 18px">${L(`Karten, die zuletzt „Nochmal“ oder „Unsicher“ waren oder in den letzten ${C.historyLength} Runden mindestens ${C.weakAgainCount}× „Nochmal“. Nach ${C.masteredAfter}× „Gewusst“ in Folge verschwinden sie.`, `Cards last rated "Again" or "Unsure", or "Again" at least ${C.weakAgainCount}× in the last ${C.historyLength} reviews. They leave after ${C.masteredAfter}× "Got it" in a row.`)}</p>
@@ -638,7 +825,13 @@
       const due = scriptCards.concat(lessonCards()).filter(c => isWeak(c.id)).sort((a, b) => weakness(b.id) - weakness(a.id));
       const fresh = shuffle(scriptCards.filter(c => !peek(c.id)));
       return { cards: due.concat(fresh).slice(0, C.rescueSize), back: "#/", order: false,
-        crumbs: [home, [L("Streak retten", "Save your streak"), ""]], title: L("Streak retten", "Save your streak") };
+        crumbs: [home, [L("Flamme anfachen", "Fan the flame"), ""]], title: L("Flamme anfachen", "Fan the flame") };
+    }
+    if (p[0] === "session" && p[1] === "restore") {
+      const due = scriptCards.concat(lessonCards()).filter(c => isWeak(c.id)).sort((a, b) => weakness(b.id) - weakness(a.id));
+      const fresh = shuffle(scriptCards.filter(c => !peek(c.id))), rest = shuffle(scriptCards.filter(c => peek(c.id) && !isWeak(c.id)));
+      return { cards: due.concat(fresh, rest).slice(0, C.restoreSize), back: "#/", order: false, restore: streakInfo().restore.day,
+        crumbs: [home, [L("Serie wiederherstellen", "Restore streak"), ""]], title: L("Serie wiederherstellen", "Restore streak") };
     }
     if (p[0] === "session" && p[1] === "card") {
       const id = decodeURIComponent(p.slice(2).join("/")); const c = byId.get(id);
@@ -666,18 +859,22 @@
         return;
       }
       if (!spec) { go("#/"); return; }
-      const cards = spec.order && prefs().shuffle ? shuffle(spec.cards) : spec.cards.slice();
-      S = Object.assign({ key, idx: 0, flipped: false, run: {} }, spec, { cards });
-      U().lastSession = { hash: key, at: NOW() }; save();
+      const mode = spec.order ? (prefs().shuffle ? "shuffle" : "script") : "weak";
+      S = Object.assign({ key, idx: 0, flipped: false, run: {}, mode }, spec, { base: spec.cards.slice(), cards: arrange(spec.cards, mode) });
+      if (!spec.restore) { U().lastSession = { hash: key, at: NOW() }; save(); }
     }
     const v = $("#fc-view");
     if (!S.cards.length) {
       v.innerHTML = crumbs(S.crumbs) + `<div class="fc-panel fc-empty"><span class="kao">｡^‿^｡</span>${L("Hier gibt es gerade keine Karten.", "There are no cards here right now.")}<div style="margin-top:14px"><a class="fc-btn" href="${S.back}">${L("Zurück", "Back")}</a></div></div>`;
       return;
     }
+    const modes = (S.order ? ["script", "shuffle"] : ["weak", "script", "shuffle"]);
+    const orderMenu = S.cards.length < 2 ? "" : `<div class="fc-order" id="s-order-wrap">
+        <button type="button" class="fc-btn fc-order-btn" id="s-order" aria-haspopup="menu" aria-expanded="false" aria-controls="s-order-menu">${UI.order}<span>${L("Reihenfolge", "Order")}</span><span class="fc-order-cur">${esc(orderLabel(S.mode))}</span>${UI.chevron}</button>
+        <div class="fc-menu" id="s-order-menu" role="menu" aria-label="${L("Reihenfolge", "Order")}" hidden>${modes.map(m => `<button type="button" role="menuitemradio" tabindex="-1" data-order="${m}" aria-checked="${m === S.mode}">${UI.check}<span><b>${esc(orderLabel(m))}</b><small>${esc(L(ORDER[m].sub[0], ORDER[m].sub[1]))}</small></span></button>`).join("")}</div></div>`;
     v.innerHTML = crumbs(S.crumbs) + `<div class="fc-session">
       <div class="fc-toolbar">
-        <button class="fc-btn${prefs().shuffle ? " on" : ""}" id="s-shuffle" aria-pressed="${!!prefs().shuffle}" title="${L("Reihenfolge mischen", "Shuffle order")}">🔀 ${L("Mischen", "Shuffle")}</button>
+        ${orderMenu}
         <a class="fc-btn" href="${S.back}">${L("Beenden", "Finish")}</a>
       </div>
       <div class="fc-progress"><div class="lbl"><span>${L("Karte", "Card")} <b id="s-i"></b> ${L("von", "of")} ${S.cards.length}</span><span id="s-counts"></span></div><div class="fc-bar" id="s-bar"><span class="g"></span><span class="u"></span><span class="a"></span></div></div>
@@ -691,22 +888,156 @@
         <button class="fc-act again" data-r="a">${C.ratings.again.kaomoji} ${L(C.ratings.again.de, C.ratings.again.en)}<small>1 · ←</small></button>
         <button class="fc-act unsure" data-r="u">${C.ratings.unsure.kaomoji} ${L(C.ratings.unsure.de, C.ratings.unsure.en)}<small>2 · ↓</small></button>
         <button class="fc-act got" data-r="g">${C.ratings.got.kaomoji} ${L(C.ratings.got.de, C.ratings.got.en)}<small>3 · →</small></button></div>
+      <div class="fc-note" id="s-note"></div>
       <p class="fc-kbd">${L("Tastatur: Leertaste umdrehen · 1/2/3 oder ←/↓/→ bewerten · E Erklärung · Esc beenden", "Keyboard: space flip · 1/2/3 or ←/↓/→ rate · E explanation · Esc finish")}</p></div>`;
-    $("#s-shuffle").onclick = () => { prefs().shuffle = !prefs().shuffle; save(); const cur = S.cards[S.idx]; S.cards = prefs().shuffle ? shuffle(S.cards) : (sessionSpec(route()) || S).cards.slice(); S.idx = Math.max(0, S.cards.indexOf(cur)); render(); };
+    wireOrder();
     $("#s-front").onclick = flip; $("#s-front").onkeydown = e => { if (e.key === "Enter") flip(); };
     $("#s-back").onclick = e => { if (e.target.closest("#s-xt,#s-x,a,button")) return; flip(); };
     $("#s-flip").onclick = flip; $("#s-prev").onclick = () => show(S.idx - 1);
     $("#s-xt").onclick = toggleExplain;
     $$("#s-cback [data-r]").forEach(b => b.onclick = () => doRate(b.dataset.r));
-    show(S.idx);
+    const keepFlip = S.flipped;   // a re-render (account change, new order) keeps the card as it was
+    show(S.idx, true); if (keepFlip) flip();
+  }
+
+  /* Order menu: "Reihenfolge ▾" with Chronologisch / Gemischt (+ Schwächste zuerst for weak and rescue decks).
+     Chapter and proof decks remember the choice (prefs.shuffle); the others choose per session. */
+  const ORDER = {
+    script: { de: "Chronologisch", en: "In order", sub: ["wie im Skript", "as in the script"] },
+    shuffle: { de: "Gemischt", en: "Shuffled", sub: ["zufällige Reihenfolge", "random order"] },
+    weak: { de: "Schwächste zuerst", en: "Weakest first", sub: ["was am meisten Übung braucht", "what needs practice most"] }
+  };
+  const orderLabel = m => L(ORDER[m].de, ORDER[m].en);
+  const arrange = (cards, mode) => mode === "shuffle" ? shuffle(cards) : mode === "script" ? chrono(cards) : cards.slice();
+  const UI = {
+    order: '<svg class="fc-ui fc-i" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h9M4 10h7M4 15h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M15.5 7v9m0 0-2.4-2.4m2.4 2.4 2.4-2.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    chevron: '<svg class="fc-ui fc-i fc-chev" viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 8 4.5 4.5L14.5 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    check: '<svg class="fc-ui fc-i fc-check" viewBox="0 0 20 20" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    note: '<svg class="fc-ui fc-i" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4.5h12a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 16 14H9l-3.5 3v-3H4a1.5 1.5 0 0 1-1.5-1.5V6A1.5 1.5 0 0 1 4 4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M6.5 8.3h7M6.5 10.8h4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+  };
+  function setOrder(m) {
+    if (!S || m === S.mode) return;
+    if (S.order) { prefs().shuffle = m === "shuffle"; save(); }
+    const cur = S.cards[S.idx];
+    S.mode = m; S.cards = arrange(S.base, m); S.idx = Math.max(0, S.cards.indexOf(cur));
+    render(); const b = $("#s-order"); if (b) b.focus();
+    announce(L("Reihenfolge: ", "Order: ") + orderLabel(m));
+  }
+  function wireOrder() {
+    const ob = $("#s-order"), om = $("#s-order-menu"); if (!ob) return;
+    const items = () => $$("[role=menuitemradio]", om);
+    const open = () => { om.hidden = false; ob.setAttribute("aria-expanded", "true"); (items().find(i => i.getAttribute("aria-checked") === "true") || items()[0]).focus(); };
+    const close = refocus => { om.hidden = true; ob.setAttribute("aria-expanded", "false"); if (refocus) ob.focus(); };
+    ob.onclick = () => (om.hidden ? open() : close());
+    ob.onkeydown = e => { if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); e.stopPropagation(); open(); } };
+    om.onkeydown = e => {
+      const list = items(), i = list.indexOf(document.activeElement);
+      if (e.key === "ArrowDown") { e.preventDefault(); list[(i + 1) % list.length].focus(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); list[(i - 1 + list.length) % list.length].focus(); }
+      else if (e.key === "Home") { e.preventDefault(); list[0].focus(); }
+      else if (e.key === "End") { e.preventDefault(); list[list.length - 1].focus(); }
+      else if (e.key === "Escape") { e.preventDefault(); close(true); }
+      else if (e.key === "Tab") close(false);
+      e.stopPropagation();   // keep the card shortcuts out of the menu
+    };
+    items().forEach(b => b.onclick = () => { close(false); setOrder(b.dataset.order); });
+  }
+  document.addEventListener("click", e => {
+    const m = $("#s-order-menu");
+    if (m && !m.hidden && !e.target.closest("#s-order-wrap")) { m.hidden = true; $("#s-order").setAttribute("aria-expanded", "false"); }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* Card comments → StudyHub forum (one thread per comment)            */
+  /* ------------------------------------------------------------------ */
+  const CM = C.comments || {};
+  const notes = { open: false, drafts: {}, cache: {} };
+  const hubLink = k => (CM[k] || {})[LANG] || (CM[k] || {}).en || "";
+  const topicOf = c => (CM.topicPrefix || "fc-analysis-") + (c.src === "script" ? "k" + c.chapter : "proof");
+  const cardLabel = c => c.src === "script" ? (c.title || strip(c.front).slice(0, 90)) : L("Lektion ", "Lesson ") + c.lesson + ": " + strip(c.front).slice(0, 90);
+  const idLine = c => "Karten-ID: " + c.id;
+  function forumThreads(topic, fresh) {
+    const SH = window.SH; if (!SH || !SH.sb) return Promise.resolve(null);
+    const hit = notes.cache[topic];
+    if (hit && !fresh && Date.now() - hit.at < 60e3) return hit.p;
+    const p = SH.sb.rpc("forum_threads_list", { p_topic: topic }).then(r => (r.error ? null : r.data || []), () => null);
+    notes.cache[topic] = { at: Date.now(), p }; return p;
+  }
+  function noteCount(c, fresh) {
+    forumThreads(topicOf(c), fresh).then(list => {
+      const el = $("#s-note-n"); if (!list || !el || !S || S.cards[S.idx] !== c) return;
+      const n = list.filter(t => String(t.body || "").split("\n").includes(idLine(c))).length;
+      el.hidden = !n; el.textContent = n === 1 ? L("1 Kommentar im Forum", "1 comment in the forum") : L(`${n} Kommentare im Forum`, `${n} comments in the forum`);
+    });
+  }
+  function renderNote(c) {
+    const box = $("#s-note"); if (!box) return;
+    if (CM.enabled === false) { box.hidden = true; return; }
+    const SH = window.SH, user = SH && SH.user;
+    const kinds = CM.kinds || [];
+    const d = notes.drafts[c.id] || (notes.drafts[c.id] = { kind: (kinds[0] || {}).id, text: "", anon: false });
+    const kind = kinds.find(k => k.id === d.kind) || kinds[0] || { de: "", en: "", ph: ["", ""] };
+    const forum = hubLink("forumPage") + "?topic=" + encodeURIComponent(topicOf(c)) + "#forum";
+    let body;
+    if (!SH) body = `<p class="fc-note-p">${L("Kommentare landen im StudyHub-Forum und sind nur im StudyHub verfügbar.", "Comments go to the StudyHub forum and are only available inside StudyHub.")}</p>`;
+    else if (!user) body = `<p class="fc-note-p">${L("Zum Kommentieren", "To comment,")} <button type="button" class="fc-linkbtn" id="s-note-in">${L("melde dich an", "sign in")}</button> ${L("(gratis, du kannst anonym bleiben). Lesen kann jede und jeder im", "(free, you can stay anonymous). Everyone can read along in the")} <a href="${esc(forum)}">${L("Forum", "forum")}</a>.</p>`;
+    else body = `<form id="s-note-form" novalidate>
+        <div class="fc-note-kinds" role="radiogroup" aria-label="${L("Art des Kommentars", "Kind of comment")}">${kinds.map(k => `<label><input type="radio" name="s-note-k" value="${esc(k.id)}"${k.id === kind.id ? " checked" : ""}><span>${esc(L(k.de, k.en))}</span></label>`).join("")}</div>
+        <label class="fc-sr" for="s-note-ta">${L("Dein Kommentar", "Your comment")}</label>
+        <textarea id="s-note-ta" rows="3" maxlength="${CM.maxLength || 2000}" placeholder="${esc(L(kind.ph[0], kind.ph[1]))}">${esc(d.text)}</textarea>
+        <div class="fc-note-foot"><label class="fc-note-anon"><input type="checkbox" id="s-note-anon"${d.anon ? " checked" : ""}> ${L("anonym", "anonymously")}</label>
+          <span class="fc-note-info">${L("Wird im Forum geteilt und geht ans StudyHub-Team.", "Shared in the forum and sent to the StudyHub team.")}</span>
+          <button type="submit" class="fc-btn fc-note-send">${L("Senden", "Send")}</button></div>
+        <p class="fc-note-msg" id="s-note-msg" role="status" aria-live="polite"></p></form>`;
+    box.innerHTML = `<div class="fc-note-row"><button type="button" class="fc-note-toggle" id="s-note-t" aria-expanded="${notes.open}" aria-controls="s-note-f">${UI.note}<span>${L("Beispiel, Wunsch oder Unklarheit zu dieser Karte?", "An example, a wish or something unclear about this card?")}</span></button>
+      <a class="fc-note-n" id="s-note-n" href="${esc(forum)}" hidden></a></div>
+      <div class="fc-note-f" id="s-note-f"${notes.open ? "" : " hidden"}>${body}</div>`;
+    $("#s-note-t").onclick = () => {
+      notes.open = !notes.open; $("#s-note-f").hidden = !notes.open; $("#s-note-t").setAttribute("aria-expanded", notes.open);
+      if (notes.open) {
+        const ta = $("#s-note-ta"); if (ta) ta.focus();
+        if (SH && !SH.sb && SH.sdk) SH.sdk().then(() => noteCount(c), () => {});   // load the hub's Supabase client on demand
+      }
+    };
+    const si = $("#s-note-in"); if (si) si.onclick = () => { try { SH.signIn(); } catch (e) { location.href = hubLink("accountPage"); } };
+    noteCount(c);
+    const form = $("#s-note-form"); if (!form) return;
+    const ta = $("#s-note-ta"), msg = $("#s-note-msg"), send = $(".fc-note-send", form);
+    ta.oninput = () => { d.text = ta.value; };
+    ta.onkeydown = e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.onsubmit(e); } };
+    $$('[name="s-note-k"]', form).forEach(r => r.onchange = () => { d.kind = r.value; const k = kinds.find(x => x.id === r.value); if (k) ta.placeholder = L(k.ph[0], k.ph[1]); });
+    $("#s-note-anon").onchange = e => { d.anon = e.target.checked; };
+    form.onsubmit = e => {
+      e.preventDefault();
+      const text = ta.value.trim(); if (text.length < 3) { msg.textContent = L("Schreib bitte ein paar Worte mehr.", "Please write a few more words."); ta.focus(); return; }
+      const k = kinds.find(x => x.id === d.kind) || kinds[0], kl = L(k.de, k.en), topic = topicOf(c);
+      const where = c.src === "script" ? `${SUBJECT} · ${L("Kapitel", "Chapter")} ${c.chapter}${c.category ? " · " + c.category : ""}` : `${L("Beweistraining · Lektion", "Proof practice · Lesson")} ${c.lesson}`;
+      const title = (kl + " · " + cardLabel(c)).slice(0, 150);
+      const full = (text + "\n\n— " + L("Lernkarte", "Flashcard") + ": " + cardLabel(c) + " (" + where + ")\n" + idLine(c)).slice(0, 5000);
+      send.disabled = true; msg.textContent = L("Wird gesendet …", "Sending …");
+      window.SH.sb.from("forum_threads").insert({ topic, title, body: full, anonymous: d.anon }).then(r => {
+        send.disabled = false;
+        if (r.error) { msg.textContent = L("Senden fehlgeschlagen: ", "Could not send: ") + r.error.message; return; }
+        notifyTeam({ app: "studyhub-analysis-flashcards", topic, card: c.id, cardTitle: cardLabel(c), where, kind: k.id, text, anonymous: d.anon, lang: LANG, at: new Date().toISOString() });
+        try { window.umami && window.umami.track("fc-comment", { kind: k.id, deck: c.deck }); } catch (er) {}
+        d.text = ""; ta.value = ""; msg.innerHTML = `${L("Danke! Dein Kommentar steht jetzt im", "Thanks! Your comment is now in the")} <a href="${esc(hubLink("forumPage") + "?topic=" + encodeURIComponent(topic) + "#forum")}">${L("Forum", "forum")}</a>.`;
+        noteCount(c, true);
+      }, () => { send.disabled = false; msg.textContent = L("Senden fehlgeschlagen – bitte später nochmal.", "Could not send – please try again later."); });
+    };
+  }
+  // Optional second channel to the team (e.g. a Supabase Edge Function that emails new comments): C.comments.notifyUrl.
+  function notifyTeam(payload) {
+    if (!CM.notifyUrl) return;
+    try { fetch(CM.notifyUrl, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload), keepalive: true }).catch(() => {}); } catch (e) {}
   }
   function badges(c) {
     const t = c.type ? `<span class="fc-tag t-${esc(c.type)}">${esc(typeLabel(c.type))}</span>` : "";
     const where = c.src === "script" ? (c.category ? `<span class="fc-tag">${esc(c.category)}</span>` : "") : `<span class="fc-tag">${L("Lektion ", "Lesson ")}${c.lesson}</span>`;
     return t + where;
   }
-  function show(i) {
+  function show(i, keepNote) {
     if (!S) return; S.idx = Math.max(0, Math.min(i, S.cards.length - 1)); S.flipped = false;
+    if (!keepNote) notes.open = false;
     const c = S.cards[S.idx];
     $("#s-card").classList.remove("flipped");
     $("#s-bf").innerHTML = badges(c) + `<span class="fc-tag side">${L("Frage", "Question")}</span>`;
@@ -724,6 +1055,7 @@
     $("#s-i").textContent = S.idx + 1; $("#s-prev").disabled = S.idx === 0;
     $("#s-cfront").hidden = false; $("#s-cback").hidden = true;
     progress(); typeset($("#s-front")); typeset($("#s-back"));
+    renderNote(c);
   }
   function progress() {
     const v = Object.values(S.run), n = S.cards.length || 1;
@@ -749,12 +1081,14 @@
   function finish() {
     const v = Object.values(S.run); const g = v.filter(r => r === "g").length, u = v.filter(r => r === "u").length, a = v.filter(r => r === "a").length;
     const perfect = !a && !u;
+    const restored = S.restore && !S.restoreDone && streakInfo().restore.possible && (S.restoreDone = applyRestore(S.restore));
     $("#fc-finish-h").textContent = perfect ? L("Perfekt!", "Perfect!") : L("Durchgang beendet!", "Round complete!");
     $("#fc-finish-kao").textContent = perfect ? C.finishKaomoji.perfect : C.finishKaomoji.mixed;
     $("#fc-finish-stats").innerHTML = `<div class="g"><b>${g}</b>${L("gewusst", "got it")}</div><div class="u"><b>${u}</b>${L("unsicher", "unsure")}</div><div class="a"><b>${a}</b>${L("nochmal", "again")}</div>`;
     $("#fc-finish-text").innerHTML = perfect ? L("Alle Karten sitzen! ｡^‿^｡", "Every card sticks! ｡^‿^｡") : L(`<b>${a + u}</b> Karte(n) möchten nochmal geübt werden.`, `<b>${a + u}</b> card(s) want another round.`);
+    if (restored) $("#fc-finish-text").innerHTML += `<span class="fc-finish-match">${matchSvg("ready lit")}${L(`Die Flamme lodert wieder: ${streakInfo().cur} Tage!`, `The flame blazes again: ${streakInfo().cur} days!`)}</span>`;
     const btns = $("#fc-finish-btns"); btns.innerHTML = "";
-    if (!perfect) { const b = document.createElement("button"); b.className = "fc-btn primary"; b.textContent = L("Falsche Karten wiederholen", "Repeat the missed cards"); b.onclick = () => { const miss = S.cards.filter(c => S.run[c.id] && S.run[c.id] !== "g"); S.cards = prefs().shuffle ? shuffle(miss) : miss; S.run = {}; S.idx = 0; closeFinish(); render(); }; btns.appendChild(b); }
+    if (!perfect) { const b = document.createElement("button"); b.className = "fc-btn primary"; b.textContent = L("Falsche Karten wiederholen", "Repeat the missed cards"); b.onclick = () => { const miss = S.cards.filter(c => S.run[c.id] && S.run[c.id] !== "g"); S.base = miss; S.cards = arrange(miss, S.mode); S.run = {}; S.idx = 0; closeFinish(); render(); }; btns.appendChild(b); }
     const again = document.createElement("button"); again.className = "fc-btn"; again.textContent = L("Deck neu starten", "Restart deck"); again.onclick = () => { S = null; closeFinish(); render(); }; btns.appendChild(again);
     const back = document.createElement("a"); back.className = "fc-btn"; back.href = S.back; back.textContent = L("Zur Übersicht", "Back to overview"); back.onclick = () => closeFinish(); btns.appendChild(back);
     $("#fc-finish").classList.add("open"); (btns.firstChild || back).focus();
@@ -777,7 +1111,10 @@
   /* Start                                                               */
   /* ------------------------------------------------------------------ */
   function start() {
-    loadStore(); U(); initLang(); migrateLegacy(); hookAccount(); render(true);
+    if (SUBJ && SUBJ.flame) document.querySelectorAll(".fc-app, .fc-overlay, .fc-toast").forEach(el => {
+      el.style.cssText += ";" + window.FC_FLAME_STYLE(SUBJ); el.setAttribute("data-flame", SUBJ.id);   // colours of fc/subjects.js
+    });
+    loadStore(); U(); initLang(); migrateLegacy(); hookAccount(); writeSummary(); render(true);
     window.addEventListener("storage", e => { if (e.key === C.storageKey) { loadStore(); render(); } });
   }
   window.__fc = { stats, isWeak, isMastered, streakInfo, rate: (id, r) => rate(byId.get(id), r), store: () => store, chapters, lesson, loadLessons, render };
