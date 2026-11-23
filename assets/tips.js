@@ -44,6 +44,7 @@
   // What's new: newest first. Add an entry whenever a lesson or feature goes live (id must be unique).
   // Shown once per visitor as a "New" card, only within 21 days of its date; all entries are listed on tips.html.
   var NEWS = [
+  { id: 'intro-video', d: '2026-11-23', en: 'New: a <a href="index.html#intro-video">short video</a> that shows StudyHub in under two minutes.', de: 'Neu: ein <a href="index.html#intro-video">kurzes Video</a>, das StudyHub in unter zwei Minuten zeigt (auf Englisch).' },
   { id: 'search-icon', d: '2026-11-23', en: 'New: the search icon at the top finds any lesson, exercise or page.', de: 'Neu: Die Lupe oben findet jede Lektion, Aufgabe und Seite.' },
   { id: 'refresher-all', d: '2026-11-23', en: 'All 12 Analysis <a href="analysis.html#refresher">refresher units</a> are online.', de: 'Alle 12 Analysis-<a href="analysis.html#refresher">Repetitionseinheiten</a> sind online (vorerst auf Englisch).' },
   { id: 'linalg-redo-1', d: '2026-11-15', en: 'The rebuilt <a href="linalg.html">Linear Algebra I</a> course is ready to explore.', de: 'Der neu aufgebaute Kurs <a href="../linalg.html">Lineare Algebra I</a> ist bereit.' },
