@@ -24,6 +24,8 @@
 
   const readStore = key => { try { return JSON.parse(localStorage.getItem(key)) || null; } catch (e) { return null; } };
   const uid = () => (window.SH && window.SH.user && window.SH.user.id) || "guest";
+  /* StudyHub's switch My StudyHub → Your design → Hide → "Flashcards streak" (localStorage "sh-design"), as in fc/app.js */
+  const designHidesStreak = () => { const d = readStore("sh-design"); return !!(d && Array.isArray(d.hide) && d.hide.indexOf("streak") >= 0); };
 
   /* Language: ?lang, else the language saved in a subject, else the hub's /de/ pages, else the browser */
   function lang() {
@@ -49,7 +51,7 @@
     const goal = todo === null ? subj.dailyGoal : Math.min(subj.dailyGoal, todo + Math.min(count, subj.dailyGoal));
     const risk = streak > 0 && !ok(today) && parseInt(hourFmt.format(new Date(now)), 10) % 24 >= RISK_HOUR;
     const level = [3, 7, 30].filter(x => streak >= x).length;
-    const show = !(u && u.prefs && u.prefs.streak === false);   // "Show streak" setting of fc/app.js
+    const show = !designHidesStreak() && !(u && u.prefs && u.prefs.streak === false);   // "Show streak" (fc/app.js) and StudyHub's own switch
     return { started: !!(u && (u.log.length || Object.keys(u.cards || {}).length)), count, streak, todo, goal, risk, level, done: ok(today), total: sum && sum.total, show };
   }
 
