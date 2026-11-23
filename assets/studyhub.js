@@ -118,6 +118,11 @@
         dot.style.setProperty('--y', (hub ? Math.min(99, (i + .5 + ((i * 7) % 5 - 2) * .18) / count * 100) : ((i * 29 + 17) % 80 + 10)) + '%');
         dot.style.setProperty('--d', '-' + (i * 1.3 % 6.5).toFixed(1) + 's'); // negative delay: every firefly is already glowing when the page opens
         dot.style.setProperty('--s', (7 + i * 1.7 % 4).toFixed(1) + 's');
+        // Drift: a loop of up to ~90px (smaller on phones and in the header), 11-21 s per loop, direction varies per firefly.
+        const reach = (phone ? .75 : 1) * (hub ? 1 : .7);
+        dot.style.setProperty('--dx', Math.round(((i * 53) % 121 - 60) * 1.5 * reach) + 'px');
+        dot.style.setProperty('--dy', Math.round(((i * 71 + 23) % 101 - 50) * 1.4 * reach) + 'px');
+        dot.style.setProperty('--m', (11 + (i * 2.3) % 10).toFixed(1) + 's');
         ff.append(dot);
       }
       if (hub) host.prepend(ff); else host.append(ff);
