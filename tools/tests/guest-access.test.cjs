@@ -47,7 +47,7 @@ test('guest UI keeps Design and language available without exposing private prof
   const element = () => ({ hidden: null, value: '', checked: false, disabled: false, classList: { toggle() {} }, setAttribute() {} });
   const design = element(), profileForm = element(), languageLink = element(), choices = element();
   const submit = element(); profileForm.querySelector = () => submit;
-  const context = { window: { SH: { user: null } }, design, profileForm, choices, heading: {}, toggle: element(), appearanceDisclosure: {}, login: element(), languageLink,
+  const context = { window: { SH: { user: null } }, design, profileForm, choices, heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink,
     profileName: element(), profileOptIn: element(), L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
   vm.runInNewContext(body + '\nupdateAccountUI();', context);
   assert.equal(design.hidden, false);
