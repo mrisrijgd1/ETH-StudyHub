@@ -205,6 +205,13 @@
   const brand = link('StudyHub', prefix + 'index.html', 'study-brand');
   const star = document.createElement('span'); star.textContent = ' ✦'; star.setAttribute('aria-hidden', 'true'); brand.append(star);
   upper.append(brand);
+  const menu = document.createElement('button');
+  menu.type = 'button';
+  menu.className = 'study-mobile-menu';
+  menu.setAttribute('aria-label', L('Menü', 'Menu'));
+  menu.setAttribute('aria-expanded', 'false');
+  menu.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+  upper.append(menu);
   const courses = document.createElement('nav'); courses.className = 'study-subjects'; courses.setAttribute('aria-label', L('Fächer', 'Subjects'));
   subjects.forEach(item => { const a = link(item.label, item.href); if (subject === item.id) a.setAttribute('aria-current', 'page'); if (item.id === 'chemie') { a.dataset.subj = 'chemie'; if (!showChemie(studyPath)) a.style.display = 'none'; } courses.append(a); });
   // Picking a path on the home page updates the header at once (no reload needed); also follows other open tabs.
@@ -214,6 +221,9 @@
   // Exam Dive (Rachel's game, dive/): a game, not a course, so it gets its own marker
   const dive = link('Exam Dive', 'dive/', 'study-game'); const diveIcon = document.createElement('span'); diveIcon.textContent = '🎮 '; diveIcon.setAttribute('aria-hidden', 'true'); dive.prepend(diveIcon); if (path.startsWith('dive/')) dive.setAttribute('aria-current', 'page'); const brk = document.createElement('span'); brk.className = 'study-break'; brk.setAttribute('aria-hidden', 'true'); courses.append(brk);
   courses.append(dive);
+  courses.append(link(L('Üben', 'Practice'), prefix + 'practice.html', 'study-practice'));
+  courses.append(link(L('Werkzeugkasten', 'Search'), prefix + 'toolbox.html', 'study-search'));
+  courses.append(link(L('Über', 'About'), prefix + 'index.html#about', 'study-about'));
   // Phones: 'More' sits in the subject bar next to Exam Dive (the utility row keeps My StudyHub, language and Design)
   courses.append(link(L('Mehr', 'More'), prefix + 'more.html', 'study-more-sub'));
   upper.append(courses);
@@ -312,6 +322,15 @@
   // Generated pages already contain this header (make_github.py writes the same markup); swap in the live one without a layout jump.
   const prebuilt = document.querySelector('header.study-shell');
   if (prebuilt) prebuilt.replaceWith(shell); else document.body.prepend(shell);
+  menu.addEventListener('click', () => {
+    const open = menu.getAttribute('aria-expanded') !== 'true';
+    menu.setAttribute('aria-expanded', String(open));
+    shell.classList.toggle('study-menu-open', open);
+  });
+  shell.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+    menu.setAttribute('aria-expanded', 'false');
+    shell.classList.remove('study-menu-open');
+  }));
   function updateMode() { shell.querySelectorAll('[data-mode]').forEach(a => { if (a.dataset.mode === activeMode()) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
   updateMode(); addEventListener('hashchange', updateMode);
   const main = document.querySelector('main');
