@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Boxes of Different Shapes">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=pra1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=prg1123"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Boxes of Different Shapes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+
+/* Informatik: code blocks, program output, method and trace boxes */
+code, pre.code, pre.out { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+code { font-size: .88em; background: var(--accent-soft); padding: .05em .3em; border-radius: 4px; overflow-wrap: anywhere; }
+pre.code, pre.out { margin: 0; padding: .75rem .9rem; border-radius: 8px; overflow-x: auto; font-size: .84rem; line-height: 1.5; tab-size: 2; white-space: pre; }
+pre.code { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); }
+pre.code code, pre.out code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+pre.out { background: var(--exam); border: 1px solid var(--rule); border-left: 3px solid var(--exam-edge); }
+pre.out::before { content: "Output"; display: block; font-family: var(--font-util); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.tk-c { color: var(--muted); font-style: italic; }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-s { color: var(--exam-edge); }
+.tk-p { color: var(--story-edge); }
+.method { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: .9rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.method h3, .method h4 { margin: 0; }
+.method ol { gap: .5rem; }
+.method .q { font-weight: 600; }
+.trace td, .trace th { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85rem; white-space: nowrap; }
+.trace td.note, .trace th.note { font-family: var(--font-body); white-space: normal; }
+.task { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.task h3 { margin: 0; }
+.pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
+.small { font-size: .9rem; color: var(--muted); }
+@media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prg1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=prg1123">
+<script defer src="assets/studyhub.js?v=inf1123"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="informatik">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="informatik.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="inf-method.html" data-mode="practice">Task method</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Informatik · Lesson 2</span>
+<h1>Boxes of Different Shapes</h1>
+<p class="lead">How C++ reads an expression (precedence, associativity, expression trees), what integer division and % really do, and the four fundamental types int, unsigned int, double and bool, with the exam's favourite task: give the type and the value.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap">Recap of lesson 1 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story">1. The story: boxes of different shapes</a>
+</li>
+<li><a href="#s2-precedence">2. How C++ reads an expression: precedence and associativity</a>
+<ol>
+<li><a href="#expression-trees">Expression trees</a></li>
+</ol></li>
+<li><a href="#s3-arithmetic-operators">3. The arithmetic operators, and their surprises</a>
+<ol>
+<li><a href="#assignment-is-right-associative">Assignment is right associative</a></li>
+<li><a href="#integer-division">Integer division: the lost remainder</a></li>
+<li><a href="#modulo">Modulo, and negative numbers</a></li>
+<li><a href="#we-1">Worked example 1: <code>-7 / 2</code>, <code>-7 % 2</code>, <code>7 % -2</code></a></li>
+<li><a href="#increment-and-decrement">Increment and decrement</a></li>
+</ol></li>
+<li><a href="#s4-integers">4. Integers: int and unsigned int</a>
+<ol>
+<li><a href="#range-of-int">The range of int</a></li>
+<li><a href="#unsigned-int">unsigned int: the clock</a></li>
+<li><a href="#mixed-expressions">Mixed expressions: int meets unsigned</a></li>
+<li><a href="#we-2">Worked example 2: why the script says "avoid unsigned" (Example 4.4, p. 39)</a></li>
+</ol></li>
+<li><a href="#s5-floating-point">5. Floating point numbers: float and double</a>
+<ol>
+<li><a href="#literals">Literals: what type is a number?</a></li>
+<li><a href="#holes">Holes in the value range</a></li>
+</ol></li>
+<li><a href="#s6-bool">6. Logical values: bool</a>
+<ol>
+<li><a href="#binding-of-operators">The binding ladder</a></li>
+<li><a href="#conversion-bool-int">bool and int convert into each other</a></li>
+<li><a href="#we-3">Worked example 3: <code>8 &gt; 4 &gt; 2 &gt; 1</code> (Code Expert Exercise 2, Task 2)</a></li>
+<li><a href="#de-morgan">De Morgan's rules</a></li>
+<li><a href="#short-circuit">Short circuit evaluation</a></li>
+<li><a href="#completeness">Completeness: three operators are enough</a></li>
+</ol></li>
+<li><a href="#type-and-value-method">7. The exam task: type and value in five steps</a>
+<ol>
+<li><a href="#the-five-steps">Type and value in five steps</a></li>
+<li><a href="#we-4">Worked example 4: IFMP January 2018, task 1 (official exam, 9 points)</a></li>
+<li><a href="#ct-1">Coding task 1: seconds to hours, minutes and seconds</a></li>
+<li><a href="#ct-2">Coding task 2: equivalent resistance, rounded (Code Expert Exercise 2, Task 3)</a></li>
+</ol></li>
+<li><a href="#worked-examples">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-5">Worked example 5: IFMP January 2016, task 1 (official exam)</a></li>
+<li><a href="#we-6">Worked example 6: IFMP January 2017, task 1 (c) and (f) (official exam)</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (IFMP January 2017, task 1, without (b)) · 7.5 points</a></li>
+<li><a href="#ex-2">Exercise 2 (IFMP August 2017, task 1, without (c)) · 7.5 points</a></li>
+<li><a href="#ex-3">Exercise 3 (IFMP January 2015, task 1) · 6 points</a></li>
+<li><a href="#ex-4">Exercise 4 (IFMP August 2015, task 1) · 6 points</a></li>
+<li><a href="#ex-5">Exercise 5 (IFMP August 2016, task 2) · 6 points</a></li>
+<li><a href="#ex-6">Exercise 6 (true or false, Code Expert Exercise 2, Task 2) · 4 points</a></li>
+</ol></li>
+<li><a href="#summary">Summary: what to keep from lesson 2</a>
+</li>
+<li><a href="#for-wonder">For wonder: unsigned int is a ring</a>
+</li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Read the method box <a href="#type-and-value-method">"Type and value in five steps"</a> and do <a href="#we-1">Worked example 1</a>. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) put <strong>parentheses</strong> into any expression with arithmetic, relational and logical operators, and draw its expression tree; (2) compute <code>/</code> and <code>%</code> for integers, also negative ones, and explain why <code>9 / 5 * c</code> differs from <code>9 * c / 5</code>; (3) say the <strong>value ranges</strong> of <code>int</code> and <code>unsigned int</code> and what overflow does to each; (4) predict the <strong>type</strong> of a mixed expression (<code>int</code> with <code>unsigned int</code>, <code>float</code>, <code>double</code>, <code>bool</code>); (5) evaluate <code>&amp;&amp;</code>, <code>||</code>, <code>!</code> with short circuit and use De Morgan; (6) answer an exam's "type and value" task with the five-step method, 9 of 9 points.</dd></div>
+  <div><dt>Time</dt><dd>About 70 minutes. This is the densest lesson of the first weeks, and the one that pays most points per minute.</dd></div>
+  <div><dt>Script (English lecture notes, printed pages)</dt><dd>
+    <ul>
+      <li><strong>Chapter 3, Expressions, p. 30–36:</strong> arithmetic expressions, precedence and associativity (rules 1–4), expression trees and evaluation order, arithmetic operators (division, modulo, increment, arithmetic assignment).</li>
+      <li><strong>Chapter 4, Fundamental Types, p. 37–48:</strong> integers (range, unsigned, mixed expressions, "avoid unsigned"), floating point numbers, logical values (relational and logical operators, precedences, completeness, conversion, De Morgan, short circuit).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Lecture 2, slide chapters 3 and 4. Code Expert <strong>Exercise 2</strong> (Expressions, Expression Evaluation, Equivalent Resistance) is about exactly this lesson.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Every IFMP exam from 2015 to 2018 opens with a task called <strong>"Typen und Werte / Types and values"</strong>: six expressions, give the C++ type (0.5 P) and value (1 P) of each, 6 to 9 points out of 60. All of them are on this page with full solutions. Your exam is at the computer, but the same knowledge decides whether your code computes what you think: <code>9 / 5</code> silently being 1 is the most common bug in first programs. The official exams warn: "<em>integer</em> or <em>boolean</em> are not C++ types and will be considered as incorrect answers". Write <code>int</code>, <code>unsigned int</code>, <code>float</code>, <code>double</code>, <code>bool</code>.</p></div>
+
+<div class="box"><h3 id="recap">Recap of <a class="xl" href="inf-01.html">lesson 1</a> (5 minutes)</h3>
+<p>A program runs top to bottom inside <code>main</code>. A variable is a box with type, name, value and address; an assignment evaluates the right side and then stores it on the left. An expression has a type, a value, and possibly an effect. Check yourself:</p>
+<ol class="gq">
+  <li>After <code>int a = 4; int b = a; a = a + b;</code>, what are a and b?
+  <details><summary>Answer</summary><div><p>a: <s>4</s>, 8 and b: 4. <code>b = a</code> copied the value 4; changing a later doesn't change b.</p></div></details></li>
+  <li>Why does <code>a + b = 3;</code> not compile?
+  <details><summary>Answer</summary><div><p><code>a + b</code> is an rvalue: it has no address, so nothing can be stored in it. The left side of <code>=</code> must be an lvalue, a box.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>precedence</td><td>Präzedenz</td></tr>
+    <tr><td>associativity (left / right)</td><td>Assoziativität (links- / rechtsassoziativ)</td></tr>
+    <tr><td>arity (unary, binary)</td><td>Stelligkeit (unär, binär)</td></tr>
+    <tr><td>expression tree</td><td>Ausdrucksbaum</td></tr>
+    <tr><td>evaluation order</td><td>Auswertungsreihenfolge</td></tr>
+    <tr><td>integer division, modulo</td><td>Ganzzahldivision, Modulo</td></tr>
+    <tr><td>increment, decrement (pre-, post-)</td><td>Inkrement, Dekrement (Prä-, Post-)</td></tr>
+    <tr><td>arithmetic assignment</td><td>arithmetische Zuweisung</td></tr>
+    <tr><td>fundamental type</td><td>Fundamentaltyp</td></tr>
+    <tr><td>value range, domain</td><td>Wertebereich</td></tr>
+    <tr><td>overflow, underflow</td><td>Überlauf, Unterlauf</td></tr>
+    <tr><td>mixed expression, conversion</td><td>gemischter Ausdruck, Konversion</td></tr>
+    <tr><td>floating point number</td><td>Fliesskommazahl</td></tr>
+    <tr><td>holes in the value range</td><td>Löcher im Wertebereich</td></tr>
+    <tr><td>logical value, truth table</td><td>Wahrheitswert, Wahrheitstabelle</td></tr>
+    <tr><td>relational operator, logical operator</td><td>Vergleichsoperator (relationaler Operator), logischer Operator</td></tr>
+    <tr><td>short circuit evaluation</td><td>Kurzschlussauswertung</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story">1. The story: boxes of different shapes</h2>
+<div class="story">
+<p>The golem's workshop has more kinds of boxes than it seemed on the first day. <em>Whole-number boxes</em> are narrow and exact, but they have a top and a bottom: pour in too much and the result is no longer to be trusted. <em>Clock boxes</em> hold only numbers from zero up, and they wrap around like the clock dials of the Free City's guilds: one past the top is zero again. <em>Float boxes</em> hold fractions and enormous numbers, but they are made of mesh: some values simply fall through the holes and the box keeps the nearest one it can hold. And the smallest boxes of all hold only a yes or a no.</p>
+<p>When an order mixes two shapes ("add this clock box to that whole-number box"), the golem first pours both into the more general shape, and only then computes. It never asks whether that is what you meant.</p>
+<p>And the golem reads every order by a fixed table of ranks. It doesn't see the parentheses you had in mind, only the ones you wrote. Where you wrote none, the rank table decides which operation happens first.</p>
+</div>
+<p>In C++: the shapes are the <strong>fundamental types</strong> <code>int</code>, <code>unsigned int</code>, <code>float</code>/<code>double</code> and <code>bool</code>. "Pouring into the more general shape" is the <strong>implicit conversion</strong> of mixed expressions, the clock wrap-around is <strong>arithmetic modulo $2^B$</strong> for unsigned integers, the mesh is the <strong>holes in the floating point range</strong>, and the rank table is <strong>precedence and associativity</strong>. If you master these four, the "types and values" task is pure routine.</p>
+
+<h2 id="s2-precedence">2. How C++ reads an expression: precedence and associativity</h2>
+<p>The script's example (Code 3.1, p. 30) converts Celsius to Fahrenheit with <code>32 + 9 * celsius / 5</code>. For 15 °C it prints 59, which is right ($32+27$). But how does C++ know not to compute $((32+9)\cdot15)/5$ like an old pocket calculator? Four rules, all from the script (p. 31–32):</p>
+<div class="box">
+<p><strong>Rule 1, precedence.</strong> Multiplicative operators <code>*</code>, <code>/</code>, <code>%</code> bind more strongly than additive operators <code>+</code>, <code>-</code>.</p>
+<p><strong>Rule 2, associativity.</strong> The arithmetic operators <code>*</code>, <code>/</code>, <code>%</code>, <code>+</code>, <code>-</code> are <em>left associative</em>: operators of the same precedence are evaluated from left to right.</p>
+<p><strong>Rule 3, arity.</strong> Unary <code>+</code>, <code>-</code> bind more strongly than the binary <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>. So <code>-3 - 4</code> is <code>(-3) - 4</code>.</p>
+<p><strong>Rule 4, parentheses.</strong> Parentheses override everything: they are stronger than precedence and associativity.</p>
+</div>
+<p>So <code>32 + 9 * celsius / 5</code> means <code>32 + ((9 * celsius) / 5)</code>: rule 1 puts <code>9 * celsius / 5</code> together, rule 2 then does the <code>*</code> before the <code>/</code>. With these rules every expression gets exactly one way of putting in parentheses.</p>
+<div class="exam"><span class="label">Attention (script p. 31)</span>
+<p>C++ knows no commutativity or associativity <em>laws</em>. It never rewrites <code>a * b / c</code> as <code>a * (b / c)</code> because "it's the same in maths". It evaluates by the rules above, full stop. With integer division (section 3) the two really are different.</p></div>
+
+<h3 id="expression-trees">Expression trees</h3>
+<p>The parentheses define a tree (p. 32–33): each operator is a node, its operands hang below it, the leaves are literals and variables, and the root is the last operation. Computer scientists draw trees with the root on top:</p>
+<figure style="margin:0">
+<svg viewBox="0 0 300 170" role="img" aria-label="Expression tree of 32 + ((9 * celsius) / 5)" style="width:100%;max-width:340px;display:block;margin:0 auto">
+<g stroke="var(--rule)" stroke-width="1.5" fill="none"><line x1="150" y1="28" x2="70" y2="70"/><line x1="150" y1="28" x2="210" y2="70"/><line x1="210" y1="80" x2="160" y2="115"/><line x1="210" y1="80" x2="255" y2="115"/><line x1="160" y1="125" x2="115" y2="150"/><line x1="160" y1="125" x2="205" y2="150"/></g>
+<g font-family="ui-monospace,Menlo,monospace" font-size="15" text-anchor="middle" fill="var(--ink)">
+<circle cx="150" cy="22" r="13" fill="var(--surface)" stroke="var(--accent)"/><text x="150" y="27">+</text>
+<text x="66" y="84">32</text>
+<circle cx="210" cy="74" r="13" fill="var(--surface)" stroke="var(--accent)"/><text x="210" y="79">/</text>
+<circle cx="160" cy="120" r="13" fill="var(--surface)" stroke="var(--accent)"/><text x="160" y="125">*</text>
+<text x="258" y="129">5</text>
+<text x="112" y="164">9</text><text x="214" y="164">celsius</text></g>
+</svg>
+<figcaption class="small">The tree of <code>32 + ((9 * celsius) / 5)</code> (script Figure 3.3). Evaluate from the leaves up: first <code>9 * celsius</code>, then <code>/ 5</code>, then <code>32 +</code>.</figcaption>
+</figure>
+<p>The tree says: a node can only be evaluated <strong>after its children</strong>. It does <em>not</em> say which of two sibling subtrees goes first. In <code>(a+b) * (a-b)</code>, C++ may compute <code>a+b</code> or <code>a-b</code> first; the order is not defined (p. 32–33). Normally that doesn't matter. It matters when a subexpression <em>changes</em> a variable that another one reads:</p>
+<div class="box"><p><strong>"Good" and "bad" expressions</strong> (p. 33). An expression is <em>good</em> if every valid evaluation order gives the same result. <code>a * (a = 2)</code> with <code>a</code> = 1 is <em>bad</em>: reading <code>a</code> first gives $1\cdot2=2$, assigning first gives $2\cdot2=4$.</p>
+<p><strong>Guideline:</strong> avoid modifying a variable that is used in the same expression more than once.</p></div>
+
+<h2 id="s3-arithmetic-operators">3. The arithmetic operators, and their surprises</h2>
+<h3 id="assignment-is-right-associative">Assignment is right associative</h3>
+<p>Unlike <code>-</code>, the assignment is <strong>right associative</strong> (p. 34): <code>a = b = c</code> means <code>a = (b = c)</code>. The inner assignment's value is the new <code>b</code>, which is then stored in <code>a</code>. Useful for <code>a = b = 0;</code>. Unary <code>-</code> and <code>+</code> are right associative too, simply because their operand stands on the right.</p>
+
+<h3 id="integer-division">Integer division: the lost remainder</h3>
+<p>If both operands are integers, <code>/</code> is <strong>integer division</strong>: it drops the remainder (rounds towards 0). So <code>5 / 2</code> is 2. This breaks a mathematical identity (script Example 3.1, p. 35):</p>
+<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">const</span> <span class="tk-k">int</span> celsius = 15;
+  <span class="tk-c">// 9 * 15 = 135, then 135 / 5 = 27: exact</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; 32 + 9 * celsius / 5 &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-c">// 9 / 5 = 1 (remainder lost!), 1 * 15 = 15</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; 32 + 9 / 5 * celsius &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>59
+47</code></pre>
+<div class="box"><p><strong>Guideline</strong> (p. 35): watch out for potential loss of precision, and postpone operations with potential loss of precision, to avoid error escalation. Here: multiply first, divide last.</p></div>
+
+<h3 id="modulo">Modulo, and negative numbers</h3>
+<p><code>a % b</code> is the remainder of the integer division: <code>5 % 2</code> is 1. Two rules pin down every case, also negative ones (p. 35):</p>
+<div class="box">
+<p><strong>Div-mod identity:</strong> <code>(a / b) * b + a % b</code> equals <code>a</code>.</p>
+<p><strong>Sign rule:</strong> <code>(-a) / b</code> equals <code>-(a / b)</code>. Division rounds towards zero.</p>
+</div>
+<p>So <code>-3 / 5</code> is 0 (because <code>3 / 5</code> is 0), and then the identity forces <code>-3 % 5</code> = $-3 - 0\cdot5 = -3$. In mathematics, $-3 \bmod 5 = 2$. The script's fix, for $m&gt;0$: <code>(a % m + m) % m</code> gives the mathematical result (here $(-3+5)\bmod5=2$).</p>
+<div class="box"><h3 id="we-1">Worked example 1: <code>-7 / 2</code>, <code>-7 % 2</code>, <code>7 % -2</code></h3>
+<ol class="gq">
+  <li><code>-7 / 2</code>?
+  <details><summary>Answer</summary><div><p><code>7 / 2</code> is 3, so by the sign rule <code>-7 / 2</code> is −3 (towards zero, not −4).</p></div></details></li>
+  <li><code>-7 % 2</code>? Use the identity.
+  <details><summary>Answer</summary><div><p>$-7 = (-3)\cdot2 + r$ gives $r=-1$. So <code>-7 % 2</code> is −1. A practical consequence: the test "<code>x % 2 == 1</code>" for odd numbers fails for negative odd x. Test <code>x % 2 != 0</code> instead.</p></div></details></li>
+  <li><code>7 % -2</code>?
+  <details><summary>Answer</summary><div><p><code>7 / -2</code> is −3 (towards zero), and $7 = (-3)(-2) + r$ gives $r = 1$. The remainder takes the sign of the left operand.</p></div></details></li>
+</ol></div>
+
+<h3 id="increment-and-decrement">Increment and decrement</h3>
+<p><code>++x</code> and <code>x++</code> both increase <code>x</code> by 1 (the operand must be an lvalue). The difference is the <strong>value</strong> of the expression (p. 35–36):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>expression</th><th>effect</th><th>value</th><th>lvalue?</th></tr></thead>
+<tbody>
+<tr><td><code>++x</code> (pre-increment)</td><td>x increases by 1</td><td>the <strong>new</strong> value</td><td>yes (it is x itself)</td></tr>
+<tr><td><code>x++</code> (post-increment)</td><td>x increases by 1</td><td>the <strong>old</strong> value</td><td>no</td></tr>
+</tbody></table></div>
+<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> a = 7;
+  <span class="tk-k">std</span>::cout &lt;&lt; ++a &lt;&lt; <span class="tk-s">"\n"</span>; <span class="tk-c">// a becomes 8, prints 8</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; a++ &lt;&lt; <span class="tk-s">"\n"</span>; <span class="tk-c">// prints 8, then a is 9</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; a &lt;&lt; <span class="tk-s">"\n"</span>;   <span class="tk-c">// 9</span>
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>8
+8
+9</code></pre>
+<p><code>--x</code> and <code>x--</code> work the same way downwards. As statements on their own, <code>++a;</code> and <code>a++;</code> do the same thing, because the value is thrown away.</p>
+<p><strong>Arithmetic assignments</strong> (p. 36): <code>a += b</code> means <code>a = a + b</code> (but evaluates <code>a</code> once). The same exists for <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>.</p>
+
+<h2 id="s4-integers">4. Integers: int and unsigned int</h2>
+<h3 id="range-of-int">The range of int</h3>
+<p>Every variable lives in memory with a fixed number of bits, so its type can only hold finitely many values (p. 37). With $B$ bits, <code>int</code> holds the $2^B$ integers</p>
+<span class="math-display" style="display:block">$$\{-2^{B-1},\ -2^{B-1}+1,\ \dots,\ -1,\ 0,\ 1,\ \dots,\ 2^{B-1}-1\}.$$</span>
+<p>On almost every machine (and on Code Expert) $B=32$: from $-2147483648$ to $2147483647$, about $\pm 2.1$ billion. C++ only guarantees $B\ge16$.</p>
+<div class="exam"><span class="label">Overflow (p. 38)</span>
+<p>If an <code>int</code> computation leaves the range, that is <strong>undefined behavior</strong>: no guarantee, no error message. The script's power8 program prints $15^8 = -1732076671$. Know the rough size: $10^9$ fits, $10^{10}$ does not.</p></div>
+
+<h3 id="unsigned-int">unsigned int: the clock</h3>
+<p><code>unsigned int</code> holds the $2^B$ numbers $\{0, 1, \dots, 2^B-1\}$ (p. 38). Literals get the suffix <code>u</code>: <code>17u</code>. All the arithmetic operators work. The big difference: unsigned over- and underflow are <strong>defined</strong>; the result is computed <strong>modulo $2^B$</strong>. So with $B=32$, <code>0u - 1u</code> is $2^{32}-1 = 4294967295$. It is the clock arithmetic $\mathbb Z/2^{32}$ from <a class="xl" href="linalg-01.html">Linear Algebra lesson 1</a>.</p>
+
+<h3 id="mixed-expressions">Mixed expressions: int meets unsigned</h3>
+<p>If one operand is <code>int</code> and the other <code>unsigned int</code>, the result is <code>unsigned int</code>, the "more general" type, and the <code>int</code> operand is converted <strong>before</strong> computing (p. 38–39):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>int value x</th><th>becomes the unsigned value</th></tr></thead>
+<tbody><tr><td>$x\ge0$</td><td>$x$</td></tr><tr><td>$x&lt;0$</td><td>$x+2^B$</td></tr></tbody></table></div>
+<p>For example, −1 becomes $2^{32}-1$. The other way, <code>int a = 3u;</code> converts back and keeps the value as long as it fits.</p>
+<div class="box"><h3 id="we-2">Worked example 2: why the script says "avoid unsigned" (Example 4.4, p. 39)</h3>
+<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> a = 10;
+  <span class="tk-k">int</span> b = -110;
+  <span class="tk-k">int</span> c = (a + b) / 10;  <span class="tk-c">// what is c?</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"c="</span> &lt;&lt; c &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li>What is the type of <code>a + b</code>, and what happens to <code>b</code>?
+  <details><summary>Answer</summary><div><p><code>unsigned int</code>. <code>b</code> = −110 is converted to $2^{32}-110 = 4294967186$.</p></div></details></li>
+  <li>Finish the computation.
+  <details><summary>Answer</summary><div><p><code>a + b</code> $= 4294967196$ (that is $-100 + 2^{32}$, as an unsigned). <code>/ 10</code> is unsigned integer division: $429496719$. That fits into an <code>int</code>, so</p>
+<pre class="out"><code>c=429496719</code></pre>
+  <p>instead of the −10 you'd expect. One unsigned variable silently turned the whole computation into clock arithmetic.</p></div></details></li>
+</ol>
+<p><strong>Guideline</strong> (p. 39): avoid unsigned integers unless you have specific reasons to use them. The C++ Core Guidelines (Sutter, Stroustrup) say the same. Use <code>int</code>.</p></div>
+
+<h2 id="s5-floating-point">5. Floating point numbers: float and double</h2>
+<p>With <code>int</code> only, <code>9 * celsius / 5 + 32</code> rounds silently. For 16 °C you'd expect 60.8, but get 60 (p. 40; the script uses 15 here, which happens to give exactly 59). For fractions we need <code>float</code> or <code>double</code> (p. 40–42):</p>
+<ul>
+  <li><code>float</code>: about <strong>7</strong> significant digits, exponent up to about ±38.</li>
+  <li><code>double</code> ("double precision"): about <strong>15</strong> digits, exponent up to about ±308. Use <code>double</code> by default.</li>
+  <li>The division <code>/</code> is the real division. There is <strong>no <code>%</code></strong> for floating point numbers (it doesn't compile).</li>
+</ul>
+<h3 id="literals">Literals: what type is a number?</h3>
+<p>A literal is a floating point literal if it has a decimal point and/or an exponent. By default it is a <code>double</code>; the suffix <code>f</code> makes it a <code>float</code> (p. 41):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>literal</th><th>type</th><th>value</th></tr></thead>
+<tbody>
+<tr><td><code>2</code></td><td><code>int</code></td><td>2</td></tr>
+<tr><td><code>2u</code></td><td><code>unsigned int</code></td><td>2</td></tr>
+<tr><td><code>1.0</code></td><td><code>double</code></td><td>1</td></tr>
+<tr><td><code>1.27f</code></td><td><code>float</code></td><td>1.27</td></tr>
+<tr><td><code>1e3</code></td><td><code>double</code></td><td>1000</td></tr>
+<tr><td><code>1.23e-7</code></td><td><code>double</code></td><td>$1.23\cdot10^{-7}$</td></tr>
+<tr><td><code>1.23e-7f</code></td><td><code>float</code></td><td>$1.23\cdot10^{-7}$</td></tr>
+<tr><td><code>true</code>, <code>false</code></td><td><code>bool</code></td><td></td></tr>
+</tbody></table></div>
+<p><strong>Mixed expressions</strong> (p. 42): floating point is "more general" than integers, so in <code>9 * celsius / 5 + 32</code> with <code>celsius</code> a <code>float</code>, the integer literals are converted to <code>float</code> first and the result is a <code>float</code>. And <code>float</code> with <code>double</code> gives <code>double</code>.</p>
+<h3 id="holes">Holes in the value range</h3>
+<p>The script's surprise (p. 42): read 1.1, 1.0 and 0.1 into <code>float</code>s and print <code>n1 - n2 - d</code>. Mathematically 0; the program prints <code>2.23517e-08</code>. Not every decimal number can be stored exactly: floating point numbers have a huge range, but <strong>holes</strong>. 0.1 is one of the values that falls through the mesh. The consequence for now: <strong>never test floating point numbers with <code>==</code></strong> unless you know the values are exact (like 0.25 or 2000). Why exactly is lesson 8 (number representations).</p>
+
+<h2 id="s6-bool">6. Logical values: bool</h2>
+<p>The type <code>bool</code> has two values, the literals <code>false</code> and <code>true</code> (p. 43). They come from the <strong>relational operators</strong>, which compare two arithmetic values and give a <code>bool</code> (an rvalue): <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>==</code> (equal), <code>!=</code> (not equal). For example <code>a % 3 == 1</code> is <code>true</code> for <code>a</code> = 4 (p. 44).</p>
+<p>The <strong>logical operators</strong> combine <code>bool</code>s (p. 44):</p>
+<div class="table-wrap"><table class="trace">
+<thead><tr><th>x</th><th>y</th><th>x &amp;&amp; y (AND)</th><th>x || y (OR)</th><th>!x (NOT)</th></tr></thead>
+<tbody>
+<tr><td>false</td><td>false</td><td>false</td><td>false</td><td>true</td></tr>
+<tr><td>false</td><td>true</td><td>false</td><td>true</td><td>true</td></tr>
+<tr><td>true</td><td>false</td><td>false</td><td>true</td><td>false</td></tr>
+<tr><td>true</td><td>true</td><td>true</td><td>true</td><td>false</td></tr>
+</tbody></table></div>
+<h3 id="binding-of-operators">The binding ladder</h3>
+<p>To put parentheses into a mixed expression you need the ranks. The script's short version (p. 45–46), from strongest to weakest:</p>
+<div class="method">
+<ol>
+  <li>unary operators: <code>!</code>, unary <code>-</code>, <code>++</code>, <code>--</code></li>
+  <li>binary arithmetic: <code>*</code> <code>/</code> <code>%</code>, then <code>+</code> <code>-</code></li>
+  <li>relational: <code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code>, then <code>==</code> <code>!=</code></li>
+  <li>logical: <code>&amp;&amp;</code>, then <code>||</code></li>
+  <li>assignment <code>=</code>, <code>+=</code>, … (right associative)</li>
+</ol>
+<p class="small">Within a level, left to right (except unary operators and assignment). The script lumps all relational operators together; the full table on cppreference puts <code>==</code>/<code>!=</code> one rank below <code>&lt;</code>/<code>&gt;</code>, as listed here. You will rarely need that detail.</p>
+</div>
+<p>Script Example 4.8: <code>7 + x &lt; y &amp;&amp; y != 3 * z || ! b</code> is <code>((7 + x) &lt; y) &amp;&amp; (y != (3 * z)) || (!b)</code>, and since <code>&amp;&amp;</code> binds more strongly than <code>||</code>: <code>(((7 + x) &lt; y) &amp;&amp; (y != (3 * z))) || (!b)</code>. Don't be fooled by layout: <code>a || b &amp;&amp; c || d</code> is <code>a || (b &amp;&amp; c) || d</code>.</p>
+
+<h3 id="conversion-bool-int">bool and int convert into each other</h3>
+<p>Inherited from C (p. 47–48): <code>true</code> becomes 1 and <code>false</code> becomes 0; any int ≠ 0 becomes <code>true</code> and 0 becomes <code>false</code>. So <code>int a = true;</code> gives 1 and <code>bool b = 3;</code> gives <code>true</code>. That is how <code>3 &gt; (1 &lt; true)</code> even compiles: <code>1 &lt; true</code> is <code>1 &lt; 1</code>, false, which becomes 0 in <code>3 &gt; 0</code>, true. Using <code>int</code> instead of <code>bool</code> is legal but bad style.</p>
+<div class="box"><h3 id="we-3">Worked example 3: <code>8 &gt; 4 &gt; 2 &gt; 1</code> (Code Expert Exercise 2, Task 2)</h3>
+<ol class="gq">
+  <li>Put in the parentheses.
+  <details><summary>Answer</summary><div><p>Relational operators are left associative: <code>((8 &gt; 4) &gt; 2) &gt; 1</code>. It is not the mathematical chain $8&gt;4&gt;2&gt;1$.</p></div></details></li>
+  <li>Evaluate.
+  <details><summary>Answer</summary><div><p><code>8 &gt; 4</code> is true, which becomes 1 when compared with 2: <code>1 &gt; 2</code> is false, becomes 0: <code>0 &gt; 1</code> is <strong>false</strong>. Type <code>bool</code>. To say "a lies between 2 and 4" in C++, write <code>2 &lt; a &amp;&amp; a &lt; 4</code>.</p></div></details></li>
+</ol></div>
+
+<h3 id="de-morgan">De Morgan's rules</h3>
+<p>For all <code>a</code>, <code>b</code> (p. 48):</p>
+<div class="box"><p><code>!(a &amp;&amp; b) == (!a || !b)</code> &nbsp;and&nbsp; <code>!(a || b) == (!a &amp;&amp; !b)</code>.</p>
+<p>"Not (sunny and hot)" is "cloudy or cold". "Not (sunny or hot)" is "cloudy and cold". To negate, flip each part and swap AND with OR.</p></div>
+<p>You'll use this every time you negate a loop condition (lesson 3). Check them with the truth table above: four rows each.</p>
+
+<h3 id="short-circuit">Short circuit evaluation</h3>
+<div class="box"><p><strong>Short circuit</strong> (p. 48): <code>&amp;&amp;</code> and <code>||</code> evaluate their <strong>left</strong> operand first. If that already decides the result (false for <code>&amp;&amp;</code>, true for <code>||</code>), the right operand is <strong>not evaluated at all</strong>.</p></div>
+<p>This is a guarantee you can build on (Example 4.11): <code>x != 0 &amp;&amp; z / x &gt; y</code> never divides by zero, because if <code>x</code> is 0 the right side is skipped. It also means side effects on the right may not happen: in <code>true || ++k &gt; 0</code>, <code>k</code> is not incremented.</p>
+
+<h3 id="completeness">Completeness: three operators are enough</h3>
+<p>Are AND, OR and NOT enough to build <em>every</em> logical function of two inputs, for example XOR ("one of them, but not both")? Yes (p. 46–47):</p>
+<div class="box">
+<p><strong>Theorem (completeness, script Theorem 4.1, p. 46).</strong> Every binary logical operator can be expressed with the three operators $\wedge$, $\vee$ and $\neg$.</p>
+<p><strong>The idea.</strong> A function of two bools is just its truth table: four rows, four output bits. Build one tiny formula for each row that is true <em>only</em> in that row, then OR together the formulas of the rows where the function is true.</p>
+<div class="frame"><span class="label">What the definitions force</span>
+<p><strong>First line:</strong> let $f$ be any function $\{0,1\}^2\to\{0,1\}$, written by its column $v$ of the truth table (rows $(x,y)=(0,0),(0,1),(1,0),(1,1)$). <strong>Last line:</strong> a formula in $x,y$ using only $\wedge,\vee,\neg$ that has the same column. <strong>The gap:</strong> one formula per row, and a way to combine them.</p></div>
+<p><strong>Proof.</strong> The four "row formulas" $\neg x\wedge\neg y$, $\neg x\wedge y$, $x\wedge\neg y$, $x\wedge y$ are each true in exactly one row: $(0,0)$, $(0,1)$, $(1,0)$, $(1,1)$ respectively. If the column $v$ of $f$ has at least one 1, let $F$ be the OR of the row formulas of the rows where $v$ is 1. In any row, $F$ is true iff one of its parts is true iff that row is one where $v$ is 1, so $F$ has column $v$. If $v=0000$, take $x\wedge\neg x$, which is always false. <span class="qed">∎</span></p>
+<p><strong>Example.</strong> XOR has column $0110$: true in rows $(0,1)$ and $(1,0)$. So $x\oplus y = (\neg x\wedge y)\vee(x\wedge\neg y)$. The script also gives $(x\vee y)\wedge\neg(x\wedge y)$; check that it has the same column.</p>
+</div>
+<div class="exam"><span class="label">How to reproduce this under exam pressure</span>
+<ol><li>Write the truth table of the function (4 rows).</li><li>For each row with output 1, write the AND of $x$ or $\neg x$ and $y$ or $\neg y$ matching that row.</li><li>OR them together. (All zeros: $x\wedge\neg x$.)</li></ol>
+<p><strong>In short:</strong> one AND per true row, OR them up. In C++: <code>(!x &amp;&amp; y) || (x &amp;&amp; !y)</code>.</p></div>
+<p>Remark 4.1 adds: by De Morgan, $x\vee y = \neg(\neg x\wedge\neg y)$, so AND and NOT alone are already enough.</p>
+
+<h2 id="type-and-value-method">7. The exam task: type and value in five steps</h2>
+<p>This is everything above, packed into one routine. Use it on every "give the C++ type and value" task, and whenever you're not sure what a line of your own code computes.</p>
+<div class="method">
+<h3 id="the-five-steps">Type and value in five steps</h3>
+<ol>
+  <li><span class="q">Where are the parentheses?</span> Use the binding ladder: unary, then <code>* / %</code>, then <code>+ -</code>, then relational, then <code>&amp;&amp;</code>, then <code>||</code>, then <code>=</code>. Same level: left to right.</li>
+  <li><span class="q">What is the type of each leaf?</span> Literals by the table in section 5 (<code>5</code> int, <code>5u</code> unsigned int, <code>5.0</code> and <code>1e3</code> double, <code>5.0f</code> float); variables as declared.</li>
+  <li><span class="q">At each operator from the bottom up: which type, then which value?</span> Arithmetic: if the operand types differ, convert to the more general one first: <code>bool</code> → <code>int</code> → <code>unsigned int</code> → <code>float</code> → <code>double</code>. Two integer operands: <code>/</code> is integer division. Relational and logical operators always give <code>bool</code>.</li>
+  <li><span class="q">Are there side effects?</span> <code>++x</code> uses the new value, <code>x++</code> the old one. In exams each expression starts from the given initial values.</li>
+  <li><span class="q">Does <code>&amp;&amp;</code> or <code>||</code> stop early?</span> Left side first; if it decides, the right side is never evaluated (even a division by zero there is harmless).</li>
+</ol>
+<p class="small">Then write the type exactly: <code>int</code>, <code>unsigned int</code>, <code>float</code>, <code>double</code>, <code>bool</code>. A <code>bool</code> value is <code>true</code> or <code>false</code>; a <code>double</code> like 4.0 may be written 4.</p>
+</div>
+
+<div class="box"><h3 id="we-4">Worked example 4: IFMP January 2018, task 1 (official exam, 9 points)</h3>
+<p>Give the C++ type and value of: (a) <code>8 + 5 / 3</code> (b) <code>1.0 * 0.1 == 0.1 * 1.0</code> (c) <code>1e1 * 2e2</code> (d) <code>5 / 2.0f + 5 / 2.0</code> (e) <code>!false || true &amp;&amp; false</code> (f) <code>17 % 5u</code>. Try all six first.</p>
+<ol class="gq">
+  <li>(a) and (c): which division, which literal types?
+  <details><summary>Answer</summary><div><p>(a) <code>8 + (5 / 3)</code>; <code>5 / 3</code> is integer division, 1. <strong>int, 9.</strong> (c) Both literals have an exponent, so both are <code>double</code>: $10\cdot200$. <strong>double, 2000.</strong></p></div></details></li>
+  <li>(d): what are the two halves?
+  <details><summary>Answer</summary><div><p><code>(5 / 2.0f) + (5 / 2.0)</code>. Left: int with float gives float, 2.5f. Right: int with double gives double, 2.5. float plus double gives double. <strong>double, 5.</strong></p></div></details></li>
+  <li>(b): same numbers, different order. Is <code>==</code> safe here?
+  <details><summary>Answer</summary><div><p>$1.0$ is exact, and multiplying by 1 changes nothing, so both sides are the same stored value of 0.1. <strong>bool, true.</strong> (The danger of <code>==</code> is rounding, and there is none here.)</p></div></details></li>
+  <li>(e) and (f).
+  <details><summary>Answer</summary><div><p>(e) <code>(!false) || (true &amp;&amp; false)</code>: the left side is already <code>true</code>, so short circuit stops. <strong>bool, true.</strong> (f) int with unsigned int: <strong>unsigned int</strong>, $17 \bmod 5 = $ <strong>2</strong>.</p></div></details></li>
+</ol>
+<p class="small">All six answers match the official solution of IFMP_2018_Exam_IFMP_2018_01, and were also checked by compiling them.</p></div>
+
+<div class="task" id="task-1"><h3 id="ct-1">Coding task 1: seconds to hours, minutes and seconds</h3>
+<p>The reverse of lesson 1's coding task 2. Read a number of seconds <code>t</code> (0 ≤ t &lt; 86400) and print it as <code>h:m:s</code>, for example 3725 as <code>1:2:5</code>.</p>
+<ol class="gq">
+  <li><strong>What goes in, what comes out?</strong>
+  <details><summary>My answer</summary><div><p>In: one <code>int</code> t in [0, 86400). Out: three numbers separated by colons (no leading zeros needed).</p></div></details></li>
+  <li><strong>Examples by hand.</strong> 3725? 59? 86399?
+  <details><summary>My answer</summary><div><p>3725: 3600 fits once, 125 left; 60 fits twice, 5 left: <code>1:2:5</code>. 59: <code>0:0:59</code>. 86399: <code>23:59:59</code>.</p></div></details></li>
+  <li><strong>Steps in words.</strong> What did you do with "fits once, … left"?
+  <details><summary>My answer</summary><div><p>"How often does 3600 fit" is integer division <code>t / 3600</code>; "what's left" is <code>t % 3600</code>. Then the same with 60. No magic step left.</p></div></details></li>
+  <li><strong>Edge case.</strong>
+  <details><summary>My answer</summary><div><p>t = 0 gives <code>0:0:0</code>. Negative t is excluded by the contract (it would give negative parts, since <code>%</code> keeps the sign).</p></div></details></li>
+  <li><strong>Code.</strong>
+  <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
+<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input: seconds since midnight</span>
+  <span class="tk-k">int</span> t;
+  <span class="tk-k">std</span>::cin &gt;&gt; t;
+
+  <span class="tk-c">// computation: / gives "how often", % "what's left"</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> h = t / 3600;     <span class="tk-c">// full hours</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> rest = t % 3600;  <span class="tk-c">// seconds left after them</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> m = rest / 60;    <span class="tk-c">// full minutes</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> s = rest % 60;    <span class="tk-c">// seconds left</span>
+
+  <span class="tk-c">// output</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; h &lt;&lt; <span class="tk-s">":"</span> &lt;&lt; m &lt;&lt; <span class="tk-s">":"</span> &lt;&lt; s &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>1:2:5</code></pre>
+  <p>Check with the div-mod identity: $1\cdot3600 + 125 = 3725$ and $2\cdot60+5=125$. ✓</p></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>3725, 59, 0, 3600 (<code>1:0:0</code>), 86399. And lesson 1's program run on the output should give back the input.</p></div></details></li>
+</ol></div>
+
+<div class="task" id="task-2"><h3 id="ct-2">Coding task 2: equivalent resistance, rounded (Code Expert Exercise 2, Task 3)</h3>
+<p>Resistors R1 and R2 are in series, R3 and R4 are in series, and these two pairs are in parallel. Read four positive <code>int</code>s and print the equivalent resistance <strong>rounded to the nearest integer</strong>. Only <code>int</code> is allowed, and no if-statements. Physics: in series $R=R_a+R_b$; in parallel $R=\frac{R_aR_b}{R_a+R_b}$.</p>
+<ol class="gq">
+  <li><strong>What goes in, what comes out?</strong>
+  <details><summary>My answer</summary><div><p>In: four positive <code>int</code>s. Out: $\frac{R_{12}R_{34}}{R_{12}+R_{34}}$ rounded to the nearest integer, where $R_{12}=R_1+R_2$, $R_{34}=R_3+R_4$.</p></div></details></li>
+  <li><strong>Examples by hand.</strong> R = 1, 1, 1, 1? And 1, 2, 3, 4?
+  <details><summary>My answer</summary><div><p>$R_{12}=R_{34}=2$: $\frac{4}{4}=1$. And $R_{12}=3$, $R_{34}=7$: $\frac{21}{10}=2.1$, rounded 2. A case that must round up: $R_{12}=3$, $R_{34}=3$ (e.g. 1, 2, 1, 2): $\frac{9}{6}=1.5$, rounded 2.</p></div></details></li>
+  <li><strong>Steps in words.</strong> The magic step is "round to nearest". How do you do it with integer division, which always rounds down for positive numbers?
+  <details><summary>My answer</summary><div><p>Rounding $p/q$ to nearest is rounding $p/q + \tfrac12$ down. And $\frac pq+\frac12=\frac{p+q/2}{q}$. So compute <code>(p + q / 2) / q</code>. For odd $q$, <code>q / 2</code> loses a half, which is fine: $p/q$ can then never be exactly halfway.</p></div></details></li>
+  <li><strong>Check the plan on the examples.</strong>
+  <details><summary>My answer</summary><div><p>$p=21, q=10$: $(21+5)/10 = 2$ ✓. $p=9,q=6$: $(9+3)/6=2$ ✓. $p=4,q=4$: $(4+2)/4=1$ ✓.</p></div></details></li>
+  <li><strong>Code.</strong>
+  <details><summary>My answer (written by StudyHub, compiled and tested)</summary><div>
+<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-c">// input</span>
+  <span class="tk-k">int</span> r1, r2, r3, r4;
+  <span class="tk-k">std</span>::cin &gt;&gt; r1 &gt;&gt; r2 &gt;&gt; r3 &gt;&gt; r4;
+
+  <span class="tk-c">// computation</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> r12 = r1 + r2;      <span class="tk-c">// series</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> r34 = r3 + r4;      <span class="tk-c">// series</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> p = r12 * r34;      <span class="tk-c">// numerator</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> q = r12 + r34;      <span class="tk-c">// denominator</span>
+  <span class="tk-c">// round p / q to nearest: add half of q first</span>
+  <span class="tk-k">const</span> <span class="tk-k">int</span> r = (p + q / 2) / q;
+
+  <span class="tk-c">// output</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; r &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>2</code></pre>
+  </div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>1 1 1 1 → 1; 1 2 3 4 → 2; 1 2 1 2 → 2. Big values: $R_{12}R_{34}$ must stay below $2^{31}$, so resistances up to about 20000 each are safe. That is the overflow question from section 4 in practice.</p></div></details></li>
+</ol></div>
+
+<h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
+<div class="box"><h3 id="we-5">Worked example 5: IFMP January 2016, task 1 (official exam)</h3>
+<p>With <code>unsigned int u = 5; int i = -10; double d = 0.25;</code> give type and value of (a) <code>u == 4 * ++d</code> (b) <code>u / 3 * 2.0 + i</code> (c) <code>u - (--i)--</code>.</p>
+<ol class="gq">
+  <li>(a)
+  <details><summary>Answer</summary><div><p><code>++d</code> makes d 1.25 and has that value; <code>4 * 1.25</code> is a double, 5. Then <code>u == 5.0</code>: u is converted to double. <strong>bool, true.</strong></p></div></details></li>
+  <li>(b) Careful with the first division.
+  <details><summary>Answer</summary><div><p><code>((u / 3) * 2.0) + i</code>. <code>u / 3</code> is unsigned integer division: 1. Then <code>1 * 2.0</code> = 2.0 (double), and <code>2.0 + (-10)</code>: i converted to double. <strong>double, −8.</strong> (Note: i is converted to <code>double</code>, not to unsigned, because double is more general.)</p></div></details></li>
+  <li>(c) The hardest one: what is <code>(--i)--</code>?
+  <details><summary>Answer</summary><div><p><code>--i</code> makes i −11 and <em>is</em> i (an lvalue), so <code>--</code> after it is allowed: post-decrement, value −11 (old value), i becomes −12. Then <code>u - (-11)</code>: unsigned minus int gives <strong>unsigned int</strong>. −11 becomes $2^{32}-11$, and $5-(2^{32}-11) = 16 - 2^{32}$, which modulo $2^{32}$ is <strong>16</strong>. Clock arithmetic gives the mathematically right answer here, because the true result 16 is in range.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-6">Worked example 6: IFMP January 2017, task 1 (c) and (f) (official exam)</h3>
+<p>(c) <code>0 / 1 == 0 || 1 / 0 == 1</code> (f) <code>0.1f == 0.1</code></p>
+<ol class="gq">
+  <li>(c) Does it divide by zero?
+  <details><summary>Answer</summary><div><p><code>((0 / 1) == 0) || ((1 / 0) == 1)</code>. The left side is <code>0 == 0</code>, true, so short circuit skips the right side: no division by zero happens. <strong>bool, true.</strong></p></div></details></li>
+  <li>(f) Both are "0.1". Why can the answer be false?
+  <details><summary>Answer</summary><div><p>0.1 falls into a hole. As a <code>float</code> it is rounded to about 7 digits, as a <code>double</code> to about 15 digits, and the two rounded values differ. The float is converted to double for the comparison, but the precision it lost doesn't come back. <strong>bool, false.</strong></p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>All from official IFMP exams (answers from the official solutions, explanations by StudyHub, every one checked by compiling). <strong>Score yourself</strong> the exam way: 0.5 for the type, 1 for the value. Each exercise is 9 points; 7 or more per exercise is exam level.</p>
+
+<h3 id="ex-1">Exercise 1 (IFMP January 2017, task 1, without (b)) · 7.5 points</h3>
+<p>(a) <code>5 / 2 * 2.0</code> (c) <code>0 / 1 == 0 || 1 / 0 == 1</code> (d) <code>1.0e4f / 1.0e2f</code> (e) <code>3 + 17 % 4</code> (f) <code>0.1f == 0.1</code>. (Part (b) uses hexadecimal literals: lesson 8.) (c) and (f) were worked above, so do them fast.</p>
+<details><summary>Solution</summary><div>
+<p>(a) <code>(5 / 2) * 2.0</code>: integer division first, 2, then <code>2 * 2.0</code>: <strong>double, 4</strong>. The trap is computing 2.5 · 2 = 5.</p>
+<p>(c) <strong>bool, true</strong> (short circuit). (d) Both <code>float</code>: <strong>float, 100</strong>. (e) <code>3 + (17 % 4)</code> = 3 + 1: <strong>int, 4</strong>. (f) <strong>bool, false</strong>.</p></div></details>
+
+<h3 id="ex-2">Exercise 2 (IFMP August 2017, task 1, without (c)) · 7.5 points</h3>
+<p>(a) <code>(1 || 1) &amp;&amp; !(1 &amp;&amp; 1)</code> (b) <code>1.0e2f / 2.0e3f</code> (d) <code>1.0f == 1</code> (e) <code>10 % 4 * 5</code> (f) <code>15 / 2 / 5 * 2</code></p>
+<details><summary>Solution</summary><div>
+<p>(a) The ints 1 are converted to <code>true</code>: <code>true &amp;&amp; !true</code> = <code>true &amp;&amp; false</code>: <strong>bool, false</strong>. (It is XOR of 1 and 1, from the completeness section.)</p>
+<p>(b) float / float: $100/2000$: <strong>float, 0.05</strong>. (d) 1 is converted to float, 1.0f == 1.0f, exact: <strong>bool, true</strong>.</p>
+<p>(e) <code>%</code> and <code>*</code> have the same rank, left to right: <code>(10 % 4) * 5</code> = 2 · 5: <strong>int, 10</strong>. (f) <code>((15 / 2) / 5) * 2</code> = (7 / 5) · 2 = 1 · 2: <strong>int, 2</strong>.</p></div></details>
+
+<h3 id="ex-3">Exercise 3 (IFMP January 2015, task 1) · 6 points</h3>
+<p>With <code>int x = 5; int y = 2; double z = 1.5;</code> (each expression starting from these values): (a) <code>x / y + z</code> (b) <code>++y % --x / z</code> (c) <code>x++ * 6 &gt; y * z * 10</code></p>
+<details><summary>Solution</summary><div>
+<p>(a) <code>(x / y) + z</code> = 2 + 1.5: <strong>double, 3.5</strong>.</p>
+<p>(b) <code>((++y) % (--x)) / z</code> = (3 % 4) / 1.5 = 3 / 1.5: <strong>double, 2</strong>.</p>
+<p>(c) <code>(x++ * 6) &gt; ((y * z) * 10)</code>. <code>x++</code> has the old value 5, so the left is 30; the right is 2 · 1.5 · 10 = 30. 30 &gt; 30 is false: <strong>bool, false</strong>.</p></div></details>
+
+<h3 id="ex-4">Exercise 4 (IFMP August 2015, task 1) · 6 points</h3>
+<p>With <code>unsigned int u = 5; int i = -10; float f = 0.25f;</code>: (a) <code>f * 0.5 * 0.32e2 == u / 2 * 2</code> (b) <code>u * -i * f</code> (c) <code>++u - ++i + 10</code></p>
+<details><summary>Solution</summary><div>
+<p>(a) Left: 0.25 · 0.5 · 32 = 4 (double, since 0.5 is a double). Right: <code>(u / 2) * 2</code> = 2 · 2 = 4 (unsigned int). 4.0 == 4: <strong>bool, true</strong>.</p>
+<p>(b) <code>(u * (-i)) * f</code>: <code>-i</code> is the int 10; <code>u * 10</code> is unsigned int 50; <code>50 * f</code> is float 12.5. <strong>float, 12.5</strong>.</p>
+<p>(c) <code>((++u) - (++i)) + 10</code> = (6u − (−9)) + 10. Unsigned: −9 becomes $2^{32}-9$, and $6-(2^{32}-9) \equiv 15$, then +10: <strong>unsigned int, 25</strong>.</p></div></details>
+
+<h3 id="ex-5">Exercise 5 (IFMP August 2016, task 2) · 6 points</h3>
+<p>With <code>int n = 9; int f = 5; unsigned int u = 8; bool a = false; bool b = true;</code>: (a) <code>-n - ++f</code> (b) <code>u-7 == -1</code> (c) <code>a || !b &amp;&amp; !a || b</code></p>
+<details><summary>Solution</summary><div>
+<p>(a) <code>(-n) - (++f)</code> = −9 − 6: <strong>int, −15</strong>.</p>
+<p>(b) <code>(u - 7) == (-1)</code>. Left: unsigned 1. Right: −1 is converted to unsigned for the comparison: $2^{32}-1$. 1 == 4294967295 is false: <strong>bool, false</strong>. (A mathematician says true; the golem pours −1 into a clock box.)</p>
+<p>(c) <code>a || (!b &amp;&amp; !a) || b</code> = false || (false &amp;&amp; true) || true: <strong>bool, true</strong>.</p></div></details>
+
+<h3 id="ex-6">Exercise 6 (true or false, Code Expert Exercise 2, Task 2) · 4 points</h3>
+<p>With <code>int a = 3;</code>: (1) <code>true || false &amp;&amp; false</code> (2) <code>(true || false) &amp;&amp; false</code> (3) <code>3 &gt; (1 &lt; true)</code> (4) <code>2 &lt; a &lt; 4</code></p>
+<details><summary>Solution</summary><div>
+<p>(1) <strong>true</strong>: <code>true || (false &amp;&amp; false)</code>, and short circuit stops at <code>true</code>. (2) <strong>false</strong>: the parentheses force <code>true &amp;&amp; false</code>. (3) <strong>true</strong>: <code>1 &lt; 1</code> is false = 0, and 3 &gt; 0. (4) <strong>true</strong>, but for the wrong reason: <code>(2 &lt; a) &lt; 4</code> is <code>1 &lt; 4</code>. It would be true for every a, even a = 100. Write <code>2 &lt; a &amp;&amp; a &lt; 4</code>.</p></div></details>
+
+<h2 id="summary">Summary: what to keep from lesson 2</h2>
+<div class="box"><ul>
+  <li><strong>Parentheses</strong> by the binding ladder; same rank left to right; assignment right to left. Only parentheses beat the ladder.</li>
+  <li>Two integers: <code>/</code> drops the remainder (towards 0); <code>%</code> follows from <code>(a/b)*b + a%b == a</code>. Divide last.</li>
+  <li><code>int</code>: $[-2^{31}, 2^{31}-1]$, overflow is undefined. <code>unsigned int</code>: $[0, 2^{32}-1]$, computed modulo $2^{32}$. Mixed: the int becomes unsigned ($x+2^{32}$ if negative). Avoid unsigned.</li>
+  <li><code>double</code> (15 digits) &gt; <code>float</code> (7 digits) &gt; integers. Literal types: <code>2</code>, <code>2u</code>, <code>2.0</code>, <code>2e0</code>, <code>2.0f</code>. Holes: don't compare floats with <code>==</code>.</li>
+  <li><code>bool</code>: relational and logical operators; <code>&amp;&amp;</code> before <code>||</code>; De Morgan; short circuit; bool ↔ int (true is 1, nonzero is true).</li>
+  <li><strong>Method:</strong> type and value in five steps (section 7).</li>
+</ul></div>
+
+<h2 id="for-wonder">For wonder: unsigned int is a ring</h2>
+<p>The clock boxes are not a defect but a piece of algebra. <code>unsigned int</code> with <code>+</code> and <code>*</code> is exactly the ring $\mathbb Z/2^{32}$ from <a class="xl" href="linalg-01.html">Linear Algebra lesson 1</a>: every law you proved there holds, for every pair of values, with no exceptions. It is not a field, since 2 has no inverse (there's no $x$ with $2x\equiv1$). But every <em>odd</em> number has one. For example, $3\cdot2863311531 \equiv 1 \pmod{2^{32}}$, so in C++ <code>3u * 2863311531u</code> is <code>1u</code>. Compilers use exactly this trick to replace a slow division by a constant with a fast multiplication.</p>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<ul>
+  <li><strong>The complete precedence table</strong> (cppreference): the binding ladder covers everything this course uses.</li>
+  <li><strong>How <code>int</code> stores negative numbers</strong> (two's complement) and <strong>how floats are built</strong> (mantissa and exponent, IEEE 754): lesson 8, script chapter 11. The script says you don't need the internal representation for the conversion rules here.</li>
+  <li><strong>Hexadecimal literals</strong> like <code>0xa</code> (they appear in old exam type-and-value tasks): lesson 8.</li>
+</ul>
+<p><strong>Next:</strong> lesson 3, control statements: <code>if</code>, <code>while</code>, <code>for</code>, <code>do</code>, <code>break</code> and <code>continue</code>, scope, and the exam's second favourite task, "what does this loop print?".</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="informatik.html">Informatik home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
