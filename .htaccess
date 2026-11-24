@@ -2,6 +2,11 @@
 # Serve pages without ".html" like GitHub Pages does (e.g. /oauth/consent -> /oauth/consent.html,
 # needed by the AI connector's sign-in page).
 RewriteEngine On
+# The AI connector (MCP server, api/mcp.php): https://study-hub.ch/mcp and its OAuth resource description.
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteRule ^mcp/?$ api/mcp.php [L,QSA]
+RewriteRule ^(?:\.well-known/oauth-protected-resource/mcp|mcp/\.well-known/oauth-protected-resource)$ api/mcp.php?meta=1 [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f

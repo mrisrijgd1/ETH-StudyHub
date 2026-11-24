@@ -1,18 +1,23 @@
 # StudyHub connector (MCP server)
 
-Students add `https://qgntwqqmpdiwexnwsmnm.supabase.co/functions/v1/studyhub-mcp` to their own Claude / ChatGPT / Gemini
-and sign in with their StudyHub account (Supabase OAuth 2.1 server; consent page = `oauth/consent.html`).
+Students add `https://study-hub.ch/mcp` to their own Claude / ChatGPT / Gemini and sign in with their StudyHub
+account (the login runs at Supabase's OAuth 2.1 server; consent page = `oauth/consent.html`). Supabase is used
+for the login only: the server, the personal data and all course files are on our Swiss hosting (Infomaniak).
 Setup guide for students: `connect.html`. Personal page: `my.html`.
 
-- `supabase/functions/studyhub-mcp/` — the server (Deno). `server.ts` = HTTP + MCP JSON-RPC + content/exercise tools,
-  `content.ts` = index loading, search, reading, locks, `personal.ts` = My StudyHub, progress, results, gap finder, design, versions,
-  `tools.ts` = tool list + rules sent to the AI.
-- `sql/` — database (run by the workflow through the Supabase Management API; safe to rerun).
-- `build/build_content.py` — builds `content.json` + page images from the built site; `build/upload.py` uploads changed files to the private `connector` bucket.
-- `.github/workflows/connector-deploy.yml` — on every push to main: SQL, deploy, content refresh, smoke test. Needs the repo secret `SUPABASE_ACCESS_TOKEN`.
+- `api/mcp.php` — the server (PHP, deployed with the website; `/mcp` is routed to it in the root `.htaccess`):
+  HTTP + MCP JSON-RPC, exercise/exam tools, locks, and the personal layer (My StudyHub, progress, results,
+  gap finder, design, versions). `api/lib/mcp_content.php` = index loading, search, reading, page images.
+  `api/lib/mcp-tools.json` = tool list + rules sent to the AI.
+- Personal data goes through the same rules as the website (`api/lib/query.php`, MariaDB at Infomaniak).
+- Course content: `build/build_content.py` builds `content.json` + page images; the connector workflow copies
+  them to `studyhub-data/connector/` (outside the website). The private library and the Exam Dive bank are built
+  by the library repo's sync workflow into `studyhub-data/connector-library/` and `studyhub-data/dive/`.
+- `supabase/functions/studyhub-mcp/index.ts` — only a forwarder at the OLD address
+  (`https://qgntwqqmpdiwexnwsmnm.supabase.co/functions/v1/studyhub-mcp`), so connectors added before 25 Nov 2026 keep working. Stores nothing.
+- `sql/` — login-side database at Supabase (run by the workflow; safe to rerun).
+- `.github/workflows/connector-deploy.yml` — on every push to main: SQL, forwarder, content refresh, smoke test.
 
 Rules enforced in the server: exercise solutions are cut out of every page and only returned after `submit_attempt`; hints one at a time (`get_hint` counts);
 official solution files and pages with inline solutions stay locked until an attempt on that exam or a submitted mock; library files only through the signed-in connector.
-Personal data (my_items, progress) is versioned by triggers into `my_versions` (undo / history / restore / reset).
-
-Local test: `deno run -A test/e2e.ts content.json` with an in-memory fake Supabase (not in the repo; see the build thread).
+Personal data (my_items, progress) is versioned into `my_versions` (undo / history / restore / reset).

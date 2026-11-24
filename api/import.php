@@ -25,7 +25,7 @@ $st = $pdo->prepare('INSERT INTO users (id, email, last_seen, created_at) VALUES
                      ON DUPLICATE KEY UPDATE last_seen = GREATEST(COALESCE(last_seen, VALUES(last_seen)), VALUES(last_seen))');
 foreach ($all['auth_users'] ?? [] as $u) {
     $seen = $u['last_sign_in_at'] ?? $u['created_at'] ?? 'now';
-    $st->execute([sh_in('uuid', $u['id']), $u['email'] ?? null, sh_in('ts', $seen), sh_in('ts', $u['created_at'] ?? 'now')]);
+    $st->execute([sh_in('uuid', $u['id']), null, sh_in('ts', $seen), sh_in('ts', $u['created_at'] ?? 'now')]);
     $n++;
 }
 $report['users'] = $n;
