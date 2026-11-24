@@ -925,3 +925,21 @@
   document.addEventListener('sh-auth', showChemistryProgress);
   showChemistryProgress();
 })();
+
+/* Links that can point at something not there yet: the other language's page (not every page is translated) and the
+   ready-made PDF (not built for every page). Check first; if it is missing, go to that language's home page, or open the
+   print dialog ("Save as PDF") instead of a 404. */
+document.addEventListener('click', e => {
+  const a = e.target.closest?.('a.sh-pdf, a.study-guest-language, .study-profile-links a[lang]');
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  let url; try { url = new URL(a.href); } catch (err) { return; }
+  if (url.origin !== location.origin) return;
+  e.preventDefault();
+  const pdf = a.classList.contains('sh-pdf');
+  fetch(url.href, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok, () => true).then(ok => {
+    if (ok && pdf) { const t = document.createElement('a'); t.href = url.href; t.download = a.getAttribute('download') || ''; document.body.append(t); t.click(); t.remove(); }
+    else if (ok) location.href = url.href;
+    else if (pdf) window.print();
+    else location.href = new URL('index.html', url).href;
+  });
+});
