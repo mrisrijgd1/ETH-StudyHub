@@ -2,7 +2,7 @@
 // Polls are answered with one tap and recorded as Umami events ("poll").
 (function () {
   if (/(^|\/)(pdf|script|phys-script)\.html$/.test(location.pathname)) return;
-  var FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform';
+  var FORM = 'feedback.html';
   var de = (document.documentElement.lang || '').slice(0, 2) === 'de';
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -21,7 +21,7 @@
     { t: 'Feeling behind? You’re not alone. This hub was built by a student who fell behind too, and caught up in two weeks.' },
     { t: 'Nothing important is missing: every lesson says what is safe to skip, and the <a href="skipped.html">skip list</a> keeps all of it.' },
     { t: 'Every exam question in the lessons links to the original exam, so you can see it exactly as it was asked.' },
-    { t: 'Thought of a feature? I’d love to hear it: <a href="' + FORM + '" target="_blank" rel="noopener">send feedback</a>.' }
+    { t: 'Thought of a feature? I’d love to hear it: <a href="' + FORM + '">send feedback</a>.' }
   ];
   var DE = [
     { t: 'Jede Lektion endet mit einem optionalen Abschnitt <b>Zum Staunen</b>: fünf Minuten für die schöne Seite des Themas, ohne Prüfungsdruck.' },
@@ -38,7 +38,7 @@
     { t: 'Fühlst du dich im Rückstand? Du bist nicht allein. Dieser Hub wurde von jemandem gebaut, der auch zurückgefallen war und in zwei Wochen aufgeholt hat.' },
     { t: 'Nichts Wichtiges fehlt: Jede Lektion sagt, was du auslassen kannst, und die <a href="skipped.html">Auslassliste</a> hält alles davon fest.' },
     { t: 'Jede Prüfungsaufgabe in den Lektionen verlinkt auf die Originalprüfung, damit du sie genau so siehst, wie sie gestellt wurde.' },
-    { t: 'Hast du eine Idee für eine Funktion? Ich freue mich darauf: <a href="' + FORM + '" target="_blank" rel="noopener">Feedback senden</a>.' }
+    { t: 'Hast du eine Idee für eine Funktion? Ich freue mich darauf: <a href="' + FORM + '">Feedback senden</a>.' }
   ];
   var L = de ? DE : EN;
   // What's new: newest first. Add an entry whenever a lesson or feature goes live (id must be unique).
@@ -189,7 +189,7 @@
           track('poll', { q: tip.id, a: a, lang: de ? 'de' : 'en' });
           answered[tip.id] = a; set('sh-polls', JSON.stringify(answered));
           box.querySelector('.b').outerHTML = '<div class="b sh-tip-thanks">' + (de ? 'Danke! ' : 'Thanks! ') +
-            '<a href="' + FORM + '" target="_blank" rel="noopener">' + (de ? 'Mehr sagen?' : 'Tell me more?') + '</a></div>';
+            '<a href="' + FORM + '">' + (de ? 'Mehr sagen?' : 'Tell me more?') + '</a></div>';
         };
       }
     }
