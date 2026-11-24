@@ -1,0 +1,9 @@
+# Only db.php and feedback.php are reachable from the web; the rest is for the server itself.
+<FilesMatch "^(cron|import)\.php$">
+  Require all denied
+</FilesMatch>
+RewriteEngine On
+RewriteRule ^lib/ - [F,L]
+# pass the login header through to PHP
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
