@@ -6,7 +6,8 @@ const URL_ = 'https://qgntwqqmpdiwexnwsmnm.supabase.co';
 const KEY = 'sb_publishable_Kox04-HlRIieoQbhDlqSuw_ko2783NR'; // public by design (RLS protects the data)
 const SBKEY = 'sb-qgntwqqmpdiwexnwsmnm-auth-token';
 const SDK = new URL('../assets/supabase.js', import.meta.url).href;
-export const BUCKET = 'dive';
+export const BUCKET = 'dive';   // old Supabase bucket name (no longer used)
+const BANK_URL = 'https://study-hub.ch/api/dive-bank.php';
 
 let ready = null;
 let sb = null;
@@ -72,32 +73,17 @@ export async function signIn() {
   await c.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } });
 }
 
-/** Private bank files for signed-in users. Returns { index, files: {name: json}, figureUrl(path) }. */
+/** Private bank for signed-in users, from our own Swiss server (study-hub.ch/api/dive-bank.php).
+ *  Returns the list of questions; figure links are signed for 6 hours. */
 export async function loadPrivateBank(acc, warn = () => {}) {
-  const store = acc.sb.storage.from(BUCKET);
-  const getJson = async (path) => {
-    const { data, error } = await store.download(path);
-    if (error) throw new Error(`${path}: ${error.message || error}`);
-    return JSON.parse(await data.text());
-  };
-  const index = await getJson('index.json');
-  const names = (Array.isArray(index) ? index : index.files || []).map(f => (typeof f === 'string' ? f : f && f.file)).filter(Boolean);
-  const all = [];
-  for (const name of names) {
-    try {
-      const data = await getJson(name);
-      all.push(...(Array.isArray(data) ? data : data.questions || []));
-    } catch (e) { warn(`[dive bank] could not load ${name}: ${e.message}`); }
-  }
-  // figures live in the private bucket too: swap their paths for short-lived signed URLs
-  const paths = [...new Set(all.map(q => q.figure).filter(f => f && !/^[a-z]+:/i.test(f)))];
-  if (paths.length) {
-    const { data, error } = await store.createSignedUrls(paths, 6 * 3600);
-    if (error) warn(`[dive bank] figures unavailable: ${error.message || error}`);
-    const map = new Map((data || []).filter(x => x.signedUrl).map(x => [x.path, x.signedUrl]));
-    for (const q of all) if (q.figure && map.has(q.figure)) q.figure = map.get(q.figure);
-  }
-  return all;
+  const { data } = await acc.sb.auth.getSession();
+  const token = data && data.session ? data.session.access_token : null;
+  if (!token) throw new Error('not signed in');
+  const res = await fetch(BANK_URL, { method: 'POST', headers: { Authorization: 'Bearer ' + token }, credentials: 'omit' });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(j.error || `bank: ${res.status}`);
+  if (!Array.isArray(j.questions)) { warn('[dive bank] empty'); return []; }
+  return j.questions;
 }
 
 /** Save a finished timed, unfiltered dive. Never throws. */
