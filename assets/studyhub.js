@@ -771,6 +771,10 @@
     profileSummary.hidden = !signedIn;
     choices.hidden = false;
     guestOptions.hidden = signedIn;
+    guestOptions.style.cssText = 'display:grid;gap:12px';
+    guestDesignHint.style.margin = '0';
+    choices.style.marginTop = '0';
+    heading.style.marginBottom = signedIn ? '' : '12px';
     appearanceDetails.hidden = !signedIn;
     profileActions.hidden = !signedIn;
     appearanceDetails.classList.toggle('study-profile-appearance-guest', !signedIn);
