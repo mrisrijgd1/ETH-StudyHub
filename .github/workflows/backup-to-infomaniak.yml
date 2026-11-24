@@ -83,7 +83,9 @@ jobs:
               json.dump(out, f, ensure_ascii=False)
           print('tables:', {t: len(v) for t, v in out['tables'].items()}, 'users:', len(out['auth_users']))
           open(os.environ['GITHUB_ENV'], 'a').write('BACKUP_FILE=' + name + '\n')
+          open('backup-name.txt', 'w').write(name)
           PY
+          BACKUP_FILE=$(cat backup-name.txt); rm -f backup-name.txt
           S="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes $DEPLOY_USER@$DEPLOY_HOST"
           scp -i ~/.ssh/deploy_key -o BatchMode=yes "$BACKUP_FILE" "$DEPLOY_USER@$DEPLOY_HOST:studyhub-data/backups/"
           rm -f "$BACKUP_FILE"
