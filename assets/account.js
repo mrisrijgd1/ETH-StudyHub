@@ -97,7 +97,12 @@
       if (window.supabase && window.supabase.createClient) return res();
       var s = document.createElement('script'); s.src = BASE + 'supabase.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s);
     }).then(function () {
-      sb = window.supabase.createClient(URL_, KEY, { auth: { persistSession: true, detectSessionInUrl: true, storageKey: SBKEY } });
+      return window.SHDB ? null : new Promise(function (res, rej) {   // our own data client (data lives on study-hub.ch)
+        var s = document.createElement('script'); s.src = BASE + 'shdb.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s);
+      });
+    }).then(function () {
+      // Supabase only handles the login; SHDB.wrap sends every .from()/.rpc() to our Swiss server.
+      sb = window.SHDB.wrap(window.supabase.createClient(URL_, KEY, { auth: { persistSession: true, detectSessionInUrl: true, storageKey: SBKEY } }));
       return sb.auth.getSession();
     }).then(function (r) {
       if (r.error) throw r.error;

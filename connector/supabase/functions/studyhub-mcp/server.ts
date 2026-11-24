@@ -5,6 +5,7 @@ import type { SupabaseClient } from "npm:@supabase/supabase-js@2.118.0";
 import { TOOLS, INSTRUCTIONS } from "./tools.ts";
 import { Content, loadContent, search, readDoc, segmentFor, wholeDoc, scriptExcerpt, relatedOfficial, pageImage } from "./content.ts";
 import { personal } from "./personal.ts";
+import { dbFor, type Db } from "./db.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "http://localhost";
 const PUBLIC_URL = `${SUPABASE_URL}/functions/v1/studyhub-mcp`;
@@ -26,7 +27,8 @@ function unauthorized(msg = "Sign in to StudyHub to use this connector.") {
   });
 }
 
-export type Ctx = { user: { id: string; email?: string }; content: Content; admin: SupabaseClient };
+// admin = Supabase (login check + course files in storage only); db = personal data on our Swiss server.
+export type Ctx = { user: { id: string; email?: string }; content: Content; admin: SupabaseClient; db: Db };
 
 export async function app(req: Request, admin: SupabaseClient): Promise<Response> {
   const url = new URL(req.url);
@@ -59,7 +61,7 @@ export async function app(req: Request, admin: SupabaseClient): Promise<Response
   let msg: any;
   try { msg = await req.json(); } catch { return json({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } }, 400); }
   const batch = Array.isArray(msg) ? msg : [msg];
-  const ctx: Ctx = { user: { id: u.user.id, email: u.user.email }, content: await loadContent(admin), admin };
+  const ctx: Ctx = { user: { id: u.user.id, email: u.user.email }, content: await loadContent(admin), admin, db: dbFor(token) };
   const out = [];
   for (const m of batch) {
     const r = await handle(m, ctx);
@@ -108,22 +110,22 @@ const J = (o: unknown) => JSON.stringify(o, null, 1);
 
 // ---- item state (hints shown, attempted) ----
 async function getState(ctx: Ctx, item: string) {
-  const { data } = await ctx.admin.from("item_state").select("*").eq("user_id", ctx.user.id).eq("item_id", item).maybeSingle();
+  const { data } = await ctx.db.from("item_state").select("*").eq("user_id", ctx.user.id).eq("item_id", item).maybeSingle();
   return data ?? { hints_shown: 0, attempted_at: null };
 }
 async function setState(ctx: Ctx, item: string, patch: Record<string, unknown>) {
   const cur = await getState(ctx, item);
   const row = { user_id: ctx.user.id, item_id: item, hints_shown: cur.hints_shown, attempted_at: cur.attempted_at, ...patch, updated_at: new Date().toISOString() };
-  const { error } = await ctx.admin.from("item_state").upsert(row);
+  const { error } = await ctx.db.from("item_state").upsert(row);
   if (error) throw new Error(error.message);
 }
 // A PDF's solutions unlock once any question of it was attempted, or a mock of it was submitted.
 async function docUnlocked(ctx: Ctx, docId: string) {
   const base = ctx.content.pdfs[docId]?.solution_of ?? docId;
-  const { data } = await ctx.admin.from("item_state").select("item_id").eq("user_id", ctx.user.id)
+  const { data } = await ctx.db.from("item_state").select("item_id").eq("user_id", ctx.user.id)
     .like("item_id", `doc:${base}#%`).not("attempted_at", "is", null).limit(1);
   if (data?.length) return true;
-  const { data: mk } = await ctx.admin.from("mocks").select("id").eq("user_id", ctx.user.id).eq("exam_id", base).not("submitted_at", "is", null).limit(1);
+  const { data: mk } = await ctx.db.from("mocks").select("id").eq("user_id", ctx.user.id).eq("exam_id", base).not("submitted_at", "is", null).limit(1);
   return !!mk?.length;
 }
 
@@ -228,7 +230,7 @@ async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
       if (x.ex) a.id = x.ex.id;
       const attempt = String(a.attempt ?? "").trim();
       if (attempt.length < 3) return err("Send the student's attempt (typed, or your faithful transcription of their photo). An empty attempt doesn't unlock the solution.");
-      await ctx.admin.from("attempts").insert({ user_id: ctx.user.id, item_id: a.id, kind: x.doc ? "exam" : "exercise", attempt: attempt.slice(0, 20000) });
+      await ctx.db.from("attempts").insert({ user_id: ctx.user.id, item_id: a.id, kind: x.doc ? "exam" : "exercise", attempt: attempt.slice(0, 20000) });
       await setState(ctx, a.id, { attempted_at: new Date().toISOString() });
       const marking = "Mark the attempt now. Compare it line by line with the OFFICIAL solution first (if there is one), then the StudyHub solution. Quote script pages for every definition or theorem used. Say what is correct first, then each gap, with points if a grader's list exists. Finally call save_result with score, max_score, a one-paragraph summary and the list of mistakes (type + topic + short note).";
       if (x.doc) {
@@ -250,7 +252,7 @@ async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
       if (!d || d.type !== "exam") return err("Unknown exam id. Use search with type 'exam' or list_exams.");
       if (d.solution_of) return err("That is a solutions file. Start the mock with the exam itself: " + d.solution_of);
       const minutes = Math.min(Math.max(Number(a.minutes) || 180, 10), 300);
-      const { data, error } = await ctx.admin.from("mocks").insert({ user_id: ctx.user.id, exam_id: d.id, minutes }).select().single();
+      const { data, error } = await ctx.db.from("mocks").insert({ user_id: ctx.user.id, exam_id: d.id, minutes }).select().single();
       if (error) throw new Error(error.message);
       const ends = new Date(Date.parse(data.started_at) + minutes * 60000);
       return text(J({ mock_id: data.id, exam: d.title, minutes, started_at: data.started_at, ends_at: ends.toISOString(),
@@ -258,13 +260,13 @@ async function callTool(name: string, a: any, ctx: Ctx): Promise<any> {
         rules: "Exam conditions: no hints, no solutions, no help with content until submit_mock. Only clarify wording. Remind the student of the time if asked." }));
     }
     case "submit_mock": {
-      const { data: mk } = await ctx.admin.from("mocks").select("*").eq("id", a.mock_id).eq("user_id", ctx.user.id).maybeSingle();
+      const { data: mk } = await ctx.db.from("mocks").select("*").eq("id", a.mock_id).eq("user_id", ctx.user.id).maybeSingle();
       if (!mk) return err("Unknown mock_id.");
       if (mk.submitted_at) return err("This mock was already submitted. Use save_result to store the marking.");
       const now = new Date();
       const used = Math.round((now.getTime() - Date.parse(mk.started_at)) / 60000);
-      await ctx.admin.from("mocks").update({ submitted_at: now.toISOString() }).eq("id", mk.id);
-      await ctx.admin.from("attempts").insert({ user_id: ctx.user.id, item_id: `mock:${mk.id}`, kind: "mock", attempt: String(a.answers ?? "").slice(0, 20000) });
+      await ctx.db.from("mocks").update({ submitted_at: now.toISOString() }).eq("id", mk.id);
+      await ctx.db.from("attempts").insert({ user_id: ctx.user.id, item_id: `mock:${mk.id}`, kind: "mock", attempt: String(a.answers ?? "").slice(0, 20000) });
       const d = C.pdfs[mk.exam_id];
       const solDoc = d?.solution_doc ? C.pdfs[d.solution_doc] : d?.inline_solutions ? d : null;
       return text(J({ mock_id: mk.id, minutes_used: used, minutes_allowed: mk.minutes, over_time: used > mk.minutes,
