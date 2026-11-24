@@ -1,0 +1,82 @@
+name: Deploy to Infomaniak (study-hub.ch)
+
+# Copies the site from main to the Infomaniak Web Hosting (study-hub.ch) over SSH.
+# For now it ONLY runs when someone starts it by hand (Actions tab -> this
+# workflow -> "Run workflow"). The first run should be a dry run: it lists what
+# would be copied and changes nothing. GitHub Pages keeps running as before.
+#
+# Needs one repository secret: INFOMANIAK_SSH_KEY (the private deploy key).
+# Host, user and folder are not secret, so they are written below.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (only list what would change, copy nothing)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-infomaniak
+  cancel-in-progress: false
+
+env:
+  DEPLOY_HOST: 2r672z.ftp.infomaniak.com
+  DEPLOY_USER: 2r672z_deploy
+  DEPLOY_PATH: /sites/study-hub.ch/
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up the SSH key
+        env:
+          SSH_KEY: ${{ secrets.INFOMANIAK_SSH_KEY }}
+        run: |
+          if [ -z "$SSH_KEY" ]; then
+            echo "::error::The secret INFOMANIAK_SSH_KEY is missing."
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Check the login works
+        run: |
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+            "test -d '$DEPLOY_PATH' && echo 'Login OK, site folder found.'"
+
+      - name: Copy the site
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          FLAGS="-rlvz --delete --itemize-changes"
+          if [ "$DRY_RUN" = "true" ]; then
+            FLAGS="$FLAGS --dry-run"
+            echo "DRY RUN: nothing will be changed on the server."
+          fi
+          # Not copied: git data, workflows, the connector source and handoff notes.
+          # Protected on the server: Infomaniak's own settings files.
+          rsync $FLAGS \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='connector/' \
+            --exclude='handoff/' \
+            --filter='P /.user.ini' \
+            --filter='P /.htaccess' \
+            -e "ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
