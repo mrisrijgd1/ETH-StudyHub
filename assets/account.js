@@ -437,11 +437,16 @@
     if (sum) {
       var p = load();
       var GROUPS = [
-        [L('Analysis I', 'Analysis I'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
-        ['Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
-        [L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
-        [L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 21, L('Lessons (so far)', 'Lektionen (bisher)')], ['serie-l', 7, L('Serien explained', 'Serien erklärt')]]],
-        ['Informatik', 'informatik.html', [['inf-', 10, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
+        ['analysis', L('Analysis I', 'Analysis I'), 'analysis.html', [['lesson-', 22, L('Lessons', 'Lektionen')], ['refresher-', 12, L('Refresher units', 'Repetitionseinheiten')], ['serie-a', 6, L('Übungsblätter explained', 'Übungsblätter erklärt')]]],
+        ['chemie', 'Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
+        ['physics', L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
+        ['linalg', L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 21, L('Lessons (so far)', 'Lektionen (bisher)')], ['serie-l', 7, L('Serien explained', 'Serien erklärt')]]],
+        ['informatik', 'Informatik', 'informatik.html', [['inf-', 10, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
+      // Only the person's own subjects (study setup, else their path: Chemie only on the Interdisciplinary path).
+      // A subject with saved progress is always shown, so nothing ever disappears.
+      var mine = null;
+      try { var sv = JSON.parse(localStorage.getItem('sh-subjects') || 'null'); if (Array.isArray(sv) && sv.length) mine = sv; } catch (e) {}
+      if (!mine) { var pth = null; try { pth = localStorage.getItem('sh-path'); } catch (e) {} mine = ['analysis', 'linalg', 'physics'].concat(pth === 'inter' ? ['chemie'] : ['informatik']); }
       function nameOf(k) {
         var n = (k.match(/(\d+)\.html$/) || [])[1]; n = n ? String(+n) : k;
         if (/^lesson-/.test(k)) return L('Analysis lesson ', 'Analysis-Lektion ') + n;
@@ -457,6 +462,9 @@
       }
       var keys = Object.keys(p).filter(function (k) { return /^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[apl]\d+\.html$/.test(k); });
       var any = keys.some(function (k) { return p[k].done; }), html = '';
+      GROUPS = GROUPS.filter(function (g) {
+        return mine.indexOf(g[0]) >= 0 || keys.some(function (k) { return g[3].some(function (t) { return k.indexOf(t[0]) === 0; }) && (p[k].done || p[k].rating || p[k].note); });
+      }).map(function (g) { return g.slice(1); });
       GROUPS.forEach(function (g) {
         var rows = '', fin = [];
         g[2].forEach(function (t) {
