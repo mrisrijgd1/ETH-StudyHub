@@ -48,6 +48,24 @@ window.FC_SUBJECTS = [
            "basis = linearly independent + spanning", "Steinitz!", "1 + 1 = 0 in 𝔽₂", "⟨M⟩: the smallest subspace ⊇ M", "(AB)ᵗ = Bᵗ Aᵗ",
            "Hom(V, W) ≅ M_{m×n}(K)", "V/U …", "Ker(φ) = {0} ⇔ φ injective", "0 · v = 0", "Is that a subspace?"]
     }
+  },
+  {
+    id: "physik",
+    title: "Physik I",
+    path: "physik/",
+    storageKey: "studyhub-physik-flashcards-v1",
+    element: { de: "Kupfer", en: "copper" },
+    flame: { outer: "#0f9f6e", inner: "#8ff0c4" },
+    palette: { fg: "#5fdcaa", fo: "#0b7a55", fo2: "#0f9f6e", fo3: "#08603f", fm: "#2bb884", fm2: "#1fab78",
+               fi: "#8ff0c4", fi2: "#6ee3b0", fc0: "#f4fffa", fc1: "#d4f9e8" },
+    dailyGoal: 20,
+    /* notation as in the script (Ensslin, Physik I): p = mv, F = dp/dt, ω₀, Q, pV = NkT */
+    thoughts: {
+      de: ["F = dp/dt", "actio = reactio", "E = ½mv² + V(r)", "L = r × p", "ω₀ = √(k/m)", "T² ∝ a³", "I = I_S + m d²",
+           "a_Z = v²/r", "F_C = −2m ω × v'", "pV = N k T", "η = 1 − T₂/T₁", "dS ≥ δQ/T", "⟨E_kin⟩ = 3/2 kT", "F = −∇V", "Resonanz!"],
+      en: ["F = dp/dt", "actio = reactio", "E = ½mv² + V(r)", "L = r × p", "ω₀ = √(k/m)", "T² ∝ a³", "I = I_S + m d²",
+           "a_c = v²/r", "F_C = −2m ω × v'", "pV = N k T", "η = 1 − T₂/T₁", "dS ≥ δQ/T", "⟨E_kin⟩ = 3/2 kT", "F = −∇V", "Resonance!"]
+    }
   }
 ];
 
@@ -59,7 +77,6 @@ window.FC_FLAME_STYLE = function (s) {
 };
 
 /* Free flame colours for further subjects (flame test), outer / inner:
-   Kupfer grün          #0f9f6e / #8ff0c4
    Strontium rot        #e0243a / #ffb0a3
    Cäsium/Indium blau   #3d63f2 / #b9ccff
    Natrium gelb         #f0b400 / #fff1a1

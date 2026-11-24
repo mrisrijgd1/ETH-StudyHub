@@ -43,6 +43,7 @@
     definition: ["Definition", "Definition"], satz: ["Satz", "Theorem"], lemma: ["Lemma", "Lemma"],
     proposition: ["Proposition", "Proposition"], beweis: ["Beweis", "Proof"], beispiel: ["Beispiel", "Example"],
     aufgabe: ["Aufgabe", "Exercise"],
+    gesetz: ["Gesetz", "Law"], herleitung: ["Herleitung", "Derivation"], konzept: ["Konzept", "Concept"], experiment: ["Experiment", "Experiment"],
     def: ["Definition", "Definition"], thm: ["Satz", "Theorem"], move: ["Kniff", "Move"], recipe: ["Rezept", "Recipe"]
   };
   const typeLabel = t => (TYPE_LABEL[t] ? L(TYPE_LABEL[t][0], TYPE_LABEL[t][1]) : t || "");
@@ -73,7 +74,8 @@
     const cards = raw ? raw.map((c, i) => ({
       id: c.id || ("k" + ch.id + ":" + (c.title || i)), src: "script", deck: "k" + ch.id, chapter: ch.id,
       category: c.category || "", type: c.type || "", title: c.title || "", front: c.front || "", back: c.back || "",
-      meta: c.meta || "", explanation: c.explanation || "", example: c.example || "", counterexample: c.counterexample || ""
+      meta: c.meta || "", explanation: c.explanation || "", example: c.example || "", counterexample: c.counterexample || "",
+      derivation: c.derivation || "", pitfalls: c.pitfalls || ""
     })) : null;
     const cats = cards ? [...new Set(cards.map(c => c.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "de", { numeric: true })) : [];
     if (cards) chronoKeys(cards, ch.id, cats);
@@ -97,6 +99,9 @@
   }
   function subNo(text, ch) { const m = new RegExp("(?:^|[^\\d.])" + ch + "\\.(\\d+\\.\\d+)").exec(text || ""); return m ? m[1] : null; }
   function chronoKeys(cards, ch, cats) {
+    /* Subjects whose data files already follow the script (config: chronoFileOrder) sort by section, then file
+       order; their meta lines cite figures and tables (Abb. 10.28) that must not be read as item numbers. */
+    if (C.chronoFileOrder) { cards.forEach((c, i) => { c.ord = [cats.indexOf(c.category), i, i]; }); return; }
     const items = cards.map(c => { const t = itemNo(c.title, ch); return t != null ? t : itemNo(c.meta, ch); });
     const subs = cards.map(c => subNo(c.title + " " + c.meta, ch));
     const subMin = {};
@@ -342,6 +347,21 @@
 
   /* Icons: currentColor line drawings, one per chapter */
   const ICONS = {
+    /* Physik I */
+    units: '<path d="M4 28 H36 V34 H4 Z" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M8 28 V31 M12 28 V32 M16 28 V31 M20 28 V33 M24 28 V31 M28 28 V32 M32 28 V31" stroke="currentColor" stroke-width="1.4"/><text x="7" y="20" font-size="13" font-family="Georgia,serif" fill="currentColor">SI</text><text x="24" y="20" font-size="10" font-family="Georgia,serif" fill="currentColor">[m]</text>',
+    trajectory: '<path d="M4 34 Q14 4 36 18" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3" fill="none"/><circle cx="17" cy="13" r="2.6" fill="currentColor"/><path d="M17 13 L29 9 M29 9 L24 7 M29 9 L25 13" stroke="currentColor" stroke-width="2.2" fill="none"/><text x="25" y="6" font-size="8" font-family="Georgia,serif" font-style="italic" fill="currentColor">v</text>',
+    newton: '<rect x="6" y="16" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20 23 H35 M35 23 L30 19 M35 23 L30 27" stroke="currentColor" stroke-width="2.4" fill="none"/><text x="24" y="15" font-size="10" font-family="Georgia,serif" font-style="italic" fill="currentColor">F</text><path d="M4 32 H36" stroke="currentColor" stroke-width="1.4"/>',
+    energy: '<path d="M4 8 Q10 34 20 34 Q30 34 36 8" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="11" cy="22" r="3" fill="currentColor"/><path d="M15 18 Q20 15 25 18" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 2" fill="none"/>',
+    rotation: '<circle cx="20" cy="22" r="11" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 3" fill="none"/><path d="M20 22 V4 M20 4 L17 9 M20 4 L23 9" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M9 22 A11 11 0 0 1 29 17 M29 17 L25 15 M29 17 L28 13" stroke="currentColor" stroke-width="2" fill="none"/>',
+    manybody: '<circle cx="9" cy="12" r="3" fill="currentColor"/><circle cx="30" cy="10" r="4" fill="currentColor"/><circle cx="14" cy="31" r="2.4" fill="currentColor"/><circle cx="32" cy="30" r="3" fill="currentColor"/><path d="M18 20 H24 M21 17 V23" stroke="currentColor" stroke-width="2"/>',
+    orbit: '<ellipse cx="20" cy="20" rx="16" ry="10" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="13" cy="20" r="4" fill="currentColor"/><circle cx="33" cy="15" r="2.2" fill="currentColor"/>',
+    rigidbody: '<ellipse cx="20" cy="26" rx="14" ry="6" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20 4 V34" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2"/><path d="M30 22 A14 6 0 0 1 34 26" stroke="currentColor" stroke-width="2.4" fill="none"/><text x="23" y="12" font-size="10" font-family="Georgia,serif" font-style="italic" fill="currentColor">I</text>',
+    oscillation: '<path d="M3 20 C7 4 11 4 15 20 S23 36 27 20 S33 8 37 20" stroke="currentColor" stroke-width="2.2" fill="none"/><path d="M3 20 H37" stroke="currentColor" stroke-width="1" opacity=".5"/>',
+    thermo: '<path d="M17 6 A3 3 0 0 1 23 6 V24 A6 6 0 1 1 17 24 Z" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="20" cy="29" r="3.4" fill="currentColor"/><path d="M20 29 V13" stroke="currentColor" stroke-width="2.4"/><path d="M26 10 H30 M26 15 H29 M26 20 H30" stroke="currentColor" stroke-width="1.4"/>',
+    vectorcalc: '<text x="3" y="28" font-size="22" font-family="Georgia,serif" fill="currentColor">∇</text><path d="M22 30 L34 14 M34 14 L28 16 M34 14 L33 20" stroke="currentColor" stroke-width="2.2" fill="none"/>',
+    ode: '<text x="2" y="17" font-size="11" font-family="Georgia,serif" font-style="italic" fill="currentColor">ẍ+ω²x</text><text x="10" y="32" font-size="12" font-family="Georgia,serif" fill="currentColor">= 0</text>',
+    gyro: '<path d="M20 34 L8 18 A12 6 0 0 1 32 18 Z" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20 18 V4" stroke="currentColor" stroke-width="2"/><path d="M12 6 A10 4 0 0 0 28 6" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 2" fill="none"/>',
+    maxwell: '<path d="M4 34 H36 M4 34 V4" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M4 34 C10 34 11 8 17 8 C24 8 27 30 36 32" stroke="currentColor" stroke-width="2.2" fill="none"/>',
     /* Lineare Algebra I */
     groupop: '<circle cx="20" cy="20" r="6" stroke="currentColor" stroke-width="2.4" fill="none"/><text x="2" y="26" font-size="15" font-family="Georgia,serif" fill="currentColor" font-style="italic">a</text><text x="30" y="26" font-size="15" font-family="Georgia,serif" fill="currentColor" font-style="italic">b</text>',
     axioms: '<text x="3" y="27" font-size="16" font-family="Georgia,serif" fill="currentColor" font-style="italic">e</text><circle cx="18" cy="21" r="3" stroke="currentColor" stroke-width="1.8" fill="none"/><text x="23" y="27" font-size="16" font-family="Georgia,serif" fill="currentColor" font-style="italic">x</text><text x="10" y="12" font-size="9" font-family="Georgia,serif" fill="currentColor">G₀ G₁ G₂</text>',
@@ -1022,12 +1042,14 @@
     const ttl = c.src === "script" ? c.title : "";
     $("#s-tf").innerHTML = ttl; $("#s-tb").innerHTML = ttl;
     $("#s-cf").innerHTML = c.front; $("#s-cb").innerHTML = c.back;
-    $("#s-cb").classList.toggle("left", c.src === "lesson");
+    $("#s-cb").classList.toggle("left", c.src === "lesson" || !!C.leftBack);
     $("#s-mf").innerHTML = c.meta || ""; $("#s-mb").innerHTML = c.meta || "";
     let x = "";
     if (c.explanation) x += `<div class="fc-xblock"><b>${L("Erklärung", "Explanation")}:</b><br>${c.explanation}</div>`;
+    if (c.derivation) x += `<div class="fc-xblock der"><b>${L("Herleitung (Schritt für Schritt)", "Derivation (step by step)")}:</b><br>${c.derivation}</div>`;
     if (c.example) x += `<div class="fc-xblock ex"><b>${L("Beispiel", "Example")}:</b><br>${c.example}</div>`;
     if (c.counterexample) x += `<div class="fc-xblock cex"><b>${L("Gegenbeispiele", "Counterexamples")}:</b><br>${c.counterexample}</div>`;
+    if (c.pitfalls) x += `<div class="fc-xblock pit"><b>${L("Typische Fehler – darauf achten", "Common mistakes – watch out")}:</b><br>${c.pitfalls}</div>`;
     $("#s-x").innerHTML = x; $("#s-x").classList.remove("open"); $("#s-xt").hidden = !x;
     $("#s-i").textContent = S.idx + 1; $("#s-prev").disabled = S.idx === 0;
     $("#s-cfront").hidden = false; $("#s-cback").hidden = true;
