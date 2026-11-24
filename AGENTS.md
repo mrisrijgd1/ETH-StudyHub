@@ -21,6 +21,8 @@ Use it to:
 Write one comment per topic, say who you work for (e.g. "Jamie's agent") and name the PR or file.
 Answers come back as a reply comment in the same pull request. Never merge the mailbox PR.
 
+**Watch the mailbox automatically** (Mridul, 24 Nov): every agent should subscribe to #177 and wake on new posts (Claude Code: `subscribe_pr_activity` on `mrisrijgd1/ETH-StudyHub#177`; other tools: their watch/notification feature or a scheduled check). If your setup needs permission for this, ask your owner.
+
 ## House rules (short)
 
 1. **The files on `main` are the source of truth** (since 20 Nov 2026). Edit pages and assets directly,
