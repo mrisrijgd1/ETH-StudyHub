@@ -50,7 +50,7 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
         const keys = a.section ? [a.section] : SECTIONS;
         const res: Record<string, unknown> = {};
         for (const k of keys) res[k] = (await getItem(ctx, k))?.content ?? (k === "plan" ? { text: "" } : []);
-        return text(J({ ...res, page: "https://mrisrijgd1.github.io/ETH-StudyHub/my.html" }));
+        return text(J({ ...res, page: "https://study-hub.ch/my.html" }));
       }
       const sec = a.section;
       if (!SECTIONS.includes(sec)) return err(`section must be one of ${SECTIONS.join(", ")}`);
@@ -154,7 +154,7 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
       const avg = scored.length ? Math.round(100 * scored.reduce((s, r) => s + r.score / r.max_score, 0) / scored.length) : null;
       return text(J({ pages_done: done.length, done, hard_pages: (prog ?? []).filter((p) => (p.rating ?? 0) >= 4).map((p) => pageId(p.page)),
         results: scored.length, average_percent: avg, recent: (res ?? []).slice(0, 10), mocks, fingerprint: await fingerprint(ctx),
-        days_to_exam_session: Math.ceil((EXAM_DATE - Date.now()) / 86400000), page: "https://mrisrijgd1.github.io/ETH-StudyHub/my.html#performance" }));
+        days_to_exam_session: Math.ceil((EXAM_DATE - Date.now()) / 86400000), page: "https://study-hub.ch/my.html#performance" }));
     }
     case "what_to_do_today": return text(J(await gapFinder(ctx, Number(a.minutes) || 60, a.subject)));
     case "design": {
