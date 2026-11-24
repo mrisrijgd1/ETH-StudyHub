@@ -2,12 +2,15 @@
 // StudyHub feedback form (replaces the old Google Form). Runs on the Infomaniak Web Hosting.
 // What it does with a message:
 //   1. saves it to a private file OUTSIDE the public website folder (studyhub-data/feedback/ in the hosting home), and
-//   2. e-mails it to contact@study-hub.ch, so the team sees it in the shared inbox.
+//   2. e-mails it to contact@study-hub.ch, where the hosting allows PHP mail() (Infomaniak has it switched off,
+//      so for now messages are read in the Infomaniak File Manager: studyhub-data/feedback/).
 // Nothing is sent to any other service. No cookies. The IP address is only used, hashed, to stop floods
 // (at most 5 messages per hour) and is never stored in plain form.
 // The form itself is feedback.html (and de/feedback.html).
 
 declare(strict_types=1);
+
+ini_set('display_errors', '0');   // never show server paths to visitors
 
 const TO      = 'contact@study-hub.ch';
 const FROM    = 'StudyHub feedback <noreply@study-hub.ch>';
@@ -103,6 +106,6 @@ $headers = [
     'MIME-Version: 1.0',
 ];
 if ($email !== '') { $headers[] = 'Reply-To: ' . $email; }
-$mailed = @mail(TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+$mailed = function_exists('mail') && @mail(TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
 
 back($lang, ($saved || $mailed) ? 'sent' : 'error');
