@@ -47,7 +47,7 @@ test('guest menu offers language and sign-in while hiding design controls', () =
   const element = () => ({ style: {}, hidden: null, value: '', checked: false, disabled: false, classList: { toggle() {} }, setAttribute() {} });
   const design = element(), profileSummary = element(), profileActions = element(), languageLink = element(), choices = element(), appearanceDetails = element();
   appearanceDetails.open = false;
-  const context = { window: { SH: { user: null } }, design, profileSummary, profileActions, choices, appearanceDetails, guestOptions: element(), heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink,
+  const context = { window: { SH: { user: null } }, design, profileSummary, profileActions, choices, appearanceDetails, guestOptions: element(), guestDesignHint: element(), heading: element(), toggle: element(), ICONS: { palette: '' }, login: element(), languageLink,
     editStudySetup: element(), setupDialog: { open: false }, L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
   vm.runInNewContext(body + '\nupdateAccountUI();', context);
   assert.equal(design.hidden, false);
@@ -62,7 +62,7 @@ test('signed-in learners without setup are sent through first-run setup', () => 
   const element = () => ({ style: {}, hidden: null, disabled: false, open: false, textContent: '', classList: { toggle() {} }, setAttribute() {} });
   let required = null;
   const account = { user: { id: 'student', email: 'student@example.test' }, profile: null, accountDataPending: false, studySetup: { read() { return null; } } };
-  const context = { window: { SH: account }, design: element(), profileSummary: element(), profileActions: element(), choices: element(), appearanceDetails: element(), guestOptions: element(), heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink: element(),
+  const context = { window: { SH: account }, design: element(), profileSummary: element(), profileActions: element(), choices: element(), appearanceDetails: element(), guestOptions: element(), guestDesignHint: element(), heading: element(), toggle: element(), ICONS: { palette: '' }, login: element(), languageLink: element(),
     editStudySetup: element(), setupDialog: { open: false }, openStudySetup(value) { required = value; }, URLSearchParams, location: { search: '' }, L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
   vm.runInNewContext(body + '\nupdateAccountUI();', context);
   assert.equal(required, true);
@@ -75,7 +75,7 @@ test('signed-in learners can postpone first-run setup', () => {
   const element = () => ({ style: {}, hidden: null, disabled: false, open: false, textContent: '', classList: { toggle() {} }, setAttribute() {} });
   let opened = false;
   const account = { user: { id: 'student', email: 'student@example.test' }, profile: null, accountDataPending: false, studySetup: { read() { return null; }, skipped() { return true; } } };
-  const context = { window: { SH: account }, design: element(), profileSummary: element(), profileActions: element(), choices: element(), appearanceDetails: element(), guestOptions: element(), heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink: element(),
+  const context = { window: { SH: account }, design: element(), profileSummary: element(), profileActions: element(), choices: element(), appearanceDetails: element(), guestOptions: element(), guestDesignHint: element(), heading: element(), toggle: element(), ICONS: { palette: '' }, login: element(), languageLink: element(),
     editStudySetup: element(), setupDialog: { open: false }, openStudySetup() { opened = true; }, URLSearchParams, location: { search: '' }, L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
   vm.runInNewContext(body + '\nupdateAccountUI();', context);
   assert.equal(opened, false);
