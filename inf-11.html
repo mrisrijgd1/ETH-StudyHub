@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Golem Walks Every Shelf">
+<script defer src="assets/tips.js?v=prv1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script src="assets/move.js"></script><script defer src="assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Golem Walks Every Shelf</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+
+/* Informatik: code blocks, program output, method and trace boxes */
+code, pre.code, pre.out { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+code { font-size: .88em; background: var(--accent-soft); padding: .05em .3em; border-radius: 4px; overflow-wrap: anywhere; }
+pre.code, pre.out { margin: 0; padding: .75rem .9rem; border-radius: 8px; overflow-x: auto; font-size: .84rem; line-height: 1.5; tab-size: 2; white-space: pre; }
+pre.code { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); }
+pre.code code, pre.out code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+pre.out { background: var(--exam); border: 1px solid var(--rule); border-left: 3px solid var(--exam-edge); }
+pre.out::before { content: "Output"; display: block; font-family: var(--font-util); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.tk-c { color: var(--muted); font-style: italic; }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-s { color: var(--exam-edge); }
+.tk-p { color: var(--story-edge); }
+.method { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: .9rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.method h3, .method h4 { margin: 0; }
+.method ol { gap: .5rem; }
+.method .q { font-weight: 600; }
+.trace td, .trace th { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85rem; white-space: nowrap; }
+.trace td.note, .trace th.note { font-family: var(--font-body); white-space: normal; }
+.task { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.task h3 { margin: 0; }
+.pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
+.small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+@media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=onb1124">
+<script defer src="assets/studyhub.js?v=guest1124c"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="informatik">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="informatik.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="inf-method.html" data-mode="practice">Task method</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Informatik · Lesson 11</span>
+<h1>The Golem Walks Every Shelf</h1>
+<p class="lead">Containers and iterators: vector, list, set and unordered_set and what each is good at; iterators with begin(), end(), * and ++; algorithms on iterator ranges; the range-based for loop; and const iterators.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap">Recap of lesson 10 and lesson 5 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story">1. The story: the golem walks every shelf</a>
+</li>
+<li><a href="#s2-containers">2. Containers (script 14.1)</a>
+<ol>
+<li><a href="#we-1">Worked example 1: which container?</a></li>
+</ol></li>
+<li><a href="#s3-iterators">3. Iterators (script 14.2)</a>
+<ol>
+<li><a href="#the-iterator-loop">The iterator loop in four questions</a></li>
+<li><a href="#we-2">Worked example 2: trace an iterator loop</a></li>
+</ol></li>
+<li><a href="#s4-algorithms">4. Ranges, algorithms and the range-based for (script 14.2)</a>
+</li>
+<li><a href="#s5-const">5. Const iterators (script 14.3)</a>
+</li>
+<li><a href="#s6-coding-tasks">6. Walking containers: coding tasks</a>
+<ol>
+<li><a href="#ct-1">Coding task 1: who passed? (script Examples 14.3 and 14.5)</a></li>
+<li><a href="#ct-2">Coding task 2: negate a part (script Example 14.7)</a></li>
+<li><a href="#ct-3">Coding task 3: common days, efficiently (Informatik exam summer 2019, task 9 (b), 8 points)</a></li>
+<li><a href="#ct-4">Coding task 4: replace in a list (script p. 175, "replace(c, e1, e2)")</a></li>
+</ol></li>
+<li><a href="#worked-examples">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-3">Worked example 3: the text task with a const_iterator (Informatik exam summer 2019, task 6)</a></li>
+<li><a href="#we-4">Worked example 4: copy or reference in a range-for?</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Informatik exam summer 2019, task 9 (a), old exam) · 3 points</a></li>
+<li><a href="#ex-2">Exercise 2 (const iterators, after script p. 176–177) · 4 points</a></li>
+<li><a href="#ex-3">Exercise 3 (choosing containers) · 4 points</a></li>
+<li><a href="#ex-4">Exercise 4 (what does it print?) · 4 points</a></li>
+<li><a href="#ex-5">Exercise 5 (true or false) · 4 points</a></li>
+</ol></li>
+<li><a href="#summary">Summary: what to keep from lesson 11</a>
+</li>
+<li><a href="#for-wonder">For wonder: one loop, a hundred algorithms <span class="small">(optional, 5 min)</span></a>
+</li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do only sections 3 and 4: read how an iterator loop works and the <a href="#it-method">iterator method</a>, then do <a href="#we-2">Worked example 2</a>. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) name the strengths and weaknesses of <code>std::vector</code>, <code>std::list</code>, <code>std::set</code> and <code>std::unordered_set</code>, and pick one for a task; (2) write an iterator loop with <code>begin()</code>, <code>end()</code>, <code>*it</code> and <code>++it</code>, and say where <code>end()</code> points; (3) write a function on an iterator range <code>[begin, end)</code> and call it on part of a vector; (4) use <code>std::sort</code> and the range-based <code>for</code>, with and without <code>&amp;</code>; (5) say when you need a <code>const_iterator</code>.</dd></div>
+  <div><dt>Time</dt><dd>About 70 minutes. A short chapter; the iterator loop is the one thing to practise until it is automatic, because lessons 12 to 14 are built on it.</dd></div>
+  <div><dt>Script (English lecture notes, printed pages)</dt><dd>
+    <ul>
+      <li><strong>Chapter 14, Containers and Iterators, p. 171–177:</strong> containers: vector, list, unordered_set, set (14.1), iterators, iterator ranges, the algorithms library, the range-based for loop (14.2), const iterators (14.3).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Lecture 10, second part (slide chapter 17 "Containers and Iterators"). Code Expert <strong>Exercise 10</strong> (information hiding, iterators and containers).</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>The summer 2019 exam, task 9 (11 points), asked for the number of common elements of two vectors: first with two index loops (3 points), then with <code>std::sort</code> and two iterators walking side by side (8 points). Its task 6 walked a text with a <code>const_iterator</code>. And from lesson 12 on, every "range" task (IFMP January 2017, task 4; January 2016, task 7) uses exactly the iterator loop of this lesson, with pointers. Coding task 3 is the 2019 task.</p></div>
+
+<div class="box"><h3 id="recap">Recap of <a class="xl" href="inf-10.html">lesson 10</a> and <a class="xl" href="inf-05.html">lesson 5</a> (5 minutes)</h3>
+<p>A class hides its representation and offers functionality. <code>std::vector</code> is such a class: you use <code>v.size()</code>, <code>v[i]</code>, <code>v.push_back(x)</code> and never see how it stores the elements. Check yourself:</p>
+<ol class="gq">
+  <li>What does <code>for (int i = 0; i &lt; std::ssize(v); ++i) v[i] = -v[i];</code> do, and what does it need from the container?
+  <details><summary>Answer</summary><div><p>It negates every element. It needs a size and access by index. Section 3 does the same without indices, so it works for containers that have no index at all.</p></div></details></li>
+  <li>In a const member function, may you call a non-const member function on the same object?
+  <details><summary>Answer</summary><div><p>No. The same idea returns in section 5: a const container only hands out read-only iterators.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>container</td><td>Container (Behälter)</td></tr>
+    <tr><td>list, set, unordered set</td><td>Liste, Menge, ungeordnete Menge</td></tr>
+    <tr><td>random access (index access)</td><td>wahlfreier Zugriff (Indexzugriff)</td></tr>
+    <tr><td>duplicate-free</td><td>duplikatfrei</td></tr>
+    <tr><td>iterator, const iterator</td><td>Iterator, konstanter Iterator</td></tr>
+    <tr><td>to dereference</td><td>dereferenzieren</td></tr>
+    <tr><td>to advance (increment)</td><td>weitersetzen (inkrementieren)</td></tr>
+    <tr><td>half-open range [begin, end)</td><td>halboffenes Intervall [begin, end)</td></tr>
+    <tr><td>range-based for loop</td><td>bereichsbasierte for-Schleife</td></tr>
+    <tr><td>type alias</td><td>Typ-Alias</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story">1. The story: the golem walks every shelf</h2>
+<div class="story">
+<p>The workshop has grown. There is the long row of jars from lesson 5, numbered so you can walk straight to jar 17. There is a chain of rings hanging from the ceiling, where a new ring can be clipped in anywhere, but to find the tenth you must count along from the first. There is a sack of tokens, where every token is there at most once and you can ask "is the red one in?" and get an answer at once, but the tokens have no order. And there is a drawer of the same tokens, sorted.</p>
+<p>The golem is asked: "Count how many items are red." For the jars it knows how: jar 0, jar 1, jar 2. For the chain, the sack and the drawer it is stuck: no numbers.</p>
+<p>So each store gets a guide, a small wooden marker. You ask the store for the marker at its first item, and for the place just behind its last item. The marker can do two things: show you the item it stands at, and step on to the next one. That's all. With those two moves, the golem walks every store the same way.</p>
+</div>
+<p>In C++: the stores are <strong>containers</strong>, the marker is an <strong>iterator</strong>; "the marker at the first item" is <code>c.begin()</code>, "just behind the last" is <code>c.end()</code>, "show the item" is <code>*it</code>, "step on" is <code>++it</code> (p. 174).</p>
+
+<h2 id="s2-containers">2. Containers (script 14.1)</h2>
+<p>A <strong>container</strong> is a collection of elements plus operations on it (p. 171). The standard library has several, because applications have different needs: only appending, rarely removing, often searching, … Each has characteristic strengths (+), weaknesses (−) and neutral properties (○):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>container</th><th>good at</th><th>weak at</th><th>also</th></tr></thead>
+<tbody>
+<tr><td><code>std::vector&lt;T&gt;</code></td><td>access by index <code>v[i]</code>; little memory</td><td>inserting or removing in the middle; searching</td><td>duplicates allowed; insertion order</td></tr>
+<tr><td><code>std::list&lt;T&gt;</code></td><td>inserting and removing anywhere (<code>push_front</code>, <code>push_back</code>, …)</td><td>no index access; more memory</td><td>duplicates allowed; insertion order</td></tr>
+<tr><td><code>std::unordered_set&lt;T&gt;</code></td><td>"is e contained?", inserting, removing</td><td>no order; no index access</td><td>no duplicates</td></tr>
+<tr><td><code>std::set&lt;T&gt;</code></td><td>like unordered_set, and the elements are <strong>sorted</strong></td><td>a bit slower than unordered_set</td><td>no duplicates</td></tr>
+</tbody></table></div>
+<p>A set models a mathematical set: $\{1, 2, 1\} = \{1, 2\} = \{2, 1\}$ (p. 172). <code>s.insert(x)</code> adds x if it isn't there yet. How they work inside (hash tables, red-black trees) is a topic of later courses. The script's use case (p. 172–173): read pairs "name score" and list everyone with at least 50 points once, which a <code>std::set&lt;std::string&gt;</code> does by itself: duplicates vanish, and the names come out in alphabetical order. That is coding task 1.</p>
+<div class="box"><h3 id="we-1">Worked example 1: which container?</h3>
+<ol class="gq">
+  <li>Ten thousand temperatures, read once, then accessed by day number.
+  <details><summary>Answer</summary><div><p><code>std::vector</code>: index access, compact.</p></div></details></li>
+  <li>All different words of a book, printed alphabetically.
+  <details><summary>Answer</summary><div><p><code>std::set&lt;std::string&gt;</code>: no duplicates, sorted.</p></div></details></li>
+  <li>A queue at a ticket counter: people join at the back, leave at the front, and sometimes someone in the middle gives up.
+  <details><summary>Answer</summary><div><p><code>std::list</code>: inserting and removing anywhere is cheap, and nobody asks for "the 57th person".</p></div></details></li>
+  <li>Has this student ID already voted? (thousands of checks)
+  <details><summary>Answer</summary><div><p><code>std::unordered_set</code>: the fastest "contained?" check, order irrelevant.</p></div></details></li>
+</ol></div>
+
+<h2 id="s3-iterators">3. Iterators (script 14.2)</h2>
+<div class="box">
+<p>Every container c offers (p. 174):</p>
+<ul>
+  <li><code>c.begin()</code>: an iterator pointing to the first element;</li>
+  <li><code>c.end()</code>: an iterator pointing <strong>behind</strong> the last element (not to an element!);</li>
+  <li><code>*it</code>: the element the iterator points to (dereference);</li>
+  <li><code>++it</code>: advance by one position.</li>
+</ul>
+<p>An iterator's type belongs to its container: <code>std::vector&lt;int&gt;::iterator</code>, <code>std::list&lt;int&gt;::iterator</code>. Shorten it with a type alias, <code>using ivit = std::vector&lt;int&gt;::iterator;</code>, or let the compiler find it with <code>auto</code>.</p>
+</div>
+<p>Negating every element (Example 14.6):</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v = {1, 2, 3};
+  <span class="tk-k">for</span> (<span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::iterator it = v.begin(); it != v.end(); ++it)
+    *it = -*it;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : v)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>-1 -2 -3</code></pre>
+<p>Since <code>end()</code> is one place behind the last element, the loop condition is <code>it != v.end()</code>, and <code>*v.end()</code> is never allowed. An empty container has <code>begin() == end()</code>: the loop doesn't run at all, without a special case. The pair (begin, end) describes the <strong>half-open range</strong> [begin, end): begin included, end excluded, exactly like indices <code>0 ≤ i &lt; n</code>.</p>
+<p><strong>Why iterators?</strong> (p. 175) They access every container in the same way, so the user stays independent of the container's implementation. The same loop works for a vector, a list, a set:</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;list&gt;</span>
+<span class="tk-p">#include &lt;set&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::list&lt;<span class="tk-k">int</span>&gt; l = {3, 1, 2};
+  l.push_front(0);                   <span class="tk-c">// l = {0, 3, 1, 2}</span>
+  <span class="tk-k">for</span> (<span class="tk-k">auto</span> it = l.begin(); it != l.end(); ++it)
+    <span class="tk-k">std</span>::cout &lt;&lt; *it &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">std</span>::set&lt;<span class="tk-k">int</span>&gt; s = {3, 1, 2, 1};    <span class="tk-c">// duplicates vanish, sorted</span>
+  <span class="tk-k">for</span> (<span class="tk-k">auto</span> it = s.begin(); it != s.end(); ++it)
+    <span class="tk-k">std</span>::cout &lt;&lt; *it &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>0 3 1 2
+1 2 3</code></pre>
+<div class="method" id="it-method">
+<h3 id="the-iterator-loop">The iterator loop in four questions</h3>
+<ol>
+  <li><span class="q">Which range?</span> The whole container: <code>c.begin()</code> to <code>c.end()</code>. A part: two iterators, e.g. <code>v.begin() + i</code> to <code>v.begin() + j</code> (only for vectors, which can jump).</li>
+  <li><span class="q">Which iterator type?</span> <code>T::iterator</code> to change elements, <code>T::const_iterator</code> to read a const container (section 5); or simply <code>auto</code>.</li>
+  <li><span class="q">The loop head?</span> Always <code>for (it = begin; it != end; ++it)</code>. Never <code>&lt;=</code>, never <code>*end</code>.</li>
+  <li><span class="q">The body?</span> The element is <code>*it</code>; write <code>*it = …</code> to change it. In a container of structs, a member is <code>(*it).name</code>.</li>
+</ol></div>
+<div class="box"><h3 id="we-2">Worked example 2: trace an iterator loop</h3>
+<pre class="code"><code><span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v = {4, 7, 1, 8};
+<span class="tk-k">int</span> s = 0;
+<span class="tk-k">for</span> (<span class="tk-k">auto</span> it = v.begin(); it != v.end(); ++it)
+  <span class="tk-k">if</span> (*it % 2 == 0)
+    s += *it;</code></pre>
+<ol class="gq">
+  <li>Fill the table: where does it point, what is <code>*it</code>, what is s after the body?
+  <details><summary>Answer</summary><div>
+  <div class="table-wrap"><table class="trace" data-fill="1"><thead><tr><th>it points to</th><th>*it</th><th>s</th></tr></thead><tbody>
+  <tr><td>element 0</td><td>4</td><td>4</td></tr>
+  <tr><td>element 1</td><td>7</td><td>4</td></tr>
+  <tr><td>element 2</td><td>1</td><td>4</td></tr>
+  <tr><td>element 3</td><td>8</td><td>12</td></tr>
+  <tr><td>end()</td><td>(not allowed)</td><td>12</td></tr>
+  </tbody></table></div>
+  <p>s = 12, the sum of the even elements. At end() the condition is false and the body doesn't run.</p></div></details></li>
+  <li>How many times is <code>it != v.end()</code> evaluated?
+  <details><summary>Answer</summary><div><p>5 times: four times true, once false. Like an index loop over n elements: n + 1 checks.</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-algorithms">4. Ranges, algorithms and the range-based for (script 14.2)</h2>
+<p>Many algorithms of the standard library take an <strong>iterator pair</strong> instead of a container (p. 175). That is more general: it works for every container, and also for <em>part</em> of one. Example 14.7, negating as a function:</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> iterator = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::iterator;
+
+<span class="tk-c">// POST: every element in [begin, end) is negated</span>
+<span class="tk-k">void</span> neg(iterator begin, iterator end) {
+  <span class="tk-k">for</span> (iterator it = begin; it != end; ++it)
+    *it = -*it;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v = {1, 2, 3, 4, 5, 6};
+  neg(v.begin(), v.begin() + (v.size() / 2));   <span class="tk-c">// negates half of the data</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : v)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>-1 -2 -3 4 5 6</code></pre>
+<p>The <strong>algorithms library</strong> (<code>#include &lt;algorithm&gt;</code>) has more than 100 such functions on ranges [begin, end), for example <code>std::sort(v.begin(), v.end())</code> (ascending), <code>std::find</code>, <code>std::fill</code> (p. 176). Not every algorithm works for every container: an unordered_set can't be sorted, and <code>v.begin() + 3</code> only works for containers that can jump, like vector.</p>
+<div class="box">
+<p><strong>Range-based for</strong> (p. 176): the iterator loop over a whole container can be written shorter, and the compiler translates it back:</p>
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">int</span> e : l)        <span class="tk-c">// e is a COPY of each element: read only</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; e;
+<span class="tk-k">for</span> (<span class="tk-k">int</span>&amp; e : l)       <span class="tk-c">// e is a REFERENCE to each element: can change it</span>
+  e += 3;</code></pre>
+<p>Without <code>&amp;</code>, changing e changes only the copy. That is the reference rule of <a class="xl" href="inf-05.html#s6-pass-by-reference">lesson 5</a> once more.</p>
+</div>
+
+<h2 id="s5-const">5. Const iterators (script 14.3)</h2>
+<p>Every container also offers a <strong>const_iterator</strong>, which only grants read access. Calling <code>begin()</code> on a <em>const</em> container automatically gives a const_iterator. So this does <strong>not</strong> compile (Example 14.8):</p>
+<pre class="code"><code><span class="tk-k">const</span> <span class="tk-k">auto</span> x = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;{1, 2, 3};
+<span class="tk-k">for</span> (<span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::iterator it = x.begin(); it != x.end(); ++it)  <span class="tk-c">// error</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; *it;</code></pre>
+<p>A const_iterator, or <code>auto</code>, works (Examples 14.9 and 14.10). This matters most for parameters: in <code>void print(const std::vector&lt;int&gt;&amp; v)</code>, v is const, so its iterators are const_iterators. If you need a const_iterator from a non-const container, use <code>x.cbegin()</code> and <code>x.cend()</code>.</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> cit = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::const_iterator;
+
+<span class="tk-c">// POST: the elements of v have been printed, separated by spaces</span>
+<span class="tk-k">void</span> print(<span class="tk-k">const</span> <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;&amp; v) {
+  <span class="tk-k">for</span> (cit it = v.begin(); it != v.end(); ++it)
+    <span class="tk-k">std</span>::cout &lt;&lt; *it &lt;&lt; <span class="tk-s">" "</span>;        <span class="tk-c">// reading is fine; *it = 0 would not compile</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v = {1, 2, 3};
+  print(v);
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>1 2 3</code></pre>
+
+<h2 id="s6-coding-tasks">6. Walking containers: coding tasks</h2>
+<p>Each task gives you a contract; you write the body, with the six questions of the <a class="xl" href="inf-method.html">Task method</a> and the <a class="xl" href="#it-method">iterator loop</a>. New patterns in this lesson:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>pattern</th><th>shape</th></tr></thead>
+<tbody>
+<tr><td>iterator loop</td><td><code>for (auto it = c.begin(); it != c.end(); ++it) … *it …</code></td></tr>
+<tr><td>a set removes duplicates</td><td><code>std::set&lt;T&gt; s; … s.insert(x); …</code> then walk s: unique and sorted</td></tr>
+<tr><td>function on a range</td><td><code>void f(iterator begin, iterator end)</code>, called with <code>v.begin() + i, v.begin() + j</code></td></tr>
+<tr><td>two iterators side by side</td><td>sort both; <code>while (a != ae &amp;&amp; b != be)</code> advance the one with the smaller element</td></tr>
+</tbody></table></div>
+
+<div class="task" id="task-1"><h3 id="ct-1">Coding task 1: who passed? (script Examples 14.3 and 14.5)</h3>
+<p>The input is a sequence of pairs "name percentage", one per Code Expert submission; the same name may appear several times. Print every name that has at least one submission with 50 % or more, once each, in alphabetical order, separated by spaces.</p>
+<div class="need"><span class="label">You'll need these</span><p>An input loop <code>while (std::cin &gt;&gt; name &gt;&gt; score)</code> (<a class="xl" href="inf-04.html">lesson 4</a>), <code>std::set</code> and <code>insert</code> (<a class="xl" href="#s2-containers">section 2</a>), and the range-based for (<a class="xl" href="#s4-algorithms">section 4</a>).</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> any number of pairs, possibly none.</li>
+  <li><strong>Must hold at the end:</strong> each qualifying name printed exactly once, sorted.</li>
+  <li><strong>The gap to fill:</strong> who removes the duplicates, and who sorts? (Answer: the container, if you pick the right one.)</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the loop and the output, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;Friedrich 90\nSasse 70\nSchwerhoff 10\nLehner 20\nSchwerhoff 11\nSasse 60\nFischer 80&quot;,&quot;out&quot;:&quot;Fischer Friedrich Sasse&quot;},{&quot;in&quot;:&quot;&quot;,&quot;out&quot;:&quot;&quot;},{&quot;in&quot;:&quot;Bob 50 Al 49 Bob 99&quot;,&quot;out&quot;:&quot;Bob&quot;},{&quot;in&quot;:&quot;Zoe 51 Anna 100 Mia 75&quot;,&quot;out&quot;:&quot;Anna Mia Zoe&quot;},{&quot;in&quot;:&quot;Tim 10 Tim 20&quot;,&quot;out&quot;:&quot;&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;set&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::set&lt;<span class="tk-k">std</span>::string&gt; names;
+  <span class="tk-k">std</span>::string name;
+  <span class="tk-k">int</span> score;
+  <span class="tk-c">// todo: read all pairs, insert the names with score &gt;= 50</span>
+  <span class="tk-c">// todo: print the names, separated by spaces</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Which container, and why?</strong>
+  <details><summary>My answer</summary><div><p><code>std::set&lt;std::string&gt;</code>: inserting Sasse twice keeps one Sasse, and walking a set gives the elements sorted. A vector would need both done by hand; an unordered_set would print in no particular order (which is what the script's Example 14.3 does).</p></div></details></li>
+  <li><strong>How do you print it?</strong>
+  <details><summary>My answer</summary><div><p><code>for (std::string n : names) std::cout &lt;&lt; n &lt;&lt; " ";</code>. (The script writes <code>std::cout &lt;&lt; names</code>, which assumes an output operator for sets; C++ has none built in, so we loop.)</p></div></details></li>
+  <li><strong>What if a name's first submission was 40 % and the second 60 %?</strong>
+  <details><summary>My answer</summary><div><p>The first pair is ignored, the second inserts the name: printed. The task asks for "at least one submission with 50 % or more".</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub after the script p. 173, checked by compiling)</summary><div>
+<p><em>Frame:</em> input loop with a filter; the set does the rest; one walk to print.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Read pair after pair; whenever the score is at least 50, drop the name into the sorted drawer. A name already in it isn't added again.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">while</span> (<span class="tk-k">std</span>::cin &gt;&gt; name &gt;&gt; score) {
+  <span class="tk-k">if</span> (50 &lt;= score)
+    names.insert(name);
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk the drawer from front to back and read out each token.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">std</span>::string n : names)
+  <span class="tk-k">std</span>::cout &lt;&lt; n &lt;&lt; <span class="tk-s">" "</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="Friedrich 90\nSasse 70\nSchwerhoff 10\nLehner 20\nSchwerhoff 11\nSasse 60\nFischer 80"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;set&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::set&lt;<span class="tk-k">std</span>::string&gt; names;
+  <span class="tk-k">std</span>::string name;
+  <span class="tk-k">int</span> score;
+  <span class="tk-k">while</span> (<span class="tk-k">std</span>::cin &gt;&gt; name &gt;&gt; score) {
+    <span class="tk-k">if</span> (50 &lt;= score)
+      names.insert(name);
+  }
+  <span class="tk-k">for</span> (<span class="tk-k">std</span>::string n : names)
+    <span class="tk-k">std</span>::cout &lt;&lt; n &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>Fischer Friedrich Sasse</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The script's data (Sasse twice, Schwerhoff twice but below 50); no input; exactly 50 and 49 (the boundary); names given in reverse order; a name that never qualifies.</p></div></details></li>
+  <li><strong>How would you print the number of different qualifying names?</strong>
+  <details><summary>My answer</summary><div><p><code>names.size()</code>. Sets have a size, though no index.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-setunique">a set removes duplicates</a> <a class="mvl" href="inf-method.html#p-itloop">iterator loop</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>"Each once"</strong> means a set; <strong>"sorted"</strong> means std::set, not unordered.</li>
+  <li><strong>Filter in the input loop,</strong> store only what you need.</li>
+  <li><strong>Print with a loop;</strong> containers have no <code>&lt;&lt;</code>.</li>
+</ol>
+<p>In short: "let the container do the work".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> What does a <code>std::set&lt;int&gt;</code> contain after inserting 5, 3, 5, 1, 3?</p>
+  <details><summary>Answer</summary><div><p>{1, 3, 5}.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Print the names of those who never reached 50 %. (Hint: two sets.)</p>
+  <details><summary>Answer</summary><div><p>Insert every name into <code>all</code>, the good ones into <code>passed</code>; then print each n in all with <code>passed.count(n) == 0</code> (<code>count</code> is 0 or 1 for a set).</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write the program in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-2"><h3 id="ct-2">Coding task 2: negate a part (script Example 14.7)</h3>
+<p>Write <code>neg(begin, end)</code>, which negates every element of the range [begin, end), and call it so that the elements with indices from to to − 1 are negated.</p>
+<div class="need"><span class="label">You'll need these</span><p>The <a class="xl" href="#it-method">iterator loop</a> and <code>v.begin() + i</code> (<a class="xl" href="#s4-algorithms">section 4</a>).</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a vector and 0 ≤ from ≤ to ≤ n.</li>
+  <li><strong>Must hold at the end:</strong> exactly the elements with index from ≤ i &lt; to are negated; the others unchanged.</li>
+  <li><strong>The gap to fill:</strong> turning the indices into iterators, and the half-open range.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the body of <code>neg</code> and the call, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;6 1 2 3 4 5 6 0 3&quot;,&quot;out&quot;:&quot;-1 -2 -3 4 5 6&quot;},{&quot;in&quot;:&quot;3 1 -2 3 0 3&quot;,&quot;out&quot;:&quot;-1 2 -3&quot;},{&quot;in&quot;:&quot;4 5 5 5 5 2 2&quot;,&quot;out&quot;:&quot;5 5 5 5&quot;},{&quot;in&quot;:&quot;1 7 0 1&quot;,&quot;out&quot;:&quot;-7&quot;},{&quot;in&quot;:&quot;5 1 2 3 4 5 1 4&quot;,&quot;out&quot;:&quot;1 -2 -3 -4 5&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> iterator = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::iterator;
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range</span>
+<span class="tk-c">// POST: every element in [begin, end) is negated</span>
+<span class="tk-k">void</span> neg(iterator begin, iterator end) {
+  <span class="tk-c">// todo</span>
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v(n);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; v[i];
+  <span class="tk-k">int</span> from, to;
+  <span class="tk-k">std</span>::cin &gt;&gt; from &gt;&gt; to;
+  <span class="tk-c">// todo: negate the elements with indices from, ..., to - 1</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : v)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Which iterators belong to indices from and to?</strong>
+  <details><summary>My answer</summary><div><p><code>v.begin() + from</code> points to element from; <code>v.begin() + to</code> to element to, which is exactly the first one <em>not</em> to negate. The half-open range fits the indices.</p></div></details></li>
+  <li><strong>What happens for from == to?</strong>
+  <details><summary>My answer</summary><div><p>An empty range: begin == end, the loop doesn't run, nothing changes. No special case.</p></div></details></li>
+  <li><strong>Why does <code>neg</code> not need the vector itself?</strong>
+  <details><summary>My answer</summary><div><p>The iterators lead to the elements; <code>*it = -*it</code> changes them inside the vector. The function doesn't know the size or the container, only its range.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub after the script p. 175, checked by compiling)</summary><div>
+<p><em>Frame:</em> the iterator loop over [begin, end); the call converts indices to iterators.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>From the first marker to the stop marker: flip the sign of the item under the marker, step on.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (iterator it = begin; it != end; ++it)
+  *it = -*it;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Place the markers: "from" steps after the first jar, and the stop marker "to" steps after it.</p></div><div class="sp-formal">
+<pre class="code"><code>neg(v.begin() + from, v.begin() + to);</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="5 1 2 3 4 5 1 4"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> iterator = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::iterator;
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range</span>
+<span class="tk-c">// POST: every element in [begin, end) is negated</span>
+<span class="tk-k">void</span> neg(iterator begin, iterator end) {
+  <span class="tk-k">for</span> (iterator it = begin; it != end; ++it)
+    *it = -*it;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v(n);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; v[i];
+  <span class="tk-k">int</span> from, to;
+  <span class="tk-k">std</span>::cin &gt;&gt; from &gt;&gt; to;
+  neg(v.begin() + from, v.begin() + to);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : v)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>1 -2 -3 -4 5</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The script's first half; the whole vector; an empty range (2, 2); a single element; a range in the middle (1 to 4), so both boundaries are checked.</p></div></details></li>
+  <li><strong>Negate the whole vector with the same function?</strong>
+  <details><summary>My answer</summary><div><p><code>neg(v.begin(), v.end());</code>. One function serves the whole and every part.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-range">function on a range</a> <a class="mvl" href="inf-method.html#p-itloop">iterator loop</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>A range function never sees the container,</strong> only begin and end.</li>
+  <li><strong>end is excluded:</strong> <code>!=</code>, never <code>&lt;=</code>.</li>
+  <li><strong>Indices i to j − 1</strong> are <code>v.begin() + i</code>, <code>v.begin() + j</code>.</li>
+</ol>
+<p>In short: "begin in, end out".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which call negates the last two elements of v?</p>
+  <details><summary>Answer</summary><div><p><code>neg(v.end() - 2, v.end());</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write <code>int sum(iterator begin, iterator end)</code>.</p>
+  <details><summary>Answer</summary><div><p><code>int s = 0; for (iterator it = begin; it != end; ++it) s += *it; return s;</code></p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write neg and the call in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-3"><h3 id="ct-3">Coding task 3: common days, efficiently (Informatik exam summer 2019, task 9 (b), 8 points)</h3>
+<p>Bob noted the days of the year on which he worked on programming exercises, for 2017 and for 2018. How many days appear in both lists? No list contains a day twice. Part (a) of the exam used two nested index loops (exercise 1). Part (b): first sort both vectors with <code>std::sort</code>, then walk them with <strong>one iterator each</strong>, side by side, so that each vector is passed only once. Example: {1, 35, 90, 5, 27, 3} and {5, 90, 7, 27, 35, 101} have 4 common elements, {5, 27, 35, 90}.</p>
+<div class="need"><span class="label">You'll need these</span><p><code>std::sort(v.begin(), v.end())</code> from <code>&lt;algorithm&gt;</code> (<a class="xl" href="#s4-algorithms">section 4</a>), two iterators and the "end" test for each.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> two vectors without duplicates; they may be changed (they are passed by reference, not const).</li>
+  <li><strong>Must hold at the end:</strong> the size of the intersection.</li>
+  <li><strong>The gap to fill:</strong> in two sorted lists, which iterator may safely move on when the elements differ?</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> complete the function, then press <em>Check</em>. Input: n and n numbers, m and m numbers.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;6 1 35 90 5 27 3 6 5 90 7 27 35 101&quot;,&quot;out&quot;:&quot;4&quot;},{&quot;in&quot;:&quot;0 3 1 2 3&quot;,&quot;out&quot;:&quot;0&quot;},{&quot;in&quot;:&quot;3 1 2 3 3 4 5 6&quot;,&quot;out&quot;:&quot;0&quot;},{&quot;in&quot;:&quot;3 3 2 1 3 1 2 3&quot;,&quot;out&quot;:&quot;3&quot;},{&quot;in&quot;:&quot;1 5 1 5&quot;,&quot;out&quot;:&quot;1&quot;},{&quot;in&quot;:&quot;5 10 20 30 40 50 3 50 5 30&quot;,&quot;out&quot;:&quot;2&quot;}]"><code><span class="tk-p">#include &lt;algorithm&gt;</span>
+<span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> Iterator = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::iterator;
+
+<span class="tk-c">// PRE:  no vector contains an element twice</span>
+<span class="tk-c">// POST: returns the number of elements that appear in both vectors;</span>
+<span class="tk-c">//       vec1 and vec2 are sorted afterwards</span>
+<span class="tk-k">int</span> efficiently_calculate_intersection(<span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;&amp; vec1,
+                                       <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;&amp; vec2) {
+  <span class="tk-c">// todo: sort both vectors</span>
+  Iterator vec1It = vec1.begin();
+  Iterator vec2It = vec2.begin();
+  <span class="tk-k">int</span> number_matching_elements = 0;
+  <span class="tk-c">// todo: walk both vectors side by side</span>
+  <span class="tk-k">return</span> number_matching_elements;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n, m;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; a(n);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i) <span class="tk-k">std</span>::cin &gt;&gt; a[i];
+  <span class="tk-k">std</span>::cin &gt;&gt; m;
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; b(m);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; m; ++i) <span class="tk-k">std</span>::cin &gt;&gt; b[i];
+  <span class="tk-k">std</span>::cout &lt;&lt; efficiently_calculate_intersection(a, b) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Both sorted; <code>*vec1It &lt; *vec2It</code>. Why may vec1It move on?</strong>
+  <details><summary>My answer</summary><div><p>Everything still ahead in vec2 is ≥ *vec2It &gt; *vec1It. So *vec1It can't occur in vec2 any more: skip it. Symmetrically for &gt;.</p></div></details></li>
+  <li><strong>And when they're equal?</strong>
+  <details><summary>My answer</summary><div><p>A common element: count it and advance both (no duplicates, so neither occurs again).</p></div></details></li>
+  <li><strong>The loop condition?</strong>
+  <details><summary>My answer</summary><div><p><code>vec1It != vec1.end() &amp;&amp; vec2It != vec2.end()</code>: as soon as one list is used up, no more matches are possible, and dereferencing an end iterator is forbidden.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub; no official solution exists; checked by compiling)</summary><div>
+<p><em>Frame:</em> sort; then one loop with three cases, each advancing at least one iterator.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Put both rows in order, smallest first.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">std</span>::sort(vec1.begin(), vec1.end());
+<span class="tk-k">std</span>::sort(vec2.begin(), vec2.end());</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>One marker on each row. While neither marker has fallen off its row: the marker on the smaller item steps on; if both items are equal, count one and both step on.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">while</span> (vec1It != vec1.end() &amp;&amp; vec2It != vec2.end()) {
+  <span class="tk-k">if</span> (*vec1It &lt; *vec2It) {
+    ++vec1It;
+  } <span class="tk-k">else</span> <span class="tk-k">if</span> (*vec1It &gt; *vec2It) {
+    ++vec2It;
+  } <span class="tk-k">else</span> {
+    ++number_matching_elements;
+    ++vec1It;
+    ++vec2It;
+  }
+}</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="6 1 35 90 5 27 3 6 5 90 7 27 35 101"><code><span class="tk-p">#include &lt;algorithm&gt;</span>
+<span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> Iterator = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;::iterator;
+
+<span class="tk-c">// PRE:  no vector contains an element twice</span>
+<span class="tk-c">// POST: returns the number of elements that appear in both vectors;</span>
+<span class="tk-c">//       vec1 and vec2 are sorted afterwards</span>
+<span class="tk-k">int</span> efficiently_calculate_intersection(<span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;&amp; vec1,
+                                       <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;&amp; vec2) {
+  <span class="tk-k">std</span>::sort(vec1.begin(), vec1.end());
+  <span class="tk-k">std</span>::sort(vec2.begin(), vec2.end());
+  Iterator vec1It = vec1.begin();
+  Iterator vec2It = vec2.begin();
+  <span class="tk-k">int</span> number_matching_elements = 0;
+  <span class="tk-k">while</span> (vec1It != vec1.end() &amp;&amp; vec2It != vec2.end()) {
+    <span class="tk-k">if</span> (*vec1It &lt; *vec2It) {
+      ++vec1It;
+    } <span class="tk-k">else</span> <span class="tk-k">if</span> (*vec1It &gt; *vec2It) {
+      ++vec2It;
+    } <span class="tk-k">else</span> {
+      ++number_matching_elements;
+      ++vec1It;
+      ++vec2It;
+    }
+  }
+  <span class="tk-k">return</span> number_matching_elements;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n, m;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; a(n);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i) <span class="tk-k">std</span>::cin &gt;&gt; a[i];
+  <span class="tk-k">std</span>::cin &gt;&gt; m;
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; b(m);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; m; ++i) <span class="tk-k">std</span>::cin &gt;&gt; b[i];
+  <span class="tk-k">std</span>::cout &lt;&lt; efficiently_calculate_intersection(a, b) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>4</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The exam's example; an empty vector; no common element; identical sets in different order; one element each; lists of different lengths where the last element matches (50), which checks that the loop doesn't stop too early.</p></div></details></li>
+  <li><strong>Why is this faster than part (a)?</strong>
+  <details><summary>My answer</summary><div><p>Nested loops compare every pair: n · m comparisons. After sorting, every step advances at least one iterator, so the walk takes at most n + m steps. Sorting itself costs about n log n (algorithms course), still far less than n · m for long lists.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-merge">two iterators side by side</a> <a class="mvl" href="inf-method.html#p-itloop">iterator loop</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Sort first,</strong> with the given signature.</li>
+  <li><strong>Condition: both iterators not at their end.</strong></li>
+  <li><strong>Three cases, each advances something;</strong> otherwise the loop never ends.</li>
+</ol>
+<p>In short: "smaller one steps; equal: count, both step".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Trace the walk for {1, 4, 6} and {4, 5, 6}: which iterator moves in each step?</p>
+  <details><summary>Answer</summary><div><p>1 &lt; 4: first. 4 = 4: count, both. 6 &gt; 5: second. 6 = 6: count, both. First is at end: stop. Result 2.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change it to put the common elements into a vector <code>common</code> instead of counting.</p>
+  <details><summary>Answer</summary><div><p>In the equal case: <code>common.push_back(*vec1It);</code>. The result is sorted.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write the function in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-4"><h3 id="ct-4">Coding task 4: replace in a list (script p. 175, "replace(c, e1, e2)")</h3>
+<p>The script lists replace(c, e1, e2), "replaces each e1 in c with e2", among the operations that iterators make possible. Write it for a <code>std::list&lt;int&gt;</code>, which has no index at all. The program reads n numbers into a list with <code>push_back</code>, replaces, then puts n in front with <code>push_front</code> and prints the list.</p>
+<div class="need"><span class="label">You'll need these</span><p><code>std::list</code>, <code>push_back</code> and <code>push_front</code> (<a class="xl" href="#s2-containers">section 2</a>), the <a class="xl" href="#it-method">iterator loop</a>, a reference parameter.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a list (changed through a reference) and two numbers.</li>
+  <li><strong>Must hold at the end:</strong> every element equal to e1 is now e2; the rest and the order unchanged.</li>
+  <li><strong>The gap to fill:</strong> walking and changing a list without <code>l[i]</code>.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the body of <code>replace</code>, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;5 1 2 1 3 1 1 9&quot;,&quot;out&quot;:&quot;5 9 2 9 3 9&quot;},{&quot;in&quot;:&quot;3 4 5 6 7 8&quot;,&quot;out&quot;:&quot;3 4 5 6&quot;},{&quot;in&quot;:&quot;0 1 2&quot;,&quot;out&quot;:&quot;0&quot;},{&quot;in&quot;:&quot;2 -1 -1 -1 0&quot;,&quot;out&quot;:&quot;2 0 0&quot;},{&quot;in&quot;:&quot;4 2 4 6 8 8 2&quot;,&quot;out&quot;:&quot;4 2 4 6 2&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;list&gt;</span>
+
+<span class="tk-k">using</span> lit = <span class="tk-k">std</span>::list&lt;<span class="tk-k">int</span>&gt;::iterator;
+
+<span class="tk-c">// POST: every element of l equal to e1 has been replaced by e2</span>
+<span class="tk-k">void</span> replace(<span class="tk-k">std</span>::list&lt;<span class="tk-k">int</span>&gt;&amp; l, <span class="tk-k">int</span> e1, <span class="tk-k">int</span> e2) {
+  <span class="tk-c">// todo</span>
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">std</span>::list&lt;<span class="tk-k">int</span>&gt; l;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i) {
+    <span class="tk-k">int</span> x;
+    <span class="tk-k">std</span>::cin &gt;&gt; x;
+    l.push_back(x);
+  }
+  <span class="tk-k">int</span> e1, e2;
+  <span class="tk-k">std</span>::cin &gt;&gt; e1 &gt;&gt; e2;
+  replace(l, e1, e2);
+  l.push_front(n);       <span class="tk-c">// the count goes in front</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : l)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Why can't you write <code>l[i]</code>?</strong>
+  <details><summary>My answer</summary><div><p>A list has no index access (section 2): its elements aren't side by side in memory, so there is no quick way to jump to the i-th. The iterator walks from neighbour to neighbour.</p></div></details></li>
+  <li><strong>Why is the parameter <code>std::list&lt;int&gt;&amp;</code>?</strong>
+  <details><summary>My answer</summary><div><p>replace must change the caller's list; a copy would be changed and thrown away. And with <code>const std::list&lt;int&gt;&amp;</code>, begin() would give a const_iterator, and <code>*it = e2</code> wouldn't compile.</p></div></details></li>
+  <li><strong>Could you use a range-based for instead?</strong>
+  <details><summary>My answer</summary><div><p>Yes: <code>for (int&amp; x : l) if (x == e1) x = e2;</code>. With <code>int x</code> (no &amp;), nothing would change: a classic exam trap.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub, checked by compiling)</summary><div>
+<p><em>Frame:</em> the iterator loop over the whole list; change through <code>*it</code>.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Walk the chain ring by ring; where a ring holds e1, swap its token for e2.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (lit it = l.begin(); it != l.end(); ++it)
+  <span class="tk-k">if</span> (*it == e1)
+    *it = e2;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="5 1 2 1 3 1 1 9"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;list&gt;</span>
+
+<span class="tk-k">using</span> lit = <span class="tk-k">std</span>::list&lt;<span class="tk-k">int</span>&gt;::iterator;
+
+<span class="tk-c">// POST: every element of l equal to e1 has been replaced by e2</span>
+<span class="tk-k">void</span> replace(<span class="tk-k">std</span>::list&lt;<span class="tk-k">int</span>&gt;&amp; l, <span class="tk-k">int</span> e1, <span class="tk-k">int</span> e2) {
+  <span class="tk-k">for</span> (lit it = l.begin(); it != l.end(); ++it)
+    <span class="tk-k">if</span> (*it == e1)
+      *it = e2;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">std</span>::list&lt;<span class="tk-k">int</span>&gt; l;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i) {
+    <span class="tk-k">int</span> x;
+    <span class="tk-k">std</span>::cin &gt;&gt; x;
+    l.push_back(x);
+  }
+  <span class="tk-k">int</span> e1, e2;
+  <span class="tk-k">std</span>::cin &gt;&gt; e1 &gt;&gt; e2;
+  replace(l, e1, e2);
+  l.push_front(n);       <span class="tk-c">// the count goes in front</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : l)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>5 9 2 9 3 9</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>Several occurrences; none; an empty list (only the count is printed); all elements equal; and e1 being the last element (8), so the loop must reach the end.</p></div></details></li>
+  <li><strong>The same function for a vector?</strong>
+  <details><summary>My answer</summary><div><p>Only the types change: <code>std::vector&lt;int&gt;&amp;</code> and its iterator. The loop is identical, which is the point of iterators. (The standard library has it ready: <code>std::replace(l.begin(), l.end(), e1, e2)</code>.)</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-itloop">iterator loop</a> <a class="mvl" href="inf-method.html#p-ref">change through a reference parameter</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>No index?</strong> Iterator loop.</li>
+  <li><strong>Changing elements?</strong> Non-const container, plain iterator, or <code>int&amp;</code> in a range-for.</li>
+  <li><strong>Check the empty container:</strong> begin() == end(), nothing happens.</li>
+</ol>
+<p>In short: "walk, compare, write through *it".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> After <code>std::list&lt;int&gt; l = {1, 2}; l.push_front(0); l.push_back(3);</code>, what is l?</p>
+  <details><summary>Answer</summary><div><p>{0, 1, 2, 3}.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write <code>int count(const std::list&lt;int&gt;&amp; l, int e)</code> with a const_iterator.</p>
+  <details><summary>Answer</summary><div><p><code>int c = 0; for (std::list&lt;int&gt;::const_iterator it = l.begin(); it != l.end(); ++it) if (*it == e) ++c; return c;</code></p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write replace in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
+<div class="box"><h3 id="we-3">Worked example 3: the text task with a const_iterator (Informatik exam summer 2019, task 6)</h3>
+<p>In <a class="xl" href="inf-06.html#ct-4">lesson 6</a> you wrote <code>modify</code>: upper-case all letters and reduce runs of spaces to one. The exam's skeleton used <code>using text = std::vector&lt;char&gt;;</code> and walked the input like this:</p>
+<pre class="code"><code>text modify(<span class="tk-k">const</span> text&amp; str) {
+  text modStr;
+  <span class="tk-k">bool</span> space_seen = <span class="tk-k">false</span>;
+  <span class="tk-k">for</span> (text::const_iterator sIt = str.begin(); sIt != str.end(); ++sIt) {
+    <span class="tk-c">// ... *sIt is the current character ...</span>
+  }
+  <span class="tk-k">return</span> modStr;
+}</code></pre>
+<ol class="gq">
+  <li>Why a const_iterator?
+  <details><summary>Answer</summary><div><p>str is a const reference, so <code>str.begin()</code> returns a const_iterator; a plain iterator wouldn't compile (section 5). We only read str and build modStr.</p></div></details></li>
+  <li>How does the index version of lesson 6 translate?
+  <details><summary>Answer</summary><div><p>Every <code>str[i]</code> becomes <code>*sIt</code>; the loop head becomes the iterator loop. The body (letter? digit? space?) stays exactly the same.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Worked example 4: copy or reference in a range-for?</h3>
+<pre class="code"><code><span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v = {1, 2, 3};
+<span class="tk-k">for</span> (<span class="tk-k">int</span> e : v) e = e * 10;
+<span class="tk-k">for</span> (<span class="tk-k">int</span>&amp; e : v) e = e + 1;
+<span class="tk-k">for</span> (<span class="tk-k">int</span> e : v) <span class="tk-k">std</span>::cout &lt;&lt; e &lt;&lt; <span class="tk-s">" "</span>;</code></pre>
+<ol class="gq">
+  <li>What is printed?
+  <details><summary>Answer</summary><div><p><code>2 3 4</code>. The first loop multiplies copies, which are discarded; the second adds 1 through references.</p></div></details></li>
+  <li>Which of the loops could also run on <code>const std::vector&lt;int&gt;&amp; v</code>?
+  <details><summary>Answer</summary><div><p>The first and the third: a copy of a const element is an ordinary int. The second would need <code>int&amp;</code> to a const element: error.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Answers by StudyHub where no official solution exists; all code checked by compiling.</p>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> use the points given; exercises 1–5 make 19 points. <strong>15 of 19 and you're done</strong> with lesson 11.</p>
+</div>
+
+<h3 id="ex-1">Exercise 1 (Informatik exam summer 2019, task 9 (a), old exam) · 3 points</h3>
+<p>Complete Bob's first version with two index loops:</p>
+<pre class="code"><code><span class="tk-c">// PRE: receives two vectors, tracking the days of different years</span>
+<span class="tk-c">// POST: calculates the size of vectors' intersection</span>
+<span class="tk-k">int</span> calculate_intersection(<span class="tk-k">const</span> <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;&amp; vec1,
+                           <span class="tk-k">const</span> <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;&amp; vec2) {
+  ...
+  <span class="tk-k">for</span> (<span class="tk-k">unsigned</span> <span class="tk-k">int</span> vec1Ind = 0; vec1Ind &lt; vec1.size(); ++vec1Ind) {
+    <span class="tk-k">for</span> (<span class="tk-k">unsigned</span> <span class="tk-k">int</span> vec2Ind = 0; vec2Ind &lt; vec2.size(); ++vec2Ind) {
+      ...
+    }
+  }
+  <span class="tk-k">return</span> matches;
+}</code></pre>
+<details><summary>Solution</summary><div><p><em>Frame:</em> accumulator: compare every pair, count equal ones; no duplicates, so each common element is counted once.</p>
+<p><code>int matches = 0;</code> before the loops (1 point); in the inner loop <code>if (vec1[vec1Ind] == vec2[vec2Ind]) ++matches;</code> (2 points). The function can't sort, because its vectors are const: that is why part (b) changed the signature to non-const references.</p></div></details>
+
+<h3 id="ex-2">Exercise 2 (const iterators, after script p. 176–177) · 4 points</h3>
+<p><code>const std::vector&lt;int&gt; x = {1, 2, 3};</code> and <code>std::vector&lt;int&gt; y = {1, 2, 3};</code>. Which lines compile? (1 point each)</p>
+<p>(a) <code>std::vector&lt;int&gt;::iterator it = x.begin();</code><br>(b) <code>std::vector&lt;int&gt;::const_iterator it = y.begin();</code><br>(c) <code>auto it = x.begin(); *it = 5;</code><br>(d) <code>for (auto it = y.cbegin(); it != y.cend(); ++it) std::cout &lt;&lt; *it;</code></p>
+<details><summary>Solution</summary><div><p><em>Frame:</em> a const container gives only const_iterators; a const_iterator only reads.</p>
+<p>(a) <strong>Error</strong> (Example 14.8). (b) <strong>Compiles</strong>: a plain iterator converts to a const_iterator (less permission is always fine). (c) <strong>Error</strong>: auto becomes a const_iterator, and <code>*it = 5</code> writes. (d) <strong>Compiles</strong>: cbegin/cend give const_iterators, which only read.</p></div></details>
+
+<h3 id="ex-3">Exercise 3 (choosing containers) · 4 points</h3>
+<p>Which container? One sentence each. (1 point each)</p>
+<p>(a) The 365 daily step counts of a year, often asked "how many steps on day 100?". (b) The distinct email addresses in a log, printed in sorted order. (c) A playlist where songs are often inserted between others. (d) A list of blocked user IDs, checked on every login, order irrelevant.</p>
+<details><summary>Solution</summary><div><p><em>Frame:</em> what is the frequent operation, and does order or uniqueness matter? (Section 2.)</p>
+<p>(a) <strong>vector</strong>: index access. (b) <strong>set</strong>: unique and sorted. (c) <strong>list</strong>: inserting anywhere is cheap. (d) <strong>unordered_set</strong>: fastest "contained?".</p></div></details>
+
+<h3 id="ex-4">Exercise 4 (what does it print?) · 4 points</h3>
+<pre class="code"><code><span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; v = {5, 3, 8, 1};
+<span class="tk-k">std</span>::sort(v.begin() + 1, v.end());
+<span class="tk-k">for</span> (<span class="tk-k">auto</span> it = v.begin(); it != v.end(); ++it)
+  <span class="tk-k">std</span>::cout &lt;&lt; *it &lt;&lt; <span class="tk-s">" "</span>;
+<span class="tk-k">std</span>::set&lt;<span class="tk-k">int</span>&gt; s = {5, 3, 5, 1};
+<span class="tk-k">std</span>::cout &lt;&lt; s.size() &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; *s.begin();</code></pre>
+<details><summary>Solution</summary><div><p><em>Frame:</em> the range [begin + 1, end) excludes element 0; a set removes duplicates and sorts.</p>
+<p><code>5 1 3 8 </code> (only the last three are sorted; 2 points), then <code>3 1</code> (the set is {1, 3, 5}: size 3, first element 1; 2 points).</p></div></details>
+
+<h3 id="ex-5">Exercise 5 (true or false) · 4 points</h3>
+<ol>
+  <li><code>*v.end()</code> is the last element of v.</li>
+  <li>For an empty container, <code>c.begin() == c.end()</code>.</li>
+  <li><code>std::list</code> supports <code>l[3]</code>.</li>
+  <li>The same iterator loop can walk a vector and a set.</li>
+</ol>
+<details><summary>Solution</summary><div><p><em>Frame:</em> sections 2 and 3, one rule each.</p>
+<p>1. <strong>False</strong>: end() points behind the last element; dereferencing it is not allowed. 2. <strong>True</strong>. 3. <strong>False</strong>: no index access. 4. <strong>True</strong>: that's the purpose of iterators (only the iterator type differs; with <code>auto</code>, not even that).</p></div></details>
+
+<h2 id="summary">Summary: what to keep from lesson 11</h2>
+<div class="box"><ul>
+  <li><strong>Containers</strong>: vector (index access, compact), list (insert and remove anywhere, no index), unordered_set (fast "contains", no duplicates, no order), set (like unordered_set but sorted). Choose by the most frequent operation.</li>
+  <li><strong>Iterators</strong>: <code>c.begin()</code> first element, <code>c.end()</code> <em>behind</em> the last; <code>*it</code> element, <code>++it</code> next. Loop: <code>for (auto it = c.begin(); it != c.end(); ++it)</code>.</li>
+  <li><strong>Ranges [begin, end)</strong>: functions and the algorithms library (<code>std::sort</code>, <code>std::find</code>, …) take iterator pairs; works on whole containers and on parts.</li>
+  <li><strong>Range-based for</strong>: <code>for (T e : c)</code> reads copies, <code>for (T&amp; e : c)</code> can change.</li>
+  <li><strong>Const</strong>: a const container gives const_iterators, read only; <code>cbegin()</code>/<code>cend()</code> from a non-const one.</li>
+</ul></div>
+
+<h2 id="for-wonder">For wonder: one loop, a hundred algorithms <span class="small">(optional, 5 min)</span></h2>
+<p>The idea behind this chapter is due to Alexander Stepanov, who designed the C++ standard template library in the early 1990s. His insight: an algorithm like "find" or "sort" doesn't care what a container is, only how you can move through it. So he sorted iterators into families by what they can do: step forward only (a singly linked list), step both ways (std::list), or jump anywhere (vector, like <code>v.begin() + 3</code>). Each algorithm states the weakest family it needs: <code>std::find</code> only steps forward, <code>std::sort</code> needs jumps. That is why you can't sort a list with <code>std::sort</code> (it has its own <code>l.sort()</code>), and why the script says the more than 100 algorithms work with the 17 standard containers "and our own": write an iterator for your container in lesson 12, and they all work on it.</p>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<p>Also on the <a class="xl" href="skipped.html#informatik">skip list</a>.</p>
+<ul>
+  <li><strong>Number pairs with a given sum</strong> (Code Expert Exercise 10, Task 4). Priority: high. A container task with hidden tests; try a set for the "have I seen x − k?" question.</li>
+  <li><strong>The other standard containers and the algorithms library in detail</strong> (cppreference, p. 171 and 176). Priority: low. Look things up when you need them.</li>
+  <li><strong>How sets work inside</strong> (hash tables, red-black trees, p. 172–173). Priority: low. "To be covered in a different course".</li>
+</ul>
+<p><strong>Next:</strong> lesson 12 (being written), pointers and dynamic memory: what an iterator really is underneath, and how to build a list yourself.</p>
+
+<link rel="stylesheet" href="assets/inf-ide.css?v=inf1123f">
+<script src="assets/codemirror/cm5-cpp.min.js?v=5.65.16" defer></script>
+<script src="assets/inf-run.js?v=inf1123f" defer></script>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="inf-10.html">← Lesson 10: The Golem Locks the Box</a>
+<a href="informatik.html">Informatik home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
