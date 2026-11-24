@@ -10,11 +10,11 @@ const EXAM_DATE = Date.parse("2027-01-25T08:00:00+01:00");
 export const MISTAKE_TYPES = ["definition", "quantifiers", "logic-gap", "wrong-theorem", "missing-hypothesis", "missing-case", "calculation", "notation", "presentation", "time", "misread-question", "other"];
 
 async function getItem(ctx: Ctx, key: string) {
-  const { data } = await ctx.admin.from("my_items").select("content, updated_at").eq("user_id", ctx.user.id).eq("key", key).maybeSingle();
+  const { data } = await ctx.db.from("my_items").select("content, updated_at").eq("user_id", ctx.user.id).eq("key", key).maybeSingle();
   return data;
 }
 async function putItem(ctx: Ctx, key: string, content: unknown) {
-  const { error } = await ctx.admin.from("my_items").upsert({ user_id: ctx.user.id, key, content, source: "ai", updated_at: new Date().toISOString() });
+  const { error } = await ctx.db.from("my_items").upsert({ user_id: ctx.user.id, key, content, source: "ai", updated_at: new Date().toISOString() });
   if (error) throw new Error(error.message);
 }
 const newId = () => crypto.randomUUID().slice(0, 8);
@@ -87,7 +87,7 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
     }
     case "history": {
       a.key = histKey(a.key);
-      const { data } = await ctx.admin.from("my_versions").select("id, content, source, created_at").eq("user_id", uid).eq("key", a.key).order("id", { ascending: false }).limit(Math.min(Number(a.limit) || 10, 50));
+      const { data } = await ctx.db.from("my_versions").select("id, content, source, created_at").eq("user_id", uid).eq("key", a.key).order("id", { ascending: false }).limit(Math.min(Number(a.limit) || 10, 50));
       if (!data?.length) return text("No history for " + a.key);
       return text(J(data.map((v) => ({ version_id: v.id, at: v.created_at, by: v.source, preview: v.content === null ? "(deleted)" : JSON.stringify(v.content).slice(0, 200) }))));
     }
@@ -96,38 +96,38 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
       let vid: number | null = null;
       if (name === "restore_version") vid = Number(a.version_id);
       if (name === "undo") {
-        const { data } = await ctx.admin.from("my_versions").select("id").eq("user_id", uid).eq("key", a.key).order("id", { ascending: false }).limit(2);
+        const { data } = await ctx.db.from("my_versions").select("id").eq("user_id", uid).eq("key", a.key).order("id", { ascending: false }).limit(2);
         if (!data || data.length < 2) return err("Nothing to undo for " + a.key);
         vid = data[1].id;
       }
       if (name === "reset") {
-        if (a.key?.startsWith("progress:")) await ctx.admin.from("progress").delete().eq("user_id", uid).eq("page", a.key.slice(9));
-        else await ctx.admin.from("my_items").delete().eq("user_id", uid).eq("key", a.key);
+        if (a.key?.startsWith("progress:")) await ctx.db.from("progress").delete().eq("user_id", uid).eq("page", a.key.slice(9));
+        else await ctx.db.from("my_items").delete().eq("user_id", uid).eq("key", a.key);
         return text(`${a.key} reset to the original (empty) state. The old content stays in history, so restore_version can bring it back.`);
       }
-      const { data: v } = await ctx.admin.from("my_versions").select("*").eq("id", vid).eq("user_id", uid).maybeSingle();
+      const { data: v } = await ctx.db.from("my_versions").select("*").eq("id", vid).eq("user_id", uid).maybeSingle();
       if (!v) return err("Version not found.");
       if (v.key.startsWith("progress:")) {
         const page = v.key.slice(9);
-        if (v.content === null) await ctx.admin.from("progress").delete().eq("user_id", uid).eq("page", page);
-        else await ctx.admin.from("progress").upsert({ user_id: uid, page, done: !!v.content.done, rating: v.content.rating, note: v.content.note, updated_at: new Date().toISOString() });
+        if (v.content === null) await ctx.db.from("progress").delete().eq("user_id", uid).eq("page", page);
+        else await ctx.db.from("progress").upsert({ user_id: uid, page, done: !!v.content.done, rating: v.content.rating, note: v.content.note, updated_at: new Date().toISOString() });
       } else {
-        if (v.content === null) await ctx.admin.from("my_items").delete().eq("user_id", uid).eq("key", v.key);
-        else await ctx.admin.from("my_items").upsert({ user_id: uid, key: v.key, content: v.content, source: name === "undo" ? "undo" : "restore", updated_at: new Date().toISOString() });
+        if (v.content === null) await ctx.db.from("my_items").delete().eq("user_id", uid).eq("key", v.key);
+        else await ctx.db.from("my_items").upsert({ user_id: uid, key: v.key, content: v.content, source: name === "undo" ? "undo" : "restore", updated_at: new Date().toISOString() });
       }
       return text(`${v.key} restored to the version from ${v.created_at}.`);
     }
     case "progress": {
       if ((a.action ?? "get") === "get") {
-        const { data } = await ctx.admin.from("progress").select("page, done, rating, note, updated_at").eq("user_id", uid).order("page");
+        const { data } = await ctx.db.from("progress").select("page, done, rating, note, updated_at").eq("user_id", uid).order("page");
         return text(J((data ?? []).map((r) => ({ ...r, page: pageId(r.page) }))));
       }
       if (!/^[a-z0-9-]{3,40}$/.test(pageId(a.page))) return err("page must be a page id like lesson-08, refresher-02 or phys-05.");
       const page = pageKey(a.page);
-      const cur = (await ctx.admin.from("progress").select("*").eq("user_id", uid).eq("page", page).maybeSingle()).data ?? {};
+      const cur = (await ctx.db.from("progress").select("*").eq("user_id", uid).eq("page", page).maybeSingle()).data ?? {};
       const row = { user_id: uid, page, done: a.done ?? cur.done ?? false, rating: a.rating ?? cur.rating ?? null, note: a.note ?? cur.note ?? null, updated_at: new Date().toISOString() };
       if (row.rating !== null && !(row.rating >= 1 && row.rating <= 5)) return err("rating is 1 (easy) to 5 (hard).");
-      const { error } = await ctx.admin.from("progress").upsert(row);
+      const { error } = await ctx.db.from("progress").upsert(row);
       if (error) throw new Error(error.message);
       return text(`Saved progress for ${pageId(page)}. It shows on the site (ticks, Your progress box) after a reload; history('progress:${pageId(page)}') lists its versions.`);
     }
@@ -136,18 +136,18 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
         type: MISTAKE_TYPES.includes(m?.type) ? m.type : "other", topic: String(m?.topic ?? "").slice(0, 80), note: String(m?.note ?? "").slice(0, 300) }));
       const kind = ["exercise", "exam", "mock", "check"].includes(a.kind) ? a.kind : "exercise";
       const topics = [...new Set([...(Array.isArray(a.topics) ? a.topics : []), ...mistakes.map((m: any) => m.topic)].filter(Boolean).map(String))].slice(0, 10);
-      const { error } = await ctx.admin.from("results").insert({ user_id: uid, item_id: String(a.item_id ?? "free"), kind, score: a.score ?? null, max_score: a.max_score ?? null,
+      const { error } = await ctx.db.from("results").insert({ user_id: uid, item_id: String(a.item_id ?? "free"), kind, score: a.score ?? null, max_score: a.max_score ?? null,
         summary: String(a.summary ?? "").slice(0, 5000), mistakes, topics });
       if (error) throw new Error(error.message);
-      if (a.mock_id && String(a.item_id ?? "").startsWith("mock:")) await ctx.admin.from("mocks").update({ score: a.score, max_score: a.max_score, feedback: String(a.summary ?? "").slice(0, 20000) }).eq("id", a.mock_id).eq("user_id", uid);
+      if (a.mock_id && String(a.item_id ?? "").startsWith("mock:")) await ctx.db.from("mocks").update({ score: a.score, max_score: a.max_score, feedback: String(a.summary ?? "").slice(0, 20000) }).eq("id", a.mock_id).eq("user_id", uid);
       return text("Result saved. It appears on the student's performance page (my.html#performance) and feeds the mistake fingerprint and what_to_do_today.");
     }
     case "mistake_fingerprint": return text(J(await fingerprint(ctx)));
     case "performance": {
       const [{ data: prog }, { data: res }, { data: mocks }] = await Promise.all([
-        ctx.admin.from("progress").select("page, done, rating").eq("user_id", uid),
-        ctx.admin.from("results").select("item_id, kind, score, max_score, topics, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(200),
-        ctx.admin.from("mocks").select("exam_id, minutes, started_at, submitted_at, score, max_score").eq("user_id", uid).order("started_at", { ascending: false }).limit(20),
+        ctx.db.from("progress").select("page, done, rating").eq("user_id", uid),
+        ctx.db.from("results").select("item_id, kind, score, max_score, topics, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(200),
+        ctx.db.from("mocks").select("exam_id, minutes, started_at, submitted_at, score, max_score").eq("user_id", uid).order("started_at", { ascending: false }).limit(20),
       ]);
       const done = (prog ?? []).filter((p) => p.done).map((p) => pageId(p.page));
       const scored = (res ?? []).filter((r) => r.max_score > 0);
@@ -160,7 +160,7 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
     case "design": {
       const action = a.action ?? "get";
       if (action === "get") return text(J({ design: (await getItem(ctx, "design"))?.content ?? {}, options: { theme: ["light", "dark", "auto"], colours: "accent, background, text, box as #rrggbb", font: FONTS, size: "80-150 (%)", density: ["compact", "normal", "airy"], width: ["narrow", "normal", "wide"], hide: HIDE } }));
-      if (action === "reset") { await ctx.admin.from("my_items").delete().eq("user_id", uid).eq("key", "design"); return text("Design reset to the StudyHub default (undo('design') brings it back)."); }
+      if (action === "reset") { await ctx.db.from("my_items").delete().eq("user_id", uid).eq("key", "design"); return text("Design reset to the StudyHub default (undo('design') brings it back)."); }
       const cur = (await getItem(ctx, "design"))?.content ?? {};
       const next = cleanDesign({ ...cur, ...(a.tokens ?? {}) });
       await putItem(ctx, "design", next);
@@ -168,7 +168,7 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
     }
     case "suggest": {
       if ((a.action ?? "add") === "list") {
-        const { data } = await ctx.admin.from("suggestions").select("id, page, section, kind, body, status, review_note, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(50);
+        const { data } = await ctx.db.from("suggestions").select("id, page, section, kind, body, status, review_note, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(50);
         return text(J(data ?? []));
       }
       const pg = pageId(a.page);
@@ -176,26 +176,26 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
       if (!/^[a-z0-9-]{2,60}$/.test(pg)) return err("page must be a page id like lesson-08 or serie-a03.");
       if (body.length < 5) return err("Write the suggestion itself in text (at least a few words).");
       const kind = ["mistake", "unclear", "addition", "other"].includes(a.kind) ? a.kind : "mistake";
-      const { error } = await ctx.admin.from("suggestions").insert({ user_id: uid, page: pg, section: a.section ? String(a.section).slice(0, 200) : null,
+      const { error } = await ctx.db.from("suggestions").insert({ user_id: uid, page: pg, section: a.section ? String(a.section).slice(0, 200) : null,
         quote: a.quote ? String(a.quote).slice(0, 1000) : null, kind, body: body.slice(0, 4000), reason: a.reason ? String(a.reason).slice(0, 2000) : null, anonymous: !!a.anonymous });
       if (error) return err(error.message);
       return text("Suggestion filed. The site owner reviews it before anything changes; its status shows on My StudyHub (my.html#my-suggestions).");
     }
     case "review_suggestions": {
-      const { data: adm } = await ctx.admin.from("admins").select("user_id").eq("user_id", uid).maybeSingle();
+      const { data: adm } = await ctx.db.from("admins").select("user_id").eq("user_id", uid).maybeSingle();
       if (!adm) return err("Only the site owner can review suggestions.");
       if ((a.action ?? "list") === "set") {
         const st = String(a.status ?? "");
         if (!["new", "accepted", "rejected", "done"].includes(st)) return err("status must be new, accepted, rejected or done.");
-        const { error } = await ctx.admin.from("suggestions").update({ status: st, review_note: a.note ? String(a.note).slice(0, 2000) : null, reviewed_at: new Date().toISOString() }).eq("id", Number(a.id));
+        const { error } = await ctx.db.from("suggestions").update({ status: st, review_note: a.note ? String(a.note).slice(0, 2000) : null, reviewed_at: new Date().toISOString() }).eq("id", Number(a.id));
         if (error) return err(error.message);
         return text(`Suggestion ${a.id} marked ${st}.`);
       }
-      let q = ctx.admin.from("suggestions").select("id, user_id, page, section, quote, kind, body, reason, anonymous, status, review_note, created_at").order("created_at", { ascending: false }).limit(200);
+      let q = ctx.db.from("suggestions").select("id, user_id, page, section, quote, kind, body, reason, anonymous, status, review_note, created_at").order("created_at", { ascending: false }).limit(200);
       if (a.status) q = q.eq("status", a.status);
       const { data } = await q;
       const ids = [...new Set((data ?? []).filter((x) => !x.anonymous).map((x) => x.user_id))];
-      const { data: profs } = ids.length ? await ctx.admin.from("profiles").select("id, nickname").in("id", ids) : { data: [] as any[] };
+      const { data: profs } = ids.length ? await ctx.db.from("profiles").select("id, nickname").in("id", ids) : { data: [] as any[] };
       const nick = new Map((profs ?? []).map((p: any) => [p.id, p.nickname]));
       return text(J({ note: "Check each one against the official script / solutions first. Accepted ones still need a site update to go live.",
         suggestions: (data ?? []).map(({ user_id, anonymous, ...x }) => ({ ...x, author: anonymous ? "anonymous" : (nick.get(user_id) ?? "anonymous") })) }));
@@ -217,7 +217,7 @@ function cleanItem(sec: string, it: any) {
 const strip = (o: any) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined));
 
 async function fingerprint(ctx: Ctx) {
-  const { data } = await ctx.admin.from("results").select("mistakes, created_at").eq("user_id", ctx.user.id).order("created_at", { ascending: false }).limit(300);
+  const { data } = await ctx.db.from("results").select("mistakes, created_at").eq("user_id", ctx.user.id).order("created_at", { ascending: false }).limit(300);
   const byType: Record<string, number> = {}, byTopic: Record<string, number> = {};
   const recent: any[] = [];
   for (const r of data ?? []) for (const m of r.mistakes ?? []) {
@@ -233,9 +233,9 @@ async function fingerprint(ctx: Ctx) {
 async function gapFinder(ctx: Ctx, minutes: number, subject?: string) {
   const uid = ctx.user.id;
   const C = ctx.content;
-  const { data: prog } = await ctx.admin.from("progress").select("page, done, rating, updated_at").eq("user_id", uid);
-  const { data: states } = await ctx.admin.from("item_state").select("item_id, attempted_at").eq("user_id", uid);
-  const { data: res } = await ctx.admin.from("results").select("item_id, score, max_score, topics, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(200);
+  const { data: prog } = await ctx.db.from("progress").select("page, done, rating, updated_at").eq("user_id", uid);
+  const { data: states } = await ctx.db.from("item_state").select("item_id, attempted_at").eq("user_id", uid);
+  const { data: res } = await ctx.db.from("results").select("item_id, score, max_score, topics, created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(200);
   const P = new Map((prog ?? []).map((p) => [pageId(p.page), p]));
   const attempted = new Set((states ?? []).filter((s) => s.attempted_at).map((s) => s.item_id));
   const pages = C.docs.filter((d: any) => (d.type === "lesson" || d.type === "refresher")
