@@ -10,6 +10,9 @@ declare(strict_types=1);
 const SH_SUPABASE_URL = 'https://qgntwqqmpdiwexnwsmnm.supabase.co';
 const SH_SUPABASE_KEY = 'sb_publishable_Kox04-HlRIieoQbhDlqSuw_ko2783NR'; // public by design
 const SH_SCHEMA_VERSION = 1;
+if (!function_exists('array_is_list')) {   // PHP < 8.1
+    function array_is_list(array $a): bool { $i = 0; foreach ($a as $k => $_) { if ($k !== $i++) { return false; } } return true; }
+}
 
 final class ShError extends Exception {}
 
@@ -120,7 +123,8 @@ function sh_migrate(PDO $pdo): void {
 }
 
 // ---------------------------------------------------------------- auth
-// Returns ['id' => uuid, 'email' => ...] for a valid Supabase access token, or null.
+// Returns ['id' => uuid] for a valid Supabase access token, or null. The e-mail address is NOT kept:
+// StudyHub only needs the login's id (the address stays with the login service).
 function sh_user_from_token(string $token): ?array {
     if ($token === '' || strlen($token) > 4096) { return null; }
     $cacheDir = sh_data_dir('cache');
@@ -152,15 +156,15 @@ function sh_http_get_user(string $token): ?array {
     if ($status !== 200) { return null; }
     $j = json_decode($body, true);
     if (!is_array($j) || !preg_match('/^[0-9a-f-]{36}$/', (string)($j['id'] ?? ''))) { return null; }
-    return ['id' => $j['id'], 'email' => (string)($j['email'] ?? '')];
+    return ['id' => $j['id']];
 }
 
 function sh_touch_user(PDO $pdo, array $u): void {
     static $done = false;
     if ($done) { return; }
     $done = true;
-    $pdo->prepare('INSERT INTO users (id, email, last_seen, created_at) VALUES (?, ?, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3))
-                   ON DUPLICATE KEY UPDATE email = VALUES(email), last_seen = VALUES(last_seen)')->execute([$u['id'], $u['email']]);
+    $pdo->prepare('INSERT INTO users (id, email, last_seen, created_at) VALUES (?, NULL, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3))
+                   ON DUPLICATE KEY UPDATE email = NULL, last_seen = VALUES(last_seen)')->execute([$u['id']]);
 }
 
 function sh_is_admin(PDO $pdo, ?array $u): bool {

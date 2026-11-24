@@ -11,6 +11,10 @@ require __DIR__ . '/lib/shdb.php';
 require __DIR__ . '/lib/query.php';
 
 $pdo = sh_pdo();
+// Data minimisation: the e-mail address stays with the login service only (older rows had a copy).
+$pdo->exec('UPDATE users SET email = NULL WHERE email IS NOT NULL');
+// Short-lived login cache (2 min): remove anything older than 10 min.
+foreach (glob(sh_data_dir('cache') . '/*.json') ?: [] as $f) { if (filemtime($f) < time() - 600) { @unlink($f); } }
 
 // 1. Two-year clean-up
 $old = $pdo->query("SELECT id FROM users WHERE COALESCE(last_seen, created_at) < UTC_TIMESTAMP(3) - INTERVAL 2 YEAR
