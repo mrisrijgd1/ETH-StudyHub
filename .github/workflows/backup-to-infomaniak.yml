@@ -1,14 +1,28 @@
 name: Nightly backup to Infomaniak
 
-# Copies all StudyHub account data (every table in the Supabase "public" schema, plus the
-# login list: id, e-mail, created, last sign-in) to the Swiss hosting every night, so a full copy
-# exists in Switzerland. Saved OUTSIDE the website in studyhub-data/backups/, one gzip per day,
-# kept 30 days. Uses the two secrets that already exist: SUPABASE_ACCESS_TOKEN and INFOMANIAK_SSH_KEY.
+# Everything here keeps StudyHub's data in Switzerland (Infomaniak Web Hosting), outside the website folder.
+#
+#  * Before the data move (no file studyhub-data/.moved-to-mariadb on the server yet):
+#    exports the Supabase account data every night and copies it to studyhub-data/backups/ (kept 30 days).
+#  * "Move data" (start by hand: Actions -> this workflow -> Run workflow -> tick "move_data"):
+#    one last export from Supabase, then api/import.php loads it into our own MariaDB database on
+#    Infomaniak and marks the move as done. From then on no student data passes through GitHub.
+#  * After the move: the nightly job only SSHes in and runs api/cron.php ON THE SERVER
+#    (2-year clean-up + a database backup into studyhub-data/backups/, kept 30 days). GitHub only
+#    starts it; the data never leaves the server.
+#  * Every night: a copy of the main repository (all branches and history) into studyhub-data/repo/.
+#
+# Secrets: INFOMANIAK_SSH_KEY (always) and SUPABASE_ACCESS_TOKEN (only until the move is done).
 
 on:
   schedule:
     - cron: '23 2 * * *'   # 02:23 UTC every night
   workflow_dispatch:
+    inputs:
+      move_data:
+        description: "Move the data from Supabase into the Infomaniak database now (one time)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -21,13 +35,32 @@ env:
   REF: qgntwqqmpdiwexnwsmnm
   DEPLOY_HOST: 2r672z.ftp.infomaniak.com
   DEPLOY_USER: 2r672z_deploy
+  MARKER: studyhub-data/.moved-to-mariadb
 
 jobs:
   backup:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Export the data from Supabase
+      - name: Connect to the Swiss hosting
+        env: { SSH_KEY: "${{ secrets.INFOMANIAK_SSH_KEY }}" }
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          S="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes $DEPLOY_USER@$DEPLOY_HOST"
+          $S "mkdir -p studyhub-data/backups && chmod 700 studyhub-data studyhub-data/backups"
+          if $S "test -f $MARKER"; then echo "MOVED=1" >> "$GITHUB_ENV"; echo "Data already lives in the Infomaniak database."; else echo "MOVED=0" >> "$GITHUB_ENV"; fi
+
+      - name: Check the database is ready (move only)
+        if: inputs.move_data
+        run: |
+          S="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes $DEPLOY_USER@$DEPLOY_HOST"
+          $S "test -f studyhub-data/db-config.php" || { echo "::error::studyhub-data/db-config.php is missing on the server (create the database user and this file first)"; exit 1; }
+          $S "test -f sites/study-hub.ch/api/import.php" || { echo "::error::api/import.php is not deployed yet"; exit 1; }
+
+      - name: Export the data from Supabase (only until the move is done)
+        if: env.MOVED == '0' || inputs.move_data
         env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::SUPABASE_ACCESS_TOKEN missing"; exit 1; }
@@ -45,26 +78,65 @@ jobs:
           for t in tables:
               out['tables'][t] = q(f'select coalesce(json_agg(x), \'[]\'::json) as rows from public."{t}" x')[0]['rows']
           out['auth_users'] = q("select coalesce(json_agg(x),'[]'::json) as rows from (select id, email, created_at, last_sign_in_at from auth.users) x")[0]['rows']
-          name = 'studyhub-' + datetime.datetime.utcnow().strftime('%Y-%m-%d') + '.json.gz'
+          name = 'studyhub-' + datetime.datetime.utcnow().strftime('%Y-%m-%d-%H%M') + '.json.gz'
           with gzip.open(name, 'wt', encoding='utf-8') as f:
               json.dump(out, f, ensure_ascii=False)
           print('tables:', {t: len(v) for t, v in out['tables'].items()}, 'users:', len(out['auth_users']))
-          print('file:', name, os.path.getsize(name), 'bytes')
           open(os.environ['GITHUB_ENV'], 'a').write('BACKUP_FILE=' + name + '\n')
           PY
+          S="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes $DEPLOY_USER@$DEPLOY_HOST"
+          scp -i ~/.ssh/deploy_key -o BatchMode=yes "$BACKUP_FILE" "$DEPLOY_USER@$DEPLOY_HOST:studyhub-data/backups/"
+          rm -f "$BACKUP_FILE"
+          $S "chmod 600 studyhub-data/backups/*.json.gz; find studyhub-data/backups -name 'studyhub-*.json.gz' -mtime +30 -delete"
 
-      - name: Copy it to the Swiss hosting (outside the website) and keep 30 days
+      - name: Load it into the Infomaniak database (move only; running it again only adds what changed)
+        if: inputs.move_data
+        run: |
+          S="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes $DEPLOY_USER@$DEPLOY_HOST"
+          $S "php sites/study-hub.ch/api/import.php studyhub-data/backups/$BACKUP_FILE && date -u > $MARKER"
+          echo "MOVED=1" >> "$GITHUB_ENV"
+
+      - name: Nightly clean-up and database backup on the server
+        if: env.MOVED == '1' && !inputs.move_data
+        run: |
+          S="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes $DEPLOY_USER@$DEPLOY_HOST"
+          $S "php sites/study-hub.ch/api/cron.php"
+
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
+
+  repo-copy:
+    # A full copy of this repository (every branch, all history) on the Swiss hosting, in case GitHub is ever gone.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ !inputs.move_data }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Copy the repository to studyhub-data/repo/
         env: { SSH_KEY: "${{ secrets.INFOMANIAK_SSH_KEY }}" }
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes"
           S="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes $DEPLOY_USER@$DEPLOY_HOST"
-          $S "mkdir -p studyhub-data/backups && chmod 700 studyhub-data studyhub-data/backups"
-          scp -i ~/.ssh/deploy_key -o BatchMode=yes "$BACKUP_FILE" "$DEPLOY_USER@$DEPLOY_HOST:studyhub-data/backups/"
-          $S "find studyhub-data/backups -name 'studyhub-*.json.gz' -mtime +30 -delete; ls -la studyhub-data/backups | tail -5"
-          rm -f "$BACKUP_FILE"
-
+          git fetch --quiet origin '+refs/heads/*:refs/remotes/origin/*'
+          git remote set-head origin -d || true
+          if $S "command -v git >/dev/null"; then
+            # git exists on the server: keep one bare copy and only send what changed
+            $S "test -d studyhub-data/repo/ETH-StudyHub.git || git init --quiet --bare studyhub-data/repo/ETH-StudyHub.git"
+            git push --quiet --force "$DEPLOY_USER@$DEPLOY_HOST:studyhub-data/repo/ETH-StudyHub.git" 'refs/remotes/origin/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
+            $S "git --git-dir=studyhub-data/repo/ETH-StudyHub.git count-objects -vH | tail -1"
+          else
+            # no git on the server: one bundle file per week, keep the last 3
+            name="ETH-StudyHub-$(date -u +%G-W%V).bundle"
+            git bundle create "$name" --all
+            $S "mkdir -p studyhub-data/repo"
+            scp -i ~/.ssh/deploy_key -o BatchMode=yes "$name" "$DEPLOY_USER@$DEPLOY_HOST:studyhub-data/repo/"
+            $S "ls -1t studyhub-data/repo/*.bundle | tail -n +4 | xargs -r rm -f; ls -la studyhub-data/repo"
+          fi
       - name: Remove the key
         if: always()
         run: rm -f ~/.ssh/deploy_key
