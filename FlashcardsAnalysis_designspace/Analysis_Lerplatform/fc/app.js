@@ -436,52 +436,21 @@
     return esc(fill(g.t).replace("{streak}", si.cur).replace("{mastered}", st.mastered));
   }
   let greetCache = null;
-  /* The streak flame: a small fire creature. Layered tongues (red → orange → yellow → white-hot core), each
-     swaying on its own clock, a noise filter for the flicker, embers, and a face that shows the streak's mood:
-     happy (done today), calm (not yet), worried (at risk), asleep (no streak) or out (streak ended). */
-  const reducedMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
-  function flameSvg(cls) {
-    const T = {   // tongues, drawn from the base (60,132) upwards
-      body: "M60 133 C33 133 21 115 23 96 C25 78 40 66 60 64 C80 66 95 78 97 96 C99 115 87 133 60 133 Z",
-      c: "M40 96 C36 72 50 52 54 30 C55 22 54 15 57 6 C63 22 72 36 76 54 C80 70 80 84 78 96 Z",
-      l: "M26 104 C19 88 22 72 28 58 C30 52 30 46 29 40 C37 50 45 62 48 80 C49 88 48 96 46 104 Z",
-      r: "M72 102 C72 86 78 72 86 62 C90 56 92 50 92 42 C99 56 102 72 98 88 C96 96 94 102 90 106 Z",
-      ll: "M30 118 C22 112 18 102 19 92 C20 86 19 80 17 74 C25 82 31 92 34 104 Z",
-      rr: "M88 118 C94 110 98 100 98 90 C98 84 100 80 103 76 C106 90 104 104 96 116 Z"
-    };
-    const layer = (n, s) => `<g class="ly ly${n}" transform="translate(60 133) scale(${s}) translate(-60 -133)" fill="url(#fcf-g${n})">` +
-      `<path class="tg body-t" d="${T.body}"/><path class="tg t-ll" d="${T.ll}"/><path class="tg t-rr" d="${T.rr}"/><path class="tg t-l" d="${T.l}"/><path class="tg t-r" d="${T.r}"/><path class="tg t-c" d="${T.c}"/></g>`;
-    const anim = reducedMotion() ? "" : `<animate attributeName="baseFrequency" dur="2.6s" values="0.018 0.055;0.024 0.075;0.016 0.065;0.018 0.055" repeatCount="indefinite"/>`;
-    return `<svg class="fc-ui fc-flame ${cls}" viewBox="0 0 120 142" aria-hidden="true">
-      <defs>
-        <radialGradient id="fcf-glow" cx="50%" cy="62%" r="50%"><stop offset="0" style="stop-color:var(--fg)" stop-opacity=".55"/><stop offset=".55" style="stop-color:var(--fg)" stop-opacity=".18"/><stop offset="1" style="stop-color:var(--fg)" stop-opacity="0"/></radialGradient>
-        <linearGradient id="fcf-g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--fo)" stop-opacity="0"/><stop offset=".16" style="stop-color:var(--fo)" stop-opacity=".8"/><stop offset=".55" style="stop-color:var(--fo2)"/><stop offset="1" style="stop-color:var(--fo3)"/></linearGradient>
-        <linearGradient id="fcf-g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--fm)" stop-opacity="0"/><stop offset=".22" style="stop-color:var(--fm)" stop-opacity=".9"/><stop offset="1" style="stop-color:var(--fm2)"/></linearGradient>
-        <linearGradient id="fcf-g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--fi)" stop-opacity="0"/><stop offset=".3" style="stop-color:var(--fi)"/><stop offset="1" style="stop-color:var(--fi2)"/></linearGradient>
-        <radialGradient id="fcf-g4" cx="50%" cy="70%" r="55%"><stop offset="0" style="stop-color:var(--fc0)"/><stop offset=".6" style="stop-color:var(--fc1)"/><stop offset="1" style="stop-color:var(--fi)" stop-opacity="0"/></radialGradient>
-        <filter id="fcf-wobble" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.055" numOctaves="1" seed="4" result="n">${anim}</feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter>
-      </defs>
-      <ellipse class="glow" cx="60" cy="98" rx="58" ry="48" fill="url(#fcf-glow)"/>
-      <g class="creature">
-        <g class="fire">${layer(1, 1)}${layer(2, .8)}${layer(3, .6)}<ellipse class="core" cx="60" cy="112" rx="22" ry="20" fill="url(#fcf-g4)"/></g>
-        <g class="face">
-          <ellipse class="cheek" cx="40" cy="108" rx="5.5" ry="3.2"/><ellipse class="cheek" cx="80" cy="108" rx="5.5" ry="3.2"/>
-          <g class="eyes"><g class="eye"><ellipse class="white" cx="48" cy="96" rx="8" ry="9.5"/><g class="pupil"><ellipse cx="49" cy="98" rx="4" ry="4.6"/><circle class="hl" cx="50.6" cy="96" r="1.5"/></g></g>
-            <g class="eye"><ellipse class="white" cx="72" cy="96" rx="8" ry="9.5"/><g class="pupil"><ellipse cx="71" cy="98" rx="4" ry="4.6"/><circle class="hl" cx="72.6" cy="96" r="1.5"/></g></g></g>
-          <g class="lids"><path d="M41 97 Q48 102 55 97"/><path d="M65 97 Q72 102 79 97"/></g>
-          <g class="brows"><path d="M41 87 Q47 83 54 83"/><path d="M79 87 Q73 83 66 83"/></g>
-          <path class="mouth m-calm" d="M54 110 Q60 115 66 110"/>
-          <path class="mouth m-happy" d="M51.5 108.5 Q60 121 68.5 108.5 Q60 112 51.5 108.5 Z"/>
-          <path class="mouth m-worry" d="M53 113 Q56.5 109.5 60 112.5 Q63.5 115.5 67 112"/>
-          <path class="mouth m-sleep" d="M57 112 Q60 114 63 112"/>
-          <path class="drop" d="M85 84 C83 88 82 90 82 92 A3 3 0 0 0 88 92 C88 90 87 88 85 84 Z"/>
-        </g>
-      </g>
-      <g class="embers"><circle cx="44" cy="70" r="1.6"/><circle cx="74" cy="64" r="1.3"/><circle cx="60" cy="40" r="1.1"/><circle cx="86" cy="80" r="1.2"/><circle cx="34" cy="84" r="1"/></g>
-      <g class="zz"><text x="84" y="70">z</text><text x="92" y="58">z</text></g>
-      <g class="smoke"><path d="M58 70 C52 60 64 54 58 44 C54 36 62 30 60 22"/><path d="M66 74 C72 64 62 58 68 48"/></g>
-      <g class="sparks"><circle cx="20" cy="50" r="3"/><circle cx="100" cy="40" r="2.6"/><circle cx="84" cy="16" r="2.2"/><circle cx="32" cy="22" r="2"/></g>
-    </svg>`;
+  /* The streak flame: the little fire creature of fc/flame.js (shared with the start page). Its mood follows the streak:
+     happy (done today), party (today's goal reached), calm (not yet), worried (at risk) or asleep (no streak).
+     On the home screen it reacts to the pointer, giggles when poked and thinks about the subject when left alone. */
+  const DAILY_GOAL = (SUBJ && SUBJ.dailyGoal) || 20;
+  function flameSvg(cls, pile) {
+    return window.FCFlame ? window.FCFlame.box(cls, "app", { poke: true, pile, label: L("Deine Lernflamme – stups sie an!", "Your study flame – give it a poke!") }) : "";
+  }
+  function wireFlame() {
+    if (!window.FCFlame) return;
+    const th = SUBJ && SUBJ.thoughts;
+    window.FCFlame.attach($("#fc-view"), {
+      thoughts: th ? (th[LANG] || th.de || []) : [],
+      reactions: LANG === "de" ? ["Hihi, das kitzelt!", "Hey! Noch eine Karte?", "Ich glühe für dich!", "Psst, ich denke gerade nach …", "Wuuusch!", "Mehr Karten = mehr Feuer!"]
+                               : ["Hehe, that tickles!", "Hey! One more card?", "I'm glowing for you!", "Shh, I'm thinking …", "Whoosh!", "More cards = more fire!"]
+    });
   }
   /* The match: a small vector illustration. ready = red head, used = charred and burnt down. */
   function matchSvg(state) {
@@ -499,7 +468,7 @@
       <path class="wisp" d="M56 6 C53 3 58 1 55 -2"/>
     </svg>`;
   }
-  function streakPanel(si) {
+  function streakPanel(si, st) {
     if (!streakOn()) return `<div class="fc-panel fc-streak off" aria-label="${L("Heute", "Today")}"><div><strong>${si.today} ${si.today === 1 ? L("Karte", "card") : L("Karten", "cards")}</strong>
       <div class="fc-streak-sub">${L("heute geübt", "practised today")}</div>
       ${designHidesStreak()
@@ -525,8 +494,10 @@
       const ms = msToZurichMidnight(NOW()); const hh = Math.floor(ms / 3600e3), mm = Math.floor(ms % 3600e3 / 60e3);
       msg = L(`Tag ${si.cur + 1} wartet auf dich! Noch ${hh} h ${mm} min – ein paar Karten, und die Flamme lodert.`, `Day ${si.cur + 1} is waiting for you! ${hh} h ${mm} min to go – a few cards and the flame blazes.`);
       extra = `<a class="fc-btn primary" href="#/session/rescue" style="margin-top:10px">${L("Flamme anfachen", "Fan the flame")} (${C.rescueSize})</a>`;
-    } else if (si.doneToday) msg = L("Heute erledigt. Die Flamme brennt weiter!", "Done for today. The flame keeps burning!");
+    } else if (si.doneToday && si.today >= DAILY_GOAL) msg = L(`Tagesziel geknackt – ${si.today} Karten! Deine Flamme tanzt vor Freude.`, `Daily goal smashed – ${si.today} cards! Your flame is dancing with joy.`);
+    else if (si.doneToday) msg = L("Heute erledigt. Die Flamme brennt weiter!", "Done for today. The flame keeps burning!");
     else msg = L(`Auf zu Tag ${si.cur + 1}! Ein paar Karten, und die Flamme wächst.`, `On to day ${si.cur + 1}! A few cards and the flame grows.`);
+    if (si.cur && si.doneToday && si.today >= DAILY_GOAL) cls += " party";   // today's goal reached: it dances and throws sparks
     const ms = C.milestones.filter(m => si.cur >= m && !(flags.milestones || []).includes(m));
     if (ms.length) { cls += " celebrate"; flags.milestones = (flags.milestones || []).concat(ms); save(); setTimeout(() => toast(L(`${ms[ms.length - 1]} Tage am Stück! ｡^‿^｡`, `${ms[ms.length - 1]} days in a row! ｡^‿^｡`)), 400); }
     // the match under the flame: ready (red head), glowing when it can save the streak, or burnt while it grows back
@@ -538,7 +509,7 @@
       ? `<a class="fc-matchbtn lit" href="#/session/restore" title="${esc(mTitle)}" aria-label="${esc(mTitle)}">${matchSvg(mState)}<span>${L("Anzünden", "Light it")}</span></a>`
       : `<span class="fc-matchbtn" role="img" title="${esc(mTitle)}" aria-label="${esc(mTitle)}">${matchSvg(mState)}${rs.ready ? "" : `<span>${L("in", "in")} ${rs.readyIn} ${L("T.", "d")}</span>`}</span>`;
     if (rs.available) extra = `<a class="fc-btn primary" href="#/session/restore" style="margin-top:10px">${L("Serie wiederherstellen", "Restore streak")} (${C.restoreSize})</a>`;
-    return `<div class="fc-panel fc-streak${rs.available ? " can-restore" : ""}" aria-label="${L("Serie", "Streak")}"><div class="fc-flamecol">${flameSvg(cls)}${match}</div><div><strong>${si.cur} ${si.cur === 1 ? L("Tag", "day") : L("Tage", "days")}</strong>
+    return `<div class="fc-panel fc-streak${rs.available ? " can-restore" : ""}" aria-label="${L("Serie", "Streak")}"><div class="fc-flamecol">${flameSvg(cls, { size: st && st.total ? st.mastered / st.total : 0, burn: si.today / DAILY_GOAL })}${match}</div><div><strong>${si.cur} ${si.cur === 1 ? L("Tag", "day") : L("Tage", "days")}</strong>
       <div class="fc-streak-sub">${L("Längste Serie", "Longest streak")}: ${si.longest} · ${L("heute", "today")}: ${si.today} ${L("Karten", "cards")} · <button type="button" class="fc-linkbtn fc-streak-toggle" data-streak="off" title="${L("Flamme, Serie und Streichholz ausblenden (für alle Fächer)", "Hide flame, streak and match (for all subjects)")}">${L("ausblenden", "hide")}</button></div>
       <div class="${si.risk || rs.available ? "fc-risk" : "fc-streak-sub"}" role="${si.risk || rs.available ? "alert" : "status"}">${msg}</div>${extra}</div></div>`;
   }
@@ -662,7 +633,7 @@
           <div class="fc-row">${lastS ? `<a class="fc-btn primary" href="${esc(lastS.hash)}">${L("Weiter, wo du aufgehört hast", "Continue where you left off")}</a>` : `<a class="fc-btn primary" href="#/kapitel-${(withCards[0] || {}).id ?? 1}">${L("Loslegen", "Start learning")}</a>`}
           <a class="fc-btn" href="#/weak">${L("Schwache Karten", "Weak cards")} (${st.weak})</a></div>
         </div>
-        ${streakPanel(si)}
+        ${streakPanel(si, st)}
       </section>
       <section class="fc-section"><h2 class="fc-sr">${L("Statistik", "Stats")}</h2>
         <div class="fc-kpis stats-grid">
@@ -682,7 +653,7 @@
     const nf = $("#fc-nameform"); if (nf) nf.onsubmit = e => { e.preventDefault(); const v = $("#fc-name").value.trim(); if (v) { U().name = v; save(); greetCache = null; render(); } };
     const rn = $("#fc-rename"); if (rn) rn.onclick = e => { e.preventDefault(); const v = prompt(L("Dein Name:", "Your name:"), U().name || ""); if (v != null) { U().name = v.trim(); save(); greetCache = null; render(); } };
     $$("[data-streak]").forEach(b => b.onclick = () => setStreak(b.dataset.streak === "on"));
-    wireFooter(); wireWeek();
+    wireFooter(); wireWeek(); wireFlame();
     $$(".fc-list").forEach(typeset);
     if (lesson.state[proofLang()] === "idle") loadLessons(proofLang()).then(() => { if (route().parts.length === 0) render(); });
   }
