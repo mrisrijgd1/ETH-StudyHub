@@ -180,6 +180,17 @@
   const url = value => { const target = new URL(value, base); if (de && sharedPages.has(value)) target.searchParams.set('lang', 'de'); return target.href; };
   // The header follows the path picked on the home page (sh-path): Chemie only on the Interdisciplinary path.
   let studyPath = null; try { studyPath = localStorage.getItem('sh-path'); } catch (_) {}
+  const subjectIds = ['analysis', 'linalg', 'physics', 'informatik', 'chemie'];
+  function savedSubjects(pathChoice) {
+    try {
+      const value = JSON.parse(localStorage.getItem('sh-subjects') || 'null');
+      if (Array.isArray(value)) {
+        const clean = value.filter((id, index) => subjectIds.includes(id) && value.indexOf(id) === index);
+        if (clean.length) return clean;
+      }
+    } catch (_) {}
+    return ['analysis', 'linalg', 'physics'].concat(pathChoice === 'inter' ? ['chemie'] : ['informatik']);
+  }
   const subjects = [
     { id: 'analysis', label: 'Analysis I', href: prefix + 'analysis.html' },
     { id: 'physics', label: L('Physik I', 'Physics I'), href: prefix + 'physics.html' },
@@ -187,7 +198,6 @@
     { id: 'linalg', label: L('Lineare Algebra I', 'Linear Algebra I'), href: prefix + 'linalg.html' },
     { id: 'informatik', label: 'Informatik', href: 'informatik.html' }
   ];
-  const showChemie = p => p === 'inter' || chemistry;
   // flashcards.html#p1-16 is the Physics deck (StudyHub's own cards); it stays on this page.
   let returnHash = '';
   try {
@@ -285,7 +295,7 @@
   const subjectNotes = { analysis: L('22 Lektionen', '22 lessons'), linalg: L('21 Lektionen', '21 lessons'), physics: L('16 Lektionen', '16 lessons'), chemie: L('27 Lektionen, auf Deutsch', '27 lessons, in German'), informatik: L('4 Lektionen bisher, auf Englisch', '4 lessons so far') };
   const subjectsPop = popover('subjects', L('Fächer', 'Subjects'), !!subject);
   function renderSubjects(p) {
-    const mine = ['analysis', 'linalg', 'physics'].concat(p === 'inter' ? [] : ['informatik']).concat(showChemie(p) ? ['chemie'] : []);
+    const mine = savedSubjects(p);
     const others = subjects.filter(s => !mine.includes(s.id));
     const item = s => { const a = richLink(s.label, s.href, subjectNotes[s.id]); if (subject === s.id) a.setAttribute('aria-current', 'page'); if (s.id === 'chemie') a.dataset.subj = 'chemie'; return a; };
     const ordered = mine.map(id => subjects.find(s => s.id === id));
@@ -312,16 +322,16 @@
   const aboutPop = popover('about', L('Über', 'About'), false);
   aboutPop.panel.append(
     group(L('Über StudyHub', 'About StudyHub'), [
-      richLink(L('Über diesen Hub', 'About this hub'), prefix + 'index.html#about', L('Wer ihn macht, und was er nicht ist', 'Who makes it, and what it is not')),
+      richLink(L('Über diesen Hub', 'About this hub'), prefix + 'about.html'),
       richLink(L('Team und Dank', 'Team and credits'), 'credits.html')
     ]),
     group(L('Hilfe und Mitmachen', 'Help and joining in'), [
-      richLink(L('Brauchst du Hilfe?', 'Need help?'), prefix + 'help.html', L('An der ETH und in Zürich, heute', 'At ETH and in Zurich, today')),
-      richLink('Community', prefix + 'community.html', L('Forum und Fragen', 'Forum and questions')),
+      richLink(L('Brauchst du Hilfe?', 'Need help?'), prefix + 'help.html'),
+      richLink('Community', prefix + 'community.html'),
       richLink(L('Unterlagen beitragen', 'Contribute notes'), 'contribute.html'),
-      richLink(L('Mit deiner KI lernen', 'Study with your AI'), prefix + 'connect.html', L('In 2 Minuten eingerichtet', 'Set up in 2 minutes'))
+      richLink(L('Mit deiner KI lernen', 'Study with your AI'), prefix + 'connect.html')
     ]),
-    group('', [richLink(L('Alle Seiten', 'All pages'), prefix + 'more.html', L('Werkzeugkasten, Karten, Downloads', 'Toolbox, maps, downloads'))])
+    group('', [richLink(L('Alle Seiten', 'All pages'), prefix + 'more.html')])
   );
   nav.append(aboutPop.wrap);
   upper.append(nav);
@@ -329,6 +339,8 @@
   const pathChanged = p => { studyPath = p; renderSubjects(p); };
   addEventListener('sh-path', e => pathChanged(e.detail));
   addEventListener('storage', e => { if (e.key === 'sh-path') pathChanged(e.newValue); });
+  addEventListener('sh-study-setup', e => { studyPath = e.detail?.degree || studyPath; renderSubjects(studyPath); });
+  addEventListener('storage', e => { if (e.key === 'sh-subjects') renderSubjects(studyPath); });
   document.addEventListener('pointerdown', event => { pops.forEach(p => { if (!p.wrap.contains(event.target)) p.set(false); }); });
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
@@ -362,25 +374,7 @@
   design.append(toggle);
   const panel = document.createElement('div'); panel.className = 'study-design-panel';
   const heading = document.createElement('h2'); heading.textContent = 'Design'; panel.append(heading);
-  const profileForm = document.createElement('form');
-  profileForm.className = 'study-profile-form';
-  profileForm.innerHTML = '<label>' + L('Benutzername für die Bestenliste', 'Leaderboard username') + '<input name="nickname" type="text" maxlength="30" autocomplete="nickname"></label>' +
-    '<label class="study-profile-optin"><input name="leaderboard" type="checkbox">' + L('In der Bestenliste anzeigen', 'Show me on the leaderboard') + '</label>' +
-    '<button type="submit" class="study-button-secondary">' + L('Speichern', 'Save') + '</button><p role="status"></p>';
-  const profileName = profileForm.elements.nickname;
-  const profileOptIn = profileForm.elements.leaderboard;
-  const profileMessage = profileForm.querySelector('[role="status"]');
-  profileForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    const button = profileForm.querySelector('button');
-    button.disabled = true;
-    try {
-      await window.SH.updateProfile(profileName.value, profileOptIn.checked);
-      profileMessage.textContent = L('Gespeichert.', 'Saved.');
-    } catch (error) { profileMessage.textContent = error.message; }
-    finally { button.disabled = false; }
-  });
-  panel.append(profileForm);
+  const profileSummary = document.createElement('p'); profileSummary.className = 'study-profile-summary'; panel.append(profileSummary);
   const choices = document.createElement('div');
   choices.className = 'study-profile-links';
   const switchLanguage = link(L('Sprache: English', 'Language: Deutsch'), languageTarget);
@@ -411,7 +405,16 @@
   });
   chooser.append(colourOptions);
   const hint = document.createElement('p'); hint.className = 'design-save-hint'; hint.textContent = L('Wird für alle Fächer in diesem Browser gespeichert.', 'Saved for all subjects in this browser.'); chooser.append(hint);
-  panel.append(chooser, link(L('Mein StudyHub', 'My StudyHub'), prefix + 'account.html', 'study-design-my'));
+  const appearanceDetails = document.createElement('details'); appearanceDetails.className = 'study-profile-appearance';
+  const appearanceSummary = document.createElement('summary'); appearanceSummary.innerHTML = '<strong>' + L('Farbgebung', 'Appearance') + '</strong><span>' + L('Hell, dunkel und Farben', 'Light, dark and colours') + '</span>';
+  appearanceDetails.append(appearanceSummary, chooser); panel.append(appearanceDetails);
+  const profileActions = document.createElement('div'); profileActions.className = 'study-profile-actions';
+  const editStudySetup = document.createElement('button'); editStudySetup.type = 'button'; editStudySetup.className = 'study-profile-action';
+  editStudySetup.innerHTML = '<strong>' + L('Nutzer', 'User') + '</strong><span>' + L('Fächer und Lernzeit ändern', 'Change subjects and study time') + '</span>';
+  const progressLink = richLink(L('Fortschritt · Mein StudyHub', 'Progress · My StudyHub'), prefix + 'account.html', L('Lektionen, Notizen und Resultate', 'Lessons, notes and results'));
+  progressLink.classList.add('study-profile-progress');
+  profileActions.append(editStudySetup, progressLink);
+  panel.append(profileActions);
   design.append(panel); utilities.append(design);
   // Every picker on the page (header panel, settings, My StudyHub) shows the same choice at once, without a reload.
   function updateDesignPanel() { syncPickers(); }
@@ -425,6 +428,78 @@
   addEventListener('resize', positionDesignPanel);
   document.addEventListener('pointerdown', event => { if (!design.contains(event.target)) design.open = false; });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && design.open) { design.open = false; toggle.focus(); } });
+  const setupDialog = document.createElement('dialog'); setupDialog.className = 'study-setup-dialog';
+  setupDialog.innerHTML = '<form method="dialog" class="study-setup-form"><div class="study-setup-head"><p class="eyebrow">StudyHub</p><h2></h2><p class="study-setup-lead"></p></div>' +
+    '<fieldset class="study-setup-degree"><legend>' + L('Was studierst du?', 'What do you study?') + '</legend>' +
+    [['math', L('Mathematik', 'Mathematics')], ['physics', L('Physik', 'Physics')], ['inter', L('Interdisziplinäre Naturwissenschaften', 'Interdisciplinary Sciences')], ['other', L('Anderes oder noch offen', 'Something else or undecided')]].map(([value, label]) => '<label><input type="radio" name="degree" value="' + value + '"><span>' + label + '</span></label>').join('') + '</fieldset>' +
+    '<fieldset class="study-setup-subjects"><legend>' + L('Deine Fächer', 'Your subjects') + '</legend><p>' + L('Die empfohlenen Fächer sind vorausgewählt. Füge weitere hinzu oder entferne einzelne.', 'Recommended subjects are preselected. Add extras or remove individual subjects.') + '</p>' +
+    [['analysis', 'Analysis I'], ['linalg', L('Lineare Algebra I', 'Linear Algebra I')], ['physics', L('Physik I', 'Physics I')], ['informatik', 'Informatik'], ['chemie', L('Allgemeine Chemie I (PC)', 'General Chemistry I (PC)')]].map(([value, label]) => '<label><input type="checkbox" name="subjects" value="' + value + '"><span>' + label + '</span></label>').join('') + '</fieldset>' +
+    '<label class="study-setup-time"><span>' + L('Wie viel Zeit möchtest du pro Woche einplanen?', 'How much time would you like to plan each week?') + '</span><select name="weeklyHours">' +
+    [2, 4, 6, 8, 10, 12, 15].map(hours => '<option value="' + hours + '">' + hours + ' ' + L('Stunden', 'hours') + '</option>').join('') + '</select></label>' +
+    '<p class="study-setup-status" role="status"></p><div class="study-setup-buttons"><button type="button" class="study-button-secondary study-setup-cancel">' + L('Abbrechen', 'Cancel') + '</button><button type="submit" class="study-setup-save">' + L('Speichern', 'Save') + '</button></div></form>';
+  document.body.append(setupDialog);
+  const setupForm = setupDialog.querySelector('form');
+  const setupTitle = setupDialog.querySelector('.study-setup-head h2');
+  const setupLead = setupDialog.querySelector('.study-setup-lead');
+  const setupCancel = setupDialog.querySelector('.study-setup-cancel');
+  const setupSave = setupDialog.querySelector('.study-setup-save');
+  const setupStatus = setupDialog.querySelector('.study-setup-status');
+  const degreeDefaults = {
+    math: ['analysis', 'linalg', 'physics', 'informatik'],
+    physics: ['analysis', 'linalg', 'physics', 'informatik'],
+    inter: ['analysis', 'linalg', 'physics', 'chemie'],
+    other: []
+  };
+  let setupRequired = false;
+  function selectSetupSubjects(ids) {
+    setupForm.querySelectorAll('input[name="subjects"]').forEach(input => { input.checked = ids.includes(input.value); });
+  }
+  setupForm.querySelectorAll('input[name="degree"]').forEach(input => input.addEventListener('change', () => selectSetupSubjects(degreeDefaults[input.value])));
+  function openStudySetup(required) {
+    const current = window.SH?.studySetup?.read();
+    let fallbackDegree = studyPath || 'math';
+    if (!degreeDefaults[fallbackDegree]) fallbackDegree = 'other';
+    const degree = current?.degree || fallbackDegree;
+    const chosen = current?.subjects || savedSubjects(degree);
+    let storedHours = 0; try { storedHours = Number(localStorage.getItem('sh-weekly-hours')); } catch (_) {}
+    const hours = current?.weeklyHours || storedHours || 6;
+    setupForm.elements.degree.value = degree;
+    selectSetupSubjects(chosen);
+    setupForm.elements.weeklyHours.value = String(hours);
+    setupRequired = !!required;
+    setupCancel.hidden = false;
+    setupCancel.textContent = setupRequired ? L('Später einrichten', 'Set up later') : L('Abbrechen', 'Cancel');
+    setupTitle.textContent = setupRequired ? L('Richte dein StudyHub ein', 'Set up your StudyHub') : L('Deine Lern-Einstellungen', 'Your study settings');
+    setupLead.textContent = setupRequired ? L('Wähle deinen Studiengang, deine Fächer und eine realistische Lernzeit. Du kannst alles später im Profil ändern.', 'Choose your degree programme, subjects and a realistic study time. You can change everything later from your profile.') : L('Ändere Fächer und Lernzeit einzeln. Dein Fortschritt bleibt erhalten.', 'Change subjects and study time individually. Your progress stays intact.');
+    setupSave.textContent = setupRequired ? L('Weiter zu StudyHub', 'Continue to StudyHub') : L('Änderungen speichern', 'Save changes');
+    setupStatus.textContent = '';
+    design.open = false;
+    if (typeof setupDialog.showModal === 'function') setupDialog.showModal(); else setupDialog.setAttribute('open', '');
+  }
+  setupCancel.addEventListener('click', async () => {
+    if (setupRequired) await window.SH?.studySetup?.skip?.();
+    if (setupDialog.close) setupDialog.close(); else setupDialog.removeAttribute('open');
+    if (setupRequired && file !== 'index.html') location.href = new URL(prefix + 'index.html', base).href;
+    setupRequired = false;
+  });
+  setupDialog.addEventListener('cancel', event => { if (setupRequired) event.preventDefault(); });
+  setupForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const subjects = Array.from(setupForm.querySelectorAll('input[name="subjects"]:checked')).map(input => input.value);
+    setupSave.disabled = true; setupStatus.textContent = '';
+    try {
+      const saved = await window.SH.studySetup.save({ degree: setupForm.elements.degree.value, subjects, weeklyHours: Number(setupForm.elements.weeklyHours.value), completedAt: Date.now() });
+      studyPath = saved.degree;
+      renderSubjects(studyPath);
+      if (setupDialog.close) setupDialog.close(); else setupDialog.removeAttribute('open');
+      if (setupRequired && file !== 'index.html') location.href = new URL(prefix + 'index.html', base).href;
+      else if (setupRequired) { history.replaceState(null, '', location.pathname + location.search); scrollTo({ top: 0, behavior: 'smooth' }); }
+      setupRequired = false;
+    } catch (error) { setupStatus.textContent = error.message; }
+    finally { setupSave.disabled = false; }
+  });
+  editStudySetup.addEventListener('click', () => openStudySetup(false));
+  window.SHStudySetup = { open: () => openStudySetup(false) };
   upper.append(utilities); shell.append(upper);
   if (subject) {
     const lower = document.createElement('nav'); lower.className = 'study-modes'; lower.setAttribute('aria-label', L('Bereiche im Fach', 'Subject modes'));
@@ -688,14 +763,18 @@
     const account = window.SH;
     const signedIn = !!account?.user;
     design.hidden = false;
-    profileForm.hidden = !signedIn;
+    profileSummary.hidden = !signedIn;
     choices.hidden = !signedIn;
-    heading.textContent = signedIn ? L('Einstellungen', 'Settings') : 'Design';
+    profileActions.hidden = !signedIn;
+    appearanceDetails.classList.toggle('study-profile-appearance-guest', !signedIn);
+    appearanceDetails.open = !signedIn;
+    heading.textContent = signedIn ? L('Profil', 'Profile') : 'Design';
     toggle.classList.toggle('study-profile-toggle', signedIn);
-    toggle.setAttribute('aria-label', signedIn ? L('Konto und Design', 'Account and design') : 'Design');
+    toggle.setAttribute('aria-label', signedIn ? L('Nutzerprofil öffnen', 'Open user profile') : 'Design');
     toggle.innerHTML = signedIn ? '<span class="study-profile-icon" aria-hidden="true"></span>' : ICONS.palette + '<span class="study-design-word">Design</span>';
     login.hidden = signedIn;
     languageLink.hidden = signedIn;
+    if (signedIn) profileSummary.textContent = account?.profile?.nickname || account?.user?.email || L('Angemeldet', 'Signed in');
 
     if (signedIn && new URLSearchParams(location.search).get('settings') === '1') {
       design.open = true;
@@ -703,11 +782,9 @@
       settingsUrl.searchParams.delete('settings');
       history.replaceState(null, '', settingsUrl);
     }
-    profileForm.querySelector('button').disabled = !!account?.accountDataPending;
-    profileName.disabled = profileOptIn.disabled = !!account?.accountDataPending;
-    if (!account?.accountDataPending) {
-      profileName.value = account?.profile?.nickname || '';
-      profileOptIn.checked = !!account?.profile?.leaderboard;
+    editStudySetup.disabled = !!account?.accountDataPending;
+    if (signedIn && !account?.accountDataPending && !account?.studySetup?.read() && !account?.studySetup?.skipped?.() && !setupDialog.open) {
+      openStudySetup(true);
     }
     updateGate();
     if (lessonKind && main && signedIn && lessonOwner !== account.user.id) { lessonOwner = account.user.id; rememberLesson(); }
