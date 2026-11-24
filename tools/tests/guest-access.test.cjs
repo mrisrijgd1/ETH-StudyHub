@@ -42,16 +42,42 @@ test('protected Chemie activities still require sign-in and cannot be dismissed'
 test('public Chemie overview and library remain open', () => {
   for (const hash of ['', '#home', '#library', '#sources']) assert.equal(render({ chemistry: true, hash }).locked, false);
 });
-test('guest UI keeps Design and language available without exposing private profile form', () => {
+test('guest UI keeps Design and language available without exposing signed-in profile actions', () => {
   const body = source.slice(source.indexOf('  function updateAccountUI() {'), source.indexOf("  document.addEventListener('sh-auth', updateAccountUI)"));
   const element = () => ({ hidden: null, value: '', checked: false, disabled: false, classList: { toggle() {} }, setAttribute() {} });
-  const design = element(), profileForm = element(), languageLink = element(), choices = element();
-  const submit = element(); profileForm.querySelector = () => submit;
-  const context = { window: { SH: { user: null } }, design, profileForm, choices, heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink,
-    profileName: element(), profileOptIn: element(), L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
+  const design = element(), profileSummary = element(), profileActions = element(), languageLink = element(), choices = element(), appearanceDetails = element();
+  appearanceDetails.open = false;
+  const context = { window: { SH: { user: null } }, design, profileSummary, profileActions, choices, appearanceDetails, heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink,
+    editStudySetup: element(), setupDialog: { open: false }, L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
   vm.runInNewContext(body + '\nupdateAccountUI();', context);
   assert.equal(design.hidden, false);
   assert.equal(languageLink.hidden, false);
-  assert.equal(profileForm.hidden, true);
+  assert.equal(profileSummary.hidden, true);
+  assert.equal(profileActions.hidden, true);
   assert.equal(choices.hidden, true);
+  assert.equal(appearanceDetails.open, true);
+});
+test('signed-in learners without setup are sent through first-run setup', () => {
+  const body = source.slice(source.indexOf('  function updateAccountUI() {'), source.indexOf("  document.addEventListener('sh-auth', updateAccountUI)"));
+  const element = () => ({ hidden: null, disabled: false, open: false, textContent: '', classList: { toggle() {} }, setAttribute() {} });
+  let required = null;
+  const account = { user: { id: 'student', email: 'student@example.test' }, profile: null, accountDataPending: false, studySetup: { read() { return null; } } };
+  const context = { window: { SH: account }, design: element(), profileSummary: element(), profileActions: element(), choices: element(), appearanceDetails: element(), heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink: element(),
+    editStudySetup: element(), setupDialog: { open: false }, openStudySetup(value) { required = value; }, URLSearchParams, location: { search: '' }, L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
+  vm.runInNewContext(body + '\nupdateAccountUI();', context);
+  assert.equal(required, true);
+  assert.equal(context.profileSummary.hidden, false);
+  assert.equal(context.profileActions.hidden, false);
+  assert.equal(context.appearanceDetails.open, false);
+});
+test('signed-in learners can postpone first-run setup', () => {
+  const body = source.slice(source.indexOf('  function updateAccountUI() {'), source.indexOf("  document.addEventListener('sh-auth', updateAccountUI)"));
+  const element = () => ({ hidden: null, disabled: false, open: false, textContent: '', classList: { toggle() {} }, setAttribute() {} });
+  let opened = false;
+  const account = { user: { id: 'student', email: 'student@example.test' }, profile: null, accountDataPending: false, studySetup: { read() { return null; }, skipped() { return true; } } };
+  const context = { window: { SH: account }, design: element(), profileSummary: element(), profileActions: element(), choices: element(), appearanceDetails: element(), heading: {}, toggle: element(), ICONS: { palette: '' }, login: element(), languageLink: element(),
+    editStudySetup: element(), setupDialog: { open: false }, openStudySetup() { opened = true; }, URLSearchParams, location: { search: '' }, L: (de, en) => en, updateGate() {}, renderContinue() {}, lessonKind: '', main: {}, lessonOwner: null };
+  vm.runInNewContext(body + '\nupdateAccountUI();', context);
+  assert.equal(opened, false);
+  assert.equal(context.profileSummary.hidden, false);
 });
