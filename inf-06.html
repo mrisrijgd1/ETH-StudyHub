@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Golem Learns to Read">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa41861b-f523-4aaa-95f8-69d90cb0a3d8"></script>
+<script defer src="assets/umami-kit.js?v=79d39d59"></script>
+<script defer src="assets/tips.js?v=prv1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script defer src="assets/account.js?v=onb1124b"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Golem Learns to Read</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+
+/* Informatik: code blocks, program output, method and trace boxes */
+code, pre.code, pre.out { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+code { font-size: .88em; background: var(--accent-soft); padding: .05em .3em; border-radius: 4px; overflow-wrap: anywhere; }
+pre.code, pre.out { margin: 0; padding: .75rem .9rem; border-radius: 8px; overflow-x: auto; font-size: .84rem; line-height: 1.5; tab-size: 2; white-space: pre; }
+pre.code { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); }
+pre.code code, pre.out code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+pre.out { background: var(--exam); border: 1px solid var(--rule); border-left: 3px solid var(--exam-edge); }
+pre.out::before { content: "Output"; display: block; font-family: var(--font-util); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.tk-c { color: var(--muted); font-style: italic; }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-s { color: var(--exam-edge); }
+.tk-p { color: var(--story-edge); }
+.method { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: .9rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.method h3, .method h4 { margin: 0; }
+.method ol { gap: .5rem; }
+.method .q { font-weight: 600; }
+.trace td, .trace th { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85rem; white-space: nowrap; }
+.trace td.note, .trace th.note { font-family: var(--font-body); white-space: normal; }
+.task { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.task h3 { margin: 0; }
+.pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
+.small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+@media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=onb1124">
+<script defer src="assets/studyhub.js?v=onb1124b"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="informatik">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="informatik.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="inf-method.html" data-mode="practice">Task method</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Informatik · Lesson 6</span>
+<h1>The Golem Learns to Read</h1>
+<p class="lead">Characters and texts: how a letter is stored as a small number (ASCII), how to compute with letters, what UTF-8 does for all the world's scripts, how the Caesar cipher shifts a text, and how std::string works like a vector of characters.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap">Recap of lesson 5 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story">1. The story: the golem learns to read</a>
+</li>
+<li><a href="#s2-char">2. The type char</a>
+<ol>
+<li><a href="#we-1">Worked example 1: type and value with characters (in the style of the exam's "type and value" task)</a></li>
+</ol></li>
+<li><a href="#s3-ascii">3. ASCII: the codebook</a>
+<ol>
+<li><a href="#three-letter-patterns">Three letter patterns</a></li>
+<li><a href="#we-2">Worked example 2: reading a number digit by digit</a></li>
+</ol></li>
+<li><a href="#s4-utf8">4. Beyond ASCII: Unicode and UTF-8 (script 9.1, marked *)</a>
+</li>
+<li><a href="#s5-caesar">5. The Caesar cipher (script 9.2)</a>
+<ol>
+<li><a href="#we-3">Worked example 3: decrypt with the script's formula (Code 9.1, p. 117)</a></li>
+</ol></li>
+<li><a href="#s6-strings">6. Texts: std::string</a>
+</li>
+<li><a href="#s7-coding-tasks">7. Working with texts: coding tasks</a>
+<ol>
+<li><a href="#ct-1">Coding task 1: a Caesar cipher on the letters (script Section 9.2, p. 115–117)</a></li>
+<li><a href="#ct-2">Coding task 2: is it a palindrome? (Informatik exam August 2020, as Code Expert Exercise 7, Task 5)</a></li>
+<li><a href="#ct-3">Coding task 3: mountains (IFMP August 2018, task 6, official exam, 10 points)</a></li>
+<li><a href="#ct-4">Coding task 4: capitals, and no double spaces (Informatik exam summer 2019, task 6, 8 points)</a></li>
+</ol></li>
+<li><a href="#worked-examples">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-4">Worked example 4: a string program to trace (written by StudyHub)</a></li>
+<li><a href="#we-5">Worked example 5: counting letters (written by StudyHub)</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (type and value, in the style of the IFMP "type and value" tasks) · 6 points</a></li>
+<li><a href="#ex-2">Exercise 2 (the script's Caesar cipher by hand) · 4 points</a></li>
+<li><a href="#ex-3">Exercise 3 (UTF-8, script 9.1) · 3 points</a></li>
+<li><a href="#ex-4">Exercise 4 (three string bugs) · 3 points</a></li>
+<li><a href="#ex-5">Exercise 5 (true or false) · 4 points</a></li>
+</ol></li>
+<li><a href="#summary">Summary: what to keep from lesson 6</a>
+</li>
+<li><a href="#for-wonder">For wonder: how Caesar was broken <span class="small">(optional, 5 min)</span></a>
+</li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do only sections 2 and 3: read what a <code>char</code> is, then the <a href="#ascii-patterns">three letter patterns</a> and <a href="#we-2">Worked example 2</a>. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) say what type and value <code>'a' + 1</code>, <code>char('a' + 1)</code> and <code>'7' - '0'</code> have; (2) use the ASCII ranges of the letters and digits to test "is c a lowercase letter?", turn a digit character into its number, and turn a lowercase letter into a capital; (3) say how many bytes UTF-8 uses for a character and why <code>std::string("ä").size()</code> is 2; (4) explain the formula <code>32 + mod(c - 32 + s, 95)</code> of the Caesar cipher and apply it by hand; (5) create, compare, index, change, walk and extend a <code>std::string</code>; (6) write a function that builds a new text character by character.</dd></div>
+  <div><dt>Time</dt><dd>About 70 minutes. The chapter is short; most of the time goes into the four coding tasks, which are real exam tasks at the computer.</dd></div>
+  <div><dt>Script (English lecture notes, printed pages)</dt><dd>
+    <ul>
+      <li><strong>Chapter 9, Characters and Texts, p. 114–118:</strong> the type <code>char</code>, ASCII and UTF-8 (9.1, Unicode marked *), the Caesar cipher (9.2, Code 9.1), texts as <code>std::string</code>.</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Lecture 7, first part (slide chapter 11 "Characters and Texts"). Code Expert <strong>Exercise 7</strong> (strings, recursion I), whose Task 5 is the palindrome task of the August 2020 exam.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Texts are a favourite topic of the programming tasks at the computer, because their tests are easy to write: "Characters and strings" was task 6 of the Informatik exam in summer 2019 (8 points), the mountains of "+" and "−" were task 6 in August 2018 (10 points), and the palindrome test was a task in August 2020. All three are coding tasks on this page. What they test is always the same small toolbox: the ASCII ranges, <code>c - 'a' + 'A'</code>, walking a string with an index, and building a new one with <code>push_back</code> or <code>+=</code>.</p></div>
+
+<div class="box"><h3 id="recap">Recap of <a class="xl" href="inf-05.html">lesson 5</a> (5 minutes)</h3>
+<p>A vector holds elements 0 to size − 1; walk it with <code>std::ssize</code>. A reference is a second name for an existing variable; use <code>T&amp;</code> to change the caller's variable and <code>const T&amp;</code> to read a vector without copying. Check yourself:</p>
+<ol class="gq">
+  <li>What is wrong with <code>for (int i = 0; i &lt;= std::ssize(v); ++i) s += v[i];</code>?
+  <details><summary>Answer</summary><div><p>The last round reads <code>v[std::ssize(v)]</code>, one element behind the end: undefined behaviour. The condition must be <code>&lt;</code>.</p></div></details></li>
+  <li>Which parameter type fits "POST: returns the number of zeros in v" for a vector of <code>int</code>?
+  <details><summary>Answer</summary><div><p><code>const std::vector&lt;int&gt;&amp; v</code>: the function only reads, and a vector is not a fundamental type (the three questions of <a class="xl" href="inf-05.html#param-choice">lesson 5, section 8</a>).</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>character</td><td>Zeichen</td></tr>
+    <tr><td>text, string</td><td>Text, Zeichenkette (String)</td></tr>
+    <tr><td>character literal, string literal</td><td>Zeichenliteral, Stringliteral</td></tr>
+    <tr><td>printable character, control character</td><td>druckbares Zeichen, Steuerzeichen</td></tr>
+    <tr><td>whitespace</td><td>Leerraum (Leerzeichen, Tabulator, Zeilenumbruch)</td></tr>
+    <tr><td>upper case, lower case</td><td>Grossbuchstabe, Kleinbuchstabe</td></tr>
+    <tr><td>encoding (ASCII, UTF-8)</td><td>Kodierung</td></tr>
+    <tr><td>byte</td><td>Byte</td></tr>
+    <tr><td>Caesar cipher, shift</td><td>Caesar-Verschlüsselung, Verschiebung</td></tr>
+    <tr><td>to concatenate</td><td>verketten (aneinanderhängen)</td></tr>
+    <tr><td>palindrome</td><td>Palindrom</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story">1. The story: the golem learns to read</h2>
+<div class="story">
+<p>The golem could only ever hold numbers. Its boxes knew nothing of letters. So when the surveyors asked it to keep the names of their gardens, the scribes made a <em>codebook</em>: every letter gets a number. "A" is 65, "B" is 66, and so on in order; the small letters start at 97; even the space has a number, 32. The golem stores the number, and only when it writes to the scroll does it look up the codebook and draw the letter.</p>
+<p>Because the letters are numbered in order, the golem can calculate with them. "The letter after C" is just 67 + 1. "How far is G from A?" is 71 − 65 = 6. And a capital is always exactly 32 below its small letter.</p>
+<p>The general of the old kingdom liked this very much. To send a secret order, he had every letter moved three places further in the alphabet, wrapping from Z back to A. A messenger who read "DWWDFN" learnt nothing; the golem at the other end moved every letter back by three and read "ATTACK".</p>
+</div>
+<p>In C++: the letter in a box is a value of type <strong><code>char</code></strong>, the codebook is <strong>ASCII</strong>, a word is a <strong><code>std::string</code></strong>, a row of characters that behaves like a vector, and the general's trick is the <strong>Caesar cipher</strong> (script 9.2). The script's starting point (p. 114): "Texts comprise characters. A character is a value of the fundamental type <code>char</code>."</p>
+
+<h2 id="s2-char">2. The type char</h2>
+<div class="box">
+<p><strong>The type <code>char</code></strong> (p. 114) represents printable characters such as <code>'a'</code> and control characters such as <code>'\n'</code> (new line). A <strong>character literal</strong> is written in single quotes: <code>char c = 'a';</code>. Double quotes make a string literal, <code>"a"</code>, a text: a different type.</p>
+<p><code>char</code> is formally an <strong>integer type</strong>: its values convert to <code>int</code> and <code>unsigned int</code>, and all arithmetic operators work on it, even meaningless ones like <code>'a' / 'b'</code>. A <code>char</code> usually takes 8 bits (one byte).</p>
+</div>
+<p>One rule from <a class="xl" href="inf-02.html">lesson 2</a> decides almost every "type and value" question with characters: in arithmetic, a <code>char</code> is converted to <code>int</code> first. So <code>'a' + 1</code> is an <code>int</code>, 98, and <code>std::cout</code> prints a number. To get a character back, convert it with <code>char(…)</code> or store it in a <code>char</code> variable.</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">char</span> c = <span class="tk-s">'a'</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; c &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; <span class="tk-k">int</span>(c) &lt;&lt; <span class="tk-s">"\n"</span>;        <span class="tk-c">// the letter, its code</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; c + 1 &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; <span class="tk-k">char</span>(c + 1) &lt;&lt; <span class="tk-s">"\n"</span>;  <span class="tk-c">// int 98, char 'b'</span>
+  <span class="tk-k">char</span> d = c + 2;                                   <span class="tk-c">// stored as char: 'c'</span>
+  ++d;                                              <span class="tk-c">// still a char: 'd'</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; d &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; (<span class="tk-s">'z'</span> - <span class="tk-s">'a'</span>) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>a 97
+98 b
+d 25</code></pre>
+<div class="box"><h3 id="we-1">Worked example 1: type and value with characters (in the style of the exam's "type and value" task)</h3>
+<p>Give type and value of each expression, with <code>char c = 'C';</code>.</p>
+<ol class="gq">
+  <li><code>c + 1</code>
+  <details><summary>Answer</summary><div><p><code>char</code> + <code>int</code>: the <code>char</code> becomes an <code>int</code>. Type <code>int</code>, value 68 (the code of 'D').</p></div></details></li>
+  <li><code>char(c + 1)</code>
+  <details><summary>Answer</summary><div><p>Type <code>char</code>, value <code>'D'</code>.</p></div></details></li>
+  <li><code>c - 'A'</code>
+  <details><summary>Answer</summary><div><p>Type <code>int</code>, value 2: C is the third capital, counting from 0. This is "the position in the alphabet".</p></div></details></li>
+  <li><code>c &lt; 'a'</code>
+  <details><summary>Answer</summary><div><p>Type <code>bool</code>, value <code>true</code>: 67 &lt; 97. In ASCII every capital comes before every small letter.</p></div></details></li>
+</ol></div>
+
+<h2 id="s3-ascii">3. ASCII: the codebook</h2>
+<p>The <strong>ASCII code</strong> (American Standard Code for Information Interchange, p. 114) fixes the numbers 0 to 127 for the characters, on every common computer. The ranges you need:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>characters</th><th>codes</th></tr></thead>
+<tbody>
+<tr><td><code>'A'</code>, <code>'B'</code>, …, <code>'Z'</code></td><td>65, 66, …, 90</td></tr>
+<tr><td><code>'a'</code>, <code>'b'</code>, …, <code>'z'</code></td><td>97, 98, …, 122</td></tr>
+<tr><td><code>'0'</code>, <code>'1'</code>, …, <code>'9'</code></td><td>48, 49, …, 57</td></tr>
+<tr><td>space <code>' '</code></td><td>32</td></tr>
+<tr><td>all 95 printable characters</td><td>32 to 126</td></tr>
+</tbody></table></div>
+<p>You don't need to learn the numbers by heart: write <code>'a'</code>, not 97, and the compiler fills in the code. What matters is that each block is <strong>in order and without gaps</strong>. That is why the script's Example 9.3 (p. 115) works:</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">for</span> (<span class="tk-k">char</span> c = <span class="tk-s">'a'</span>; c &lt;= <span class="tk-s">'z'</span>; ++c)
+    <span class="tk-k">std</span>::cout &lt;&lt; c;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>abcdefghijklmnopqrstuvwxyz</code></pre>
+<div class="method" id="ascii-patterns">
+<h3 id="three-letter-patterns">Three letter patterns</h3>
+<ol>
+  <li><span class="q">Is c a lowercase letter?</span> <code>'a' &lt;= c &amp;&amp; c &lt;= 'z'</code>. The same for <code>'A'…'Z'</code> and the digits <code>'0'…'9'</code>.</li>
+  <li><span class="q">What number does the digit character c stand for?</span> <code>c - '0'</code>. <code>'7' - '0'</code> is 55 − 48 = 7.</li>
+  <li><span class="q">Which capital belongs to the lowercase c?</span> <code>c - 'a' + 'A'</code>: position in the alphabet, then the same position among the capitals. Store it in a <code>char</code> (or write <code>char(…)</code>), or you get a number.</li>
+</ol>
+<p>All three use only the order of the blocks, never the codes themselves.</p></div>
+<div class="box"><h3 id="we-2">Worked example 2: reading a number digit by digit</h3>
+<p>Turn the text <code>"2026"</code> into the <code>int</code> 2026, the way <code>std::cin &gt;&gt; n</code> does it inside.</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string digits = <span class="tk-s">"2026"</span>;
+  <span class="tk-k">int</span> n = 0;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(digits); ++i) {
+    n = 10 * n + (digits[i] - <span class="tk-s">'0'</span>);   <span class="tk-c">// shift left by one digit, add the new one</span>
+  }
+  <span class="tk-k">std</span>::cout &lt;&lt; n + 1 &lt;&lt; <span class="tk-s">"\n"</span>;          <span class="tk-c">// a real int now: 2027</span>
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>2027</code></pre>
+<ol class="gq">
+  <li>Trace n through the four rounds.
+  <details><summary>Answer</summary><div>
+  <div class="table-wrap"><table class="trace" data-fill="2"><thead><tr><th>i</th><th>digits[i]</th><th>digits[i] − '0'</th><th>n</th></tr></thead><tbody>
+  <tr><td>0</td><td>'2'</td><td>2</td><td>2</td></tr>
+  <tr><td>1</td><td>'0'</td><td>0</td><td>20</td></tr>
+  <tr><td>2</td><td>'2'</td><td>2</td><td>202</td></tr>
+  <tr><td>3</td><td>'6'</td><td>6</td><td>2026</td></tr>
+  </tbody></table></div></div></details></li>
+  <li>What would <code>n = 10 * n + digits[i];</code> (without <code>- '0'</code>) give after the first round?
+  <details><summary>Answer</summary><div><p>50, the code of <code>'2'</code>. Forgetting <code>- '0'</code> is the classic mistake with digit characters.</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-utf8">4. Beyond ASCII: Unicode and UTF-8 (script 9.1, marked *)</h2>
+<p>128 characters are not enough for Chinese, Cyrillic, Greek, Hebrew, or even for "ä" (p. 115). <strong>Unicode</strong> numbers more than 137 000 characters from more than 150 scripts. To store them without wasting space on ordinary English text, <strong>UTF-8</strong> uses a <strong>variable number of bytes</strong> per character (p. 115):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>usable bits</th><th>bytes</th><th>bit pattern</th></tr></thead>
+<tbody>
+<tr><td>7</td><td>1</td><td><code>0xxxxxxx</code> (exactly ASCII)</td></tr>
+<tr><td>11</td><td>2</td><td><code>110xxxxx 10xxxxxx</code></td></tr>
+<tr><td>16</td><td>3</td><td><code>1110xxxx 10xxxxxx 10xxxxxx</code></td></tr>
+<tr><td>21</td><td>4</td><td><code>11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</code></td></tr>
+</tbody></table></div>
+<p class="small">The script continues the table up to 6 bytes and 31 bits; today's Unicode needs at most 4.</p>
+<p>The remarkable property (p. 115): a byte starting with <code>10</code> never starts a character. So in the middle of a stream of bytes you can always find where the next character begins. And the first byte says how long the character is: for a multi-byte character, its number of leading 1s is the number of bytes.</p>
+<p>For C++ this has one consequence you should know: a <code>std::string</code> stores <strong>bytes</strong>. <code>std::string("ä").size()</code> is 2, because "ä" (Unicode 228, 8 bits) needs the two-byte pattern. "The size is not equal to the text length if a multi-byte encoding is used" (p. 118). All exam tasks stay in ASCII.</p>
+
+<h2 id="s5-caesar">5. The Caesar cipher (script 9.2)</h2>
+<p>In its simplest form, the Caesar cipher replaces every character by the one s places further on, wrapping around at the end (p. 115). On the alphabet, ZEBRA becomes AFCSB with a shift of 1, and YDAQZ with a shift of −1. The script shifts all <strong>95 printable characters</strong> 32 to 126 instead of only the letters, so that, with a shift of −3, the space (32) becomes <code>'|'</code> (124) and <code>'D'</code> (68) becomes <code>'A'</code> (65).</p>
+<p>How to compute the shifted code of c (p. 116)? <code>c + s</code>, except where it leaves the range 32…126. The elegant way around the case distinction is the "move to 0" trick:</p>
+<ol>
+  <li>subtract 32: the printable characters become 0…94;</li>
+  <li>add the shift and take the <strong>mathematical</strong> remainder modulo 95: the result is again in 0…94, wrapped around;</li>
+  <li>add 32 back.</li>
+</ol>
+<p>So the new code is <code>32 + mod(c - 32 + s, 95)</code>, where <code>mod</code> is the mathematical modulo from <a class="xl" href="inf-02.html#modulo">lesson 2</a>: C++'s <code>%</code> gives a negative result for a negative left operand, so the script adds the divisor once more. Code 9.1 (p. 117), complete:</p>
+<pre class="code" data-run="1" data-stdin="3 Hello, Caesar!"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;ios&gt;</span>
+
+<span class="tk-c">// PRE:  divisor &gt; 0</span>
+<span class="tk-c">// POST: returns the mathematically defined remainder of</span>
+<span class="tk-c">//       dividend / divisor with 0 &lt;= result &lt; divisor</span>
+<span class="tk-k">int</span> mod(<span class="tk-k">int</span> dividend, <span class="tk-k">int</span> divisor) {
+  <span class="tk-k">return</span> (dividend % divisor + divisor) % divisor;
+}
+
+<span class="tk-c">// POST: if c is one of the 95 printable ASCII characters, c is</span>
+<span class="tk-c">//       cyclically shifted s printable characters to the right</span>
+<span class="tk-k">char</span> shift(<span class="tk-k">char</span> c, <span class="tk-k">int</span> s) {
+  <span class="tk-k">if</span> (c &gt;= 32 &amp;&amp; c &lt;= 126) {        <span class="tk-c">// c is printable</span>
+    c = 32 + mod(c - 32 + s, 95);
+  }
+  <span class="tk-k">return</span> c;
+}
+
+<span class="tk-c">// POST: Each character read from std::cin was shifted cyclically</span>
+<span class="tk-c">//       by s characters and afterwards written to std::cout</span>
+<span class="tk-k">void</span> caesar(<span class="tk-k">int</span> s) {
+  <span class="tk-k">std</span>::cin &gt;&gt; <span class="tk-k">std</span>::noskipws;        <span class="tk-c">// do not skip whitespace from now on</span>
+  <span class="tk-k">char</span> next;
+  <span class="tk-k">while</span> (<span class="tk-k">std</span>::cin &gt;&gt; next) {
+    <span class="tk-k">std</span>::cout &lt;&lt; shift(next, s);
+  }
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> s;
+  <span class="tk-k">std</span>::cin &gt;&gt; s;
+  caesar(s);                         <span class="tk-c">// shift the rest of the input by s</span>
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>#Khoor/#Fdhvdu$</code></pre>
+<p>Two details. <code>std::cin &gt;&gt; std::noskipws;</code> switches off the usual skipping of whitespace (p. 116), so spaces and line breaks are read as characters too. That is why the output starts with <code>#</code>: the space after the 3 in the input is read and shifted to <code>#</code> (35). And <code>while (std::cin &gt;&gt; next)</code> stops at the end of the input.</p>
+<div class="box"><h3 id="we-3">Worked example 3: decrypt with the script's formula (Code 9.1, p. 117)</h3>
+<ol class="gq">
+  <li>What is <code>shift('~', 1)</code>? (<code>'~'</code> is 126, the last printable character.)
+  <details><summary>Answer</summary><div><p>126 − 32 + 1 = 95; mod(95, 95) = 0; 32 + 0 = 32: the space. The wrap-around from the last printable character to the first.</p></div></details></li>
+  <li>What is <code>shift(' ', -3)</code>?
+  <details><summary>Answer</summary><div><p>32 − 32 − 3 = −3. C++ gives <code>-3 % 95 == -3</code>, but mod(−3, 95) = (−3 + 95) % 95 = 92. 32 + 92 = 124: <code>'|'</code>, as in the script's table (p. 116).</p></div></details></li>
+  <li>How do you decrypt a text encrypted with shift s?
+  <details><summary>Answer</summary><div><p>Encrypt it again with shift −s: each character moves s places back, wrapping the same way. Feeding the output above back in, as <code>-3 #Khoor/#Fdhvdu$</code>, prints <code>| Hello, Caesar!</code>: the text again, after the two shifted spaces that followed the numbers.</p></div></details></li>
+</ol></div>
+
+<h2 id="s6-strings">6. Texts: std::string</h2>
+<p>A text like "to be or not to be" could be a <code>std::vector&lt;char&gt;</code>. Texts are everywhere, so the standard library has its own type for them, <strong><code>std::string</code></strong>, with <code>#include &lt;string&gt;</code> (p. 116). It behaves like a vector of <code>char</code>, plus a few things only texts need. The script's list (p. 116–118):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>what</th><th>how</th></tr></thead>
+<tbody>
+<tr><td>declare, initialise with a literal</td><td><code>std::string text = "Essen ist fertig!";</code></td></tr>
+<tr><td>n copies of one character</td><td><code>std::string text = std::string(n, 'a');</code></td></tr>
+<tr><td>compare</td><td><code>text1 == text2</code>: true if equal character by character</td></tr>
+<tr><td>size</td><td><code>text.size()</code>, or <code>std::ssize(text)</code> for a loop (lesson 5)</td></tr>
+<tr><td>read a character</td><td><code>text[0]</code> (no bound check) or <code>text.at(0)</code> (checked)</td></tr>
+<tr><td>write a character</td><td><code>text[0] = 'b';</code></td></tr>
+<tr><td>walk</td><td><code>for (int i = 0; i &lt; std::ssize(text); ++i) … text[i] …</code></td></tr>
+<tr><td>concatenate</td><td><code>text = ":-"; text += ")";</code> gives <code>":-)"</code>; also <code>a + b</code> for two strings, and <code>text.push_back('!')</code></td></tr>
+</tbody></table></div>
+<p>Reading: <code>std::cin &gt;&gt; word;</code> reads one word, up to the next whitespace. Writing: <code>std::cout &lt;&lt; text;</code>.</p>
+<pre class="code" data-run="1" data-stdin="golem"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string name;
+  <span class="tk-k">std</span>::cin &gt;&gt; name;                       <span class="tk-c">// one word</span>
+  <span class="tk-k">std</span>::string shout = name;               <span class="tk-c">// a copy</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(shout); ++i) {
+    <span class="tk-k">if</span> (<span class="tk-s">'a'</span> &lt;= shout[i] &amp;&amp; shout[i] &lt;= <span class="tk-s">'z'</span>) {
+      shout[i] = shout[i] - <span class="tk-s">'a'</span> + <span class="tk-s">'A'</span>;     <span class="tk-c">// pattern 3 of section 3</span>
+    }
+  }
+  shout += <span class="tk-s">"!"</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; name &lt;&lt; <span class="tk-s">" -&gt; "</span> &lt;&lt; shout &lt;&lt; <span class="tk-s">" ("</span> &lt;&lt; shout.size() &lt;&lt; <span class="tk-s">" characters)\n"</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; (name == <span class="tk-s">"golem"</span>) &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; <span class="tk-k">std</span>::string(3, <span class="tk-s">'*'</span>) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>golem -&gt; GOLEM! (6 characters)
+1 ***</code></pre>
+<p class="small">Like for vectors: a string you only read is passed as <code>const std::string&amp;</code>, a string the function must change as <code>std::string&amp;</code>, and a new string is returned by value (lesson 5, section 8).</p>
+
+<h2 id="s7-coding-tasks">7. Working with texts: coding tasks</h2>
+<p>Each task gives you a contract; you write the body. Work through the six questions of the <a class="xl" href="inf-method.html">Task method</a> before opening the answers. New patterns in this lesson:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>pattern</th><th>shape</th></tr></thead>
+<tbody>
+<tr><td>character class test</td><td><code>'a' &lt;= c &amp;&amp; c &lt;= 'z'</code> (also <code>'A'…'Z'</code>, <code>'0'…'9'</code>)</td></tr>
+<tr><td>position in the alphabet</td><td><code>c - 'a'</code>, and back: <code>'a' + k</code>; digits: <code>c - '0'</code></td></tr>
+<tr><td>build a new text</td><td><code>std::string r; … r += …; return r;</code></td></tr>
+<tr><td>two indices from both ends</td><td><code>int i = 0, j = std::ssize(s) - 1; while (i &lt; j) { …; ++i; --j; }</code></td></tr>
+<tr><td>running maximum</td><td><code>if (x &gt; max) max = x;</code> inside the loop</td></tr>
+<tr><td>remember the last step</td><td>a <code>bool</code> like <code>space_seen</code>, set at the end of each round</td></tr>
+</tbody></table></div>
+
+<div class="task" id="task-1"><h3 id="ct-1">Coding task 1: a Caesar cipher on the letters (script Section 9.2, p. 115–117)</h3>
+<p>Shift every <strong>letter</strong> by s places in its alphabet, wrapping around, and keep every other character. Capitals stay capitals, small letters stay small. The script's examples: ZEBRA becomes AFCSB with s = 1 and YDAQZ with s = −1. The input is s followed by words; print each encrypted word followed by a space.</p>
+<div class="need"><span class="label">You'll need these</span><p>The mathematical <code>mod</code> from <a class="xl" href="inf-02.html#modulo">lesson 2</a>, the "move to 0" trick of <a class="xl" href="#s5-caesar">section 5</a>, and the letter patterns of <a class="xl" href="#ascii-patterns">section 3</a>.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a character c and a shift s, which may be negative or larger than 26.</li>
+  <li><strong>Must hold at the end:</strong> letters move s places within their own 26-letter block; everything else is returned unchanged. <code>caesar</code> returns a <em>new</em> string of the same length.</li>
+  <li><strong>The gap to fill:</strong> the formula for one letter (the script's formula, with 26 instead of 95 and the block's own start instead of 32), and the loop that builds the new string.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the two bodies, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;1 ZEBRA&quot;,&quot;out&quot;:&quot;AFCSB&quot;},{&quot;in&quot;:&quot;-1 ZEBRA&quot;,&quot;out&quot;:&quot;YDAQZ&quot;},{&quot;in&quot;:&quot;3 Hello, world!&quot;,&quot;out&quot;:&quot;Khoor, zruog!&quot;},{&quot;in&quot;:&quot;26 abc&quot;,&quot;out&quot;:&quot;abc&quot;},{&quot;in&quot;:&quot;-27 abc&quot;,&quot;out&quot;:&quot;zab&quot;},{&quot;in&quot;:&quot;13 Uryyb 2026&quot;,&quot;out&quot;:&quot;Hello 2026&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-c">// PRE:  divisor &gt; 0</span>
+<span class="tk-c">// POST: returns the mathematically defined remainder of</span>
+<span class="tk-c">//       dividend / divisor with 0 &lt;= result &lt; divisor</span>
+<span class="tk-k">int</span> mod(<span class="tk-k">int</span> dividend, <span class="tk-k">int</span> divisor) {
+  <span class="tk-k">return</span> (dividend % divisor + divisor) % divisor;
+}
+
+<span class="tk-c">// POST: if c is a letter, returns c shifted cyclically by s places</span>
+<span class="tk-c">//       within its alphabet (upper or lower case); otherwise returns c</span>
+<span class="tk-k">char</span> shift_letter(<span class="tk-k">char</span> c, <span class="tk-k">int</span> s) {
+  <span class="tk-k">return</span> c; <span class="tk-c">// todo</span>
+}
+
+<span class="tk-c">// POST: returns text with every letter shifted by s (see shift_letter)</span>
+<span class="tk-k">std</span>::string caesar(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; text, <span class="tk-k">int</span> s) {
+  <span class="tk-k">return</span> text; <span class="tk-c">// todo</span>
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> s;
+  <span class="tk-k">std</span>::cin &gt;&gt; s;
+  <span class="tk-k">std</span>::string word;
+  <span class="tk-k">while</span> (<span class="tk-k">std</span>::cin &gt;&gt; word) {
+    <span class="tk-k">std</span>::cout &lt;&lt; caesar(word, s) &lt;&lt; <span class="tk-s">" "</span>;
+  }
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>What goes in, what comes out?</strong>
+  <details><summary>My answer</summary><div><p><code>shift_letter</code>: a character and a shift in, a character out. <code>caesar</code>: a text to read only (<code>const std::string&amp;</code>) and a shift in, a new text out (by value).</p></div></details></li>
+  <li><strong>By hand: Z with s = 1, and a with s = −27.</strong>
+  <details><summary>My answer</summary><div><p>Z: position 'Z' − 'A' = 25; 25 + 1 = 26; mod 26 gives 0; 'A' + 0 = A. a with −27: 0 − 27 = −27; mod(−27, 26) = 25 (C++'s % would give −1); 'a' + 25 = z.</p></div></details></li>
+  <li><strong>Steps.</strong> How do you treat the two blocks?
+  <details><summary>My answer</summary><div><p>Two class tests, one per block, each with the same three steps: position (<code>c - 'A'</code>), shift and wrap (<code>mod(… + s, 26)</code>), back (<code>'A' + …</code>). The rest falls through to <code>return c;</code>.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub, checked by compiling)</summary><div>
+<p><em>Frame:</em> the script's "move to 0, wrap with mod, move back", once per letter block; then build the new text character by character.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A capital: count its place from A, move s on, wrap at 26, and count back from A.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (<span class="tk-s">'A'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'Z'</span>)
+  <span class="tk-k">return</span> <span class="tk-s">'A'</span> + mod(c - <span class="tk-s">'A'</span> + s, 26);</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>A small letter: the same from a.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (<span class="tk-s">'a'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'z'</span>)
+  <span class="tk-k">return</span> <span class="tk-s">'a'</span> + mod(c - <span class="tk-s">'a'</span> + s, 26);</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Anything else stays.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">return</span> c;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Start an empty scroll and copy the text onto it, each letter shifted.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">std</span>::string result;
+<span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(text); ++i)
+  result += shift_letter(text[i], s);
+<span class="tk-k">return</span> result;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="3 Hello, world!"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-c">// PRE:  divisor &gt; 0</span>
+<span class="tk-c">// POST: returns the mathematically defined remainder of</span>
+<span class="tk-c">//       dividend / divisor with 0 &lt;= result &lt; divisor</span>
+<span class="tk-k">int</span> mod(<span class="tk-k">int</span> dividend, <span class="tk-k">int</span> divisor) {
+  <span class="tk-k">return</span> (dividend % divisor + divisor) % divisor;
+}
+
+<span class="tk-c">// POST: if c is a letter, returns c shifted cyclically by s places</span>
+<span class="tk-c">//       within its alphabet (upper or lower case); otherwise returns c</span>
+<span class="tk-k">char</span> shift_letter(<span class="tk-k">char</span> c, <span class="tk-k">int</span> s) {
+  <span class="tk-k">if</span> (<span class="tk-s">'A'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'Z'</span>)
+    <span class="tk-k">return</span> <span class="tk-s">'A'</span> + mod(c - <span class="tk-s">'A'</span> + s, 26);   <span class="tk-c">// position, shift, wrap, back</span>
+  <span class="tk-k">if</span> (<span class="tk-s">'a'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'z'</span>)
+    <span class="tk-k">return</span> <span class="tk-s">'a'</span> + mod(c - <span class="tk-s">'a'</span> + s, 26);
+  <span class="tk-k">return</span> c;                               <span class="tk-c">// not a letter: unchanged</span>
+}
+
+<span class="tk-c">// POST: returns text with every letter shifted by s (see shift_letter)</span>
+<span class="tk-k">std</span>::string caesar(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; text, <span class="tk-k">int</span> s) {
+  <span class="tk-k">std</span>::string result;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(text); ++i) {
+    result += shift_letter(text[i], s);
+  }
+  <span class="tk-k">return</span> result;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> s;
+  <span class="tk-k">std</span>::cin &gt;&gt; s;
+  <span class="tk-k">std</span>::string word;
+  <span class="tk-k">while</span> (<span class="tk-k">std</span>::cin &gt;&gt; word) {
+    <span class="tk-k">std</span>::cout &lt;&lt; caesar(word, s) &lt;&lt; <span class="tk-s">" "</span>;
+  }
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>Khoor, zruog! </code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>Wrap forwards (Z + 1), wrap backwards (A − 1), a shift of exactly 26 (nothing changes), a shift below −26 (needs the mathematical mod), mixed case and punctuation, digits (unchanged).</p></div></details></li>
+  <li><strong>Why not simply <code>c + s</code> with an <code>if</code> for "past Z"?</strong>
+  <details><summary>My answer</summary><div><p>It works for −26 &lt; s &lt; 26 with two <code>if</code>s (past Z: subtract 26; before A: add 26), but not for s = 30 or s = −27. The <code>mod</code> handles every s in one line, which is exactly the script's argument (p. 116).</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-charclass">character class test</a> <a class="mvl" href="inf-method.html#p-alpha">position in the alphabet</a> <a class="mvl" href="inf-method.html#p-mod">mathematical a mod m</a> <a class="mvl" href="inf-method.html#p-build">build a new text</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Move to 0:</strong> <code>c - 'A'</code>.</li>
+  <li><strong>Shift and wrap</strong> with the mathematical mod, never with bare <code>%</code> when s can be negative.</li>
+  <li><strong>Move back:</strong> <code>'A' + …</code>, returned as <code>char</code>.</li>
+  <li><strong>Test Z + 1 and A − 1</strong> by hand.</li>
+</ol>
+<p>In short: "position, mod, back".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the return line for a capital letter.</p>
+  <details><summary>Answer</summary><div><p><code>return 'A' + mod(c - 'A' + s, 26);</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Extend <code>shift_letter</code> to shift digits within 0–9 as well, so 9 + 1 becomes 0.</p>
+  <details><summary>Answer</summary><div><p>Add <code>if ('0' &lt;= c &amp;&amp; c &lt;= '9') return '0' + mod(c - '0' + s, 10);</code> before <code>return c;</code>.</p></div></details></li>
+  <li><p><strong>Rung 3 (6 min).</strong> With the answers closed, write both bodies in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-2"><h3 id="ct-2">Coding task 2: is it a palindrome? (Informatik exam August 2020, as Code Expert Exercise 7, Task 5)</h3>
+<p>A <strong>palindrome</strong> reads the same forwards and backwards: <code>anna</code>, <code>racecar</code>. The empty word and every one-letter word are palindromes. Write the test with a loop. (Code Expert also asks for a version without loops; that one comes in lesson 7, recursion.)</p>
+<div class="need"><span class="label">You'll need these</span><p>Walking a string by index (<a class="xl" href="#s6-strings">section 6</a>), "for all" as a search for a counterexample (<a class="xl" href="inf-05.html#ct-3">lesson 5, coding task 3</a>).</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a string, to read only.</li>
+  <li><strong>Must hold at the end:</strong> true exactly when <code>str[i] == str[n-1-i]</code> for every i, where n is the length.</li>
+  <li><strong>The gap to fill:</strong> which pairs to compare, and where to stop so that no index leaves the string, for even and odd n.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the body, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;anna&quot;,&quot;out&quot;:&quot;palindrome&quot;},{&quot;in&quot;:&quot;racecar&quot;,&quot;out&quot;:&quot;palindrome&quot;},{&quot;in&quot;:&quot;a&quot;,&quot;out&quot;:&quot;palindrome&quot;},{&quot;in&quot;:&quot;ab&quot;,&quot;out&quot;:&quot;no palindrome&quot;},{&quot;in&quot;:&quot;abca&quot;,&quot;out&quot;:&quot;no palindrome&quot;},{&quot;in&quot;:&quot;abcba&quot;,&quot;out&quot;:&quot;palindrome&quot;},{&quot;in&quot;:&quot;Anna&quot;,&quot;out&quot;:&quot;no palindrome&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-c">// POST: returns true if and only if str reads the same</span>
+<span class="tk-c">//       forwards and backwards</span>
+<span class="tk-k">bool</span> is_palindrome(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; str) {
+  <span class="tk-k">return</span> <span class="tk-k">false</span>; <span class="tk-c">// todo</span>
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string word;
+  <span class="tk-k">std</span>::cin &gt;&gt; word;
+  <span class="tk-k">if</span> (is_palindrome(word))
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"palindrome\n"</span>;
+  <span class="tk-k">else</span>
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"no palindrome\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>What goes in, what comes out?</strong>
+  <details><summary>My answer</summary><div><p>A string to read (<code>const std::string&amp;</code>), a <code>bool</code> out. Case matters: <code>Anna</code> is not a palindrome here, because 'A' ≠ 'a'.</p></div></details></li>
+  <li><strong>By hand: racecar (7 letters) and abca (4).</strong>
+  <details><summary>My answer</summary><div><p>racecar: compare 0 with 6 (r, r), 1 with 5 (a, a), 2 with 4 (c, c); 3 is the middle, nothing to compare. abca: 0 with 3 (a, a), 1 with 2 (b, c): different, so no. Two indices, one from each end, until they meet.</p></div></details></li>
+  <li><strong>Where exactly to stop?</strong>
+  <details><summary>My answer</summary><div><p>While <code>i &lt; j</code>. For even n they cross (i = 2, j = 1 for abca's next step), for odd n they meet in the middle (i = j = 3). Either way, every pair has been compared once. For the empty string j starts at −1, and the loop doesn't run.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub, checked by compiling)</summary><div>
+<p><em>Frame:</em> search for a counterexample with two indices from both ends; true if none is found.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>One finger on the first letter, one on the last.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> i = 0;
+<span class="tk-k">int</span> j = <span class="tk-k">std</span>::ssize(str) - 1;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>While the fingers haven't met: if the two letters differ, it's no palindrome. Otherwise move both fingers inwards.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">while</span> (i &lt; j) {
+  <span class="tk-k">if</span> (str[i] != str[j]) <span class="tk-k">return</span> <span class="tk-k">false</span>;
+  ++i;
+  --j;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>All pairs matched.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">return</span> <span class="tk-k">true</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="racecar"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-c">// POST: returns true if and only if str reads the same</span>
+<span class="tk-c">//       forwards and backwards</span>
+<span class="tk-k">bool</span> is_palindrome(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; str) {
+  <span class="tk-k">int</span> i = 0;                        <span class="tk-c">// from the front</span>
+  <span class="tk-k">int</span> j = <span class="tk-k">std</span>::ssize(str) - 1;      <span class="tk-c">// from the back (-1 if empty)</span>
+  <span class="tk-k">while</span> (i &lt; j) {
+    <span class="tk-k">if</span> (str[i] != str[j]) {
+      <span class="tk-k">return</span> <span class="tk-k">false</span>;                 <span class="tk-c">// counterexample</span>
+    }
+    ++i;
+    --j;
+  }
+  <span class="tk-k">return</span> <span class="tk-k">true</span>;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string word;
+  <span class="tk-k">std</span>::cin &gt;&gt; word;
+  <span class="tk-k">if</span> (is_palindrome(word))
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"palindrome\n"</span>;
+  <span class="tk-k">else</span>
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"no palindrome\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>palindrome</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>Even and odd length, one letter, two different letters, a word that fails only in the middle pair (<code>abca</code>), and one that differs only in case. The empty word can't be typed as input here, but the loop handles it.</p></div></details></li>
+  <li><strong>A shorter version with one index?</strong>
+  <details><summary>My answer</summary><div><p><code>for (int i = 0; i &lt; std::ssize(str) / 2; ++i) if (str[i] != str[std::ssize(str) - 1 - i]) return false;</code> is the same idea; j is just written as <code>n - 1 - i</code>. Choose whichever you can check faster.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-ends">two indices from both ends</a> <a class="mvl" href="inf-method.html#p-search">search until found</a> <a class="mvl" href="inf-method.html#p-cref">read without copying</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>"Reads the same backwards"</strong>: compare <code>str[i]</code> with <code>str[n-1-i]</code>.</li>
+  <li><strong>Two indices, <code>while (i &lt; j)</code></strong>: no special case for even, odd or empty.</li>
+  <li><strong>Return false inside, true after.</strong></li>
+</ol>
+<p>In short: "two fingers inwards, stop when they meet".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the loop condition and the two index updates.</p>
+  <details><summary>Answer</summary><div><p><code>while (i &lt; j) { …; ++i; --j; }</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Make it ignore case, so <code>Anna</code> counts.</p>
+  <details><summary>Answer</summary><div><p>Compare lowercase versions: write a helper <code>char lower(char c)</code> that returns <code>c - 'A' + 'a'</code> for capitals and c otherwise, and test <code>lower(str[i]) != lower(str[j])</code>.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write the body in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-3"><h3 id="ct-3">Coding task 3: mountains (IFMP August 2018, task 6, official exam, 10 points)</h3>
+<p>A <strong>mountain</strong> is a sequence of plus and minus signs with two properties: (1) in every prefix, there are at least as many plus as minus signs; (2) over the whole sequence, there are as many plus as minus signs. Read "+" as a step up and "−" as a step down, and you can draw it. The <strong>height</strong> of a mountain is the largest surplus of plus signs over any prefix. The exam's examples, of heights 4, 5 and 3: <code>++++----</code>, <code>+++---+++++-----</code>, <code>+-+-++-+--+++---+-</code>.</p>
+<p>Complete the three functions; <code>climb</code> can and shall be called in the other two. The exam passed the sequence as a pointer range (lesson 12); here it is a <code>std::string</code>.</p>
+<div class="need"><span class="label">You'll need these</span><p>A reference parameter that changes the caller's variable (<a class="xl" href="inf-05.html#s6-pass-by-reference">lesson 5, section 6</a>), and the accumulator from <a class="xl" href="inf-03.html#s3-for">lesson 3</a>.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> <code>climb(c, h)</code> changes the caller's height h (so <code>int&amp; h</code>); the other two get a string of '+' and '−' to read.</li>
+  <li><strong>Must hold at the end:</strong> <code>is_mountain</code> is true exactly when the height never drops below 0 and ends at 0. <code>height</code> returns the largest h reached.</li>
+  <li><strong>The gap to fill:</strong> when may <code>is_mountain</code> answer false early, and what must it check after the loop?</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the three bodies (the stubs compile), then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;++++----&quot;,&quot;out&quot;:&quot;mountain of height 4&quot;},{&quot;in&quot;:&quot;+++---+++++-----&quot;,&quot;out&quot;:&quot;mountain of height 5&quot;},{&quot;in&quot;:&quot;+-+-++-+--+++---+-&quot;,&quot;out&quot;:&quot;mountain of height 3&quot;},{&quot;in&quot;:&quot;+--+&quot;,&quot;out&quot;:&quot;no mountain&quot;},{&quot;in&quot;:&quot;++-&quot;,&quot;out&quot;:&quot;no mountain&quot;},{&quot;in&quot;:&quot;-+&quot;,&quot;out&quot;:&quot;no mountain&quot;},{&quot;in&quot;:&quot;+-&quot;,&quot;out&quot;:&quot;mountain of height 1&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+<span class="tk-p">#include &lt;cassert&gt;</span>
+
+<span class="tk-c">// PRE:  c == '+' || c == '-'</span>
+<span class="tk-c">// POST: if c == '+', then h is increased by 1, otherwise h is decreased by 1</span>
+<span class="tk-k">void</span> climb(<span class="tk-k">char</span> c, <span class="tk-k">int</span>&amp; h) {
+  assert(c == <span class="tk-s">'+'</span> || c == <span class="tk-s">'-'</span>);
+  <span class="tk-c">// your code</span>
+}
+
+<span class="tk-c">// PRE:  s consists of '+' and '-' only</span>
+<span class="tk-c">// POST: returns true if and only if s represents a mountain</span>
+<span class="tk-k">bool</span> is_mountain(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; s) {
+  <span class="tk-k">int</span> h = 0;   <span class="tk-c">// current height</span>
+  <span class="tk-c">// your code</span>
+  <span class="tk-k">return</span> <span class="tk-k">false</span>; <span class="tk-c">// todo</span>
+}
+
+<span class="tk-c">// PRE:  s represents a mountain</span>
+<span class="tk-c">// POST: returns the height of the mountain represented by s</span>
+<span class="tk-k">int</span> height(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; s) {
+  assert(is_mountain(s));
+  <span class="tk-k">int</span> h = 0;       <span class="tk-c">// current height</span>
+  <span class="tk-k">int</span> max_h = 0;   <span class="tk-c">// maximum height</span>
+  <span class="tk-c">// your code</span>
+  <span class="tk-k">return</span> 0; <span class="tk-c">// todo</span>
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string s;
+  <span class="tk-k">std</span>::cin &gt;&gt; s;
+  <span class="tk-k">if</span> (is_mountain(s))
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"mountain of height "</span> &lt;&lt; height(s) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">else</span>
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"no mountain\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>What goes in, what comes out?</strong>
+  <details><summary>My answer</summary><div><p><code>climb</code>: one sign and the caller's height, which it changes: nothing is returned. <code>is_mountain</code>: a string to read, a <code>bool</code> out. <code>height</code>: a string that is a mountain, an <code>int</code> out.</p></div></details></li>
+  <li><strong>By hand: <code>+--+</code> and <code>++-</code>.</strong>
+  <details><summary>My answer</summary><div><p><code>+--+</code>: heights 1, 0, −1: below the ground after three steps, so property (1) fails. <code>++-</code>: heights 1, 2, 1; never below 0, but it ends at 1, so property (2) fails. Two different reasons, two different checks.</p></div></details></li>
+  <li><strong>Steps.</strong> Where does each check go?
+  <details><summary>My answer</summary><div><p>Property (1) is checked after every step, inside the loop: <code>if (h &lt; 0) return false;</code>. Property (2) is checked once, after the loop: <code>return h == 0;</code>. For the height: after every step, update the running maximum.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub after the exam's frame, checked by compiling)</summary><div>
+<p><em>Frame:</em> walk the string once with a height counter changed by <code>climb</code>: inside the loop, test "below ground" (or update the maximum); after the loop, test "back at ground".</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>One step: up for '+', down for '−'. h is the caller's own counter.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (c == <span class="tk-s">'+'</span>) ++h;
+<span class="tk-k">else</span> --h;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk the signs. After each step: below the ground? Then it's no mountain, whatever follows.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(s); ++i) {
+  climb(s[i], h);
+  <span class="tk-k">if</span> (h &lt; 0) <span class="tk-k">return</span> <span class="tk-k">false</span>;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>At the end, we must be back on the ground.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">return</span> h == 0;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>For the height: the same walk, remembering the highest point.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(s); ++i) {
+  climb(s[i], h);
+  <span class="tk-k">if</span> (h &gt; max_h) max_h = h;
+}
+<span class="tk-k">return</span> max_h;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="+++---+++++-----"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+<span class="tk-p">#include &lt;cassert&gt;</span>
+
+<span class="tk-c">// PRE:  c == '+' || c == '-'</span>
+<span class="tk-c">// POST: if c == '+', then h is increased by 1, otherwise h is decreased by 1</span>
+<span class="tk-k">void</span> climb(<span class="tk-k">char</span> c, <span class="tk-k">int</span>&amp; h) {
+  assert(c == <span class="tk-s">'+'</span> || c == <span class="tk-s">'-'</span>);
+  <span class="tk-k">if</span> (c == <span class="tk-s">'+'</span>)
+    ++h;                  <span class="tk-c">// changes the caller's h (reference)</span>
+  <span class="tk-k">else</span>
+    --h;
+}
+
+<span class="tk-c">// PRE:  s consists of '+' and '-' only</span>
+<span class="tk-c">// POST: returns true if and only if s represents a mountain</span>
+<span class="tk-k">bool</span> is_mountain(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; s) {
+  <span class="tk-k">int</span> h = 0;   <span class="tk-c">// current height</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(s); ++i) {
+    climb(s[i], h);
+    <span class="tk-k">if</span> (h &lt; 0) {
+      <span class="tk-k">return</span> <span class="tk-k">false</span>;       <span class="tk-c">// property (1) fails: below the ground</span>
+    }
+  }
+  <span class="tk-k">return</span> h == 0;          <span class="tk-c">// property (2): back on the ground</span>
+}
+
+<span class="tk-c">// PRE:  s represents a mountain</span>
+<span class="tk-c">// POST: returns the height of the mountain represented by s</span>
+<span class="tk-k">int</span> height(<span class="tk-k">const</span> <span class="tk-k">std</span>::string&amp; s) {
+  assert(is_mountain(s));
+  <span class="tk-k">int</span> h = 0;       <span class="tk-c">// current height</span>
+  <span class="tk-k">int</span> max_h = 0;   <span class="tk-c">// maximum height</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(s); ++i) {
+    climb(s[i], h);
+    <span class="tk-k">if</span> (h &gt; max_h) {
+      max_h = h;          <span class="tk-c">// running maximum</span>
+    }
+  }
+  <span class="tk-k">return</span> max_h;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string s;
+  <span class="tk-k">std</span>::cin &gt;&gt; s;
+  <span class="tk-k">if</span> (is_mountain(s))
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"mountain of height "</span> &lt;&lt; height(s) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">else</span>
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"no mountain\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>mountain of height 5</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The three exam mountains; one that dips below ground and comes back (<code>+--+</code>, which a check only at the end would wrongly accept); one that ends too high; one that starts with '−'; the smallest mountain <code>+-</code>. The empty sequence is a mountain of height 0 by the definition (n ≥ 0), but can't be typed as input here.</p></div></details></li>
+  <li><strong>Could <code>is_mountain</code> just count plus and minus signs?</strong>
+  <details><summary>My answer</summary><div><p>Counting tests only property (2). <code>-+</code> has one of each but starts below the ground. The prefix property needs the check after every step.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-ref">change the caller's variable</a> <a class="mvl" href="inf-method.html#p-walk">walk a vector</a> <a class="mvl" href="inf-method.html#p-max">running maximum</a> <a class="mvl" href="inf-method.html#p-retcond">return the condition</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Use the helper the task gives you</strong> (<code>climb</code>): the exam said it "can and shall be called".</li>
+  <li><strong>"In every prefix"</strong> = a check inside the loop, after each step.</li>
+  <li><strong>"Over the whole sequence"</strong> = a check after the loop.</li>
+  <li><strong>Maximum:</strong> start at 0 (the empty prefix), update after each step.</li>
+</ol>
+<p>In short: "every prefix inside, the whole after, the maximum as you go".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the body of <code>climb</code>.</p>
+  <details><summary>Answer</summary><div><p><code>if (c == '+') ++h; else --h;</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write <code>is_mountain</code> from its contract.</p>
+  <details><summary>Answer</summary><div><p>The loop with <code>climb(s[i], h); if (h &lt; 0) return false;</code>, then <code>return h == 0;</code>.</p></div></details></li>
+  <li><p><strong>Rung 3 (8 min).</strong> With the answers closed, write all three bodies in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-4"><h3 id="ct-4">Coding task 4: capitals, and no double spaces (Informatik exam summer 2019, task 6, 8 points)</h3>
+<p>Complete <code>modify</code> so that, given a text, it returns a copy (1) with all letters in capitals and (2) without redundant spaces: of several consecutive spaces, only the first is copied. The text contains only letters, digits and spaces. Example from the exam: <code>␣Hello␣␣1st␣World</code> (each ␣ a space) gives <code>␣HELLO␣1ST␣WORLD</code>. The exam's hint: "potentially useful ASCII values are 97 for 'a', 65 for 'A', 48 for '0' and 32 for ' '". As in the exam, a text is a <code>std::vector&lt;char&gt;</code>; <code>main</code> reads one line and prints the result between brackets, so you can see the spaces.</p>
+<div class="need"><span class="label">You'll need these</span><p>Pattern 3 of <a class="xl" href="#ascii-patterns">section 3</a> (lowercase to capital), and <code>push_back</code> from <a class="xl" href="inf-05.html#s3-bounds">lesson 5</a>.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a text to read (<code>const text&amp;</code>), only letters, digits and spaces.</li>
+  <li><strong>Must hold at the end:</strong> the returned text has every small letter capitalised, every other non-space character unchanged, and every run of spaces replaced by one space.</li>
+  <li><strong>The gap to fill:</strong> whether to copy a space depends on the <em>previous</em> character. What must the loop remember from one round to the next?</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the loop body, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot; Hello  1st World&quot;,&quot;out&quot;:&quot;[ HELLO 1ST WORLD]&quot;},{&quot;in&quot;:&quot;abc&quot;,&quot;out&quot;:&quot;[ABC]&quot;},{&quot;in&quot;:&quot;a   b&quot;,&quot;out&quot;:&quot;[A B]&quot;},{&quot;in&quot;:&quot;&quot;,&quot;out&quot;:&quot;[]&quot;},{&quot;in&quot;:&quot;   &quot;,&quot;out&quot;:&quot;[ ]&quot;},{&quot;in&quot;:&quot;ALREADY UPPER 42&quot;,&quot;out&quot;:&quot;[ALREADY UPPER 42]&quot;},{&quot;in&quot;:&quot;x  y  z &quot;,&quot;out&quot;:&quot;[X Y Z ]&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> text = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">char</span>&gt;;
+
+<span class="tk-c">// PRE:  A text consisting only of letters, numbers and whitespaces.</span>
+<span class="tk-c">// POST: Returns a copy of the input text with all letters upper-cased and</span>
+<span class="tk-c">//       consecutive spaces reduced to a single space.</span>
+text modify(<span class="tk-k">const</span> text&amp; str) {
+  text modStr;
+  <span class="tk-k">bool</span> space_seen = <span class="tk-k">false</span>;   <span class="tk-c">// was the previous character a space?</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(str); ++i) {
+    <span class="tk-k">char</span> c = str[i];
+    <span class="tk-c">// your code</span>
+  }
+  <span class="tk-k">return</span> modStr;
+}
+
+<span class="tk-k">int</span> main() {
+  text str;
+  <span class="tk-k">char</span> c;
+  <span class="tk-k">std</span>::cin &gt;&gt; <span class="tk-k">std</span>::noskipws;
+  <span class="tk-k">while</span> (<span class="tk-k">std</span>::cin &gt;&gt; c &amp;&amp; c != <span class="tk-s">'\n'</span>) {   <span class="tk-c">// read one line</span>
+    str.push_back(c);
+  }
+  text result = modify(str);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"["</span>;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(result); ++i) {
+    <span class="tk-k">std</span>::cout &lt;&lt; result[i];
+  }
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"]\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>What goes in, what comes out?</strong>
+  <details><summary>My answer</summary><div><p>A text to read, a new text out, built with <code>push_back</code>. Its length is at most the input length.</p></div></details></li>
+  <li><strong>By hand: <code>a␣␣␣b</code>.</strong> Which characters are copied?
+  <details><summary>My answer</summary><div><p>a → A, copied. First space: the previous was no space, copy it. Second and third space: the previous was a space, skip. b → B, copied. Result <code>A␣B</code>. So the loop must remember "was the last character a space?": that is <code>space_seen</code>.</p></div></details></li>
+  <li><strong>Steps.</strong> How many cases are there, and what happens to <code>space_seen</code> in each?
+  <details><summary>My answer</summary><div><p>Three: a small letter (copy its capital, <code>space_seen = false</code>), another non-space (copy it, <code>space_seen = false</code>), a space (copy it only if <code>!space_seen</code>; in any case <code>space_seen = true</code>). Forgetting to reset <code>space_seen</code> after a letter is the trap: then only the first space of the whole text would survive.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub; the exam's frame used iterators, lesson 11)</summary><div>
+<p><em>Frame:</em> one walk over the text, three cases, and a <code>bool</code> that remembers whether the previous character was a space.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>A small letter: write its capital. The last character is now no space.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (<span class="tk-s">'a'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'z'</span>) {
+  modStr.push_back(c - <span class="tk-s">'a'</span> + <span class="tk-s">'A'</span>);
+  space_seen = <span class="tk-k">false</span>;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>A capital or a digit: copy it as it is.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">else</span> <span class="tk-k">if</span> (c != <span class="tk-s">' '</span>) {
+  modStr.push_back(c);
+  space_seen = <span class="tk-k">false</span>;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>A space: copy it only if the one before wasn't a space. Either way, remember that this one was.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">else</span> {
+  <span class="tk-k">if</span> (!space_seen) modStr.push_back(c);
+  space_seen = <span class="tk-k">true</span>;
+}</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin=" Hello  1st World"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">using</span> text = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">char</span>&gt;;
+
+<span class="tk-c">// PRE:  A text consisting only of letters, numbers and whitespaces.</span>
+<span class="tk-c">// POST: Returns a copy of the input text with all letters upper-cased and</span>
+<span class="tk-c">//       consecutive spaces reduced to a single space.</span>
+text modify(<span class="tk-k">const</span> text&amp; str) {
+  text modStr;
+  <span class="tk-k">bool</span> space_seen = <span class="tk-k">false</span>;   <span class="tk-c">// was the previous character a space?</span>
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(str); ++i) {
+    <span class="tk-k">char</span> c = str[i];
+    <span class="tk-k">if</span> (<span class="tk-s">'a'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'z'</span>) {           <span class="tk-c">// small letter: capitalise</span>
+      modStr.push_back(c - <span class="tk-s">'a'</span> + <span class="tk-s">'A'</span>);
+      space_seen = <span class="tk-k">false</span>;
+    } <span class="tk-k">else</span> <span class="tk-k">if</span> (c != <span class="tk-s">' '</span>) {                <span class="tk-c">// capital or digit: copy</span>
+      modStr.push_back(c);
+      space_seen = <span class="tk-k">false</span>;
+    } <span class="tk-k">else</span> {                              <span class="tk-c">// a space</span>
+      <span class="tk-k">if</span> (!space_seen) {
+        modStr.push_back(c);              <span class="tk-c">// only the first of a run</span>
+      }
+      space_seen = <span class="tk-k">true</span>;
+    }
+  }
+  <span class="tk-k">return</span> modStr;
+}
+
+<span class="tk-k">int</span> main() {
+  text str;
+  <span class="tk-k">char</span> c;
+  <span class="tk-k">std</span>::cin &gt;&gt; <span class="tk-k">std</span>::noskipws;
+  <span class="tk-k">while</span> (<span class="tk-k">std</span>::cin &gt;&gt; c &amp;&amp; c != <span class="tk-s">'\n'</span>) {   <span class="tk-c">// read one line</span>
+    str.push_back(c);
+  }
+  text result = modify(str);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"["</span>;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(result); ++i) {
+    <span class="tk-k">std</span>::cout &lt;&lt; result[i];
+  }
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"]\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>[ HELLO 1ST WORLD]</code></pre>
+</div></details>
+<p class="small">There is no official solution for this exam. With the exam's ASCII hint, the capital is <code>c - 97 + 65</code>, or <code>c - 32</code>: the same as <code>c - 'a' + 'A'</code>, which you don't need numbers for.</p></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The exam's example; no spaces; a long run of spaces; the empty line; only spaces; text that is already in capitals; a trailing space (it is kept: only <em>redundant</em> spaces go).</p></div></details></li>
+  <li><strong>Why is <code>space_seen</code> set to <code>true</code> also when the space is skipped?</strong>
+  <details><summary>My answer</summary><div><p>It already is true then, so the line does no harm, and writing it once after the <code>if</code> keeps the code simple. What matters is the meaning: "the last character read was a space", whether or not it was copied.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-charclass">character class test</a> <a class="mvl" href="inf-method.html#p-alpha">position in the alphabet</a> <a class="mvl" href="inf-method.html#p-flag">remember the last step</a> <a class="mvl" href="inf-method.html#p-grow">grow with push_back</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>List the character classes</strong> the PRE allows (here: small, capital, digit, space) and give each a branch.</li>
+  <li><strong>"Depends on the previous one"</strong> = a <code>bool</code> declared before the loop.</li>
+  <li><strong>Set that <code>bool</code> in every branch.</strong></li>
+  <li><strong>Test a run of spaces after a word</strong>, not only at the start.</li>
+</ol>
+<p>In short: "one branch per class, one flag for the previous character".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Write the line that appends the capital of the small letter c.</p>
+  <details><summary>Answer</summary><div><p><code>modStr.push_back(c - 'a' + 'A');</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Change <code>modify</code> so that it also removes spaces at the very start of the text.</p>
+  <details><summary>Answer</summary><div><p>Start with <code>bool space_seen = true;</code>: the text then behaves as if a space came before it, so leading spaces are all skipped.</p></div></details></li>
+  <li><p><strong>Rung 3 (6 min).</strong> With the answers closed, write the loop body in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
+<div class="box"><h3 id="we-4">Worked example 4: a string program to trace (written by StudyHub)</h3>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string t = <span class="tk-s">"ab"</span>;
+  t += t;                      <span class="tk-c">// "abab"</span>
+  t[1] = <span class="tk-s">'x'</span>;
+  <span class="tk-k">std</span>::string u = <span class="tk-k">std</span>::string(2, t[0]) + t;
+  <span class="tk-k">std</span>::cout &lt;&lt; t &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; u &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; <span class="tk-k">std</span>::ssize(u) &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; (t == <span class="tk-s">"axab"</span>) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li>What is t after the first two lines of <code>main</code>, and after <code>t[1] = 'x'</code>?
+  <details><summary>Answer</summary><div><p><code>t += t</code> appends a copy of t to itself: <code>"abab"</code>. Then character 1 (the second) becomes x: <code>"axab"</code>.</p></div></details></li>
+  <li>What is u?
+  <details><summary>Answer</summary><div><p><code>t[0]</code> is <code>'a'</code>, so <code>std::string(2, 'a')</code> is <code>"aa"</code>; with t appended: <code>"aaaxab"</code>, 6 characters.</p></div></details></li>
+  <li>The output?
+  <details><summary>Answer</summary><div>
+<pre class="out"><code>axab aaaxab 6 1</code></pre>
+  <p>The comparison is true, printed as 1.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-5">Worked example 5: counting letters (written by StudyHub)</h3>
+<p>A vector of 26 counters, one per letter, indexed by the position in the alphabet: the two big tools of lessons 5 and 6 together.</p>
+<pre class="code" data-run="1" data-stdin="Mississippi"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+<span class="tk-p">#include &lt;vector&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">std</span>::string word;
+  <span class="tk-k">std</span>::cin &gt;&gt; word;
+  <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt; count = <span class="tk-k">std</span>::vector&lt;<span class="tk-k">int</span>&gt;(26, 0);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; <span class="tk-k">std</span>::ssize(word); ++i) {
+    <span class="tk-k">char</span> c = word[i];
+    <span class="tk-k">if</span> (<span class="tk-s">'A'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'Z'</span>) c = c - <span class="tk-s">'A'</span> + <span class="tk-s">'a'</span>;   <span class="tk-c">// ignore case</span>
+    <span class="tk-k">if</span> (<span class="tk-s">'a'</span> &lt;= c &amp;&amp; c &lt;= <span class="tk-s">'z'</span>) ++count[c - <span class="tk-s">'a'</span>];    <span class="tk-c">// position as index</span>
+  }
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> k = 0; k &lt; 26; ++k) {
+    <span class="tk-k">if</span> (count[k] &gt; 0) <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-k">char</span>(<span class="tk-s">'a'</span> + k) &lt;&lt; count[k] &lt;&lt; <span class="tk-s">" "</span>;
+  }
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li>Why is <code>count[c - 'a']</code> never out of bounds?
+  <details><summary>Answer</summary><div><p>It is only reached when <code>'a' &lt;= c &amp;&amp; c &lt;= 'z'</code>, so <code>c - 'a'</code> is between 0 and 25, the valid indices of a 26-element vector.</p></div></details></li>
+  <li>Why <code>char('a' + k)</code> and not <code>'a' + k</code> in the output?
+  <details><summary>Answer</summary><div><p><code>'a' + k</code> is an <code>int</code>, and <code>std::cout</code> would print 105 instead of i.</p></div></details></li>
+  <li>The output for Mississippi?
+  <details><summary>Answer</summary><div>
+<pre class="out"><code>i4 m1 p2 s4 </code></pre>
+  <p>In alphabetical order, because the second loop walks the counters from a to z.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Answers by StudyHub; all checked by compiling.</p>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> use the points given; exercises 1–5 make 20 points. <strong>16 of 20 and you're done</strong> with lesson 6.</p>
+</div>
+
+<h3 id="ex-1">Exercise 1 (type and value, in the style of the IFMP "type and value" tasks) · 6 points</h3>
+<p>Give the C++ type (0.5 points) and value (0.5 points) of each expression, with <code>char c = 'e';</code> and <code>std::string s = "golem";</code>.</p>
+<ol>
+  <li><code>c - 'a'</code></li>
+  <li><code>char(c - 32)</code></li>
+  <li><code>'9' - '0' + 1</code></li>
+  <li><code>s[1] == 'o'</code></li>
+  <li><code>s.size() - 6 &gt; 0</code></li>
+  <li><code>c + 'a' - 'A' &gt; 'z'</code></li>
+</ol>
+<details><summary>Solution</summary><div><p><em>Frame:</em> lesson 2's five steps, with one extra rule: in arithmetic, a <code>char</code> becomes an <code>int</code> first.</p>
+<p>1. <code>int</code>, 4 (e is the fifth letter, counting from 0). 2. <code>char</code>, <code>'E'</code> (101 − 32 = 69). 3. <code>int</code>, 10. 4. <code>bool</code>, <code>true</code>. 5. <code>bool</code>, <code>true</code>: <code>s.size()</code> is unsigned, so 5 − 6 wraps around to a huge number, which is &gt; 0 (the trap of <a class="xl" href="inf-05.html#mixed-integers">lesson 5</a>). 6. <code>bool</code>, <code>true</code>: 101 + 97 − 65 = 133 &gt; 122.</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">char</span> c = <span class="tk-s">'e'</span>;
+  <span class="tk-k">std</span>::string s = <span class="tk-s">"golem"</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; c - <span class="tk-s">'a'</span> &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; <span class="tk-k">char</span>(c - 32) &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; <span class="tk-s">'9'</span> - <span class="tk-s">'0'</span> + 1 &lt;&lt; <span class="tk-s">" "</span>
+            &lt;&lt; (s[1] == <span class="tk-s">'o'</span>) &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; (s.size() - 6 &gt; 0) &lt;&lt; <span class="tk-s">" "</span>
+            &lt;&lt; (c + <span class="tk-s">'a'</span> - <span class="tk-s">'A'</span> &gt; <span class="tk-s">'z'</span>) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>4 E 10 1 1 1</code></pre>
+</div></details>
+
+<h3 id="ex-2">Exercise 2 (the script's Caesar cipher by hand) · 4 points</h3>
+<p>With <code>shift</code> from Code 9.1 (shift over all 95 printable characters), compute (1 point each): <code>shift('A', 3)</code>, <code>shift('}', 3)</code> (<code>'}'</code> is 125), <code>shift('!', -2)</code> (<code>'!'</code> is 33), <code>shift('\n', 5)</code>.</p>
+<details><summary>Solution</summary><div><p><em>Frame:</em> <code>32 + mod(c - 32 + s, 95)</code> for printable c, unchanged otherwise (<a class="xl" href="#s5-caesar">section 5</a>).</p>
+<p><code>shift('A', 3)</code>: 65 + 3 = 68, inside the range: <code>'D'</code>. <code>shift('}', 3)</code>: 125 − 32 + 3 = 96, mod 95 = 1, so 33: <code>'!'</code>. <code>shift('!', -2)</code>: 33 − 32 − 2 = −1, mod 95 = 94, so 126: <code>'~'</code>. <code>shift('\n', 5)</code>: 10 is not printable: <code>'\n'</code> unchanged.</p></div></details>
+
+<h3 id="ex-3">Exercise 3 (UTF-8, script 9.1) · 3 points</h3>
+<ol>
+  <li>How many bytes does UTF-8 need for "€" (Unicode 8364)? (1 point)</li>
+  <li>Which of these bytes start a new character: <code>01000001</code>, <code>10100100</code>, <code>11000011</code>? (1 point)</li>
+  <li>What does <code>std::string("aä€").size()</code> return? (1 point)</li>
+</ol>
+<details><summary>Solution</summary><div><p><em>Frame:</em> the table of <a class="xl" href="#s4-utf8">section 4</a>: 7, 11, 16, 21 usable bits for 1, 2, 3, 4 bytes.</p>
+<p>1. 8364 ≥ $2^{11}$ = 2048 and &lt; $2^{16}$, so it needs 16 bits: <strong>3 bytes</strong>. 2. <code>01000001</code> (an ASCII character, 'A') and <code>11000011</code> (the start of a 2-byte character) start one; <code>10100100</code> starts with 10, so it continues a character. 3. 1 + 2 + 3 = <strong>6</strong>: a <code>std::string</code> counts bytes.</p></div></details>
+
+<h3 id="ex-4">Exercise 4 (three string bugs) · 3 points</h3>
+<p>Each snippet has a bug. Say what goes wrong and fix it (1 point each).</p>
+<pre class="code"><code><span class="tk-c">// (1) print the last character of the word w</span>
+<span class="tk-k">std</span>::cout &lt;&lt; w[<span class="tk-k">std</span>::ssize(w)];
+
+<span class="tk-c">// (2) capitalise the first letter of w (a small letter)</span>
+w[0] - <span class="tk-s">'a'</span> + <span class="tk-s">'A'</span>;
+
+<span class="tk-c">// (3) a string of 5 stars</span>
+<span class="tk-k">std</span>::string stars = <span class="tk-k">std</span>::string(<span class="tk-s">'*'</span>, 5);</code></pre>
+<details><summary>Solution</summary><div><p><em>Frame:</em> the string table of <a class="xl" href="#s6-strings">section 6</a>: indices 0 to size − 1, writing needs an assignment, <code>std::string(n, c)</code> takes the count first.</p>
+<p>(1) Index <code>std::ssize(w)</code> is one past the end: undefined. Fix: <code>w[std::ssize(w) - 1]</code> (and w must not be empty). (2) The expression is computed and thrown away; nothing changes. Fix: <code>w[0] = w[0] - 'a' + 'A';</code>. (3) The arguments are swapped: this makes 42 characters (the code of '*') with code 5. Fix: <code>std::string(5, '*')</code>.</p></div></details>
+
+<h3 id="ex-5">Exercise 5 (true or false) · 4 points</h3>
+<ol>
+  <li><code>'7' == 7</code> is true.</li>
+  <li><code>"a"</code> and <code>'a'</code> have the same type.</li>
+  <li>After <code>std::string s = "Hi"; s += '!';</code>, s has 3 characters.</li>
+  <li><code>for (char c = 'A'; c &lt;= 'Z'; ++c)</code> runs 26 times.</li>
+</ol>
+<details><summary>Solution</summary><div><p><em>Frame:</em> each statement is about one fact of sections 2, 3 or 6.</p><p>1. <strong>False:</strong> <code>'7'</code> is 55. 2. <strong>False:</strong> <code>'a'</code> is a <code>char</code>, <code>"a"</code> a string literal (a text with one character). 3. <strong>True</strong>. 4. <strong>True</strong>: the capitals 65 to 90 have no gaps.</p></div></details>
+
+<h2 id="summary">Summary: what to keep from lesson 6</h2>
+<div class="box"><ul>
+  <li><code>char</code> is an integer type: <code>'a'</code> is 97. In arithmetic it becomes <code>int</code>; write <code>char(…)</code> to print a character.</li>
+  <li>ASCII: capitals 65–90, small letters 97–122, digits 48–57, space 32, printable 32–126. Each block is in order: use <code>'a' &lt;= c &amp;&amp; c &lt;= 'z'</code>, <code>c - '0'</code>, <code>c - 'a' + 'A'</code>.</li>
+  <li>UTF-8 uses 1 to 4 bytes per character; a byte starting with 10 continues one. <code>std::string</code> counts bytes.</li>
+  <li>Caesar: <code>32 + mod(c - 32 + s, 95)</code>: move to 0, shift and wrap with the mathematical mod, move back. <code>std::noskipws</code> reads spaces too.</li>
+  <li><code>std::string</code>: like a <code>std::vector&lt;char&gt;</code>, plus <code>==</code>, <code>+</code>, <code>+=</code>, <code>std::string(n, c)</code>, and <code>std::cin &gt;&gt;</code> for one word.</li>
+  <li><strong>Methods:</strong> three letter patterns; two indices from both ends; a flag for the previous character.</li>
+</ul></div>
+
+<h2 id="for-wonder">For wonder: how Caesar was broken <span class="small">(optional, 5 min)</span></h2>
+<p>A Caesar cipher has only 25 useful keys: just try them all. But even if every letter is replaced by an arbitrary other letter (a "substitution cipher", with about $4\cdot 10^{26}$ keys), it falls quickly. Around 850, the scholar al-Kindi in Baghdad described the method in his <em>Manuscript on Deciphering Cryptographic Messages</em>: count how often each letter occurs in the secret text, exactly like Worked example 5, and compare with how often letters occur in the language. In English, E is the most common letter; in German too. The most frequent letter of a long secret text is almost certainly the replacement of E. This "frequency analysis" broke substitution ciphers for the next thousand years, and is the first known use of statistics to decode a message.</p>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<p>Also on the <a class="xl" href="skipped.html#informatik">skip list</a>.</p>
+<ul>
+  <li><strong>Trapezoid printing</strong> (Code Expert Exercise 7, Task 3). Priority: medium. Printing patterns of characters; it asks for recursion, so do it after lesson 7.</li>
+  <li><strong>Further string operations</strong> (<code>substr</code>, <code>find</code> and more; the script points to cppreference, p. 118). Priority: low. Not needed for the tasks; everything can be done with indices.</li>
+  <li><strong>UTF-8 with 5 and 6 bytes</strong> (the end of the script's table, p. 115). Priority: low. No longer used today.</li>
+</ul>
+<p><strong>Next:</strong> lesson 7 (being written), recursion: functions that call themselves, and how the call stack makes that work.</p>
+
+<link rel="stylesheet" href="assets/inf-ide.css?v=inf1123f">
+<script src="assets/codemirror/cm5-cpp.min.js?v=5.65.16" defer></script>
+<script src="assets/inf-run.js?v=inf1123f" defer></script>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="inf-05.html">← Lesson 5: The Golem&#x27;s Row of Jars</a>
+<a href="informatik.html">Informatik home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
