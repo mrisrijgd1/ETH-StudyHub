@@ -233,7 +233,7 @@ function sh_check(string $table, array $r): void {
             if (isset($r['rating']) && ($r['rating'] < 1 || $r['rating'] > 5)) { throw new ShError('Rating must be 1 to 5.'); } break;
         case 'forum_threads': $len('topic', 0, 100); $len('title', 3, 150); $len('body', 1, 5000); break;
         case 'forum_posts': $len('body', 1, 5000); break;
-        case 'my_items': $in('key', ['plan', 'notes', 'questions', 'flashcards', 'design', 'study_setup']);
+        case 'my_items': $in('key', ['plan', 'notes', 'questions', 'flashcards', 'design', 'study_setup', 'addons']);
             $in('source', ['site', 'ai', 'undo', 'restore', 'reset']); $big('content'); break;
         case 'attempts': $len('attempt', 0, 20000); break;
         case 'results': $in('kind', ['exercise', 'exam', 'mock', 'check']); $len('summary', 0, 5000); break;

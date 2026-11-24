@@ -162,7 +162,7 @@
   }
   // ---------- history ----------
   function secHistory() {
-    var keys = [['plan', L('Plan', 'Plan')], ['notes', L('Notes', 'Notizen')], ['questions', L('Questions', 'Fragen')], ['flashcards', L('Flashcards', 'Lernkarten')], ['design', L('Design', 'Design')]];
+    var keys = [['plan', L('Plan', 'Plan')], ['notes', L('Notes', 'Notizen')], ['questions', L('Questions', 'Fragen')], ['flashcards', L('Flashcards', 'Lernkarten')], ['design', L('Design', 'Design')], ['addons', L('Add-ons', 'Add-ons')]];
     return '<section id="my-history"><h2>' + L('History', 'Verlauf') + '</h2><p>' + L('Every change, by you or your AI, is kept. Pick an item to see its versions and bring an older one back. Lesson progress has a history too (“progress:lesson-08”).', 'Jede Änderung, von dir oder deiner KI, bleibt erhalten. Wähle einen Bereich, um seine Versionen zu sehen und eine ältere zurückzuholen. Auch der Lektionsfortschritt hat einen Verlauf („progress:lesson-08“).') + '</p>' +
       '<div class="row"><select id="my-hk">' + keys.map(function (k) { return '<option value="' + k[0] + '">' + k[1] + '</option>'; }).join('') + '</select><input type="text" id="my-hk2" placeholder="' + L('or e.g. progress:lesson-08', 'oder z. B. progress:lesson-08') + '"></div>' +
       '<div class="btns"><button class="main" id="my-hshow">' + L('Show versions', 'Versionen zeigen') + '</button></div><div id="my-hlist"></div></section>';
