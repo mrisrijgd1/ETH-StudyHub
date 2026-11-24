@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 ROOT, OUT = sys.argv[1], sys.argv[2]
 IMAGES = '--images' in sys.argv
-SITE = 'https://mrisrijgd1.github.io/ETH-StudyHub/'
+SITE = 'https://study-hub.ch/'
 os.makedirs(OUT, exist_ok=True)
 
 LOCK_SUMMARY = re.compile(r"^(solution|lösung|the proof and the grader|the proof in one piece|the mistake|full solution|musterlösung)", re.I)
