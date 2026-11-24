@@ -38,13 +38,13 @@ export async function app(req: Request, admin: SupabaseClient): Promise<Response
       bearer_methods_supported: ["header"],
       scopes_supported: ["openid", "email", "profile"],
       resource_name: "StudyHub (ETH first semester)",
-      resource_documentation: "https://mrisrijgd1.github.io/ETH-StudyHub/connect.html",
+      resource_documentation: "https://study-hub.ch/connect.html",
     });
   }
   if (req.method === "GET") {
     // No server-sent event stream: this server answers every request directly.
     if ((req.headers.get("accept") ?? "").includes("text/event-stream")) return new Response(null, { status: 405, headers: CORS });
-    return json({ name: "StudyHub connector", version: VERSION, docs: "https://mrisrijgd1.github.io/ETH-StudyHub/connect.html" });
+    return json({ name: "StudyHub connector", version: VERSION, docs: "https://study-hub.ch/connect.html" });
   }
   if (req.method === "DELETE") return new Response(null, { status: 204, headers: CORS });
   if (req.method !== "POST") return new Response(null, { status: 405, headers: CORS });
