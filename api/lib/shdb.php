@@ -10,6 +10,9 @@ declare(strict_types=1);
 const SH_SUPABASE_URL = 'https://qgntwqqmpdiwexnwsmnm.supabase.co';
 const SH_SUPABASE_KEY = 'sb_publishable_Kox04-HlRIieoQbhDlqSuw_ko2783NR'; // public by design
 const SH_SCHEMA_VERSION = 1;
+if (!function_exists('array_is_list')) {   // PHP < 8.1
+    function array_is_list(array $a): bool { $i = 0; foreach ($a as $k => $_) { if ($k !== $i++) { return false; } } return true; }
+}
 
 final class ShError extends Exception {}
 
