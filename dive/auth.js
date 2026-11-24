@@ -26,9 +26,20 @@ function loadSdk() {
   });
 }
 
+function loadShdb() {
+  return new Promise((res, rej) => {
+    if (globalThis.SHDB) return res();
+    const s = document.createElement('script');
+    s.src = new URL('../assets/shdb.js', import.meta.url).href; s.onload = res; s.onerror = () => rej(new Error('StudyHub data client not available'));
+    document.head.appendChild(s);
+  });
+}
+
 async function client() {
   await loadSdk();
-  if (!sb) sb = globalThis.supabase.createClient(URL_, KEY, { auth: { persistSession: true, detectSessionInUrl: true, storageKey: SBKEY } });
+  await loadShdb();
+  // Login via Supabase; runs and leaderboards go to our own server (SHDB.wrap). Storage (question bank) stays on Supabase.
+  if (!sb) sb = globalThis.SHDB.wrap(globalThis.supabase.createClient(URL_, KEY, { auth: { persistSession: true, detectSessionInUrl: true, storageKey: SBKEY } }));
   return sb;
 }
 
