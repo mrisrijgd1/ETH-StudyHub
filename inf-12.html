@@ -1,0 +1,1355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Golem Builds a Train">
+<script defer src="assets/tips.js?v=prv1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script src="assets/move.js"></script><script defer src="assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Golem Builds a Train</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+
+/* Informatik: code blocks, program output, method and trace boxes */
+code, pre.code, pre.out { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+code { font-size: .88em; background: var(--accent-soft); padding: .05em .3em; border-radius: 4px; overflow-wrap: anywhere; }
+pre.code, pre.out { margin: 0; padding: .75rem .9rem; border-radius: 8px; overflow-x: auto; font-size: .84rem; line-height: 1.5; tab-size: 2; white-space: pre; }
+pre.code { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); }
+pre.code code, pre.out code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+pre.out { background: var(--exam); border: 1px solid var(--rule); border-left: 3px solid var(--exam-edge); }
+pre.out::before { content: "Output"; display: block; font-family: var(--font-util); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.tk-c { color: var(--muted); font-style: italic; }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-s { color: var(--exam-edge); }
+.tk-p { color: var(--story-edge); }
+.method { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: .9rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.method h3, .method h4 { margin: 0; }
+.method ol { gap: .5rem; }
+.method .q { font-weight: 600; }
+.trace td, .trace th { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85rem; white-space: nowrap; }
+.trace td.note, .trace th.note { font-family: var(--font-body); white-space: normal; }
+.task { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.task h3 { margin: 0; }
+.pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
+.small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+@media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=onb1124">
+<script defer src="assets/studyhub.js?v=guest1124c"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="informatik">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="informatik.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="inf-method.html" data-mode="practice">Task method</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Informatik · Lesson 12</span>
+<h1>The Golem Builds a Train</h1>
+<p class="lead">Pointers and dynamic memory: addresses with &, dereferencing with * and ->, nullptr, const and pointers; objects created with new at runtime; then the linked list built by hand: print, push_front, push_back, size, and an iterator of our own.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap">Recap of lesson 11 and lesson 5 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story">1. The story: the golem builds a train</a>
+</li>
+<li><a href="#s2-pointers">2. Pointers (script 15.1)</a>
+<ol>
+<li><a href="#we-1">Worked example 1: pointers and references in one trace</a></li>
+</ol></li>
+<li><a href="#s3-new">3. Dynamic memory with new (script 15.2)</a>
+</li>
+<li><a href="#s4-lists">4. Linked lists (script 16.1)</a>
+<ol>
+<li><a href="#the-list-method">Linked-list code in four questions</a></li>
+<li><a href="#we-2">Worked example 2: push_front step by step</a></li>
+</ol></li>
+<li><a href="#s5-iterator">5. A list iterator (script 16.2)</a>
+<ol>
+<li><a href="#we-3">Worked example 3: where does end() point?</a></li>
+</ol></li>
+<li><a href="#s6-coding-tasks">6. Building lists: coding tasks</a>
+<ol>
+<li><a href="#ct-1">Coding task 1: a train of any length (script Example 15.18)</a></li>
+<li><a href="#ct-2">Coding task 2: push_back and size (script Examples 16.2 and 16.3, p. 193)</a></li>
+<li><a href="#ct-3">Coding task 3: a sorted list with a sentinel (IFMP exam January 2017, task 8, 8 points)</a></li>
+<li><a href="#ct-4">Coding task 4: an iterator for our list (script Examples 16.7 to 16.13)</a></li>
+</ol></li>
+<li><a href="#worked-examples">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-4">Worked example 4: dot or arrow?</a></li>
+<li><a href="#we-5">Worked example 5: operator[] with an assertion (script p. 190)</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Informatik exam summer 2019, task 2, parts (a), (b), (e), (f), old exam) · 6 points</a></li>
+<li><a href="#ex-2">Exercise 2 (const and pointers, after script p. 185) · 4 points</a></li>
+<li><a href="#ex-3">Exercise 3 (draw it: script Example 15.18) · 3 points</a></li>
+<li><a href="#ex-4">Exercise 4 (Informatik exam winter 2018/19, task 9, insert part, old exam) · our scoring: 4 points</a></li>
+<li><a href="#ex-5">Exercise 5 (true or false) · 4 points</a></li>
+</ol></li>
+<li><a href="#summary">Summary: what to keep from lesson 12</a>
+</li>
+<li><a href="#for-wonder">For wonder: the billion-dollar mistake <span class="small">(optional, 5 min)</span></a>
+</li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do only sections 2 and 4: read what a pointer is and how to walk a linked list with the <a href="#list-method">list method</a>, then do <a href="#we-2">Worked example 2</a>. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) declare a pointer, take an address with <code>&amp;</code>, dereference with <code>*</code>, and say what <code style="white-space:nowrap">p-&gt;n</code> means; (2) read a declaration like <code>int const* p</code> or <code>int* const p</code> from right to left; (3) create an object with <code>new</code> and say how long it lives; (4) walk a linked list with <code>for (lnode* n = head; n != nullptr; n = n-&gt;next)</code> and write <code>push_front</code>, <code>push_back</code> (with the empty case) and <code>size</code>; (5) write the four parts of a list iterator: <code>++</code>, <code>*</code>, <code>!=</code>, and <code>begin()</code>/<code>end()</code>.</dd></div>
+  <div><dt>Time</dt><dd>About 90 minutes. A big step: for the first time you build a data structure yourself. Draw every list on paper as boxes and arrows; that is how the exam expects you to think.</dd></div>
+  <div><dt>Script (English lecture notes, printed pages)</dt><dd>
+    <ul>
+      <li><strong>Chapter 15, Pointers and Dynamic Memory, p. 178–186:</strong> the wagon example, pointers, address and dereference operators, the null pointer, pointers to classes and <code style="white-space:nowrap">-&gt;</code>, const and pointers (15.1), dynamic memory with <code>new</code> (15.2).</li>
+      <li><strong>Chapter 16, Dynamic Data Structures, p. 187–196:</strong> linked lists: <code>lnode</code>, <code>our_list</code>, print, operator[], push_front, push_back, size (16.1); the list iterator (16.2).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>Lecture 11 (slide chapter 18 "Dynamic Memory and Pointers", which covers both script chapters). Code Expert: the exercise sheet after lecture 11.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Every recent exam has a task "pointers and references" (summer 2019, task 2, 9 points; winter 2018/19, task 2, 8 points): read a few lines with <code>*</code>, <code>&amp;</code> and <code>new</code> and write the output. And linked structures come back as code to complete: a sorted list with a sentinel (IFMP January 2017, task 8, 8 points), a hash table built from chains of contacts (winter 2018/19, task 9, 16 points). Coding task 3 is the 2017 task with its official solution.</p></div>
+
+<div class="box"><h3 id="recap">Recap of <a class="xl" href="inf-11.html">lesson 11</a> and <a class="xl" href="inf-05.html">lesson 5</a> (5 minutes)</h3>
+<p>A reference is a second name for an existing object; an iterator marks a position in a container, and <code>*it</code> gives the element there. Check yourself:</p>
+<ol class="gq">
+  <li>After <code>int x = 5; int&amp; r = x; r = 7;</code>, what is x? Can r later refer to a different variable?
+  <details><summary>Answer</summary><div><p>x is 7. No: a reference is bound once, at its declaration, and stays bound. Section 1 shows why that is a problem for a train.</p></div></details></li>
+  <li>In the loop <code>for (auto it = c.begin(); it != c.end(); ++it)</code>, what are the three things an iterator must be able to do?
+  <details><summary>Answer</summary><div><p>Be compared (<code>!=</code>), give its element (<code>*it</code>), step on (<code>++it</code>). In section 6 you build exactly these three for your own list.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>pointer, pointer to T</td><td>Zeiger, Zeiger auf T</td></tr>
+    <tr><td>address, address operator</td><td>Adresse, Adressoperator</td></tr>
+    <tr><td>dereference operator</td><td>Dereferenzierungsoperator</td></tr>
+    <tr><td>null pointer</td><td>Nullzeiger</td></tr>
+    <tr><td>dynamic memory, to allocate</td><td>dynamischer Speicher, allozieren</td></tr>
+    <tr><td>linked list, node</td><td>verkettete Liste, Knoten</td></tr>
+    <tr><td>head, tail</td><td>Kopf, Ende (Schwanz)</td></tr>
+    <tr><td>sentinel</td><td>Wächter</td></tr>
+    <tr><td>random access</td><td>wahlfreier Zugriff</td></tr>
+    <tr><td>inner class</td><td>innere Klasse</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story">1. The story: the golem builds a train</h2>
+<div class="story">
+<p>The golem wants to build a train. Each wagon carries a number plate and a coupling at the back. The first idea: each wagon <em>contains</em> the next wagon. But then that wagon contains the next one, which contains the next, without end: no wagon could ever be finished.</p>
+<p>The second idea: each wagon is <em>welded</em> to the next one when it is made. But the golem wants to make the first wagon now and attach more later, and a weld can't wait and can't be moved.</p>
+<p>The third idea works: each wagon has a coupling hook that can hang free, or be clipped to any other wagon, and unclipped and clipped again. The golem also learns to make new wagons whenever it likes, in the middle of the work, not just the ones it planned at the start.</p>
+</div>
+<p>In C++: "contains a wagon" is a member of type <code>wagon</code> (doesn't compile); "welded" is a reference <code>wagon&amp;</code> (must be bound at once, can't change); the coupling hook is a <strong>pointer</strong> <code>wagon*</code>, which can point nowhere (<code>nullptr</code>) and can be changed. Making wagons during the run is <strong>dynamic memory</strong>: <code>new wagon(4)</code> (p. 178–186).</p>
+
+<h2 id="s2-pointers">2. Pointers (script 15.1)</h2>
+<div class="box">
+<p>For a type T, <code>T*</code> is the type <strong>pointer to T</strong>. Its value is the <strong>address</strong> of an object of type T (p. 179–180). Three operators belong together (p. 180–181):</p>
+<ul>
+  <li><code>&amp;x</code>, the <strong>address operator</strong>: the address of the object x; type <code>T*</code>.</li>
+  <li><code>*p</code>, the <strong>dereference operator</strong>: the object at the address in p; type T, and an l-value, so you can assign to it.</li>
+  <li><code>nullptr</code>, the <strong>null pointer</strong>: points to no object. Dereferencing it is undefined behaviour, usually a crash (p. 182).</li>
+</ul>
+<p>A pointer to T must point to a T: <code>std::string* q = p;</code> with <code>int* p</code> is a compiler error (p. 180). The mnemonic of p. 182: read <code>T *p</code> as "<code>*p</code> is a T". In a declaration <code>T *a, *b</code>, each name needs its own star.</p>
+</div>
+<p>Note the two meanings of <code>&amp;</code> and <code>*</code>: in a <em>declaration</em>, <code>int&amp; r</code> is a reference and <code>int* p</code> a pointer; in an <em>expression</em>, <code>&amp;x</code> takes an address and <code>*p</code> dereferences.</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> x = 5;
+  <span class="tk-k">int</span>* p = &amp;x;       <span class="tk-c">// p points to x</span>
+  <span class="tk-k">int</span> y = *p;        <span class="tk-c">// y = 5, a copy</span>
+  *p = 8;            <span class="tk-c">// changes x through p</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; y &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">int</span> z = 1;
+  p = &amp;z;            <span class="tk-c">// unlike a reference, a pointer can be redirected</span>
+  *p += 10;
+  <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; z &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">int</span>* q = <span class="tk-k">nullptr</span>;  <span class="tk-c">// explicitly points nowhere</span>
+  <span class="tk-k">if</span> (q == <span class="tk-k">nullptr</span>)
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"q points into the void\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>8 5
+8 11
+q points into the void</code></pre>
+<p><strong>Pointers to classes and the arrow</strong> (p. 182–183). For <code>rational* p = &amp;r;</code> the members of r are <code>(*p).n</code> and <code>(*p).d</code>. The brackets matter: <code>*p.n</code> means <code>*(p.n)</code>, and a pointer has no members. Because this is so frequent, there is a shorthand: <strong><code style="white-space:nowrap">p-&gt;n</code> is <code>(*p).n</code></strong>. Now you also know what <code>this</code> is (lesson 10): a pointer to the object the member function was called on, so <code style="white-space:nowrap">this-&gt;n</code> is its member n.</p>
+<p><strong>The wagons with pointers</strong> (Examples 15.10 and 15.11):</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> wagon {
+  <span class="tk-k">int</span> id;
+  wagon* next;
+  <span class="tk-c">// initially no wagon is appended</span>
+  wagon(<span class="tk-k">int</span> i) : id(i), next(<span class="tk-k">nullptr</span>) {}
+};
+
+<span class="tk-k">int</span> main() {
+  wagon w1 = wagon(1);
+  wagon w2 = wagon(2);
+  wagon w3 = wagon(3);
+  w1.next = &amp;w2;
+  w2.next = &amp;w3;
+  <span class="tk-k">std</span>::cout &lt;&lt; w1.next-&gt;next-&gt;id &lt;&lt; <span class="tk-s">"\n"</span>;   <span class="tk-c">// outputs 3</span>
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>3</code></pre>
+<p>Read <code style="white-space:nowrap">w1.next-&gt;next-&gt;id</code> left to right: w1's hook leads to w2, w2's hook leads to w3, and w3's id is 3. w1 itself is an object (a dot), every hook is a pointer (an arrow).</p>
+<div class="box">
+<p><strong>Const and pointers</strong> (p. 184–185). Two rules: <code>const T</code> is the same as <code>T const</code>; and a declaration is read <strong>from right to left</strong>:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>declaration</th><th>read right to left</th><th>what is protected</th></tr></thead>
+<tbody>
+<tr><td><code>int const p1</code></td><td>p1 is a constant int</td><td>p1</td></tr>
+<tr><td><code>int const* p2</code></td><td>p2 is a pointer to a constant int</td><td>the int (read-only pointer)</td></tr>
+<tr><td><code>int* const p3</code></td><td>p3 is a constant pointer to an int</td><td>the pointer (can't be redirected)</td></tr>
+<tr><td><code>int const* const p4</code></td><td>p4 is a constant pointer to a constant int</td><td>both</td></tr>
+</tbody></table></div>
+<p>So in <code>void print(const wagon* w)</code>, the wagon is protected; the function can still change its own copy of the pointer, which doesn't affect the caller (p. 185). And const is a promise of the pointer, not of the object: through another, non-const pointer to the same int, the int can change (Example 15.16).</p>
+</div>
+<div class="box"><h3 id="we-1">Worked example 1: pointers and references in one trace</h3>
+<pre class="code"><code><span class="tk-k">int</span> a = 2;      <span class="tk-c">// line 1</span>
+<span class="tk-k">int</span>* p = &amp;a;    <span class="tk-c">// line 2</span>
+<span class="tk-k">int</span>&amp; r = a;     <span class="tk-c">// line 3</span>
+*p += 3;        <span class="tk-c">// line 4</span>
+r *= 2;         <span class="tk-c">// line 5</span>
+<span class="tk-k">int</span> b = 7;      <span class="tk-c">// line 6</span>
+p = &amp;b;         <span class="tk-c">// line 7</span>
+*p = r;         <span class="tk-c">// line 8</span></code></pre>
+<ol class="gq">
+  <li>Fill the table: the values of a and b after each line from line 4 on.
+  <details><summary>Answer</summary><div>
+  <div class="table-wrap"><table class="trace" data-fill="1"><thead><tr><th>after line</th><th>a</th><th>b</th></tr></thead><tbody>
+  <tr><td>4</td><td>5</td><td></td></tr>
+  <tr><td>5</td><td>10</td><td></td></tr>
+  <tr><td>6</td><td>10</td><td>7</td></tr>
+  <tr><td>7</td><td>10</td><td>7</td></tr>
+  <tr><td>8</td><td>10</td><td>10</td></tr>
+  </tbody></table></div>
+  <p>Before line 6 there is no b (empty cells). r and *p (before line 7) are both other names for a. <code>*p = r</code> copies a's value into b.</p></div></details></li>
+  <li>Where does p point after line 6, and after line 7?
+  <details><summary>Answer</summary><div><p>After line 6 still to a; after line 7 to b. <code>p = &amp;b</code> redirects the pointer; no value is copied.</p></div></details></li>
+  <li>Why couldn't line 7 be written with r, as <code>r = b;</code>, to make r refer to b?
+  <details><summary>Answer</summary><div><p><code>r = b</code> doesn't rebind r: it assigns b's value to a. A reference can never be redirected; a pointer can. That is the whole reason for pointers in this chapter.</p></div></details></li>
+</ol></div>
+
+<h2 id="s3-new">3. Dynamic memory with new (script 15.2)</h2>
+<p>With n variables of type wagon you have n wagons. To make more while the program runs, you allocate memory yourself (p. 185–186):</p>
+<div class="box">
+<p><code>new T(...)</code> creates a new object of type T, initialises it with the matching constructor, and returns its address, of type <code>T*</code>. The object <strong>lives until it is explicitly deleted</strong>: unlike every object so far, it is not released when the pointer to it goes out of scope. (Every <code>new</code> needs a matching <code>delete</code>; that is lesson 13.)</p>
+</div>
+<p>Example 15.18, arbitrarily many wagons. The pointer <code>last</code> always points to the last wagon, so a new one can be clipped on directly:</p>
+<pre class="code" data-run="1" data-stdin="4"><code><span class="tk-p">#include &lt;cassert&gt;</span>
+<span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> wagon {
+  <span class="tk-k">int</span> id;
+  wagon* next;
+  wagon(<span class="tk-k">int</span> i) : id(i), next(<span class="tk-k">nullptr</span>) {}
+};
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;                 <span class="tk-c">// number of wagons</span>
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  assert(n &gt;= 1);
+  wagon first = wagon(1);
+  wagon* last = &amp;first;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 2; i &lt;= n; ++i) {
+    wagon* new_wagon = <span class="tk-k">new</span> wagon(i);
+    last-&gt;next = new_wagon;
+    last = new_wagon;
+  }
+  <span class="tk-k">std</span>::cout &lt;&lt; first.next-&gt;id &lt;&lt; <span class="tk-s">"\n"</span>;         <span class="tk-c">// outputs 2</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; first.next-&gt;next-&gt;id &lt;&lt; <span class="tk-s">"\n"</span>;   <span class="tk-c">// outputs 3</span>
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>2
+3</code></pre>
+<p>Take the script's advice and draw it for n = 4: four boxes 1 → 2 → 3 → 4, the last hook free, and <code>last</code> on wagon 4 at the end. The variable <code>new_wagon</code> disappears after each round of the loop, but its wagon stays: that is what <code>new</code> means.</p>
+
+<h2 id="s4-lists">4. Linked lists (script 16.1)</h2>
+<p>Remove one brick from the middle of a Lego wall, and every brick after it must move (p. 187). A chain of clipped elements doesn't have that problem. A <strong>linked list</strong> needs no contiguous memory, inserting and deleting are simple and fast, but there is no fast random access (p. 188). <code>std::list</code> is built this way. The train was a linked list already; now each element is called a node:</p>
+<pre class="code"><code><span class="tk-k">struct</span> lnode {
+  <span class="tk-k">int</span> value;     <span class="tk-c">// user data</span>
+  lnode* next;   <span class="tk-c">// next element pointer</span>
+  <span class="tk-c">// Constructor accepting a value and a pointer to the next element</span>
+  lnode(<span class="tk-k">int</span> v, lnode* n) : value(v), next(n) {}
+};
+
+<span class="tk-k">class</span> our_list {
+  lnode* head;   <span class="tk-c">// pointer to the first element of the list</span>
+<span class="tk-k">public</span>:
+  <span class="tk-k">void</span> print() <span class="tk-k">const</span>;
+  <span class="tk-k">int</span> size() <span class="tk-k">const</span>;
+  <span class="tk-k">void</span> push_front(<span class="tk-k">int</span> element);
+  <span class="tk-k">void</span> push_back(<span class="tk-k">int</span> element);
+  ...
+};</code></pre>
+<p>The list itself is just a pointer to its first node, wrapped in a class (lesson 10): the user sees the interface, not the nodes (p. 189). An empty list has <code>head == nullptr</code>; the last node has <code>next == nullptr</code>.</p>
+<div class="box">
+<p><strong>Walking the list</strong> (p. 189–190): n starts at head; while n isn't the null pointer, use <code style="white-space:nowrap">n-&gt;value</code>, then move to <code style="white-space:nowrap">n-&gt;next</code>.</p>
+<pre class="code"><code><span class="tk-c">// post: output element values of the linked list</span>
+<span class="tk-k">void</span> our_list::print() <span class="tk-k">const</span> {
+  <span class="tk-k">for</span> (lnode* n = head; n != <span class="tk-k">nullptr</span>; n = n-&gt;next)
+    <span class="tk-k">std</span>::cout &lt;&lt; n-&gt;value &lt;&lt; <span class="tk-s">' '</span>;
+}</code></pre>
+<p>Every list function is a variation of this loop: <code>size</code> counts (p. 193), <code>operator[](i)</code> takes i steps and returns <code style="white-space:nowrap">n-&gt;value</code> (p. 190; with too large an i, n becomes nullptr and the access is undefined behaviour).</p>
+</div>
+<p><strong>push_front</strong> is one line (p. 190):</p>
+<pre class="code"><code><span class="tk-k">void</span> our_list::push_front(<span class="tk-k">int</span> e) {
+  head = <span class="tk-k">new</span> lnode(e, head);
+}</code></pre>
+<p>Read it inside out: the new node gets value e and, as its next, the <em>old</em> head; then head points to the new node. It works for the empty list too (the new node's next is nullptr). The node must come from <code>new</code>: a local lnode would disappear when push_front ends, and the list would point into nothing (Remark 16.1).</p>
+<div class="method" id="list-method">
+<h3 id="the-list-method">Linked-list code in four questions</h3>
+<ol>
+  <li><span class="q">Draw it.</span> Boxes for the nodes, arrows for the pointers, head on the left, a cross for nullptr. Draw before and after.</li>
+  <li><span class="q">Which loop?</span> Visit every node: <code>for (lnode* n = head; n != nullptr; n = n-&gt;next)</code>. Stop <em>at</em> the last node (to append): <code>n-&gt;next != nullptr</code>.</li>
+  <li><span class="q">Which pointer changes?</span> Name exactly the one or two pointers that get a new value (head, or some <code style="white-space:nowrap">n-&gt;next</code>), and assign them in an order that loses nothing.</li>
+  <li><span class="q">The edge cases?</span> The empty list (head == nullptr), a list of one node, the first and the last position. Every <code style="white-space:nowrap">n-&gt;</code> needs n != nullptr.</li>
+</ol></div>
+<div class="box"><h3 id="we-2">Worked example 2: push_front step by step</h3>
+<p>The list is head → 1 → 5 → 6. We call <code>push_front(4)</code> (p. 190).</p>
+<ol class="gq">
+  <li>What does <code>new lnode(4, head)</code> create, before the assignment?
+  <details><summary>Answer</summary><div><p>A node with value 4 whose next points to the node 1, the node head points to. For a moment two pointers lead to node 1: head and the new node's next.</p></div></details></li>
+  <li>And after <code>head = …</code>?
+  <details><summary>Answer</summary><div><p>head → 4 → 1 → 5 → 6. Nothing was moved; one node was made and one pointer changed.</p></div></details></li>
+  <li>The constructor <code>our_list(int size)</code> calls <code>push_front(0)</code> size times, starting with head = nullptr (p. 191). What does <code>our_list(3).print()</code> output, and how do the pointers look?
+  <details><summary>Answer</summary><div><p><code>0 0 0</code>. head → 0 → 0 → 0 → nullptr; the node made first is now the last.</p></div></details></li>
+</ol></div>
+<p><strong>push_back</strong> is where the pitfalls are (p. 191–192). The first try walks to the last node and clips a new one on:</p>
+<pre class="code"><code><span class="tk-k">void</span> our_list::push_back(<span class="tk-k">int</span> e) {       <span class="tk-c">// buggy (Example 16.2)</span>
+  lnode* n = head;                                <span class="tk-c">// list start</span>
+  <span class="tk-k">for</span> (; n-&gt;next != <span class="tk-k">nullptr</span>; n = n-&gt;next);        <span class="tk-c">// run to the end</span>
+  n-&gt;next = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);                <span class="tk-c">// append the new element</span>
+}</code></pre>
+<p>For the empty list, head is nullptr, and already the first <code style="white-space:nowrap">n-&gt;next</code> is undefined behaviour. The fix is the empty case first; that is coding task 2. The script's lesson from it: in dynamic data structures, take <em>all</em> cases into account. (Example 16.4 has a shorter version with a pointer to a pointer, <code>lnode**</code>. The script shows it as a curiosity and says clearly that it is not good code: "Trying to be clever is very often particularly unclever in programming.")</p>
+<p><strong>Faster variants</strong> (p. 192–193): push_back walks the whole list every time. A second member <code>tail</code> pointing to the last node makes it immediate, like <code>last</code> in the train; a member <code>count</code> makes size() immediate. Both must then be kept correct by every function that changes the list.</p>
+
+<h2 id="s5-iterator">5. A list iterator (script 16.2)</h2>
+<p>Our list is a container, but it can't yet be used with the iterator loop of lesson 11. For that we need an iterator class with <code>operator*</code>, <code>operator++</code> and <code>operator!=</code>, and list functions <code>begin()</code> and <code>end()</code> (p. 193). The iterator belongs to our list, so it is defined <em>inside</em> it, as an inner class: its full name is <code>our_list::iterator</code> (p. 193–194).</p>
+<div class="box">
+<p>Its state is one node pointer (Example 16.7):</p>
+<ul>
+  <li>constructor: <code>iterator(lnode* n) : node(n) {}</code>;</li>
+  <li><code>++</code>: <code>node = node-&gt;next; return *this;</code> (with <code>assert(node != nullptr)</code> first);</li>
+  <li><code>*</code>: <code>return node-&gt;value;</code>, as <code>int&amp;</code>, so <code>*it = 5</code> changes the element;</li>
+  <li><code>!=</code>: <code>return node != other.node;</code>: two iterators are equal if they point to the same node;</li>
+  <li>in the list: <code>begin()</code> is <code>iterator(head)</code>, <code>end()</code> is <code>iterator(nullptr)</code>, the "place behind the last node".</li>
+</ul>
+</div>
+<p>Now the secret of lesson 11 is out: an iterator is a small object wrapping a pointer, and <code>*it</code> and <code>++it</code> are member functions that follow it. With these parts, our list works with the range-based for (p. 196). Coding task 4 builds it.</p>
+<div class="box"><h3 id="we-3">Worked example 3: where does end() point?</h3>
+<ol class="gq">
+  <li>For the list head → 3 → 9, how many times does the body of <code>for (auto it = l.begin(); it != l.end(); ++it)</code> run, and which nodes does it.node visit?
+  <details><summary>Answer</summary><div><p>Twice: node 3, node 9, then nullptr, which equals end(): stop. The iterator loop is exactly the walk <code>for (lnode* n = head; n != nullptr; n = n-&gt;next)</code> in disguise.</p></div></details></li>
+  <li>For the empty list?
+  <details><summary>Answer</summary><div><p>begin() is iterator(head) = iterator(nullptr) = end(): the body never runs, as for every empty container.</p></div></details></li>
+</ol></div>
+
+<h2 id="s6-coding-tasks">6. Building lists: coding tasks</h2>
+<p>Each task gives you a contract; you write the body, with the six questions of the <a class="xl" href="inf-method.html">Task method</a> and the <a class="xl" href="#list-method">list method</a>. New patterns in this lesson:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>pattern</th><th>shape</th></tr></thead>
+<tbody>
+<tr><td>walk the nodes</td><td><code>for (lnode* n = head; n != nullptr; n = n-&gt;next) … n-&gt;value …</code></td></tr>
+<tr><td>keep a pointer to the last node</td><td><code>last-&gt;next = new node(…); last = last-&gt;next;</code></td></tr>
+<tr><td>empty case first</td><td><code>if (head == nullptr) { … } else { … n-&gt;next … }</code></td></tr>
+<tr><td>a sentinel removes the special case</td><td>a dummy first node; walk with <code style="white-space:nowrap">p-&gt;next</code>, insert after p</td></tr>
+<tr><td>an iterator of your own</td><td>inner class with a node pointer; <code>++</code>, <code>*</code>, <code>!=</code>; <code>begin()</code>, <code>end()</code></td></tr>
+</tbody></table></div>
+
+<div class="task" id="task-1"><h3 id="ct-1">Coding task 1: a train of any length (script Example 15.18)</h3>
+<p>Read n ≥ 1 and then n wagon numbers. Build the train in that order, every wagon made with <code>new</code>, then walk it from the first wagon and print the numbers, separated by spaces.</p>
+<div class="need"><span class="label">You'll need these</span><p><code>new wagon(id)</code> (<a class="xl" href="#s3-new">section 3</a>), the arrow <code style="white-space:nowrap">-&gt;</code> (<a class="xl" href="#s2-pointers">section 2</a>) and the walk of <a class="xl" href="#s4-lists">section 4</a>.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> n ≥ 1 numbers, in order.</li>
+  <li><strong>Must hold at the end:</strong> a chain first → … → last, in input order, the last hook nullptr; output in the same order.</li>
+  <li><strong>The gap to fill:</strong> appending at the back without walking the chain each time.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the building loop and the printing loop, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;4 1 2 3 4&quot;,&quot;out&quot;:&quot;1 2 3 4&quot;},{&quot;in&quot;:&quot;1 7&quot;,&quot;out&quot;:&quot;7&quot;},{&quot;in&quot;:&quot;3 30 10 20&quot;,&quot;out&quot;:&quot;30 10 20&quot;},{&quot;in&quot;:&quot;2 -5 -5&quot;,&quot;out&quot;:&quot;-5 -5&quot;},{&quot;in&quot;:&quot;6 6 5 4 3 2 1&quot;,&quot;out&quot;:&quot;6 5 4 3 2 1&quot;}]"><code><span class="tk-p">#include &lt;cassert&gt;</span>
+<span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> wagon {
+  <span class="tk-k">int</span> id;
+  wagon* next;
+  <span class="tk-c">// initially no wagon is appended</span>
+  wagon(<span class="tk-k">int</span> i) : id(i), next(<span class="tk-k">nullptr</span>) {}
+};
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  assert(n &gt;= 1);
+  <span class="tk-k">int</span> id;
+  <span class="tk-k">std</span>::cin &gt;&gt; id;
+  wagon* first = <span class="tk-k">new</span> wagon(id);
+  wagon* last = first;
+  <span class="tk-c">// todo: read the other n - 1 numbers and append a wagon for each</span>
+  <span class="tk-c">// todo: walk from first and print every id</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>What does <code>last</code> point to before and after each round?</strong>
+  <details><summary>My answer</summary><div><p>Before: the current last wagon. In the round, a new wagon is clipped to it (<code>last-&gt;next = …</code>) and then last moves on to the new one. So the statement "last points to the last wagon" holds after every round: an invariant.</p></div></details></li>
+  <li><strong>In which order must the two assignments come?</strong>
+  <details><summary>My answer</summary><div><p>First <code>last-&gt;next = w;</code>, then <code>last = w;</code>. The other way round, last would already be w, and w would be clipped to itself; the old last wagon would never get its hook set.</p></div></details></li>
+  <li><strong>How does the printing loop know when to stop?</strong>
+  <details><summary>My answer</summary><div><p>The last wagon's hook is still nullptr from the constructor. The walk stops when w becomes nullptr.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub after the script p. 186, checked by compiling)</summary><div>
+<p><em>Frame:</em> a loop that makes and clips wagons, keeping last up to date; then the walk.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>For each further number: make a new wagon with that plate, clip it behind the current last wagon, and from now on call the new one "last".</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">int</span> i = 2; i &lt;= n; ++i) {
+  <span class="tk-k">std</span>::cin &gt;&gt; id;
+  wagon* new_wagon = <span class="tk-k">new</span> wagon(id);
+  last-&gt;next = new_wagon;
+  last = new_wagon;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Start at the first wagon and read its plate; follow its hook to the next; stop when a hook hangs free.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (wagon* w = first; w != <span class="tk-k">nullptr</span>; w = w-&gt;next)
+  <span class="tk-k">std</span>::cout &lt;&lt; w-&gt;id &lt;&lt; <span class="tk-s">" "</span>;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="4 1 2 3 4"><code><span class="tk-p">#include &lt;cassert&gt;</span>
+<span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> wagon {
+  <span class="tk-k">int</span> id;
+  wagon* next;
+  <span class="tk-c">// initially no wagon is appended</span>
+  wagon(<span class="tk-k">int</span> i) : id(i), next(<span class="tk-k">nullptr</span>) {}
+};
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  assert(n &gt;= 1);
+  <span class="tk-k">int</span> id;
+  <span class="tk-k">std</span>::cin &gt;&gt; id;
+  wagon* first = <span class="tk-k">new</span> wagon(id);
+  wagon* last = first;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 2; i &lt;= n; ++i) {
+    <span class="tk-k">std</span>::cin &gt;&gt; id;
+    wagon* new_wagon = <span class="tk-k">new</span> wagon(id);
+    last-&gt;next = new_wagon;
+    last = new_wagon;
+  }
+  <span class="tk-k">for</span> (wagon* w = first; w != <span class="tk-k">nullptr</span>; w = w-&gt;next)
+    <span class="tk-k">std</span>::cout &lt;&lt; w-&gt;id &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>1 2 3 4</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The script's 1 to 4; a single wagon (the building loop doesn't run); numbers not in order (the train keeps input order); equal numbers; a longer train in descending order.</p></div></details></li>
+  <li><strong>The memory of the wagons is never released. Is that a problem here?</strong>
+  <details><summary>My answer</summary><div><p>Not for this short program: the operating system takes everything back when it ends. In a long-running program it would be a memory leak. Lesson 13 adds <code>delete</code>.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-tail">keep a pointer to the last node</a> <a class="mvl" href="inf-method.html#p-nodewalk">walk the nodes</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Draw three wagons</strong> and the pointer last, before and after one round.</li>
+  <li><strong>Clip first, then move last.</strong></li>
+  <li><strong>The walk:</strong> start at first, test for nullptr, step with <code style="white-space:nowrap">-&gt;next</code>.</li>
+</ol>
+<p>In short: "clip on, move on".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> With the train 1 → 2 → 3, what is <code style="white-space:nowrap">first-&gt;next-&gt;next-&gt;next</code>?</p>
+  <details><summary>Answer</summary><div><p>nullptr: wagon 3's hook hangs free. One more <code style="white-space:nowrap">-&gt;id</code> would crash.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Print the train backwards? (Hint: build it differently.)</p>
+  <details><summary>Answer</summary><div><p>Put each new wagon in front: <code>wagon* w = new wagon(id); w-&gt;next = first; first = w;</code>. Then the normal walk prints in reverse input order. That is push_front.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write both loops in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-2"><h3 id="ct-2">Coding task 2: push_back and size (script Examples 16.2 and 16.3, p. 193)</h3>
+<p>Complete <code>our_list</code>: <code>push_back(e)</code> appends e at the end, also when the list is empty, and <code>size()</code> returns the number of elements. The program reads m numbers, appends each, then prints the list and its size.</p>
+<div class="need"><span class="label">You'll need these</span><p>The walk and the buggy push_back of <a class="xl" href="#s4-lists">section 4</a>, and the <a class="xl" href="#list-method">list method</a>, question 4.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a list in any state, including empty.</li>
+  <li><strong>Must hold at the end:</strong> push_back: e is the new last element, the others unchanged; size: the count, list unchanged (const).</li>
+  <li><strong>The gap to fill:</strong> which pointer changes when the list is empty, and which when it isn't?</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the two bodies, then press <em>Check</em>.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;3 1 5 6&quot;,&quot;out&quot;:&quot;1 5 6 size 3&quot;},{&quot;in&quot;:&quot;0&quot;,&quot;out&quot;:&quot;size 0&quot;},{&quot;in&quot;:&quot;1 -4&quot;,&quot;out&quot;:&quot;-4 size 1&quot;},{&quot;in&quot;:&quot;5 9 8 7 6 5&quot;,&quot;out&quot;:&quot;9 8 7 6 5 size 5&quot;},{&quot;in&quot;:&quot;2 0 0&quot;,&quot;out&quot;:&quot;0 0 size 2&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> lnode {
+  <span class="tk-k">int</span> value;     <span class="tk-c">// user data</span>
+  lnode* next;   <span class="tk-c">// next element pointer</span>
+  lnode(<span class="tk-k">int</span> v, lnode* n) : value(v), next(n) {}
+};
+
+<span class="tk-k">class</span> our_list {
+  lnode* head;   <span class="tk-c">// pointer to the first element of the list</span>
+<span class="tk-k">public</span>:
+  <span class="tk-c">// POST: an empty list</span>
+  our_list() : head(<span class="tk-k">nullptr</span>) {}
+
+  <span class="tk-c">// POST: the element values have been printed, separated by spaces</span>
+  <span class="tk-k">void</span> print() <span class="tk-k">const</span> {
+    <span class="tk-k">for</span> (lnode* n = head; n != <span class="tk-k">nullptr</span>; n = n-&gt;next)
+      <span class="tk-k">std</span>::cout &lt;&lt; n-&gt;value &lt;&lt; <span class="tk-s">" "</span>;
+  }
+
+  <span class="tk-c">// POST: e has been added at the front</span>
+  <span class="tk-k">void</span> push_front(<span class="tk-k">int</span> e) {
+    head = <span class="tk-k">new</span> lnode(e, head);
+  }
+
+  <span class="tk-c">// POST: e has been added at the end</span>
+  <span class="tk-k">void</span> push_back(<span class="tk-k">int</span> e) {
+    <span class="tk-c">// todo</span>
+  }
+
+  <span class="tk-c">// POST: returns the number of elements</span>
+  <span class="tk-k">int</span> size() <span class="tk-k">const</span> {
+    <span class="tk-c">// todo</span>
+    <span class="tk-k">return</span> 0;
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  our_list l;
+  <span class="tk-k">int</span> m;
+  <span class="tk-k">std</span>::cin &gt;&gt; m;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; m; ++i) {
+    <span class="tk-k">int</span> x;
+    <span class="tk-k">std</span>::cin &gt;&gt; x;
+    l.push_back(x);
+  }
+  l.print();
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"size "</span> &lt;&lt; l.size() &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Which pointer gets the new node, in each case?</strong>
+  <details><summary>My answer</summary><div><p>Empty list: <code>head</code> itself (there is no last node). Otherwise: <code>next</code> of the last node. Two different pointers, so two cases.</p></div></details></li>
+  <li><strong>How do you find the last node?</strong>
+  <details><summary>My answer</summary><div><p>Walk while <code>n-&gt;next != nullptr</code>: the loop stops <em>on</em> the last node, not behind it. With <code>n != nullptr</code> it would end on nullptr, and you couldn't clip anything to it.</p></div></details></li>
+  <li><strong>Why may size() be const, but not push_back?</strong>
+  <details><summary>My answer</summary><div><p>size only reads the pointers; push_back changes head or a node's next. (Strictly, a const function may change the nodes, since head stays the same pointer; but the promise "the list doesn't change" is what const should express.)</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (after the script p. 192–193, checked by compiling)</summary><div>
+<p><em>Frame:</em> push_back: the empty case first, then walk to the last node and clip on. size: an accumulator over the walk.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>No train at all? The new node is the train. Otherwise walk until a node's hook hangs free and clip the new node there.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (head == <span class="tk-k">nullptr</span>) {         <span class="tk-c">// Case 1: empty list</span>
+  head = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+} <span class="tk-k">else</span> {                       <span class="tk-c">// Case 2: non-empty list</span>
+  lnode* n = head;
+  <span class="tk-k">for</span> (; n-&gt;next != <span class="tk-k">nullptr</span>; n = n-&gt;next);
+  n-&gt;next = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk the whole chain and count the nodes.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> c = 0;
+<span class="tk-k">for</span> (lnode* n = head; n != <span class="tk-k">nullptr</span>; n = n-&gt;next)
+  ++c;
+<span class="tk-k">return</span> c;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="3 1 5 6"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> lnode {
+  <span class="tk-k">int</span> value;     <span class="tk-c">// user data</span>
+  lnode* next;   <span class="tk-c">// next element pointer</span>
+  lnode(<span class="tk-k">int</span> v, lnode* n) : value(v), next(n) {}
+};
+
+<span class="tk-k">class</span> our_list {
+  lnode* head;   <span class="tk-c">// pointer to the first element of the list</span>
+<span class="tk-k">public</span>:
+  <span class="tk-c">// POST: an empty list</span>
+  our_list() : head(<span class="tk-k">nullptr</span>) {}
+
+  <span class="tk-c">// POST: the element values have been printed, separated by spaces</span>
+  <span class="tk-k">void</span> print() <span class="tk-k">const</span> {
+    <span class="tk-k">for</span> (lnode* n = head; n != <span class="tk-k">nullptr</span>; n = n-&gt;next)
+      <span class="tk-k">std</span>::cout &lt;&lt; n-&gt;value &lt;&lt; <span class="tk-s">" "</span>;
+  }
+
+  <span class="tk-c">// POST: e has been added at the front</span>
+  <span class="tk-k">void</span> push_front(<span class="tk-k">int</span> e) {
+    head = <span class="tk-k">new</span> lnode(e, head);
+  }
+
+  <span class="tk-c">// POST: e has been added at the end</span>
+  <span class="tk-k">void</span> push_back(<span class="tk-k">int</span> e) {
+    <span class="tk-k">if</span> (head == <span class="tk-k">nullptr</span>) {         <span class="tk-c">// Case 1: empty list</span>
+      head = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+    } <span class="tk-k">else</span> {                       <span class="tk-c">// Case 2: non-empty list</span>
+      lnode* n = head;
+      <span class="tk-k">for</span> (; n-&gt;next != <span class="tk-k">nullptr</span>; n = n-&gt;next);
+      n-&gt;next = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+    }
+  }
+
+  <span class="tk-c">// POST: returns the number of elements</span>
+  <span class="tk-k">int</span> size() <span class="tk-k">const</span> {
+    <span class="tk-k">int</span> c = 0;
+    <span class="tk-k">for</span> (lnode* n = head; n != <span class="tk-k">nullptr</span>; n = n-&gt;next)
+      ++c;
+    <span class="tk-k">return</span> c;
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  our_list l;
+  <span class="tk-k">int</span> m;
+  <span class="tk-k">std</span>::cin &gt;&gt; m;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; m; ++i) {
+    <span class="tk-k">int</span> x;
+    <span class="tk-k">std</span>::cin &gt;&gt; x;
+    l.push_back(x);
+  }
+  l.print();
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"size "</span> &lt;&lt; l.size() &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>1 5 6 size 3</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The script's list 1 5 6; no numbers (size 0, and nothing may crash); one number (only case 1 runs); a longer list (order kept); zeros (values don't matter to the pointers).</p></div></details></li>
+  <li><strong>The first push_back of every list takes case 1. Which test would have caught the buggy version?</strong>
+  <details><summary>My answer</summary><div><p>Every test with m ≥ 1: the very first push_back is on an empty list and crashes. That is why the script calls the empty list the first case to think of.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-emptycase">empty case first</a> <a class="mvl" href="inf-method.html#p-nodewalk">walk the nodes</a> <a class="mvl" href="inf-method.html#p-acc">accumulator</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Before every <code style="white-space:nowrap">n-&gt;</code>,</strong> ask: can n be nullptr here?</li>
+  <li><strong>Empty list: head changes.</strong> Otherwise: some next changes.</li>
+  <li><strong>Stop on the last node</strong> with <code>n-&gt;next != nullptr</code>; walk past all nodes with <code>n != nullptr</code>.</li>
+</ol>
+<p>In short: "empty first, then walk".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> On the list 2 → 7, after <code>push_front(1); push_back(9);</code>, what does print show?</p>
+  <details><summary>Answer</summary><div><p><code>1 2 7 9</code>.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write <code>int sum() const</code>.</p>
+  <details><summary>Answer</summary><div><p><code>int s = 0; for (lnode* n = head; n != nullptr; n = n-&gt;next) s += n-&gt;value; return s;</code>. The empty list gives 0 with no special case.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write push_back and size in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-3"><h3 id="ct-3">Coding task 3: a sorted list with a sentinel (IFMP exam January 2017, task 8, 8 points)</h3>
+<p>A sorted list stores characters in increasing ASCII order. It always starts with an artificial first node holding <code>':'</code>, a <strong>sentinel</strong>, so that inserting needs no special case. <code>insert(k)</code> adds k and keeps the order; <code>print()</code> outputs the elements in order, without the sentinel. Inserting the characters of "ifmp16" one by one gives the output <code>16fimp</code>. (The exam writes 0 for the null pointer; that is older C++ and means nullptr.)</p>
+<div class="need"><span class="label">You'll need these</span><p>The walk (<a class="xl" href="#s4-lists">section 4</a>), push_front's one line <code>new lnode(e, …)</code>, and <code style="white-space:nowrap">p-&gt;next-&gt;key</code> read left to right (<a class="xl" href="#s2-pointers">section 2</a>).</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a sorted list, always with the sentinel in front.</li>
+  <li><strong>Must hold at the end:</strong> k is in the list and the list is still sorted; print shows everything after the sentinel.</li>
+  <li><strong>The gap to fill:</strong> to insert, you must stop at the node <em>before</em> the place, because that node's next changes.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> complete <code>insert</code> and <code>print</code>, then press <em>Check</em>. Input: one word.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;ifmp16&quot;,&quot;out&quot;:&quot;16fimp&quot;},{&quot;in&quot;:&quot;ba&quot;,&quot;out&quot;:&quot;ab&quot;},{&quot;in&quot;:&quot;a&quot;,&quot;out&quot;:&quot;a&quot;},{&quot;in&quot;:&quot;zzaa&quot;,&quot;out&quot;:&quot;aazz&quot;},{&quot;in&quot;:&quot;hello&quot;,&quot;out&quot;:&quot;ehllo&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">struct</span> list_node {
+  list_node(<span class="tk-k">char</span> k, list_node* n) : key(k), next(n) {}
+  <span class="tk-k">char</span> key;
+  list_node* next;   <span class="tk-c">// 0 means: no next element</span>
+};
+
+<span class="tk-k">class</span> sorted_list {
+<span class="tk-k">public</span>:
+  <span class="tk-c">// POST: generates an empty list</span>
+  sorted_list() : sentinel(<span class="tk-k">new</span> list_node(<span class="tk-s">':'</span>, 0)) {}   <span class="tk-c">// sentinel</span>
+
+  <span class="tk-c">// POST: inserts k into *this so that *this remains sorted by increasing ASCII code</span>
+  <span class="tk-k">void</span> insert(<span class="tk-k">char</span> k) {
+    list_node* p = sentinel;
+    <span class="tk-c">// todo: walk p forward while the next key is smaller than k</span>
+    <span class="tk-c">// todo: insert a new node with k after p</span>
+  }
+
+  <span class="tk-c">// POST: prints all elements of *this, sorted by increasing ASCII code</span>
+  <span class="tk-k">void</span> print() <span class="tk-k">const</span> {
+    <span class="tk-c">// todo</span>
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">'\n'</span>;
+  }
+<span class="tk-k">private</span>:
+  list_node* sentinel;
+};
+
+<span class="tk-k">int</span> main() {
+  sorted_list l;
+  <span class="tk-k">std</span>::string s;
+  <span class="tk-k">std</span>::cin &gt;&gt; s;
+  <span class="tk-k">for</span> (<span class="tk-k">unsigned</span> <span class="tk-k">int</span> i = 0; i &lt; s.length(); ++i)
+    l.insert(s[i]);
+  l.print();
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Why does the walk look at <code style="white-space:nowrap">p-&gt;next-&gt;key</code> and not at <code style="white-space:nowrap">p-&gt;key</code>?</strong>
+  <details><summary>My answer</summary><div><p>The new node goes between p and p->next, so p must stop one node <em>before</em> the place: at the last node whose successor is not smaller than k. If p were on the first larger node, you couldn't reach the node before it any more: the list has no backward pointers.</p></div></details></li>
+  <li><strong>Why must <code>p-&gt;next != 0</code> come first in the condition?</strong>
+  <details><summary>My answer</summary><div><p>If p is the last node, <code style="white-space:nowrap">p-&gt;next-&gt;key</code> dereferences the null pointer. <code>&amp;&amp;</code> evaluates left to right and stops at the first false (lesson 3), so the second part is only evaluated when there is a next node.</p></div></details></li>
+  <li><strong>What would go wrong without the sentinel?</strong>
+  <details><summary>My answer</summary><div><p>Inserting in front of everything (like '1' into "fimp") would change head, not any node's next: a special case, like push_back's empty list. With the sentinel there is always a node before the place, even for the smallest character. (The sentinel ':' is never compared; the walk starts by looking at the node <em>after</em> it.)</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (official solution, IFMP January 2017; checked by compiling)</summary><div>
+<p><em>Frame:</em> walk p to the node before the place; one new node linked in with one assignment; print walks from the first real node.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Start at the guard wagon. While there is a next wagon and its letter comes before k, step on.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">while</span> (p-&gt;next != 0 &amp;&amp; p-&gt;next-&gt;key &lt; k)
+  p = p-&gt;next;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Make a wagon for k whose hook holds what p's hook held, then clip it to p.</p></div><div class="sp-formal">
+<pre class="code"><code>p-&gt;next = <span class="tk-k">new</span> list_node(k, p-&gt;next);</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Read out every letter after the guard wagon.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (list_node* p = sentinel-&gt;next; p != 0; p = p-&gt;next)
+  <span class="tk-k">std</span>::cout &lt;&lt; p-&gt;key;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="ifmp16"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;string&gt;</span>
+
+<span class="tk-k">struct</span> list_node {
+  list_node(<span class="tk-k">char</span> k, list_node* n) : key(k), next(n) {}
+  <span class="tk-k">char</span> key;
+  list_node* next;   <span class="tk-c">// 0 means: no next element</span>
+};
+
+<span class="tk-k">class</span> sorted_list {
+<span class="tk-k">public</span>:
+  <span class="tk-c">// POST: generates an empty list</span>
+  sorted_list() : sentinel(<span class="tk-k">new</span> list_node(<span class="tk-s">':'</span>, 0)) {}   <span class="tk-c">// sentinel</span>
+
+  <span class="tk-c">// POST: inserts k into *this so that *this remains sorted by increasing ASCII code</span>
+  <span class="tk-k">void</span> insert(<span class="tk-k">char</span> k) {
+    list_node* p = sentinel;
+    <span class="tk-k">while</span> (p-&gt;next != 0 &amp;&amp; p-&gt;next-&gt;key &lt; k)
+      p = p-&gt;next;
+    p-&gt;next = <span class="tk-k">new</span> list_node(k, p-&gt;next);
+  }
+
+  <span class="tk-c">// POST: prints all elements of *this, sorted by increasing ASCII code</span>
+  <span class="tk-k">void</span> print() <span class="tk-k">const</span> {
+    <span class="tk-k">for</span> (list_node* p = sentinel-&gt;next; p != 0; p = p-&gt;next)
+      <span class="tk-k">std</span>::cout &lt;&lt; p-&gt;key;
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">'\n'</span>;
+  }
+<span class="tk-k">private</span>:
+  list_node* sentinel;
+};
+
+<span class="tk-k">int</span> main() {
+  sorted_list l;
+  <span class="tk-k">std</span>::string s;
+  <span class="tk-k">std</span>::cin &gt;&gt; s;
+  <span class="tk-k">for</span> (<span class="tk-k">unsigned</span> <span class="tk-k">int</span> i = 0; i &lt; s.length(); ++i)
+    l.insert(s[i]);
+  l.print();
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>16fimp</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The exam's word (digits sort before letters in ASCII); two letters in reverse order (each insert goes to the front); a single letter (the list was empty); repeated letters (with <code>&lt;</code>, an equal key is inserted before the existing one; the output is the same); an ordinary word.</p></div></details></li>
+  <li><strong>Trace inserting '6' into ':' → '1' → 'f' → 'i'.</strong>
+  <details><summary>My answer</summary><div><p>p on ':': next key '1' &lt; '6', step. p on '1': next key 'f' is not &lt; '6', stop. The new node '6' gets next = 'f', and '1''s next becomes the new node: ':' → '1' → '6' → 'f' → 'i'.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-sentinel">a sentinel removes the special case</a> <a class="mvl" href="inf-method.html#p-nodewalk">walk the nodes</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Insert after p:</strong> <code>p-&gt;next = new node(k, p-&gt;next);</code>, one line, no pointer lost.</li>
+  <li><strong>Walk to the node before the place,</strong> looking one ahead with <code style="white-space:nowrap">p-&gt;next-&gt;</code>.</li>
+  <li><strong>The null test comes first</strong> in the <code>&amp;&amp;</code>.</li>
+</ol>
+<p>In short: "look ahead, stop before, link in".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which character in "ifmp16" ends up right after the sentinel, and why?</p>
+  <details><summary>Answer</summary><div><p>'1': digits have smaller ASCII codes than letters ('0' is 48, 'a' is 97).</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Add <code>bool contains(char k) const</code>, which may stop early because the list is sorted.</p>
+  <details><summary>Answer</summary><div><p><code>list_node* p = sentinel-&gt;next; while (p != 0 &amp;&amp; p-&gt;key &lt; k) p = p-&gt;next; return p != 0 &amp;&amp; p-&gt;key == k;</code></p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write insert and print in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-4"><h3 id="ct-4">Coding task 4: an iterator for our list (script Examples 16.7 to 16.13)</h3>
+<p>Complete the inner class <code>our_list::iterator</code> and the functions <code>begin()</code> and <code>end()</code>. The program then adds k to every element with an iterator loop and prints the list with a range-based for; both only work once your iterator does.</p>
+<div class="need"><span class="label">You'll need these</span><p><a class="xl" href="#s5-iterator">Section 5</a>, the operator functions of <a class="xl" href="inf-09.html">lesson 9</a> (here as member functions), and <code>return *this;</code> for <code>++</code>.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a list of nodes; an iterator holds one node pointer.</li>
+  <li><strong>Must hold at the end:</strong> begin() on the first node, end() "behind the last" (nullptr); ++ moves to the next node; * gives a reference to the value; != compares positions.</li>
+  <li><strong>The gap to fill:</strong> five one-line bodies, each a pointer operation.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> fill in the five bodies, then press <em>Check</em>. Input: n, n numbers, then k.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;3 1 5 6 10&quot;,&quot;out&quot;:&quot;11 15 16&quot;},{&quot;in&quot;:&quot;0 5&quot;,&quot;out&quot;:&quot;&quot;},{&quot;in&quot;:&quot;2 -1 -2 1&quot;,&quot;out&quot;:&quot;0 -1&quot;},{&quot;in&quot;:&quot;1 7 0&quot;,&quot;out&quot;:&quot;7&quot;},{&quot;in&quot;:&quot;4 1 2 3 4 -1&quot;,&quot;out&quot;:&quot;0 1 2 3&quot;}]"><code><span class="tk-p">#include &lt;cassert&gt;</span>
+<span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> lnode {
+  <span class="tk-k">int</span> value;
+  lnode* next;
+  lnode(<span class="tk-k">int</span> v, lnode* n) : value(v), next(n) {}
+};
+
+<span class="tk-k">class</span> our_list {
+  lnode* head;
+<span class="tk-k">public</span>:
+  our_list() : head(<span class="tk-k">nullptr</span>) {}
+
+  <span class="tk-k">void</span> push_back(<span class="tk-k">int</span> e) {
+    <span class="tk-k">if</span> (head == <span class="tk-k">nullptr</span>) {
+      head = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+    } <span class="tk-k">else</span> {
+      lnode* n = head;
+      <span class="tk-k">for</span> (; n-&gt;next != <span class="tk-k">nullptr</span>; n = n-&gt;next);
+      n-&gt;next = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+    }
+  }
+
+  <span class="tk-k">class</span> iterator {
+    lnode* node;   <span class="tk-c">// state: the currently pointed node</span>
+  <span class="tk-k">public</span>:
+    iterator(lnode* n) : node(n) {}
+
+    <span class="tk-c">// PRE:  node != nullptr</span>
+    <span class="tk-c">// POST: iterator points to the next element</span>
+    iterator&amp; <span class="tk-k">operator</span>++() {
+      assert(node != <span class="tk-k">nullptr</span>);
+      <span class="tk-c">// todo</span>
+    }
+
+    <span class="tk-c">// POST: returns a reference to the current element</span>
+    <span class="tk-k">int</span>&amp; <span class="tk-k">operator</span>*() <span class="tk-k">const</span> {
+      <span class="tk-c">// todo</span>
+    }
+
+    <span class="tk-c">// POST: true if the iterators point to different nodes</span>
+    <span class="tk-k">bool</span> <span class="tk-k">operator</span>!=(<span class="tk-k">const</span> iterator&amp; other) <span class="tk-k">const</span> {
+      <span class="tk-c">// todo</span>
+    }
+  };
+
+  <span class="tk-c">// POST: iterator to the first element</span>
+  iterator begin() {
+    <span class="tk-c">// todo</span>
+  }
+
+  <span class="tk-c">// POST: iterator past the last element</span>
+  iterator end() {
+    <span class="tk-c">// todo</span>
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  our_list l;
+  <span class="tk-k">int</span> n, k;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i) {
+    <span class="tk-k">int</span> x;
+    <span class="tk-k">std</span>::cin &gt;&gt; x;
+    l.push_back(x);
+  }
+  <span class="tk-k">std</span>::cin &gt;&gt; k;
+  <span class="tk-k">for</span> (our_list::iterator it = l.begin(); it != l.end(); ++it)
+    *it += k;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : l)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Why does <code>operator*</code> return <code>int&amp;</code>, not <code>int</code>?</strong>
+  <details><summary>My answer</summary><div><p><code>*it += k</code> must change the value inside the node. With <code>int</code>, it would change a copy (lesson 9, "return a reference").</p></div></details></li>
+  <li><strong>Why may <code>operator*</code> be const, although it allows changing the element?</strong>
+  <details><summary>My answer</summary><div><p>const protects the <em>iterator</em>: its member node isn't changed. The node it points to is not part of the iterator. (The same as <code>int* const p</code>: the pointer is fixed, the int is not.)</p></div></details></li>
+  <li><strong>Why can end() simply be <code>iterator(nullptr)</code>?</strong>
+  <details><summary>My answer</summary><div><p>Walking with ++ from the last node gives node = last->next = nullptr. So "behind the last element" is exactly the null pointer, and comparing with it is the walk's stop test.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (after the script p. 194–195, checked by compiling)</summary><div>
+<p><em>Frame:</em> every operation is one statement on the node pointer.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Step on: the marker follows the hook to the next node and hands itself back.</p></div><div class="sp-formal">
+<pre class="code"><code>node = node-&gt;next;   <span class="tk-c">// advance</span>
+<span class="tk-k">return</span> *<span class="tk-k">this</span>;        <span class="tk-c">// behavior of pre-increment</span></code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Show the item: the value inside the node, itself, not a copy.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">return</span> node-&gt;value;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Two markers differ if they stand on different nodes.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">return</span> node != other.node;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>The first marker stands on the first node; the stop marker stands nowhere.</p></div><div class="sp-formal">
+<pre class="code"><code>iterator begin() { <span class="tk-k">return</span> iterator(head); }
+iterator end()   { <span class="tk-k">return</span> iterator(<span class="tk-k">nullptr</span>); }</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="3 1 5 6 10"><code><span class="tk-p">#include &lt;cassert&gt;</span>
+<span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">struct</span> lnode {
+  <span class="tk-k">int</span> value;
+  lnode* next;
+  lnode(<span class="tk-k">int</span> v, lnode* n) : value(v), next(n) {}
+};
+
+<span class="tk-k">class</span> our_list {
+  lnode* head;
+<span class="tk-k">public</span>:
+  our_list() : head(<span class="tk-k">nullptr</span>) {}
+
+  <span class="tk-k">void</span> push_back(<span class="tk-k">int</span> e) {
+    <span class="tk-k">if</span> (head == <span class="tk-k">nullptr</span>) {
+      head = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+    } <span class="tk-k">else</span> {
+      lnode* n = head;
+      <span class="tk-k">for</span> (; n-&gt;next != <span class="tk-k">nullptr</span>; n = n-&gt;next);
+      n-&gt;next = <span class="tk-k">new</span> lnode(e, <span class="tk-k">nullptr</span>);
+    }
+  }
+
+  <span class="tk-k">class</span> iterator {
+    lnode* node;   <span class="tk-c">// state: the currently pointed node</span>
+  <span class="tk-k">public</span>:
+    iterator(lnode* n) : node(n) {}
+
+    <span class="tk-c">// PRE:  node != nullptr</span>
+    <span class="tk-c">// POST: iterator points to the next element</span>
+    iterator&amp; <span class="tk-k">operator</span>++() {
+      assert(node != <span class="tk-k">nullptr</span>);
+      node = node-&gt;next;   <span class="tk-c">// advance</span>
+      <span class="tk-k">return</span> *<span class="tk-k">this</span>;        <span class="tk-c">// behavior of pre-increment</span>
+    }
+
+    <span class="tk-c">// POST: returns a reference to the current element</span>
+    <span class="tk-k">int</span>&amp; <span class="tk-k">operator</span>*() <span class="tk-k">const</span> {
+      <span class="tk-k">return</span> node-&gt;value;
+    }
+
+    <span class="tk-c">// POST: true if the iterators point to different nodes</span>
+    <span class="tk-k">bool</span> <span class="tk-k">operator</span>!=(<span class="tk-k">const</span> iterator&amp; other) <span class="tk-k">const</span> {
+      <span class="tk-k">return</span> node != other.node;
+    }
+  };
+
+  <span class="tk-c">// POST: iterator to the first element</span>
+  iterator begin() {
+    <span class="tk-k">return</span> iterator(head);
+  }
+
+  <span class="tk-c">// POST: iterator past the last element</span>
+  iterator end() {
+    <span class="tk-k">return</span> iterator(<span class="tk-k">nullptr</span>);
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  our_list l;
+  <span class="tk-k">int</span> n, k;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i) {
+    <span class="tk-k">int</span> x;
+    <span class="tk-k">std</span>::cin &gt;&gt; x;
+    l.push_back(x);
+  }
+  <span class="tk-k">std</span>::cin &gt;&gt; k;
+  <span class="tk-k">for</span> (our_list::iterator it = l.begin(); it != l.end(); ++it)
+    *it += k;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> x : l)
+    <span class="tk-k">std</span>::cout &lt;&lt; x &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>11 15 16</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>A normal list; the empty list (begin() == end(), nothing printed, nothing crashes); negative numbers and k; k = 0 (unchanged); a negative k on a longer list.</p></div></details></li>
+  <li><strong>The script says that our list now works with the standard algorithms, e.g. <code>std::min_element(l.begin(), l.end())</code>. Does it, exactly as written?</strong>
+  <details><summary>My answer</summary><div><p>Not quite: we tried it, and the compiler's library also needs <code>operator==</code>. Add <code>bool operator==(const iterator&amp; other) const { return node == other.node; }</code> and it compiles. The script itself says the iterator needs "operator!= or operator==" (p. 193); the algorithms want both. The range-based for only needs the three of this task.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-myiter">an iterator of your own</a> <a class="mvl" href="inf-method.html#p-opref">return a reference to allow changes</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>State: one node pointer.</strong> Everything else follows from it.</li>
+  <li><strong>++ returns <code>*this</code></strong> by reference; <strong>*</strong> returns <code>int&amp;</code>.</li>
+  <li><strong>end() is nullptr,</strong> because that is where the walk ends.</li>
+</ol>
+<p>In short: "an iterator is a pointer in a suit".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Which of the iterator's operations is used by <code>it != l.end()</code>, and which node pointers are compared?</p>
+  <details><summary>Answer</summary><div><p><code>operator!=</code>, comparing it.node with nullptr.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write a free function <code>int count(our_list&amp; l, int e)</code> using only the iterator.</p>
+  <details><summary>Answer</summary><div><p><code>int c = 0; for (our_list::iterator it = l.begin(); it != l.end(); ++it) if (*it == e) ++c; return c;</code>. It doesn't know about nodes at all: that is information hiding.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write the five bodies in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
+<div class="box"><h3 id="we-4">Worked example 4: dot or arrow?</h3>
+<p>With <code>wagon w = wagon(1); wagon* p = &amp;w;</code>, which expressions are correct for w's id?</p>
+<ol class="gq">
+  <li><code>w.id</code>, <code>p.id</code>, <code style="white-space:nowrap">p-&gt;id</code>, <code>(*p).id</code>, <code>*p.id</code>?
+  <details><summary>Answer</summary><div><p>Correct: <code>w.id</code> (an object: dot), <code style="white-space:nowrap">p-&gt;id</code> and <code>(*p).id</code> (a pointer: arrow, or dereference then dot). Wrong: <code>p.id</code> (a pointer has no members) and <code>*p.id</code> (means <code>*(p.id)</code>).</p></div></details></li>
+  <li>In the list code, why is it always <code style="white-space:nowrap">n-&gt;next</code> and never <code>n.next</code>?
+  <details><summary>Answer</summary><div><p>n is an <code>lnode*</code>. In list code you almost never hold a node itself, only pointers to nodes; so it is arrows everywhere.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-5">Worked example 5: operator[] with an assertion (script p. 190)</h3>
+<p>The script suggests, as an exercise, changing <code>operator[]</code> so that an assertion fails when i is too large.</p>
+<ol class="gq">
+  <li>Where does the assertion go?
+  <details><summary>Answer</summary><div><p>Inside the loop, before every step: <code>for (int j = 0; j &lt; i; ++j) { assert(n != nullptr); n = n-&gt;next; }</code>, and once more after the loop, <code>assert(n != nullptr);</code>, before <code>return n-&gt;value;</code>. The second one catches i == size, which the first doesn't.</p></div></details></li>
+  <li>Why is <code>l[i]</code> in a loop over all i a bad idea for a list?
+  <details><summary>Answer</summary><div><p>Each <code>l[i]</code> walks i steps from head. For n elements that is 0 + 1 + … + (n − 1), about n²/2 steps, against n for the walk or the iterator. That is the "no efficient random access" of p. 188.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Answers by StudyHub where no official solution exists; all code checked by compiling.</p>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> use the points given; exercises 1–5 make 21 points. <strong>17 of 21 and you're done</strong> with lesson 12.</p>
+</div>
+
+<h3 id="ex-1">Exercise 1 (Informatik exam summer 2019, task 2, parts (a), (b), (e), (f), old exam) · 6 points</h3>
+<p>Write the outputs (a), (b), (e) and (f). (Parts (c) and (d) use an array made with <code>new int[2]</code>; they come in lesson 14.)</p>
+<pre class="code"><code><span class="tk-k">int</span>* j = <span class="tk-k">new</span> <span class="tk-k">int</span>;
+*j = 2;
+<span class="tk-k">int</span>&amp; m = *j;
+m += 1;
+<span class="tk-k">std</span>::cout &lt;&lt; m &lt;&lt; <span class="tk-k">std</span>::endl;      <span class="tk-c">// Output (a)</span>
+<span class="tk-k">std</span>::cout &lt;&lt; *j &lt;&lt; <span class="tk-k">std</span>::endl;     <span class="tk-c">// Output (b)</span>
+
+<span class="tk-k">int</span> h = 9;
+<span class="tk-k">int</span>* o = &amp;h;
+<span class="tk-k">std</span>::cout &lt;&lt; h &lt;&lt; <span class="tk-k">std</span>::endl;      <span class="tk-c">// Output (e)</span>
+<span class="tk-k">std</span>::cout &lt;&lt; ++(*o) &lt;&lt; <span class="tk-k">std</span>::endl; <span class="tk-c">// Output (f)</span></code></pre>
+<details><summary>Solution</summary><div><p><em>Frame:</em> m is a second name for the int that j points to; o points to h. (1.5 points each, as in the exam.)</p>
+<p>(a) <strong>3</strong>: m is the new int, 2 + 1. (b) <strong>3</strong>: the same int through the pointer. (e) <strong>9</strong>. (f) <strong>10</strong>: <code>++(*o)</code> increments h through o and gives the new value. (In the exam, o was declared earlier; we declare it here so the fragment compiles on its own.)</p></div></details>
+
+<h3 id="ex-2">Exercise 2 (const and pointers, after script p. 185) · 4 points</h3>
+<p><code>int a = 1; int b = 2;</code> Which lines compile? (1 point each)</p>
+<p>(a) <code>int const* p = &amp;a; p = &amp;b;</code><br>(b) <code>int const* p = &amp;a; *p = 5;</code><br>(c) <code>int* const p = &amp;a; *p = 5;</code><br>(d) <code>int* const p = &amp;a; p = &amp;b;</code></p>
+<details><summary>Solution</summary><div><p><em>Frame:</em> read right to left; the const right next to the name protects the pointer, the const next to int protects the int.</p>
+<p>(a) <strong>Compiles</strong>: pointer to const int; the pointer itself may move. (b) <strong>Error</strong>: the int is read-only through p. (c) <strong>Compiles</strong>: constant pointer to a (changeable) int. (d) <strong>Error</strong>: the pointer can't be redirected.</p></div></details>
+
+<h3 id="ex-3">Exercise 3 (draw it: script Example 15.18) · 3 points</h3>
+<p>Run Example 15.18 (section 3) in your head for n = 3. Draw the wagons and pointers at the end. What do <code style="white-space:nowrap">first.next-&gt;next-&gt;id</code> and <code style="white-space:nowrap">last-&gt;next</code> give? How many wagons were made with <code>new</code>?</p>
+<details><summary>Solution</summary><div><p><em>Frame:</em> the invariant "last points to the last wagon".</p>
+<p>first(1) → 2 → 3 → nullptr, with last on wagon 3 (1 point). <code style="white-space:nowrap">first.next-&gt;next-&gt;id</code> is <strong>3</strong>, <code style="white-space:nowrap">last-&gt;next</code> is <strong>nullptr</strong> (1 point). <strong>Two</strong> wagons came from <code>new</code> (2 and 3); wagon 1 is the ordinary variable first (1 point).</p></div></details>
+
+<h3 id="ex-4">Exercise 4 (Informatik exam winter 2018/19, task 9, insert part, old exam) · our scoring: 4 points</h3>
+<p>Eve's contact list stores <code>contact</code> structs in a hash table: a vector <code>contacts</code> of n pointers, all nullptr at the start. A contact goes to index "phone number modulo n"; contacts with the same index form a linked list from that vector entry. Complete <code>insert</code>, which <em>prepends</em> the new contact to the list at its index.</p>
+<pre class="code"><code><span class="tk-k">struct</span> contact {
+  <span class="tk-k">std</span>::string name;      <span class="tk-c">// Contact's name</span>
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> number;   <span class="tk-c">// Contact's phone number</span>
+  contact* next;         <span class="tk-c">// Another contact (or nullptr)</span>
+};
+
+<span class="tk-k">class</span> contact_list {
+  <span class="tk-k">std</span>::vector&lt;contact*&gt; contacts;
+<span class="tk-k">public</span>:
+  <span class="tk-c">// POST: Initialises vector 'contacts' with 'size' null-pointers</span>
+  contact_list(<span class="tk-k">unsigned</span> <span class="tk-k">int</span> size)
+    : contacts(<span class="tk-k">std</span>::vector&lt;contact*&gt;(size, <span class="tk-k">nullptr</span>)) {}
+
+  <span class="tk-c">// POST: The new contact was prepended to the contact list</span>
+  <span class="tk-k">void</span> insert(<span class="tk-k">std</span>::string&amp; name, <span class="tk-k">unsigned</span> <span class="tk-k">int</span> number) {
+    ...  = number % contacts.size();
+    ...
+  }
+};</code></pre>
+<details class="hint"><summary>Hint</summary><div><p>contacts[idx] plays the role of head; prepending is push_front. contact has no constructor, so make it with braces: <code>new contact{name, number, …}</code>.</p></div></details>
+<details><summary>Solution</summary><div><p><em>Frame:</em> push_front, with <code>contacts[idx]</code> as the head pointer. (Written by StudyHub; no official solution exists; checked by compiling.)</p>
+<pre class="code"><code><span class="tk-k">unsigned</span> <span class="tk-k">int</span> idx = number % contacts.size();
+contacts[idx] = <span class="tk-k">new</span> contact{name, number, contacts[idx]};</code></pre>
+<p>The index (1 point); a new contact made with new (1 point) whose next is the old first contact at that index (1 point); the vector entry now points to it (1 point). The order is the same as in push_front: the old head is read before it is overwritten. The exam's second part, <code>remove</code>, needs <code>delete</code>: it is in lesson 13.</p></div></details>
+
+<h3 id="ex-5">Exercise 5 (true or false) · 4 points</h3>
+<ol>
+  <li>An object created with <code>new</code> inside a function is released when the function ends.</li>
+  <li><code>head = new lnode(e, head);</code> is correct also for an empty list.</li>
+  <li>A linked list offers fast access to its i-th element.</li>
+  <li><code style="white-space:nowrap">p-&gt;value</code> is the same as <code>(*p).value</code>.</li>
+</ol>
+<details><summary>Solution</summary><div><p><em>Frame:</em> sections 2 to 4, one rule each.</p>
+<p>1. <strong>False</strong>: it lives until it is deleted; only the pointer variable disappears. 2. <strong>True</strong>: the new node's next becomes nullptr. 3. <strong>False</strong>: you walk i steps from head. 4. <strong>True</strong>: that is what the arrow means.</p></div></details>
+
+<h2 id="summary">Summary: what to keep from lesson 12</h2>
+<div class="box"><ul>
+  <li><strong>Pointers</strong>: <code>T* p = &amp;x;</code> holds the address of x; <code>*p</code> is x; <code style="white-space:nowrap">p-&gt;m</code> is <code>(*p).m</code>; <code>nullptr</code> points nowhere and must never be dereferenced. Unlike a reference, a pointer can be redirected.</li>
+  <li><strong>Const</strong>: read right to left. <code>int const* p</code>: the int is read-only. <code>int* const p</code>: the pointer is fixed.</li>
+  <li><strong>new</strong>: <code>new T(...)</code> makes an object at runtime and returns its address; it lives until deleted.</li>
+  <li><strong>Linked list</strong>: nodes with value and next; the list holds head. Walk: <code>for (lnode* n = head; n != nullptr; n = n-&gt;next)</code>. push_front: <code>head = new lnode(e, head);</code>. push_back: empty case first. Sentinel: a dummy first node removes special cases.</li>
+  <li><strong>Iterator</strong>: an inner class holding a node pointer; <code>++</code> follows next, <code>*</code> gives <code style="white-space:nowrap">node-&gt;value</code> by reference, <code>!=</code> compares nodes; begin() is head, end() is nullptr.</li>
+</ul></div>
+
+<h2 id="for-wonder">For wonder: the billion-dollar mistake <span class="small">(optional, 5 min)</span></h2>
+<p>The null pointer was invented in 1965 by Tony Hoare, for the language ALGOL W, "simply because it was so easy to implement". In 2009 he called it his "billion-dollar mistake": a null pointer dereferenced by accident has crashed countless programs since, and caused untold security holes. C++ kept it, and gave it the clearer name <code>nullptr</code> in 2011 (before, people wrote 0 or NULL, as in the 2017 exam). Newer languages try to make the mistake impossible: in Rust or Swift, a value that might be missing has its own type, and the compiler refuses to let you use it before you have checked. In C++, the check is your job, which is why the list method asks before every <code style="white-space:nowrap">n-&gt;</code>: can n be nullptr here?</p>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<p>Also on the <a class="xl" href="skipped.html#informatik">skip list</a>.</p>
+<ul>
+  <li><strong>The Code Expert sheet after lecture 11.</strong> Priority: high. Practise with hidden tests; draw every list operation before you code it.</li>
+  <li><strong>push_back with a pointer to a pointer</strong> (Example 16.4, p. 192). Priority: low. The script says you may understand it but do not have to, and it is not good code.</li>
+  <li><strong>Doubly linked lists and lists with sentinels in general</strong> (p. 193). Priority: low. Named only; the sentinel idea is in coding task 3.</li>
+</ul>
+<p><strong>Next:</strong> lesson 13 (being written), memory management: delete, destructors, copying a list correctly, and the rule of three.</p>
+
+<link rel="stylesheet" href="assets/inf-ide.css?v=inf1123f">
+<script src="assets/codemirror/cm5-cpp.min.js?v=5.65.16" defer></script>
+<script src="assets/inf-run.js?v=inf1123f" defer></script>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="inf-11.html">← Lesson 11: The Golem Walks Every Shelf</a>
+<a href="informatik.html">Informatik home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

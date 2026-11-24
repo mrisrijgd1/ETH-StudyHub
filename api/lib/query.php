@@ -32,6 +32,8 @@ function sh_where(string $table, array $filters, array &$args): string {
                 $w[] = "$col IN (" . implode(',', array_fill(0, count($vals), '?')) . ')';
                 foreach ($vals as $x) { $args[] = sh_in($ty, $x); }
                 break;
+            case 'prefix': // "starts with" (the connector's docUnlocked: item_id starting with "doc:<exam>#")
+                $w[] = "$col LIKE ?"; $args[] = addcslashes((string)$v, '%_\\') . '%'; break;
             case 'is':     $w[] = "$col IS NULL"; break;
             case 'not_is': $w[] = "$col IS NOT NULL"; break;
             default: throw new ShError('Unknown filter.');
