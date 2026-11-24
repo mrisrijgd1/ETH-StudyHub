@@ -26,11 +26,64 @@
   /* ---------- local progress ---------- */
   function load() { try { return JSON.parse(localStorage.getItem('sh-progress') || '{}') || {}; } catch (e) { return {}; } }
   function store(p) { try { localStorage.setItem('sh-progress', JSON.stringify(p)); } catch (e) {} }
+  var SETUP_KEY = 'sh-study-setup-v1';
+  var SETUP_SUBJECTS = ['analysis', 'linalg', 'physics', 'informatik', 'chemie'];
+  function normalizeStudySetup(value) {
+    if (!value || typeof value !== 'object') return null;
+    var degree = ['math', 'physics', 'inter', 'other'].indexOf(value.degree) >= 0 ? value.degree : 'other';
+    var subjects = Array.isArray(value.subjects) ? value.subjects.filter(function (id, i, all) { return SETUP_SUBJECTS.indexOf(id) >= 0 && all.indexOf(id) === i; }) : [];
+    var weeklyHours = Number(value.weeklyHours);
+    if (!subjects.length || !isFinite(weeklyHours) || weeklyHours < 1 || weeklyHours > 40) return null;
+    return { version: 1, degree: degree, subjects: subjects, weeklyHours: weeklyHours, completedAt: Number(value.completedAt) || Date.now() };
+  }
+  function setupKey() { return SETUP_KEY + (user ? ':' + user.id : ':guest'); }
+  function setupSkipKey() { return SETUP_KEY + ':skipped' + (user ? ':' + user.id : ':guest'); }
+  function applyStudySetup(setup) {
+    if (!setup) return;
+    var pace = setup.weeklyHours <= 3 ? 1 : setup.weeklyHours <= 7 ? 2 : 3;
+    try {
+      localStorage.setItem(setupKey(), JSON.stringify(setup));
+      localStorage.setItem('sh-path', setup.degree === 'other' ? 'math' : setup.degree);
+      localStorage.setItem('sh-subjects', JSON.stringify(setup.subjects));
+      localStorage.setItem('sh-weekly-hours', String(setup.weeklyHours));
+      localStorage.setItem('sh-pace', String(pace));
+    } catch (e) {}
+  }
+  function readStudySetup() {
+    if (syncedStudySetup) { applyStudySetup(syncedStudySetup); return syncedStudySetup; }
+    try { return normalizeStudySetup(JSON.parse(localStorage.getItem(setupKey()) || 'null')); } catch (e) { return null; }
+  }
+  function saveStudySetup(value) {
+    var setup = normalizeStudySetup(value);
+    if (!setup) return Promise.reject(new Error(L('Choose at least one subject and your weekly study time.', 'Wähle mindestens ein Fach und deine wöchentliche Lernzeit.')));
+    applyStudySetup(setup);
+    syncedStudySetup = setup;
+    studySetupSkipped = false;
+    try { localStorage.removeItem(setupSkipKey()); } catch (e) {}
+    try { dispatchEvent(new CustomEvent('sh-study-setup', { detail: setup })); } catch (e) {}
+    if (!user || !sb) return Promise.resolve(setup);
+    var userId = user.id;
+    return sb.from('my_items').upsert({ user_id: userId, key: 'study_setup', content: setup, source: 'site', updated_at: new Date().toISOString() }).then(function (result) {
+      if (result.error) return setup;
+      publishAccount();
+      return setup;
+    }).catch(function () { return setup; });
+  }
+  function studySetupWasSkipped() {
+    if (studySetupSkipped) return true;
+    try { return localStorage.getItem(setupSkipKey()) === '1'; } catch (e) { return false; }
+  }
+  function skipStudySetup() {
+    studySetupSkipped = true;
+    try { localStorage.setItem(setupSkipKey(), '1'); } catch (e) {}
+    if (!user || !sb) return Promise.resolve();
+    return sb.from('my_items').upsert({ user_id: user.id, key: 'study_setup', content: { skipped: true, skippedAt: new Date().toISOString() }, source: 'site', updated_at: new Date().toISOString() }).then(function () {}).catch(function () {});
+  }
   var page = (location.pathname.split('/').pop() || 'index.html').replace(/\?.*$/, '');
   var isLesson = /^(lesson|phys|refresher|linalg|chemie|inf)-\d+\.html$|^serie-[apl]\d+\.html$/.test(page), isSheet = /^serie-/.test(page);
 
   /* ---------- Supabase (lazy) ---------- */
-  var sb = null, user = null, profile = null, ready;
+  var sb = null, user = null, profile = null, syncedStudySetup = null, studySetupSkipped = false, ready;
   var authPending = wantSdk();
   var accountDataPending = authPending;
   var returnKey = 'sh-login-return';
@@ -58,6 +111,8 @@
         if ((next && next.id) === (user && user.id)) return;
         user = next;
         profile = null;
+        syncedStudySetup = null;
+        studySetupSkipped = false;
         authPending = false;
         accountDataPending = !!user;
         setTimeout(function () { publishAccount(); afterAuth(); }, 0); // Supabase calls must run outside the auth callback.
@@ -169,16 +224,22 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', offlineBox); else offlineBox();
 
   function afterAuth() {
-    if (!user) { profile = null; render(); return Promise.resolve(); }
+    if (!user) { profile = null; syncedStudySetup = null; studySetupSkipped = false; render(); return Promise.resolve(); }
     var userId = user.id;
     return Promise.all([
       sb.from('profiles').select('nickname,leaderboard').eq('id', userId).maybeSingle(),
       sb.from('progress').select('page,done,rating,note,updated_at'),
-      appSync()
+      appSync(),
+      sb.from('my_items').select('content').eq('key', 'study_setup').maybeSingle()
     ]).then(function (rs) {
       if (!user || user.id !== userId) return;
       accountDataPending = false;
       profile = rs[0].data || null;
+      var setupContent = rs[3] && rs[3].data && rs[3].data.content;
+      syncedStudySetup = normalizeStudySetup(setupContent);
+      studySetupSkipped = !!(setupContent && setupContent.skipped);
+      if (studySetupSkipped) try { localStorage.setItem(setupSkipKey(), '1'); } catch (e) {}
+      readStudySetup();
       var rows = rs[1].data || [], p = load(), push = [];
       rows.forEach(function (r) {
         var t = Date.parse(r.updated_at) || 0, l = p[r.page];
@@ -276,7 +337,7 @@
     panel.innerHTML = '<h2 class="shp-h">' + L('Your progress', 'Dein Fortschritt') + '</h2>' +
       '<label class="shp-done"><input type="checkbox"> ' + (isSheet ? L('I worked through this sheet', 'Ich habe dieses Blatt durchgearbeitet') : L('I finished this lesson', 'Ich habe diese Lektion abgeschlossen')) + '</label>' +
       '<div class="shp-rate"><span>' + L('How hard was it? (1 easy, 5 very hard)', 'Wie schwer war es? (1 leicht, 5 sehr schwer)') + '</span><div class="shp-stars">' + stars + '</div></div>' +
-      '<label class="shp-note"><span>' + L('Your notes (only you see them)', 'Deine Notizen (nur du siehst sie)') + '</span><textarea rows="3" maxlength="5000" placeholder="' +
+      '<label class="shp-note"><span>' + L('Your personal notes', 'Deine persönlichen Notizen') + '</span><textarea rows="3" maxlength="5000" placeholder="' +
       L('What to repeat, questions, page numbers…', 'Was du wiederholen willst, Fragen, Seitenzahlen …') + '"></textarea></label>' +
       '<p class="shp-status"></p>';
     var foot = main.querySelector('nav.site.foot');
@@ -317,15 +378,15 @@
   function accountPage() {
     var box = document.getElementById('sh-account'); if (!box) return;
     if (!user) {
-      box.innerHTML = '<p>' + L('You are using StudyHub as a guest. Everything works, and your progress is saved in this browser.', 'Du nutzt StudyHub als Gast. Alles funktioniert, und dein Fortschritt wird in diesem Browser gespeichert.') + '</p>' +
+      box.innerHTML = '<p>' + L('You are using StudyHub as a guest. Your progress is saved in this browser.', 'Du nutzt StudyHub als Gast. Dein Fortschritt wird in diesem Browser gespeichert.') + '</p>' +
         '<p><button type="button" class="start-btn sh-google">' + L('Sign in with Google', 'Mit Google anmelden') + '</button></p>' +
-        '<p>' + L('Optional. Signing in only adds syncing across your devices. Nobody sees your name or email.', 'Optional. Die Anmeldung fügt nur die Synchronisation über deine Geräte hinzu. Niemand sieht deinen Namen oder deine E-Mail.') + '</p><p class="sh-msg" role="status"></p>';
+        '<p>' + L('Signing in stores account and progress information so StudyHub can sync it across your devices. See the privacy information below.', 'Bei der Anmeldung werden Konto- und Fortschrittsdaten gespeichert, damit StudyHub sie zwischen deinen Geräten synchronisieren kann. Details stehen unten im Datenschutzabschnitt.') + '</p><p class="sh-msg" role="status"></p>';
       box.querySelector('.sh-google').onclick = function () {
         signIn().catch(function () { box.querySelector('.sh-msg').textContent = L('Could not log in. Please try again.', 'Anmeldung fehlgeschlagen. Bitte versuche es erneut.'); });
       };
     } else {
       var nick = profile && profile.nickname || '', lb = !!(profile && profile.leaderboard);
-      box.innerHTML = '<p>' + L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email || '') + '</strong> ' + L('(only you see this)', '(nur du siehst das)') + '.</p>' +
+      box.innerHTML = '<p>' + L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email || '') + '</strong>.</p>' +
         '<label class="sh-field"><span>' + L('Nickname (shown instead of your name, e.g. in the forum later)', 'Spitzname (wird statt deines Namens gezeigt, z. B. später im Forum)') + '</span>' +
         '<input type="text" maxlength="30" value="' + esc(nick) + '" placeholder="' + L('e.g. quiet-fox', 'z. B. stiller-fuchs') + '"></label>' +
         '<label class="sh-field sh-check"><input type="checkbox"' + (lb ? ' checked' : '') + '> ' + L('Show my nickname on the leaderboard (consistency, not speed). Off by default.', 'Meinen Spitznamen in der Bestenliste zeigen (Regelmässigkeit, nicht Tempo). Standardmässig aus.') + '</label>' +
@@ -576,6 +637,7 @@
   function publishAccount() {
     window.SH = { sb: sb, user: user, profile: profile, authPending: authPending, accountDataPending: accountDataPending, signIn: signIn, sdk: sdk, L: L, esc: esc,
       updateProfile: updateProfile, signOut: function () { return sb.auth.signOut(); },
+      studySetup: { read: readStudySetup, save: saveStudySetup, skipped: studySetupWasSkipped, skip: skipStudySetup },
       resume: { read: readResume, write: writeResume }, courseProgress: load, saveCourseProgress: function(entries) {
       var p=load(), changed=[]; Object.keys(entries).forEach(function(k){if(!/^chemie-\d+\.html$/.test(k))return;var v=entries[k];if(!p[k] || !!p[k].done!==!!v.done){p[k]=Object.assign(p[k]||{},v,{t:Date.now()});changed.push(k)}});store(p);
       if(sb&&user&&changed.length)sb.from('progress').upsert(changed.map(row)).then(function(r){if(r.error)status(L('Could not sync, saved in this browser.','Sync fehlgeschlagen, im Browser gespeichert.'))});
@@ -603,4 +665,4 @@
 
 /* Compatibility for pages that are not generated by the build (Chemie app, course apps in subfolders): if a page has not
    linked the StudyHub design in its <head>, add it here. Generated pages link it in <head> themselves, so this does nothing there. */
-(function(){var s=document.currentScript;if(!s||document.querySelector('link[href*="assets/studyhub.css"],link[href*="/studyhub.css"]'))return;var base=new URL('.',s.src);['learning-app.css','appearance.css','studyhub.css'].forEach(function(f){var l=document.createElement('link');l.rel='stylesheet';l.href=new URL(f+'?v=pri1123',base);document.head.appendChild(l)});if(!document.querySelector('script[src*="studyhub.js"]')){var j=document.createElement('script');j.src=new URL('studyhub.js?v=fc1123',base);document.head.appendChild(j)}})();
+(function(){var s=document.currentScript;if(!s||document.querySelector('link[href*="assets/studyhub.css"],link[href*="/studyhub.css"]'))return;var base=new URL('.',s.src);['learning-app.css','appearance.css','studyhub.css'].forEach(function(f){var l=document.createElement('link');l.rel='stylesheet';l.href=new URL(f+'?v=onb1124',base);document.head.appendChild(l)});if(!document.querySelector('script[src*="studyhub.js"]')){var j=document.createElement('script');j.src=new URL('studyhub.js?v=onb1124b',base);document.head.appendChild(j)}})();
