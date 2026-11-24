@@ -382,6 +382,10 @@
   switchLanguage.lang = de ? 'en' : 'de';
   choices.append(switchLanguage);
   panel.append(choices);
+  const guestOptions = document.createElement('div'); guestOptions.className = 'study-guest-options';
+  const guestSignIn = link(L('Mit ETH-Konto anmelden', 'Sign in with your ETH account'), prefix + 'account.html', 'study-login');
+  const guestDesignHint = document.createElement('p'); guestDesignHint.textContent = L('Melde dich mit deinem ETH-Konto an, um das Design zu ändern.', 'Sign in with your ETH account to change the design.');
+  guestOptions.append(guestSignIn, guestDesignHint); panel.append(guestOptions);
   // The Design chooser is always open (no dropdown inside the panel): two theme tiles, then one tile per palette.
   const chooser = document.createElement('section'); chooser.className = 'design-chooser'; chooser.setAttribute('aria-label', 'Design');
   const themeTitle = document.createElement('p'); themeTitle.className = 'design-group'; themeTitle.textContent = L('Hell oder dunkel', 'Light or dark');
@@ -765,16 +769,19 @@
     const signedIn = !!account?.user;
     design.hidden = false;
     profileSummary.hidden = !signedIn;
-    choices.hidden = !signedIn;
+    choices.hidden = false;
+    guestOptions.hidden = signedIn;
+    appearanceDetails.hidden = !signedIn;
     profileActions.hidden = !signedIn;
     appearanceDetails.classList.toggle('study-profile-appearance-guest', !signedIn);
-    appearanceDetails.open = !signedIn;
-    heading.textContent = signedIn ? L('Profil', 'Profile') : 'Design';
+    appearanceDetails.open = false;
+    heading.textContent = signedIn ? L('Profil', 'Profile') : L('Anmelden', 'Sign in');
     toggle.classList.toggle('study-profile-toggle', signedIn);
-    toggle.setAttribute('aria-label', signedIn ? L('Nutzerprofil öffnen', 'Open user profile') : 'Design');
-    toggle.innerHTML = signedIn ? '<span class="study-profile-icon" aria-hidden="true"></span>' : ICONS.palette + '<span class="study-design-word">Design</span>';
-    login.hidden = signedIn;
-    languageLink.hidden = signedIn;
+    toggle.style.cssText = signedIn ? '' : 'min-width:88px!important;width:auto!important;padding-inline:12px!important';
+    toggle.setAttribute('aria-label', signedIn ? L('Nutzerprofil öffnen', 'Open user profile') : L('Anmelden und Sprache', 'Sign in and language'));
+    toggle.innerHTML = signedIn ? '<span class="study-profile-icon" aria-hidden="true"></span>' : '<span>' + L('Anmelden', 'Sign in') + '</span>';
+    login.hidden = true;
+    languageLink.hidden = true;
     if (signedIn) profileSummary.textContent = account?.profile?.nickname || account?.user?.email || L('Angemeldet', 'Signed in');
 
     if (signedIn && new URLSearchParams(location.search).get('settings') === '1') {
