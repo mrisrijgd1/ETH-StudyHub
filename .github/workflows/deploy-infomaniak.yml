@@ -54,7 +54,9 @@ jobs:
       - name: Check the login works
         run: |
           ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
-            "test -d '$DEPLOY_PATH' && echo 'Login OK, site folder found.'"
+            "echo 'Login OK.'; echo \"Home folder: \$(pwd)\"; ls -la; \
+             if test -d '$DEPLOY_PATH'; then echo 'Site folder found.'; \
+             else echo 'Site folder NOT found at $DEPLOY_PATH'; exit 1; fi"
 
       - name: Copy the site
         env:
