@@ -1,4 +1,4 @@
-# Lernkarten (Analysis I, Lineare Algebra I): how the app depends on StudyHub
+# Lernkarten (Analysis I, Lineare Algebra I, Physik I): how the app depends on StudyHub
 
 The app lives in `Analysis_Lerplatform/` of this repo. The hub's workflow `sync-flashcards.yml` copies it to
 `FlashcardsAnalysis_designspace/Analysis_Lerplatform/` in `mrisrijgd1/ETH-StudyHub`, where it is served.
@@ -16,6 +16,7 @@ fc/app.js, app.css    the engine shared by all subjects (+ start-page and thermo
 fc/config_<id>.js     everything meant to be tuned per subject (chapters, icons, thresholds, greetings, …)
 analysis/             Analysis I: index.html, data_kapitel1–9.js, classic.html
 linalg/               Lineare Algebra I: index.html, data_kapitel0–10.js
+physik/               Physik I: index.html, data_kapitel1–14.js
 ```
 
 The hub's "Lernkarten" button (next to the subjects in the shared header) should link to `index.html` of this folder.
@@ -29,7 +30,7 @@ Progress is kept: localStorage belongs to the origin, not the path.
 | `index.html` | Start page shell: `fc/app.css`, `fc/subjects.js`, `fc/flame.js`, `fc/hub.js`, `../../assets/account.js` |
 | `<subject>/index.html` | Subject shell: MathJax 3.2.2 `tex-svg-full`, the deck files, `../fc/subjects.js`, `../fc/config_<id>.js`, `../fc/app.js`, `../../../assets/account.js` |
 | `fc/subjects.js` | List of subjects. A new subject = an entry here + its folder + `fc/config_<id>.js` |
-| `fc/config_analysis.js`, `fc/config_linalg.js` | **Everything meant to be tuned** per subject: chapters and icons, mastery/weak/streak thresholds, kaomojis, greeting pool, lesson-card sources |
+| `fc/config_analysis.js`, `fc/config_linalg.js`, `fc/config_physik.js` | **Everything meant to be tuned** per subject: chapters and icons, mastery/weak/streak thresholds, kaomojis, greeting pool, lesson-card sources |
 | `fc/app.js` | Router, storage, mastery rules, overview page, chapter pages, Proof practice, Weak cards, the card environment; writes a small `summary` per user for the start page |
 | `fc/app.css` | All styles. The only colour definitions are in the theme block at the top (`.fc-app { --fc-* }`); the flame colour is set per subject |
 | `<subject>/data_kapitel<N>.js` | Script-chapter decks (`window.FLASHCARDS_KAPITEL_<N>`). Card text is never changed by the app |
@@ -105,7 +106,8 @@ Export/import as JSON on the overview page. No server sync yet: that needs a Sup
 - Order (session toolbar, "Reihenfolge ▾"): Chronologisch (script order) or Gemischt; weak and rescue decks also offer
   "Schwächste zuerst". Chapter/proof decks remember the choice (`prefs.shuffle`). The data files are not always in
   script order, so `chronoKeys()` sorts by section, then the script's item number in the title/meta (Definition 3.12 → 12),
-  then file order.
+  then file order. With `chronoFileOrder: true` (Physik) it sorts by section, then file order only: those decks are
+  written in script order, and their meta lines cite figures and tables (Abb. 10.28) that are not item numbers.
 
 ## Streak flame (`fc/flame.js`)
 
@@ -173,3 +175,20 @@ keys and falls back to the Analysis values, so the Analysis page behaves as befo
   base-change matrices $B_V$, $\tilde A_\varphi = B_W A_\varphi B_V^{-1}$, $A^t$, $\dim(V)$, $\mathrm{Ker}(\varphi)$, $\mathrm{Bild}(\varphi)$.
 - New features work on both pages: the match (`restoreSize`, `restoreCooldownDays`; defaults 10 / 7 if missing) and the card
   comments (`comments.topicPrefix` = `fc-linalg-`, so Lineare Algebra comments get their own forum topics `fc-linalg-k<N>`).
+
+## Physik I (`physik/`)
+
+A third subject on the same engine, after the script Physik I (Ensslin, HS 2025). Config: `fc/config_physik.js`
+(storage key `studyhub-physik-flashcards-v1`, comments `fc-physik-`, flame element copper in `fc/subjects.js`).
+
+- Courses: `P1` (chapters 1–10) and `P1A` (appendices 11–12 and the bonus sections 13–14 of the script).
+- Extra card fields, shown by `fc/app.js` for every subject when present: `derivation` (an `<ol class="fc-steps">`;
+  every step is math plus an `<em>` with the reason) and `pitfalls` (a list, block "Typische Fehler – darauf achten").
+- Extra card types: `gesetz` (Law), `herleitung` (Derivation), `konzept` (Concept), `experiment` (Experiment), with tag
+  colours in `app.css`; `definition` and `beispiel` as before. `leftBack: true` aligns answers left.
+- `chronoFileOrder: true`: the decks are written in script order (see "Order" above).
+- Every `meta` line cites section, equation, figure and page numbers of the script. Cards that go beyond the script
+  (typical exam problems, strategy cards, outlooks on Physik II) start their `meta` with "Ergänzung" and sit at the end
+  of their section.
+- In math, write `\lt`/`\gt` instead of `<`/`>`: a raw `<` followed by a letter is read as an HTML tag.
+
