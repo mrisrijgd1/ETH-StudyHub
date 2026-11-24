@@ -11,6 +11,7 @@ renaming it means changing `sync-flashcards.yml` in the hub.)
 index.html            Lernkarten start page: one tile per subject (flame, thermometer, message) → the subject
 fc/subjects.js        the subjects: id, title, folder, storage key, flame colour (element), daily goal
 fc/hub.js             start page logic (reads each subject's storage; same user and streak rules as fc/app.js)
+fc/flame.js           the flame creature: drawing, moods, hover/poke/idle-thought behaviour (subjects and start page)
 fc/app.js, app.css    the engine shared by all subjects (+ start-page and thermometer styles at the end of app.css)
 fc/config_<id>.js     everything meant to be tuned per subject (chapters, icons, thresholds, greetings, …)
 analysis/             Analysis I: index.html, data_kapitel1–9.js, classic.html
@@ -25,7 +26,7 @@ Progress is kept: localStorage belongs to the origin, not the path.
 
 | File | What it is |
 |---|---|
-| `index.html` | Start page shell: `fc/app.css`, `fc/subjects.js`, `fc/hub.js`, `../../assets/account.js` |
+| `index.html` | Start page shell: `fc/app.css`, `fc/subjects.js`, `fc/flame.js`, `fc/hub.js`, `../../assets/account.js` |
 | `<subject>/index.html` | Subject shell: MathJax 3.2.2 `tex-svg-full`, the deck files, `../fc/subjects.js`, `../fc/config_<id>.js`, `../fc/app.js`, `../../../assets/account.js` |
 | `fc/subjects.js` | List of subjects. A new subject = an entry here + its folder + `fc/config_<id>.js` |
 | `fc/config_analysis.js`, `fc/config_linalg.js` | **Everything meant to be tuned** per subject: chapters and icons, mastery/weak/streak thresholds, kaomojis, greeting pool, lesson-card sources |
@@ -36,9 +37,9 @@ Progress is kept: localStorage belongs to the origin, not the path.
 
 ## Start page (`index.html`, `fc/hub.js`)
 
-- One tile per subject, at the top: the flame creature (same drawing as in the subjects) in the subject's flame colour,
+- One tile per subject, at the top: the flame creature (`fc/flame.js`, the same as in the subjects) in the subject's flame colour,
   streak, and a horizontal thermometer whose liquid has the same colour.
-- Flame colours are flame-test colours of elements: Analysis I = copper (green), Lineare Algebra I = strontium (red).
+- Flame colours are flame-test colours of elements: Analysis I = calcium (orange-red), Lineare Algebra I = potassium (lilac).
   Free colours for further subjects are listed in `fc/subjects.js`.
 - Thermometer = cards rated today / daily goal. Goal = `min(dailyGoal, cards not yet mastered + today's ratings)`; the number of
   cards not yet mastered comes from the `summary` that `fc/app.js` stores (`users[<id>].summary`) on every start and rating.
@@ -106,16 +107,44 @@ Export/import as JSON on the overview page. No server sync yet: that needs a Sup
   script order, so `chronoKeys()` sorts by section, then the script's item number in the title/meta (Definition 3.12 → 12),
   then file order.
 
-## Streak flame
+## Streak flame (`fc/flame.js`)
 
-An original little fire creature (inline SVG in `flameSvg()`): three layers of tongues (red → orange → yellow) plus a
-white-hot core, each tongue swaying on its own clock, an `feTurbulence` displacement for the flicker, embers, and a face.
-States (classes): `happy` (done today), calm (not yet), `risk` (worried brows, sweat drop, dimmer), `none` (asleep, grey, "z"),
-`out` (grey, smoke), `lvl1–3` (grows), `celebrate` (sparks). The fire colours are CSS variables on `.fc-flame`.
-`prefers-reduced-motion` stops every animation.
+An original little fire spirit (inline SVG, shared by the subject pages and the start page), drawn as a natural flame in
+three nested layers (outer, middle, inner, plus a blurred bright core behind the face) and five licking tongues. An animated
+`feTurbulence` displacement with a light blur gives every layer an organic, flickering edge instead of a drawn outline; small
+sparks keep coming loose and drift upwards. The face is hand-drawn and organic: irregular off-white eyes with a plain dark
+pupil (no highlights), no cheeks, a thin wavy mouth that opens into a glowing, irregular mouth; mouth edges are a dark tone of
+the flame colour (`--mouth-ink`), not black.
+
+The flame burns on a small **woodpile** that shows the learning state. The fire is drawn in front of it and fades out towards
+the bottom (`mask`), so the logs shimmer through the flame like in a real fire; the pile stays put while the flame moves.
+- Size: 2–6 logs from the share of mastered cards (`pile.size`, subject page: `mastered / total`; start page: from the summary).
+- Burn degree from today's cards / daily goal (`pile.burn`): `burn0` fresh wood with bark, `burn1` lightly charred,
+  `burn2` charred with glowing cracks and some ash, `burn3` (goal reached) thinner, glowing embers. Asleep: cold, grey wood.
+- The same burn level (`b0–b3` on `.fc-flame`) makes the flame itself grow (`--sb` .9 → 1.16), throw more sparks
+  (2 → 8) and move faster and livelier (tongues, layers, face; a little bounce at `b3`).
+
+`FCFlame.svg(cls, id, pile)` draws it (gradient ids get the suffix `id`, so several
+creatures can share a page); `FCFlame.box()` adds the thought bubble around it; `FCFlame.attach(root, opts)` wires the behaviour.
+
+Moods (classes on `.fc-flame`, chosen by `streakPanel()` / the start-page tile):
+- calm (`lvl0–3`, grows with the streak), `happy` (done today: grin, little hops, waves now and then),
+- `party` (today's goal reached, `dailyGoal` of `fc/subjects.js`: dances, eyes squeezed with joy, big grin, sparks flying),
+- `risk` (late and nothing yet: smaller, dimmer, worried brows, sweat drop, hugging itself),
+- `none` (no streak: grey, asleep, "z"), `out` (legacy), `celebrate` (streak milestone: three bursts of sparks).
+
+Behaviour (classes on `.fc-flamebox`):
+- hover: a surprised "oh!" and a little jump, then it grins, leans towards the pointer (`--lean`) and its eyes follow it
+  (`--px`, `--py`); the sleeper half-opens its eyes.
+- poke (click / tap / Enter, only on the subject pages, not inside the start-page links): squish, joyful eyes, sparks and a
+  short line ("Hihi, das kitzelt!").
+- idle: after 9 s without input (then every 16 s) one creature on the page thinks: a thought bubble with a concept or short
+  formula of its subject (`thoughts` in `fc/subjects.js`, plain Unicode, in the script's notation). Asleep, it dreams ("z… ").
+- `prefers-reduced-motion`: no animation, leaning or eye-following; bubbles only fade.
+
 Per subject the creature takes its element colour: `palette` in `fc/subjects.js` becomes `--sf-*` on `.fc-app[data-flame]`
-(or on a start-page tile), and the rules at the end of `app.css` map it onto the ten gradient stops; risk dims it towards grey,
-asleep/out stay grey. The start page copies `flameSvg()` into `fc/hub.js` with per-tile gradient ids (keep both in sync).
+(or on a start-page tile), and the rules at the end of `app.css` map it onto the gradient stops; risk dims it towards grey,
+asleep stays grey.
 
 ## Card comments → forum
 

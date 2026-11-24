@@ -103,75 +103,157 @@ body.sh-unified .fc-nav .fc-lang { display: none; }
 .fc-streak strong { font-size: 34px; line-height: 1; display: block; }
 .fc-streak .fc-streak-sub { font-size: 14px; color: var(--fc-muted); margin-top: 6px; }
 .fc-streak .fc-risk { margin-top: 10px; font-size: 14px; font-weight: 600; color: var(--fc-ink); }
-/* fire palette (fixed hues, like the rating colours); the states below recolour it */
-.fc-flame { --fg: #ffb347; --fo: #e8361a; --fo2: #f4511e; --fo3: #d4330f; --fm: #ff8f1f; --fm2: #ff7a12;
-  --fi: #ffcf3a; --fi2: #ffb21f; --fc0: #fffdf0; --fc1: #fff0a8; --s: 1; }
-.fc-flame .fire { filter: url(#fcf-wobble); }
-.fc-flame .creature { transform-box: view-box; transform-origin: 60px 133px; scale: var(--s); transition: scale .6s ease; animation: fcf-breathe 3.2s ease-in-out infinite; }
-.fc-flame .tg { transform-box: fill-box; transform-origin: 50% 100%; }
-.fc-flame .t-c { animation: fcf-sway 1.9s ease-in-out infinite; }
-.fc-flame .t-l { animation: fcf-sway 1.5s ease-in-out -.7s infinite reverse; }
-.fc-flame .t-r { animation: fcf-sway 1.7s ease-in-out -.3s infinite; }
-.fc-flame .t-ll { animation: fcf-lick 1.3s ease-in-out -.2s infinite; }
-.fc-flame .t-rr { animation: fcf-lick 1.45s ease-in-out -.9s infinite; }
-.fc-flame .body-t { animation: fcf-breathe 2.4s ease-in-out infinite; }
-.fc-flame .ly2 .tg { animation-duration: 1.35s; } .fc-flame .ly3 .tg { animation-duration: 1.05s; }
+/* ---- The flame creature (fc/flame.js). Fixed fire palette by default; subjects recolour it (see [data-flame] below) ---- */
+.fc-flamebox { position: relative; display: inline-flex; flex: none; --lean: 0deg; --px: 0px; --py: 0px; -webkit-tap-highlight-color: transparent; }
+.fc-flamebox[data-poke] { cursor: pointer; border-radius: 50%; }
+.fc-flamebox[data-poke]:focus-visible { outline: 3px solid var(--fc-accent, #2f6f4f); outline-offset: 2px; }
+.fc-flame { --fg: #ffb347; --fo: #e8361a; --fo2: #f4511e; --fo3: #c22d0c; --fm: #ff8f1f; --fm2: #ff7a12;
+  --fi: #ffcf3a; --fi2: #ffb21f; --fc0: #fffdf0; --fc1: #fff0a8; --s: 1; --ink-face: #22100a;
+  --mouth-ink: color-mix(in srgb, var(--fo3) 62%, #1a0703); overflow: visible; }
+.fc-flame .creature { transform-box: view-box; transform-origin: 60px 138px; scale: calc(var(--s) * var(--sb, 1)); rotate: var(--lean);
+  transition: scale .6s ease, rotate .25s ease-out; animation: fcf-breathe 3.2s ease-in-out infinite; }
+/* the fire: soft layers and tongues that lick upwards, each on its own clock */
+.fc-flame .ly, .fc-flame .tongue { transform-box: fill-box; transform-origin: 50% 100%; }
+.fc-flame .ly1 { animation: fcf-flick 1.7s ease-in-out infinite; }
+.fc-flame .ly2 { animation: fcf-flick 1.2s ease-in-out -.5s infinite reverse; }
+.fc-flame .ly3 { animation: fcf-flick .95s ease-in-out -.3s infinite; }
+.fc-flame .tongue { animation: fcf-lick 1.4s ease-in-out infinite; }
+.fc-flame .t1 { animation-duration: 1.1s; animation-delay: -.4s; } .fc-flame .t2 { animation-duration: 1.6s; animation-delay: -.9s; }
+.fc-flame .t3 { animation-duration: 1.25s; animation-delay: -.2s; } .fc-flame .t4 { animation-duration: 1.5s; animation-delay: -.7s; }
+.fc-flame .core { animation: fcf-core 2.1s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 70%; }
 .fc-flame .glow { animation: fcf-glow 2.3s ease-in-out infinite; }
+/* the woodpile under the flame: size = share of mastered cards, burn0–3 = today's progress (fresh → embers); cold when asleep */
+.fc-flame .pile { --wood: #9b6639; --wood-edge: #6a4223; --barkc: #5a3519; --grainc: #ddb07c; --ringc: #a8713f; --crackc: var(--fm); --crack-o: 0; --bed-o: .35; }
+.fc-flame .wood { fill: var(--wood); stroke: var(--wood-edge); stroke-width: .9; }
+.fc-flame .bark { fill: none; stroke: var(--barkc); stroke-width: 1; stroke-linecap: round; opacity: .75; }
+.fc-flame .grain { fill: var(--grainc); stroke: var(--wood-edge); stroke-width: .8; } .fc-flame .ring { fill: none; stroke: var(--ringc); stroke-width: .7; }
+.fc-flame .crack { fill: none; stroke: var(--crackc); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; opacity: var(--crack-o); }
+.fc-flame .emberbed { fill: var(--fi); opacity: var(--bed-o); animation: fcf-glow 1.7s ease-in-out infinite; }
+.fc-flame .ash { fill: #8d8580; opacity: 0; }
+.fc-flame .burn1 { --wood: #7a4a29; --wood-edge: #4a2c17; --barkc: #2e1b0e; --grainc: #b9834f; --ringc: #6e4424; --crack-o: .45; --bed-o: .5; }
+.fc-flame .burn2 { --wood: #3e271a; --wood-edge: #24160e; --barkc: #160d08; --grainc: #6b4a33; --ringc: #3e271a; --crack-o: .9; --bed-o: .7; }
+.fc-flame .burn2 .ash { opacity: .35; }
+.fc-flame .burn3 { --wood: #2b1b12; --wood-edge: #1a0f09; --barkc: #120a06; --grainc: var(--fm); --ringc: var(--fi); --crackc: var(--fi); --crack-o: 1; --bed-o: .95; }
+.fc-flame .burn3 .ash { opacity: .5; }
+.fc-flame .burn2 .crack, .fc-flame .burn3 .crack, .fc-flame .burn3 .grain { animation: fcf-ember-glow 1.6s ease-in-out infinite; }
+.fc-flame .burn3 .wlog:nth-of-type(2n) .crack { animation-delay: -.8s; }
+/* asleep: cold, grey wood, no glow */
+.fc-flame.none .pile, .fc-flame.out .pile { --wood: #7d756f; --wood-edge: #5c5550; --barkc: #4d4743; --grainc: #a39b94; --ringc: #7d756f; --crack-o: 0; --bed-o: 0; }
+.fc-flame.none .emberbed, .fc-flame.out .emberbed { animation: none; }
+/* the face: hand-drawn, no highlights */
 .fc-flame .face { animation: fcf-bob 3.2s ease-in-out infinite; }
-.fc-flame .eye { transform-box: fill-box; transform-origin: 50% 50%; animation: fcf-blink 5.5s infinite; }
+.fc-flame .eye { transform-box: fill-box; transform-origin: 50% 50%; animation: fcf-blink 5.5s infinite; transition: scale .2s; }
 .fc-flame .eye + .eye { animation-delay: .04s; }
-.fc-flame .pupil { animation: fcf-look 8s ease-in-out infinite; }
-.fc-flame .white { fill: #ffffff; }
-.fc-flame .pupil ellipse { fill: #2b1206; }
-.fc-flame .hl { fill: #ffffff; }
-.fc-flame .cheek { fill: #ff4f3a; opacity: .35; }
-.fc-flame .lids path, .fc-flame .brows path, .fc-flame .mouth { stroke: #5a1d06; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-.fc-flame .m-happy { fill: #7a230a; stroke-width: 1.4; }
+.fc-flame .pupil { animation: fcf-look 9s ease-in-out infinite; translate: var(--px) var(--py); transition: translate .12s ease-out; }
+.fc-flame .white { fill: #fbf2e2; stroke: var(--ink-face); stroke-width: 1.3; stroke-linejoin: round; }
+.fc-flame .iris { fill: var(--ink-face); }
+.fc-flame .mouth { fill: var(--mouth-ink); }   /* mouths: a dark tone of the flame colour, not black */
+.fc-flame .mouth-in { stroke: var(--mouth-ink); stroke-width: 1.5; stroke-linejoin: round; }
+.fc-flame .m-sleep { stroke: var(--mouth-ink) !important; }
+.fc-flame .lids path, .fc-flame .joy path, .fc-flame .brows path, .fc-flame .m-sleep { stroke: var(--ink-face); stroke-width: 1.7; stroke-linecap: round; fill: none; }
 .fc-flame .drop { fill: #8fd3ff; stroke: #4aa8e0; stroke-width: .8; }
-.fc-flame .lids, .fc-flame .brows, .fc-flame .m-happy, .fc-flame .m-worry, .fc-flame .m-sleep, .fc-flame .drop, .fc-flame .zz, .fc-flame .smoke { display: none; }
-.fc-flame .embers circle { fill: #ffd27a; opacity: 0; transform-box: fill-box; animation: fcf-ember 2.8s ease-out infinite; }
+.fc-flame .lids, .fc-flame .joy, .fc-flame .brows, .fc-flame .m-grin, .fc-flame .m-oh, .fc-flame .m-worry, .fc-flame .m-sleep, .fc-flame .drop, .fc-flame .zz, .fc-flame .smoke { display: none; }
+.fc-flame .embers circle { fill: var(--fi); opacity: 0; transform-box: fill-box; animation: fcf-ember 2.6s ease-out infinite; }
 .fc-flame .embers circle:nth-child(1) { --dx: -8px; } .fc-flame .embers circle:nth-child(2) { --dx: 7px; animation-delay: .9s; }
 .fc-flame .embers circle:nth-child(3) { --dx: -3px; animation-delay: 1.7s; } .fc-flame .embers circle:nth-child(4) { --dx: 9px; animation-delay: 2.3s; }
-.fc-flame .embers circle:nth-child(5) { --dx: -10px; animation-delay: 1.3s; }
-.fc-flame .zz text { fill: var(--fc-muted); font: 700 11px system-ui, sans-serif; animation: fcf-zz 3s ease-in-out infinite; }
-.fc-flame .zz text + text { font-size: 8px; animation-delay: 1.5s; }
+.fc-flame .embers circle:nth-child(5) { --dx: 12px; animation-delay: 1.3s; animation-duration: 3.1s; }
+.fc-flame .embers circle:nth-child(6) { --dx: -5px; animation-delay: .4s; animation-duration: 2.2s; } .fc-flame .embers circle:nth-child(7) { --dx: 6px; animation-delay: 1.95s; animation-duration: 2.9s; }
+.fc-flame .embers circle:nth-child(8) { --dx: -12px; animation-delay: 2.6s; animation-duration: 3.3s; }
+.fc-flame .zz text { fill: var(--fc-muted); font: 700 12px system-ui, sans-serif; animation: fcf-zz 3s ease-in-out infinite; }
+.fc-flame .zz text + text { font-size: 9px; animation-delay: 1.5s; }
 .fc-flame .smoke path { fill: none; stroke: color-mix(in srgb, var(--fc-muted) 60%, var(--fc-surface)); stroke-width: 2.4; stroke-linecap: round; opacity: 0; animation: fcf-smoke 3.4s ease-out infinite; }
 .fc-flame .smoke path + path { animation-delay: 1.6s; }
-.fc-flame .sparks circle { fill: #ffd23f; opacity: 0; }
+/* sparks fly out in a fan: directions per spark */
+.fc-flame .sp { fill: var(--fi); opacity: 0; transform-box: fill-box; }
+.fc-flame .sp0 { --sx: -38px; --sy: -30px; } .fc-flame .sp1 { --sx: 36px; --sy: -34px; } .fc-flame .sp2 { --sx: -18px; --sy: -56px; }
+.fc-flame .sp3 { --sx: 20px; --sy: -58px; } .fc-flame .sp4 { --sx: -46px; --sy: -6px; } .fc-flame .sp5 { --sx: 46px; --sy: -10px; }
+.fc-flame .sp6 { --sx: 2px; --sy: -66px; } .fc-flame .sp7 { --sx: -30px; --sy: -46px; } .fc-flame .sp8 { --sx: 32px; --sy: -48px; }
+/* burn level b0–b3 (today's cards / daily goal, like the woodpile): the flame grows, throws more sparks and gets livelier */
+.fc-flame.b0 { --sb: .9; } .fc-flame.b1 { --sb: 1; } .fc-flame.b2 { --sb: 1.08; } .fc-flame.b3 { --sb: 1.16; }
+.fc-flame.b0 .embers circle:nth-child(n+3), .fc-flame.b1 .embers circle:nth-child(n+5), .fc-flame.b2 .embers circle:nth-child(n+7) { display: none; }
+.fc-flame.b0 .tongue { animation-duration: 1.9s; } .fc-flame.b0 .face { animation-duration: 4.2s; }
+.fc-flame.b2 .tongue { animation-duration: 1s; } .fc-flame.b2 .ly1, .fc-flame.b2 .ly2 { animation-duration: .95s; } .fc-flame.b2 .embers circle { animation-duration: 2s; }
+.fc-flame.b3 .tongue { animation-duration: .72s; } .fc-flame.b3 .ly1, .fc-flame.b3 .ly2, .fc-flame.b3 .ly3 { animation-duration: .7s; }
+.fc-flame.b3 .embers circle { animation-duration: 1.5s; } .fc-flame.b3 .glow { animation-duration: 1.2s; } .fc-flame.b3 .face { animation-duration: 1.6s; }
+.fc-flame.b3:not(.party):not(.risk):not(.none) .creature { animation: fcf-bounce 1.3s ease-in-out infinite; }
 /* levels: the creature grows with the streak */
-.fc-flame.lvl1 { --s: 1.05; } .fc-flame.lvl2 { --s: 1.1; } .fc-flame.lvl3 { --s: 1.16; --fg: #ffc04d; }
-/* happy: done for today */
-.fc-flame.happy .m-calm { display: none; } .fc-flame.happy .m-happy { display: inline; }
+.fc-flame.lvl1 { --s: 1.04; } .fc-flame.lvl2 { --s: 1.08; } .fc-flame.lvl3 { --s: 1.13; }
+/* happy: done for today – grin and little hops, a wave now and then */
+.fc-flame.happy .m-calm { display: none; } .fc-flame.happy .m-grin { display: inline; }
 .fc-flame.happy .face { animation: fcf-hop 2.6s ease-in-out infinite; }
+/* party: today's goal reached – dances, eyes squeezed with joy, big grin, sparks everywhere */
+.fc-flame.party .m-calm, .fc-flame.party .eyes { display: none; } .fc-flame.party .m-grin, .fc-flame.party .joy { display: inline; }
+.fc-flame.party .creature { animation: fcf-dance 1.1s ease-in-out infinite; }
+.fc-flame.party .sp { animation: fcf-burst 1.6s ease-out infinite; }
+.fc-flame.party .sp1 { animation-delay: .2s; } .fc-flame.party .sp2 { animation-delay: .5s; } .fc-flame.party .sp3 { animation-delay: .75s; } .fc-flame.party .sp4 { animation-delay: .35s; }
+.fc-flame.party .sp5 { animation-delay: 1s; } .fc-flame.party .sp6 { animation-delay: 1.2s; } .fc-flame.party .sp7 { animation-delay: .9s; } .fc-flame.party .sp8 { animation-delay: 1.4s; }
+.fc-flame.party .glow { animation-duration: 1.1s; } .fc-flame.party .tongue { animation-duration: .7s; }
 /* at risk: smaller, dimmer, worried, sweating */
-.fc-flame.risk { --s: .86; --fg: #f2a35b; --fo: #c9502e; --fo2: #d8622f; --fo3: #b8452a; --fm: #e98a3a; --fm2: #df7a2e; --fi: #f3c766; --fi2: #e9ad48; --fc1: #f8e3a6; }
+.fc-flame.risk { --s: .88; --fg: #f2a35b; --fo: #c9502e; --fo2: #d8622f; --fo3: #b8452a; --fm: #e98a3a; --fm2: #df7a2e; --fi: #f3c766; --fi2: #e9ad48; --fc1: #f8e3a6; }
 .fc-flame.risk .m-calm { display: none; } .fc-flame.risk .m-worry, .fc-flame.risk .brows, .fc-flame.risk .drop { display: inline; }
-.fc-flame.risk .tg { animation-duration: .7s !important; }
+.fc-flame.risk .ly, .fc-flame.risk .tongue { animation-duration: .8s; }
 .fc-flame.risk .drop { animation: fcf-drop 2.4s ease-in infinite; transform-box: fill-box; }
-/* asleep (no streak) and out (streak ended): grey embers, eyes closed */
-.fc-flame.none, .fc-flame.out { --fg: transparent; --fo: #8e9096; --fo2: #9fa2a8; --fo3: #85878d; --fm: #b4b6bc; --fm2: #a9abb1; --fi: #cfd1d6; --fi2: #c3c5ca; --fc0: #f1f1f3; --fc1: #e2e3e6; }
-.fc-flame.none { --s: .74; } .fc-flame.out { --s: .8; }
-.fc-flame.none .eyes, .fc-flame.out .eyes, .fc-flame.none .m-calm, .fc-flame.out .m-calm, .fc-flame.none .embers, .fc-flame.out .embers, .fc-flame.none .cheek, .fc-flame.out .cheek { display: none; }
+/* asleep (no streak) and out: grey, eyes closed, zz / a wisp of smoke */
+.fc-flame.none, .fc-flame.out { --fg: transparent; --fo: #9a9ca2; --fo2: #a7a9ae; --fo3: #85878d; --fm: #b8babf; --fm2: #aeb0b5; --fi: #d2d3d7; --fi2: #c6c8cc; --fc0: #f3f3f5; --fc1: #e4e5e8; }
+.fc-flame.none { --s: .78; } .fc-flame.out { --s: .8; }
+.fc-flame.none .eyes, .fc-flame.out .eyes, .fc-flame.none .m-calm, .fc-flame.out .m-calm, .fc-flame.none .embers, .fc-flame.out .embers, .fc-flame.none .tongue, .fc-flame.out .tongue { display: none; }
 .fc-flame.none .lids, .fc-flame.out .lids, .fc-flame.none .m-sleep, .fc-flame.out .m-sleep { display: inline; }
 .fc-flame.none .zz { display: inline; } .fc-flame.out .smoke { display: inline; }
-.fc-flame.none .tg, .fc-flame.out .tg { animation-duration: 3.2s !important; }
+.fc-flame.none .ly, .fc-flame.out .ly { animation-duration: 3.4s; }
 .fc-flame.out .creature { animation: fcf-out 1.4s ease-in forwards; }
-.fc-flame.celebrate .sparks circle { animation: fc-spark 1.2s ease-out 3; }
-.fc-flame.celebrate .sparks circle:nth-child(2) { animation-delay: .25s; } .fc-flame.celebrate .sparks circle:nth-child(3) { animation-delay: .5s; } .fc-flame.celebrate .sparks circle:nth-child(4) { animation-delay: .15s; }
-@keyframes fcf-sway { 0%,100% { transform: skewX(0) scaleY(1); } 25% { transform: skewX(-4deg) scaleY(1.07); } 50% { transform: skewX(2deg) scaleY(.95); } 75% { transform: skewX(5deg) scaleY(1.04); } }
-@keyframes fcf-lick { 0%,100% { transform: scale(1, 1) rotate(0); } 40% { transform: scale(.9, 1.14) rotate(-4deg); } 70% { transform: scale(1.04, .9) rotate(3deg); } }
+.fc-flame.celebrate .sp { animation: fcf-burst 1.2s ease-out 3; }
+.fc-flame.celebrate .sp2, .fc-flame.celebrate .sp5 { animation-delay: .25s; } .fc-flame.celebrate .sp3, .fc-flame.celebrate .sp6 { animation-delay: .5s; }
+/* ---- interaction (classes on .fc-flamebox from fc/flame.js) ---- */
+.fc-flamebox.hover .pupil { animation: none; }
+.fc-flamebox.hover .fc-flame:not(.none):not(.out) .m-calm, .fc-flamebox.hover .fc-flame:not(.none):not(.out) .m-worry { display: none; }
+.fc-flamebox.hover .fc-flame:not(.none):not(.out) .m-grin { display: inline; }
+.fc-flamebox.hover .fc-flame.risk .brows, .fc-flamebox.hover .fc-flame.risk .drop { display: none; }
+/* the sleeper half-opens its eyes when you come close */
+.fc-flamebox.hover .fc-flame.none .eyes { display: inline; } .fc-flamebox.hover .fc-flame.none .eye { scale: 1 .5; animation: none; }
+.fc-flamebox.hover .fc-flame.none .lids, .fc-flamebox.hover .fc-flame.none .zz { display: none; }
+.fc-flamebox.surprised .fc-flame .m-calm, .fc-flamebox.surprised .fc-flame .m-grin, .fc-flamebox.surprised .fc-flame .m-worry, .fc-flamebox.surprised .fc-flame .m-sleep { display: none !important; }
+.fc-flamebox.surprised .fc-flame .m-oh { display: inline; }
+.fc-flamebox.surprised .fc-flame:not(.none) .eye { scale: 1.12; }
+.fc-flamebox.surprised .fc-flame:not(.none):not(.out) .creature { animation: fcf-jump .5s ease-out; }
+.fc-flamebox.poked .fc-flame .creature { animation: fcf-squish .9s ease-out; }
+.fc-flamebox.poked .fc-flame .eyes { display: none; } .fc-flamebox.poked .fc-flame .joy { display: inline; }
+.fc-flamebox.poked .fc-flame .m-calm, .fc-flamebox.poked .fc-flame .m-worry, .fc-flamebox.poked .fc-flame .m-sleep, .fc-flamebox.poked .fc-flame .lids, .fc-flamebox.poked .fc-flame .zz { display: none; }
+.fc-flamebox.poked .fc-flame .m-grin { display: inline; }
+.fc-flamebox.poked .fc-flame .sp { animation: fcf-burst .9s ease-out 1; }
+.fc-flamebox.thinking .pupil { animation: none; translate: 2.4px -2.6px; }
+/* the thought bubble */
+.fc-thought { position: absolute; left: 56%; bottom: 94%; z-index: 6; width: max-content; min-width: 64px; max-width: 168px;
+  padding: 7px 12px; border-radius: 18px; background: var(--fc-surface, #fff); color: var(--fc-ink, #222);
+  border: 2px solid color-mix(in srgb, var(--fc-flame-outer, #ff8a1f) 55%, var(--fc-surface, #fff));
+  box-shadow: 0 6px 18px #0000001f; font: 600 13px/1.3 "Cambria Math", "STIX Two Math", "STIX Two Text", Georgia, serif;
+  text-align: center; pointer-events: none; animation: fct-in .35s cubic-bezier(.2, 1.4, .4, 1); transition: opacity .35s, translate .35s; }
+.fc-thought::before, .fc-thought::after { content: ""; position: absolute; border-radius: 50%; background: inherit;
+  border: 2px solid color-mix(in srgb, var(--fc-flame-outer, #ff8a1f) 55%, var(--fc-surface, #fff)); }
+.fc-thought::before { width: 11px; height: 11px; left: 6px; bottom: -13px; } .fc-thought::after { width: 6px; height: 6px; left: -3px; bottom: -22px; }
+.fc-thought.out { opacity: 0; translate: 0 -6px; }
+@keyframes fct-in { from { opacity: 0; scale: .6; translate: -10px 8px; } to { opacity: 1; scale: 1; translate: 0 0; } }
+@keyframes fcf-lick { 0%,100% { transform: scale(1, 1) translateY(0); opacity: .9; } 35% { transform: scale(.85, 1.25) translateY(-3px); opacity: 1; } 70% { transform: scale(1.1, .7) translateY(1px); opacity: .55; } }
+@keyframes fcf-ember-glow { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.45); } }
+@keyframes fcf-bounce { 0%,100% { transform: translateY(0) scale(1, 1); } 30% { transform: translateY(-3px) scale(.98, 1.04); } 60% { transform: translateY(0) scale(1.03, .97); } }
+@keyframes fcf-flick { 0%,100% { transform: scale(1, 1) skewX(0); } 30% { transform: scale(.97, 1.06) skewX(-2deg); } 65% { transform: scale(1.02, .96) skewX(1.6deg); } }
+@keyframes fcf-core { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.04, .97); opacity: .92; } }
 @keyframes fcf-breathe { 0%,100% { transform: scale(1, 1); } 50% { transform: scale(1.025, .975); } }
+@keyframes fcf-dance { 0%,100% { transform: translateY(0) rotate(0) scale(1, 1); } 20% { transform: translateY(-5px) rotate(-6deg) scale(.97, 1.05); }
+  45% { transform: translateY(0) rotate(0) scale(1.05, .94); } 70% { transform: translateY(-5px) rotate(6deg) scale(.97, 1.05); } }
+@keyframes fcf-jump { 0% { transform: translateY(0); } 35% { transform: translateY(-6px) scale(.96, 1.06); } 100% { transform: translateY(0); } }
+@keyframes fcf-squish { 0% { transform: scale(1, 1); } 15% { transform: scale(1.18, .78); } 35% { transform: scale(.9, 1.12) translateY(-6px); }
+  55% { transform: scale(1.05, .95) rotate(-4deg); } 70% { transform: rotate(4deg); } 85% { transform: rotate(-2deg); } 100% { transform: none; } }
 @keyframes fcf-glow { 0%,100% { opacity: .85; } 45% { opacity: 1; } 70% { opacity: .7; } }
 @keyframes fcf-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
 @keyframes fcf-hop { 0%,70%,100% { transform: translateY(0); } 78% { transform: translateY(-3px); } 86% { transform: translateY(0); } 92% { transform: translateY(-1.5px); } }
 @keyframes fcf-blink { 0%,93%,100% { transform: scaleY(1); } 96% { transform: scaleY(.08); } }
-@keyframes fcf-look { 0%,28%,100% { transform: translate(0, 0); } 36%,52% { transform: translate(-1.8px, .5px); } 62%,80% { transform: translate(1.8px, -.4px); } }
-@keyframes fcf-ember { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: .95; } 100% { opacity: 0; transform: translate(var(--dx, 0), -48px); } }
+@keyframes fcf-look { 0%,28%,100% { transform: translate(0, 0); } 36%,52% { transform: translate(-2.2px, .6px); } 62%,80% { transform: translate(2.2px, -.5px); } }
+@keyframes fcf-ember { 0% { opacity: 0; transform: translate(0, 6px) scale(.6); } 12% { opacity: 1; transform: translate(calc(var(--dx, 0px) * .1), 0) scale(1); } 55% { opacity: .85; transform: translate(calc(var(--dx, 0px) * -.4), -20px) scale(.85); } 100% { opacity: 0; transform: translate(var(--dx, 0), -42px) scale(.4); } }
+@keyframes fcf-burst { 0% { opacity: 0; transform: translate(0, 0) scale(.4); } 15% { opacity: 1; transform: translate(calc(var(--sx) * .2), calc(var(--sy) * .2)) scale(1.2); } 100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(.5); } }
 @keyframes fcf-zz { 0% { opacity: 0; transform: translate(0, 4px); } 30%,70% { opacity: .9; } 100% { opacity: 0; transform: translate(4px, -8px); } }
 @keyframes fcf-smoke { 0% { opacity: 0; transform: translateY(6px); } 30% { opacity: .7; } 100% { opacity: 0; transform: translateY(-18px); } }
 @keyframes fcf-drop { 0%,40% { opacity: 0; transform: translateY(-2px); } 55% { opacity: 1; } 100% { opacity: 0; transform: translateY(8px); } }
 @keyframes fcf-out { from { scale: 1; } to { scale: .8; translate: 0 6px; } }
-@keyframes fc-spark { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px); } }
 
 /* the match under the flame */
 .fc-matchbtn { display: inline-flex; align-items: center; gap: 4px; margin-top: -2px; padding: 2px 8px 2px 4px; border-radius: 999px;
@@ -363,6 +445,8 @@ a.fc-chapter:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(0 0 
   .fc-card { transition: none; }
   .fc-card.flipped .fc-face.front { visibility: hidden; }
   .fc-flame *, .fc-flame .creature, .fc-matchbtn .fc-match { animation: none !important; }
+  .fc-flame .creature { rotate: 0deg !important; } .fc-flame .pupil { translate: none !important; }
+  .fc-thought { animation: none; transition: opacity .35s; } .fc-thought.out { translate: 0 0; }
   .fc-flame.out .creature { scale: .8; }
   a.fc-chapter:hover { transform: none; }
 }
@@ -546,7 +630,7 @@ html[data-appearance-theme=dark] .fc-week { --wk-mix: 62%; --wk-base: #ffffff; }
   --fo: color-mix(in srgb, var(--sf-fo) 62%, #8f8780); --fo2: color-mix(in srgb, var(--sf-fo2) 62%, #9a928b); --fo3: color-mix(in srgb, var(--sf-fo3) 62%, #857d77);
   --fm: color-mix(in srgb, var(--sf-fm) 62%, #aaa29b); --fm2: color-mix(in srgb, var(--sf-fm2) 62%, #a19992);
   --fi: color-mix(in srgb, var(--sf-fi) 62%, #cbc5bf); --fi2: color-mix(in srgb, var(--sf-fi2) 62%, #c0bab4); --fc1: color-mix(in srgb, var(--sf-fc1) 70%, #e7e3df); }
-[data-flame] .fc-flame .embers circle, [data-flame] .fc-flame .sparks circle { fill: var(--sf-fi, #ffd27a); }
+[data-flame] .fc-flame:not(.none):not(.out) .embers circle { fill: color-mix(in srgb, var(--sf-fi, #ffd27a) 70%, var(--sf-fo2, #f4511e)); } [data-flame] .fc-flame .sparks circle { fill: var(--sf-fi, #ffd27a); }
 .fc-subj-head .fc-flame { width: 64px; height: 76px; overflow: visible; }
 
 /* "Show streak" off: a quiet panel with today's count and the switch back; no flame, streak or match */
