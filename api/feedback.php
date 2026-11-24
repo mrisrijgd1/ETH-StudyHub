@@ -2,8 +2,7 @@
 // StudyHub feedback form (replaces the old Google Form). Runs on the Infomaniak Web Hosting.
 // What it does with a message:
 //   1. saves it to a private file OUTSIDE the public website folder (studyhub-data/feedback/ in the hosting home), and
-//   2. e-mails it to contact@study-hub.ch, where the hosting allows PHP mail() (Infomaniak has it switched off,
-//      so for now messages are read in the Infomaniak File Manager: studyhub-data/feedback/).
+//   2. e-mails it to contact@study-hub.ch through the mailbox's own SMTP login (see smtp_send below).
 // Nothing is sent to any other service. No cookies. The IP address is only used, hashed, to stop floods
 // (at most 5 messages per hour) and is never stored in plain form.
 // The form itself is feedback.html (and de/feedback.html).
@@ -13,7 +12,6 @@ declare(strict_types=1);
 ini_set('display_errors', '0');   // never show server paths to visitors
 
 const TO      = 'contact@study-hub.ch';
-const FROM    = 'StudyHub feedback <noreply@study-hub.ch>';
 const MAX_LEN = 4000;
 const PER_HOUR = 5;
 
@@ -100,12 +98,54 @@ if ($dir !== null) {
 $subject = 'StudyHub feedback: ' . $kind . ($page !== '' ? ' (' . one_line($page, 60) . ')' : '');
 $body = "Kind: $kind\nPage: " . ($page ?: '-') . "\nLanguage: $lang\nReply to: " . ($email ?: '(no address given)') .
         "\nTime (UTC): {$entry['time']}\n\n$message\n";
-$headers = [
-    'From: ' . FROM,
-    'Content-Type: text/plain; charset=UTF-8',
-    'MIME-Version: 1.0',
-];
-if ($email !== '') { $headers[] = 'Reply-To: ' . $email; }
-$mailed = function_exists('mail') && @mail(TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+// E-mail via Infomaniak SMTP. Infomaniak switches PHP mail() off, so we log in to the mailbox instead.
+// The login lives ONLY on the server, outside the website folder, in <home>/studyhub-data/mail-config.php:
+//   <?php return ['user' => 'contact@study-hub.ch', 'pass' => '...'];
+// (created by hand in the Infomaniak File Manager; never in GitHub). Without that file, nothing is mailed.
+function smtp_send(array $cfg, string $to, string $subject, string $body, string $replyTo): bool {
+    $host = $cfg['host'] ?? 'mail.infomaniak.com';
+    $fp = @stream_socket_client('ssl://' . $host . ':465', $errno, $errstr, 10);
+    if (!$fp) { return false; }
+    stream_set_timeout($fp, 10);
+    $read = function () use ($fp): string {
+        $out = '';
+        while (($line = fgets($fp, 515)) !== false) { $out .= $line; if (isset($line[3]) && $line[3] === ' ') { break; } }
+        return $out;
+    };
+    $cmd = function (string $c, string $expect) use ($fp, $read): bool {
+        fwrite($fp, $c . "\r\n");
+        return strncmp($read(), $expect, 3) === 0;
+    };
+    $user = (string)$cfg['user'];
+    $ok = strncmp($read(), '220', 3) === 0
+        && $cmd('EHLO study-hub.ch', '250')
+        && $cmd('AUTH LOGIN', '334')
+        && $cmd(base64_encode($user), '334')
+        && $cmd(base64_encode((string)$cfg['pass']), '235')
+        && $cmd('MAIL FROM:<' . $user . '>', '250')
+        && $cmd('RCPT TO:<' . $to . '>', '250')
+        && $cmd('DATA', '354');
+    if ($ok) {
+        $headers = 'From: StudyHub feedback <' . $user . ">\r\n" .
+                   'To: <' . $to . ">\r\n" .
+                   ($replyTo !== '' ? 'Reply-To: <' . $replyTo . ">\r\n" : '') .
+                   'Subject: =?UTF-8?B?' . base64_encode($subject) . "?=\r\n" .
+                   'Date: ' . date('r') . "\r\n" .
+                   "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n";
+        $ok = $cmd($headers . "\r\n" . chunk_split(base64_encode($body)) . '.', '250');
+    }
+    @fwrite($fp, "QUIT\r\n");
+    fclose($fp);
+    return $ok;
+}
+
+$mailed = false;
+$cfgFile = dirname(__DIR__, 3) . '/studyhub-data/mail-config.php';
+if (is_file($cfgFile)) {
+    $cfg = include $cfgFile;
+    if (is_array($cfg) && !empty($cfg['user']) && !empty($cfg['pass'])) {
+        $mailed = smtp_send($cfg, TO, $subject, $body, $email);
+    }
+}
 
 back($lang, ($saved || $mailed) ? 'sent' : 'error');
