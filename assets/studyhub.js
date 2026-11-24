@@ -322,16 +322,16 @@
   const aboutPop = popover('about', L('Über', 'About'), false);
   aboutPop.panel.append(
     group(L('Über StudyHub', 'About StudyHub'), [
-      richLink(L('Über diesen Hub', 'About this hub'), prefix + 'about.html', L('Team, Idee und Materialien', 'Team, idea and materials')),
+      richLink(L('Über diesen Hub', 'About this hub'), prefix + 'about.html'),
       richLink(L('Team und Dank', 'Team and credits'), 'credits.html')
     ]),
     group(L('Hilfe und Mitmachen', 'Help and joining in'), [
-      richLink(L('Brauchst du Hilfe?', 'Need help?'), prefix + 'help.html', L('An der ETH und in Zürich, heute', 'At ETH and in Zurich, today')),
-      richLink('Community', prefix + 'community.html', L('Forum und Fragen', 'Forum and questions')),
+      richLink(L('Brauchst du Hilfe?', 'Need help?'), prefix + 'help.html'),
+      richLink('Community', prefix + 'community.html'),
       richLink(L('Unterlagen beitragen', 'Contribute notes'), 'contribute.html'),
-      richLink(L('Mit deiner KI lernen', 'Study with your AI'), prefix + 'connect.html', L('In 2 Minuten eingerichtet', 'Set up in 2 minutes'))
+      richLink(L('Mit deiner KI lernen', 'Study with your AI'), prefix + 'connect.html')
     ]),
-    group('', [richLink(L('Alle Seiten', 'All pages'), prefix + 'more.html', L('Werkzeugkasten, Karten, Downloads', 'Toolbox, maps, downloads'))])
+    group('', [richLink(L('Alle Seiten', 'All pages'), prefix + 'more.html')])
   );
   nav.append(aboutPop.wrap);
   upper.append(nav);
