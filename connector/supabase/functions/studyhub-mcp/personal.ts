@@ -32,6 +32,7 @@ export function cleanDesign(t: any) {
   const out: Record<string, unknown> = {};
   const hex = (v: any) => typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v) ? v : undefined;
   if (["light", "dark", "auto"].includes(t?.theme)) out.theme = t.theme;
+  if (typeof t?.palette === "string" && /^[a-z0-9-]{1,40}$/.test(t.palette)) out.palette = t.palette;
   for (const k of ["accent", "background", "text", "box"]) { const v = hex(t?.[k]); if (v) out[k] = v; }
   if (FONTS.includes(t?.font)) out.font = t.font;
   const size = Number(t?.size); if (size >= 80 && size <= 150) out.size = Math.round(size);
@@ -159,7 +160,7 @@ export async function personal(name: string, a: any, ctx: Ctx): Promise<any> {
     case "what_to_do_today": return text(J(await gapFinder(ctx, Number(a.minutes) || 60, a.subject)));
     case "design": {
       const action = a.action ?? "get";
-      if (action === "get") return text(J({ design: (await getItem(ctx, "design"))?.content ?? {}, options: { theme: ["light", "dark", "auto"], colours: "accent, background, text, box as #rrggbb", font: FONTS, size: "80-150 (%)", density: ["compact", "normal", "airy"], width: ["narrow", "normal", "wide"], hide: HIDE } }));
+      if (action === "get") return text(J({ design: (await getItem(ctx, "design"))?.content ?? {}, options: { theme: ["light", "dark", "auto"], palette: "a Design picker palette name (the site shows the list); light/dark only", colours: "accent, background, text, box as #rrggbb", font: FONTS, size: "80-150 (%)", density: ["compact", "normal", "airy"], width: ["narrow", "normal", "wide"], hide: HIDE } }));
       if (action === "reset") { await ctx.db.from("my_items").delete().eq("user_id", uid).eq("key", "design"); return text("Design reset to the StudyHub default (undo('design') brings it back)."); }
       const cur = (await getItem(ctx, "design"))?.content ?? {};
       const next = cleanDesign({ ...cur, ...(a.tokens ?? {}) });

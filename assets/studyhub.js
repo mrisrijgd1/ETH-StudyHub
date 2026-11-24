@@ -86,7 +86,7 @@
     try { localStorage.setItem('sh-appearance-css', JSON.stringify({ t: appearance.theme, p: appearance.palette, css: document.documentElement.getAttribute('style') || '' })); } catch (_) {}
     if (persist) {
       try { localStorage.setItem(appearanceKey, JSON.stringify(appearance)); localStorage.setItem('sh-theme', appearance.theme); } catch (_) {}
-      if (window.SHDesign) window.SHDesign.save({ ...window.SHDesign.get(), theme: appearance.theme, accent: values.accent, background: values.bg, text: values.ink, box: values.surface }).catch(() => {});
+      if (window.SHDesign) window.SHDesign.save({ ...window.SHDesign.get(), theme: appearance.theme, palette: appearance.palette, accent: values.accent, background: values.bg, text: values.ink, box: values.surface }).catch(() => {});
     }
   }
   // Storybook schemes: Garamond fonts, lantern glow and fireflies. The layer is part of the page and scrolls with it:
@@ -151,7 +151,8 @@
     get: () => ({ ...appearance }),
     palettes: Object.keys(palettes),
     setTheme(theme) { if (!['light', 'dark'].includes(theme)) return; appearance.theme = theme; applyAppearance(true); },
-    setPalette(id) { appearance.palette = knownPalette(id); applyAppearance(true); }
+    setPalette(id) { appearance.palette = knownPalette(id); applyAppearance(true); },
+    reload: () => reloadAppearance()   // apply the saved choice again without saving (used when the account's design arrives)
   };
   addEventListener('storage', event => { if (event.key === appearanceKey) reloadAppearance(); });
   addEventListener('pageshow', event => { if (event.persisted) reloadAppearance(); });

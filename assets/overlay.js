@@ -11,6 +11,7 @@
   function clean(t) {
     t = t || {}; var o = {};
     if (['light', 'dark', 'auto'].indexOf(t.theme) >= 0) o.theme = t.theme;
+    if (/^[a-z0-9-]{1,40}$/.test(t.palette || '')) o.palette = t.palette;   // the Design picker's palette (studyhub.js checks the name)
     ['accent', 'background', 'text', 'box'].forEach(function (k) { if (HEX.test(t[k] || '')) o[k] = t[k]; });
     if (t.font === 'default' || FONTS[t.font]) o.font = t.font;
     var s = Number(t.size); if (s >= 80 && s <= 150) o.size = Math.round(s);
@@ -83,7 +84,16 @@
     var S = window.SH; if (!S || !S.sb || !S.user || window.SHDesign._synced) return;
     window.SHDesign._synced = true;
     S.sb.from('my_items').select('content').eq('key', 'design').maybeSingle().then(function (r) {
-      if (r && r.data && r.data.content) { try { localStorage.setItem(KEY, JSON.stringify(clean(r.data.content))); } catch (e) {} apply(r.data.content); }
+      if (r && r.data && r.data.content) {
+        var c = clean(r.data.content);
+        try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {}
+        apply(c);
+        // The palette and light/dark of the Design picker follow the account too (without saving back).
+        if (c.palette && (c.theme === 'light' || c.theme === 'dark')) {
+          try { localStorage.setItem('sh-appearance', JSON.stringify({ theme: c.theme, palette: c.palette })); } catch (e) {}
+          if (window.SHAppearance && window.SHAppearance.reload) window.SHAppearance.reload();
+        }
+      }
     });
   });
 })();
