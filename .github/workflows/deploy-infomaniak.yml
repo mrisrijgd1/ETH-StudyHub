@@ -70,14 +70,14 @@ jobs:
             echo "DRY RUN: nothing will be changed on the server."
           fi
           # Not copied: git data, workflows, the connector source and handoff notes.
-          # Protected on the server: Infomaniak's own settings files.
+          # Protected on the server: Infomaniak's own settings file and the private feedback folder.
           rsync $FLAGS \
             --exclude='.git/' \
             --exclude='.github/' \
             --exclude='connector/' \
             --exclude='handoff/' \
             --filter='P /.user.ini' \
-            --filter='P /.htaccess' \
+            --filter='P /_private/' \
             -e "ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes" \
             ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
 
