@@ -76,7 +76,7 @@ function mcp_handle(array $m): ?array {
     if (($m['jsonrpc'] ?? null) !== '2.0' || !is_string($m['method'] ?? null)) { return ['jsonrpc' => '2.0', 'id' => $m['id'] ?? null, 'error' => ['code' => -32600, 'message' => 'Invalid request']]; }
     if (!array_key_exists('id', $m) || $m['id'] === null) { return null; }   // notification
     $id = $m['id'];
-    $T = json_decode((string)file_get_contents(__DIR__ . '/lib/mcp-tools.json'), true);
+    $T = json_decode((string)file_get_contents(__DIR__ . '/lib/mcp-tools.json'));   // objects, so empty {} stays {} (not [])
     try {
         switch ($m['method']) {
             case 'initialize':
@@ -84,9 +84,9 @@ function mcp_handle(array $m): ?array {
                 $ok = ['2025-06-18', '2025-03-26', '2024-11-05', '2025-11-25'];
                 return ['jsonrpc' => '2.0', 'id' => $id, 'result' => ['protocolVersion' => in_array($asked, $ok, true) ? $asked : '2025-06-18',
                     'capabilities' => ['tools' => ['listChanged' => false]], 'serverInfo' => ['name' => 'studyhub', 'title' => 'StudyHub', 'version' => MCP_VERSION],
-                    'instructions' => $T['instructions']]];
+                    'instructions' => $T->instructions]];
             case 'ping': return ['jsonrpc' => '2.0', 'id' => $id, 'result' => new stdClass()];
-            case 'tools/list': return ['jsonrpc' => '2.0', 'id' => $id, 'result' => ['tools' => $T['tools']]];
+            case 'tools/list': return ['jsonrpc' => '2.0', 'id' => $id, 'result' => ['tools' => $T->tools]];
             case 'tools/call':
                 $args = $m['params']['arguments'] ?? [];
                 return ['jsonrpc' => '2.0', 'id' => $id, 'result' => mcp_tool((string)($m['params']['name'] ?? ''), is_array($args) ? $args : [])];
