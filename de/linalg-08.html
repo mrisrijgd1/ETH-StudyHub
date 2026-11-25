@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Die beiden Viertel">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die beiden Viertel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 8</span>
+<h1>Die beiden Viertel</h1>
+<p class="lead">Durchschnitte, Vereinigungen und Summen von Unterräumen, die Dimensionsformel mit ihrem Basisbeweis, direkte Summen (fünf äquivalente Bedingungen), Komplemente, ein Summen-und-Durchschnitts-Explorer im R3, Serie 4 Aufgaben 21 und 22, FS17 Problem 5.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-7-5">Rückblick auf Lektion 7 (5 Minuten)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Begriffe für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-two-districts-of">1. Die Geschichte: zwei Viertel der Freien Stadt</a>
+</li>
+<li><a href="#s2-intersection-union-and-sum">2. Durchschnitt, Vereinigung und Summe</a>
+<ol>
+<li><a href="#proof-a">Beweis A: die Summe ist der Spann der Vereinigung (Proposition 2.3.37 (1), S. 64)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: eine Basis einer Summe im $\mathbb R^4$</a></li>
+</ol></li>
+<li><a href="#s3-the-dimension-formula">3. Die Dimensionsformel</a>
+<ol>
+<li><a href="#proof-b">Beweis B: eine Basis von $U+W$ und die Dimensionsformel (Proposition 2.3.37 (2), (3), S. 64)</a></li>
+<li><a href="#we-2">Musterbeispiel 2: Basen von Ebenen und ihren Durchschnitten (Serie 4, Aufgabe 21)</a></li>
+</ol></li>
+<li><a href="#s4-direct-sums">4. Direkte Summen</a>
+<ol>
+<li><a href="#proof-c">Beweis C: fünf Arten zu sagen „die Überschneidung ist nur $0$“ (Proposition 2.3.40, S. 65)</a></li>
+<li><a href="#we-3">Musterbeispiel 3: gerade und ungerade Funktionen (Beispiel 2.3.45 (4))</a></li>
+<li><a href="#we-4">Musterbeispiel 4: symmetrische plus schiefsymmetrische Matrizen</a></li>
+</ol></li>
+<li><a href="#s5-complements">5. Komplemente</a>
+<ol>
+<li><a href="#proof-d">Beweis D: jeder Unterraum hat ein Komplement (Proposition 2.3.43, S. 66; Probeklausur HS20, Problem 5 (b), 6 Punkte)</a></li>
+<li><a href="#we-5">Musterbeispiel 5: alle Komplemente der $x$-Achse</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+<li><a href="#for-wonder-the-formula-for">Zum Staunen: die Formel für drei Unterräume gilt nicht (Aufgabe 2.3.39, S. 65)</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-6">Musterbeispiel 6: ein $2020$-dimensionaler Raum (FS20, Frage III)</a></li>
+<li><a href="#we-7">Musterbeispiel 7: zwei Wahr-falsch-Aussagen (FS17, xiv; Probeklausur HS20, (5))</a></li>
+<li><a href="#we-8">Musterbeispiel 8: wie viele Komplemente über $\mathbb F_2$? (Probeklausur HS20, Problem 5 (c), 6 Punkte)</a></li>
+<li><a href="#we-9">Musterbeispiel 9: Unterräume, gegeben durch Gleichungen im $\mathbb R^4$</a></li>
+</ol></li>
+<li><a href="#exercises">Übungen</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (FS17, Problem 5, 15 Punkte)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Serie 4, Aufgabe 22 (a), (b): die Unterräume von $\mathbb F_4^2$)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (ein Komplement, explizit)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Probeklausur HS20, Problem 5 (a), (b))</a></li>
+<li><a href="#ex-5">Aufgabe 5 (wahr oder falsch)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (HS20, Problem 5 (c), 6 Punkte)</a></li>
+<li><a href="#ex-7">Aufgabe 7 (Summen und Durchschnitte verteilen sich nicht)</a></li>
+<li><a href="#ex-8">Aufgabe 8 (Summe und Durchschnitt von Polynomräumen)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schwerer Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Rückblick-Fragen oben. Das zählt. Morgen machst du einfach hier weiter: ein ausgelassener oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) erklären kannst, warum der Durchschnitt zweier Unterräume ein Unterraum ist und die Vereinigung meist nicht; (2) die <strong>Summe</strong> $U+W$ definieren und beweisen kannst, dass sie der kleinste Unterraum ist, der $U$ und $W$ enthält; (3) die <strong>Dimensionsformel</strong> $\dim(U+W)=\dim U+\dim W-\dim(U\cap W)$ beweisen kannst, indem du eine Basis baust; (4) die fünf äquivalenten Bedingungen für eine <strong>direkte Summe</strong> $U\oplus W$ angeben und beweisen kannst; (5) ein <strong>Komplement</strong> eines Unterraums konstruieren kannst und weisst, dass es nicht eindeutig ist; (6) Basen von Summen und Durchschnitten im $\mathbb R^3$ berechnen kannst, wie in Serie 4.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 115 Minuten: 55 für die Abschnitte 1–3 mit dem Explorer, eine Pause, 60 für die Abschnitte 4–5 und die Übungen. Eine natürliche Pause kommt nach Abschnitt 3 (Dimensionsformel fertig, direkte Summen kommen als Nächstes).</dd></div>
+  <div><dt>Skript (Englisch, gedruckte Seiten)</dt><dd>Skript EN 2023:
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p42">S. 42</a>, Wiederholung:</strong> Lemma 2.2.1 (Durchschnitte von Unterräumen sind Unterräume; <a class="xl" href="linalg-06.html">Lektion 6</a>).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p64">S. 64–66</a>, 2.3.4 Summen:</strong> Definition 2.3.36 (Summe von Unterräumen), Proposition 2.3.37 (die Summe ist der Spann der Vereinigung; eine Basis von $U+W$; die Dimensionsformel), Aufgabe 2.3.39 (drei Unterräume), Proposition 2.3.40 (fünf äquivalente Bedingungen), Definition 2.3.42 (direkte Summe), Proposition 2.3.43 und Definition 2.3.44 (Komplemente), Beispiel 2.3.45.</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §5, erste Hälfte (Notizen vom 12. Okt.): Unterräume noch einmal, Lemma 5.0 ($W$ ist ein Unterraum $\iff\langle W\rangle=W$; Serie 4, Aufgabe 20 (a)), die Beispiele $U_\lambda=\{x_1+x_2+x_3=\lambda\}$ und die Unterräume des $\mathbb R^2$, sowie Lemma 5.1 ($\dim U\le\dim V$, mit Gleichheit nur für $U=V$; Durchschnitte sind Unterräume; $\langle U_1\cup U_2\rangle$ ist ein Unterraum; $U_1\cup U_2$ ist im Allgemeinen keiner). Serie 4, Aufgaben 20–22 (a), (b), gehören hierher; Aufgabe 22 (c) und Aufgabe 23 (affine Räume, lateinische Quadrate) sind <a class="xl" href="../linalg-09.html">Lektion 9</a>.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Summen, Durchschnitte und die Dimensionsformel sind eine vollständige schriftliche Aufgabe in FS17 (Problem 5, 15 Punkte: die Ungleichungen, die Definition einer direkten Summe, das Kriterium der eindeutigen Darstellung und $M_{n\times n}(K)=W_1\oplus W_2$). Die Probeklausur HS20 hat eine 14-Punkte-Aufgabe über Komplemente (definieren, Existenz beweisen, über $\mathbb F_2$ zählen). Wahr-falsch: „$\dim(W_1\oplus W_2)=\dim W_1\cdot\dim W_2$“ (FS17, xiv), der $2020$-dimensionale Raum mit einem $1010$-dimensionalen Unterraum (FS20, III), „es gibt $Z$ mit $U\oplus Z=W\oplus Z=K^4$“ (Probeklausur HS20, (5)) und zwei Ebenen im $\mathbb R^3$ (HS21, VIII). In HS20, Problem 5 (14 Punkte) ist die Dimensionsformel selbst die Beweisfrage (6 Punkte, „es reicht nicht, eine Basis anzugeben, ohne zu zeigen, dass sie eine ist“), gefolgt von einer 6-Punkte-Anwendung. Alle davon folgen unten.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-7-5">Rückblick auf <a class="xl" href="linalg-07.html">Lektion 7</a> (5 Minuten)</h3>
+<p>Alle Basen eines endlichdimensionalen Raums haben dieselbe Länge, $\dim V$. Jede unabhängige Liste lässt sich zu einer Basis ergänzen; jede erzeugende Liste enthält eine. In einem $n$-dimensionalen Raum sind $n$ Vektoren unabhängig $\iff$ sie erzeugen. Prüfe dich selbst: $U\subseteq V$ ist ein Unterraum mit $\dim U=\dim V&lt;\infty$. Was kannst du sagen?</p>
+<details><summary>Antwort</summary><div><p>$U=V$ (<a class="xl" href="linalg-07.html">Lektion 7</a>, Aufgabe 4): eine Basis von $U$ sind $\dim V$ unabhängige Vektoren von $V$, also eine Basis von $V$. Heute brauchen wir das ständig: um zu zeigen, dass ein Unterraum alles ist, zähle seine Dimension.</p></div></details>
+<p>Zwei weitere: (a) Ergänze $(1,1,0)$ zu einer Basis des $\mathbb R^3$. (b) Wie viele Vektoren hat eine Basis von $\{x\in\mathbb R^3\mid x_1=x_2\}$?</p>
+<details><summary>Antwort</summary><div><p>(a) Zum Beispiel $(1,1,0),(1,0,0),(0,0,1)$: drei Vektoren, und unabhängig (der zweite hat einen von null verschiedenen ersten Eintrag bei null zweitem Eintrag, der dritte ist der einzige mit dritter Komponente), also eine Basis nach dem Gleichgewichtssatz. (b) Zwei: $(1,1,0),(0,0,1)$ erzeugen ihn ($x=(a,a,b)$) und sind unabhängig. Der erste Beweis von heute ergänzt Basen genau wie in (a).</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Begriffe für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>intersection, union</td><td>Durchschnitt, Vereinigung</td></tr>
+    <tr><td>sum of subspaces $U+W$</td><td>Summe von Unterräumen</td></tr>
+    <tr><td>dimension formula</td><td>Dimensionsformel</td></tr>
+    <tr><td>direct sum $U\oplus W$</td><td>direkte Summe</td></tr>
+    <tr><td>complement, direct summand</td><td>Komplement, direkter Summand</td></tr>
+    <tr><td>trivial subspaces $\{0\}$ and $V$</td><td>triviale Unterräume</td></tr>
+    <tr><td>unique representation</td><td>eindeutige Darstellung</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-two-districts-of">1. Die Geschichte: zwei Viertel der Freien Stadt</h2>
+<div class="story">
+<p>Die Freie Stadt hat zwei Gildenviertel, und beide sind abgeschlossen nach den Regeln der Karawanen: gehst du auf irgendeiner ihrer Strassen, beliebig oft, bleibst du innerhalb. Wo sich die Viertel überschneiden, ist ein Reisender in beiden. Der Rat stellt zwei Fragen. Was ist das kleinste Viertel, das beide enthält? Und wie viele unabhängige Richtungen hat es?</p>
+<p>Der Volkszähler hat eine Antwort aus <a class="xl" href="linalg-07.html">Lektion 7</a>: zähle die Richtungen jedes Viertels und addiere sie, aber die Richtungen in der Überschneidung wurden doppelt gezählt. Ziehe sie einmal ab. Wenn die Überschneidung nur das Stadttor ist, wird nichts doppelt gezählt, und jeder Ort im gemeinsamen Viertel hat genau eine Adresse der Form „ein Weg im ersten Viertel, dann ein Weg im zweiten“.</p>
+</div>
+<p>Mathematisch: die Viertel sind <strong>Unterräume</strong> $U,W$, die Überschneidung ist der <strong>Durchschnitt</strong> $U\cap W$, das kleinste Viertel, das beide enthält, ist die <strong>Summe</strong> $U+W$, das Zählen ist die <strong>Dimensionsformel</strong>, und „Überschneidung nur am Tor“ ist eine <strong>direkte Summe</strong> $U\oplus W$. Wenn $U\oplus W$ der ganze Raum ist, heisst $W$ ein <strong>Komplement</strong> von $U$.</p>
+
+<h2 id="s2-intersection-union-and-sum">2. Durchschnitt, Vereinigung und Summe</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-05.html#proof-d">Lektion 5</a>, <a class="xl" href="linalg-06.html#proof-a">Lektion 6</a>)</span>
+<ul>
+  <li><strong>Der Unterraumtest</strong> (Null, Summen, Vielfache), und: ein Durchschnitt von Unterräumen ist ein Unterraum (Beweis A aus Lektion 6).</li>
+</ul></div>
+<p>Im Folgenden ist $V$ ein Vektorraum über $K$, und $U,W\subseteq V$ sind Unterräume.</p>
+<div class="box">
+<p><strong>Ein Unterraum ist sein eigener Spann (Vorlesung, Lemma 5.0; Serie 4, Aufgabe 20 (a)).</strong> $W\subseteq V$ ist ein Unterraum genau dann, wenn $\mathrm{Sp}(W)=W$. („$\Rightarrow$“: $W$ ist ein Unterraum, der $W$ enthält, also enthält er den kleinsten solchen, $\mathrm{Sp}(W)$, und $W\subseteq\mathrm{Sp}(W)$ gilt immer. „$\Leftarrow$“: ein Spann ist ein Unterraum.)</p>
+<p><strong>Durchschnitte (Lemma 2.2.1, <a class="pl" href="../linalg-script.html#p42">S. 42</a>; Vorlesung, Lemma 5.1 (ii)).</strong> $U\cap W$ ist ein Unterraum: $0$ liegt in beiden, und eine Summe oder ein Vielfaches von Vektoren, die in beiden liegen, liegt in beiden. Das gilt genauso für jede Familie von Unterräumen.</p>
+<p><strong>Vereinigungen (Vorlesung, Lemma 5.1 (iv)).</strong> $U\cup W$ ist im Allgemeinen <em>kein</em> Unterraum: im $\mathbb R^2$ liegt $(1,0)$ auf der $x$-Achse und $(0,1)$ auf der $y$-Achse, aber ihre Summe $(1,1)$ liegt auf keiner von beiden. (<a class="xl" href="linalg-05.html">Lektion 5</a>: $U\cup W$ ist nur dann ein Unterraum, wenn $U\subseteq W$ oder $W\subseteq U$ gilt.)</p>
+<p><strong>Definition (Summe von Unterräumen; Definition 2.3.36, <a class="pl" href="../linalg-script.html#p64">S. 64</a>).</strong></p>
+<span class="math-display" style="display:block">$$U+W:=\{u+w\mid u\in U,\ w\in W\}.$$</span>
+<p>Allgemeiner ist $U_1+\dots+U_n$ die Menge aller Summen $u_1+\dots+u_n$ mit $u_i\in U_i$.</p></div>
+<p>Die Vereinigung ist zu klein, um ein Unterraum zu sein. Die Summe repariert das: sie fügt alle Vektoren hinzu, die man notgedrungen addieren muss.</p>
+
+<h3 id="proof-a">Beweis A: die Summe ist der Spann der Vereinigung (Proposition 2.3.37 (1), <a class="pl" href="../linalg-script.html#p64">S. 64</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> $U+W=\mathrm{Sp}(U\cup W)$. Insbesondere ist $U+W$ ein Unterraum, und er ist der kleinste Unterraum von $V$, der $U$ und $W$ enthält.</p></div>
+<p><strong>Die Idee.</strong> Zwei Inklusionen. Ein Vektor $u+w$ ist eine Kombination von Vektoren aus $U\cup W$. Umgekehrt sammle in einer Kombination von Vektoren aus $U\cup W$ die Terme aus $U$ (sie ergeben einen Vektor von $U$) und die Terme aus $W$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Eine Mengengleichheit:</strong> zwei Inklusionen. <strong>Erste Zeile</strong> jeder: „Sei $v\in U+W$, d. h. $v=u+w$ mit $u\in U$, $w\in W$“ und „Sei $v\in\mathrm{Sp}(U\cup W)$, d. h. $v$ ist eine Linearkombination endlich vieler Vektoren aus $U\cup W$“ (der Spann als Menge aller Linearkombinationen, <a class="xl" href="linalg-06.html">Lektion 6</a>).</li>
+  <li><strong>Letzte Zeilen:</strong> „also $v\in\mathrm{Sp}(U\cup W)$“ und „also $v\in U+W$“.</li>
+  <li><strong>Die Lücke:</strong> die zweite Inklusion braucht die Zerlegung der Kombination in einen $U$-Teil und einen $W$-Teil, und jeder bleibt in seinem Unterraum.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Ein Weg im einen Viertel, dann ein Weg im anderen, ist eine Mischung aus Strassen beider.</p></div><div class="sp-formal"><p>„$\subseteq$“: für $u\in U$, $w\in W$ ist der Vektor $u+w=1\cdot u+1\cdot w$ eine Linearkombination von Vektoren aus $U\cup W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jede Mischung von Strassen aus beiden Vierteln lässt sich sortieren: erst alle Strassen des ersten Viertels, dann alle des zweiten.</p></div><div class="sp-formal"><p>„$\supseteq$“: sei $v=\sum_{i=1}^sa_iu_i+\sum_{j=1}^rb_jw_j$ mit $u_i\in U$, $w_j\in W$ (Terme sortiert danach, woher der Vektor stammt; ein Vektor in $U\cap W$ darf auf eine der beiden Seiten). Dann ist $u:=\sum a_iu_i\in U$ und $w:=\sum b_jw_j\in W$, da Unterräume unter Kombinationen abgeschlossen sind. Also $v=u+w\in U+W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Also ist das gemeinsame Viertel das kleinste abgeschlossene Viertel, das beide enthält.</p></div><div class="sp-formal"><p>Also $U+W=\mathrm{Sp}(U\cup W)$, und das ist der kleinste Unterraum, der $U\cup W$ enthält (<a class="xl" href="linalg-06.html">Lektion 6</a>). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_twoways">ein Element auf zwei Wegen berechnen</a> <a class="mvl" href="../linalg-moves.html#m-la_member">Zugehörigkeit Element für Element entscheiden</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>„$\subseteq$“: für $u\in U$ und $w\in W$ ist der Vektor $u+w=1\cdot u+1\cdot w$ eine Linearkombination von Vektoren aus $U\cup W$, liegt also in $\mathrm{Sp}(U\cup W)$. „$\supseteq$“: ein Vektor aus $\mathrm{Sp}(U\cup W)$ ist eine Linearkombination $v=\sum_{i=1}^sa_iu_i+\sum_{j=1}^rb_jw_j$ endlich vieler Vektoren, wobei wir die Terme so sortiert haben, dass $u_i\in U$ und $w_j\in W$ (ein Vektor aus $U\cap W$ kommt auf eine der beiden Seiten). Da $U$ und $W$ Unterräume sind, ist $u:=\sum a_iu_i\in U$ und $w:=\sum b_jw_j\in W$, also $v=u+w\in U+W$. Also $U+W=\mathrm{Sp}(U\cup W)$; insbesondere ist es ein Unterraum und der kleinste, der $U\cup W$ enthält. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Zeige direkt (ohne Beweis A), dass $U+W$ unter Addition abgeschlossen ist.
+  <details><summary>Antwort</summary><div><p>$(u+w)+(u'+w')=(u+u')+(w+w')$ nach Assoziativität und Kommutativität von $+$, und $u+u'\in U$, $w+w'\in W$. Also ist die Summe wieder von der Form „Vektor von $U$ plus Vektor von $W$“.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige: $U+W=U$ genau dann, wenn $W\subseteq U$.
+  <details><summary>Antwort</summary><div><p>„$\Leftarrow$“: ist $W\subseteq U$, so liegt $u+w\in U$ für alle $u\in U$, $w\in W$, also $U+W\subseteq U$; und $U\subseteq U+W$ über $u=u+0$. „$\Rightarrow$“: $w=0+w\in U+W=U$ für jedes $w\in W$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe Beweis A nur aus dem Rahmen heraus.</li>
+</ol></div>
+<p>Praktische Folgerung: <strong>ist $U=\mathrm{Sp}(u_1,\dots,u_l)$ und $W=\mathrm{Sp}(w_1,\dots,w_m)$, so ist $U+W$ $=\mathrm{Sp}(u_1,\dots,u_l,$ $w_1,\dots,w_m)$.</strong> Um eine Summe zu berechnen, setze die erzeugenden Vektoren zusammen.</p>
+
+<div class="box"><h3 id="we-1">Musterbeispiel 1: eine Basis einer Summe im $\mathbb R^4$</h3>
+<p>Sei $U=\mathrm{Sp}\big((1,0,1,0),(0,1,0,1)\big)$ und $W=\mathrm{Sp}\big((1,1,0,0),(0,0,1,1)\big)$ im $\mathbb R^4$.</p>
+<ol class="steps">
+  <li>Schreibe ein erzeugendes System von $U+W$ auf.
+  <details><summary>Antwort</summary><div><p>Nach der praktischen Folgerung aus Beweis A: alle vier Vektoren zusammen, $(1,0,1,0),(0,1,0,1),(1,1,0,0),(0,0,1,1)$.</p></div></details></li>
+  <li>Siebe es zu einer Basis. Was ist $\dim(U+W)$?
+  <details><summary>Antwort</summary><div><p>Die ersten beiden sind unabhängig (schau auf die Einträge 1 und 2). $(1,1,0,0)$: eine Kombination $a(1,0,1,0)+b(0,1,0,1)=(a,b,a,b)$ hat Eintrag 3 gleich Eintrag 1; $(1,1,0,0)$ hat $0\ne1$, also behalten. $(0,0,1,1)$: $(1,0,1,0)+(0,1,0,1)-(1,1,0,0)=(0,0,1,1)$, also wegwerfen. <strong>Basis von $U+W$: die ersten drei Vektoren; $\dim(U+W)=3$.</strong></p></div></details></li>
+  <li>Was sagt die Dimensionsformel für $U\cap W$ voraus? Finde ihn.</li>
+
+  <details><summary>Antwort</summary><div><p>$\dim(U\cap W)=2+2-3=1$. Die Beziehung, die wir gefunden haben, $(1,0,1,0)+(0,1,0,1)=(1,1,0,0)+(0,0,1,1)$, zeigt, dass $(1,1,1,1)$ in $U$ (linke Seite) und in $W$ (rechte Seite) liegt. Also $U\cap W=\mathrm{Sp}\big((1,1,1,1)\big)$. Der Zug: <strong>eine Abhängigkeit in der gemeinsamen erzeugenden Liste liefert einen Vektor im Durchschnitt</strong>, genau wie im Beweis unten.</p></div></details></li>
+</ol></div>
+
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Zwei Inklusionen; für „$\supseteq$“ schreibe eine allgemeine Linearkombination und sortiere ihre Terme in einen $U$-Teil und einen $W$-Teil.</li>
+  <li>Jeder Teil bleibt in seinem Unterraum (abgeschlossen unter Kombinationen).</li>
+  <li>Schliesse „kleinster Unterraum, der $U$ und $W$ enthält“ aus der Beschreibung des Spanns.</li>
+</ol>
+<p><strong>Kurz:</strong> sortiere die Terme. Selten allein gefragt, aber jede Berechnung einer Summe („setze die erzeugenden Vektoren zusammen“) und der Erzeugungsteil der Dimensionsformel ruhen darauf.</p></div>
+<h2 id="s3-the-dimension-formula">3. Die Dimensionsformel</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-07.html#proof-e">Lektion 7</a>)</span>
+<ul>
+  <li><strong>Eine Liste ergänzen:</strong> jede linear unabhängige Liste in einem endlichdimensionalen Raum lässt sich zu einer Basis ergänzen (Beweis E). Beweis B unten ergänzt eine Basis von $U\cap W$ zweimal.</li>
+  <li><strong>Gleichgewicht:</strong> $n$ Vektoren in einem $n$-dimensionalen Raum sind genau dann unabhängig, wenn sie erzeugen (Beweis F).</li>
+</ul></div>
+
+<h3 id="proof-b">Beweis B: eine Basis von $U+W$ und die Dimensionsformel (Proposition 2.3.37 (2), (3), <a class="pl" href="../linalg-script.html#p64">S. 64</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Seien $U$ und $W$ endlichdimensional, $k=\dim(U\cap W)$, $l=\dim U$, $m=\dim W$. Wähle eine Basis $p_1,\dots,p_k$ von $U\cap W$ und ergänze sie zu einer Basis $p_1,\dots,p_k,u_1,\dots,u_{l-k}$ von $U$ und zu einer Basis $p_1,\dots,p_k,w_1,\dots,w_{m-k}$ von $W$. Dann ist</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;p_1,\dots,p_k,\ u_1,\dots,u_{l-k},\\ &amp;w_1,\dots,w_{m-k}\end{aligned}$$</span>
+<p>eine Basis von $U+W$. Insbesondere</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\dim(U+W)&amp;=\dim U+\dim W\\&amp;\quad-\dim(U\cap W).\end{aligned}$$</span></div>
+<p><strong>Die Idee.</strong> Baue die Basis von der Überschneidung nach aussen, sodass die Vektoren der Überschneidung genau einmal vorkommen. Das Erzeugen ist leicht (Beweis A). Für die Unabhängigkeit verschiebe den $w$-Teil einer verschwindenden Kombination auf eine Seite: er liegt in $W$ und in $U$, also in der Überschneidung, wo er allein mit den $p$ geschrieben werden kann.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Die Formel ist eine Aussage über drei Dimensionen.</strong> Dimensionen sind Längen von Basen, also baut der ehrliche Beweis <strong>Basen</strong>: eine von $U\cap W$, ergänzt zu $U$ und zu $W$, und zeigt, dass die kombinierte Liste eine Basis von $U+W$ ist.</li>
+  <li><strong>„ist eine Basis“</strong> heisst zwei Prüfungen: sie erzeugt $U+W$, und sie ist linear unabhängig. (Probeklausur HS20, Problem 5 (b): „es reicht nicht, eine Basis anzugeben, ohne zu zeigen, dass sie eine ist“.)</li>
+  <li><strong>Unabhängigkeit, erste Zeile:</strong> „Sei $\sum a_ip_i+\sum b_iu_i+\sum c_iw_i=0$.“ <strong>Letzte Zeile:</strong> „also sind alle $a_i,b_i,c_i$ gleich $0$.“</li>
+  <li><strong>Die Lücke:</strong> die drei Gruppen von Vektoren stammen aus verschiedenen Basen, und keine einzelne Basis enthält sie alle. Man muss zeigen, dass ein Vektor in $U\cap W$ liegt, damit er mit den $p$ umgeschrieben werden kann.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Liste enthält einen vollständigen Satz von Richtungen für jedes Viertel, also erreicht sie das gemeinsame Viertel.</p></div><div class="sp-formal"><p>Die Liste enthält eine Basis von $U$ und eine Basis von $W$, also erzeugt sie nach Beweis A $U+W$. (Die Ergänzungen existieren nach <a class="xl" href="linalg-07.html">Lektion 7</a>, Beweis E; $U\cap W$ ist endlichdimensional als Unterraum von $U$, <a class="xl" href="linalg-07.html">Lektion 7</a>, Aufgabe 4.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Angenommen, eine Mischung aus all diesen Strassen führt zurück zum Tor.</p></div><div class="sp-formal"><p>Unabhängigkeit: sei</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\textstyle\sum_{i}a_ip_i+\sum_{i}b_iu_i\\ &amp;\textstyle{}+\sum_{i}c_iw_i=0.\quad(*)\end{aligned}$$</span>
+<p>Setze $v:=\sum c_iw_i$ $=-\big(\sum a_ip_i+\sum b_iu_i\big)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Teil, der auf den eigenen Strassen des zweiten Viertels ging, endet in beiden Vierteln, also in der Überschneidung.</p></div><div class="sp-formal"><p>Die linke Form zeigt $v\in W$, die rechte Form zeigt $v\in U$. Also $v\in U\cap W$, und $v=\sum\lambda_ip_i$ für gewisse $\lambda_i\in K$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Aber die Strassen des zweiten Viertels verschwenden nichts, also war dieser Teil leer.</p></div><div class="sp-formal"><p>Dann $\sum\lambda_ip_i-\sum c_iw_i=0$. Da $p_1,\dots,p_k,w_1,\dots,w_{m-k}$ eine Basis von $W$ ist, sind alle $\lambda_i=0$ und alle $c_i=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Was übrig bleibt, ist eine Mischung im ersten Viertel, also ebenfalls trivial.</p></div><div class="sp-formal"><p>Nun liest sich $(*)$ als $\sum a_ip_i+\sum b_iu_i=0$, und $p_1,\dots,p_k,u_1,\dots,u_{l-k}$ ist eine Basis von $U$: alle $a_i=b_i=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zähle die Strassen.</p></div><div class="sp-formal"><p>Also ist die Liste eine Basis von $U+W$, und $\dim(U+W)$ $=k+(l-k)+(m-k)$ $=l+m-k$. <span class="qed">∎</span></p></div></div>
+</div>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Die Liste enthält Basen von $U$ und von $W$, erzeugt also $U+W=\mathrm{Sp}(U\cup W)$. Sei $\sum_ia_ip_i+\sum_ib_iu_i+\sum_ic_iw_i=0$ und setze $v:=\sum_ic_iw_i$. Dann ist $v\in W$, und $v=-\sum_ia_ip_i-\sum_ib_iu_i\in U$, also $v\in U\cap W$ und $v=\sum_i\lambda_ip_i$ für geeignete $\lambda_i\in K$. Aus $\sum_i\lambda_ip_i-\sum_ic_iw_i=0$ und der linearen Unabhängigkeit von $p_1,\dots,p_k,w_1,\dots,w_{m-k}$ folgt $c_i=0$ für alle $i$. Die verbleibende Gleichung $\sum_ia_ip_i+\sum_ib_iu_i=0$ und die lineare Unabhängigkeit von $p_1,\dots,p_k,u_1,\dots,u_{l-k}$ geben $a_i=b_i=0$. Also ist die Liste eine Basis von $U+W$, und $\dim(U+W)$ $=k+(l-k)+(m-k)$ $=l+m-k$, was die Dimensionsformel ist. <span class="qed">∎</span></p>
+</div></details>
+<p>Zwei schnelle Folgerungen, benutzt in FS17, Problem 5 (a): $\dim(U\cap W)$ $\le\min(\dim U,\dim W)$ (ein Unterraum von jedem), und $\dim(U+W)\le\dim U+\dim W$ (die Formel, da $\dim(U\cap W)\ge0$).</p>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_overlap">ein Vektor, auf zwei Wegen geschrieben, liegt im Durchschnitt</a></p>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Warum beginnen wir mit einer Basis von $U\cap W$ und ergänzen sie, statt irgendeine Basis von $U$ und irgendeine Basis von $W$ zu nehmen und sie zusammenzulegen?
+  <details><summary>Antwort</summary><div><p>Zwei beliebige Basen zusammengelegt erzeugen $U+W$, aber sie sind meist abhängig, und man sieht nicht, wie viele Vektoren man wegwerfen muss. Wenn man von der Überschneidung ausgeht, erscheinen die Richtungen der Überschneidung genau einmal, die Liste hat also genau $l+m-k$ Vektoren, und nur die Unabhängigkeit bleibt zu zeigen. (Beispiel: $U=W=\mathbb R^2$ mit zwei verschiedenen Basen: vier Vektoren, Dimension $2$.)</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Im Schritt der Unabhängigkeit: welche der beiden Basen benutzt du zuerst, und warum muss es genau diese sein?
+  <details><summary>Antwort</summary><div><p>Zuerst die Basis $p_1,\dots,p_k,w_1,\dots,w_{m-k}$ von $W$: nach dem Umschreiben $v=\sum c_iw_i$ als $\sum\lambda_ip_i$ betrifft die Gleichung $\sum\lambda_ip_i-\sum c_iw_i=0$ nur Vektoren dieser Basis, also sind alle $c_i=0$. Erst dann ist die verbleibende Gleichung eine Kombination der Basis von $U$. (Symmetrisch könntest du den $u$-Teil isolieren; wichtig ist, den Teil zu isolieren, der <em>nicht</em> in der Basis des anderen Unterraums liegt.)</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe Beweis B nur aus dem Rahmen: die Basen, das Erzeugen, die Unabhängigkeit in drei Zügen, das Zählen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Basen: $p_1,\dots,p_k$ von $U\cap W$, ergänzt zu $U$ (füge $u_1,\dots,u_{l-k}$ hinzu) und zu $W$ (füge $w_1,\dots,w_{m-k}$ hinzu). Nenne den Grund: jede unabhängige Liste ergänzt sich zu einer Basis.</li>
+  <li>Erzeugen: die Liste enthält eine Basis von $U$ und eine von $W$, und $U+W=\mathrm{Sp}(U\cup W)$.</li>
+  <li>Unabhängigkeit: aus $\sum a_ip_i+\sum b_iu_i+\sum c_iw_i=0$ setze $v:=\sum c_iw_i$; er liegt in $W$ und (nach der Gleichung) in $U$.</li>
+  <li>Also $v=\sum\lambda_ip_i$; die Basis von $W$ gibt $c_i=0$; dann gibt die Basis von $U$ $a_i=b_i=0$.</li>
+  <li>Zählen: $k+(l-k)+(m-k)=l+m-k$.</li>
+</ol>
+<p><strong>Kurz:</strong> baue von der Überschneidung nach aussen; der $w$-Teil einer Nullkombination liegt in der Überschneidung. Das ist Probeklausur HS20, Problem 5 (b) (6 Punkte) und steckt hinter FS17, Problem 5 (a); der Satz der Vorlesung zur Dimensionsformel. Rechne mit 6–8 Punkten.</p></div>
+
+<div class="explorer" id="sum-ex">
+<span class="label">Probier es aus: Summe und Durchschnitt im $\mathbb R^3$</span>
+<p>Jeder Unterraum wird von zwei Vektoren erzeugt (schreibe $0$en für weniger). Der Explorer rechnet genau: eine Basis und die Dimension von $U$, $W$, $U+W$ und $U\cap W$, prüft die Dimensionsformel und sagt, ob die Summe direkt ist.</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label>Beispiel <select id="sum-set" aria-label="Beispiel"></select></label>
+</div>
+<div id="sum-in" style="font-family:var(--font-util)"></div>
+<div id="sum-out" aria-live="polite"></div>
+</div>
+<script>
+(function(){
+  var box=document.getElementById('sum-in');if(!box)return;
+  var SETS=[
+    {name:'Serie 4, ex. 21: E₁ ∩ E₂',v:[[-2,1,0],[-3,0,1],[1,0,-2],[0,1,0]]},
+    {name:'Script: Sp(e₁,e₂) and Sp(e₂,e₃)',v:[[1,0,0],[0,1,0],[0,1,0],[0,0,1]]},
+    {name:'A plane and a line (direct)',v:[[1,0,0],[0,1,0],[1,1,1],[0,0,0]]},
+    {name:'A line inside a plane',v:[[1,1,0],[1,-1,0],[2,0,0],[0,0,0]]},
+    {name:'The same line twice',v:[[1,2,3],[0,0,0],[2,4,6],[0,0,0]]}
+  ];
+  var sel=document.getElementById('sum-set');
+  SETS.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
+  var N=['u₁','u₂','w₁','w₂'],h='';
+  N.forEach(function(n,r){h+='<div style="white-space:nowrap;margin:.2em 0">'+n+' = (';for(var c=0;c<3;c++)h+=(c?', ':'')+'<input type="number" id="sum-'+r+c+'" style="width:2.6em" aria-label="'+n+' entry '+(c+1)+'">';h+=')</div>';});
+  box.innerHTML=h;
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function fr(n,d){if(d<0){n=-n;d=-d;}var g=gcd(n,d);return [n/g,d/g];}
+  function add(p,q){return fr(p[0]*q[1]+q[0]*p[1],p[1]*q[1]);}
+  function mul(p,q){return fr(p[0]*q[0],p[1]*q[1]);}
+  function div(p,q){return fr(p[0]*q[1],p[1]*q[0]);}
+  function neg(p){return [-p[0],p[1]];}
+  /* RREF of rows (array of arrays of fractions); returns {R, piv} */
+  function rref(M){M=M.map(function(r){return r.slice();});var rows=M.length,cols=rows?M[0].length:0,piv=[],row=0;
+    for(var c=0;c<cols&&row<rows;c++){var p=-1;for(var r=row;r<rows;r++)if(M[r][c][0]!==0){p=r;break;}if(p<0)continue;
+      var t=M[p];M[p]=M[row];M[row]=t;var inv=M[row][c];for(var i=0;i<cols;i++)M[row][i]=div(M[row][i],inv);
+      for(r=0;r<rows;r++)if(r!==row&&M[r][c][0]!==0){var f=M[r][c];for(i=0;i<cols;i++)M[r][i]=add(M[r][i],neg(mul(f,M[row][i])));}
+      piv.push(c);row++;}
+    return {R:M,piv:piv};}
+  function F(v){return v.map(function(x){return [x,1];});}
+  /* sieve: keep vectors not in the span of the kept ones */
+  function sieve(vs){var kept=[];vs.forEach(function(v){if(v.every(function(x){return x[0]===0;}))return;var t=kept.concat([v]);if(rref(t).piv.length>kept.length)kept.push(v);});return kept;}
+  function nice(v,flip){/* scale fraction vector to a primitive integer vector */var L=1;v.forEach(function(x){L=L*x[1]/gcd(L,x[1]);});var w=v.map(function(x){return x[0]*(L/x[1]);});var g=0;w.forEach(function(x){g=gcd(g,x);});if(g)w=w.map(function(x){return x/g;});var f=w.find(function(x){return x!==0;});if(flip&&f<0)w=w.map(function(x){return -x;});return '('+w.join(', ')+')';}
+  function list(B,f){return B.length?B.map(function(v){return nice(v,f);}).join(', '):'(empty list)';}
+  function run(){var V=[];for(var r=0;r<4;r++){var v=[];for(var c=0;c<3;c++)v.push(Math.round(+document.getElementById('sum-'+r+c).value||0));V.push(v);}
+    var BU=sieve([F(V[0]),F(V[1])]),BW=sieve([F(V[2]),F(V[3])]);
+    var BS=sieve(BU.concat(BW));
+    /* intersection: solve sum a_i bu_i - sum b_j bw_j = 0; columns = BU, -BW; null space */
+    var cols=BU.concat(BW.map(function(w){return w.map(neg);})),BI=[];
+    if(cols.length){var M=[];for(var i=0;i<3;i++){M.push(cols.map(function(c){return c[i];}));}
+      var rr=rref(M),free=[];for(var c2=0;c2<cols.length;c2++)if(rr.piv.indexOf(c2)<0)free.push(c2);
+      free.forEach(function(fc){var x=cols.map(function(){return [0,1];});x[fc]=[1,1];rr.piv.forEach(function(pc,ri){x[pc]=neg(rr.R[ri][fc]);});
+        var v=[[0,1],[0,1],[0,1]];for(var k=0;k<BU.length;k++)for(i=0;i<3;i++)v[i]=add(v[i],mul(x[k],BU[k][i]));BI.push(v);});}
+    var dU=BU.length,dW=BW.length,dS=BS.length,dI=BI.length;
+    var out='<p><strong>U</strong>: basis '+list(BU)+', dim U = '+dU+'.<br><strong>W</strong>: basis '+list(BW)+', dim W = '+dW+'.<br><strong>U + W</strong>: basis '+list(BS)+', dim(U + W) = '+dS+(dS===3?' (all of ℝ³)':'')+'.<br><strong>U ∩ W</strong>: basis '+list(BI,1)+', dim(U ∩ W) = '+dI+'.</p>';
+    out+='<p>Dimension formula: dim U + dim W − dim(U ∩ W) = '+dU+' + '+dW+' − '+dI+' = '+(dU+dW-dI)+' = dim(U + W) ✓. ';
+    out+=dI===0?'The intersection is {0}: <strong>the sum is direct</strong>, U + W = U ⊕ W.':'The intersection is not {0}: <strong>the sum is not direct</strong>; a vector of U ∩ W can be moved from the U-part to the W-part.';
+    out+='</p>';document.getElementById('sum-out').innerHTML=out;}
+  function load(){var s=SETS[+sel.value];for(var r=0;r<4;r++)for(var c=0;c<3;c++)document.getElementById('sum-'+r+c).value=s.v[r][c];run();}
+  sel.addEventListener('change',load);box.addEventListener('input',run);load();
+})();
+</script>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: Basen von Ebenen und ihren Durchschnitten (Serie 4, Aufgabe 21)</h3>
+<p>Für $(\alpha,\beta,\gamma)\ne(0,0,0)$ ist die Menge $U_{0;\alpha,\beta,\gamma}=\{x\in\mathbb R^3\mid\alpha x_1+\beta x_2+\gamma x_3=0\}$ ein Unterraum (das Beispiel $U_\lambda$ der Vorlesung mit $\lambda=0$). Sei $E_1=U_{0;1,2,3}$, $E_2=U_{0;2,0,1}$, $E_3=U_{0;2,0,0}$. Finde Basen von $E_1$, $E_2$, $E_3$ und von den drei paarweisen Durchschnitten.</p>
+<ol class="steps">
+  <li>Eine Basis von $E_1$: löse die Gleichung nach einer Koordinate auf.
+  <details><summary>Antwort</summary><div><p>$x_1=-2x_2-3x_3$, also $x=x_2(-2,1,0)+x_3(-3,0,1)$. Die beiden Vektoren liegen in $E_1$, erzeugen ihn und sind unabhängig (schau auf die Einträge 2 und 3). <strong>Basis $(-2,1,0),(-3,0,1)$, Dimension $2$.</strong> Ebenso $E_2$: $x_3=-2x_1$, Basis $(1,0,-2),(0,1,0)$. $E_3$: $x_1=0$, Basis $(0,1,0),(0,0,1)$.</p></div></details></li>
+  <li>Bevor du rechnest: welche Dimension muss $E_1\cap E_2$ haben?
+  <details><summary>Antwort</summary><div><p>$E_1\ne E_2$ (z. B. $(0,1,0)\in E_2\setminus E_1$), also ist $E_1+E_2$ ein Unterraum, der echt grösser ist als die Ebene $E_1$, also $\mathbb R^3$ (Dimension $3$). Dimensionsformel: $\dim(E_1\cap E_2)=2+2-3=1$, eine Gerade.</p></div></details></li>
+  <li>Berechne $E_1\cap E_2$, $E_2\cap E_3$, $E_3\cap E_1$.
+  <details><summary>Antwort</summary><div><p>Löse beide Gleichungen. $E_1\cap E_2$: $x_3=-2x_1$, dann gibt $x_1+2x_2-6x_1=0$ den Wert $x_2=\frac52x_1$; also $x=\frac{x_1}2(2,5,-4)$: <strong>Basis $(2,5,-4)$</strong>. $E_2\cap E_3$: $x_1=0$, $x_3=0$: <strong>Basis $(0,1,0)$</strong>. $E_3\cap E_1$: $x_1=0$, $2x_2+3x_3=0$: <strong>Basis $(0,3,-2)$</strong>. Prüfe jeden gegen beide Gleichungen; das erste Beispiel des Explorers zeigt $E_1\cap E_2$.</p></div></details></li>
+  <li>Kann ein Paar der Ebenen $E_1,E_2,E_3$ eine direkte Summe bilden? Welche Gerade ist ein Komplement von $E_3$?
+  <details><summary>Antwort</summary><div><p>Nein: zwei Ebenen im $\mathbb R^3$ treffen sich immer in mindestens einer Geraden, denn $\dim(E_i\cap E_j)\ge2+2-3=1$, also ist ihr Durchschnitt nie $\{0\}$. Ein Komplement von $E_3=\{x_1=0\}$ ist eine Gerade $\mathrm{Sp}(w)$ mit $w\notin E_3$, also $w_1\ne0$: zum Beispiel $\mathrm{Sp}(e_1)$, oder $\mathrm{Sp}\big((1,5,-4)\big)$.</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-direct-sums">4. Direkte Summen</h2>
+<h3 id="proof-c">Beweis C: fünf Arten zu sagen „die Überschneidung ist nur $0$“ (Proposition 2.3.40, <a class="pl" href="../linalg-script.html#p65">S. 65</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $V$ endlichdimensional. Die folgenden Aussagen sind äquivalent:</p>
+<ol>
+  <li>$\dim(U+W)=\dim U+\dim W$;</li>
+  <li>$\dim(U\cap W)=0$;</li>
+  <li>$U\cap W=\{0\}$;</li>
+  <li>jedes $v\in U+W$ hat eine <strong>eindeutige</strong> Darstellung $v=u+w$ mit $u\in U$, $w\in W$;</li>
+  <li>aus $0=u+w$ mit $u\in U$, $w\in W$ folgt $u=0$ und $w=0$.</li>
+</ol>
+<p><strong>Definition 2.3.42.</strong> Gelten sie, so heisst $U+W$ die <strong>direkte Summe</strong> von $U$ und $W$, geschrieben $U\oplus W$. (Bemerkung 2.3.41: für unendlichdimensionales $V$ sind (2)–(5) weiterhin äquivalent und dienen als Definition.)</p></div>
+<p><strong>Die Idee.</strong> (1)$\iff$(2) ist die Dimensionsformel, (2)$\iff$(3) gilt, weil nur $\{0\}$ die Dimension $0$ hat. Das Herz ist (3)$\Rightarrow$(4)$\Rightarrow$(5)$\Rightarrow$(3): subtrahiere zwei Darstellungen, und umgekehrt zerlege einen Vektor der Überschneidung als $v+(-v)$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Fünf Aussagen:</strong> beweise eine Kette. (1)$\iff$(2) und (2)$\iff$(3) sind kurz; danach ein Kreis (3)$\Rightarrow$(4)$\Rightarrow$(5)$\Rightarrow$(3).</li>
+  <li><strong>(3)$\Rightarrow$(4):</strong> Eindeutigkeit, also „Sei $u_1+w_1=u_2+w_2$ … also $u_1=u_2$ und $w_1=w_2$“.</li>
+  <li><strong>(5)$\Rightarrow$(3):</strong> eine Mengengleichheit $U\cap W=\{0\}$; „$\supseteq$“ ist gratis, also „Sei $v\in U\cap W$ … also $v=0$“ (oder per Widerspruch).</li>
+  <li><strong>Die Lücke:</strong> zwei Darstellungen in eine Darstellung der $0$ verwandeln und einen Vektor der Überschneidung in eine Darstellung der $0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Adressen für einen Ort: die Differenz der Wege liegt in beiden Vierteln.</p></div><div class="sp-formal"><p>(3)$\Rightarrow$(4): sei $u_1+w_1=u_2+w_2$ mit $u_i\in U$, $w_i\in W$. Dann liegt $u_1-u_2=w_2-w_1$ in $U$ (links) und in $W$ (rechts), also in $U\cap W=\{0\}$. Somit $u_1=u_2$, $w_1=w_2$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Das Tor selbst hat die naheliegende Adresse „bleib, bleib“, also hat es keine andere.</p></div><div class="sp-formal"><p>(4)$\Rightarrow$(5): $0=0+0$ ist eine Darstellung der $0$; nach Eindeutigkeit erzwingt $0=u+w$ die Werte $u=0$, $w=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Ein Ort der Überschneidung ausser dem Tor gibt dem Tor eine zweite Adresse.</p></div><div class="sp-formal"><p>(5)$\Rightarrow$(3): ist $0\ne v\in U\cap W$, so $0=v+(-v)$ mit $v\in U$, $-v\in W$ und $v\ne0$, Widerspruch zu (5). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_twoexpr">zwei Darstellungen: subtrahiere sie</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(1)$\iff$(2): nach der Dimensionsformel ist $\dim(U+W)=\dim U+\dim W-\dim(U\cap W)$, also gilt (1) genau dann, wenn $\dim(U\cap W)=0$. (2)$\iff$(3): der einzige Raum der Dimension $0$ ist $\{0\}$ (seine Basis ist leer, und der Spann der leeren Liste ist $\{0\}$). (3)$\Rightarrow$(4): jedes $v\in U+W$ hat eine Darstellung $v=u+w$ nach Definition von $U+W$. Ist $u_1+w_1=u_2+w_2$ mit $u_i\in U$, $w_i\in W$, so liegt $u_1-u_2=w_2-w_1$ in $U$ und in $W$, ist also $0$; also $u_1=u_2$ und $w_1=w_2$. (4)$\Rightarrow$(5): $0=0+0$ ist eine Darstellung von $0\in U+W$; nach Eindeutigkeit erzwingt $0=u+w$ die Werte $u=0$ und $w=0$. (5)$\Rightarrow$(3): sei $v\in U\cap W$. Dann $0=v+(-v)$ mit $v\in U$ und $-v\in W$, also nach (5) $v=0$. Somit $U\cap W=\{0\}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Welche der fünf Bedingungen ergeben in einem unendlichdimensionalen Raum Sinn, und welche prüft man dort in der Praxis?
+  <details><summary>Antwort</summary><div><p>(3), (4), (5) ergeben immer Sinn; (1), (2) brauchen endliche Dimension. In der Praxis prüfst du (3): zeige, dass ein Vektor in beiden Unterräumen $0$ ist. Musterbeispiel 3 (gerade und ungerade Funktionen) tut genau das.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Beweise (5)$\Rightarrow$(4) direkt, ohne über (3) zu gehen.
+  <details><summary>Antwort</summary><div><p>Sei $u_1+w_1=u_2+w_2$. Dann $0=(u_1-u_2)+(w_1-w_2)$ mit $u_1-u_2\in U$, $w_1-w_2\in W$. Nach (5) ist $u_1-u_2=0$ und $w_1-w_2=0$. Das ist der Zug „zwei Darstellungen: subtrahiere sie“ aus <a class="xl" href="linalg-06.html">Lektion 6</a>.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe den Kreis (3)$\Rightarrow$(4)$\Rightarrow$(5)$\Rightarrow$(3) nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Definition: $V=U\oplus W$ heisst $V=U+W$ und $U\cap W=\{0\}$.</li>
+  <li>„$\Rightarrow$ eindeutige Darstellung“: Existenz aus $V=U+W$; zwei Darstellungen, subtrahieren, die Differenz liegt in $U\cap W=\{0\}$.</li>
+  <li>„$\Leftarrow$“: Existenz gibt $V=U+W$; für $v\in U\cap W$ vergleiche $v=v+0$ und $v=0+v$; Eindeutigkeit gibt $v=0$.</li>
+  <li>Wenn Dimensionen gefragt sind: die Dimensionsformel macht aus $U\cap W=\{0\}$ die Gleichung $\dim(U\oplus W)=\dim U+\dim W$.</li>
+</ol>
+<p><strong>Kurz:</strong> Überschneidung $\{0\}$ $\iff$ eindeutige Darstellung, durch Subtrahieren. FS17, Problem 5 (b), (c) fragt genau nach der Definition und dieser Äquivalenz (zusammen 7 Punkte).</p></div>
+<p>Prüfungswarnung: <strong>bei drei oder mehr Unterräumen reicht „paarweise Durchschnitte sind $\{0\}$“ nicht</strong> für eine direkte Summe. Die Geraden $\mathrm{Sp}(e_1)$, $\mathrm{Sp}(e_2)$, $\mathrm{Sp}(e_1+e_2)$ im $\mathbb R^2$ treffen sich paarweise nur in $0$, aber $0=e_1+e_2+\big(-(e_1+e_2)\big)$ ist eine nichttriviale Darstellung der $0$ als Summe je eines Vektors aus jedem.</p>
+
+<div class="box"><h3 id="we-3">Musterbeispiel 3: gerade und ungerade Funktionen (Beispiel 2.3.45 (4))</h3>
+<p>Sei $V=\mathrm{Abb}(\mathbb R,\mathbb R)$, $U=\{f\mid f(-x)=f(x)\ \forall x\}$ (gerade), $W=\{f\mid f(-x)=-f(x)\ \forall x\}$ (ungerade). Zeige $V=U\oplus W$.</p>
+<ol class="steps">
+  <li>Ist die Überschneidung nur $0$?
+  <details><summary>Antwort</summary><div><p>Ist $f$ gerade und ungerade, so $f(x)=f(-x)=-f(x)$, also $2f(x)=0$ und $f(x)=0$ für alle $x$. Also $U\cap W=\{0\}$.</p></div></details></li>
+  <li>Zerfällt jedes $f$ in gerade plus ungerade? Errate die Zerlegung.
+  <details><summary>Antwort</summary><div><p>$f(x)=\underbrace{\tfrac{f(x)+f(-x)}2}_{\text{even}}+\underbrace{\tfrac{f(x)-f(-x)}2}_{\text{odd}}$. Prüfe: ersetzt man $x$ durch $-x$, bleibt der erste Teil unverändert und der zweite wechselt das Vorzeichen. Also $V=U+W$, und mit Schritt 1 $V=U\oplus W$. (Beispiel: $e^x=\cosh x+\sinh x$.) Die Division durch $2$ ist wichtig: über einem Körper mit $1+1=0$ bricht dieses Argument zusammen.</p></div></details></li>
+</ol>
+<p>Hier ist $V$ unendlichdimensional, also haben wir Bedingung (3) benutzt, nicht das Zählen der Dimension.</p></div>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: symmetrische plus schiefsymmetrische Matrizen</h3>
+<p>Sei $V=M_{2\times2}(\mathbb R)$, $S=\{A\mid A^T=A\}$ (symmetrisch) und $A\!S=\{A\mid A^T=-A\}$ (schiefsymmetrisch), wobei $A^T$ die Transponierte ist (Zeilen und Spalten vertauscht).</p>
+<ol class="steps">
+  <li>Finde Basen und Dimensionen von $S$ und $A\!S$.
+  <details><summary>Antwort</summary><div><p>$S$: $\begin{pmatrix}a&amp;b\\b&amp;d\end{pmatrix}$, Basis $E_{11},\ E_{12}+E_{21},\ E_{22}$, Dimension $3$ (<a class="xl" href="linalg-07.html">Lektion 7</a>, Aufgabe 2 (a)). $A\!S$: $A^T=-A$ erzwingt für die Diagonaleinträge $a=-a$, also $a=0$ (da $2\ne0$ in $\mathbb R$), und $c=-b$: $\begin{pmatrix}0&amp;b\\-b&amp;0\end{pmatrix}$, Basis $E_{12}-E_{21}$, Dimension $1$.</p></div></details></li>
+
+  <li>Zeige $V=S\oplus A\!S$ mit möglichst wenig Arbeit.
+  <details><summary>Antwort</summary><div><p>Durchschnitt: $A^T=A$ und $A^T=-A$ ergeben $A=-A$, $2A=0$, $A=0$. Also $S\cap A\!S=\{0\}$, und nach der Dimensionsformel ist $\dim(S+A\!S)=3+1-0=4=\dim V$, also $S+A\!S=V$ (ein Unterraum voller Dimension ist alles). Die Zerlegung muss man nicht finden.</p></div></details></li>
+  <li>Zerlege $A=\begin{pmatrix}1&amp;4\\2&amp;3\end{pmatrix}$ trotzdem.
+  <details><summary>Antwort</summary><div><p>$\tfrac12(A+A^T)=\begin{pmatrix}1&amp;3\\3&amp;3\end{pmatrix}$ ist symmetrisch und $\tfrac12(A-A^T)=\begin{pmatrix}0&amp;1\\-1&amp;0\end{pmatrix}$ ist schiefsymmetrisch; ihre Summe ist $A$. Dieselbe Formel wie bei geraden und ungeraden Funktionen, mit $A\mapsto A^T$ statt $f(x)\mapsto f(-x)$. Über $\mathbb F_2$ bricht sie: dort ist $-A=A$, also $S=A\!S$.</p></div></details></li>
+</ol></div>
+
+<h2 id="s5-complements">5. Komplemente</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-07.html#proof-e">Lektion 7</a>)</span>
+<ul>
+  <li><strong>Eine Liste zu einer Basis ergänzen</strong> (Beweis E): die hinzugefügten Vektoren erzeugen das Komplement.</li>
+</ul></div>
+<h3 id="proof-d">Beweis D: jeder Unterraum hat ein Komplement (Proposition 2.3.43, <a class="pl" href="../linalg-script.html#p66">S. 66</a>; Probeklausur HS20, Problem 5 (b), 6 Punkte)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $V$ endlichdimensional und $U\subseteq V$ ein Unterraum. Dann gibt es einen Unterraum $W$ mit $V=U\oplus W$. Ein solches $W$ heisst ein <strong>Komplement</strong> von $U$ in $V$ (Definition 2.3.44).</p></div>
+<p><strong>Die Idee.</strong> Ergänze eine Basis von $U$ zu einer Basis von $V$; die hinzugefügten Vektoren erzeugen ein Komplement.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Eine Existenzbehauptung:</strong> wir müssen $W$ <strong>konstruieren</strong>. <strong>Erste Zeile:</strong> „Seien $u_1,\dots,u_l$ eine Basis von $U$.“ Dann definiere $W$.</li>
+  <li><strong>„Komplement“ auflösen:</strong> $W$ ist ein Unterraum, $U+W=V$ und $U\cap W=\{0\}$. Drei Prüfungen. <strong>Letzte Zeile:</strong> „Also $V=U\oplus W$.“</li>
+  <li><strong>Die Lücke:</strong> woher kommt ein Kandidat für $W$? Das einzige Werkzeug, das aus der Basis von $U$ neue Vektoren liefert, ist „jede unabhängige Liste ergänzt sich zu einer Basis“.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Nimm die Strassen des Viertels und füge Strassen hinzu, bis das ganze Land erreicht ist.</p></div><div class="sp-formal"><p>Seien $u_1,\dots,u_l$ eine Basis von $U$, und ergänze sie zu einer Basis $u_1,\dots,u_l,w_1,\dots,w_k$ von $V$ (<a class="xl" href="linalg-07.html">Lektion 7</a>, Beweis E). Setze $W:=\mathrm{Sp}(w_1,\dots,w_k)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zusammen erreichen sie alles.</p></div><div class="sp-formal"><p>$U+W=\mathrm{Sp}(U\cup W)$ $=\mathrm{Sp}(u_1,\dots,u_l,w_1,\dots,w_k)=V$ (Beweis A).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Und sie teilen nur das Tor.</p></div><div class="sp-formal"><p>Ist $v\in U\cap W$, so $v=\sum a_iu_i=\sum b_jw_j$, also $\sum a_iu_i-\sum b_jw_j=0$. Nach der Unabhängigkeit der Basis von $V$ sind alle $a_i=b_j=0$, also $v=0$. Somit $V=U\oplus W$ (Beweis C). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_dimcount">zuerst zählen: $n$ Vektoren in einem $n$-dimensionalen Raum</a> <a class="mvl" href="../linalg-moves.html#m-la_twoexpr">zwei Darstellungen: subtrahiere sie</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Seien $u_1,\dots,u_l$ eine Basis von $U$ ($U$ ist als Unterraum von $V$ endlichdimensional). Ergänze sie zu einer Basis $u_1,\dots,u_l,w_1,\dots,w_k$ von $V$ und setze $W:=\mathrm{Sp}(w_1,\dots,w_k)$, ein Unterraum. Dann $U+W=\mathrm{Sp}(U\cup W)\supseteq\mathrm{Sp}(u_1,\dots,u_l,w_1,\dots,w_k)=V$, also $U+W=V$. Ist $v\in U\cap W$, schreibe $v=\sum_ia_iu_i=\sum_jb_jw_j$; dann $\sum_ia_iu_i-\sum_jb_jw_j=0$, und nach der linearen Unabhängigkeit der Basis von $V$ sind alle $a_i$ und $b_j$ gleich $0$, also $v=0$. Somit $U\cap W=\{0\}$ und $V=U\oplus W$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Folge dem Beweis für $U=\mathrm{Sp}\big((1,1,0)\big)\subseteq\mathbb R^3$, ergänzt mit der Standardbasis.
+  <details><summary>Antwort</summary><div><p>Siebe $(1,1,0),e_1,e_2,e_3$: behalte $(1,1,0)$; behalte $e_1$ (kein Vielfaches); $e_2=(1,1,0)-e_1$, wirf weg; behalte $e_3$ (dritter Eintrag). Also $W=\mathrm{Sp}(e_1,e_3)$, und $\mathbb R^3=U\oplus W$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige, dass jedes Komplement $W$ von $U$ die Dimension $\dim W=\dim V-\dim U$ hat.
+  <details><summary>Antwort</summary><div><p>Dimensionsformel mit $U\cap W=\{0\}$ und $U+W=V$: $\dim V=\dim U+\dim W-0$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe Beweis D nur aus dem Rahmen, wie in der Klausur (6 Punkte).</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Basis von $U$, ergänzt zu einer Basis von $V$ (nenne den Grund).</li>
+  <li>$W:=$ Spann der hinzugefügten Vektoren; er ist ein Unterraum.</li>
+  <li>$U+W=V$: die Summe enthält die ganze Basis von $V$.</li>
+  <li>$U\cap W=\{0\}$: setze die beiden Ausdrücke gleich, Unabhängigkeit der Basis von $V$.</li>
+</ol>
+<p><strong>Kurz:</strong> ergänze die Basis, nimm den Spann dessen, was du hinzugefügt hast. Probeklausur HS20, Problem 5 (b), 6 Punkte; ein Punkt pro Schritt und einer für die Schlussfolgerung.</p></div>
+<div class="box"><h3 id="we-5">Musterbeispiel 5: alle Komplemente der $x$-Achse</h3>
+<p>Sei $U=\mathrm{Sp}(e_1)\subseteq\mathbb R^2$.</p>
+<ol class="steps">
+  <li>Welche Unterräume $W$ erfüllen $\mathbb R^2=U\oplus W$?
+  <details><summary>Antwort</summary><div><p>$\dim W=2-1=1$, also $W=\mathrm{Sp}(w)$ mit $w=(a,c)\ne0$, und wir brauchen $U\cap W=\{0\}$, d. h. $w\notin U$, d. h. $c\ne0$. Durch Skalieren mit $c^{-1}$: $W=\mathrm{Sp}\big((t,1)\big)$ mit $t=a/c\in\mathbb R$. Jedes $t$ ergibt eine andere Gerade, also hat <strong>$U$ unendlich viele Komplemente</strong>, eines für jedes reelle $t$: jede Gerade durch $0$ ausser $U$ selbst.</p></div></details></li>
+  <li>Zerlege $v=(3,2)$ entlang $U$ und dem Komplement $W_t=\mathrm{Sp}\big((t,1)\big)$. Hängt der $U$-Teil von $t$ ab?
+  <details><summary>Antwort</summary><div><p>$v=\lambda e_1+\mu(t,1)$: der zweite Eintrag gibt $\mu=2$, dann $\lambda=3-2t$. Also $v=(3-2t,0)+(2t,2)$. Der $U$-Teil $(3-2t,0)$ <strong>hängt von der Wahl des Komplements ab</strong>: „die Komponente von $v$ in $U$“ ergibt nur Sinn, sobald $W$ festgelegt ist. Deshalb ist ein Komplement eine Wahl, und deshalb ist der Quotientenraum aus <a class="xl" href="../linalg-09.html">Lektion 9</a> nützlich, der keine Wahl braucht.</p></div></details></li>
+</ol></div>
+<p><strong>Komplemente sind nicht eindeutig.</strong> Im $\mathbb R^2$ hat die $x$-Achse $U$ als Komplement <em>jede</em> Gerade durch $0$ ausser $U$ selbst: die $y$-Achse, die Diagonale und so weiter (Musterbeispiel 5). Eindeutig ist die Dimension: $\dim W=\dim V-\dim U$ (Dimensionsformel mit $U\cap W=\{0\}$). Beispiel 2.3.45 (1): ist $B$ eine Basis und $S\subseteq B$, so gilt $V=\mathrm{Sp}(S)\oplus\mathrm{Sp}(B\setminus S)$.</p>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Eine direkte Summe lässt dich ein Problem in unabhängige Stücke zerlegen. Jede Funktion ist ihr gerader Teil plus ihr ungerader Teil; jede quadratische Matrix ist eine symmetrische plus eine schiefsymmetrische Matrix (falls $1+1\ne0$); im zweiten Semester ist eine Matrix genau dann diagonalisierbar, wenn der Raum die direkte Summe ihrer Eigenräume ist, und dann wirkt die Matrix auf jedem Stück einfach durch Multiplikation. Die Dimensionsformel ist die lineare Version des Zählens mit Überschneidungen, $|A\cup B|=|A|+|B|-|A\cap B|$, mit einer Wendung (unten).</p></div>
+
+<div class="box"><h3 id="for-wonder-the-formula-for">Zum Staunen: die Formel für drei Unterräume gilt nicht (Aufgabe 2.3.39, <a class="pl" href="../linalg-script.html#p65">S. 65</a>)</h3>
+<p>Für drei endliche Mengen gilt $|A\cup B\cup C|$ $=|A|+|B|+|C|$ $-|A\cap B|-|A\cap C|-|B\cap C|$ $+|A\cap B\cap C|$. Gilt Dasselbe für $\dim(U_1+U_2+U_3)$? Nimm drei verschiedene Geraden durch $0$ im $\mathbb R^2$. Die linke Seite ist $\dim\mathbb R^2=2$. Rechts ist jeder Durchschnitt $\{0\}$, also ist die rechte Seite $1+1+1=3$. <strong>Die Formel ist falsch.</strong> Der Grund: „$+$“ für Unterräume ist nicht „$\cup$“, und $(U_1+U_2)\cap U_3\ne(U_1\cap U_3)+(U_2\cap U_3)$ im Allgemeinen. Mengen verteilen sich, Unterräume nicht.</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Versuch jedes im Kopf, bevor du die Schritte aufklappst.</p>
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: ein $2020$-dimensionaler Raum (FS20, Frage III)</h3>
+<p>$\dim W=2020$, $U\subseteq W$ ein Unterraum der Dimension $1010$, $V\subseteq W$ ein beliebiger Unterraum. Welche Aussage gilt <em>nicht</em> für alle solchen $U,V,W$? (a) $U+V$ ist ein Unterraum von $W$; (b) $\dim(U\cap V)\ge\dim V-1010$; (c) $\dim(U\cap V)\le1010-\dim V$; (d) ist $\dim V&gt;1010$, so ist $U\cap V\ne0$.</p>
+<ol class="steps">
+  <li>Schreibe die Dimensionsformel als untere Schranke für $\dim(U\cap V)$ um.
+  <details><summary>Antwort</summary><div><p>$\dim(U\cap V)$ $=\dim U+\dim V-\dim(U+V)$ $\ge1010+\dim V-2020$ $=\dim V-1010$, da $U+V\subseteq W$. Das ist (b), also gilt (b), und (d) folgt daraus: $\dim V&gt;1010$ ergibt $\dim(U\cap V)\ge1$.</p></div></details></li>
+  <li>Prüfe (c) mit einer einfachen Wahl von $V$.
+  <details><summary>Antwort</summary><div><p>$V=U$: dann $\dim(U\cap V)=1010$, aber $1010-\dim V=0$. Also ist (c) falsch. (a) gilt nach Beweis A. <strong>Antwort (c).</strong></p></div></details></li>
+  <li>Für welche Dimensionen von $V$ kann $U\cap V=\{0\}$ eintreten?
+  <details><summary>Antwort</summary><div><p>Aus der Schranke in Schritt 1 folgt aus $U\cap V=\{0\}$: $\dim V-1010\le0$, d. h. $\dim V\le1010$. Umgekehrt ist jedes $\dim V\le1010$ möglich: ergänze eine Basis von $U$ zu einer Basis von $W$ ($1010$ neue Vektoren) und lass $V$ den Spann einiger der neuen Vektoren sein; dann ist $U\cap V=\{0\}$, wie in Beweis D.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-7">Musterbeispiel 7: zwei Wahr-falsch-Aussagen (FS17, xiv; Probeklausur HS20, (5))</h3>
+<ol class="steps">
+  <li>FS17, xiv: „$V$ endlichdimensional, $W_1,W_2\subseteq V$ Unterräume mit $W_1\cap W_2=\{0\}$. Dann gilt $\dim(W_1\oplus W_2)=\dim W_1\cdot\dim W_2$.“
+  <details><summary>Antwort</summary><div><p><strong>Falsch.</strong> Die Dimension einer direkten Summe ist die <em>Summe</em> der Dimensionen: die Dimensionsformel mit $\dim(W_1\cap W_2)=0$. Gegenbeispiel: die beiden Achsen im $\mathbb R^2$: $\dim=2$, aber $1\cdot1=1$. (Noch einfacher: $W_2=\{0\}$ liefert links $\dim W_1$ und rechts $0$, sobald $W_1\ne\{0\}$.)</p></div></details></li>
+
+  <li>Mock HS20, (5): „$U=\mathrm{Sp}(e_1,e_2)$, $W=\mathrm{Sp}(e_3,e_4)\subseteq K^4$. Es gibt einen Unterraum $Z$ mit $U\oplus Z=W\oplus Z=K^4$.“
+  <details><summary>Antwort</summary><div><p><strong>Wahr.</strong> $Z$ muss $2$-dimensional sein und $U$ wie $W$ nur in $0$ treffen. Probiere die „diagonale“ $Z=\mathrm{Sp}(e_1+e_3,\,e_2+e_4)$. Ein Vektor aus $Z$ ist $(a,b,a,b)$. Er liegt nur dann in $U$, wenn $a=b=0$ (Einträge 3 und 4), und nur dann in $W$, wenn $a=b=0$ (Einträge 1 und 2). Also $U\cap Z=W\cap Z=\{0\}$, und $\dim U+\dim Z=4$ gibt $U\oplus Z=K^4$; ebenso $W\oplus Z=K^4$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-8">Musterbeispiel 8: wie viele Komplemente über $\mathbb F_2$? (Probeklausur HS20, Problem 5 (c), 6 Punkte)</h3>
+<p>Sei $V$ ein Vektorraum über $\mathbb F_2$ mit $\dim V=n$, und $U\subseteq V$ ein Unterraum mit $\dim U=n-1$. Wie viele Komplemente hat $U$ in $V$?</p>
+<ol class="steps">
+  <li>Welche Dimension hat ein Komplement, und wie sieht ein $1$-dimensionaler Unterraum über $\mathbb F_2$ aus?
+  <details><summary>Antwort</summary><div><p>$\dim W=n-(n-1)=1$, also $W=\mathrm{Sp}(w)$ mit $w\ne0$. Über $\mathbb F_2$ sind die einzigen Skalare $0,1$, also $\mathrm{Sp}(w)=\{0,w\}$: verschiedene nichtnull $w$ ergeben verschiedene Geraden.</p></div></details></li>
+  <li>Für welche $w$ ist $\mathrm{Sp}(w)$ ein Komplement?
+  <details><summary>Antwort</summary><div><p>Genau für $w\notin U$. Ist $w\in U$, so ist $U\cap\mathrm{Sp}(w)\ne\{0\}$. Ist $w\notin U$, so ist $U\cap\mathrm{Sp}(w)=\{0\}$ und $\dim U+\dim\mathrm{Sp}(w)=n$, also $U\oplus\mathrm{Sp}(w)=V$.</p></div></details></li>
+  <li>Zähle.
+  <details><summary>Antwort</summary><div><p>$|V|=2^n$ und $|U|=2^{n-1}$ (ein Raum der Dimension $d$ über $\mathbb F_2$ hat $2^d$ Elemente; <a class="xl" href="linalg-07.html">Lektion 7</a>, Musterbeispiel 5), also gibt es $|V\setminus U|=2^n-2^{n-1}$ $=2^{n-1}$ Möglichkeiten für $w$, jede ergibt ein anderes Komplement. <strong>$U$ hat $2^{n-1}$ Komplemente.</strong></p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-9">Musterbeispiel 9: Unterräume, gegeben durch Gleichungen im $\mathbb R^4$</h3>
+<p>$U=\{x\in\mathbb R^4\mid x_1+x_2+x_3+x_4=0\}$ und $W=\{x\in\mathbb R^4\mid x_1=x_2,\ x_3=x_4\}$.</p>
+<ol class="steps">
+  <li>Dimensionen von $U$ und $W$?
+  <details><summary>Antwort</summary><div><p>$U$: löse nach $x_1=-x_2-x_3-x_4$ auf; drei freie Parameter ergeben die Basis $(-1,1,0,0),(-1,0,1,0),(-1,0,0,1)$, also $\dim U=3$. $W$: $x=(a,a,b,b)=a(1,1,0,0)+b(0,0,1,1)$, also $\dim W=2$.</p></div></details></li>
+  <li>Finde $U\cap W$.
+  <details><summary>Antwort</summary><div><p>Ein Vektor aus $W$ ist $(a,a,b,b)$; er liegt in $U$ genau dann, wenn $2a+2b=0$, d. h. $b=-a$. Also $U\cap W=\mathrm{Sp}\big((1,1,-1,-1)\big)$, der Dimension $1$ hat.</p></div></details></li>
+  <li>Was ist $U+W$? Ist die Summe direkt?
+  <details><summary>Antwort</summary><div><p>$\dim(U+W)=3+2-1=4$, also ist $U+W$ ein Unterraum des $\mathbb R^4$ voller Dimension: $U+W=\mathbb R^4$, ohne Rechnung. Die Summe ist <strong>nicht</strong> direkt, da $U\cap W\ne\{0\}$: zum Beispiel hat $(1,1,-1,-1)$ die zwei Darstellungen $(1,1,-1,-1)+0$ und $0+(1,1,-1,-1)$.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Übungen</h2>
+<p>Jede Lösung klappt unter ihrer Aufgabe auf. Aufgaben 1 und 6 sind ganze Klausuraufgaben; Aufgabe 8 ist die Rechnung, die in irgendeiner Form in jeder Prüfung vorkommt.</p>
+
+<h3 id="ex-1">Aufgabe 1 (FS17, Problem 5, 15 Punkte)</h3>
+<p>Sei $V$ ein Vektorraum und $W_1,W_2\subseteq V$ Unterräume. (a) Sei $\dim W_i=m_i$ mit $m_1\le m_2$. Beweise $\dim(W_1\cap W_2)\le m_1$ und $\dim(W_1+W_2)\le m_1+m_2$. (b) Definiere, was es heisst, dass $V$ die direkte Summe von $W_1$ und $W_2$ ist. (c) Beweise: $V=W_1\oplus W_2$ genau dann, wenn jedes $v\in V$ eindeutige $w_1\in W_1$, $w_2\in W_2$ mit $v=w_1+w_2$ hat. (d) Sei $W_1=\{A\in M_{n\times n}(K)\mid A_{ij}=0$ für $i\le j\}$ und $W_2$ die symmetrischen $n\times n$-Matrizen. Beweise $M_{n\times n}(K)=W_1\oplus W_2$.</p>
+<details class="hint"><summary>Hinweis 1</summary><div><p>Schreibe zuerst den Rahmen jedes Teils: (a) zwei Ungleichungen, die je einen Unterraum mit einem grösseren Raum vergleichen; (b) eine Definition; (c) zwei Richtungen; (d) Überschneidung $\{0\}$ und Summe ist alles.</p></div></details>
+<details class="hint"><summary>Hinweis 2</summary><div><p>(d) $W_1$ besteht aus den Matrizen, die auf und oberhalb der Diagonale null sind. Zu gegebenem $A$ muss der symmetrische Teil auf und oberhalb der Diagonale mit $A$ übereinstimmen.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) zwei Ungleichungen zwischen Dimensionen; (b) eine Definition mit beiden Bedingungen; (c) eine Äquivalenz, zwei Richtungen; (d) eine direkte Summe, also Überschneidung $\{0\}$ und Summe ist alles.</p>
+<p><strong>(a)</strong> $W_1\cap W_2$ ist ein Unterraum von $W_1$, also $\dim(W_1\cap W_2)\le\dim W_1=m_1$ (ein Unterraum hat höchstens die Dimension des Raumes; <a class="xl" href="linalg-07.html">Lektion 7</a>, Aufgabe 4). Sind $b_1,\dots,b_{m_1}$ und $c_1,\dots,c_{m_2}$ Basen von $W_1$ und $W_2$, so erzeugen sie zusammen $W_1+W_2$ (die Summe ist der Spann der Vereinigung), und ein erzeugendes System der Länge $m_1+m_2$ enthält eine Basis, also $\dim(W_1+W_2)\le m_1+m_2$. (Oder: die Dimensionsformel mit $\dim(W_1\cap W_2)\ge0$.)</p>
+<p><strong>(b)</strong> $V$ ist die direkte Summe von $W_1$ und $W_2$, $V=W_1\oplus W_2$, wenn $V=W_1+W_2$ und $W_1\cap W_2=\{0\}$.</p>
+<p><strong>(c)</strong> „$\Rightarrow$“: jedes $v$ hat eine Darstellung, da $V=W_1+W_2$. Ist $v=w_1+w_2=w_1'+w_2'$, so ist $w_1-w_1'=w_2'-w_2\in W_1\cap W_2=\{0\}$, also $w_1=w_1'$, $w_2=w_2'$. „$\Leftarrow$“: die Existenz der Darstellungen gibt $V=W_1+W_2$. Ist $v\in W_1\cap W_2$, so sind $v=v+0=0+v$ zwei Darstellungen ($v\in W_1$, $0\in W_2$ bzw. $0\in W_1$, $v\in W_2$); nach Eindeutigkeit ist $v=0$. Also $W_1\cap W_2=\{0\}$.</p>
+<p><strong>(d)</strong> <em>Durchschnitt:</em> sei $A\in W_1\cap W_2$. Dann $A_{ij}=0$ für $i\le j$, und durch Symmetrie auch $A_{ij}=A_{ji}=0$ für $i&gt;j$. Also $A=0$.</p>
+<p><em>Summe:</em> zu gegebenem $A$ definiere $S$ durch $S_{ij}:=A_{ij}$ für $i\le j$ und $S_{ij}:=A_{ji}$ für $i&gt;j$. Dann ist $S$ symmetrisch. Setze $L:=A-S$. Für $i\le j$ ist $L_{ij}=A_{ij}-A_{ij}=0$, also $L\in W_1$. Somit $A=L+S\in W_1+W_2$.</p>
+<p>Also $M_{n\times n}(K)=W_1\oplus W_2$. (Kontrolle mit Dimensionen: $\dim W_1=\frac{n(n-1)}2$, $\dim W_2=\frac{n(n+1)}2$, Summe $n^2$.)</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Serie 4, Aufgabe 22 (a), (b): die Unterräume von $\mathbb F_4^2$)</h3>
+<p>$\mathbb F_4=\{0,1,a,b\}$ ist der Körper mit vier Elementen aus <a class="xl" href="linalg-04.html">Lektion 4</a> ($1+a=b$, $a^2=b$, $ab=1$, $b^2=a$, $x+x=0$). (a) Finde eine Basis jedes nichttrivialen Unterraums von $\mathbb F_4^2$. (b) Liste alle Elemente des nichttrivialen Unterraums auf, der $(1,b)$ enthält.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>$\dim\mathbb F_4^2=2$, also hat ein nichttrivialer Unterraum die Dimension $1$: er ist $\mathrm{Sp}(v)=\{0,v,av,bv\}$ für ein $v\ne0$. Skaliere $v$ so, dass sein erster nichtnull Eintrag $1$ ist.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> zähle zuerst die Dimensionen; dann ist jeder Unterraum der Spann eines Vektors, und wir müssen jeden genau einmal auflisten.</p>
+<p><strong>(a)</strong> Ein nichttrivialer Unterraum $U$ (weder $\{0\}$ noch $\mathbb F_4^2$) hat $0&lt;\dim U&lt;2$, also $U=\mathrm{Sp}(v)$ mit $v=(s,t)\ne0$. Ist $s\ne0$, so spannt $s^{-1}v=(1,s^{-1}t)$ dieselbe Gerade auf; ist $s=0$, so tut es $t^{-1}v=(0,1)$. Also sind die nichttrivialen Unterräume die fünf Geraden</p>
+<span class="math-display" style="display:block">$$\begin{aligned}g_0&amp;=\mathrm{Sp}(1,0),&amp; g_1&amp;=\mathrm{Sp}(1,1),\\ g_a&amp;=\mathrm{Sp}(1,a),&amp; g_b&amp;=\mathrm{Sp}(1,b),\\ g_\infty&amp;=\mathrm{Sp}(0,1),\end{aligned}$$</span>
+<p>jede mit dem erzeugenden Vektor als Basis. Sie sind verschieden: jede hat $3$ von null verschiedene Vektoren, und zusammen enthalten sie alle $15$ von null verschiedenen Vektoren von $\mathbb F_4^2$, keiner doppelt gezählt.</p>
+<p><strong>(b)</strong> Die Gerade durch $(1,b)$ ist $g_b$: $0\cdot(1,b)=(0,0)$, $1\cdot(1,b)=(1,b)$, $a\cdot(1,b)=(a,ab)=(a,1)$, $b\cdot(1,b)=(b,b^2)=(b,a)$. Also $g_b=\{(0,0),(1,b),(a,1),(b,a)\}$.</p>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (ein Komplement, explizit)</h3>
+<p>Sei $U=\{x\in\mathbb R^3\mid x_1+x_2+x_3=0\}$. (a) Finde eine Basis von $U$. (b) Finde ein Komplement von $U$. (c) Ist $\{x\mid x_1=x_2=x_3\}$ ein Komplement? Ist $\{x\mid x_3=0\}$ eines?</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Ein Komplement einer Ebene im $\mathbb R^3$ ist eine Gerade $\mathrm{Sp}(w)$; welche $w$ sind erlaubt?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> ein Komplement $W$ braucht $\dim W=3-\dim U$ und $U\cap W=\{0\}$; dann liefert die Dimensionsformel $U+W=\mathbb R^3$.</p>
+<p>(a) $x_1=-x_2-x_3$, also $x=x_2(-1,1,0)+x_3(-1,0,1)$: die beiden Vektoren liegen in $U$ und erzeugen ihn, und sie sind unabhängig (Einträge 2 und 3). Basis $(-1,1,0),(-1,0,1)$; $\dim U=2$.</p>
+<p>(b) Ein Komplement hat Dimension $1$: jedes $\mathrm{Sp}(w)$ mit $w\notin U$, zum Beispiel $w=(1,0,0)$ ($1\ne0$). Dann ist $U\cap\mathrm{Sp}(w)=\{0\}$: ein nichtnull Vielfaches $\lambda w=(\lambda,0,0)$ hat Koordinatensumme $\lambda\ne0$. Und $\dim(U+\mathrm{Sp}(w))=2+1-0=3$, also ist die Summe $\mathbb R^3$.</p>
+<p>(c) $D=\mathrm{Sp}(1,1,1)$: $(1,1,1)\notin U$ ($1+1+1=3\ne0$), also ja, $\mathbb R^3=U\oplus D$. $P=\{x_3=0\}$ hat Dimension $2$, und $2+2&gt;3$: <strong>nein</strong>. Tatsächlich gilt $U\cap P\ni(1,-1,0)\ne0$. (Über $\mathbb F_3$ läge $(1,1,1)$ <em>in</em> $U$: die Antwort hängt vom Körper ab.)</p>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 (Probeklausur HS20, Problem 5 (a), (b))</h3>
+<p>(a) Definiere, was ein Komplement eines Unterraums $U\subseteq V$ ist (2 Punkte). (b) Sei $\dim V&lt;\infty$. Zeige, dass jeder Unterraum $U\subseteq V$ ein Komplement hat (6 Punkte). Schreibe es so auf, wie du es in der Klausur abgeben würdest, und vergleiche danach.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(b) Beginne mit einer Basis von $U$. Welches Ergebnis aus <a class="xl" href="linalg-07.html">Lektion 7</a> liefert weitere Vektoren?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) eine Definition: nenne das Objekt und beide Bedingungen; (b) ein Existenzbeweis: konstruiere $W$, dann die drei Prüfungen.</p>
+<p>(a) Ein Komplement von $U$ in $V$ ist ein Unterraum $W\subseteq V$ mit $V=U\oplus W$, d. h. $V=U+W$ und $U\cap W=\{0\}$.</p>
+<p>(b) Was du abgeben würdest:</p>
+<ol>
+<li>Da $V$ endlichdimensional ist, ist es auch sein Unterraum $U$; sei $u_1,\dots,u_l$ eine Basis von $U$.</li>
+<li>Die Liste $u_1,\dots,u_l$ ist in $V$ linear unabhängig, also lässt sie sich zu einer Basis $u_1,\dots,u_l,w_1,\dots,w_k$ von $V$ ergänzen (jede unabhängige Liste in einem endlichdimensionalen Raum ergänzt sich zu einer Basis).</li>
+<li>Setze $W:=\mathrm{Sp}(w_1,\dots,w_k)$. Als Spann ist $W$ ein Unterraum von $V$.</li>
+<li>$U+W=V$: die Summe $U+W$ ist ein Unterraum, der $u_1,\dots,u_l,w_1,\dots,w_k$ enthält, also enthält er ihren Spann, und das ist $V$.</li>
+<li>$U\cap W=\{0\}$: sei $v\in U\cap W$. Dann $v=\sum_{i=1}^la_iu_i$ und $v=\sum_{j=1}^kb_jw_j$ für gewisse Skalare, also $\sum_ia_iu_i-\sum_jb_jw_j=0$. Die Vektoren $u_1,\dots,u_l,w_1,\dots,w_k$ bilden eine Basis von $V$, sind also linear unabhängig; somit sind alle $a_i=0$ und $b_j=0$, also $v=0$.</li>
+<li>Also $V=U\oplus W$, und $W$ ist ein Komplement von $U$.</li>
+</ol>
+<p>Punkte gibt es für: die Ergänzung mit ihrem Grund, die Definition von $W$, $U+W=V$, und $U\cap W=\{0\}$ mit dem Unabhängigkeitsargument.</p>
+
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (wahr oder falsch)</h3>
+<p>(a) Ist $U\cap W=\{0\}$ und $U\cap X=\{0\}$ und $W\cap X=\{0\}$, so ist die Summe $U+W+X$ direkt. (b) Zwei $3$-dimensionale Unterräume des $\mathbb R^5$ haben immer einen gemeinsamen Vektor ungleich null. (c) Ist $V=U\oplus W$, so ist jede Basis von $V$ eine Vereinigung einer Basis von $U$ und einer Basis von $W$. (d) $U+U=U$ für jeden Unterraum $U$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(a) ist die Prüfungswarnung aus Abschnitt 4. (b) Wende die Dimensionsformel innerhalb des $\mathbb R^5$ an.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> „wahr“ braucht einen Beweis für alle Fälle, „falsch“ ein Gegenbeispiel.</p>
+<ol>
+<li>(a) <strong>Falsch.</strong> Die Geraden $\mathrm{Sp}(e_1)$, $\mathrm{Sp}(e_2)$, $\mathrm{Sp}(e_1+e_2)$ im $\mathbb R^2$ treffen sich paarweise nur in $0$, aber $0=e_1+e_2+\big(-(e_1+e_2)\big)$ ist eine Darstellung der $0$ mit nichtnull Teilen, also ist die Summe nicht direkt (Abschnitt 4).</li>
+<li>(b) <strong>Wahr.</strong> $U+W\subseteq\mathbb R^5$ gibt $\dim(U+W)\le5$, also nach der Dimensionsformel $\dim(U\cap W)=3+3-\dim(U+W)\ge1$, und $U\cap W$ enthält einen Vektor ungleich null.</li>
+<li>(c) <strong>Falsch.</strong> $\mathbb R^2=\mathrm{Sp}(e_1)\oplus\mathrm{Sp}(e_2)$, aber die Basis $e_1+e_2,\,e_1-e_2$ enthält keinen Vektor einer der beiden Achsen. Nur die Umkehrung gilt: eine Basis von $U$ zusammen mit einer Basis von $W$ ist eine Basis von $U\oplus W$ (Beweis B mit $k=0$).</li>
+<li>(d) <strong>Wahr.</strong> $U\subseteq U+U$, da $u=u+0$ mit $0\in U$; und $U+U\subseteq U$, da $U$ unter Addition abgeschlossen ist.</li>
+</ol>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (HS20, Problem 5 (c), 6 Punkte)</h3>
+<p>Sei $\dim V=9$, und seien $U,W,Z\subseteq V$ Unterräume mit $\dim U=\dim W=\dim Z=6$. Angenommen, es gibt ein $x\in V$ mit $x\notin W+Z$. Zeige, dass es ein $v\ne0$ mit $v\in U\cap W\cap Z$ gibt.</p>
+<details class="hint"><summary>Hinweis 1</summary><div><p>Du musst einen Vektor ungleich null finden, also strebe $\dim(U\cap W\cap Z)\ge1$ an. Welches Werkzeug gibt eine untere Schranke für die Dimension eines Durchschnitts?</p></div></details>
+<details class="hint"><summary>Hinweis 2</summary><div><p>Was sagt $x\notin W+Z$ über $\dim(W+Z)$? Dann benutze die Dimensionsformel zweimal: erst für $W$ und $Z$, dann für $U$ und $W\cap Z$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> wir müssen $\dim(U\cap W\cap Z)\ge1$ zeigen; dann existiert ein Vektor ungleich null, denn ein Raum der Dimension $\ge1$ ist nicht $\{0\}$. Untere Schranken für Durchschnitte kommen aus der Dimensionsformel, gelesen als $\dim(A\cap B)=\dim A+\dim B-\dim(A+B)\ge\dim A+\dim B-\dim V$.</p>
+<ol>
+<li><strong>$W+Z$ ist nicht alles.</strong> $x\notin W+Z$, also $W+Z\ne V$. Ein Unterraum von $V$ der Dimension $9=\dim V$ wäre gleich $V$, also $\dim(W+Z)\le8$.</li>
+<li><strong>$W\cap Z$ ist gross.</strong> Nach der Dimensionsformel ist $\dim(W\cap Z)=\dim W+\dim Z-\dim(W+Z)\ge6+6-8=4$.</li>
+<li><strong>Schneide mit $U$.</strong> $U\cap(W\cap Z)=U\cap W\cap Z$, und nach der Dimensionsformel für $U$ und $W\cap Z$: $\dim(U\cap W\cap Z)=\dim U+\dim(W\cap Z)-\dim\big(U+(W\cap Z)\big)\ge6+4-9=1$, da $U+(W\cap Z)\subseteq V$ höchstens Dimension $9$ hat.</li>
+<li><strong>Schluss.</strong> $U\cap W\cap Z$ hat Dimension mindestens $1$, besitzt also einen Basisvektor $v$, und $v\ne0$, weil eine Basis keinen Nullvektor enthält.</li>
+</ol>
+<p>Ohne die Voraussetzung über $x$ kann die Behauptung scheitern: Schritt 1 würde nur $\dim(W+Z)\le9$ liefern, also $\dim(W\cap Z)\ge3$, und $6+3-9=0$ ergibt nichts.</p>
+</div></details>
+
+<h3 id="ex-7">Aufgabe 7 (Summen und Durchschnitte verteilen sich nicht)</h3>
+<p>Seien $U_1,U_2,U_3$ Unterräume von $V$. (a) Zeige $(U_1\cap U_3)+(U_2\cap U_3)$ $\subseteq(U_1+U_2)\cap U_3$. (b) Zeige an einem Beispiel im $\mathbb R^2$, dass Gleichheit scheitern kann. (c) Erkläre, wie (b) die Formel der „Inklusion–Exklusion“ für drei Unterräume bricht (Zum Staunen oben).</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(a) Nimm ein Element der linken Seite und prüfe beide Bedingungen rechts. (b) Drei verschiedene Geraden durch $0$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) eine Inklusion: „Sei $v\in(U_1\cap U_3)+(U_2\cap U_3)$ … also $v\in U_1+U_2$ und $v\in U_3$.“ (b) ein Gegenbeispiel mit beiden Seiten berechnet.</p>
+<ol>
+<li>(a) Sei $v=a+b$ mit $a\in U_1\cap U_3$ und $b\in U_2\cap U_3$. Da $a\in U_1$ und $b\in U_2$, ist $v\in U_1+U_2$. Da $a,b\in U_3$ und $U_3$ unter Addition abgeschlossen ist, ist $v\in U_3$. Also $v\in(U_1+U_2)\cap U_3$.</li>
+<li>(b) $U_1=\mathrm{Sp}(e_1)$, $U_2=\mathrm{Sp}(e_2)$, $U_3=\mathrm{Sp}(e_1+e_2)$. Dann sind $U_1\cap U_3=U_2\cap U_3=\{0\}$, also ist die linke Seite $\{0\}$. Aber $U_1+U_2=\mathbb R^2$, also ist die rechte Seite $U_3$, eine Gerade. Also $\{0\}\subsetneq U_3$.</li>
+<li>(c) Für Mengen gilt $(A\cup B)\cap C=(A\cap C)\cup(B\cap C)$, und genau das macht Inklusion–Exklusion für drei Mengen möglich. Für Unterräume scheitert die entsprechende Gleichheit, wie (b) zeigt, und damit die Dreier-Formel: für die drei Geraden würde sie $1+1+1-0-0-0+0=3\ne2=\dim(U_1+U_2+U_3)$ liefern.</li>
+</ol>
+
+</div></details>
+
+<h3 id="ex-8">Aufgabe 8 (Summe und Durchschnitt von Polynomräumen)</h3>
+<p>In $\mathbb R[x]_2$ (Polynome vom Grad höchstens $2$) sei $U=\mathrm{Sp}(1+x,\ x+x^2)$ und $W=\mathrm{Sp}(1,\ x^2)$. Finde $\dim(U+W)$, eine Basis von $U\cap W$, und entscheide, ob die Summe direkt ist.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Setze die vier erzeugenden Polynome zusammen und suche nach einer Abhängigkeit; sie liefert einen Vektor aus $U\cap W$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> Summe = Spann der Vereinigung; Dimensionen aus einer Basis; der Durchschnitt aus dem Gleichsetzen eines allgemeinen Vektors von $U$ mit einem allgemeinen Vektor von $W$; dann Kontrolle mit der Dimensionsformel.</p>
+<ol>
+<li><strong>Dimensionen von $U$, $W$.</strong> $1+x$ und $x+x^2$ sind keine Vielfachen voneinander (das erste hat einen konstanten Term, das zweite nicht, und beide sind nicht null), also $\dim U=2$. Ebenso sind $1,x^2$ unabhängig: $\dim W=2$.</li>
+<li><strong>Die Summe.</strong> $U+W=\mathrm{Sp}(1+x,\ x+x^2,\ 1,\ x^2)$. Sie enthält $1$, $x=(1+x)-1$ und $x^2$, also ganz $\mathbb R[x]_2$. Also $\dim(U+W)=3$.</li>
+<li><strong>Der Durchschnitt.</strong> $a(1+x)+b(x+x^2)=c+dx^2$. Vergleiche Koeffizienten: konstant $a=c$; $x$: $a+b=0$; $x^2$: $b=d$. Also $b=-a$, $c=a$, $d=-a$, und die gemeinsamen Vektoren sind $a(1-x^2)$. Tatsächlich ist $1-x^2=(1+x)-(x+x^2)\in U$ und $1-x^2=1\cdot1+(-1)x^2\in W$. <strong>Basis von $U\cap W$: $1-x^2$.</strong></li>
+<li><strong>Kontrolle.</strong> $\dim(U+W)=2+2-1=3$, wie berechnet. Die Summe ist <strong>nicht direkt</strong>, da $U\cap W\ne\{0\}$.</li>
+</ol>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Die Aufgaben 1–8 ergeben 8 Punkte, einen für jede gelöste Aufgabe. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, eine Wahr-falsch-Reihe, wenn höchstens ein Item falsch ist. Mit 6 von 8 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="skipped.html#linalg-08">Überspringliste</a>.</p>
+<ul>
+  <li><strong>Bemerkung 2.3.38</strong> (Fischers Version von Beweis B, über eindeutige Koordinaten): dieselbe Idee. <em>Priorität: optional.</em></li>
+  <li><strong>Direkte Summen von mehr als zwei Unterräumen</strong> (die „Direkten Summen II“ des Skripts, Abschnitt 5.3.1): sie kommen mit den Eigenräumen in Lineare Algebra II, das zusammen mit Lineare Algebra I geprüft wird. Die richtige Bedingung ist Bedingung (5) für alle zusammen. <em>Priorität: niedrig.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a href="../linalg-09.html">Lektion 9</a>: affine Räume (verschobene Unterräume) und Quotientenräume.</p>
+
+<nav class="site foot" aria-label="Lektionsnavigation">
+<a href="linalg-07.html">← Lektion 7: Die Volkszählung der Strassen</a>
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-09.html">Lektion 9: Die parallelen Gassen →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="feedback.html">Feedback geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
