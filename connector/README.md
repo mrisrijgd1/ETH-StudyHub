@@ -13,10 +13,9 @@ Setup guide for students: `connect.html`. Personal page: `my.html`.
 - Course content: `build/build_content.py` builds `content.json` + page images; the connector workflow copies
   them to `studyhub-data/connector/` (outside the website). The private library and the Exam Dive bank are built
   by the library repo's sync workflow into `studyhub-data/connector-library/` and `studyhub-data/dive/`.
-- `supabase/functions/studyhub-mcp/index.ts` — only a forwarder at the OLD address
-  (`https://qgntwqqmpdiwexnwsmnm.supabase.co/functions/v1/studyhub-mcp`), so connectors added before 25 Nov 2026 keep working. Stores nothing.
+- The old Supabase address (`.../functions/v1/studyhub-mcp`) was removed on 25 Nov 2026; connectors must use `https://study-hub.ch/mcp`.
 - `sql/` — login-side database at Supabase (run by the workflow; safe to rerun).
-- `.github/workflows/connector-deploy.yml` — on every push to main: SQL, forwarder, content refresh, smoke test.
+- `.github/workflows/connector-deploy.yml` — on every push to main: SQL, content refresh, smoke test.
 
 Rules enforced in the server: exercise solutions are cut out of every page and only returned after `submit_attempt`; hints one at a time (`get_hint` counts);
 official solution files and pages with inline solutions stay locked until an attempt on that exam or a submitted mock; library files only through the signed-in connector.
