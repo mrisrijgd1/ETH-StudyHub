@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Die Kartenmacher der Freien Stadt">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Kartenmacher der Freien Stadt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 6</span>
+<h1>Die Kartenmacher der Freien Stadt</h1>
+<p class="lead">Linearkombinationen und das Spann (kleinster Unterraum = alle Kombinationen), Zugehörigkeit durch Lösen eines Systems entscheiden, lineare Unabhängigkeit in der Form des Skripts und der Vorlesung, Basen und eindeutige Koordinaten, die Standardbasen, Serie 3.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-5-5">Rückblick auf Lektion 5 (5 Minuten)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-mapmakers-of">1. Die Geschichte: die Kartenmacher der Freien Stadt</a>
+</li>
+<li><a href="#s2-linear-combinations-and-the-span">2. Linearkombinationen und das Spann</a>
+<ol>
+<li><a href="#proof-a">Beweis A: ein Durchschnitt von Unterräumen ist ein Unterraum (Lemma 2.2.1, S. 42)</a></li>
+<li><a href="#proof-b">Beweis B: das Spann ist die Menge aller Linearkombinationen (Lemma 2.2.6, S. 43)</a></li>
+</ol></li>
+<li><a href="#s3-is-in-the-span-solve">3. Liegt $w$ im Spann? Ein lineares System lösen</a>
+<ol>
+<li><a href="#we-1">Musterbeispiel 1: liegt er im Spann? Drei Vektoren in $\mathbb R^3$</a></li>
+<li><a href="#we-2">Musterbeispiel 2: alle Unterräume von $\mathbb R^2$ (Beispiel 2.2.13, S. 45)</a></li>
+</ol></li>
+<li><a href="#s4-linear-independence">4. Lineare Unabhängigkeit</a>
+<ol>
+<li><a href="#we-3">Musterbeispiel 3: Unabhängigkeit von Funktionen (an gut gewählten Stellen auswerten)</a></li>
+<li><a href="#proof-c">Beweis C: die beiden Definitionen stimmen überein (Vorlesung, Satz 4.0)</a></li>
+<li><a href="#proof-d">Beweis D: in einer abhängigen Familie ist ein Vektor eine Kombination der vorherigen (Lemma 2.3.2, S. 51; Vorlesung, Lemma 4.2)</a></li>
+</ol></li>
+<li><a href="#s5-bases-and-coordinates">5. Basen und Koordinaten</a>
+<ol>
+<li><a href="#proof-e">Beweis E: eine Basis liefert eindeutige Koordinaten (Proposition 2.2.35, S. 50; Vorlesung Satz 4.1 = Serie 3, Aufgabe 15)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: Koordinaten in drei verschiedenen Räumen</a></li>
+<li><a href="#we-5">Musterbeispiel 5: ist $\{e_1,e_2,\dots\}$ eine Basis des Folgenraums $K^\infty$? (Vorlesung; Übung 2.2.23, S. 48)</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+<li><a href="#for-wonder-is-over-finite">Zum Staunen: ist $\mathbb R$ über $\mathbb Q$ endlichdimensional?</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-6">Musterbeispiel 6: welche Familie ist eine Basis von $\mathbb R^3$? (FS20, Frage I)</a></li>
+<li><a href="#we-7">Musterbeispiel 7: vier Wahr-falsch-Aussagen (FS17, x und xii; FS18, ix; Probeklausur HS20, (6))</a></li>
+<li><a href="#we-8">Musterbeispiel 8: neue Vektoren aus unabhängigen (Prüfungsklassiker; der Körper zählt)</a></li>
+<li><a href="#we-9">Musterbeispiel 9: „gib die Definition einer Basis an“ (HS21, Problem 3 (a), 2 Punkte)</a></li>
+</ol></li>
+<li><a href="#exercises">Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (FS17, Problem 3 (a))</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Serie 3, Aufgabe 17: drei Basen von Fib)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Serie 3, Aufgabe 18 (a))</a></li>
+<li><a href="#ex-4">Aufgabe 4 (wahr oder falsch)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Serie 3, Aufgabe 19 (b))</a></li>
+<li><a href="#ex-6">Aufgabe 6 (Serie 3, Aufgabe 18 (b): die $x_n$ erzeugen ebenfalls)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schwerer Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Rückblickfragen oben. Das zählt. Morgen machst du einfach hier weiter: ein ausgelassener oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) <strong>Linearkombination</strong> und <strong>Spann</strong> definieren kannst (beide Wege: kleinster Unterraum und alle Linearkombinationen) und beweisen kannst, dass sie übereinstimmen; (2) entscheidest, ob ein Vektor im Spann liegt, indem du ein lineares System löst; (3) <strong>lineare Unabhängigkeit</strong> in der Form des Skripts und in Halbeisens Form angeben und ihre Äquivalenz beweisen kannst; (4) „eine abhängige Familie hat einen Vektor, der eine Kombination der vorherigen ist“ benutzen kannst; (5) eine <strong>Basis</strong> definieren, beweisen kannst, dass sie jedem Vektor <strong>eindeutige Koordinaten</strong> gibt, und die Standardbasen von $K^n$, $K[x]$, $M_{m\times n}(K)$ nennen kannst.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 110 Minuten: 50 für die Abschnitte 1–3, eine Pause, 60 für die Abschnitte 4–5 und die Aufgaben. Eine natürliche Pause kommt nach Abschnitt 3 (Spann fertig, als Nächstes Unabhängigkeit).</dd></div>
+  <div><dt>Skript (Englisch, gedruckte Seiten)</dt><dd>Skript EN 2023, Abschnitt 2.2 „Back to theory“:
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p42">S. 42–44</a>, 2.2.1 Spann und Linearkombinationen:</strong> Lemma 2.2.1 (Durchschnitte von Unterräumen), Definition 2.2.2 (Spann als kleinster Unterraum), Lemma 2.2.3, Definition 2.2.4 (Linearkombination), Lemma 2.2.6 (Spann = alle Linearkombinationen), Übung 2.2.9, Definitionen 2.2.10–2.2.11 (Erzeugendensystem, endlichdimensional), Bemerkung 2.2.12 ($\mathrm{Sp}(\emptyset)=\{0\}$).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p45">S. 45–48</a>, 2.2.2 Beispiele:</strong> die Unterräume von $\mathbb R^2$ (2.2.13), Spann und Gauss (Lemma 2.2.17), Fibonacci (2.2.19), die Standardbasen (2.2.20), Übung 2.2.23.</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p48">S. 48–50</a>, 2.2.3 Lineare Unabhängigkeit und Basis:</strong> Definitionen 2.2.24–2.2.34, Lemma 2.2.27, Beispiele 2.2.28, Übung 2.2.29, Proposition 2.2.35 (Basis = eindeutige Koordinaten).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p51">S. 51</a>, Beginn von 2.3:</strong> Lemma 2.3.2 (eine abhängige Familie hat einen Vektor im Spann der vorherigen).</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §4, erste Hälfte (Notizen vom 2. Okt.): Linearkombinationen, die lineare Hülle $\langle M\rangle$, lineare Unabhängigkeit als „kein Vektor liegt in der Hülle der anderen“, Basis, Dimension, Satz 4.0 (Äquivalenz mit der Form „nur die triviale Kombination ergibt $0$“), Satz 4.1 (eindeutige Darstellung, Serie 3 Aufgabe 15) und Lemma 4.2. Serie 3, Aufgaben 15, 17, 18 und 19, gehören hierher; Aufgabe 16 und Quiz 3 (der Austauschsatz von Steinitz) sind <a class="xl" href="../linalg-07.html">Lektion 7</a>.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Spann, Unabhängigkeit und Basen stehen in fast jedem Wahr-falsch-Block: „welche Familie ist eine Basis von $\mathbb R^3$?“ (FS20, I), „drei Vektoren sind genau dann unabhängig, wenn sie paarweise unabhängig sind“ (FS17, xii), „$\{(a,b),(c,d)\}$ ist genau dann eine Basis von $\mathbb C^2$, wenn $ad-bc\ne0$“ (FS17, x), „Teilmengen unabhängiger Mengen sind unabhängig“ (FS18, ix), „$(1,i)$ und $(-i,1)$ bilden eine Basis von $\mathbb C^2$“ (Probeklausur HS20, (6)), „hat ein Vektor eine eindeutige Darstellung durch $v_1,\dots,v_k$, so sind sie unabhängig“ (Probeklausur HS20, (7)), „je zwei Erzeugendensysteme haben dieselbe Anzahl Elemente“ (FS17, ix). Im schriftlichen Teil: „zeige, dass diese vier Polynome eine Basis bilden“ (FS17, Problem 3 (a)) und „gib die Definition einer (geordneten) Basis an“ (HS21, Problem 3 (a), 2 Punkte). Alle davon kommen unten vor.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-5-5">Rückblick auf <a class="xl" href="linalg-05.html">Lektion 5</a> (5 Minuten)</h3>
+<p>Ein Unterraum $W\subseteq V$: $0_V\in W$, abgeschlossen unter $+$, abgeschlossen unter Skalaren; dann ist er selbst ein Vektorraum. Prüf dich selbst: ist $\{(x,y,z)\in\mathbb R^3\mid x=y\}$ ein Unterraum? Ist $\{(x,y,z)\mid x=y^2\}$ einer?</p>
+<details><summary>Antwort</summary><div><p>Der erste ja: eine lineare Bedingung, $0$ erfüllt sie, und Summen und Vielfache lassen $x-y=0$ bestehen. Der zweite nicht: $(1,1,0)$ liegt darin, aber $2\cdot(1,1,0)=(2,2,0)$ hat $2\ne4$. Die heutige Frage ist die umgekehrte: Gegeben einige Vektoren, was ist der kleinste Unterraum, der sie enthält?</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>Englisch</th></tr></thead>
+  <tbody>
+    <tr><td>Linearkombination, Koeffizient</td><td>linear combination, coefficient</td></tr>
+    <tr><td>Spann (Erzeugnis), lineare Hülle $\langle M\rangle$</td><td>span, linear hull</td></tr>
+    <tr><td>Erzeugendensystem</td><td>generating system, spanning set</td></tr>
+    <tr><td>endlichdimensional</td><td>finite-dimensional</td></tr>
+    <tr><td>linear unabhängig / abhängig (l.u. / l.a.)</td><td>linearly independent / dependent</td></tr>
+    <tr><td>triviale Linearkombination</td><td>trivial linear combination</td></tr>
+    <tr><td>Basis, Standardbasis</td><td>basis, standard basis</td></tr>
+    <tr><td>Koordinaten</td><td>coordinates</td></tr>
+    <tr><td>Dimension</td><td>dimension</td></tr>
+    <tr><td>ohne Beschränkung der Allgemeinheit (o.B.d.A.)</td><td>without loss of generality</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-mapmakers-of">1. Die Geschichte: die Kartenmacher der Freien Stadt</h2>
+<div class="story">
+<p>Die Karawanen aus <a class="xl" href="linalg-05.html">Lektion 5</a> reisen entlang von Pfeilen. Die Gilde der Kartenmacher stellt die praktische Frage: <em>welche Reisen können wir mit den Strassen beschreiben, die wir haben?</em> Hat die Stadt eine Strasse nach Osten und eine nach Norden, so ist jeder Ort der Ebene erreichbar: so weit nach Osten, dann so weit nach Norden. Eine dritte Strasse, nordost, bringt nichts Neues; sie ist eine Mischung der ersten beiden.</p>
+<p>Also suchen die Kartenmacher eine Menge von Strassen mit zwei Eigenschaften. Jeder Ort ist erreichbar (die Strassen genügen). Und keine Strasse ist eine Mischung der anderen (keine ist verschwendet). Eine solche Menge gibt jedem Ort eine eindeutige Adresse: „drei nach Osten, zwei nach Norden“. Die Anzahl der Strassen darin ist die Anzahl der Richtungen, die das Land hat.</p>
+</div>
+<p>In der Mathematik: Mischungen von Vektoren sind <strong>Linearkombinationen</strong>, die erreichbaren Orte sind das <strong>Spann</strong>, „keine Strasse verschwendet“ ist <strong>lineare Unabhängigkeit</strong>, eine Menge mit beiden Eigenschaften ist eine <strong>Basis</strong>, die Adresse ist der Vektor der <strong>Koordinaten</strong>, und die Anzahl der Strassen ist die <strong>Dimension</strong>. Dass die Zahl nicht von der gewählten Basis abhängt, ist <a class="xl" href="../linalg-07.html">Lektion 7</a>. Sobald ein Vektorraum eine Basis aus $n$ Vektoren hat, wird jeder Vektor zu einer Liste von $n$ Zahlen, und die ganze lineare Algebra wird zur Rechnung in $K^n$.</p>
+
+<h2 id="s2-linear-combinations-and-the-span">2. Linearkombinationen und das Spann</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-05.html#proof-d">Lektion 5</a>)</span>
+<ul>
+  <li><strong>Das Unterraumkriterium:</strong> $W\subseteq V$ ist ein Unterraum, wenn $0\in W$ gilt und $W$ unter Summen und unter Vielfachen mit Skalaren abgeschlossen ist.</li>
+</ul></div>
+<p>Im Folgenden ist $V$ ein Vektorraum über einem Körper $K$.</p>
+<div class="box">
+<p><strong>Definition (Linearkombination; Definition 2.2.4, <a class="pl" href="../linalg-script.html#p43">S. 43</a>).</strong> Für $n\in\mathbb N$, $a_1,\dots,a_n\in K$ und $v_1,\dots,v_n\in V$ heisst der Vektor $a_1v_1+\dots+a_nv_n=\sum_{i=1}^na_iv_i$ eine <strong>Linearkombination</strong> von $v_1,\dots,v_n$ mit den <strong>Koeffizienten</strong> $a_1,\dots,a_n$. Bemerkung 2.2.5: <em>immer nur endlich viele Summanden</em>, auch wenn du sie aus einer unendlichen Menge wählst.</p>
+<p><strong>Definition (Spann, auf zwei Wegen).</strong> Für $S\subseteq V$:</p>
+<ul>
+  <li>(Definition 2.2.2, <a class="pl" href="../linalg-script.html#p42">S. 42</a>) $\mathrm{Sp}(S):=\bigcap\{W\mid W$ ein Unterraum von $V$ mit $S\subseteq W\}$, der <strong>kleinste Unterraum, der $S$ enthält</strong>;</li>
+  <li>(Lemma 2.2.6, <a class="pl" href="../linalg-script.html#p43">S. 43</a>; die Definition der Vorlesung für die lineare Hülle $\langle S\rangle$) die Menge aller <strong>Linearkombinationen von Vektoren aus $S$</strong>.</li>
+</ul>
+<p>$\mathrm{Sp}(\emptyset)=\{0_V\}$ (Bemerkung 2.2.12: die leere Summe ist $0_V$). Wir schreiben $\mathrm{Sp}(v_1,\dots,v_n)$ für $\mathrm{Sp}(\{v_1,\dots,v_n\})$. Gilt $\mathrm{Sp}(S)=V$, so <strong>erzeugt</strong> (spannt) $S$ den Raum $V$, und $S$ heisst <strong>Erzeugendensystem</strong> (Definition 2.2.10). $V$ heisst <strong>endlichdimensional</strong>, wenn ein endliches $S$ ihn erzeugt (Definition 2.2.11).</p></div>
+<p>Die erste Definition sagt, was das Spann <em>ist</em> (der kleinste Unterraum mit $S$ darin); die zweite sagt, wie man damit <em>rechnet</em> (Vektoren als Kombinationen schreiben). Dass beide übereinstimmen, ist der Inhalt von zwei kurzen Beweisen.</p>
+
+<h3 id="proof-a">Beweis A: ein Durchschnitt von Unterräumen ist ein Unterraum (Lemma 2.2.1, <a class="pl" href="../linalg-script.html#p42">S. 42</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $(W_i)_{i\in I}$ eine nichtleere Familie von Unterräumen von $V$. Dann ist $W:=\bigcap_{i\in I}W_i$ ein Unterraum. Insbesondere ist $\mathrm{Sp}(S)$ (Definition 2.2.2) ein Unterraum, er enthält $S$, und er liegt in jedem Unterraum, der $S$ enthält (Lemma 2.2.3).</p></div>
+<p><strong>Die Idee.</strong> Zugehörigkeit zu einem Durchschnitt ist „für alle $i$“ (<a class="xl" href="linalg-03.html">Lektion 3</a>). Jede Bedingung des Unterraumkriteriums gilt in jedem $W_i$, also gilt sie im Durchschnitt.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Wir prüfen das Unterraumkriterium für $W=\bigcap_{i\in I}W_i$.“</li>
+  <li><strong>Zugehörigkeit auflösen:</strong> $v\in W$ heisst $v\in W_i$ für <em>jedes</em> $i\in I$. Also beginnt jede Prüfung mit „für jedes $i$“ und endet mit „also liegt es in $W$“.</li>
+  <li><strong>Letzte Zeile:</strong> „Also ist $W$ ein Unterraum.“ Dann die drei Aussagen über $\mathrm{Sp}(S)$, jede aus der Definition als Durchschnitt.</li>
+  <li><strong>Die Lücke:</strong> keine; jedes $W_i$ besteht den Test bereits, und der Beweis trägt dies nur durch das „für alle“ durch.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Orte, die jede Gildenkarte zeigt. Das Stadttor ist auf jeder Karte.</p></div><div class="sp-formal"><p>$0_V\in W_i$ für alle $i$ (jedes $W_i$ ist ein Unterraum), also $0_V\in W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Orte auf jeder Karte: ihre Mischung ist ebenfalls auf jeder Karte, denn jede Karte ist unter Mischen abgeschlossen.</p></div><div class="sp-formal"><p>Seien $a_1,a_2\in K$, $v_1,v_2\in W$. Dann $v_1,v_2\in W_i$ für alle $i$, also $a_1v_1+a_2v_2\in W_i$ für alle $i$, also $a_1v_1+a_2v_2\in W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die kleinste gemeinsame Karte: sie ist eine Karte, sie zeigt $S$, und sie liegt in jeder Karte, die $S$ zeigt.</p></div><div class="sp-formal"><p>$\mathrm{Sp}(S)$ ist ein Durchschnitt von Unterräumen (die Familie enthält $V$, ist also nichtleer), also ein Unterraum; jedes Glied enthält $S$, also $S\subseteq\mathrm{Sp}(S)$; und ist $W\supseteq S$ ein Unterraum, so ist er eines der geschnittenen Mengen, also $\mathrm{Sp}(S)\subseteq W$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_member">Zugehörigkeit elementweise entscheiden</a> <a class="mvl" href="../linalg-moves.html#m-la_subspace">das Unterraumkriterium: Null, Summen, Vielfache</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Sei $(W_i)_{i\in I}$ eine nichtleere Familie von Unterräumen von $V$ und $W=\bigcap_{i\in I}W_i$. Da jedes $W_i$ ein Unterraum ist, gilt $0_V\in W_i$ für alle $i$, also $0_V\in W$. Seien $a_1,a_2\in K$ und $v_1,v_2\in W$. Für jedes $i\in I$ gilt $v_1,v_2\in W_i$, und $W_i$ ist unter Linearkombinationen abgeschlossen, also $a_1v_1+a_2v_2\in W_i$. Da dies für jedes $i$ gilt, ist $a_1v_1+a_2v_2\in W$. Also ist $W$ ein Unterraum. Sei nun $S\subseteq V$. Die Familie der Unterräume, die $S$ enthalten, ist nichtleer (sie enthält $V$), also ist $\mathrm{Sp}(S)$ ein Unterraum; er enthält $S$, weil jedes Glied $S$ enthält; und jeder Unterraum $W'\supseteq S$ ist ein Glied der Familie, also $\mathrm{Sp}(S)\subseteq W'$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Warum verlangt die Behauptung eine <em>nichtleere</em> Familie?
+  <details><summary>Antwort</summary><div><p>Für die leere Familie ist „$v\in W_i$ für alle $i\in\emptyset$“ für jedes beliebige $v$ wahr (es gibt kein $i$ zu prüfen), also wäre der „Durchschnitt“ alles, nicht eine Teilmenge von $V$. Die Nichtleere schliesst das aus. Für $\mathrm{Sp}(S)$ ist die Familie nie leer, da $V$ selbst ein Unterraum ist, der $S$ enthält.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Die Vereinigung zweier Unterräume ist im Allgemeinen kein Unterraum (<a class="xl" href="linalg-05.html">Lektion 5</a>, Aufgabe 6). Welcher Schritt von Beweis A bricht, wenn du $\bigcap$ durch $\bigcup$ ersetzt?
+  <details><summary>Antwort</summary><div><p>Der Abgeschlossenheitsschritt: $v_1\in W_1$ und $v_2\in W_2$ liegen in der Vereinigung, aber es gibt keinen einzigen Unterraum, der beide enthält, also garantiert nichts, dass $v_1+v_2$ in $W_1$ oder in $W_2$ liegt. Beispiel: $(1,0)+(0,1)=(1,1)$ liegt auf keiner der Achsen. Beim $\bigcap$ liegen beide Vektoren in <em>jedem</em> $W_i$, also hält ein Unterraum beide.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis A nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Schreib $v\in\bigcap W_i\iff\forall i:\ v\in W_i$.</li>
+  <li>Null: in jedem $W_i$, also im Durchschnitt.</li>
+  <li>Nimm $a_1,a_2\in K$, $v_1,v_2$ im Durchschnitt; fixiere ein beliebiges $i$; Abgeschlossenheit in $W_i$; da $i$ beliebig war, liegt die Kombination im Durchschnitt.</li>
+  <li>Für das Spann bedeutet „kleinste“ zwei Dinge: enthält $S$ und liegt in jedem Unterraum, der $S$ enthält; sag beides.</li>
+</ol>
+<p><strong>Kurz:</strong> „für alle $i$“ läuft durch das Unterraumkriterium. Das ist die wahre Hälfte der Prüfungsfrage „$W_1\cap W_2$ und $W_1\cup W_2$ sind Unterräume“ (FS17, v; FS18, (v)): der Durchschnitt ist einer, die Vereinigung im Allgemeinen nicht.</p></div>
+
+<h3 id="proof-b">Beweis B: das Spann ist die Menge aller Linearkombinationen (Lemma 2.2.6, <a class="pl" href="../linalg-script.html#p43">S. 43</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Für $\emptyset\ne S\subseteq V$ sei $L(S)$ die Menge aller Linearkombinationen von Vektoren aus $S$. Dann gilt $L(S)=\mathrm{Sp}(S)$.</p></div>
+<p><strong>Die Idee.</strong> Zeige, dass $L(S)$ <em>ein</em> Unterraum ist, der $S$ enthält (also $\mathrm{Sp}(S)\subseteq L(S)$, da $\mathrm{Sp}$ der kleinste ist), und dass jeder Unterraum, der $S$ enthält, alle Kombinationen enthält (also $L(S)\subseteq\mathrm{Sp}(S)$). Zwei Inklusionen, der Standardweg, eine Mengengleichheit zu beweisen (<a class="xl" href="linalg-03.html">Lektion 3</a>).</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Wir zeigen $\mathrm{Sp}(S)\subseteq L(S)$ und $L(S)\subseteq\mathrm{Sp}(S)$.“</li>
+  <li><strong>Für „$\subseteq L(S)$“:</strong> da $\mathrm{Sp}(S)$ der kleinste Unterraum mit $S$ ist, genügt es, dass $L(S)$ ein Unterraum mit $S\subseteq L(S)$ ist.</li>
+  <li><strong>Für „$L(S)\subseteq$“:</strong> jeder Unterraum $W\supseteq S$ enthält jede Linearkombination (Induktion über die Anzahl der Summanden).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Jede Strasse ist eine Mischung ihrer selbst: eine Strasse, Koeffizient eins.</p></div><div class="sp-formal"><p>$S\subseteq L(S)$, da $v=1\cdot v$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Mischungen mischen ergibt eine (längere) Mischung.</p></div><div class="sp-formal"><p>$L(S)$ ist ein Unterraum: $0_V=0\cdot v\in L(S)$ für ein $v\in S$; und ist $v=\sum_{i=1}^na_iv_i$, $w=\sum_{j=1}^mb_jw_j$, so ist $\lambda v+\mu w$ $=\sum_i(\lambda a_i)v_i+\sum_j(\mu b_j)w_j$, eine Kombination von $n+m$ Vektoren aus $S$. Also $\mathrm{Sp}(S)\subseteq L(S)$, weil das Spann der kleinste Unterraum mit $S$ ist.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jede Karte, die die Strassen zeigt, zeigt jede Mischung: man fügt eine Strasse nach der anderen hinzu.</p></div><div class="sp-formal"><p>Sei $W\supseteq S$ ein Unterraum. Induktion nach $n$: $a_1v_1\in W$, da $W$ unter Skalarmultiplikation abgeschlossen ist; ist $\sum_{i=1}^na_iv_i\in W$, so bleibt $\sum_{i=1}^{n+1}a_iv_i\in W$ bei Addition von $a_{n+1}v_{n+1}\in W$, da $W$ unter Addition abgeschlossen ist. Also $L(S)\subseteq W$ für jedes solche $W$, somit $L(S)\subseteq\mathrm{Sp}(S)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_twoways">ein Element auf zwei Wegen berechnen</a> <a class="mvl" href="../linalg-moves.html#m-la_subspace">das Unterraumkriterium: Null, Summen, Vielfache</a> <a class="mvl" href="../linalg-moves.html#m-la_induct">Induktion: Basis, Voraussetzung, Schritt</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Wir zeigen beide Inklusionen. Jedes $v\in S$ ist die Kombination $1\cdot v$, also $S\subseteq L(S)$. $L(S)$ ist ein Unterraum: er enthält $0_V=0\cdot v$ für jedes $v\in S$; und für $v=\sum_{i=1}^na_iv_i$, $w=\sum_{j=1}^mb_jw_j$ in $L(S)$ und $\lambda,\mu\in K$ ist $\lambda v+\mu w=\sum_{i=1}^n(\lambda a_i)v_i+\sum_{j=1}^m(\mu b_j)w_j$ wieder eine Linearkombination von Vektoren aus $S$. Da $\mathrm{Sp}(S)$ der kleinste Unterraum mit $S$ ist, gilt $\mathrm{Sp}(S)\subseteq L(S)$. Umgekehrt sei $W$ ein beliebiger Unterraum mit $S\subseteq W$. Durch Induktion nach $n$ liegt jedes $\sum_{i=1}^na_iv_i$ mit $v_i\in S$ in $W$: für $n=1$, weil $W$ unter Skalarmultiplikation abgeschlossen ist, und von $n$ auf $n+1$, weil $W$ unter Addition abgeschlossen ist. Also $L(S)\subseteq W$ für jedes solche $W$, und damit liegt $L(S)$ im Durchschnitt $\mathrm{Sp}(S)$. Somit $L(S)=\mathrm{Sp}(S)$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Übung 2.2.9: zeige $\mathrm{Sp}(v)=\{\lambda v\mid\lambda\in K\}$. Was genau ist zu zeigen?
+  <details><summary>Antwort</summary><div><p>Eine Kombination von Vektoren aus $\{v\}$ ist $a_1v+\dots+a_nv$ mit lauter gleichen Vektoren (endlich viele Summanden, Wiederholungen erlaubt), und das ist nach V8 gleich $(a_1+\dots+a_n)v$. Also hat jede Kombination die Form $\lambda v$, und umgekehrt ist $\lambda v$ eine Kombination. „Ist das nicht schon die Definition?“ Fast: die Arbeit steckt im Zusammenfassen wiederholter Vektoren.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige: liegt $w\in\mathrm{Sp}(v_1,\dots,v_n)$, so gilt $\mathrm{Sp}(v_1,\dots,v_n,w)=\mathrm{Sp}(v_1,\dots,v_n)$.
+  <details><summary>Antwort</summary><div><p>„$\supseteq$“: mehr Vektoren, mehr Kombinationen. „$\subseteq$“: die rechte Seite ist ein Unterraum, der $v_1,\dots,v_n$ und $w$ enthält, also enthält sie den kleinsten solchen Unterraum, die linke Seite. (Oder: setze $w=\sum c_iv_i$ in jede Kombination ein.) Diese Tatsache treibt <a class="xl" href="../linalg-07.html">Lektion 7</a> an.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis B nur aus dem Rahmen.</li>
+</ol></div>
+
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Kündige die beiden Inklusionen an.</li>
+  <li>$\mathrm{Sp}(S)\subseteq L(S)$: zeige, dass $L(S)$ $S$ enthält und ein Unterraum ist (Null; eine Kombination zweier Kombinationen ist eine Kombination, die Koeffizienten $\lambda a_i$, $\mu b_j$ ausgeschrieben). Zitiere „kleinste“.</li>
+  <li>$L(S)\subseteq\mathrm{Sp}(S)$: fixiere einen Unterraum $W\supseteq S$; Induktion über die Anzahl der Summanden; dann „in jedem solchen $W$, also im Durchschnitt“.</li>
+</ol>
+<p><strong>Kurz:</strong> „kleinste“ gibt eine Inklusion gratis, sobald du weisst, dass $L(S)$ ein Unterraum ist; die Abgeschlossenheit gibt die andere. Dasselbe Zwei-Inklusionen-Muster beweist jede Aussage „der kleinste X, der $S$ enthält, ist …“, zum Beispiel die Summe $U+W$ zweier Unterräume in <a class="xl" href="../linalg-08.html">Lektion 8</a>.</p></div>
+
+
+<h2 id="s3-is-in-the-span-solve">3. Liegt $w$ im Spann? Ein lineares System lösen</h2>
+<p>In $K^m$ ist die Frage „ist $w$ eine Linearkombination von $v_1,\dots,v_n$?“ ein lineares Gleichungssystem. Schreibe die Vektoren als Spalten in eine Matrix $A=(v_1\,|\,\cdots\,|\,v_n)\in M_{m\times n}(K)$. Dann gilt $Ax=x_1v_1+\dots+x_nv_n$ (Lemma 2.2.17, <a class="pl" href="../linalg-script.html#p46">S. 46</a>), also</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;w\in\mathrm{Sp}(v_1,\dots,v_n)\\ \iff\ &amp;Ax=w\ \text{has a solution }x\in K^n.\end{aligned}$$</span>
+<p>Das Beispiel des Skripts: ist $(11,137)$ eine Kombination von $v=(1,3)$ und $w=(7,73)$? Löse $x_1+7x_2=11$, $3x_1+73x_2=137$. Ziehe das $3$-Fache der ersten von der zweiten ab: $52x_2=104$, also $x_2=2$, $x_1=-3$. Tatsächlich $-3\cdot(1,3)+2\cdot(7,73)=(11,137)$. Allgemein formst du $(A\,|\,w)$ mit dem Gauss-Verfahren um (das kennst du aus den Übungen).</p>
+
+<div class="box"><h3 id="we-1">Musterbeispiel 1: liegt er im Spann? Drei Vektoren in $\mathbb R^3$</h3>
+<p>Sei $v_1=(1,0,1)$, $v_2=(0,1,1)$, $v_3=(1,1,2)$.</p>
+<ol class="gq">
+  <li>Liegt $w=(2,3,5)$ in $\mathrm{Sp}(v_1,v_2,v_3)$? Stelle zuerst das System auf.
+  <details><summary>Antwort</summary><div><p>$x_1v_1+x_2v_2+x_3v_3=w$ lautet komponentenweise: $x_1+x_3=2$, $x_2+x_3=3$, $x_1+x_2+2x_3=5$. Die dritte Gleichung minus die ersten beiden ergibt $0=5-2-3=0$: kein Widerspruch, das System hat also Lösungen. Mit $x_3=0$: $x_1=2$, $x_2=3$, und tatsächlich $2(1,0,1)+3(0,1,1)=(2,3,5)$. <strong>Ja.</strong></p></div></details></li>
+  <li>Ist die Lösung eindeutig? Was sagt dir das?
+  <details><summary>Antwort</summary><div><p>Nein: $x_3$ ist frei. $x_3=1$ ergibt $x_1=1$, $x_2=2$, und $1\cdot v_1+2v_2+1\cdot v_3=(2,3,5)$ ebenfalls. Zwei verschiedene Darstellungen eines Vektors: ziehst du sie voneinander ab, erhältst du $v_1+v_2-v_3=0$, eine nichttriviale Darstellung der $0$. Also sind $v_1,v_2,v_3$ abhängig ($v_3=v_1+v_2$). Abschnitt 5 macht daraus einen Satz: eindeutige Darstellungen gibt es genau bei Basen.</p></div></details></li>
+  <li>Liegt $u=(1,1,1)$ im Spann? Beschreibe das Spann als Menge.
+  <details><summary>Antwort</summary><div><p>Dieselbe Elimination ergibt die Bedingung „dritte Komponente = erste plus zweite“: $x_1+x_2+2x_3=(x_1+x_3)+(x_2+x_3)$. Für $u$: $1\ne1+1$, das System hat also keine Lösung, und <strong>$u$ liegt nicht im Spann</strong>. Allgemein ist $\mathrm{Sp}(v_1,v_2,v_3)=\{(x,y,z)\mid z=x+y\}$, eine Ebene durch $0$: jeder Vektor des Spanns erfüllt $z=x+y$, und umgekehrt gilt $(x,y,x+y)=xv_1+yv_2$.</p></div></details></li>
+</ol></div>
+
+<div class="explorer" id="lc-ex">
+<span class="label">Probier es aus: das Spann zweier Vektoren in $\mathbb R^2$</span>
+<p>Gib $v$, $w$ und ein Ziel $t$ ein. Bewege die Schieberegler, um $\lambda v+\mu w$ zu bilden (das blasse Gitter zeigt ganzzahlige Kombinationen). Das Urteil sagt, ob $v,w$ unabhängig sind, und findet die Koeffizienten von $t$, falls es sie gibt.</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">$v$ = (<input id="lc-a" type="number" value="2" style="width:2.6em" aria-label="v first">, <input id="lc-b" type="number" value="1" style="width:2.6em" aria-label="v second">)</label>
+  <label style="white-space:nowrap">$w$ = (<input id="lc-c" type="number" value="1" style="width:2.6em" aria-label="w first">, <input id="lc-d" type="number" value="2" style="width:2.6em" aria-label="w second">)</label>
+  <label style="white-space:nowrap">$t$ = (<input id="lc-x" type="number" value="4" style="width:2.6em" aria-label="t first">, <input id="lc-y" type="number" value="5" style="width:2.6em" aria-label="t second">)</label>
+</div>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label>λ <input id="lc-l" type="range" min="-3" max="3" step="0.25" value="1" aria-label="lambda"> <span id="lc-lv">1</span></label>
+  <label>μ <input id="lc-m" type="range" min="-3" max="3" step="0.25" value="1" aria-label="mu"> <span id="lc-mv">1</span></label>
+</div>
+<svg id="lc-svg" viewBox="-150 -150 300 300" width="100%" style="max-width:330px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="Vektoren v, w, die Kombination und das Ziel"></svg>
+<p id="lc-verdict" aria-live="polite"></p>
+</div>
+<script>
+(function(){
+  var ids=['a','b','c','d','x','y','l','m'],E={};ids.forEach(function(k){E[k]=document.getElementById('lc-'+k);});if(!E.a)return;
+  var K=20;function X(x){return (x*K).toFixed(1);}function Y(y){return (-y*K).toFixed(1);}
+  function arrow(p,col,lab,w){var h='<line x1="0" y1="0" x2="'+X(p[0])+'" y2="'+Y(p[1])+'" style="stroke:'+col+'" stroke-width="'+(w||2.5)+'"/>';var L=Math.hypot(p[0],p[1]);if(L>1e-9){var ux=p[0]/L,uy=p[1]/L,tx=p[0]*K,ty=-p[1]*K;h+='<path d="M'+tx+' '+ty+' L'+(tx-9*ux+4*uy).toFixed(1)+' '+(ty+9*uy+4*ux).toFixed(1)+' L'+(tx-9*ux-4*uy).toFixed(1)+' '+(ty+9*uy-4*ux).toFixed(1)+' Z" style="fill:'+col+'"/>';}
+    h+='<text x="'+(+X(p[0])+6)+'" y="'+(+Y(p[1])-6)+'" font-size="13" style="fill:'+col+'">'+lab+'</text>';return h;}
+  function fr(q){var s=(+q.toFixed(3)).toString();return s;}
+  function draw(){var a=+E.a.value||0,b=+E.b.value||0,c=+E.c.value||0,d=+E.d.value||0,x=+E.x.value||0,y=+E.y.value||0,l=+E.l.value,m=+E.m.value;
+    document.getElementById('lc-lv').textContent=l;document.getElementById('lc-mv').textContent=m;
+    var h='<line x1="-150" y1="0" x2="150" y2="0" style="stroke:var(--rule)"/><line x1="0" y1="-150" x2="0" y2="150" style="stroke:var(--rule)"/>';
+    var det=a*d-b*c;
+    for(var i=-6;i<=6;i++)for(var j=-6;j<=6;j++){var px=i*a+j*c,py=i*b+j*d;if(Math.abs(px)<7.4&&Math.abs(py)<7.4)h+='<circle cx="'+X(px)+'" cy="'+Y(py)+'" r="1.8" style="fill:var(--muted)" opacity=".5"/>';}
+    if(Math.abs(det)<1e-12&&(a||b||c||d)){var u=(a||b)?[a,b]:[c,d],L=Math.hypot(u[0],u[1]);h+='<line x1="'+X(-8*u[0]/L)+'" y1="'+Y(-8*u[1]/L)+'" x2="'+X(8*u[0]/L)+'" y2="'+Y(8*u[1]/L)+'" style="stroke:var(--accent)" stroke-width="6" opacity=".2"/>';}
+    var z=[l*a+m*c,l*b+m*d];
+    h+='<circle cx="'+X(x)+'" cy="'+Y(y)+'" r="6" style="fill:none;stroke:var(--k-del)" stroke-width="2.5"/><text x="'+(+X(x)+8)+'" y="'+(+Y(y)+14)+'" font-size="13" style="fill:var(--k-del)">t</text>';
+    h+=arrow([a,b],'var(--accent)','v')+arrow([c,d],'var(--accent)','w')+arrow(z,'var(--k-c)','λv+μw',1.8);
+    document.getElementById('lc-svg').innerHTML=h;
+    var t='';
+    if(Math.abs(det)>1e-12){var L1=(x*d-y*c)/det,M1=(a*y-b*x)/det;t='ad − bc = '+fr(det)+' ≠ 0: <strong>v and w are linearly independent</strong>, so they span all of ℝ² and form a basis. t = '+fr(L1)+'·v + '+fr(M1)+'·w, and these coefficients are the only ones (the coordinates of t).';}
+    else if(!(a||b||c||d)){t='Both vectors are 0: the span is {0}. Only t = 0 is reachable.';}
+    else{var u2=(a||b)?[a,b]:[c,d],inLine=Math.abs(u2[0]*y-u2[1]*x)<1e-9;t='ad − bc = 0: <strong>v and w are linearly dependent</strong> (one is a multiple of the other, or one is 0). Their span is the shaded line through 0. t '+(inLine?'<strong>lies on it</strong>, and it has many representations λv+μw: the coefficients are not unique.':'is <strong>not</strong> in the span: no λ, μ reach it.');}
+    t+=' Current combination: '+fr(l)+'·v + '+fr(m)+'·w = ('+fr(z[0])+', '+fr(z[1])+')'+(Math.abs(z[0]-x)<1e-9&&Math.abs(z[1]-y)<1e-9?' = t ✓':'')+'.';
+    document.getElementById('lc-verdict').innerHTML=t;}
+  ids.forEach(function(k){E[k].addEventListener('input',draw);});draw();
+})();
+</script>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: alle Unterräume von $\mathbb R^2$ (Beispiel 2.2.13, <a class="pl" href="../linalg-script.html#p45">S. 45</a>)</h3>
+<ol class="gq">
+  <li>Sei $W\subseteq\mathbb R^2$ ein Unterraum mit einem $v\ne0$ darin. Was muss $W$ enthalten?
+  <details><summary>Antwort</summary><div><p>$\mathrm{Sp}(v)=\{\lambda v\}$, die Gerade $G_v$ durch $0$ und $v$ (jeder Unterraum, der $v$ enthält, enthält alle $\lambda v$, und die $\lambda v$ bilden bereits einen Unterraum).</p></div></details></li>
+  <li>Und wenn $W$ ausserdem ein $w\notin G_v$ enthält?
+  <details><summary>Antwort</summary><div><p>Dann ist $\mathrm{Sp}(v,w)=\mathbb R^2$ (in Koordinaten: $w$ ist kein Vielfaches von $v$, also $ad-bc\ne0$, und das Werkzeug löst jedes $t$). Also $W=\mathbb R^2$. Ergebnis: die Unterräume von $\mathbb R^2$ sind genau $\{0\}$, die Geraden durch $0$ und $\mathbb R^2$ selbst. Insbesondere ist $\mathbb R^2=\mathrm{Sp}((1,0),(0,1))$ endlichdimensional.</p></div></details></li>
+  <li>Rate die Liste für $\mathbb R^3$, und sag, welchen Schritt der Argumentation du noch nicht streng machen kannst.
+  <details><summary>Antwort</summary><div><p>$\{0\}$, die Geraden durch $0$, die Ebenen durch $0$ und $\mathbb R^3$. Dasselbe Argument funktioniert bis zu den Ebenen: ein Unterraum, der zwei nicht proportionale Vektoren enthält, enthält die Ebene, die sie aufspannen; und enthält er einen Vektor ausserhalb dieser Ebene, so ist er ganz $\mathbb R^3$. Der fehlende Schritt ist der letzte: „eine Ebene plus ein Vektor ausserhalb spannt $\mathbb R^3$ auf“ braucht entweder eine Rechnung für jeden Fall oder das Dimensionszählen aus <a class="xl" href="../linalg-07.html">Lektion 7</a> (drei unabhängige Vektoren in einem $3$-dimensionalen Raum bilden eine Basis). Bis dahin ist die Liste eine gut begründete Vermutung.</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-linear-independence">4. Lineare Unabhängigkeit</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-02.html#proof-d">Lektion 2</a>, <a class="xl" href="linalg-05.html#proof-a">Lektion 5</a>)</span>
+<ul>
+  <li><strong>Eine Definition verneinen:</strong> kehre jeden Quantor um und verneine den Kern; ein beschränkter Quantor behält seine Schranke (Beweis D). „Nicht unabhängig“ entsteht daraus mechanisch.</li>
+  <li><strong>Keine Nullteiler für Vektoren:</strong> gilt $av=0_V$, so ist $a=0$ oder $v=0_V$ (Beweis A (d)). Damit entscheidet sich, wann ein einzelner Vektor unabhängig ist.</li>
+</ul></div>
+<p>Ein Erzeugendensystem kann überflüssige Vektoren enthalten. Unabhängigkeit sagt: keiner ist überflüssig. Skript und Vorlesung formulieren das verschieden; beide Formen werden gebraucht.</p>
+<div class="box">
+<p><strong>Definition (Skript; Definitionen 2.2.24 und 2.2.26, <a class="pl" href="../linalg-script.html#p48">S. 48–49</a>).</strong> Eine endliche Menge $\{v_1,\dots,v_n\}\subseteq V$ (paarweise verschieden) heisst <strong>linear unabhängig</strong>, wenn</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\forall a_1,\dots,a_n\in K:\\ &amp;a_1v_1+\dots+a_nv_n=0\\ &amp;\quad\Rightarrow\ a_1=\dots=a_n=0.\end{aligned}$$</span>
+<p>Eine unendliche Menge heisst linear unabhängig, wenn jede endliche nichtleere Teilmenge es ist. $\emptyset$ ist nach Konvention unabhängig. Sonst heisst die Menge <strong>linear abhängig</strong>: es gibt paarweise verschiedene $v_1,\dots,v_n\in S$ und $a_1,\dots,a_n$, <em>nicht alle $0$</em>, mit $\sum a_iv_i=0$ (Definition 2.2.32: die Verneinung, nach <a class="xl" href="linalg-02.html">Lektion 2</a>).</p>
+<p><strong>Definition (Vorlesung, §4).</strong> $M\subseteq V$ ist linear unabhängig, wenn $\forall x\in M:\ x\notin\langle M\setminus\{x\}\rangle$: kein Vektor ist eine Kombination der anderen.</p></div>
+<p>In Worten (Bemerkung 2.2.25): $0=0v_1+\dots+0v_n$ gilt immer; Unabhängigkeit sagt, dass diese <em>triviale</em> Kombination die einzige Art ist, $0$ zu schreiben. Beispiele: $\{0\}$ ist abhängig ($1\cdot0=0$), ebenso jede Menge, die $0$ enthält. Ein einzelnes $v$ ist genau dann unabhängig, wenn $v\ne0$ (Übung 2.2.29, nach der Regel aus <a class="xl" href="linalg-05.html">Lektion 5</a>: $\lambda v=0\Rightarrow\lambda=0\vee v=0$). Zwei Vektoren sind genau dann unabhängig, wenn keiner ein Vielfaches des anderen ist.</p>
+
+
+<div class="box"><h3 id="we-3">Musterbeispiel 3: Unabhängigkeit von Funktionen (an gut gewählten Stellen auswerten)</h3>
+<p>In $\mathbb R^{\mathbb R}$ ist der Nullvektor die Nullfunktion; „$af+bg=0$“ heisst $af(x)+bg(x)=0$ für <em>jedes</em> $x\in\mathbb R$.</p>
+<ol class="gq">
+  <li>Sind $\sin$ und $\cos$ linear unabhängig?
+  <details><summary>Antwort</summary><div><p>Sei $a\sin+b\cos=0$. Auswerten bei $x=0$: $a\cdot0+b\cdot1=0$, also $b=0$. Auswerten bei $x=\frac\pi2$: $a\cdot1+0=0$, also $a=0$. <strong>Unabhängig.</strong> Der Zug: eine Gleichung, die für alle $x$ gilt, gilt insbesondere an Stellen, die du wählst.</p></div></details></li>
+  <li>Sind $1,\sin^2,\cos^2$ unabhängig?
+  <details><summary>Antwort</summary><div><p><strong>Nein:</strong> $1\cdot1+(-1)\sin^2+(-1)\cos^2=0$ für jedes $x$, da $\sin^2x+\cos^2x=1$. Eine nichttriviale Kombination, die die Nullfunktion ist. Auswerten an Stellen hätte hier nie Unabhängigkeit beweisen können; für <em>Abhängigkeit</em> gibst du die Kombination an.</p></div></details></li>
+  <li>Sind $f(x)=e^x$ und $g(x)=e^{2x}$ unabhängig?
+  <details><summary>Antwort</summary><div><p>Sei $ae^x+be^{2x}=0$ für alle $x$. Bei $x=0$: $a+b=0$. Bei $x=\ln2$: $2a+4b=0$. Aus der ersten $a=-b$; dann $-2b+4b=2b=0$, also $b=0$ und $a=0$. <strong>Unabhängig.</strong></p></div></details></li>
+</ol></div>
+
+<h3 id="proof-c">Beweis C: die beiden Definitionen stimmen überein (Vorlesung, Satz 4.0)</h3>
+<div class="box"><p><strong>Behauptung.</strong> $M\subseteq V$ erfüllt „kein $x\in M$ liegt in $\langle M\setminus\{x\}\rangle$“ genau dann, wenn für alle $n\ge1$ und paarweise verschiedene $x_1,\dots,x_n\in M$ gilt: $\sum_{i=1}^n\lambda_ix_i=0$ $\Rightarrow\lambda_1=\dots=\lambda_n=0$.</p></div>
+<p><strong>Die Idee.</strong> Beide Richtungen durch Kontraposition (<a class="xl" href="linalg-02.html">Lektion 2</a>: $\neg(A\to B)\iff A\wedge\neg B$). Eine nichttriviale Kombination, die $0$ ergibt und in der ein $\lambda_1\ne0$ vorkommt, lässt sich nach $x_1$ auflösen: durch $\lambda_1$ teilen. Umgekehrt: ist $y$ eine Kombination der anderen, so bringe $y$ auf die andere Seite: Koeffizient $-1\ne0$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Zwei Richtungen</strong>, jede eine Implikation zwischen zwei „für alle“-Aussagen. Direkt zu beweisen ist das umständlich; ihre Verneinungen sind „es gibt“-Aussagen, mit denen man arbeiten kann. Also zwei Kontrapositionen.</li>
+  <li><strong>(⇒), erste Zeile:</strong> „Sei $\sum\lambda_ix_i=0$ mit paarweise verschiedenen $x_i\in M$ und einem $\lambda_i\ne0$.“ <strong>Letzte Zeile:</strong> „Also liegt ein $x\in M$ in $\langle M\setminus\{x\}\rangle$.“</li>
+  <li><strong>(⇐), erste Zeile:</strong> „Sei $y\in M$ in $\langle M\setminus\{y\}\rangle$.“ <strong>Letzte Zeile:</strong> „Das ist eine nichttriviale Kombination paarweise verschiedener Vektoren aus $M$, die $0$ ergibt.“</li>
+  <li><strong>Die Lücke:</strong> eine Gleichung „$\dots=0$“ in „$x_1=\dots$“ umformen und zurück.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>„$\Rightarrow$“, Hintertür: nimm an, eine nichttriviale Mischung von Strassen führt zurück zum Tor. Irgendeine Strasse wird mit einem von null verschiedenen Anteil benutzt; nenne sie Strasse eins.</p></div><div class="sp-formal"><p>(⇒, Kontraposition) Sei $\sum_{i=1}^n\lambda_ix_i=0$ mit einem $\lambda_i\ne0$; o.B.d.A. $\lambda_1\ne0$ (umnummerieren).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Dann ist Strasse eins eine Mischung der anderen: geh die anderen, skaliert, und du kommst dorthin, wohin Strasse eins führt.</p></div><div class="sp-formal"><p>Multipliziere mit $-\lambda_1^{-1}$: $-x_1-\sum_{i=2}^n\lambda_1^{-1}\lambda_ix_i=0$, also $x_1=\sum_{i=2}^n(-\lambda_1^{-1}\lambda_i)x_i$, und das liegt in $\langle M\setminus\{x_1\}\rangle$. Also ist $M$ im Sinne der Vorlesung nicht unabhängig.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>„$\Leftarrow$“, Hintertür: ist eine Strasse $y$ eine Mischung der anderen, so geh die Mischung und dann zurück auf $y$: du bist am Tor, und $y$ wurde mit dem Anteil $-1$ benutzt.</p></div><div class="sp-formal"><p>(⇐, Kontraposition) Sei $y\in M$ mit $y=\sum_{i=1}^n\lambda_ix_i$, $x_i\in M\setminus\{y\}$ paarweise verschieden. Dann $0=\sum_{i=1}^n\lambda_ix_i+(-1)y$, eine Kombination paarweise verschiedener Vektoren aus $M$ mit Koeffizient $-1\ne0$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_contra">beweise die Kontraposition</a> <a class="mvl" href="../linalg-moves.html#m-la_solvefor">nichttriviale Kombination: nach dem Vektor mit nichtnullem Koeffizienten auflösen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(⇒) Kontraposition. Ist $\sum_{i=1}^n\lambda_ix_i=0$ mit $\lambda_1\ne0$ (nach Umnummerierung), so liegt $x_1=\sum_{i=2}^n(-\lambda_1^{-1}\lambda_i)x_i$ in $\langle M\setminus\{x_1\}\rangle$. (⇐) Kontraposition. Ist $y=\sum_{i=1}^n\lambda_ix_i$ mit $x_i\in M\setminus\{y\}$, so ist $\sum_{i=1}^n\lambda_ix_i+(-1)\cdot y=0$ eine nichttriviale Kombination. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Wo benutzt der Beweis, dass $K$ ein Körper ist?
+  <details><summary>Antwort</summary><div><p>Beim Teilen durch $\lambda_1\ne0$. Über einem Ring wie $\mathbb Z$ unterscheiden sich die beiden Begriffe: in $\mathbb Z^1$ hat $\{2,3\}$ die Kombination $3\cdot2-2\cdot3=0$, aber $2$ ist kein ganzzahliges Vielfaches von $3$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Verneine „$\{v_1,v_2,v_3\}$ ist linear unabhängig“ mit Quantoren.
+  <details><summary>Antwort</summary><div><p>$\exists a_1,a_2,a_3\in K:$ $a_1v_1+a_2v_2+a_3v_3=0$ $\wedge\,(a_1\ne0\vee a_2\ne0\vee a_3\ne0)$. Beachte „nicht alle null“, nicht „alle nicht null“.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis C aus dem Rahmen: zwei Kontrapositionen, „durch $\lambda_1$ teilen“ und „Koeffizient $-1$“.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Schreib beide Definitionen mit Quantoren, nebeneinander.</li>
+  <li>(⇒) durch Kontraposition: eine nichttriviale Kombination, die $0$ ist; umnummerieren, so dass $\lambda_1\ne0$; mit $-\lambda_1^{-1}$ multiplizieren; nach $x_1$ auflösen.</li>
+  <li>(⇐) durch Kontraposition: $y=\sum\lambda_ix_i$ mit $x_i\ne y$; $y$ hinüberbringen; sein Koeffizient ist $-1\ne0$.</li>
+  <li>Sag, wo der Körper benutzt wird (das Inverse $\lambda_1^{-1}$), und dass die $x_i$ verschieden sind (sonst könnten sich Koeffizienten aufheben).</li>
+</ol>
+<p><strong>Kurz:</strong> „durch den nichtnullen Koeffizienten teilen“ in der einen Richtung, „Koeffizient $-1$“ in der anderen. Prüfungsvarianten: „zeige, dass $v_1,\dots,v_n$ genau dann abhängig sind, wenn einer eine Kombination der anderen ist“, und das Wahr-falsch-Item „hat ein Vektor genau eine Darstellung, so sind die Vektoren unabhängig“ (Probeklausur HS20, (7)).</p></div>
+
+<h3 id="proof-d">Beweis D: in einer abhängigen Familie ist ein Vektor eine Kombination der vorherigen (Lemma 2.3.2, <a class="pl" href="../linalg-script.html#p51">S. 51</a>; Vorlesung, Lemma 4.2)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Seien $v_1,\dots,v_m$ linear abhängig. Dann gibt es ein $j$ mit (a) $v_j\in\mathrm{Sp}(v_1,\dots,v_{j-1})$ und (b) das Weglassen von $v_j$ ändert das Spann nicht: $\mathrm{Sp}(v_1,\dots,\widehat{v_j},\dots,v_m)$ $=\mathrm{Sp}(v_1,\dots,v_m)$.</p></div>
+<p><strong>Die Idee.</strong> Nimm eine nichttriviale Kombination, die $0$ ergibt, und sei $j$ der <em>grösste</em> Index mit nichtnullem Koeffizienten. Dann ist $a_1v_1+\dots+a_jv_j=0$ mit $a_j\ne0$: löse nach $v_j$ auf. Es treten nur frühere Vektoren auf.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Da $v_1,\dots,v_m$ abhängig sind, gibt es $a_1,\dots,a_m\in K$, nicht alle $0$, mit $\sum_{i=1}^ma_iv_i=0$.“ (Die Definition von abhängig, entfaltet.)</li>
+  <li><strong>Letzte Zeile von (a):</strong> „$v_j\in\mathrm{Sp}(v_1,\dots,v_{j-1})$.“ <strong>Letzte Zeile von (b):</strong> die beiden Spanne sind gleich, also zwei Inklusionen.</li>
+  <li><strong>Die Lücke:</strong> wähle $j$ so, dass nach dem Auflösen nach $v_j$ nur <em>frühere</em> Vektoren auftreten. „Grösster Index mit nichtnullem Koeffizienten“ leistet genau das.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine verschwenderische Liste von Strassen: irgendeine nichttriviale Mischung kehrt zum Tor zurück. Schau dir die letzte Strasse an, die sie wirklich benutzt.</p></div><div class="sp-formal"><p>(a) Wähle $a_1,\dots,a_m$, nicht alle $0$, mit $\sum a_iv_i=0$, und sei $j:=\max\{i\mid a_i\ne0\}$. Dann $a_1v_1+\dots+a_jv_j=0$ mit $a_j\ne0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Diese Strasse ist eine Mischung der Strassen vor ihr.</p></div><div class="sp-formal"><p>$v_j=-\frac{a_1}{a_j}v_1-\dots-\frac{a_{j-1}}{a_j}v_{j-1}$ $\in\mathrm{Sp}(v_1,\dots,v_{j-1})$. (Für $j=1$: $v_1=0\in\mathrm{Sp}(\emptyset)$.)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Also kann sie von der Liste gestrichen werden, ohne einen Ort zu verlieren.</p></div><div class="sp-formal"><p>(b) In jeder Kombination von $v_1,\dots,v_m$ ersetze $v_j$ durch diesen Ausdruck: es entsteht eine Kombination ohne $v_j$. (Abschnitt 2, Stufe 2.) <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_solvefor">nichttriviale Kombination: nach dem Vektor mit nichtnullem Koeffizienten auflösen</a> <a class="mvl" href="../linalg-moves.html#m-la_twoways">ein Element auf zwei Wegen berechnen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Da $v_1,\dots,v_m$ linear abhängig sind, gibt es $a_1,\dots,a_m\in K$, nicht alle $0$, mit $\sum_{i=1}^ma_iv_i=0$. Sei $j:=\max\{i\mid a_i\ne0\}$; dann ist $a_i=0$ für $i>j$, also $a_1v_1+\dots+a_jv_j=0$ mit $a_j\ne0$. Multipliziere mit $-a_j^{-1}$ und löse auf: $v_j=\sum_{i=1}^{j-1}\big(-a_j^{-1}a_i\big)v_i\in\mathrm{Sp}(v_1,\dots,v_{j-1})$ (für $j=1$ ist die Summe leer und $v_1=0$). Das ist (a). Für (b): „$\subseteq$“ gilt, weil weniger Vektoren weniger Kombinationen liefern. Für „$\supseteq$“ sei $v=\sum_{i=1}^mc_iv_i$; Einsetzen des Ausdrucks für $v_j$ ergibt $v=\sum_{i\ne j}c_iv_i+c_j\sum_{i=1}^{j-1}(-a_j^{-1}a_i)v_i$, eine Kombination der $v_i$ mit $i\ne j$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Warum der <em>grösste</em> Index? Was geht mit dem kleinsten schief?
+  <details><summary>Antwort</summary><div><p>Mit dem kleinsten Index $k$ mit $a_k\ne0$ drückt das Auflösen nach $v_k$ den Vektor durch die <em>späteren</em> Vektoren $v_{k+1},\dots,v_m$ aus. Das zeigt „ein Vektor ist eine Kombination der anderen“ (Beweis C), aber nicht „einer der früheren“, und genau das braucht Steinitz in <a class="xl" href="../linalg-07.html">Lektion 7</a>.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige mit Beweis D: ist $v_1\ne0$ und ist jedes $v_k$ ($k\ge2$) nicht in $\mathrm{Sp}(v_1,\dots,v_{k-1})$, so sind $v_1,\dots,v_m$ unabhängig.
+  <details><summary>Antwort</summary><div><p>Kontraposition. Wäre die Familie abhängig, so gäbe Beweis D ein $j$ mit $v_j\in\mathrm{Sp}(v_1,\dots,v_{j-1})$. Für $j=1$ heisst das $v_1\in\mathrm{Sp}(\emptyset)=\{0\}$, Widerspruch zu $v_1\ne0$; für $j\ge2$ widerspricht es der Voraussetzung an $v_j$. Dieser Test wird in Aufgabe 3 benutzt.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis D nur aus dem Rahmen, einschliesslich des Falls $j=1$.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Entfalte „abhängig“: Koeffizienten nicht alle $0$, Kombination $=0$.</li>
+  <li>$j:=$ grösster Index mit $a_j\ne0$; die Nullterme nach $j$ weglassen.</li>
+  <li>Nach $v_j$ auflösen (durch $a_j$ teilen, ein Körperelement $\ne0$); nur $v_1,\dots,v_{j-1}$ bleiben. $j=1$ erwähnen.</li>
+  <li>(b): zwei Inklusionen; für die schwere, den Ausdruck für $v_j$ einsetzen.</li>
+</ol>
+<p><strong>Kurz:</strong> der letzte Vektor, den eine Abhängigkeit wirklich benutzt, ist eine Kombination der früheren und kann weggeworfen werden. Das ist der erste Schritt des Austauschsatzes von Steinitz (<a class="xl" href="../linalg-07.html">Lektion 7</a>), den Halbeisen von Hand prüft (Serie 3, Aufgabe 16; Quiz 3).</p></div>
+<p>Liest du es rückwärts, erhältst du den praktischen Test aus Serie 3, Aufgabe 18: <strong>Ist kein Vektor einer Liste eine Kombination der früheren, so ist die Liste unabhängig.</strong> Lektion 7 baut den Austauschsatz von Steinitz auf Beweis D auf.</p>
+
+<h2 id="s5-bases-and-coordinates">5. Basen und Koordinaten</h2>
+<div class="box">
+<p><strong>Definition (Basis; Definition 2.2.34, <a class="pl" href="../linalg-script.html#p50">S. 50</a>; Vorlesung §4).</strong> $B\subseteq V$ heisst <strong>Basis</strong> von $V$, wenn (1) $B$ linear unabhängig ist und (2) $\mathrm{Sp}(B)=V$ gilt.</p>
+<p><strong>Definition (Dimension; Vorlesung).</strong> Ist $B$ eine Basis, so ist $\dim V:=|B|$. Dass jede Basis dieselbe Grösse hat, ist der Hauptsatz von Lektion 7; bis dahin ist die Definition ein Versprechen.</p></div>
+<h3 id="proof-e">Beweis E: eine Basis liefert eindeutige Koordinaten (Proposition 2.2.35, <a class="pl" href="../linalg-script.html#p50">S. 50</a>; Vorlesung Satz 4.1 = Serie 3, Aufgabe 15)</h3>
+<div class="box"><p><strong>Behauptung.</strong> $B=\{v_1,\dots,v_n\}$ ist eine Basis von $V$ $\iff$ jedes $v\in V$ lässt sich auf genau eine Weise als $v=a_1v_1+\dots+a_nv_n$ schreiben.</p></div>
+<p><strong>Die Idee.</strong> Die Existenz einer Darstellung ist „$B$ erzeugt“. Die Eindeutigkeit ist Unabhängigkeit in Verkleidung: zwei Darstellungen von $v$ ergeben, voneinander abgezogen, eine Darstellung von $0$; und die triviale Darstellung der $0$ ist genau dann eindeutig, wenn $B$ unabhängig ist.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>„$\Rightarrow$“:</strong> Existenz aus (2). Eindeutigkeit: „Sei $v=\sum a_iv_i=\sum b_iv_i$. … Also $a_i=b_i$ für alle $i$.“</li>
+  <li><strong>„$\Leftarrow$“:</strong> das Erzeugen ist sofort klar. Unabhängigkeit: „Sei $\sum a_iv_i=0$. Da auch $\sum0\cdot v_i=0$, liefert die Eindeutigkeit $a_i=0$.“</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Jeder Ort hat eine Adresse, da die Strassen überall hinreichen.</p></div><div class="sp-formal"><p>(⇒) Sei $v\in V$. Da $\mathrm{Sp}(B)=V$, gilt $v=\sum a_iv_i$ für geeignete $a_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Adressen für einen Ort: geh die eine, dann die andere rückwärts. Du bist wieder am Tor.</p></div><div class="sp-formal"><p>Gilt auch $v=\sum b_iv_i$, so $0=v-v=\sum(a_i-b_i)v_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Keine Strasse ist verschwendet, also gibt es als Rückweg zum Tor nur das Nicht-Gehen: die beiden Adressen stimmen überein.</p></div><div class="sp-formal"><p>Nach der Unabhängigkeit gilt $a_i-b_i=0$ für alle $i$: die Darstellung ist eindeutig.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Umgekehrt: eindeutige Adressen. Die Adresse des Tores selbst ist „nirgends“, also führt keine nichttriviale Mischung dorthin zurück.</p></div><div class="sp-formal"><p>(⇐) $\mathrm{Sp}(B)=V$ folgt aus der Existenz. Gilt $\sum a_iv_i=0=\sum0\cdot v_i$, so liefert die Eindeutigkeit $a_i=0$ für alle $i$: $B$ ist unabhängig. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_twoexpr">zwei Darstellungen: voneinander abziehen</a> <a class="mvl" href="../linalg-moves.html#m-la_arbitrary">ein beliebiges Element wählen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(⇒) Sei $B=\{v_1,\dots,v_n\}$ eine Basis und $v\in V$. Da $\mathrm{Sp}(B)=V$, gibt es $a_1,\dots,a_n\in K$ mit $v=\sum_{i=1}^na_iv_i$. Gilt auch $v=\sum_{i=1}^nb_iv_i$, so ist $0=v-v=\sum_{i=1}^n(a_i-b_i)v_i$, und da $B$ linear unabhängig ist, $a_i-b_i=0$, also $a_i=b_i$ für alle $i$. (⇐) Jedes $v$ ist eine Kombination von $v_1,\dots,v_n$, also $\mathrm{Sp}(B)=V$. Ist $\sum_{i=1}^na_iv_i=0$, so folgt wegen $\sum_{i=1}^n0\cdot v_i=0$ aus der Eindeutigkeit der Darstellung der $0$, dass $a_i=0$ für alle $i$. Also ist $B$ linear unabhängig, somit eine Basis. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> In (⇐) wird die Eindeutigkeit nur für einen Vektor benutzt. Welchen, und warum reicht das?
+  <details><summary>Antwort</summary><div><p>Nur für $v=0$: Unabhängigkeit sagt genau, dass $0$ nur die triviale Darstellung hat. Also genügt die schwächere Voraussetzung „$0$ hat genau eine Darstellung, und $B$ erzeugt“, um eine Basis zu erhalten. Aufgabe 4 (c) geht weiter: Eindeutigkeit für <em>einen</em> Vektor erzwingt Unabhängigkeit.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige, dass die Koordinaten von $v+w$ die Summen der Koordinaten von $v$ und $w$ sind, und die Koordinaten von $\lambda v$ das $\lambda$-Fache derer von $v$.
+  <details><summary>Antwort</summary><div><p>Ist $v=\sum a_iv_i$ und $w=\sum b_iv_i$, so ist $v+w=\sum(a_i+b_i)v_i$ nach V1, V4 und V8, eine Darstellung von $v+w$; nach der Eindeutigkeit ist es <em>die</em> Darstellung, also sind die Koordinaten von $v+w$ gleich $a_i+b_i$. Ebenso $\lambda v=\sum(\lambda a_i)v_i$ (V5, V7). „Koordinaten nehmen“ respektiert also beide Operationen: es ist der lineare Isomorphismus $V\to K^n$ aus <a class="xl" href="../linalg-12.html">Lektion 12</a>.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis E nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>(⇒) Existenz: „da $B$ den Raum $V$ erzeugt“. Eindeutigkeit: zwei Darstellungen, abziehen, Unabhängigkeit ergibt $a_i=b_i$.</li>
+  <li>(⇐) Erzeugen aus der Existenz. Unabhängigkeit: vergleiche $\sum a_iv_i=0$ mit $\sum0\cdot v_i=0$ und benutze die Eindeutigkeit.</li>
+  <li>Für eine unendliche Basis: eine Darstellung benutzt endlich viele Basisvektoren; vergleiche zwei Darstellungen auf der Vereinigung der beiden endlichen Mengen, und fülle mit Nullen auf.</li>
+</ol>
+<p><strong>Kurz:</strong> Existenz = Erzeugen, Eindeutigkeit = Unabhängigkeit. Das ist Serie 3, Aufgabe 15; die Rückrichtung ist das Wahr-falsch-Item der Probeklausur HS20, (7).</p></div>
+<p>Für eine unendliche Basis (Serie 3, Aufgabe 15) funktioniert derselbe Beweis mit „eindeutig bis auf die Reihenfolge der Summanden, mit nichtnullen Koeffizienten“: eine Darstellung benutzt endlich viele Basisvektoren, und du vergleichst die beiden endlichen Listen auf ihrer Vereinigung. Die Zahlen $a_1,\dots,a_n$ sind die <strong>Koordinaten</strong> von $v$ bezüglich der (geordneten) Basis $v_1,\dots,v_n$.</p>
+
+<div class="box"><p><strong>Die Standardbasen (Beispiel 2.2.20, <a class="pl" href="../linalg-script.html#p47">S. 47</a>).</strong></p>
+<ul>
+  <li>$K^n$: $e_1=(1,0,\dots,0)$, …, $e_n=(0,\dots,0,1)$. Koordinaten von $(a_1,\dots,a_n)$: $a_1,\dots,a_n$. Also $\dim K^n=n$.</li>
+  <li>$K[x]_{\le n}$: $1,x,\dots,x^n$; $K[x]$: $\{x^i\mid i\ge0\}$, unendlich. (Erzeugend: ein Polynom ist eine <em>endliche</em> Summe $\sum a_ix^i$. Unabhängig: ein Polynom ist nur dann $0$, wenn alle Koeffizienten $0$ sind.)</li>
+  <li>$M_{m\times n}(K)$: die $mn$ Matrizen $E_{ij}$ mit einer einzigen $1$ an Stelle $(i,j)$.</li>
+  <li>$\mathcal P(X)$ über $\mathbb F_2$, $|X|=n$: die $n$ einelementigen Teilmengen $\{x\}$.</li>
+</ul>
+<p>Das Skript bittet, sie nicht „kanonisch“ zu nennen (Bemerkung 2.2.21): an ihnen ist nichts kanonisch.</p></div>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: Koordinaten in drei verschiedenen Räumen</h3>
+<ol class="gq">
+  <li>Koordinaten von $t=(4,5)$ bezüglich der Basis $v=(2,1)$, $w=(1,2)$ von $\mathbb R^2$?
+  <details><summary>Antwort</summary><div><p>Löse $\lambda(2,1)+\mu(1,2)=(4,5)$: $2\lambda+\mu=4$, $\lambda+2\mu=5$. Zweimal die zweite minus die erste: $3\mu=6$, $\mu=2$, dann $\lambda=1$. Probe: $(2,1)+2(1,2)=(4,5)$. Die Koordinaten sind $(1,2)$, während die Koordinaten bezüglich $e_1,e_2$ gleich $(4,5)$ sind: derselbe Vektor, andere Adresse. (Das Werkzeug oben beginnt genau mit diesem Beispiel.)</p></div></details></li>
+  <li>Koordinaten von $p=2x^2-3x+5$ bezüglich der Basis $1,\ (x-1),\ (x-1)^2$ von $\mathbb R[x]_{\le2}$?
+  <details><summary>Antwort</summary><div><p>Schreibe $p=a+b(x-1)+c(x-1)^2$. Ein Koeffizientenvergleich bei $x^2$: $c=2$. Dann $p-2(x-1)^2=2x^2-3x+5-(2x^2-4x+2)=x+3=(x-1)+4$, also $b=1$, $a=4$. Koordinaten $(4,1,2)$. Probe bei $x=1$: $p(1)=2-3+5=4=a$. (Das ist eine Taylor-Entwicklung bei $1$; dass es eine Basis ist, folgt aus dem Gradargument von Aufgabe 3.)</p></div></details></li>
+  <li>Koordinaten von $A=\begin{pmatrix}3&amp;-1\\0&amp;7\end{pmatrix}$ bezüglich $E_{11},E_{12},E_{21},E_{22}$?
+  <details><summary>Antwort</summary><div><p>$A=3E_{11}-E_{12}+0E_{21}+7E_{22}$, also $(3,-1,0,7)$: die Einträge, zeilenweise gelesen. Bezüglich einer Standardbasis sind die Koordinaten „die Zahlen, die du schon siehst“; bei jeder anderen Basis musst du ein System lösen.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-5">Musterbeispiel 5: ist $\{e_1,e_2,\dots\}$ eine Basis des Folgenraums $K^\infty$? (Vorlesung; Übung 2.2.23, <a class="pl" href="../linalg-script.html#p48">S. 48</a>)</h3>
+<ol class="gq">
+  <li>Unabhängig?
+  <details><summary>Antwort</summary><div><p>Ja: eine endliche Kombination $\sum_{i\in F}a_ie_i$ ist die Folge mit $a_i$ an Stelle $i$ und $0$ sonst; sie ist nur dann $0$, wenn alle $a_i=0$ sind.</p></div></details></li>
+  <li>Erzeugend?
+  <details><summary>Antwort</summary><div><p>Nein: Linearkombinationen sind endlich, also hat jeder Vektor im Spann nur endlich viele Einträge ungleich null. $(1,1,1,\dots)$ liegt nicht im Spann. Das Spann ist genau der Raum der Folgen mit endlichem Träger aus <a class="xl" href="linalg-05.html">Lektion 5</a>. Also ist es <strong>keine Basis</strong>. (Jeder Vektorraum hat eine Basis, aber für $K^\infty$ braucht man dafür das Auswahlaxiom, und niemand kann eine hinschreiben.)</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Eine Basis verwandelt jeden endlichdimensionalen Vektorraum in $K^n$: wähle eine Basis, und jeder Vektor <em>ist</em> seine Liste von Koordinaten. Polynome vom Grad höchstens $3$ werden zu Listen aus $4$ Zahlen, $2\times2$-Matrizen zu Listen aus $4$ Zahlen, Fibonacci-Folgen zu Listen aus $2$ Zahlen (Serie 3, Aufgabe 17). Und eine geschickte Basis macht schwere Probleme leicht: in der Basis $\{(1,\varphi,\varphi^2,\dots),(1,\psi,\psi^2,\dots)\}$ des Fibonacci-Raums, mit $\varphi,\psi=\frac{1\pm\sqrt5}2$, haben die Fibonacci-Zahlen die geschlossene Formel $f_n=\frac1{\sqrt5}(\varphi^n-\psi^n)$ (Binet). Die beste Basis zu finden ist das Thema des ganzen zweiten Semesters (Eigenvektoren).</p></div>
+
+<div class="box"><h3 id="for-wonder-is-over-finite">Zum Staunen: ist $\mathbb R$ über $\mathbb Q$ endlichdimensional?</h3>
+<p>$\mathbb R$ ist ein Vektorraum über $\mathbb Q$ (<a class="xl" href="linalg-05.html">Lektion 5</a>). Gibt es eine endliche Basis? Nein: erzeugten $b_1,\dots,b_n$, so wäre jede reelle Zahl eine Summe $q_1b_1+\dots+q_nb_n$ mit $q_i\in\mathbb Q$, und davon gibt es nur abzählbar viele, aber $\mathbb R$ ist überabzählbar (<a class="xl" href="linalg-03.html">Lektion 3</a>). Jede Basis von $\mathbb R$ über $\mathbb Q$ ist also überabzählbar; eine existiert (Auswahlaxiom), sie heisst Hamel-Basis, und niemand hat je eine gesehen. Ein kleines Stück davon kannst du sehen: $1,\sqrt2,\sqrt3,\sqrt6$ sind über $\mathbb Q$ unabhängig (Serie 3, Aufgabe 19).</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Versuch jedes im Kopf, bevor du die Schritte aufklappst.</p>
+
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: welche Familie ist eine Basis von $\mathbb R^3$? (FS20, Frage I)</h3>
+<p>(a) $(1,1,1),(1,-1,1),(-1,1,-1)$. (b) $(1,-1,0),(0,1,-1),(-1,0,1)$. (c) $(3,2,1),(4,3,2),(5,4,3)$. (d) $(1,1,0),(0,1,1),(1,0,1)$.</p>
+<ol class="gq">
+  <li>Finde in dreien davon eine Abhängigkeit.
+  <details><summary>Antwort</summary><div><p>(a) Der dritte ist $-1$ mal der zweite. (b) Die drei Vektoren summieren sich zu $0$. (c) $(3,2,1)+(5,4,3)$ $=(8,6,4)=2\cdot(4,3,2)$.</p></div></details></li>
+  <li>Prüfe (d).
+  <details><summary>Antwort</summary><div><p>Unabhängig: $a(1,1,0)+b(0,1,1)$ $+\,c(1,0,1)=0$ ergibt $a+c=0$, $a+b=0$, $b+c=0$; addiert man alle drei, folgt $2(a+b+c)=0$, also $a+b+c=0$, und dann $b=0$, $c=0$, $a=0$. Erzeugend: $(x,y,z)=a(1,1,0)$ $+\,b(0,1,1)+c(1,0,1)$ wird gelöst durch $a=\frac{x+y-z}2$, $b=\frac{y+z-x}2$, $c=\frac{x+z-y}2$. <strong>Antwort (d).</strong> Beachte die Division durch $2$: über $\mathbb F_2$ summieren sich dieselben drei Vektoren zu $0$ und sind abhängig.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-7">Musterbeispiel 7: vier Wahr-falsch-Aussagen (FS17, x und xii; FS18, ix; Probeklausur HS20, (6))</h3>
+<ol class="gq">
+  <li>FS17 x: $\{(a,b),(c,d)\}\subseteq\mathbb C^2$ ist eine Basis genau dann, wenn $ad-bc\ne0$.
+  <details><summary>Antwort</summary><div><p><strong>Wahr.</strong> Ist $ad-bc\ne0$, so hat jedes $(x,y)$ die eindeutige Lösung $\lambda=\frac{xd-yc}{ad-bc}$, $\mu=\frac{ay-bx}{ad-bc}$ (die Formel des Werkzeugs), also ist es nach Beweis E eine Basis. Ist $ad-bc=0$: ist $(a,b)=(0,0)$, so enthält die Menge $0$ und ist abhängig. Sonst: ist $a\ne0$, so $d=\frac{bc}a$ und $(c,d)=\frac ca(a,b)$; ist $a=0$, so $b\ne0$ und $bc=0$ ergibt $c=0$, also $(c,d)=\frac db(a,b)$. In beiden Fällen ist $(c,d)$ ein Vielfaches von $(a,b)$: abhängig (oder, bei Gleichheit, hat die Menge nur ein Element und kann $\mathbb C^2$ nicht erzeugen).</p></div></details></li>
+  <li>FS17 xii: drei Vektoren sind genau dann unabhängig, wenn sie paarweise unabhängig sind.
+  <details><summary>Antwort</summary><div><p><strong>Falsch.</strong> $(1,0),(0,1),(1,1)$ in $\mathbb R^2$: je zwei sind unabhängig, alle drei nicht ($(1,0)+(0,1)-(1,1)=0$). Nur „$\Rightarrow$“ gilt (FS18 ix unten).</p></div></details></li>
+  <li>FS18 ix: ist $S_1\subseteq S_2$ und $S_2$ unabhängig, so ist $S_1$ unabhängig.
+  <details><summary>Antwort</summary><div><p><strong>Wahr</strong>: eine nichttriviale Abhängigkeit unter Vektoren aus $S_1$ ist eine unter Vektoren aus $S_2$, da jeder Vektor aus $S_1$ in $S_2$ liegt. Wäre also $S_1$ abhängig, so auch $S_2$.</p></div></details></li>
+  <li>Probeklausur HS20 (6): $(1,i)$ und $(-i,1)$ bilden eine Basis von $\mathbb C^2$ über $\mathbb C$.
+  <details><summary>Antwort</summary><div><p><strong>Falsch:</strong> $-i\cdot(1,i)=(-i,-i^2)$ $=(-i,1)$. Einer ist ein Vielfaches des anderen ($ad-bc=1\cdot1-i\cdot(-i)$ $=1+i^2=0$). Über $\mathbb R$ wäre der Skalar $-i$ nicht erlaubt, und das Paar wäre als reeller Vektorraum $\mathbb C^2$ unabhängig.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-8">Musterbeispiel 8: neue Vektoren aus unabhängigen (Prüfungsklassiker; der Körper zählt)</h3>
+<p>Seien $v_1,v_2,v_3$ linear unabhängig in einem Vektorraum $V$ über $K$.</p>
+<ol class="gq">
+  <li>Sind $v_1,\ v_1+v_2,\ v_1+v_2+v_3$ unabhängig?
+  <details><summary>Antwort</summary><div><p>Sei $a v_1+b(v_1+v_2)+c(v_1+v_2+v_3)=0$. Sammeln: $(a+b+c)v_1+(b+c)v_2+c\,v_3=0$. Wegen der Unabhängigkeit von $v_1,v_2,v_3$: $c=0$, $b+c=0$, $a+b+c=0$, also $c=0$, $b=0$, $a=0$. <strong>Ja, über jedem Körper.</strong></p></div></details></li>
+  <li>Sind $u_1=v_1+v_2,\ u_2=v_2+v_3,\ u_3=v_1+v_3$ unabhängig?
+  <details><summary>Antwort</summary><div><p>Sei $au_1+bu_2+cu_3=0$. Sammeln: $(a+c)v_1+(a+b)v_2+(b+c)v_3=0$, also $a+c=0$, $a+b=0$, $b+c=0$. Addiert: $2(a+b+c)=0$. <strong>Ist $2\ne0$ in $K$</strong> (zum Beispiel $K=\mathbb Q,\mathbb R,\mathbb C,\mathbb F_3$), teile durch $2$: $a+b+c=0$, und Abziehen jeder Gleichung ergibt $b=0$, $c=0$, $a=0$. Unabhängig.</p></div></details></li>
+  <li>Und über $\mathbb F_2$?
+  <details><summary>Antwort</summary><div><p>Dann ist $u_1+u_2+u_3=2v_1+2v_2+2v_3=0$ mit lauter Koeffizienten $1\ne0$: <strong>abhängig</strong>. Die Antwort auf „sind sie unabhängig?“ hängt vom Körper ab. Deshalb nennt eine Prüfungsfrage immer $K$ (vergleiche Musterbeispiel 6 (d)).</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-9">Musterbeispiel 9: „gib die Definition einer Basis an“ (HS21, Problem 3 (a), 2 Punkte)</h3>
+<ol class="gq">
+  <li>Schreib auf, was du abgeben würdest.
+  <details><summary>Antwort</summary><div><p>Sei $V$ ein Vektorraum über $K$. Eine Teilmenge $B\subseteq V$ ist eine Basis von $V$, wenn $B$ linear unabhängig ist, d. h. für alle $n\ge1$, paarweise verschiedene $v_1,\dots,v_n\in B$ und $a_1,\dots,a_n\in K$ gilt: $\sum a_iv_i=0$ $\Rightarrow a_1=\dots=a_n=0$, und $B$ erzeugt $V$, d. h. jedes $v\in V$ ist eine Linearkombination endlich vieler Vektoren aus $B$. Eine <em>geordnete</em> Basis ist eine Basis, als Liste $(v_1,\dots,v_n)$ geschrieben, damit die Koordinaten eine Reihenfolge haben. Beide Bedingungen, mit Quantoren.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Aufgaben</h2>
+<p>Jede Lösung klappt sich unter ihrer Aufgabe auf. Aufgabe 1 ist eine vollständige Prüfungsaufgabe; Aufgaben 3 und 6 zusammen sind Serie 3, Aufgabe 18.</p>
+
+<h3 id="ex-1">Aufgabe 1 (FS17, Problem 3 (a))</h3>
+<p>Sei $V$ der reelle Vektorraum der Polynome vom Grad $\le3$. Zeige, dass $p_1=4x^3+3x^2+2x+7$, $p_2=x^3+x^2+x$, $p_3=3x^3+2x^2+x$, $p_4=9x^3+4x^2+x$ eine Basis von $V$ bilden.</p>
+<details class="hint"><summary>Tipp 1</summary><div><p>Eine Basis braucht zwei Dinge. Welchen der vier Koeffizienten kannst du sofort aus den Konstanten ablesen?</p></div></details>
+<details class="hint"><summary>Tipp 2</summary><div><p>Nur $p_1$ hat einen konstanten Term. Für $p_2,p_3,p_4$ vergleiche die Koeffizienten von $x$, $x^2$, $x^3$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> unabhängig und erzeugend. <strong>Züge:</strong> Koeffizienten vergleichen; ein lineares System lösen.</p>
+<p><strong>Unabhängig.</strong> Sei $ap_1+bp_2+cp_3+dp_4=0$. Konstanter Term: $7a=0$, also $a=0$. Koeffizienten von $x$, $x^2$, $x^3$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}b+c+d&amp;=0,\\ b+2c+4d&amp;=0,\\ b+3c+9d&amp;=0.\end{aligned}$$</span>
+<p>Abziehen: $c+3d=0$ und $c+5d=0$, also $2d=0$, $d=0$, $c=0$, $b=0$.</p>
+<p><strong>Erzeugend.</strong> Es genügt, $1,x,x^2,x^3$ zu erreichen (sie erzeugen $V$). Löse dasselbe System mit den rechten Seiten $e_1,e_2,e_3$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}x&amp;=3p_2-\tfrac52p_3+\tfrac12p_4,\\ x^2&amp;=-3p_2+4p_3-p_4,\\ x^3&amp;=p_2-\tfrac32p_3+\tfrac12p_4,\end{aligned}$$</span>
+<p>(prüfe die Koeffizienten von $x$, $x^2$, $x^3$), und $1=\frac17\big(p_1-4x^3-3x^2-2x\big)$ ist dann ebenfalls eine Kombination. Also bilden $\{p_1,\dots,p_4\}$ eine Basis. (Ab <a class="xl" href="../linalg-07.html">Lektion 7</a> genügt „vier unabhängige Vektoren in einem $4$-dimensionalen Raum“, und der Erzeugungsteil fällt weg.)</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Serie 3, Aufgabe 17: drei Basen von Fib)</h3>
+<p>Finde drei verschiedene Basen von $\mathrm{Fib}$, dem Raum der Folgen $(f_n)_{n\ge0}$ mit $f_{n+2}=f_{n+1}+f_n$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Eine Folge vom Fibonacci-Typ ist durch $f_0$ und $f_1$ bestimmt. Schreibe $F_{a,b}$ für die Folge, die mit $a,b$ beginnt.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> eine Basis muss $\mathrm{Fib}$ erzeugen und unabhängig sein. Beide Eigenschaften auf $\mathbb R^2$ über die ersten beiden Glieder zurückführen. <strong>Züge:</strong> Induktion; zwei Darstellungen stimmen überein, wenn sie an den entscheidenden Stellen übereinstimmen.</p>
+<ol>
+<li><strong>Eine Folge in Fib ist durch ihren Anfang bestimmt.</strong> Haben $f,g\in\mathrm{Fib}$ $f_0=g_0$ und $f_1=g_1$, so $f_n=g_n$ für alle $n$, per Induktion: gilt es für $n$ und $n+1$, so $f_{n+2}=f_{n+1}+f_n=g_{n+1}+g_n=g_{n+2}$. Und jeder Anfang $(a,b)$ kommt vor: definiere $F_{a,b}$ durch $F_0=a$, $F_1=b$ und die Rekursion.</li>
+<li><strong>$B_1=\{F_{1,0},F_{0,1}\}$ erzeugt.</strong> Für $f\in\mathrm{Fib}$ liegt die Folge $f_0F_{1,0}+f_1F_{0,1}$ in Fib (ein Unterraum) und beginnt mit $f_0,f_1$. Nach Schritt 1 ist sie gleich $f$.</li>
+<li><strong>$B_1$ ist unabhängig.</strong> Gilt $aF_{1,0}+bF_{0,1}=0$, so vergleiche die Glieder $0$ und $1$: $a=0$ und $b=0$.</li>
+<li><strong>Andere Basen.</strong> Dieselben zwei Schritte zeigen: $\{F_{a,b},F_{c,d}\}$ ist eine Basis, wenn $(a,b)$ und $(c,d)$ eine Basis von $\mathbb R^2$ bilden, d. h. $ad-bc\ne0$ (Musterbeispiel 7), denn beide Fragen betreffen nur die ersten zwei Glieder. $B_2=\{F_{1,1},F_{2,1}\}$ $=\{(1,1,2,3,5,\dots),$ $(2,1,3,4,7,\dots)\}$ hat $1\cdot1-1\cdot2=-1\ne0$.</li>
+<li><strong>Eine clevere Basis.</strong> $B_3=\{(1,\varphi,\varphi^2,\dots),$ $(1,\psi,\psi^2,\dots)\}$ mit $\varphi,\psi=\frac{1\pm\sqrt5}2$. Sie liegen in Fib, da $t^2=t+1$ die Gleichung $t^{n+2}=t^{n+1}+t^n$ ergibt; ihre Anfänge sind $(1,\varphi)$, $(1,\psi)$ mit $1\cdot\psi-\varphi\cdot1=-\sqrt5\ne0$. In $B_3$: $F_{0,1}=\frac1{\sqrt5}(F_{1,\varphi}-F_{1,\psi})$ (beide Seiten beginnen mit $0,1$), das ist die Formel von Binet.</li>
+</ol>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (Serie 3, Aufgabe 18 (a))</h3>
+<p>In $\mathbb Q[X]$ sei $x_0=1$ und für $n\ge1$ $x_n=1+(n+1)(X+\dots+X^n)$. Zeige, dass $\{x_n\mid n\ge0\}$ linear unabhängig ist.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Welchen Grad hat $x_n$? Kann ein Polynom vom Grad $n$ eine Kombination von Polynomen kleineren Grades sein?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> eine unendliche Menge ist unabhängig, wenn jede endliche Teilmenge es ist. Erste Zeile: „Sei $F\subseteq\{x_n\mid n\ge0\}$ endlich.“ Letzte Zeile: „also ist $F$ unabhängig.“ <strong>Züge:</strong> zeigen, dass kein Vektor eine Kombination der früheren ist, dann „eine abhängige Liste hat einen Vektor im Spann der früheren“ benutzen.</p>
+<ol>
+<li><strong>Grade.</strong> $x_0=1$ hat Grad $0$. Für $n\ge1$ ist die höchste Potenz in $x_n$ gleich $X^n$ mit Koeffizient $n+1\ne0$ in $\mathbb Q$, also $\deg x_n=n$.</li>
+<li><strong>Kein Vektor ist eine Kombination der früheren.</strong> $x_0\ne0$. Für $n\ge1$ hat eine Kombination $c_0x_0+\dots+c_{n-1}x_{n-1}$ höchstens Grad $n-1$ (eine Summe von Polynomen vom Grad $\le n-1$), kann also nicht $x_n$ sein, das Grad $n$ hat.</li>
+<li><strong>Jede Liste $x_0,\dots,x_N$ ist unabhängig.</strong> Wäre sie abhängig, so läge ein $x_j$ im Spann der früheren (das Lemma über abhängige Listen; für $j=0$ ist dieser Spann $\{0\}$). Schritt 2 schliesst das aus.</li>
+<li><strong>Jede endliche Teilmenge.</strong> Eine endliche $F$ liegt in einer Liste $x_0,\dots,x_N$ ($N$ = der grösste Index in $F$), und eine Teilmenge einer unabhängigen Menge ist unabhängig. Also ist $\{x_n\mid n\ge0\}$ linear unabhängig.</li>
+</ol>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 (wahr oder falsch)</h3>
+<p>(a) Je zwei Erzeugendensysteme von $V$ haben gleich viele Elemente (FS17, ix). (b) Jede Teilmenge von $V$ ist entweder linear abhängig oder linear unabhängig (FS17, xi). (c) Hat ein $v\in V$ genau eine Darstellung als Kombination von $v_1,\dots,v_k$, so ist $\{v_1,\dots,v_k\}$ unabhängig (Probeklausur HS20, (7)). (d) Erzeugt $S$ den Raum $V$ und gilt $S\subseteq T$, so erzeugt auch $T$ den Raum $V$. (e) $\mathrm{Sp}(S)=S$ genau dann, wenn $S$ ein Unterraum ist.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Bei (c): nimm an, die Vektoren sind abhängig, und addiere die nichttriviale Darstellung der $0$ zur gegebenen Darstellung von $v$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> „wahr“ braucht einen Beweis für jeden Fall, „falsch“ ein Gegenbeispiel.</p>
+<ol>
+<li>(a) <strong>Falsch.</strong> $\{e_1,e_2\}$ und $\{e_1,e_2,e_1+e_2\}$ erzeugen beide $\mathbb R^2$ (die zweite enthält die erste, ihr Spann ist also mindestens so gross), haben aber $2$ bzw. $3$ Elemente. Für <em>Basen</em> stimmt die Aussage: <a class="xl" href="../linalg-07.html">Lektion 7</a>.</li>
+<li>(b) <strong>Wahr.</strong> „Linear abhängig“ ist definiert als „nicht linear unabhängig“, nach dem Satz vom ausgeschlossenen Dritten ist also jede Teilmenge genau eines von beiden.</li>
+<li>(c) <strong>Wahr.</strong> Kontraposition: nimm an, $\{v_1,\dots,v_k\}$ ist abhängig, also $\sum a_iv_i=0$ mit einem $a_i\ne0$. Ist $v=\sum c_iv_i$, so auch $v=v+0=\sum(c_i+a_i)v_i$, und da ein $a_i\ne0$ ist, unterscheiden sich die Koeffizientenlisten $(c_i)$ und $(c_i+a_i)$. Also hat $v$ zwei Darstellungen. (Hat $v$ gar keine Darstellung, so ist die Voraussetzung „genau eine“ falsch.)</li>
+<li>(d) <strong>Wahr.</strong> Mehr Vektoren ergeben mindestens dieselben Kombinationen, also $V=\mathrm{Sp}(S)\subseteq\mathrm{Sp}(T)\subseteq V$, und überall gilt Gleichheit.</li>
+<li>(e) <strong>Wahr.</strong> Ist $S$ ein Unterraum, so ist er ein Unterraum, der $S$ enthält, und liegt in jedem Unterraum, der $S$ enthält; also ist er der kleinste: $\mathrm{Sp}(S)=S$. Umgekehrt: gilt $\mathrm{Sp}(S)=S$, so ist $S$ ein Unterraum, da das Spann immer einer ist. (Für $S=\emptyset$ sind beide Seiten falsch: $\mathrm{Sp}(\emptyset)=\{0\}\ne\emptyset$, und $\emptyset$ ist kein Unterraum.)</li>
+</ol>
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (Serie 3, Aufgabe 19 (b))</h3>
+<p>Sei $V\subseteq\mathbb R$ die Menge der Zahlen $q_0+q_1\sqrt2+q_2\sqrt3+q_3\sqrt6$ mit $q_i\in\mathbb Q$. Zeige, dass $\{1,\sqrt3\}$ eine Basis von $V$ über dem Körper $K_1=\mathbb Q(\sqrt2)$ ist, aber nicht über $K_2=\mathbb Q(\sqrt3)$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Für die Unabhängigkeit über $\mathbb Q(\sqrt2)$ brauchst du $\sqrt3\notin\mathbb Q(\sqrt2)$. Quadriere $\sqrt3=r+s\sqrt2$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> erst erzeugend, dann unabhängig; der Körper der Skalare ändert die Antwort. <strong>Züge:</strong> das Gegenteil annehmen; ein Gegenbeispiel genügt.</p>
+<p><strong>Erzeugend über $K_1$:</strong> $q_0+q_1\sqrt2+q_2\sqrt3+q_3\sqrt6$ $=(q_0+q_1\sqrt2)\cdot1$ $+\,(q_2+q_3\sqrt2)\cdot\sqrt3$ mit beiden Koeffizienten in $\mathbb Q(\sqrt2)$.</p>
+<p><strong>Unabhängig über $K_1$:</strong> sei $a\cdot1+b\sqrt3=0$ mit $a,b\in\mathbb Q(\sqrt2)$. Ist $b\ne0$, so $\sqrt3=-a/b\in\mathbb Q(\sqrt2)$, etwa $\sqrt3=r+s\sqrt2$ mit $r,s\in\mathbb Q$. Quadrieren: $3=r^2+2s^2+2rs\sqrt2$, also $rs=0$ (sonst $\sqrt2\in\mathbb Q$). Ist $s=0$: $\sqrt3=r\in\mathbb Q$, unmöglich. Ist $r=0$: $\sqrt3=s\sqrt2$, also $3=2s^2$, also $(2s)^2=6$ und $\sqrt6\in\mathbb Q$, unmöglich. Also $b=0$ und dann $a=0$.</p>
+<p><strong>Keine Basis über $K_2$:</strong> $\sqrt3\in K_2$ ist dort ein Skalar, und $\sqrt3\cdot1+(-1)\cdot\sqrt3=0$ ist eine nichttriviale Abhängigkeit.</p>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (Serie 3, Aufgabe 18 (b): die $x_n$ erzeugen ebenfalls)</h3>
+<p>Mit $x_n$ wie in Aufgabe 3 zeige, dass $\{x_n\mid n\ge0\}$ den Raum $\mathbb Q[X]$ erzeugt, und folgere, dass er eine Basis ist.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Es genügt, jedes $X^k$ zu erreichen. Induktion über $k$: aus $x_{k+1}$ isolierst du $(k+2)X^{k+1}$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> die Monome $1,X,X^2,\dots$ erzeugen $\mathbb Q[X]$, es genügt also zu zeigen, dass jedes $X^k$ in $U:=\mathrm{Sp}(x_n\mid n\ge0)$ liegt; da $U$ ein Unterraum ist, enthält er dann jede Kombination von Monomen, also jedes Polynom. Induktion über $k$ mit der Aussage $P(k)$: $1,X,\dots,X^k\in U$.</p>
+<ol>
+<li><strong>Basis, $k=0$:</strong> $X^0=1=x_0\in U$.</li>
+<li><strong>Schritt.</strong> Angenommen $1,X,\dots,X^k\in U$. Nach Definition ist $x_{k+1}=1+(k+2)(X+X^2+\dots+X^{k+1})$, also</li>
+</ol>
+<span class="math-display" style="display:block">$$\begin{aligned}(k+2)X^{k+1}&amp;=x_{k+1}-1\\ &amp;\quad-(k+2)(X+\dots+X^k).\end{aligned}$$</span>
+<ol start="3">
+<li>Die rechte Seite ist eine Kombination von $x_{k+1}$ und $1,X,\dots,X^k$, alle in $U$ (letztere nach Induktionsvoraussetzung), liegt also in $U$, da $U$ unter Kombinationen abgeschlossen ist. Da $k+2\ne0$ in $\mathbb Q$, multipliziere mit $(k+2)^{-1}$: $X^{k+1}\in U$. Das beweist $P(k+1)$.</li>
+<li><strong>Schluss.</strong> Alle Monome liegen in $U$, also $U=\mathbb Q[X]$. Zusammen mit Aufgabe 3 (Unabhängigkeit) ist $\{x_n\mid n\ge0\}$ eine Basis von $\mathbb Q[X]$.</li>
+</ol>
+<p>Kleine Probe, $k=0$: $x_1=1+2X$, also $X=\frac12(x_1-x_0)$. Die offizielle Lösung macht dieselbe Induktion.</p>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Aufgaben 1–6 ergeben 6 Punkte, einen für jede Aufgabe, die du löst. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, ein Wahr-falsch-Block, wenn höchstens ein Teil falsch ist. Mit 4 von 6 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="skipped.html#linalg-06">Auslassungsliste</a>.</p>
+<ul>
+  <li><strong>Serie 3, Aufgabe 19 (a), (c), (d)</strong>: dieselbe Technik wie Aufgabe 5, mit mehr Fällen. <em>Priorität: niedrig.</em></li>
+  <li><strong>„Jeder Vektorraum hat eine Basis“</strong>: braucht das Auswahlaxiom (Lemma von Zorn); in der Vorlesung ohne Beweis angegeben. <em>Priorität: optional.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a href="../linalg-07.html">Lektion 7</a>: der Austauschsatz von Steinitz und warum jede Basis eines Vektorraums gleich viele Elemente hat.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg-05.html">← Lektion 5: Die Pfeile der Freien Stadt</a>
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-07.html">Lektion 7: Die Volkszählung der Strassen →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="feedback.html">Feedback geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
