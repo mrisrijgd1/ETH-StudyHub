@@ -293,7 +293,7 @@
     return a;
   }
   // Subjects: the learner's own subjects first (from the path picked on the home page), then everything else.
-  const subjectNotes = { analysis: L('22 Lektionen', '22 lessons'), linalg: L('21 Lektionen', '21 lessons'), physics: L('16 Lektionen', '16 lessons'), chemie: L('27 Lektionen, auf Deutsch', '27 lessons, in German'), informatik: L('13 Lektionen bisher, auf Englisch', '13 lessons so far') };
+  const subjectNotes = { analysis: L('22 Lektionen', '22 lessons'), linalg: L('21 Lektionen', '21 lessons'), physics: L('16 Lektionen', '16 lessons'), chemie: L('27 Lektionen, auf Deutsch', '27 lessons, in German'), informatik: L('14 Lektionen, auf Englisch', '14 lessons') };
   const subjectsPop = popover('subjects', L('Fächer', 'Subjects'), !!subject);
   function renderSubjects(p) {
     const mine = savedSubjects(p);
