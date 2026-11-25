@@ -84,7 +84,7 @@ function mcp_handle(array $m): ?array {
                 $ok = ['2025-06-18', '2025-03-26', '2024-11-05', '2025-11-25'];
                 return ['jsonrpc' => '2.0', 'id' => $id, 'result' => ['protocolVersion' => in_array($asked, $ok, true) ? $asked : '2025-06-18',
                     'capabilities' => ['tools' => ['listChanged' => false]], 'serverInfo' => ['name' => 'studyhub', 'title' => 'StudyHub', 'version' => MCP_VERSION],
-                    'instructions' => $T->instructions]];
+                    'instructions' => $T->instructions . memory_block()]];
             case 'ping': return ['jsonrpc' => '2.0', 'id' => $id, 'result' => new stdClass()];
             case 'tools/list': return ['jsonrpc' => '2.0', 'id' => $id, 'result' => ['tools' => $T->tools]];
             case 'tools/call':
@@ -319,8 +319,37 @@ function clean_item(string $sec, $it): array {
     return array_filter($o, fn($v) => $v !== null);
 }
 
+// Memory: short lasting notes about the student (preferences, decisions, facts), max 100 entries.
+function memory_list(): array { $m = get_item('memory')['content'] ?? []; return is_array($m) ? array_values($m) : []; }
+function memory_block(): string {
+    try { $m = memory_list(); } catch (Throwable $e) { return ''; }
+    if (!$m) { return "\n\nMEMORY: nothing saved yet for this student."; }
+    $lines = array_map(fn($x) => '- [' . ($x['kind'] ?? 'fact') . '] ' . ($x['text'] ?? '') . ' (id ' . ($x['id'] ?? '?') . ')', $m);
+    return "\n\nMEMORY (what this student asked StudyHub to remember; follow it):\n" . implode("\n", $lines);
+}
+
 function mcp_personal(string $name, array $a): array {
     switch ($name) {
+        case 'memory': {
+            $action = $a['action'] ?? 'get';
+            $list = memory_list();
+            if ($action === 'get') { return mcp_text(J(['memory' => $list, 'page' => 'https://study-hub.ch/account.html#my-memory'])); }
+            $text = trim(mb_substr((string)($a['text'] ?? ''), 0, 300));
+            $kind = in_array($a['kind'] ?? null, ['preference', 'decision', 'fact'], true) ? $a['kind'] : null;
+            if ($action === 'add') {
+                if ($text === '') { return mcp_err('text is needed.'); }
+                if (count($list) >= 100) { return mcp_err('Memory is full (100 entries). Remove an old entry first.'); }
+                $e = ['id' => substr(sh_uuid4(), 0, 8), 'created' => now_iso(), 'kind' => $kind ?? 'fact', 'text' => $text];
+                $list[] = $e; put_item('memory', $list);
+                return mcp_text("Remembered (id {$e['id']}). The student can see and delete it on My StudyHub; undo('memory') reverts.");
+            }
+            foreach ($list as $i => $x) {
+                if (($x['id'] ?? null) !== ($a['id'] ?? null)) { continue; }
+                if ($action === 'update') { if ($text !== '') { $list[$i]['text'] = $text; } if ($kind) { $list[$i]['kind'] = $kind; } put_item('memory', $list); return mcp_text('Updated.'); }
+                if ($action === 'remove') { array_splice($list, $i, 1); put_item('memory', $list); return mcp_text("Forgotten (undo('memory') brings it back)."); }
+            }
+            return in_array($action, ['update', 'remove'], true) ? mcp_err('No memory entry with that id.') : mcp_err('action must be get, add, update or remove.');
+        }
         case 'my_studyhub': {
             $action = $a['action'] ?? 'get';
             if ($action === 'get') {
