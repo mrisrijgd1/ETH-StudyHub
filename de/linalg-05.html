@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Die Pfeile der Freien Stadt">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Pfeile der Freien Stadt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 5</span>
+<h1>Die Pfeile der Freien Stadt</h1>
+<p class="lead">Vektorräume: die acht Axiome, die Rechenregeln $0\cdot v=0$ und $(-1)v=-v$, die Standardbeispiele ($K^n$, Matrizen, Folgen, Funktionen, Polynome, $\mathcal P(X)$ über $\mathbb F_2$), Quiz 2 und Unterräume mit dem Unterraumkriterium.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-4-5">Rückblick auf Lektion 4 (5 Minuten)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-arrows-of">1. Die Geschichte: die Pfeile der Freien Stadt</a>
+</li>
+<li><a href="#s2-the-definition">2. Die Definition</a>
+</li>
+<li><a href="#s3-calculation-rules-from-the-axioms">3. Rechenregeln aus den Axiomen</a>
+<ol>
+<li><a href="#proof-a">Beweis A: $0\cdot v=0_V$, $a\cdot0_V=0_V$, $(-1)v=-v$, keine „Nullteiler“ (Lemma 2.0.2 (c)–(g), S. 33; Vorlesung Lemma 3.0 = Serie 2, Aufgabe 10)</a></li>
+</ol></li>
+<li><a href="#s4-the-standard-examples">4. Die Standardbeispiele</a>
+<ol>
+<li><a href="#proof-b">Beweis B: $K^n$ ist ein Vektorraum (Beispiel 2.0.3, „prüfe einige/alle!“)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: wie viele Vektoren hat $\mathbb F_p^n$? Rechne in $\mathbb F_{11}^{11}$ (Serie 2, Aufgabe 13)</a></li>
+<li><a href="#we-2">Musterbeispiel 2: die Potenzmenge als Vektorraum über $\mathbb F_2$ (Beispiel 2.1.23, S. 41; Quiz 2, Aufgabe 4)</a></li>
+</ol></li>
+<li><a href="#s5-non-examples-when-no-scalar">5. Nichtbeispiele: wenn keine Skalarmultiplikation funktioniert</a>
+<ol>
+<li><a href="#proof-c">Beweis C: $(\mathbb R\setminus\{0\},\cdot)$ ist über $\mathbb Q$ für keine Skalarmultiplikation ein Vektorraum (Quiz 2, Aufgabe 3)</a></li>
+</ol></li>
+<li><a href="#s6-subspaces">6. Unterräume</a>
+<ol>
+<li><a href="#proof-d">Beweis D: ein Unterraum ist ein Vektorraum; und die beiden Kriterien (Lemma 2.0.7 und Übung 2.0.6, S. 35)</a></li>
+<li><a href="#we-3">Musterbeispiel 3: welche Teilmenge ist kein Unterraum von $\mathbb R^3$? (HS21, Frage VI)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: „Sind $W_1,W_2$ Unterräume von $V$, so sind $W_1\cap W_2$ und $W_1\cup W_2$ Unterräume.“ Wahr oder falsch? (FS17, v; FS18, (v))</a></li>
+<li><a href="#we-5">Musterbeispiel 5: Polynome vom Grad genau $h$; „$\deg f=\deg g=n\Rightarrow\deg(f+g)=n$“ (Beispiel 2.1.21; HS17, (vii))</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+<li><a href="#for-wonder-the-positive-reals">Zum Staunen: die positiven reellen Zahlen sind ein Vektorraum, mit der Multiplikation als Addition</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-6">Musterbeispiel 6: „die Matrizen $A$ mit $A^2=0$ bilden einen Unterraum von $M_{2\times2}(\mathbb R)$.“ Wahr oder falsch? (Probeklausur HS20)</a></li>
+<li><a href="#we-7">Musterbeispiel 7: Unterraum oder nicht? (a) $\{(a_i)\in\mathbb R^\infty\mid a_1=0\}$; (b) $\{(a_i)\mid a_i\to0\}$; (c) $\{(a_i)\mid a_{n+1}=a_n+1\ \forall n\}$; (d) $\{f\in\mathbb R^{\mathbb R}\mid f(1)=f(2)\}$.</a></li>
+<li><a href="#we-8">Musterbeispiel 8: periodische Funktionen (Prüfungsstil: „zeige, dass … ein Vektorraum ist“)</a></li>
+</ol></li>
+<li><a href="#exercises">Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (FS19, Problem 2 (a), 3 Punkte)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Serie 2, Aufgabe 11: Fibonacci-Folgen)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Aufgabe 2.1.13, S. 38: „die Antwort hängt von etwas ab“)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Quiz 2, alle vier Teile)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Rechenregeln)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (Vereinigungen von Unterräumen)</a></li>
+<li><a href="#ex-7">Aufgabe 7 (wahr oder falsch, Altklausur-Stil)</a></li>
+<li><a href="#ex-8">Aufgabe 8 (gerade und ungerade Funktionen: ein erster Blick auf das Zerlegen eines Raums)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schwerer Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Rückblickfragen oben. Das zählt. Morgen machst du einfach hier weiter: ein ausgelassener oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) die Definition eines <strong>Vektorraums</strong> über einem Körper $K$ mit allen acht Axiomen angeben kannst, in der Form des Skripts und in der Form der Vorlesung; (2) die <strong>Rechenregeln</strong> $0\cdot v=0_V$, $\lambda\cdot0_V=0_V$, $(-1)v=-v$ und „$\lambda v=0_V\Rightarrow\lambda=0\vee v=0_V$“ aus den Axiomen beweisen kannst; (3) die <strong>Standardbeispiele</strong> ($K^n$, Matrizen, Folgen, Funktionen, Polynome, ein Körper über einem Unterkörper, $\mathcal P(X)$ über $\mathbb F_2$) erkennst und die Axiome prüfst, indem du sie von $K$ erbst; (4) zeigen kannst, dass etwas <strong>kein</strong> Vektorraum ist, auch wenn keine Skalarmultiplikation angegeben ist; (5) prüfen kannst, ob eine Teilmenge ein <strong>Unterraum</strong> ist, und bei „nein“ einen Zeugen angeben kannst.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 95 Minuten. Eine natürliche Pause kommt nach Abschnitt 5 (Vektorräume fertig, als Nächstes Unterräume).</dd></div>
+  <div><dt>Skript (Englisch, gedruckte Seiten)</dt><dd>Skript EN 2023, Kapitel 2 „Vektorräume“:
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p33">S. 33</a>:</strong> Definition 2.0.1 (Vektorraum, Axiome V1–V8) und Lemma 2.0.2 (Eigenschaften von Vektorräumen).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p34">S. 34–35</a>:</strong> Beispiel 2.0.3 (der Koordinatenraum $K^n$), Bemerkung 2.0.4 (Zeilen und Spalten), Definition 2.0.5 (Unterraum), Übung 2.0.6, Lemma 2.0.7 (ein Unterraum ist ein Vektorraum).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p35">S. 35–41</a>, Abschnitt 2.1 „Eine Menge Beispiele“:</strong> triviale Unterräume (2.1.1), $U_b\subseteq K^3$ (2.1.3), Lösungsmengen $L_{A,b}$ (2.1.7), Folgenräume und Fibonacci (2.1.10–2.1.15), Funktionenräume $K^S$ (2.1.17), Polynome (2.1.21), Matrizen, die Potenzmenge über $\mathbb F_2$ (2.1.23–2.1.24).</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §3 (Notizen vom 1. Okt.): Definition 1 (eine abelsche Gruppe, ein Körper und eine Operation $\ast:K\times V\to V$ mit vier Eigenschaften), Lemma 3.0 (= Serie 2, Aufgabe 10) und die Liste der Beispiele: der Nullraum, ein Körper über einem Unterkörper, $K^n$, $M_{m\times n}(K)$, der Folgenraum $S(K)$. Serie 2 (Aufgaben 10–14) und Quiz 2 gehören hierher. Unterräume stehen jetzt im Skript und in der Vorlesung in §5; diese Lektion behandelt die Definition und das Kriterium, und <a class="xl" href="../linalg-08.html">Lektion 8</a> macht Summen und Durchschnitte.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Jede Prüfungsaufgabe ab hier beginnt mit „sei $V$ ein Vektorraum über $K$“. Direkt geprüft werden: „welche dieser Teilmengen ist <strong>kein</strong> Unterraum von $\mathbb R^3$?“ (HS21, Frage VI), „sind $W_1,W_2$ Unterräume, so sind $W_1\cap W_2$ und $W_1\cup W_2$ Unterräume“ (FS17, v, und FS18, (v)), „die Matrizen mit $A^2=0$ bilden einen Unterraum von $M_{2\times2}(\mathbb R)$“ (Probeklausur HS20), „zeige, dass die Folgen mit nur endlich vielen verschiedenen Werten einen Unterraum bilden“ (FS19, Problem 2 (a), 3 Punkte), „ist $\deg f=\deg g=n$, so ist $\deg(f+g)=n$“ (HS17, (vii)), und Quiz 2: „für welche Paare $V$, $K$ ist $V$ ein Vektorraum über $K$?“. Alle davon kommen unten vor. Die Rechenregeln aus Abschnitt 3 werden in jedem späteren Beweis benutzt, meist stillschweigend.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-4-5">Rückblick auf <a class="xl" href="linalg-04.html">Lektion 4</a> (5 Minuten)</h3>
+<p>Aus den Axiomen eines Rings: $0\cdot a=0$ (schreibe $0=0+0$ und verteile), $a(-b)=-(ab)$ (zeige, dass es mit $ab$ addiert $0$ ergibt, und benutze dann die Eindeutigkeit). In einem Körper: keine Nullteiler, also $ab=0\Rightarrow a=0\vee b=0$. Prüf dich selbst: was ist in $\mathbb F_7$ $\bar3\cdot(\bar2,\bar5,\bar6)$, wenn du jeden Eintrag multiplizierst?</p>
+<details><summary>Antwort</summary><div><p>$(\bar6,\overline{15},\overline{18})=(\bar6,\bar1,\bar4)$. Das ist die Skalarmultiplikation im Vektorraum $\mathbb F_7^3$, das erste Beispiel von heute.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>Englisch</th></tr></thead>
+  <tbody>
+    <tr><td>Vektorraum über $K$, $K$-Vektorraum</td><td>vector space over $K$, $K$-vector space</td></tr>
+    <tr><td>reeller / komplexer Vektorraum</td><td>real / complex vector space</td></tr>
+    <tr><td>Vektor, Skalar</td><td>vector, scalar</td></tr>
+    <tr><td>Skalarmultiplikation</td><td>scalar multiplication</td></tr>
+    <tr><td>Nullvektor, Nullraum</td><td>zero vector, zero space</td></tr>
+    <tr><td>Koordinatenraum $K^n$</td><td>coordinate space $K^n$</td></tr>
+    <tr><td>Zeilenvektor, Spaltenvektor</td><td>row vector, column vector</td></tr>
+    <tr><td>komponentenweise (koordinatenweise)</td><td>componentwise</td></tr>
+    <tr><td>Folgenraum, Funktionenraum</td><td>sequence space, function space</td></tr>
+    <tr><td>Polynom, Grad</td><td>polynomial, degree</td></tr>
+    <tr><td>Unterraum (Untervektorraum)</td><td>subspace (linear subspace)</td></tr>
+    <tr><td>Unterkörper (Teilkörper)</td><td>subfield</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-arrows-of">1. Die Geschichte: die Pfeile der Freien Stadt</h2>
+<div class="story">
+<p>Bisher hatte die Freie Stadt nur <em>Zahlen</em>: die Gilde eines Körpers, in der du addieren, subtrahieren, multiplizieren und dividieren kannst. Jetzt kommen Karawanen an, und mit ihnen eine zweite Sorte Bürger: <em>Pfeile</em>, Reisen über das Land. Zwei Reisen lassen sich Ende an Ende hängen (Pfeile addieren). Eine Reise lässt sich mit einer Zahl strecken: doppelt so weit, halb so weit, rückwärts (einen Pfeil mit einer Zahl multiplizieren). Aber zwei Pfeile lassen sich nicht miteinander multiplizieren, und ein Pfeil lässt sich nicht durch einen Pfeil teilen.</p>
+<p>Das Gesetzbuch aus <a class="xl" href="linalg-04.html">Lektion 4</a> bekommt ein neues Kapitel: die Gesetze, die Zahlen und Pfeile verbinden. Es sind acht. Und das Erste, was der Schreiber bemerkt, ist, wie viele verschiedene Dinge ihnen gehorchen: nicht nur Reisen auf einer Karte, sondern Zahlenlisten, unendliche Folgen, Funktionen, Polynome, sogar Mengen. Was auch immer die acht Gesetze befolgt, für das gilt jede Regel dieses Kapitels.</p>
+</div>
+<p>In der Mathematik: die Pfeile sind <strong>Vektoren</strong>, die Zahlen sind <strong>Skalare</strong> aus einem Körper $K$, und eine Menge von Vektoren mit Addition und Skalarmultiplikation, die den Axiomen gehorcht, ist ein <strong>Vektorraum</strong>. Halbeisens Ein-Satz-Zusammenfassung: ein Vektorraum ist ein Körper, der auf eine abelsche Gruppe wirkt. Das ist das zentrale Objekt der Vorlesung. Alles, was folgt (Basen, Dimension, lineare Abbildungen, Matrizen), handelt von Vektorräumen.</p>
+
+<h2 id="s2-the-definition">2. Die Definition</h2>
+<div class="box">
+<p><strong>Definition (Vektorraum; Definition 2.0.1, <a class="pl" href="../linalg-script.html#p33">S. 33</a>).</strong> Sei $K$ ein Körper. Ein <strong>Vektorraum über $K$</strong> ist eine Menge $V$ mit zwei Operationen</p>
+<ul>
+  <li>Addition $+:V\times V\to V$, $(v_1,v_2)\mapsto v_1+v_2$,</li>
+  <li>Skalarmultiplikation $\cdot:K\times V\to V$, $(a,v)\mapsto a\cdot v=av$,</li>
+</ul>
+<p>so dass für alle $a,b\in K$ und $v,v_1,v_2,v_3\in V$ gilt:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th></th><th>Axiom</th><th>Formel</th></tr></thead>
+  <tbody>
+    <tr><td>V1</td><td>Addition ist assoziativ</td><td>$v_1+(v_2+v_3)=(v_1+v_2)+v_3$</td></tr>
+    <tr><td>V2</td><td>Nullvektor</td><td>$\exists\,0_V\in V\ \forall v:$ $0_V+v=v$</td></tr>
+    <tr><td>V3</td><td>additive Inverse</td><td>$\forall v\ \exists v'$: $v+v'=0_V$</td></tr>
+    <tr><td>V4</td><td>Addition ist kommutativ</td><td>$v_1+v_2=v_2+v_1$</td></tr>
+    <tr><td>V5</td><td>Verträglichkeit</td><td>$a\cdot(b\cdot v)=(ab)\cdot v$</td></tr>
+    <tr><td>V6</td><td>die Eins wirkt trivial</td><td>$1\cdot v=v$</td></tr>
+    <tr><td>V7</td><td>Distributivität I</td><td>$a(v_1+v_2)=av_1+av_2$</td></tr>
+    <tr><td>V8</td><td>Distributivität II</td><td>$(a_1+a_2)v=a_1v+a_2v$</td></tr>
+  </tbody>
+</table></div>
+<p>Elemente von $V$ heissen <strong>Vektoren</strong>, Elemente von $K$ heissen <strong>Skalare</strong>. Für $K=\mathbb R$ (oder $\mathbb C$) spricht man von einem <strong>reellen</strong> (bzw. <strong>komplexen</strong>) Vektorraum.</p></div>
+<p><strong>Die Version der Vorlesung</strong> (Definition 1 aus §3) fasst V1–V4 in einen Satz zusammen: $(V,+_V)$ ist eine <strong>abelsche Gruppe</strong> (<a class="xl" href="linalg-01.html">Lektion 1</a>). Die übrigen vier sind Halbeisens (a)–(d): (a) ist V6, (b) ist V8, (c) ist V5, (d) ist V7. Also: <em>ein Vektorraum ist eine abelsche Gruppe $(V,+_V,0_V)$, ein Körper $K$ und eine Abbildung $K\times V\to V$, die V5–V8 erfüllt.</em> Wenn du eine Definition in der Prüfung schreibst, bekommt jede der beiden Versionen die Punkte, solange jedes Axiom mit seinen Quantoren da steht.</p>
+<p><strong>Lies die Axiome mit den Typen im Kopf.</strong> Jedes Zeichen hat einen Typ, und dasselbe Zeichen bedeutet Verschiedenes:</p>
+<ul>
+  <li>In V8, $(a_1+a_2)v=a_1v+a_2v$: das linke $+$ ist Addition <em>in $K$</em>, das rechte $+$ ist Addition <em>in $V$</em>.</li>
+  <li>In V5, $a\cdot(b\cdot v)=(ab)\cdot v$: $ab$ ist Multiplikation <em>in $K$</em>; die beiden anderen Punkte sind Skalarmultiplikation.</li>
+  <li>Es gibt zwei Nullen, $0=0_K\in K$ und $0_V\in V$, und zwei „minus“: $-a$ in $K$ und $-v$ in $V$.</li>
+</ul>
+<p>Die Vorlesung schreibt zunächst $+_V$ und $0_V$, um sie auseinanderzuhalten; das Skript verzichtet darauf, absichtlich, „damit der Leser immer wieder überlegen muss, was genau was bedeutet“ (<a class="pl" href="../linalg-script.html#p34">S. 34</a>). Mach es dir jedes Mal im Kopf klar. Beachte, was <strong>nicht</strong> da ist: kein Produkt zweier Vektoren, und keine Division durch einen Vektor.</p>
+
+<h2 id="s3-calculation-rules-from-the-axioms">3. Rechenregeln aus den Axiomen</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-04.html#proof-b">Lektion 4</a>)</span>
+<ul>
+  <li><strong>Der Ring-Trick:</strong> $0\cdot a=(0+0)\cdot a=0\cdot a+0\cdot a$, dann eine Kopie kürzen; und „$x$ ist $-y$“ zeigt man durch $x+y=0$ plus Eindeutigkeit des Inversen. Beweis A ist dasselbe Argument mit Vektoren.</li>
+</ul></div>
+<h3 id="proof-a">Beweis A: $0\cdot v=0_V$, $a\cdot0_V=0_V$, $(-1)v=-v$, keine „Nullteiler“ (Lemma 2.0.2 (c)–(g), <a class="pl" href="../linalg-script.html#p33">S. 33</a>; Vorlesung Lemma 3.0 = Serie 2, Aufgabe 10)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $V$ ein Vektorraum über $K$. Für alle $a\in K$, $v\in V$ gilt:</p>
+<ol type="a">
+  <li>$0\cdot v=0_V$;</li>
+  <li>$a\cdot0_V=0_V$;</li>
+  <li>$(-1)\cdot v=-v$;</li>
+  <li>ist $a\cdot v=0_V$, so ist $a=0$ oder $v=0_V$.</li>
+</ol></div>
+<p><strong>Die Idee.</strong> Genau <a class="xl" href="linalg-04.html">Lektion 4</a>, Beweis B, mit den beiden Distributivgesetzen V8 und V7 anstelle derjenigen des Rings. Die offizielle Lösung isoliert zuerst eine kleine Tatsache, das <em>Hilfslemma</em>: gilt $u+u=u$ in $V$, so ist $u=0_V$ (addiere $-u$ auf beiden Seiten). Dann (a): $0\cdot v=(0+0)v=0v+0v$. (b): $a0_V=a(0_V+0_V)=a0_V+a0_V$. (c): zeige, dass $(-1)v$ mit $v$ zu $0_V$ addiert wird. (d): ist $a\ne0$, multipliziere mit $a^{-1}$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>(a), (b):</strong> V8 und V7 sind die einzigen Axiome, die $+$ und $\cdot$ mischen; der Beweis muss eine Summe erzeugen. <strong>Letzte Zeile:</strong> „nach dem Hilfslemma ist $\dots=0_V$.“</li>
+  <li><strong>(c):</strong> „$(-1)v=-v$“ heisst „$(-1)v$ ist <em>das</em> additive Inverse von $v$“. <strong>Letzte Zeile:</strong> „$v+(-1)v=0_V$, also $(-1)v=-v$ wegen der Eindeutigkeit.“</li>
+  <li><strong>(d):</strong> ein „oder“: Fallunterscheidung. „Ist $a=0$, sind wir fertig. Sonst ist $a\ne0$, und wir zeigen $v=0_V$.“</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Reise, die mit sich selbst verbunden immer noch dieselbe Reise ist, führt nirgendwohin.</p></div><div class="sp-formal"><p><strong>Hilfslemma.</strong> Gilt $u+u=u$, so ist $0_V=u+(-u)$ $=(u+u)+(-u)$ $=u+(u+(-u))=u+0_V=u$ (V3, V1, V3, V2 mit V4).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Strecke jede Reise um die Zahl null. „Null“ ist „null plus null“, und das Strecken verteilt sich über eine Summe von Zahlen.</p></div><div class="sp-formal"><p>(a) $0\cdot v=(0+0)\cdot v=0\cdot v+0\cdot v$ (V8); mit dem Hilfslemma für $u=0\cdot v$ folgt $0\cdot v=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Strecke die leere Reise um eine beliebige Zahl: derselbe Trick, mit dem anderen Verteilungsgesetz.</p></div><div class="sp-formal"><p>(b) $a\cdot0_V=a\cdot(0_V+0_V)=a\cdot0_V+a\cdot0_V$ (V2, V7); mit dem Hilfslemma ist $a\cdot0_V=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Reise, mit minus eins gestreckt und mit dem Original verbunden, führt nirgendwohin. Also ist sie der Rückweg.</p></div><div class="sp-formal"><p>(c) $v+(-1)v=1v+(-1)v$ $=(1+(-1))v=0\cdot v=0_V$ (V6, V8, (a)). Inverse in der Gruppe $(V,+)$ sind eindeutig, also $(-1)v=-v$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine gestreckte Reise führt nirgendwohin. Entweder war die Streckung mit nichts, oder die Streckung lässt sich rückgängig machen, und dann ist die Reise von Anfang an nirgendwohin gegangen.</p></div><div class="sp-formal"><p>(d) Sei $av=0_V$. Ist $a=0$, sind wir fertig. Ist $a\ne0$: $v=1v=(a^{-1}a)v$ $=a^{-1}(av)=a^{-1}0_V=0_V$ (V6, V5, (b)). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_zeroplus">schreibe $0$ als $0+0$ und verteile</a> <a class="mvl" href="../linalg-moves.html#m-la_isinverse">zeige, dass es das Inverse ist, dann Eindeutigkeit</a> <a class="mvl" href="../linalg-moves.html#m-la_cancel">kürze mit einem Inversen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p><strong>Hilfslemma:</strong> gilt $u+u=u$, so ergibt Addition von $-u$ $u=0_V$. (a) $0v=(0+0)v=0v+0v$, also $0v=0_V$. (b) $a0_V=a(0_V+0_V)=a0_V+a0_V$, also $a0_V=0_V$. (c) $v+(-1)v=(1+(-1))v=0v=0_V$, also $(-1)v=-v$ wegen der Eindeutigkeit der Inversen. (d) Ist $av=0_V$ und $a\ne0$, so $v=(a^{-1}a)v=a^{-1}(av)=a^{-1}0_V=0_V$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Welche $0$ steht in (a) in $K$, welche in $V$? Schreib jede Null mit ihrem Index.
+  <details><summary>Antwort</summary><div><p>$0_K\cdot v=(0_K+0_K)\cdot v$ $=0_K\cdot v+_V0_K\cdot v$, also $0_K\cdot v=0_V$. Das erste $+$ ist in $K$, das zweite in $V$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Wo benutzt (d), dass $K$ ein Körper ist, und was geht schief über dem „Ring“ $\mathbb Z/6$, der auf $(\mathbb Z/6)^1$ wirkt?
+  <details><summary>Antwort</summary><div><p>In „$a\ne0$ hat ein Inverses $a^{-1}$“. Über $\mathbb Z/6$: $\bar2\cdot\bar3=\bar0$ mit $\bar2\ne\bar0$, $\bar3\ne\bar0$. Die Regel (d) scheitert, ein Grund, warum Vektorräume nur über Körpern definiert werden.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib (a)–(d) nur aus dem Rahmen. Das ist Serie 2, Aufgabe 10.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Formuliere und beweise zuerst das Hilfslemma: „gilt $u+u=u$, so ist $u=0_V$“ (addiere $-u$, klammere neu).</li>
+  <li>$0\cdot v$: schreibe $0=0+0$ <em>in $K$</em> und benutze V8. $a\cdot0_V$: schreibe $0_V=0_V+0_V$ <em>in $V$</em> und benutze V7.</li>
+  <li>$(-1)v=-v$: zeige $v+(-1)v=0_V$ (V6, V8, Schritt 2) und zitiere die Eindeutigkeit des additiven Inversen.</li>
+  <li>$av=0_V\Rightarrow a=0$ oder $v=0_V$: Fallunterscheidung; ist $a\ne0$, multipliziere mit $a^{-1}$ und benutze V5, V6.</li>
+  <li>Nenne das Axiom nach jedem Gleichheitszeichen, und indiziere jede Null ($0$ oder $0_V$).</li>
+</ol>
+<p><strong>Kurz:</strong> die zwei Tricks aus <a class="xl" href="linalg-04.html">Lektion 4</a> (Null ist Null plus Null; „minus“ wird geprüft, indem man zur Null addiert), einmal in $K$ und einmal in $V$. Das ist Serie 2, Aufgabe 10, und genau so wird ein erster Prüfungsbeweis über Vektorräume bewertet: ein Punkt pro begründetem Schritt.</p></div>
+<p>Das Skript-Lemma 2.0.2 listet ausserdem: der Nullvektor und die additiven Inversen sind eindeutig (<a class="xl" href="linalg-01.html">Lektion 1</a>, da $(V,+)$ eine Gruppe ist), $-(-v)=v$ (<a class="xl" href="linalg-04.html">Lektion 4</a>, Beweis A, Stufe 2), und (h) Summen von $n$ Vektoren brauchen keine Klammern (Assoziativität, per Induktion). Ab jetzt schreiben wir $w-v:=w+(-v)$ und benutzen all diese Regeln frei.</p>
+
+<h2 id="s4-the-standard-examples">4. Die Standardbeispiele</h2>
+<p>Eine Definition mit acht Axiomen ist nur nützlich, wenn viele Dinge sie erfüllen. Das Motto des Skripts: prüfe eine neue Definition immer an den Beispielen („dein Computer-Compiler“, <a class="pl" href="../linalg-script.html#p42">S. 42</a>). Hier ist die Liste. Bei jedem Beispiel ist die Vektorraumstruktur <strong>von $K$ geerbt</strong>: die Operationen werden Eintrag für Eintrag definiert (komponentenweise, gliedweise, punktweise), sodass jedes Axiom die entsprechende Regel von $K$ ist, angewandt auf jeden Eintrag.</p>
+
+<div class="box">
+<p><strong>0. Der Nullraum</strong> $\{0_V\}$, über jedem Körper: $0_V+0_V:=0_V$, $a\cdot0_V:=0_V$.</p>
+<p><strong>1. Ein Körper über einem Unterkörper</strong> (Vorlesung). Ist $K\subseteq L$ ein Unterkörper (eine Teilmenge, die mit denselben Operationen ein Körper ist), so ist $L$ ein Vektorraum über $K$, mit der Skalarmultiplikation als Multiplikation von $L$. Beispiele: $\mathbb R$ über $\mathbb Q$, $\mathbb C$ über $\mathbb R$, $\mathbb Q(\sqrt2)$ über $\mathbb Q$, und $K$ über sich selbst.</p>
+<p><strong>2. Der Koordinatenraum $K^n$</strong> (Beispiel 2.0.3, <a class="pl" href="../linalg-script.html#p34">S. 34</a>): $K^n=\{(a_1,\dots,a_n)\mid a_i\in K\}$ mit</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;(a_1,\dots,a_n)+(b_1,\dots,b_n)\\ &amp;\quad:=(a_1+b_1,\dots,a_n+b_n),\\ &amp;a\cdot(a_1,\dots,a_n):=(aa_1,\dots,aa_n).\end{aligned}$$</span>
+<p>Nullvektor $(0,\dots,0)$. $K^0=\{0\}$ ist der Nullraum, $K^1=K$. Bemerkung 2.0.4: man schreibt die Vektoren als Zeilen oder als Spalten; später, für Matrixprodukte, zählen die Spalten ($K^n_{\text{col}}$).</p>
+<p><strong>3. Matrizen</strong> $M_{m\times n}(K)$ (<a class="pl" href="../linalg-script.html#p40">S. 40–41</a>): rechteckige Anordnungen mit $m$ Zeilen und $n$ Spalten, Eintrag für Eintrag addiert und skaliert. Als Vektorraum ist das $K^{mn}$, in ein Rechteck geschrieben.</p>
+<p><strong>4. Folgen</strong> $K^\infty=\{(a_1,a_2,\dots)\mid a_i\in K\}$ (Behauptung 2.1.10, <a class="pl" href="../linalg-script.html#p37">S. 37</a>; Vorlesung $S(K)$), Glied für Glied addiert und skaliert.</p>
+<p><strong>5. Funktionen</strong> $K^S=\{f:S\to K\}$ für eine Menge $S\ne\emptyset$ (<a class="pl" href="../linalg-script.html#p38">S. 38</a>): $(f+g)(x):=f(x)+g(x)$, $(af)(x):=a\cdot f(x)$. Nullvektor: die Nullfunktion. Für $S=\{1,\dots,n\}$ ist das $K^n$ in Verkleidung, für $S=\mathbb N$ ist es $K^\infty$ (Bemerkung 2.1.19). Serie 2, Aufgabe 14 ist der Fall $\mathbb R^{\mathbb R}$.</p>
+<p><strong>6. Polynome</strong> $K[x]$ (<a class="pl" href="../linalg-script.html#p40">S. 40</a>; Serie 2, Aufgabe 12 für $\mathbb Q[X]$): $a\cdot(a_0+a_1x+\dots+a_nx^n)$ $:=aa_0+aa_1x+\dots+aa_nx^n$.</p>
+</div>
+
+<h3 id="proof-b">Beweis B: $K^n$ ist ein Vektorraum (Beispiel 2.0.3, „prüfe einige/alle!“)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Mit komponentenweisen Operationen ist $K^n$ ein Vektorraum über $K$.</p></div>
+<p><strong>Die Idee.</strong> Zwei $n$-Tupel sind genau dann gleich, wenn sie in jeder Komponente übereinstimmen. Also ist jedes Axiom eine Aussage über $n$ Komponenten, und in jeder Komponente ist es ein Körperaxiom.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Sei $v=(v_1,\dots,v_n)$, $w$, $u\in K^n$ und $a,b\in K$. Zwei Tupel sind genau dann gleich, wenn sie in jeder Komponente übereinstimmen.“</li>
+  <li><strong>Was zu zeigen ist:</strong> die Operationen landen in $K^n$, und V1–V8 gelten. V2 und V3 sind „es gibt“-Axiome: <em>nenne</em> den Nullvektor und das Negative.</li>
+  <li><strong>Letzte Zeile:</strong> „Also gelten alle acht Axiome, und $K^n$ ist ein Vektorraum über $K$.“</li>
+  <li><strong>Die Lücke:</strong> vergleiche für jedes Axiom die $i$-ten Komponenten beider Seiten und zitiere die Körperregel, die sie gleich macht.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Karawanenliste hat $n$ Einträge. Zwei Listen sind dieselbe, wenn jeder Eintrag derselbe ist.</p></div><div class="sp-formal"><p>Sei $v=(v_1,\dots,v_n)$, $w=(w_1,\dots,w_n)$, $u\in K^n$ und $a,b\in K$. Tupel sind genau dann gleich, wenn alle Komponenten gleich sind.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jedes Gesetz der Pfeile, Eintrag für Eintrag gelesen, ist ein Gesetz der Zahlen.</p></div><div class="sp-formal"><p>V8: die $i$-te Komponente von $(a+b)v$ ist $(a+b)v_i=av_i+bv_i$ (Distributivität in $K$), das ist die $i$-te Komponente von $av+bv$. V5: $a(bv_i)=(ab)v_i$. V6: $1\cdot v_i=v_i$. V7: $a(v_i+w_i)=av_i+aw_i$. V1, V4: Assoziativität und Kommutativität von $+$ in $K$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die leere Liste und die umgekehrte Liste vervollständigen die Gesetze.</p></div><div class="sp-formal"><p>V2: $0_V:=(0,\dots,0)$, da $0+v_i=v_i$. V3: $-v:=(-v_1,\dots,-v_n)$, da $v_i+(-v_i)=0$. Also ist $K^n$ ein Vektorraum. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_entrywise">prüfe die Axiome Eintrag für Eintrag</a> <a class="mvl" href="../linalg-moves.html#m-la_witness">nenne einen Zeugen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Seien $v,w,u\in K^n$ und $a,b\in K$; Tupel sind gleich, wenn alle Komponenten übereinstimmen. Die Operationen sind Abbildungen $K^n\times K^n\to K^n$ und $K\times K^n\to K^n$, da Summen und Produkte von Körperelementen in $K$ liegen. Für jedes $i$: $(v_i+w_i)+u_i=v_i+(w_i+u_i)$ und $v_i+w_i=w_i+v_i$ (V1, V4); $0+v_i=v_i$, also erfüllt $0_V:=(0,\dots,0)$ V2; $v_i+(-v_i)=0$, also erfüllt $-v:=(-v_1,\dots,-v_n)$ V3; $a(bv_i)=(ab)v_i$ (V5); $1\cdot v_i=v_i$ (V6); $a(v_i+w_i)=av_i+aw_i$ (V7); $(a+b)v_i=av_i+bv_i$ (V8). Jede Gleichheit ist ein Körperaxiom von $K$, und sie gilt in jeder Komponente, also gelten V1–V8 in $K^n$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Schreib V5 für $K^n$ in einer Zeile, mit der Körperregel, die du benutzt.
+  <details><summary>Antwort</summary><div><p>Die $i$-te Komponente von $a(bv)$ ist $a(bv_i)$, die von $(ab)v$ ist $(ab)v_i$, und $a(bv_i)=(ab)v_i$ wegen der Assoziativität der Multiplikation in $K$. Also $a(bv)=(ab)v$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Mach denselben Beweis für den Funktionenraum $K^S$: welche Wörter ändern sich, und welche zusätzliche Prüfung taucht auf?
+  <details><summary>Antwort</summary><div><p>„Komponente $i$“ wird zu „Wert an der Stelle $x\in S$“: zwei Funktionen sind gleich, wenn sie an jeder Stelle $x$ übereinstimmen. Zum Beispiel V8: $\big((a+b)f\big)(x)=(a+b)f(x)$ $=af(x)+bf(x)$ $=(af+bf)(x)$. Der Nullvektor ist die Nullfunktion, $-f$ ist $x\mapsto-f(x)$. Die zusätzliche Prüfung ist nur, dass $f+g$ und $af$ wieder Funktionen $S\to K$ sind, was sie nach Definition sind.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis B nur aus dem Rahmen, mit allen acht Axiomen benannt.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Sag, wie Gleichheit in der Menge funktioniert (komponentenweise, gliedweise, punktweise).</li>
+  <li>Prüfe, dass die Operationen in der Menge bleiben.</li>
+  <li>Nenne $0_V$ und $-v$ ausdrücklich (V2, V3).</li>
+  <li>Für die sechs „für alle“-Axiome schreibst du je eine Zeile: „in jeder Komponente ist es [Körperregel]“. Schreib mindestens V5 und V8 ganz aus.</li>
+</ol>
+<p><strong>Kurz:</strong> Gleichheit Eintrag für Eintrag, dann ist jedes Axiom eine Körperregel in jedem Eintrag. Liegt die Menge in einem bekannten Vektorraum, ist das Unterraumkriterium (Beweis D) kürzer: nimm es.</p></div>
+<p>Derselbe Beweis, mit „Komponente $i$“ ersetzt durch „Glied $i$“, „Eintrag $(i,j)$“, „Wert an der Stelle $x$“ oder „Koeffizient von $x^i$“, beweist die Beispiele 3–6. Bei Folgen und Funktionen prüfst du ausserdem, dass die Operationen in der Menge bleiben (das tun sie offensichtlich: die Summe zweier Folgen ist eine Folge). Bei Polynomen prüfst du, dass $a\cdot p$ wieder ein Polynom ist: nur endlich viele Koeffizienten sind ungleich null, da $a\cdot0=0$.</p>
+
+<div class="box"><h3 id="we-1">Musterbeispiel 1: wie viele Vektoren hat $\mathbb F_p^n$? Rechne in $\mathbb F_{11}^{11}$ (Serie 2, Aufgabe 13)</h3>
+<ol class="gq">
+  <li>(a) $|\mathbb F_p^n|$?
+  <details><summary>Antwort</summary><div><p>Jede der $n$ Komponenten nimmt unabhängig einen der $p$ Werte $\bar0,\dots,\overline{p-1}$ an, also $|\mathbb F_p^n|=p\cdot p\cdots p=p^n$. Ein Vektorraum muss nicht unendlich sein: $\mathbb F_2^3$ hat $8$ Vektoren.</p></div></details></li>
+  <li>(b) $\bar7\cdot(\bar0,\bar1,\bar2,\dots,\overline{10})$ in $\mathbb F_{11}^{11}$?
+  <details><summary>Antwort</summary><div><p>Komponentenweise $7k$ modulo $11$ für $k=0,\dots,10$: $(\bar0,\bar7,\bar3,\overline{10},\bar6,\bar2,\bar9,\bar5,\bar1,\bar8,\bar4)$. Jede Klasse kommt genau einmal vor: Multiplikation mit $\bar7\ne\bar0$ ist injektiv, genau die Abbildung $m_a$ aus <a class="xl" href="linalg-04.html">Lektion 4</a>.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: die Potenzmenge als Vektorraum über $\mathbb F_2$ (Beispiel 2.1.23, <a class="pl" href="../linalg-script.html#p41">S. 41</a>; Quiz 2, Aufgabe 4)</h3>
+<p>Sei $X$ eine Menge. Mache $\mathcal P(X)$ zu einem Vektorraum über $\mathbb F_2=\{0,1\}$, mit der Addition der symmetrischen Differenz $A\triangle B$.</p>
+<ol class="gq">
+  <li>Was muss der Nullvektor sein, und wie muss die Skalarmultiplikation definiert werden?
+  <details><summary>Antwort</summary><div><p>$A\triangle\emptyset=A$, also $0_V=\emptyset$. Für die Skalarmultiplikation gibt es keine Wahl: V6 erzwingt $1\cdot A=A$, und Beweis A (a) erzwingt $0\cdot A=0_V=\emptyset$.</p></div></details></li>
+  <li>Prüfe V8 für $a=b=1$, den einzigen Fall, in dem die Addition des Körpers nicht offensichtlich ist.
+  <details><summary>Antwort</summary><div><p>In $\mathbb F_2$ gilt $1+1=0$, also ist die linke Seite $0\cdot A=\emptyset$. Die rechte Seite ist $A\triangle A=\emptyset$. Gleich. (In <a class="xl" href="linalg-01.html">Lektion 1</a> hast du bewiesen, dass $(\mathcal P(X),\triangle)$ eine abelsche Gruppe ist, in der jedes Element sein eigenes Inverses ist; genau das braucht $1+1=0$.) Die übrigen Fälle: $a=0$ oder $b=0$ machen beide Seiten gleich $1\cdot A$ oder $\emptyset$; V5–V7 ebenso durch Fallunterscheidung. Die Antwort auf Quiz 2, Aufgabe 4 ist also <strong>ja</strong>.</p></div></details></li>
+</ol></div>
+
+<h2 id="s5-non-examples-when-no-scalar">5. Nichtbeispiele: wenn keine Skalarmultiplikation funktioniert</h2>
+<p>Quiz 2 fragt „ist $V$ ein Vektorraum über $K$?“ für Paare, bei denen nur die Gruppe und der Körper gegeben sind. Die Konvention (offizielle Lösung): steht nichts anderes da, ist die Skalarmultiplikation die naheliegende. Aber die Lösung geht weiter und zeigt, dass in den „nein“-Fällen <em>keine</em> Skalarmultiplikation funktioniert. Das Werkzeug ist Beweis A (d).</p>
+<h3 id="proof-c">Beweis C: $(\mathbb R\setminus\{0\},\cdot)$ ist über $\mathbb Q$ für keine Skalarmultiplikation ein Vektorraum (Quiz 2, Aufgabe 3)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Es gibt keine Abbildung $\mathbb Q\times(\mathbb R\setminus\{0\})\to\mathbb R\setminus\{0\}$, die die abelsche Gruppe $V=(\mathbb R\setminus\{0\},\cdot)$ zu einem Vektorraum über $\mathbb Q$ macht.</p></div>
+<p><strong>Die Idee.</strong> Achte auf die Typen: hier ist die „Vektoraddition“ $+_V$ die Multiplikation reeller Zahlen, und der Nullvektor ist $0_V=1$. Das Element $-1$ erfüllt $(-1)+_V(-1)=(-1)(-1)=1=0_V$: zweimal den Vektor $-1$ ergibt den Nullvektor. In einem Vektorraum über $\mathbb Q$ gilt $2\cdot x=x+_Vx$, und „$2\cdot x=0_V$ mit $2\ne0$“ erzwingt $x=0_V$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>„Egal welche Skalarmultiplikation“:</strong> eine Aussage über <em>alle</em> Abbildungen $\ast$, also ist der Beweis ein Widerspruchsbeweis. <strong>Erste Zeile:</strong> „Angenommen, ein $\ast:\mathbb Q\times V\to V$ macht $V$ zu einem Vektorraum über $\mathbb Q$.“</li>
+  <li><strong>Übersetze die Typen:</strong> $x+_Vy:=xy$, $0_V=1$ (da $1\cdot x=x$), und das Negative von $x$ ist $x^{-1}$.</li>
+  <li><strong>Letzte Zeile:</strong> „… also $-1=0_V=1$, ein Widerspruch.“</li>
+  <li><strong>Die Lücke:</strong> finde einen Vektor $x\ne0_V$ und einen Skalar $\lambda\ne0$ mit $\lambda\ast x=0_V$, nur mit den Axiomen (nicht mit einer Formel für $\ast$).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Angenommen, irgendein Schreiber findet einen Weg, diese „Pfeile“ mit rationalen Zahlen zu strecken, und alle Gesetze gelten.</p></div><div class="sp-formal"><p>Angenommen, im Gegenteil, ein $\ast:\mathbb Q\times V\to V$ erfüllt V5–V8. Hier ist $x+_Vy=xy$ und $0_V=1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Um $2$ zu strecken, verbindet man den Pfeil mit sich selbst.</p></div><div class="sp-formal"><p>Nach V8 und V6 gilt für jedes $x$: $2\ast x=(1+1)\ast x$ $=1\ast x+_V1\ast x=x+_Vx$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Pfeil $-1$, mit sich selbst verbunden, ist der leere Pfeil.</p></div><div class="sp-formal"><p>Für $x=-1$: $2\ast(-1)=(-1)\cdot(-1)=1=0_V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Streckung um eine von null verschiedene Zahl, die nichts ergibt, heisst, dass der Pfeil nichts war. Aber $-1$ ist nicht der leere Pfeil.</p></div><div class="sp-formal"><p>Da $2\ne0$ in $\mathbb Q$, folgt aus Beweis A (d): $-1=0_V=1$, ein Widerspruch. Also gibt es kein solches $\ast$. <span class="qed">∎</span></p></div></div>
+</div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Mit der naheliegenden Skalarmultiplikation (Multiplikation reeller Zahlen): welches Axiom oder welche Anforderung scheitert zuerst?
+  <details><summary>Antwort</summary><div><p>Es ist nicht einmal eine Abbildung nach $V$: $0\cdot\pi=0\notin\mathbb R\setminus\{0\}$. Und V7 scheitert ebenfalls: $2\cdot(x+_Vy)=2xy$, aber $2x+_V2y=(2x)(2y)=4xy$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Quiz 2, Teil 2: $(\mathbb Q,+)$ über $\mathbb R$. Warum scheitert die naheliegende Multiplikation?
+  <details><summary>Antwort</summary><div><p>Sie verlässt $\mathbb Q$: $\sqrt2\cdot1=\sqrt2\notin\mathbb Q$. (Die offizielle Lösung zeigt, dass auch keine andere Multiplikation funktioniert: $\lambda\mapsto\lambda\ast1$ wäre nach Beweis A (d) eine injektive Abbildung $\mathbb R\to\mathbb Q$, und $\mathbb R$ ist überabzählbar, $\mathbb Q$ abzählbar, <a class="xl" href="linalg-03.html">Lektion 3</a>.) Quiz 2, Teil 1, $(\mathbb R,+)$ über $\mathbb Q$, ist ein Ja: Beispiel 1 aus Abschnitt 4.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis C aus dem Rahmen: „$+_V$ ist $\cdot$, $0_V=1$; $2\ast x=x+_Vx$; nimm $x=-1$; Beweis A (d).“</li>
+</ol></div>
+
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_contradiction">nimm das Gegenteil an</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>In $V=(\mathbb R\setminus\{0\},\cdot)$ ist die Vektoraddition $x+_Vy=xy$ und der Nullvektor $0_V=1$. Angenommen, $\ast:\mathbb Q\times V\to V$ erfüllt V5–V8. Nach V8 und V6 gilt $2\ast x=(1+1)\ast x=1\ast x+_V1\ast x=x+_Vx=x\cdot x$ für jedes $x\in V$. Für $x=-1$ ergibt das $2\ast(-1)=(-1)(-1)=1=0_V$. In einem Vektorraum erzwingt $\lambda\ast x=0_V$ mit $\lambda\ne0$ die Aussage $x=0_V$; da $2\ne0$ in $\mathbb Q$ ist, folgt $-1=0_V=1$, was falsch ist. Also macht keine Skalarmultiplikation $V$ zu einem Vektorraum über $\mathbb Q$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Schreib zuerst auf, was $+_V$, $0_V$ und $-x$ in der gegebenen Gruppe sind; erst die Typen.</li>
+  <li>Finde ein Element $x\ne0_V$ mit $x+_Vx=0_V$ (ein Element der Ordnung $2$).</li>
+  <li>Benutze V6 und V8: $2\ast x=x+_Vx=0_V$.</li>
+  <li>Die Regel „$\lambda v=0_V$, $\lambda\ne0\Rightarrow v=0_V$“ ergibt $x=0_V$: Widerspruch (über jedem Körper mit $2\ne0$).</li>
+</ol>
+<p><strong>Kurz:</strong> ein Element der Ordnung $2$ kann nicht in einem Vektorraum über einem Körper mit $2\ne0$ leben. (Über $\mathbb F_2$, wo $2=0$ ist, kann es: Musterbeispiel 2.)</p></div>
+
+<h2 id="s6-subspaces">6. Unterräume</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-01.html#s5-subgroups-and-structure-preserving-maps">Lektion 1</a>)</span>
+<ul>
+  <li><strong>Untergruppenkriterium:</strong> $H\ne\emptyset$, abgeschlossen unter der Operation und unter Inversen. Das Unterraumkriterium hat dieselbe Form: enthält $0$, abgeschlossen unter Summen und unter Vielfachen.</li>
+</ul></div>
+<p>Die meisten Vektorräume in der Praxis liegen in einem grösseren: die Lösungen einer Gleichung in $K^n$, die Fibonacci-Folgen in allen Folgen, die stetigen Funktionen in allen Funktionen. Das Skript definiert dies gleich nach den Axiomen.</p>
+<div class="box">
+<p><strong>Definition (Unterraum; Definition 2.0.5, <a class="pl" href="../linalg-script.html#p34">S. 34</a>).</strong> Sei $V$ ein Vektorraum über $K$. Eine Teilmenge $W\subseteq V$ heisst <strong>Unterraum</strong> von $V$, wenn</p>
+<ul>
+  <li>(LSS1) $W\ne\emptyset$;</li>
+  <li>(LSS2) für alle $w_1,w_2\in W$: $w_1+w_2\in W$;</li>
+  <li>(LSS3) für alle $a\in K$, $w\in W$: $aw\in W$.</li>
+</ul>
+<p><strong>Übung 2.0.6 (<a class="pl" href="../linalg-script.html#p35">S. 35</a>).</strong> (a) (LSS1) darf durch (LSS1′) ersetzt werden: $0_V\in W$. (b) (LSS2) und (LSS3) zusammen sind äquivalent zu: $\forall a_1,a_2\in K\ \forall w_1,w_2\in W:$ $a_1w_1+a_2w_2\in W$.</p></div>
+<h3 id="proof-d">Beweis D: ein Unterraum ist ein Vektorraum; und die beiden Kriterien (Lemma 2.0.7 und Übung 2.0.6, <a class="pl" href="../linalg-script.html#p35">S. 35</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> (i) Erfüllt $W$ (LSS1)–(LSS3), so ist $0_V\in W$, und $W$ mit den Operationen von $V$ ist ein Vektorraum über $K$. (ii) (LSS1′)+(LSS2)+(LSS3) $\iff$ (LSS1)+(LSS2)+(LSS3).</p></div>
+<p><strong>Die Idee.</strong> V1, V4–V8 sind „für alle“-Aussagen; sie gelten in $V$, also insbesondere für die Elemente von $W$. Nur die „es gibt“-Axiome V2 und V3 brauchen Sorgfalt: der Nullvektor und die Negativen müssen <em>in $W$</em> liegen. Sie tun es, nach Beweis A: $0_V=0\cdot w$ und $-w=(-1)\cdot w$, und $W$ ist unter Skalarmultiplikation abgeschlossen.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>(i), erste Zeile:</strong> „Sei $W$ mit (LSS1)–(LSS3). Nach (LSS2) und (LSS3) schränken sich Addition und Skalarmultiplikation auf $W$ ein.“ <strong>Letzte Zeile:</strong> „Also ist $W$ ein Vektorraum über $K$.“</li>
+  <li><strong>Sortiere die Axiome:</strong> die „für alle“-Axiome (V1, V4–V8) werden vererbt; die „es gibt“-Axiome (V2, V3) brauchen einen Zeugen <em>innerhalb von $W$</em>.</li>
+  <li><strong>(ii):</strong> zwei Implikationen zwischen den ersten Bedingungen; (LSS2), (LSS3) sind auf beiden Seiten dieselben.</li>
+  <li><strong>Die Lücke:</strong> erzeuge $0_V$ und $-w$ aus Elementen von $W$, nur mit Skalarmultiplikation.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Ein Bezirk von Pfeilen: nicht leer, abgeschlossen unter Verbinden und unter Strecken.</p></div><div class="sp-formal"><p>(i) Nach (LSS2), (LSS3) schränken sich $+$ und $\cdot$ zu Abbildungen $W\times W\to W$ und $K\times W\to W$ ein.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Gesetze, die von allen Pfeilen sprechen, gelten für die Pfeile des Bezirks, und die sind Pfeile.</p></div><div class="sp-formal"><p>V1, V4, V5, V6, V7, V8 gelten für alle Elemente von $V$, also für alle Elemente von $W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die leere Reise und der Rückweg: strecke einen beliebigen Pfeil des Bezirks mit $0$ und mit $-1$.</p></div><div class="sp-formal"><p>Nach (LSS1) wähle $u\in W$. Dann ist $0_V=0\cdot u\in W$ (Beweis A (a), LSS3): V2 gilt in $W$. Für $w\in W$: $-w=(-1)w\in W$ (Beweis A (c), LSS3): V3 gilt in $W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die zwei Versionen der ersten Bedingung: eine folgt aus der anderen.</p></div><div class="sp-formal"><p>(ii) (LSS1′) $\Rightarrow$ (LSS1): $0_V\in W$, also $W\ne\emptyset$. (LSS1)+(LSS3) $\Rightarrow$ (LSS1′): in (i) gezeigt. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_inherit">vererbe von der grösseren Struktur</a> <a class="mvl" href="../linalg-moves.html#m-la_subspace">das Unterraumkriterium: Null, Summen, Vielfache</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(i) Nach (LSS2) und (LSS3) schränken sich $+$ und $\cdot$ zu Abbildungen $W\times W\to W$ und $K\times W\to W$ ein. Die Axiome V1, V4, V5, V6, V7, V8 gelten für alle Vektoren von $V$, also insbesondere für alle Vektoren von $W$. Nach (LSS1) gibt es ein $u\in W$; dann ist $0_V=0\cdot u\in W$ nach der Regel $0\cdot v=0_V$ und (LSS3), also gilt V2 in $W$. Für $w\in W$ ist $-w=(-1)w\in W$ nach der Regel $(-1)v=-v$ und (LSS3), also gilt V3 in $W$. Also ist $W$ ein Vektorraum über $K$, mit $0_V\in W$. (ii) Gilt $0_V\in W$, so ist $W\ne\emptyset$; umgekehrt zeigt (i), dass (LSS1) und (LSS3) $0_V\in W$ liefern. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Warum muss V4 für $W$ nicht geprüft werden, V2 aber schon?
+  <details><summary>Antwort</summary><div><p>V4 sagt „für alle $v_1,v_2$: $v_1+v_2=v_2+v_1$“; das gilt für alle Vektoren von $V$, also für die von $W$. V2 sagt „es gibt einen Nullvektor <em>im Raum</em>“; die Null von $V$ muss als in $W$ liegend gezeigt werden, sonst hat $W$ gar keinen Nullvektor.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Beweise Übung 2.0.6 (b): (LSS2) und (LSS3) zusammen $\iff$ $a_1w_1+a_2w_2\in W$ für alle $a_1,a_2\in K$, $w_1,w_2\in W$.
+  <details><summary>Antwort</summary><div><p>„$\Rightarrow$“: $a_1w_1\in W$ und $a_2w_2\in W$ nach (LSS3), also liegt ihre Summe nach (LSS2) in $W$. „$\Leftarrow$“: $a_1=a_2=1$ ergibt $w_1+w_2\in W$ (mit V6); $a_2=0$ ergibt $a_1w_1+0\cdot w_2=a_1w_1+0_V=a_1w_1\in W$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis D (i) nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Bei „zeige, dass $W$ ein Vektorraum ist“, wenn $W$ in einem bekannten Vektorraum $V$ liegt: prüfe nicht acht Axiome; schreib „wir zeigen, dass $W$ ein Unterraum von $V$ ist“.</li>
+  <li>Prüfe $0_V\in W$ (eine Zeile, mit der Bedingung, die $W$ definiert).</li>
+  <li>Nimm $w_1,w_2\in W$ und zeige, dass $w_1+w_2$ die Bedingung erfüllt.</li>
+  <li>Nimm $a\in K$, $w\in W$ und zeige, dass $aw$ die Bedingung erfüllt.</li>
+  <li>Schliesse mit „also ist $W$ ein Unterraum, somit ein Vektorraum mit den Operationen von $V$“.</li>
+</ol>
+<p><strong>Kurz:</strong> Null drin, abgeschlossen unter Summen, abgeschlossen unter Vielfachen. Zum Widerlegen: ein Zeuge.</p></div>
+<div class="box"><p><strong>Das Unterraumkriterium, das du benutzen wirst.</strong> Um $W\subseteq V$ als Unterraum zu zeigen: (1) $0_V\in W$; (2) $w_1,w_2\in W\Rightarrow w_1+w_2\in W$; (3) $a\in K$, $w\in W\Rightarrow aw\in W$. Um zu zeigen, dass es <strong>kein</strong> Unterraum ist: gib <em>einen</em> Zeugen an: $0_V\notin W$, oder zwei Elemente, deren Summe $W$ verlässt, oder ein Element und einen Skalar, deren Produkt $W$ verlässt. Zuerst $0_V\in W$ zu prüfen ist der schnellste Filter: eine Menge ohne $0_V$ ist nie ein Unterraum.</p></div>
+
+<p><strong>Beispiele aus dem Skript.</strong></p>
+<ul>
+  <li>$\{0_V\}$ und $V$ sind Unterräume von $V$ (Beispiel 2.1.1). Also hat jeder Vektorraum Unterräume, aber der Nullraum hat nur einen: „jeder Vektorraum hat zwei verschiedene Unterräume“ ist falsch (der Nullraum ist die Ausnahme).</li>
+  <li>$U_b=\{x\in K^3\mid$ $x_1-x_2+x_3=b\}$ ist genau dann ein Unterraum, wenn $b=0$ (Beispiel 2.1.3, <a class="pl" href="../linalg-script.html#p36">S. 36</a>). Für $b\ne0$: die Summe zweier Elemente hat $z_1-z_2+z_3=b+b=2b$, und $2b\ne b$, da $b\ne0$. (Noch schneller: $0_V\notin U_b$.)</li>
+  <li>Allgemeiner: die Lösungen von $Ax=0$ bilden einen Unterraum von $K^n$, die von $Ax=b$ mit $b\ne0$ nicht (Beispiel 2.1.7, <a class="pl" href="../linalg-script.html#p37">S. 37</a>). Das ist das wichtigste Beispiel: später im Kurs siehst du, dass <em>jeder</em> Unterraum von $K^n$ von dieser Form ist.</li>
+  <li>Fibonacci-Folgen $\{(a_i)\mid a_n=a_{n-1}+a_{n-2}\ \forall n\ge3\}$ bilden einen Unterraum von $K^\infty$ (Beispiel 2.1.12, <a class="pl" href="../linalg-script.html#p38">S. 38</a>), ebenso jede lineare Rekursion $a_n=\alpha a_{n-1}+\beta a_{n-2}$. Serie 2, Aufgabe 11.</li>
+  <li>$\{f\in K^S\mid f(s_0)=0\}$ ist ein Unterraum von $K^S$ (Beispiel 2.1.17, <a class="pl" href="../linalg-script.html#p39">S. 39</a>); ebenso $\{f:[0,1]\to\mathbb R\mid f\text{ continuous}\}$ (Beispiel 2.1.18).</li>
+  <li>$K[x]_h=\{p\in K[x]\mid\deg p\le h\}$ ist ein Unterraum (Beispiel 2.1.21, <a class="pl" href="../linalg-script.html#p40">S. 40</a>). Ist $\{p\mid\deg p=h\}$ einer? Musterbeispiel 5.</li>
+</ul>
+
+<div class="explorer" id="ss-ex">
+<span class="label">Probier es aus: ist diese Teilmenge von $\mathbb R^2$ ein Unterraum?</span>
+<p>Wähle eine Teilmenge der Ebene. Das Werkzeug wählt zwei Punkte $u,v$ der Menge und einen Skalar $\lambda$ und zeichnet $u+v$ und $\lambda u$. Ein roter Punkt hat die Menge verlassen: das ist ein Zeuge dafür, dass die Menge kein Unterraum ist. Drück ein paarmal auf „neue Punkte“; bei einem Unterraum erscheint nie ein Zeuge.</p>
+<div class="ex-nav">
+  <label>Menge <select id="ss-set" aria-label="Teilmenge der Ebene"></select></label>
+  <button type="button" id="ss-new">Neue Punkte</button>
+</div>
+<svg id="ss-svg" viewBox="-130 -130 260 260" width="100%" style="max-width:320px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="Die Teilmenge und die Testpunkte"></svg>
+<p id="ss-verdict" aria-live="polite"></p>
+</div>
+<script>
+(function(){
+  var SEL=document.getElementById('ss-set');if(!SEL)return;
+  function R(a,b){return a+Math.random()*(b-a);}
+  function pick(a){return a[Math.floor(Math.random()*a.length)];}
+  var S=[
+    {n:'the line y = 2x',m:function(x,y){return Math.abs(y-2*x)<1e-9;},s:function(){var t=R(-0.8,0.8);return [t,2*t];},d:'line',p:[[-3,-6],[3,6]],v:'<strong>Subspace.</strong> $0_V=(0,0)$ lies on it; if $y_1=2x_1$ and $y_2=2x_2$ then $y_1+y_2=2(x_1+x_2)$ and $\\lambda y_1=2(\\lambda x_1)$. It is the solution set of $-2x+y=0$, an equation $Ax=0$.'},
+    {n:'the line y = 2x + 1',m:function(x,y){return Math.abs(y-2*x-1)<1e-9;},s:function(){var t=R(-0.9,0.4);return [t,2*t+1];},d:'line',p:[[-3,-5],[3,7]],v:'<strong>Not a subspace:</strong> $(0,0)$ is not on it ($0\\ne2\\cdot0+1$). Also the sum of two points has $y=2x+2$, off the line. A line not through $0$ is an <em>affine</em> subspace (lesson 9).'},
+    {n:'the two axes, xy = 0',m:function(x,y){return Math.abs(x*y)<1e-9;},s:function(){var t=R(-1.8,1.8);return Math.random()<.5?[t,0]:[0,t];},d:'axes',v:'<strong>Not a subspace:</strong> it contains $0$ and is closed under scaling, but $(1,0)+(0,1)=(1,1)$ has $1\\cdot1\\ne0$. A union of two lines is not a subspace (HS21, question VI (b), one dimension up).'},
+    {n:'the first quadrant, x ≥ 0 and y ≥ 0',m:function(x,y){return x>=-1e-9&&y>=-1e-9;},s:function(){return [R(0,1.5),R(0,1.5)];},d:'quad',v:'<strong>Not a subspace:</strong> closed under addition, but $(-1)\\cdot(1,1)=(-1,-1)$ leaves it. Scalars can be negative.'},
+    {n:'the unit circle, x² + y² = 1',m:function(x,y){return Math.abs(x*x+y*y-1)<1e-9;},s:function(){var t=R(0,6.283);return [Math.cos(t),Math.sin(t)];},d:'circle',v:'<strong>Not a subspace:</strong> $(0,0)$ is not on it. Every test fails: $2u$ has length $2$.'},
+    {n:'the single point {(0,0)}',m:function(x,y){return Math.abs(x)<1e-9&&Math.abs(y)<1e-9;},s:function(){return [0,0];},d:'pt',v:'<strong>Subspace:</strong> the zero space. $0+0=0$, $\\lambda\\cdot0=0$.'},
+    {n:'the whole plane ℝ²',m:function(){return true;},s:function(){return [R(-1.5,1.5),R(-1.5,1.5)];},d:'all',v:'<strong>Subspace:</strong> $V$ itself.'},
+    {n:'points with integer coordinates, ℤ²',m:function(x,y){return Math.abs(x-Math.round(x))<1e-9&&Math.abs(y-Math.round(y))<1e-9;},s:function(){return [pick([-2,-1,0,1,2]),pick([-2,-1,0,1,2])];},d:'grid',v:'<strong>Not a subspace</strong> of the real vector space $\\mathbb R^2$: closed under addition and under $-1$ (it is a group!), but $\\frac12\\cdot(1,0)\\notin\\mathbb Z^2$. A subspace must be closed under <em>all</em> scalars of $K=\\mathbb R$.'}
+  ];
+  S.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.n;SEL.appendChild(o);});
+  var K=34;function X(x){return (x*K).toFixed(1);}function Y(y){return (-y*K).toFixed(1);}
+  function draw(){var s=S[+SEL.value],h='';
+    h+='<line x1="-130" y1="0" x2="130" y2="0" style="stroke:var(--rule)" stroke-width="1"/><line x1="0" y1="-130" x2="0" y2="130" style="stroke:var(--rule)" stroke-width="1"/>';
+    var c='var(--accent)';
+    if(s.d==='line')h+='<line x1="'+X(s.p[0][0])+'" y1="'+Y(s.p[0][1])+'" x2="'+X(s.p[1][0])+'" y2="'+Y(s.p[1][1])+'" style="stroke:'+c+'" stroke-width="4" opacity=".5"/>';
+    if(s.d==='axes')h+='<line x1="-130" y1="0" x2="130" y2="0" style="stroke:'+c+'" stroke-width="4" opacity=".5"/><line x1="0" y1="-130" x2="0" y2="130" style="stroke:'+c+'" stroke-width="4" opacity=".5"/>';
+    if(s.d==='quad')h+='<rect x="0" y="-130" width="130" height="130" style="fill:'+c+'" opacity=".2"/>';
+    if(s.d==='circle')h+='<circle cx="0" cy="0" r="'+K+'" style="fill:none;stroke:'+c+'" stroke-width="4" opacity=".5"/>';
+    if(s.d==='pt')h+='<circle cx="0" cy="0" r="6" style="fill:'+c+'" opacity=".5"/>';
+    if(s.d==='all')h+='<rect x="-130" y="-130" width="260" height="260" style="fill:'+c+'" opacity=".15"/>';
+    if(s.d==='grid'){for(var i=-3;i<=3;i++)for(var j=-3;j<=3;j++)h+='<circle cx="'+X(i)+'" cy="'+Y(j)+'" r="3" style="fill:'+c+'" opacity=".55"/>';}
+    var u=s.s(),v=s.s(),lam=pick([-2,-1,-0.5,0.5,1.5,2]);if(s.d==='grid')lam=pick([-1,0.5,-0.5,1.5]);
+    var w=[u[0]+v[0],u[1]+v[1]],z=[lam*u[0],lam*u[1]],inW=s.m(w[0],w[1]),inZ=s.m(z[0],z[1]);
+    function pt(p,lab,ok,dx){var col=ok?'var(--ink)':'var(--k-c)';return '<line x1="0" y1="0" x2="'+X(p[0])+'" y2="'+Y(p[1])+'" style="stroke:'+col+'" stroke-width="1.5" opacity=".6"/><circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" style="fill:'+col+'"/><text x="'+(+X(p[0])+(dx||8))+'" y="'+(+Y(p[1])-7)+'" font-size="13" style="fill:'+col+'">'+lab+'</text>';}
+    h+=pt(u,'u',true)+pt(v,'v',true,-16)+pt(w,'u+v',inW)+pt(z,'λu',inZ,-24);
+    document.getElementById('ss-svg').innerHTML=h;
+    function f(p){return '('+(+p[0].toFixed(2))+', '+(+p[1].toFixed(2))+')';}
+    var t='u = '+f(u)+', v = '+f(v)+', λ = '+lam+'. u+v = '+f(w)+(inW?' is in the set':' is <strong>not</strong> in the set')+'; λu = '+f(z)+(inZ?' is in the set.':' is <strong>not</strong> in the set.');
+    var el=document.getElementById('ss-verdict');el.innerHTML=t+'<br>'+s.v;
+    if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([el]).catch(function(){});}
+  }
+  SEL.addEventListener('change',draw);document.getElementById('ss-new').addEventListener('click',draw);
+  SEL.value=2;draw();
+})();
+</script>
+
+<div class="box"><h3 id="we-3">Musterbeispiel 3: welche Teilmenge ist kein Unterraum von $\mathbb R^3$? (HS21, Frage VI)</h3>
+<p>(a) $\{x\mid x_1=2x_2=3x_3\}$. (b) $\{x\mid x_1x_2=0\}$. (c) $\{x\mid x_1^2+x_2^2=0\}$. (d) $\{(0,0,x^2-y^2)\mid x,y\in\mathbb R\}$.</p>
+<ol class="gq">
+  <li>Schreibe jede Menge, wo möglich, als lineare Gleichungen um.
+  <details><summary>Antwort</summary><div><p>(a) $x_1-2x_2=0$ und $2x_2-3x_3=0$: Lösungen von $Ax=0$, eine Gerade. (c) Über $\mathbb R$ gilt $x_1^2+x_2^2=0\iff x_1=x_2=0$: die $x_3$-Achse. (d) $x^2-y^2$ nimmt jeden reellen Wert an ($x^2-0$ für $t\ge0$, $0-y^2$ für $t\le0$): wieder die $x_3$-Achse. Alle drei sind Unterräume.</p></div></details></li>
+  <li>Und (b)? Gib den Zeugen an.
+  <details><summary>Antwort</summary><div><p>$x_1x_2=0$ heisst $x_1=0$ oder $x_2=0$: die Vereinigung zweier Ebenen. $(1,0,0)$ und $(0,1,0)$ liegen darin, aber ihre Summe $(1,1,0)$ hat $x_1x_2=1$. <strong>Antwort (b).</strong> Pass bei (d) auf: liest man es unachtsam als $x^2y^2$, wäre es der Halbstrahl $x_3\ge0$, kein Unterraum. Das Minuszeichen zählt.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: „Sind $W_1,W_2$ Unterräume von $V$, so sind $W_1\cap W_2$ und $W_1\cup W_2$ Unterräume.“ Wahr oder falsch? (FS17, v; FS18, (v))</h3>
+<ol class="gq">
+  <li>Der Durchschnitt.
+  <details><summary>Antwort</summary><div><p>Ein Unterraum: $0_V\in W_1$ und $0_V\in W_2$; sind $w,w'\in W_1\cap W_2$, so liegt $w+w'$ in $W_1$ (abgeschlossen) und in $W_2$ (abgeschlossen); ebenso $aw$. (<a class="xl" href="../linalg-06.html">Lektion 6</a>, Beweis A.)</p></div></details></li>
+  <li>Die Vereinigung.
+  <details><summary>Antwort</summary><div><p>Im Allgemeinen nicht: in $\mathbb R^2$ sind die beiden Achsen Unterräume, aber ihre Vereinigung nicht (das Werkzeug oben, $xy=0$). Die Aussage ist also <strong>falsch</strong>. (Die Vereinigung ist nur dann ein Unterraum, wenn $W_1\subseteq W_2$ oder $W_2\subseteq W_1$ gilt: Aufgabe 6.)</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-5">Musterbeispiel 5: Polynome vom Grad genau $h$; „$\deg f=\deg g=n\Rightarrow\deg(f+g)=n$“ (Beispiel 2.1.21; HS17, (vii))</h3>
+<ol class="gq">
+  <li>Ist $\{p\in K[x]\mid\deg p=2\}$ ein Unterraum von $K[x]$?
+  <details><summary>Antwort</summary><div><p>Nein: das Nullpolynom hat den Grad $-\infty$ (oder „keinen Grad“), nicht $2$, also fehlt $0_V$. Ausserdem ist $x^2+(-x^2+1)=1$ vom Grad $0$. Dagegen ist $\{\deg p\le2\}$ ein Unterraum: Summe und Vielfache von Polynomen vom Grad $\le2$ haben Grad $\le2$.</p></div></details></li>
+  <li>Und die Aussage aus HS17?
+  <details><summary>Antwort</summary><div><p><strong>Falsch</strong>, mit demselben Zeugen: $f=x^2$, $g=-x^2+1$, $\deg(f+g)=0$. Die höchsten Terme können sich aufheben. Wahr ist nur $\deg(f+g)\le\max(\deg f,\deg g)$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Die acht Axiome sagen nie, was ein Vektor <em>ist</em>. Darin liegt der Witz: ein Satz, einmal aus den Axiomen bewiesen, gilt gleichzeitig für Pfeile im Raum, für Zahlenlisten, für Tonsignale (Funktionen der Zeit), für Bilder (Matrizen von Pixelwerten), für Polynome und für Fehlerkorrekturcodes über $\mathbb F_2$. Wenn dein Handy ein Foto komprimiert, behandelt es das Bild als Vektor in einem Raum mit mehreren Millionen Dimensionen und wechselt die Basis (Lektion 13). Wenn Netflix dir einen Film empfiehlt, ist dein Geschmack ein Vektor. Eine Definition, und jede spätere Lektion zahlt sich in all diesen Welten gleichzeitig aus.</p></div>
+
+<div class="box"><h3 id="for-wonder-the-positive-reals">Zum Staunen: die positiven reellen Zahlen sind ein Vektorraum, mit der Multiplikation als Addition</h3>
+<p>Beweis C hat gezeigt, dass $(\mathbb R\setminus\{0\},\cdot)$ kein Vektorraum sein kann, und der Übeltäter war das einzelne Element $-1$. Entferne die Negativen: auf $\mathbb R_{&gt;0}$ definiere „Addition“ $x\oplus y:=xy$ und „Skalarmultiplikation“ $\lambda\odot x:=x^\lambda$ für $\lambda\in\mathbb R$. Alle Axiome gelten, denn $(xy)^\lambda=x^\lambda y^\lambda$, $x^{\lambda+\mu}=x^\lambda x^\mu$, $x^{\lambda\mu}=(x^\mu)^\lambda$, $x^1=x$. Der Nullvektor ist die Zahl $1$. Tatsächlich übersetzt $\log$ diesen seltsamen Raum in das gewöhnliche $\mathbb R$: $\log(xy)=\log x+\log y$ und $\log(x^\lambda)=\lambda\log x$. Lektion 12 nennt so eine Übersetzung einen Isomorphismus. Ein Rechenschieber ist eine Maschine, die darauf gebaut ist.</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Versuch jedes im Kopf, bevor du die Schritte aufklappst.</p>
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: „die Matrizen $A$ mit $A^2=0$ bilden einen Unterraum von $M_{2\times2}(\mathbb R)$.“ Wahr oder falsch? (Probeklausur HS20)</h3>
+<p>Produktregel: $\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}^2$ $=\begin{pmatrix}a^2+bc&amp;ab+bd\\ca+dc&amp;cb+d^2\end{pmatrix}$.</p>
+<ol class="gq">
+  <li>Führe das Unterraumkriterium der Reihe nach aus: ist $0$ in der Menge? Ist sie unter Streckung abgeschlossen?
+  <details><summary>Antwort</summary><div><p>$0^2=0$, also ist die Nullmatrix dabei. Ist $A^2=0$ und $\lambda\in\mathbb R$, so $(\lambda A)^2=\lambda^2A^2=0$. Beide Prüfungen bestehen, also entscheidet sich alles an der Addition.</p></div></details></li>
+  <li>Finde zwei Matrizen der Menge, deren Summe nicht in der Menge liegt.
+  <details><summary>Antwort</summary><div><p>$E=\begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}$ und $F=\begin{pmatrix}0&amp;0\\1&amp;0\end{pmatrix}$ erfüllen $E^2=F^2=0$. Aber $E+F=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}$ hat das Quadrat $\begin{pmatrix}1&amp;0\\0&amp;1\end{pmatrix}\ne0$. <strong>Falsch.</strong> (Die Menge enthält $0$ und ist unter Streckung abgeschlossen; nur die Addition scheitert. Eine Bedingung, die in den Einträgen nicht linear ist, ergibt selten einen Unterraum.)</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-7">Musterbeispiel 7: Unterraum oder nicht? (a) $\{(a_i)\in\mathbb R^\infty\mid a_1=0\}$; (b) $\{(a_i)\mid a_i\to0\}$; (c) $\{(a_i)\mid a_{n+1}=a_n+1\ \forall n\}$; (d) $\{f\in\mathbb R^{\mathbb R}\mid f(1)=f(2)\}$.</h3>
+<ol class="gq">
+  <li>(a) und (c): welche scheitert am schnellsten am ersten Filter?
+  <details><summary>Antwort</summary><div><p>(c): die Nullfolge müsste $0=0+1$ erfüllen, also $0_V\notin W$. Kein Unterraum. (a) besteht: die Nullfolge hat $a_1=0$; ist $a_1=0$ und $b_1=0$, so ist $a_1+b_1=0$ und $\lambda a_1=0$. Ein Unterraum.</p></div></details></li>
+  <li>(b): welche bekannten Tatsachen liefern die drei Prüfungen?
+  <details><summary>Antwort</summary><div><p>Die Grenzwertregeln aus der Analysis: die Nullfolge konvergiert gegen $0$; gilt $a_i\to0$ und $b_i\to0$, so $a_i+b_i\to0+0=0$; und $\lambda a_i\to\lambda\cdot0=0$. Ein Unterraum (der Raum $c_0$ der Nullfolgen).</p></div></details></li>
+  <li>(d): ist die Bedingung linear?
+  <details><summary>Antwort</summary><div><p>Ja: $f(1)=f(2)$ ist $f(1)-f(2)=0$. Die Nullfunktion erfüllt sie; gilt $f(1)=f(2)$ und $g(1)=g(2)$, so $(f+g)(1)=f(1)+g(1)=f(2)+g(2)=(f+g)(2)$, und $(\lambda f)(1)=\lambda f(2)=(\lambda f)(2)$. Ein Unterraum, nach demselben Test wie die Funktionen, die an einer Stelle verschwinden.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-8">Musterbeispiel 8: periodische Funktionen (Prüfungsstil: „zeige, dass … ein Vektorraum ist“)</h3>
+<p>Sei $P=\{f:\mathbb R\to\mathbb R\mid f(x+1)=f(x)\text{ for all }x\in\mathbb R\}$, die Funktionen mit Periode $1$, und $Q=\{f:\mathbb R\to\mathbb R\mid f(x+1)=f(x)+1\text{ for all }x\}$. Welche davon ist mit den punktweisen Operationen ein Vektorraum?</p>
+<ol class="gq">
+  <li>In welchem grösseren Vektorraum liegen beide, und was spart das?
+  <details><summary>Antwort</summary><div><p>Beide sind Teilmengen von $\mathbb R^{\mathbb R}$, dem Raum aller Funktionen $\mathbb R\to\mathbb R$ (Abschnitt 4, Beispiel 5). Statt acht Axiome reicht also das Unterraumkriterium (Beweis D).</p></div></details></li>
+  <li>Führe den Test für $P$ durch.
+  <details><summary>Antwort</summary><div><p><strong>Null:</strong> die Nullfunktion erfüllt $0=0$. <strong>Summen:</strong> sind $f,g\in P$, so $(f+g)(x+1)=f(x+1)+g(x+1)$ $=f(x)+g(x)=(f+g)(x)$. <strong>Vielfache:</strong> $(\lambda f)(x+1)=\lambda f(x+1)=\lambda f(x)=(\lambda f)(x)$. Also ist $P$ ein Unterraum von $\mathbb R^{\mathbb R}$, somit ein Vektorraum. Beispiele in $P$: $\sin(2\pi x)$, $\cos(2\pi x)$, jede Konstante.</p></div></details></li>
+  <li>Und $Q$? Gib die kürzeste Widerlegung.
+  <details><summary>Antwort</summary><div><p>Die Nullfunktion müsste $0=0+1$ erfüllen: $0_V\notin Q$. Kein Unterraum. (Ausserdem: $f(x)=x$ liegt in $Q$, aber $2f$ erfüllt $2(x+1)=2x+2\ne2x+1$.) Beachte $Q=x+P$: jedes $f\in Q$ ist $x$ plus eine periodische Funktion. Das ist eine parallele Kopie von $P$, ein <em>affiner</em> Unterraum (<a class="xl" href="../linalg-09.html">Lektion 9</a>).</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Aufgaben</h2>
+<p>Jede Lösung klappt sich unter ihrer Aufgabe auf. Aufgabe 1 ist eine vollständige Prüfungsaufgabe.</p>
+
+<h3 id="ex-1">Aufgabe 1 (FS19, Problem 2 (a), 3 Punkte)</h3>
+<p>Sei $V$ der Vektorraum aller reellen Folgen $(x_n)_{n\ge0}$. Zeige, dass die Folgen, die nur endlich viele verschiedene Werte annehmen, einen Unterraum $W$ von $V$ bilden.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Nimmt $(x_n)$ Werte in einer endlichen Menge $A$ an und $(y_n)$ in einer endlichen Menge $B$, in welcher Menge liegen dann die Werte von $(x_n+y_n)$? Wie gross ist sie?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> das Unterraumkriterium. <strong>Züge:</strong> die Definition entpacken; drei Prüfungen.</p>
+<p>Schreibe $\operatorname{val}(x):=\{x_n\mid n\ge0\}$; dann ist $W=\{x\in V\mid\operatorname{val}(x)\text{ finite}\}$.</p>
+<p><strong>(0)</strong> Die Nullfolge hat $\operatorname{val}=\{0\}$, also endlich, also $0_V\in W$.</p>
+<p><strong>(+)</strong> Seien $x,y\in W$. Für jedes $n$ liegt $x_n+y_n$ in $\{a+b\mid a\in\operatorname{val}(x),$ $b\in\operatorname{val}(y)\}$, einer Menge mit höchstens $|\operatorname{val}(x)|\cdot|\operatorname{val}(y)|$ Elementen. Also ist $\operatorname{val}(x+y)$ endlich, und $x+y\in W$.</p>
+<p><strong>(·)</strong> Sei $\lambda\in\mathbb R$, $x\in W$. Dann hat $\operatorname{val}(\lambda x)=\{\lambda a\mid a\in\operatorname{val}(x)\}$ höchstens $|\operatorname{val}(x)|$ Elemente, also $\lambda x\in W$.</p>
+<p>Also ist $W$ ein Unterraum von $V$.</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Serie 2, Aufgabe 11: Fibonacci-Folgen)</h3>
+<p>Sei $\mathrm{Fib}$ die Menge der $(f_n)_{n\ge0}\in\mathbb R^\infty$ mit $f_{n+2}=f_{n+1}+f_n$ für alle $n\ge0$. Zeige, dass $\mathrm{Fib}$ mit gliedweisen Operationen ein Vektorraum über $\mathbb R$ ist.</p>
+<details class="hint"><summary>Tipp</summary><div><p>$\mathrm{Fib}$ liegt im Folgenraum $\mathbb R^\infty$. Benutze das Unterraumkriterium statt acht Axiome.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> zeige, dass $\mathrm{Fib}$ ein Unterraum des Folgenraums ist; dann macht Beweis D daraus einen Vektorraum. <strong>Züge:</strong> von der grösseren Struktur erben.</p>
+<p>Die Nullfolge erfüllt $0=0+0$. Sind $f,g\in\mathrm{Fib}$, so $f_{n+2}+g_{n+2}=(f_{n+1}+g_{n+1})+(f_n+g_n)$, also $f+g\in\mathrm{Fib}$. Ist $\lambda\in\mathbb R$, so $\lambda f_{n+2}=\lambda f_{n+1}+\lambda f_n$, also $\lambda f\in\mathrm{Fib}$. Nach Beweis D ist $\mathrm{Fib}$ ein Vektorraum. (Die offizielle Lösung prüft stattdessen die vier Axiome gliedweise; beide Wege sind vollständig.)</p>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (Aufgabe 2.1.13, <a class="pl" href="../linalg-script.html#p38">S. 38</a>: „die Antwort hängt von etwas ab“)</h3>
+<p>Ist $W=\{(a_i)\in K^\infty\mid a_n=a_{n-1}^2\ \forall n\ge2\}$ ein Unterraum von $K^\infty$?</p>
+<details class="hint"><summary>Tipp</summary><div><p>Welche konstanten Folgen liegen in $W$? Strecke eine davon mit $\lambda$ und frage, für welche $\lambda$ sie in $W$ bleibt. Der Körper spielt eine Rolle.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> prüfe das einfachste Element von $W$ gegen Streckung. <strong>Züge:</strong> ein Gegenbeispiel genügt.</p>
+<p>Die konstante Folge $(1,1,1,\dots)$ liegt in jedem Körper in $W$, da $1=1^2$. Für $\lambda\in K$ liegt $\lambda\cdot(1,1,\dots)=(\lambda,\lambda,\dots)$ genau dann in $W$, wenn $\lambda=\lambda^2$, d. h. $\lambda(\lambda-1)=0$, d. h. $\lambda\in\{0,1\}$ (keine Nullteiler).</p>
+<p>Hat $K$ also ein Element ausser $0$ und $1$ (wie $\mathbb Q$, $\mathbb R$, $\mathbb F_3$, $\mathbb F_4$), so ist $W$ <strong>kein Unterraum</strong>: nimm $\lambda=2$ in $\mathbb R$, oder $\lambda=a$ in $\mathbb F_4$.</p>
+<p>Ist $K=\mathbb F_2$, so gilt $x^2=x$ für beide Elemente, die Bedingung sagt also $a_n=a_{n-1}$: $W$ ist die Menge der konstanten Folgen, sie enthält $0$ und ist unter Addition und Streckung abgeschlossen. <strong>Ein Unterraum.</strong> Die Antwort hängt vom Körper ab.</p>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 (Quiz 2, alle vier Teile)</h3>
+<p>Für welche Paare ist $V$ ein Vektorraum über $K$? (1) $(\mathbb R,+)$ über $\mathbb Q$. (2) $(\mathbb Q,+)$ über $\mathbb R$. (3) $(\mathbb R\setminus\{0\},\cdot)$ über $\mathbb Q$. (4) $(\mathcal P(\mathbb N),\triangle)$ über $\mathbb F_2$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Die Teile 2 und 3 sind „nein“: bei 2 verlässt die Skalarmultiplikation die Menge; bei 3 suche ein Element, das sein eigenes Negatives ist (Beweis C).</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> zuerst die naheliegende Skalarmultiplikation; bei „nein“ ein strukturelles Hindernis. <strong>Züge:</strong> „$\lambda v=0_V$ mit $\lambda\ne0$ erzwingt $v=0_V$“; von der grösseren Struktur erben.</p>
+<p>(1) <strong>Ja:</strong> $\mathbb Q$ ist ein Unterkörper von $\mathbb R$ (Abschnitt 4, Beispiel 1). (2) <strong>Nein:</strong> $\sqrt2\cdot1\notin\mathbb Q$, und auch keine andere Skalarmultiplikation funktioniert (Beweis C, Stufe 2: sie würde eine injektive Abbildung $\mathbb R\to\mathbb Q$ liefern). (3) <strong>Nein:</strong> $-1$ ist sein eigenes Negatives ($(-1)(-1)=1=0_V$), was kein Vektorraum über $\mathbb Q$ zulässt (Beweis C). (4) <strong>Ja:</strong> Musterbeispiel 2. Das Quiz gibt den Punkt nur, wenn alle vier stimmen: „1 ja, 2 nein, 3 nein, 4 ja“.</p>
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (Rechenregeln)</h3>
+<p>Sei $V$ ein Vektorraum über $K$, $a,b\in K$, $v,w\in V$. Beweise: (a) $a(v-w)=av-aw$; (b) gilt $av=bv$ und $v\ne0_V$, so ist $a=b$; (c) gilt $av=aw$ und $a\ne0$, so ist $v=w$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Bring alles auf eine Seite und schreibe es als einen Skalar mal einen Vektor. Benutze dann: $\lambda v=0_V$ erzwingt $\lambda=0$ oder $v=0_V$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> bringe alles auf eine Seite und benutze „$\lambda v=0_V\Rightarrow\lambda=0$ oder $v=0_V$“. <strong>Züge:</strong> zeige, dass es das Inverse ist, dann Eindeutigkeit benutzen.</p>
+<p>(a) $a(v-w)=a(v+(-1)w)$ $=av+a((-1)w)$ $=av+(-a)w$ $=av+(-1)(aw)=av-aw$ (V7, zweimal V5, und $(-1)u=-u$).</p>
+<p>(b) $0_V=av-bv=av+(-b)v=(a-b)v$ (die Regel $(-1)u=-u$ mit V5, dann V8). Da $v\ne0_V$ und $\lambda v=0_V$ nur $\lambda=0$ oder $v=0_V$ zulässt, folgt $a-b=0$, also $a=b$.</p>
+<p>(c) $0_V=av-aw=a(v-w)$ nach (a). Da $a\ne0$, liefert dieselbe Regel $v-w=0_V$, also $v=w$.</p>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (Vereinigungen von Unterräumen)</h3>
+<p>Seien $W_1,W_2$ Unterräume von $V$. Zeige: $W_1\cup W_2$ ist genau dann ein Unterraum, wenn $W_1\subseteq W_2$ oder $W_2\subseteq W_1$ gilt.</p>
+<details class="hint"><summary>Tipp</summary><div><p>„$\Rightarrow$“ durch Kontraposition: wähle $w_1\in W_1\setminus W_2$ und $w_2\in W_2\setminus W_1$. Wo kann $w_1+w_2$ liegen?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> Kontraposition für „$\Rightarrow$“. <strong>Züge:</strong> die Kontraposition beweisen; das Gegenteil annehmen.</p>
+<p>„$\Leftarrow$“: dann ist $W_1\cup W_2$ gleich $W_2$ oder $W_1$, ein Unterraum. „$\Rightarrow$“: nimm an, keine der Inklusionen gilt; wähle $w_1\in W_1\setminus W_2$ und $w_2\in W_2\setminus W_1$. Ist $w_1+w_2\in W_1$, so $w_2=(w_1+w_2)-w_1\in W_1$, ein Widerspruch; ist $w_1+w_2\in W_2$, so $w_1=(w_1+w_2)-w_2\in W_2$, ein Widerspruch. Also ist $w_1+w_2\notin W_1\cup W_2$, und die Vereinigung ist nicht unter Addition abgeschlossen.</p>
+</div></details>
+
+<h3 id="ex-7">Aufgabe 7 (wahr oder falsch, Altklausur-Stil)</h3>
+<p>(a) Jeder Vektorraum hat mindestens zwei Elemente. (b) Jeder Körper hat mindestens zwei Elemente. (c) $\{x\in\mathbb R^3\mid x_1+x_2+x_3=1\}$ ist ein Unterraum. (d) $\mathbb C$ ist ein Vektorraum über $\mathbb R$. (e) $\mathbb R$ ist mit der Multiplikation von $\mathbb C$ ein Vektorraum über $\mathbb C$. (f) Erfüllt $W\subseteq V$ $0_V\in W$ und ist unter Addition abgeschlossen, so ist $W$ ein Unterraum.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Bei Teilmengen prüfe zuerst $0_V$. Bei „ein Vektorraum über“ prüfe, dass die Skalarmultiplikation in der Menge bleibt.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> ein „wahr“ braucht einen Grund, der in jedem Fall funktioniert; ein „falsch“ braucht ein konkretes Gegenbeispiel.</p>
+<ol>
+<li>(a) <strong>Falsch.</strong> Der Nullraum $V=\{0\}$ über jedem Körper, mit $0+0=0$ und $a\cdot0=0$, erfüllt jedes Axiom: jedes Axiom ist eine Gleichung zwischen Elementen von $V$, und $V$ hat nur ein Element, also sind beide Seiten immer $0$.</li>
+<li>(b) <strong>Wahr.</strong> Die Körperaxiome verlangen $0\ne1$, also sind $0$ und $1$ zwei verschiedene Elemente.</li>
+<li>(c) <strong>Falsch.</strong> Jeder Unterraum enthält den Nullvektor, aber $0+0+0=0\ne1$, also liegt $(0,0,0)$ nicht in der Menge. (Anschaulich: eine Ebene, die den Ursprung verfehlt.)</li>
+<li>(d) <strong>Wahr.</strong> Die Axiome eines Vektorraums über $\mathbb R$ sind für $a,b\in\mathbb R$ und $u,v\in\mathbb C$ Körperregeln von $\mathbb C$: Assoziativität und Distributivität der Multiplikation, $1\cdot v=v$. Sie gelten, weil sie für alle komplexen Zahlen gelten, insbesondere wenn $a,b$ reell sind.</li>
+<li>(e) <strong>Falsch.</strong> Die Skalarmultiplikation muss eine Abbildung $K\times V\to V$ sein. Hier ist $i\in\mathbb C$ und $1\in\mathbb R$, aber $i\cdot1=i\notin\mathbb R$: das Produkt verlässt $V$, es gibt also gar keine Skalarmultiplikation.</li>
+<li>(f) <strong>Falsch.</strong> $W=\mathbb Z^2\subseteq\mathbb R^2$ enthält $(0,0)$, und die Summe zweier ganzzahliger Vektoren ist ganzzahlig, aber $\tfrac12\cdot(1,0)=(\tfrac12,0)\notin W$: die Abgeschlossenheit unter Skalaren scheitert. (Ebenso $\mathbb N_0\subseteq\mathbb R$, wo schon $-1\cdot1$ die Menge verlässt.) Die Abgeschlossenheit unter Skalarmultiplikation ist eine eigene Bedingung und kann nicht weggelassen werden.</li>
+</ol>
+</div></details>
+
+<h3 id="ex-8">Aufgabe 8 (gerade und ungerade Funktionen: ein erster Blick auf das Zerlegen eines Raums)</h3>
+<p>In $V=\mathbb R^{\mathbb R}$ (alle Funktionen $\mathbb R\to\mathbb R$, punktweise Operationen) seien $E=\{f\mid f(-x)=f(x)\ \forall x\}$ (gerade Funktionen) und $O=\{f\mid f(-x)=-f(x)\ \forall x\}$ (ungerade Funktionen). (a) Zeige, dass $E$ und $O$ Unterräume sind. (b) Zeige $E\cap O=\{0\}$. (c) Zeige, dass sich jedes $f\in V$ als $f=g+h$ mit $g\in E$, $h\in O$ schreiben lässt. (d) Ist $\{f\mid f(0)=1\}$ ein Unterraum?</p>
+<details class="hint"><summary>Tipp</summary><div><p>(a) Benutze den einzeiligen Test $a_1f_1+a_2f_2\in W$ und werte bei $-x$ aus. (c) Probiere $g(x)=\tfrac12\big(f(x)+f(-x)\big)$ und rate $h$ aus $f=g+h$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> für (a), erste Zeile: $f_1,f_2\in E$, $a_1,a_2\in\mathbb R$; letzte Zeile: $(a_1f_1+a_2f_2)(-x)=(a_1f_1+a_2f_2)(x)$ für alle $x$. Für (c) müssen wir $g$ und $h$ angeben und drei Dinge prüfen: $g$ gerade, $h$ ungerade, $g+h=f$.</p>
+<ol>
+<li>(a) $E$ enthält die Nullfunktion, da $0(-x)=0=0(x)$. Für $f_1,f_2\in E$, $a_1,a_2\in\mathbb R$ und jedes $x$: $(a_1f_1+a_2f_2)(-x)=a_1f_1(-x)+a_2f_2(-x)$ (Definition der punktweisen Operationen) $=a_1f_1(x)+a_2f_2(x)$ (beide $f_i$ sind gerade) $=(a_1f_1+a_2f_2)(x)$. Also ist $E$ nicht leer und unter Linearkombinationen abgeschlossen, somit ein Unterraum. Für $O$ liefert dieselbe Rechnung $a_1(-f_1(x))+a_2(-f_2(x))=-(a_1f_1+a_2f_2)(x)$, und die Nullfunktion ist ungerade, da $0=-0$.</li>
+<li>(b) Ist $f$ gerade und ungerade, so gilt für jedes $x$: $f(x)=f(-x)=-f(x)$, also $2f(x)=0$ und, durch $2$ in $\mathbb R$ dividiert, $f(x)=0$. Also ist $f$ die Nullfunktion. (Über $\mathbb F_2$ würde dieser Schritt scheitern, weil dort $2=0$ ist.)</li>
+<li>(c) Setze $g(x)=\tfrac12\big(f(x)+f(-x)\big)$ und $h(x)=\tfrac12\big(f(x)-f(-x)\big)$. Dann ist $g(-x)=\tfrac12\big(f(-x)+f(x)\big)=g(x)$, also $g\in E$; $h(-x)=\tfrac12\big(f(-x)-f(x)\big)=-h(x)$, also $h\in O$; und $g(x)+h(x)=\tfrac12\cdot2f(x)=f(x)$. Beispiel: $e^x=\cosh x+\sinh x$.</li>
+<li>(d) <strong>Nein.</strong> Die Nullfunktion hat an der Stelle $0$ den Wert $0\ne1$, liegt also nicht in der Menge, und jeder Unterraum enthält den Nullvektor.</li>
+</ol>
+<p>Zusammen sagen (b) und (c): jede Funktion zerfällt auf genau eine Weise in einen geraden und einen ungeraden Anteil (ist $g+h=g'+h'$, so liegt $g-g'=h'-h$ in $E\cap O=\{0\}$). Das ist das erste Beispiel einer <em>direkten Summe</em> $V=E\oplus O$, die in <a class="xl" href="../linalg-08.html">Lektion 8</a> wiederkommt.</p>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Aufgaben 1–8 ergeben 8 Punkte, einen für jede Aufgabe, die du löst. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, ein Wahr-falsch-Block, wenn höchstens ein Teil falsch ist. Mit 6 von 8 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="skipped.html#linalg-05">Auslassungsliste</a>.</p>
+<ul>
+  <li><strong>Lemma 2.0.2 (h)</strong>, allgemeine Assoziativität für Summen von $n$ Vektoren: eine Induktion, die du ohne Beweis benutzen darfst. <em>Priorität: niedrig.</em></li>
+  <li><strong>Zweiseitige Folgen</strong> (<a class="pl" href="../linalg-script.html#p38">S. 38</a>, Beispiel 2.1.14) und <strong>Ann$(S')$</strong> (Beispiel 2.1.17): weitere Beispiele derselben Art. <em>Priorität: niedrig.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a href="../linalg-06.html">Lektion 6</a>, Spann, lineare Unabhängigkeit und Basen: welche Vektoren braucht man, um jeden Vektor des Raums zu erreichen, und welche sind überflüssig.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg-04.html">← Lektion 4: Das Gesetzbuch der Freien Stadt</a>
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-06.html">Lektion 6: Die Kartenmacher der Freien Stadt →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="feedback.html">Feedback geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
