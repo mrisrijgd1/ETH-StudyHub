@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Das Gesetzbuch der Freien Stadt">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Das Gesetzbuch der Freien Stadt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 4</span>
+<h1>Das Gesetzbuch der Freien Stadt</h1>
+<p class="lead">Erste Beweise aus den Axiomen: drei schlanke Gruppenaxiome, Rechenregeln in Ringen und Körpern, keine Nullteiler, $\mathbb Z/n$ ist genau dann ein Körper, wenn $n$ prim ist, die Charakteristik, $\mathbb Q(\sqrt2)$ und der Körper mit vier Elementen.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lessons-1-and">Rückblick auf die Lektionen 1 und 3 (5 Minuten)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-lawbook-of">1. Die Geschichte: das Gesetzbuch der Freien Stadt</a>
+</li>
+<li><a href="#s2-three-lean-axioms-are-enough">2. Drei schlanke Axiome genügen für eine Gruppe</a>
+<ol>
+<li><a href="#proof-a">Beweis A: die schlanken Gruppenaxiome (Vorlesung, Satz 2.0)</a></li>
+<li><a href="#the-unbeispiel-why-the-sides">Das „Unbeispiel“: warum die Seiten übereinstimmen müssen (Vorlesung)</a></li>
+</ol></li>
+<li><a href="#s3-calculation-rules-in-every-ring">3. Rechenregeln in jedem Ring</a>
+<ol>
+<li><a href="#proof-b">Beweis B: $0\cdot a=0$, $a(-b)=-(ab)$, $(-a)(-b)=ab$ (Lemma 1.3.4, S. 17, und Lemma 1.3.10 (d), S. 19; Vorlesung, Satz 2.2)</a></li>
+</ol></li>
+<li><a href="#s4-calculation-rules-in-every-field">4. Rechenregeln in jedem Körper</a>
+<ol>
+<li><a href="#proof-c">Beweis C: $1\ne0$, keine Nullteiler, Kürzen (Lemma 1.3.10 (a), (c), (e), S. 19; Vorlesung, Satz 2.1)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: „die reellen $2\times2$-Matrizen mit Matrizenaddition und Matrizenmultiplikation bilden einen Körper.“ Wahr oder falsch? (FS18, (iv))</a></li>
+</ol></li>
+<li><a href="#s5-which-clocks-are-fields-and">5. Welche Uhren sind Körper: $\mathbb Z/n$ und Nullteiler</a>
+<ol>
+<li><a href="#proof-d">Beweis D: $\mathbb Z/n$ (mit $n\ge2$) hat genau dann keine Nullteiler, wenn $n$ prim ist (Lemma 1.3.12, S. 19)</a></li>
+</ol></li>
+<li><a href="#s6-a-finite-ring-without-zero">6. Ein endlicher Ring ohne Nullteiler ist ein Körper</a>
+<ol>
+<li><a href="#proof-e">Beweis E: endlich + kommutativ + $1\ne0$ + keine Nullteiler $\Rightarrow$ Körper (Lemma 1.3.14, S. 20)</a></li>
+<li><a href="#we-2">Musterbeispiel 2: ist $\mathbb Z/n$ ein Körper? Finde Inverse.</a></li>
+</ol></li>
+<li><a href="#s7-the-characteristic-of-a-field">7. Die Charakteristik eines Körpers</a>
+<ol>
+<li><a href="#proof-f">Beweis F: die Charakteristik eines Körpers ist $0$ oder eine Primzahl (Bemerkung im Skript, S. 21)</a></li>
+</ol></li>
+<li><a href="#s8-two-more-fields-and">8. Zwei weitere Körper: $\mathbb Q(\sqrt2)$ und $\mathbb F_4$</a>
+<ol>
+<li><a href="#we-3">Musterbeispiel 3: $\mathbb Q(\sqrt2):=\{a+b\sqrt2\mid a,b\in\mathbb Q\}$ ist ein Körper (Vorlesung)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: ein Körper mit vier Elementen (Serie 1, Aufgabe 9)</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+<li><a href="#for-wonder-which-sizes-can">Zum Staunen: welche Grössen kann ein Körper haben?</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-5">Musterbeispiel 5: „in jeder Gruppe gilt $\forall a,b,c:\ b=c\iff a\circ b=a\circ c$.“ Und in jedem Körper, mit $\cdot$? (FS17, iv)</a></li>
+<li><a href="#we-6">Musterbeispiel 6: löse $x^2=\bar2$ und $\bar3x+\bar4=\bar1$ in $\mathbb F_7$</a></li>
+<li><a href="#we-7">Musterbeispiel 7: welche schlanken Axiome? Auf einer Menge $M$ mit $|M|\ge2$ sei $a\ast b:=b$.</a></li>
+<li><a href="#we-8">Musterbeispiel 8: die affinen Abbildungen der Geraden bilden eine Gruppe (Prüfungsstil: „zeige, dass … eine Gruppe ist“)</a></li>
+</ol></li>
+<li><a href="#exercises">Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Serie 1, Aufgabe 8 (d), mit Stern)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Rechenregeln)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Inverse in endlichen Körpern)</a></li>
+<li><a href="#ex-4">Aufgabe 4 ($\mathbb Q(\sqrt3)$)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Charakteristik)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (wahr oder falsch, Altklausur-Stil)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schlechter Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Wiederholungsfragen oben. Das zählt. Morgen machst du einfach hier weiter: ein verpasster oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) aus den <strong>drei schlanken Gruppenaxiomen</strong> (assoziativ, linksneutral, Linksinverse) beweisen kannst, dass das Linksinverse auch ein Rechtsinverses ist und das neutrale Element zweiseitig ist, und erklären kannst, warum „links“ und „rechts“ nicht gemischt werden dürfen; (2) die <strong>Rechenregeln jedes Rings</strong> herleiten kannst: $0\cdot a=0$, $(-1)a=-a$, $a(-b)=-(ab)$, $(-a)(-b)=ab$; (3) beweisen kannst, dass ein Körper $1\ne0$ hat, <strong>keine Nullteiler</strong>, und dass man einen von null verschiedenen Faktor kürzen darf; (4) beweisen kannst, dass $\mathbb Z/n$ genau dann keine Nullteiler hat, wenn $n$ prim ist, und dass ein <strong>endlicher Ring ohne Nullteiler ein Körper ist</strong>, also $\mathbb Z/p$ ein Körper ist; (5) die <strong>Charakteristik</strong> eines Körpers berechnen und beweisen kannst, dass sie $0$ oder prim ist; (6) in den Körpern $\mathbb Q(\sqrt2)$ und $\mathbb F_4$ arbeiten kannst.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 90 Minuten. Eine natürliche Pause kommt nach Abschnitt 4 (Regeln in Ringen und Körpern fertig, die endlichen Körper folgen).</dd></div>
+  <div><dt>Skript (Englisch, Seitenzahlen des Drucks)</dt><dd>Skript EN 2023, Kapitel 1 „Vorwissen“, Abschnitt 1.3:
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p17">S. 17</a>, Lemma 1.3.4:</strong> Multiplikation mit $0$.</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p18">S. 18</a>, Definition 1.3.9:</strong> der Körper, ausgeschrieben als zehn Axiome.</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p19">S. 19</a>, Lemma 1.3.10:</strong> Eigenschaften eines Körpers (a)–(e); <strong>Lemma 1.3.12:</strong> $\mathbb Z/n$ hat genau dann keine Nullteiler, wenn $n$ prim ist; <strong>Bemerkung 1.3.13:</strong> Primelemente und irreduzible Elemente.</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p20">S. 20</a>, Lemma 1.3.14:</strong> ein endlicher kommutativer Ring mit $1\ne0$ und ohne Nullteiler ist ein Körper; <strong>Korollar 1.3.15:</strong> $\mathbb Z/p$ ist ein Körper; <strong>Aufgabe 1.3.17:</strong> Rechtsinverse sind Linksinverse.</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p21">S. 21</a>, Definition 1.3.18 und Beispiel 1.3.19:</strong> die Charakteristik eines Körpers.</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §2 (Notizen vom 28. Sep.): Satz 2.0 (drei schlanke Axiome genügen für eine Gruppe, mit einem „Unbeispiel“, das zeigt, dass die Seiten zählen), Satz 2.1 (in einem Körper gilt $0\ne1$ und es gibt keine Nullteiler), Satz 2.2 (Rechenregeln in Ringen), die Körper $\mathbb Q$, $\mathbb R$, $\mathbb C$, $\mathbb F_p$, $\mathbb F_4$ und $\mathbb Q(\sqrt2)$. Serie 1, Aufgaben 8 (d) und 9, gehören hierher.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Die alten Prüfungen fragen diese Tatsachen als Wahr-falsch- und Multiple-Choice-Fragen ab: „die reellen $2\times2$-Matrizen mit Matrizenaddition und -multiplikation bilden einen Körper“ (FS18, (iv)), „in jeder Gruppe gilt $b=c\iff a\circ b=a\circ c$“ (FS17, iv), „welche Eigenschaft gilt nicht in jeder Gruppe?“ (FS19, III), und Rechnungen in $\mathbb F_p$ (FS19, IV; <a class="xl" href="linalg-01.html">Lektion 1</a>). Spätere Aufgaben arbeiten direkt über $\mathbb Z/p$: „sei $K=\mathbb Z/p\mathbb Z$ der Körper mit $p$ Elementen; zeige, dass die Matrix …“ (FS18, Aufgabe 6 (c)), „für welche endlichen Körper $\mathbb F_p$ ist $F$ diagonalisierbar?“ (FS20, Aufgabe 3), und das Zählen von Punkten auf einer Geraden über einem endlichen Körper (FS17, Aufgabe 4 (b)). Die Beweise dieser Lektion sind auch das Muster für <a class="xl" href="../linalg-05.html">Lektion 5</a>: Serie 2, Aufgabe 10 verlangt $0\cdot x=0_V$, $(-1)x=-x$ und „keine Nullteiler“ in einem Vektorraum, mit genau den Argumenten aus den Abschnitten 3 und 4.</p></div>
+
+<div class="box"><h3 id="recap-of-lessons-1-and">Rückblick auf <a class="xl" href="linalg-01.html">Lektion 1</a> und <a class="xl" href="linalg-03.html">3</a> (5 Minuten)</h3>
+<p>Ein Körper ist ein kommutativer Ring mit Eins, in dem jedes Element ausser $0$ ein multiplikatives Inverses hat; gleichbedeutend: $(K,+)$ und $(K^\times,\cdot)$ sind abelsche Gruppen, und das Distributivgesetz gilt. In <a class="xl" href="linalg-01.html">Lektion 1</a> hast du bewiesen: das neutrale Element und die Inversen sind eindeutig. In <a class="xl" href="linalg-03.html">Lektion 3</a> hast du mit dem Schubfachprinzip bewiesen, dass jedes $\bar a\ne\bar0$ in $\mathbb Z/p$ ein Inverses hat. Prüf dich selbst: warum hat $\bar2$ kein Inverses in $\mathbb Z/6$?</p>
+<details><summary>Antwort</summary><div><p>$\bar2\cdot\bar3=\bar0$ mit $\bar2\ne\bar0\ne\bar3$: Nullteiler. Hätte $\bar2$ ein Inverses, so wäre $\bar3=\bar2^{-1}\cdot\bar2\cdot\bar3=\bar2^{-1}\cdot\bar0=\bar0$, was falsch ist. Heute beweist du die Regel, die im letzten Schritt benutzt wurde, $x\cdot0=0$, aus den Axiomen.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Englisch</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>left neutral, right neutral</td><td>linksneutral, rechtsneutral</td></tr>
+    <tr><td>left inverse, right inverse</td><td>Linksinverses, Rechtsinverses</td></tr>
+    <tr><td>non-example</td><td>Unbeispiel (Halbeisens Wort)</td></tr>
+    <tr><td>calculation rule</td><td>Rechenregel</td></tr>
+    <tr><td>additive inverse, the negative $-a$</td><td>additives Inverses, das Negative $-a$</td></tr>
+    <tr><td>zero divisor, free of zero divisors</td><td>Nullteiler, nullteilerfrei</td></tr>
+    <tr><td>cancellation rule</td><td>Kürzungsregel</td></tr>
+    <tr><td>prime element, irreducible element</td><td>Primelement, irreduzibles Element</td></tr>
+    <tr><td>finite field</td><td>endlicher Körper</td></tr>
+    <tr><td>characteristic</td><td>Charakteristik</td></tr>
+    <tr><td>multiplication-by-$a$ map</td><td>Multiplikation mit $a$ (Linksmultiplikation)</td></tr>
+    <tr><td>drawer principle, pigeonhole principle</td><td>Schubfachprinzip</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-lawbook-of">1. Die Geschichte: das Gesetzbuch der Freien Stadt</h2>
+<div class="story">
+<p>Die Gilden aus <a class="xl" href="linalg-01.html">Lektion 1</a> wurden mit kurzen Chartas gegründet: jeweils eine Handvoll Gesetze. Seitdem streiten sich die Bürger darüber, was die Gesetze <em>nach sich ziehen</em>. Ein Kaufmann behauptet, eine Schuld mit nichts zu multiplizieren ergebe nichts; ein Skeptiker fragt, wo die Charta das sagt. Das tut sie nicht, nicht mit diesen Worten. Aber das Gericht aus <a class="xl" href="linalg-03.html">Lektion 3</a> kann es aus den geschriebenen Gesetzen ableiten.</p>
+<p>Die Stadt führt deshalb ein <em>Gesetzbuch</em>: jede Regel, die aus den Chartas folgt, mit ihrem Urteil daneben. Heute schreibst du seine ersten Seiten. Manche Einträge sind überraschend. Die Charta des Hauses der Gruppen kommt mit nur drei Gesetzen aus, wenn sie alle in dieselbe Richtung zeigen; mischt man links und rechts, schleicht sich eine falsche Gruppe ein. Das Haus der Körper hat einen Eintrag, der jeden Kaufmann rettet: ist ein Produkt null, so war einer der Faktoren null. Und die Uhrmacher lernen, welche Uhren einen Körper beherbergen können: genau jene mit einer Primzahl an Stunden.</p>
+</div>
+<p>In der Mathematik: heute <strong>leiten wir Rechenregeln aus Axiomen her</strong>. Nichts Neues wird angenommen; jede Zeile wird durch ein Axiom oder eine frühere Regel gerechtfertigt. Das ist genau die Art Beweis, die die Lineare Algebra ab <a class="xl" href="../linalg-05.html">Lektion 5</a> verlangt, wo die Axiome die eines Vektorraums sind und die Regeln „$0\cdot v=0$“, „$(-1)v=-v$“ und ihre Verwandten. Und die endlichen Körper $\mathbb Z/p$ und $\mathbb F_4$, die du heute triffst, sind die Körper, über denen die Prüfung später verlangt, Gleichungssysteme zu lösen und Matrizen zu diagonalisieren.</p>
+
+<h2 id="s2-three-lean-axioms-are-enough">2. Drei schlanke Axiome genügen für eine Gruppe</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-01.html#proof-a">Lektion 1</a>)</span>
+<ul>
+  <li><strong>Gruppe:</strong> eine assoziative Verknüpfung mit neutralem Element und Inversen, die auf <em>beiden</em> Seiten wirken.</li>
+  <li><strong>Eindeutigkeit:</strong> ein links- und ein rechtsneutrales Element stimmen überein (Beweis A); Inverse sind eindeutig (Beweis B), also kann „es ist <em>das</em> Inverse“ durch Prüfen einer einzigen Gleichung gezeigt werden.</li>
+</ul></div>
+<p>In <a class="xl" href="linalg-01.html">Lektion 1</a> hatte eine Gruppe eine assoziative Verknüpfung, ein neutrales Element, das auf beiden Seiten wirkt ($e\circ x=x\circ e=x$), und Inverse auf beiden Seiten. Halbeisen fragt: wie wenig kann man verlangen und trotzdem all das bekommen? Seine Antwort ist Satz 2.0.</p>
+<h3 id="proof-a">Beweis A: die schlanken Gruppenaxiome (Vorlesung, Satz 2.0)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $\circ$ eine Verknüpfung auf einer Menge $G$ mit</p>
+<ul>
+  <li><strong>G0</strong> (assoziativ): $\forall x,y,z\in G:$ $(x\circ y)\circ z=x\circ(y\circ z)$;</li>
+  <li><strong>G1</strong> (linksneutral): es gibt $e\in G$ mit $\forall x\in G:$ $e\circ x=x$;</li>
+  <li><strong>G2</strong> (Linksinverse): $\forall x\in G\ \exists\bar x\in G:$ $\bar x\circ x=e$.</li>
+</ul>
+<p>Dann gilt (a) jedes Linksinverse ist auch ein Rechtsinverses: $x\circ\bar x=e$; (b) $e$ ist auch rechtsneutral: $x\circ e=x$; (c) $e$ ist das einzige neutrale Element; (d) jedes $x$ hat nur ein Inverses. Also ist $(G,\circ,e)$ eine Gruppe.</p></div>
+<p><strong>Die Idee.</strong> Die einzigen Werkzeuge sind G0, G1, G2, und G1 und G2 wirken von links. Um $x\circ\bar x=e$ zu zeigen, setze etwas auf die <em>linke</em> Seite von $x\circ\bar x$, das wir zusammenfallen lassen können: ein Linksinverses von $\bar x$ selbst. Halbeisens Trick ist, $e$ als $\bar{\bar x}\circ\bar x$ zu schreiben und dann umzuklammern.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile von (a):</strong> „Sei $x\in G$ und $\bar x$ ein Linksinverses, $\bar x\circ x=e$. Nach G2 hat auch $\bar x$ ein Linksinverses $\bar{\bar x}$, also $\bar{\bar x}\circ\bar x=e$.“</li>
+  <li><strong>Letzte Zeile von (a):</strong> „… $=e$, also ist $\bar x$ auch ein Rechtsinverses von $x$.“</li>
+  <li><strong>Die Lücke:</strong> eine Kette von Gleichungen, wobei jeder Schritt G0, G1 oder G2 (oder die Zeile darüber) zitiert.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Charta sagt nur „Schweigen von links bewirkt nichts“ und „jedes Mitglied hat einen Partner, der es von links aufhebt“. Der Partner hat selbst auch einen Partner.</p></div><div class="sp-formal"><p>(a) Sei $x\in G$, $\bar x\circ x=e$, und sei $\bar{\bar x}$ ein Linksinverses von $\bar x$ (G2), also $\bar{\bar x}\circ\bar x=e$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Schreiber setzt Schweigen auf die linke Seite von $x\circ\bar x$, und schreibt dann das Schweigen als „Partner des Partners, dann Partner“.</p></div><div class="sp-formal"><p>$x\circ\bar x=e\circ(x\circ\bar x)$ (G1)<br>$\phantom{x\circ\bar x}=(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)$ (Wahl von $\bar{\bar x}$)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Klammern spielen keine Rolle, also trifft der Partner $x$ in der Mitte, und sie heben sich auf.</p></div><div class="sp-formal"><p>$\phantom{x\circ\bar x}=\bar{\bar x}\circ\big((\bar x\circ x)\circ\bar x\big)$ (G0, zweimal)<br>$\phantom{x\circ\bar x}=\bar{\bar x}\circ(e\circ\bar x)$ (G2)<br>$\phantom{x\circ\bar x}=\bar{\bar x}\circ\bar x=e$ (G1, Wahl von $\bar{\bar x}$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Nun das Schweigen auf der rechten Seite: ersetze es durch „Partner, dann Mitglied“, was (a) gerade in beiden Reihenfolgen erlaubt hat.</p></div><div class="sp-formal"><p>(b) $x\circ e=x\circ(\bar x\circ x)$ $=(x\circ\bar x)\circ x$ (G2, G0) $=e\circ x$ $=x$ (nach (a), G1).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Arten von Schweigen müssen übereinstimmen: berechne ihr Produkt auf zwei Wegen. Zwei Partner eines Mitglieds müssen übereinstimmen: <a class="xl" href="linalg-01.html">Lektion 1</a>.</p></div><div class="sp-formal"><p>(c) Ist $e'$ auch neutral, so $e'=e\circ e'=e$ (G1 für $e$, dann $e'$ rechtsneutral). (d) Nach (a) ist jedes Linksinverse ein Inverses, und Inverse sind eindeutig (<a class="xl" href="linalg-01.html">Lektion 1</a>, Beweis B). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_sneak">das neutrale Element einschmuggeln</a> <a class="mvl" href="../linalg-moves.html#m-la_isinverse">zeigen, dass es das Inverse ist, dann Eindeutigkeit benutzen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(a) Sei $\bar x\circ x=e$, und wähle nach G2 ein Element $\bar{\bar x}$ mit $\bar{\bar x}\circ\bar x=e$. Dann</p>
+<span class="math-display" style="display:block">$$\begin{aligned}x\circ\bar x&amp;=e\circ(x\circ\bar x)=(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)\\&amp;=\bar{\bar x}\circ\big((\bar x\circ x)\circ\bar x\big)=\bar{\bar x}\circ(e\circ\bar x)\\&amp;=\bar{\bar x}\circ\bar x=e.\end{aligned}$$</span>
+<p>(b) $x\circ e=x\circ(\bar x\circ x)$ $=(x\circ\bar x)\circ x$ $=e\circ x=x$. (c) Ist $e'$ neutral, so $e'=e\circ e'=e$. (d) Ein Linksinverses ist nach (a) ein Inverses; Inverse sind eindeutig (<a class="xl" href="linalg-01.html">Lektion 1</a>). <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Wo genau wird G0 in der Kette für (a) benutzt, und warum „zweimal“?
+  <details><summary>Antwort</summary><div><p>Von $(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)$ zu $\bar{\bar x}\circ\big((\bar x\circ x)\circ\bar x\big)$. Zuerst $(\bar{\bar x}\circ\bar x)\circ(x\circ\bar x)=\bar{\bar x}\circ\big(\bar x\circ(x\circ\bar x)\big)$, dann $\bar x\circ(x\circ\bar x)=(\bar x\circ x)\circ\bar x$. Zwei Umklammerungen, zwei Anwendungen von G0.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige die zusätzliche Behauptung der Vorlesung $\bar{\bar x}=x$: das Inverse des Inversen ist das Element selbst.
+  <details><summary>Antwort</summary><div><p>Nach G2 und (a) gilt $\bar x\circ x=e$ und $x\circ\bar x=e$. Mit $\bar x$ in der Mitte gelesen: $x$ ist ein Links- und ein Rechtsinverses von $\bar x$, also ist $x$ ein Inverses von $\bar x$. Inverse sind eindeutig, also $\bar{\bar x}=x$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib (a) und (b) nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Schreib die drei Axiome auf, die du hast (assoziativ, linksneutrales $e$, Linksinverse), und was du zeigen musst (Rechtsinverses, rechtsneutral).</li>
+  <li>Für „$x\circ\bar x=e$“: nimm ein Linksinverses $\bar{\bar x}$ von $\bar x$ und setze $e=\bar{\bar x}\circ\bar x$ auf die <em>linke</em> Seite von $x\circ\bar x$.</li>
+  <li>Klammere um (Assoziativität zweimal), so dass $\bar x\circ x$ in der Mitte steht; ersetze es durch $e$, dann $e\circ\bar x$ durch $\bar x$, dann $\bar{\bar x}\circ\bar x$ durch $e$.</li>
+  <li>Für „$x\circ e=x$“: schreibe $e=\bar x\circ x$, klammere um, benutze Schritt 3.</li>
+  <li>Benenne nach jedem Gleichheitszeichen das Axiom (oder die frühere Zeile).</li>
+</ol>
+<p><strong>Kurz:</strong> alles wirkt von links, also setze ein Linksinverses des Inversen links davor und klammere um.</p>
+<p>Halbeisens Serien und Quizze lieben genau diese Art Frage „leite es aus den gegebenen Axiomen her“; schreib jeden Schritt mit seiner Begründung auf.</p></div>
+<p><strong>Schreibweise</strong> (Vorlesung). In einer additiven Gruppe schreibt man $-x$ für das Inverse und $x-y:=x+(-y)$; in einer multiplikativen Gruppe $x^{-1}$ und, falls die Gruppe abelsch ist, $x:y=\frac xy:=x\cdot y^{-1}$. Stufe 2 sagt $-(-x)=x$ und $(x^{-1})^{-1}=x$.</p>
+
+<div class="box"><h3 id="the-unbeispiel-why-the-sides">Das „Unbeispiel“: warum die Seiten übereinstimmen müssen (Vorlesung)</h3>
+<p>Nimm eine beliebige Menge $M$ mit mindestens zwei Elementen und definiere $a\ast b:=a$ („der linke gewinnt“).</p>
+<ul>
+  <li><strong>Assoziativ:</strong> $(a\ast b)\ast c=a\ast c=a$ und $a\ast(b\ast c)=a$. Ja.</li>
+  <li><strong>Rechtsneutral:</strong> jedes $e\in M$ erfüllt $x\ast e=x$ für alle $x$. Ja (sogar viele!).</li>
+  <li><strong>Linksinverse zu einem rechtsneutralen $e$:</strong> $\bar x:=e$ ergibt $\bar x\ast x=e\ast x=e$. Ja.</li>
+  <li><strong>Eine Gruppe?</strong> Nein: eine Gruppe hat genau ein neutrales Element (Beweis A (c)), hier ist aber jedes Element rechtsneutral, und kein Element ist linksneutral, denn $e\ast x=e\ne x$ für $x\ne e$.</li>
+</ul>
+<p>„Rechtsneutral plus Linksinverse“ genügt also <em>nicht</em>. Beweis A funktioniert, weil G1 und G2 in dieselbe Richtung zeigen. (Rechtsneutral plus Rechtsinverse funktioniert auch, durch das Spiegelbild von Beweis A.)</p></div>
+
+<h2 id="s3-calculation-rules-in-every-ring">3. Rechenregeln in jedem Ring</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-01.html#s6-rings-two-operations-that-must">Lektion 1</a>)</span>
+<ul>
+  <li><strong>Ring:</strong> $(R,+)$ ist eine abelsche Gruppe, die Multiplikation ist assoziativ, und beide Distributivgesetze gelten. Das Distributivgesetz ist das einzige Axiom, das $+$ und $\cdot$ verbindet.</li>
+</ul></div>
+<p>Erinnere dich an einen Ring $(R,+,\cdot)$ aus <a class="xl" href="linalg-01.html">Lektion 1</a> (Skript Definition 1.3.1, <a class="pl" href="../linalg-script.html#p15">S. 15</a>): $(R,+)$ ist eine abelsche Gruppe mit neutralem Element $0$, die Multiplikation ist assoziativ, und beide Distributivgesetze gelten. Schreibe $-a$ für das additive Inverse. Keines dieser Axiome erwähnt $0\cdot a$. Die folgenden Regeln sind abgeleitet.</p>
+<h3 id="proof-b">Beweis B: $0\cdot a=0$, $a(-b)=-(ab)$, $(-a)(-b)=ab$ (Lemma 1.3.4, <a class="pl" href="../linalg-script.html#p17">S. 17</a>, und Lemma 1.3.10 (d), <a class="pl" href="../linalg-script.html#p19">S. 19</a>; Vorlesung, Satz 2.2)</h3>
+<div class="box"><p><strong>Behauptung.</strong> In jedem Ring $R$ gilt für alle $a,b\in R$: (i) $0\cdot a=a\cdot0=0$; (ii) $a(-b)=-(ab)=(-a)b$; (iii) $(-a)(-b)=ab$. Hat $R$ eine Eins, dann gilt (iv) $(-1)a=-a$.</p></div>
+<p><strong>Die Idee.</strong> Die Axiome verbinden $0$ und Multiplikation nur durch das Distributivgesetz. Also schreibe $0$ als $0+0$ und verteile: $0\cdot a=(0+0)a=0\cdot a+0\cdot a$. Ein Element, das gleich seinem Doppelten ist, ist $0$ (kürze es mit seinem additiven Inversen). Für (ii): um zu zeigen, dass etwas $-(ab)$ ist, zeige, dass es sich mit $ab$ <em>zu $0$ addiert</em>; die Eindeutigkeit der Inversen erledigt den Rest.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Für (i):</strong> das einzige Axiom, in dem $\cdot$ und $+$ zusammen vorkommen, ist das Distributivgesetz, also muss der Beweis eine Summe erzeugen. <strong>Letzte Zeile:</strong> „$\dots$ also $0\cdot a=0$.“</li>
+  <li><strong>Für (ii):</strong> „$x=-(ab)$“ heisst „$x$ ist das additive Inverse von $ab$“. <strong>Letzte Zeile:</strong> „$ab+x=0$, also $x=-(ab)$ wegen der Eindeutigkeit des Inversen.“</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Schuld von nichts, $a$-mal genommen. „Nichts“ ist „nichts und nichts“, und das Teilungsgesetz gilt.</p></div><div class="sp-formal"><p>(i) Da $0+0=0$, liefert das Distributivgesetz $0\cdot a=(0+0)\cdot a=0\cdot a+0\cdot a$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Der Schreiber nimmt auf beiden Seiten eine Kopie von $0\cdot a$ weg.</p></div><div class="sp-formal"><p>Addiere $-(0\cdot a)$ auf beiden Seiten und benutze Assoziativität: $0=0\cdot a+0=0\cdot a$. Dasselbe mit $a\cdot(0+0)$ ergibt $a\cdot0=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Ist $a(-b)$ das Gegenteil von $ab$? Der Test für „Gegenteil“ ist: zusammen ergeben sie nichts.</p></div><div class="sp-formal"><p>(ii) $ab+a(-b)=a\big(b+(-b)\big)=a\cdot0=0$ (Distributivgesetz, (i)). Also ist $a(-b)$ ein additives Inverses von $ab$; wegen der Eindeutigkeit gilt $a(-b)=-(ab)$. Ebenso $ab+(-a)b=(a+(-a))b=0$, also $(-a)b=-(ab)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Vorzeichen: zieh sie nacheinander heraus, dann ist das Gegenteil des Gegenteils das Original.</p></div><div class="sp-formal"><p>(iii) $(-a)(-b)=-\big(a(-b)\big)$ $=-\big(-(ab)\big)=ab$ nach (ii) zweimal und $-(-x)=x$ (Beweis A, Stufe 2). (iv) $(-1)a=-(1\cdot a)=-a$ nach (ii). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_zeroplus">$0$ als $0+0$ schreiben und verteilen</a> <a class="mvl" href="../linalg-moves.html#m-la_cancel">mit einem Inversen kürzen</a> <a class="mvl" href="../linalg-moves.html#m-la_isinverse">zeigen, dass es das Inverse ist, dann Eindeutigkeit benutzen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(i) $0\cdot a=(0+0)a=0\cdot a+0\cdot a$; Addition von $-(0\cdot a)$ ergibt $0=0\cdot a$. Symmetrisch $a\cdot0=0$. (ii) $ab+a(-b)=a(b-b)=a\cdot0=0$, also $a(-b)=-(ab)$ wegen der Eindeutigkeit des additiven Inversen; ähnlich $(-a)b=-(ab)$. (iii) $(-a)(-b)=-(a(-b))=-(-(ab))=ab$. (iv) $(-1)a=-(1a)=-a$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Die Vorlesung beweist (i) anders: $x=1\cdot x=(1+0)x=x+0\cdot x$. Wie endet sie, und was braucht sie, das der Beweis des Skripts nicht braucht?
+  <details><summary>Antwort</summary><div><p>Addiere $-x$ auf beiden Seiten: $0=0\cdot x$. Sie braucht eine Eins ($1\cdot x=x$); der Beweis des Skripts mit $0+0=0$ funktioniert in jedem Ring.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Beweise $(-1)(-1)=1$ in einem Ring mit Eins.
+  <details><summary>Antwort</summary><div><p>(iii) mit $a=b=1$: $(-1)(-1)=1\cdot1=1$. Das ist „minus mal minus ist plus“, und es ist keine Konvention: die Axiome erzwingen es.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib (i) und (ii) nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>$0\cdot a=0$: „$0\cdot a=(0+0)\cdot a=0\cdot a+0\cdot a$ (Distributivgesetz); addiere $-(0\cdot a)$ auf beiden Seiten.“</li>
+  <li>„$x=-(ab)$“ heisst immer: zeige $ab+x=0$ und nenne die Eindeutigkeit des additiven Inversen.</li>
+  <li>$a(-b)$: $ab+a(-b)=a(b+(-b))=a\cdot0=0$.</li>
+  <li>$(-a)(-b)=ab$: zieh jeweils ein Vorzeichen heraus, dann $-(-x)=x$.</li>
+</ol>
+<p><strong>Kurz:</strong> Null ist $0+0$; „minus“ wird geprüft, indem man zu $0$ aufaddiert. Dieselben zwei Tricks beweisen $0\cdot v=0_V$ und $(-1)v=-v$ in einem Vektorraum (<a class="xl" href="../linalg-05.html">Lektion 5</a>).</p></div>
+<p><strong>Warum $0$ nie invertierbar ist</strong> (ausser im trivialen Ring). Gilt $0\cdot y=1$ für ein $y$, so ist $1=0\cdot y=0$, und dann ist $a=1\cdot a=0\cdot a=0$ für jedes $a$: der Ring ist $\{0\}$, der <em>Nullring</em>. Deshalb verlangt ein Körper Inverse nur für die Elemente $\ne0$, und deshalb verlangt er $1\ne0$ gesondert.</p>
+
+<h2 id="s4-calculation-rules-in-every-field">4. Rechenregeln in jedem Körper</h2>
+<p>Das Skript listet die Körperaxiome einzeln auf, in Definition 1.3.9 (<a class="pl" href="../linalg-script.html#p18">S. 18</a>). Für eine Menge $K$ mit $+$, $\cdot$ und Elementen $0,1$:</p>
+<div class="box">
+<p><strong>Definition (Körper, axiomatisch; Skript <a class="pl" href="../linalg-script.html#p18">S. 18</a>).</strong> Für alle $a,b,c\in K$:</p>
+<ul>
+  <li>Addition: $(a+b)+c=a+(b+c)$; $a+b=b+a$; $0+a=a$; es gibt $-a$ mit $a+(-a)=0$;</li>
+  <li>Multiplikation: $(ab)c=a(bc)$; $ab=ba$; $1\cdot a=a$; ist $a\ne0$, so gibt es $a^{-1}$ mit $a\,a^{-1}=1$;</li>
+  <li>$a(b+c)=ab+ac$; und $1\ne0$.</li>
+</ul>
+<p>Gleichbedeutend (Definition 1.3.7, <a class="pl" href="../linalg-script.html#p17">S. 17</a>): $K$ ist ein kommutativer Ring mit Eins, und $K^\times:=K\setminus\{0\}$ ist eine Gruppe bezüglich der Multiplikation.</p></div>
+<h3 id="proof-c">Beweis C: $1\ne0$, keine Nullteiler, Kürzen (Lemma 1.3.10 (a), (c), (e), <a class="pl" href="../linalg-script.html#p19">S. 19</a>; Vorlesung, Satz 2.1)</h3>
+<div class="box"><p><strong>Behauptung.</strong> In jedem Körper $K$ gilt: (a) $1\ne0$; (c) ist $ab=0$, so ist $a=0$ oder $b=0$; (e) ist $xa=ya$ mit $a\ne0$, so ist $x=y$.</p></div>
+<p><strong>Die Idee.</strong> In der Fassung „$K^\times$ ist eine Gruppe“ stecken (a) und (c) schon in der Definition: $1$ ist das neutrale Element von $K^\times$, liegt also in $K^\times$, und $0$ nicht; und eine Gruppe ist unter ihrer Verknüpfung abgeschlossen, also ist ein Produkt von Elementen ungleich null wieder ungleich null. Halbeisen beweist (c) durch Kontraposition mit Inversen, was zeigt, <em>warum</em>: ein Inverses kann einen Faktor rückgängig machen, und $0$ kann nicht rückgängig gemacht werden.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Für (c) als Kontraposition umschreiben</strong> (<a class="xl" href="linalg-02.html">Lektion 2</a>): $a\ne0\wedge b\ne0\ \Rightarrow\ ab\ne0$. <strong>Erste Zeile:</strong> „Seien $a\ne0$ und $b\ne0$.“ <strong>Letzte Zeile:</strong> „also $ab\ne0$.“</li>
+  <li><strong>Die Lücke:</strong> benutze die Inversen $a^{-1},b^{-1}$, die existieren, weil $a,b\ne0$.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Das Haus der Körper hält Schweigen ($0$) und Einheit ($1$) durch die Charta getrennt.</p></div><div class="sp-formal"><p>(a) $1\ne0$ ist ein Axiom (und in der Gruppenfassung: $1\in K^\times$, $0\notin K^\times$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Kaufleute schulden jeweils etwas Echtes. Jede Schuld kann von ihrem Partner aufgehoben werden.</p></div><div class="sp-formal"><p>(c) Seien $a\ne0$ und $b\ne0$, mit Inversen $a^{-1},b^{-1}$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Hebe das Produkt auf: zuerst $b$, dann $a$. Was übrig bleibt, ist die Einheit.</p></div><div class="sp-formal"><p>$(ab)(b^{-1}a^{-1})$ $=a(bb^{-1})a^{-1}=a\,a^{-1}=1$ (Assoziativität).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Schweigen, mit irgendetwas multipliziert, bleibt Schweigen; es kann nie zur Einheit werden.</p></div><div class="sp-formal"><p>Wäre $ab=0$, so wäre die linke Seite nach Beweis B gleich $0\cdot(b^{-1}a^{-1})=0$, also $0=1$, im Widerspruch zu (a). Also $ab\ne0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Kürzen: hebe $a$ auf beiden Seiten auf.</p></div><div class="sp-formal"><p>(e) Multipliziere $xa=ya$ von rechts mit $a^{-1}$: $x=x(aa^{-1})$ $=(xa)a^{-1}=(ya)a^{-1}=y$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_contra">die Kontraposition beweisen</a> <a class="mvl" href="../linalg-moves.html#m-la_cancel">mit einem Inversen kürzen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(a) ist ein Axiom. (c) Seien $a,b\ne0$. Dann $(ab)(b^{-1}a^{-1})=a(bb^{-1})a^{-1}=aa^{-1}=1$. Wäre $ab=0$, so wäre die linke Seite nach Beweis B gleich $0$, also $1=0$, im Widerspruch zu (a). Also $ab\ne0$, das ist die Kontraposition von (c). (e) $x=(xa)a^{-1}=(ya)a^{-1}=y$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Beweise (e) noch einmal, nur mit (c) und dem Distributivgesetz, ohne $a^{-1}$.
+  <details><summary>Antwort</summary><div><p>$xa=ya$ gibt $xa-ya=0$, d. h. $(x-y)a=0$ (Distributivgesetz und Beweis B (ii)). Nach (c) ist $x-y=0$ oder $a=0$. Da $a\ne0$: $x=y$. Diese Version funktioniert in jedem kommutativen Ring <em>ohne Nullteiler</em>, sogar ohne Inverse (zum Beispiel in $\mathbb Z$).</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Löse in einem Körper $x^2=x$.
+  <details><summary>Antwort</summary><div><p>$x^2-x=x(x-1)=0$, also nach (c) $x=0$ oder $x-1=0$: die Lösungen sind $x=0$ und $x=1$. In $\mathbb Z/6$ hat dieselbe Gleichung vier Lösungen, $\bar0,\bar1,\bar3,\bar4$ ($\bar3^2=\bar9=\bar3$, $\bar4^2=\overline{16}=\bar4$), weil $\bar3\cdot\bar2=\bar0$: Nullteiler zerstören das Argument.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib (c) nur aus dem Rahmen.</li>
+</ol></div>
+
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>„Keine Nullteiler“: beweise die Kontraposition, „$a\ne0$ und $b\ne0$ $\Rightarrow ab\ne0$“.</li>
+  <li>Benutze die Inversen: $(ab)(b^{-1}a^{-1})=1$.</li>
+  <li>Wäre $ab$ gleich $0$, so wäre die linke Seite $0$ (null mal irgendetwas ist null), also $0=1$: Widerspruch.</li>
+  <li>Kürzen: multipliziere $xa=ya$ von rechts mit $a^{-1}$, oder schreibe $(x-y)a=0$ und benutze Schritt 1.</li>
+</ol>
+<p><strong>Kurz:</strong> ein Inverses macht einen Faktor rückgängig, und $0$ kann nicht zu $1$ rückgängig gemacht werden.</p></div>
+<div class="box"><h3 id="we-1">Musterbeispiel 1: „die reellen $2\times2$-Matrizen mit Matrizenaddition und Matrizenmultiplikation bilden einen Körper.“ Wahr oder falsch? (FS18, (iv))</h3>
+<p>Matrizen kommen in den Lektionen 11 und 12; für diese Frage brauchst du nur die Produktregel $\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}\begin{pmatrix}e&amp;f\\g&amp;h\end{pmatrix}$ $=\begin{pmatrix}ae+bg&amp;af+bh\\ce+dg&amp;cf+dh\end{pmatrix}$.</p>
+<ol class="gq">
+  <li>Welche Körpereigenschaft ist am leichtesten zu brechen? Denk an Beweis C.
+  <details><summary>Antwort</summary><div><p>„Keine Nullteiler“ (oder Kommutativität). Suche zwei von null verschiedene Matrizen mit Produkt $0$.</p></div></details></li>
+  <li>Finde sie.
+  <details><summary>Antwort</summary><div><p>$A=\begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}$, $B=\begin{pmatrix}0&amp;0\\0&amp;1\end{pmatrix}$: beide $\ne0$, und $AB=\begin{pmatrix}0&amp;0\\0&amp;0\end{pmatrix}$. Ein Körper hat keine Nullteiler (Beweis C (c)), also <strong>falsch</strong>. (Auch die Kommutativität scheitert: mit $C=\begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}$ ist $AC=C$, aber $CA=0$.) Ein Gegenbeispiel genügt.</p></div></details></li>
+</ol></div>
+
+<h2 id="s5-which-clocks-are-fields-and">5. Welche Uhren sind Körper: $\mathbb Z/n$ und Nullteiler</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-01.html#proof-c">Lektion 1</a>, <a class="xl" href="linalg-03.html#proof-g">Lektion 3</a>)</span>
+<ul>
+  <li><strong>Rechnen in $\mathbb Z/n$:</strong> $\bar a\cdot\bar b=\overline{ab}$ (wohldefiniert nach Beweis C), und $\bar x=\bar0\iff n\mid x$.</li>
+  <li><strong>Inverse durch Schubfach:</strong> in $\mathbb Z/p$ hat jede von null verschiedene Klasse ein Inverses (Beweis G). Heute erreicht das Skript dasselbe Ergebnis in zwei Schritten.</li>
+</ul></div>
+<p><a class="xl" href="linalg-01.html">Lektion 1</a> hat mit Tabellen gezeigt, dass $\mathbb Z/4$ und $\mathbb Z/6$ Nullteiler haben, $\mathbb Z/5$ und $\mathbb Z/7$ dagegen nicht. Jetzt die allgemeine Aussage.</p>
+<h3 id="proof-d">Beweis D: $\mathbb Z/n$ (mit $n\ge2$) hat genau dann keine Nullteiler, wenn $n$ prim ist (Lemma 1.3.12, <a class="pl" href="../linalg-script.html#p19">S. 19</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $n\ge2$. Der Ring $\mathbb Z/n$ ist genau dann nullteilerfrei, wenn $n$ eine Primzahl ist.</p></div>
+<p><strong>Die Idee.</strong> „$\Rightarrow$“ durch Kontraposition: eine Zerlegung $n=kl$ ist ein Paar von Nullteilern, denn $\bar k\cdot\bar l=\bar n=\bar0$. „$\Leftarrow$“: $\bar k\cdot\bar l=\bar0$ bedeutet $n\mid kl$, und eine Primzahl, die ein Produkt teilt, teilt einen der Faktoren. Das Skript nennt diese Tatsache „Primzahlen sind prim“ (Bemerkung 1.3.13 unten).</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>„$\Rightarrow$“, Kontraposition:</strong> „Angenommen, $n$ ist nicht prim. … Also hat $\mathbb Z/n$ Nullteiler.“ Die Lücke: nenne zwei von null verschiedene Klassen mit Produkt $\bar0$.</li>
+  <li><strong>„$\Leftarrow$“:</strong> „Sei $n$ prim und $\bar k\cdot\bar l=\bar0$. … Also $\bar k=\bar0$ oder $\bar l=\bar0$.“ Die Lücke: übersetze $\bar x=\bar0$ in „$n\mid x$“.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Uhr, deren Stunden sich in ein Rechteck teilen lassen, $k$ Reihen zu je $l$: $l$ Stunden, $k$-mal gegangen, landet auf Mitternacht.</p></div><div class="sp-formal"><p>„$\Rightarrow$“ (Kontraposition). Sei $n\ge2$ nicht prim. Dann ist $n=kl$ mit $1&lt;k,l&lt;n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Weder $k$ noch $l$ Stunden sind selbst Mitternacht, da beide strikt zwischen $0$ und $n$ liegen.</p></div><div class="sp-formal"><p>Dann $\bar k\cdot\bar l=\overline{kl}=\bar n=\bar0$, aber $\bar k\ne\bar0$ und $\bar l\ne\bar0$, da $0&lt;k,l&lt;n$ bedeutet $n\nmid k$ und $n\nmid l$. Also hat $\mathbb Z/n$ Nullteiler.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Auf einer Primzahluhr landet ein Produkt auf Mitternacht. Dann teilt die Primzahl das Produkt der beiden Stundenzahlen.</p></div><div class="sp-formal"><p>„$\Leftarrow$“. Sei $n$ prim und $\bar k\cdot\bar l=\bar0$. Dann $\overline{kl}=\bar0$, d. h. $kl=rn$ für ein $r\in\mathbb Z$, also $n\mid kl$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Primzahl, die ein Produkt teilt, teilt einen Faktor. Also war eine der beiden Stundenzahlen schon Mitternacht.</p></div><div class="sp-formal"><p>Da $n$ prim ist, gilt $n\mid k$ oder $n\mid l$ (Euklids Lemma), d. h. $\bar k=\bar0$ oder $\bar l=\bar0$. Also ist $\mathbb Z/n$ nullteilerfrei. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_contra">die Kontraposition beweisen</a> <a class="mvl" href="../linalg-moves.html#m-la_witness">einen Zeugen nennen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>„$\Rightarrow$“: Ist $n\ge2$ nicht prim, so $n=kl$ mit $1&lt;k,l&lt;n$; dann sind $\bar k,\bar l\ne\bar0$, aber $\bar k\bar l=\bar n=\bar0$. „$\Leftarrow$“: Ist $n$ prim und $\bar k\bar l=\bar0$, so $n\mid kl$, also $n\mid k$ oder $n\mid l$, d. h. $\bar k=\bar0$ oder $\bar l=\bar0$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Fülle für $n=15$ aus: $\bar{\ }\cdot\bar{\ }=\bar0$ mit beiden Faktoren $\ne\bar0$, und sag, welcher Schritt von „$\Rightarrow$“ das ist.
+  <details><summary>Antwort</summary><div><p>$\bar3\cdot\bar5=\overline{15}=\bar0$, mit $\bar3\ne\bar0\ne\bar5$, da $0&lt;3,5&lt;15$. Es ist die Kontraposition: eine nicht prime Zahl $n=kl$ mit $1&lt;k,l&lt;n$ liefert die Nullteiler $\bar k,\bar l$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Schreib „$\Leftarrow$“ vollständig für $n=7$ und $\bar k\cdot\bar l=\bar0$, und nenne die Tatsache über Primzahlen, die du benutzt.
+  <details><summary>Antwort</summary><div><p>$\bar k\cdot\bar l=\overline{kl}=\bar0$ bedeutet $7\mid kl$. Da $7$ prim ist, liefert Euklids Lemma (eine Primzahl, die ein Produkt teilt, teilt einen Faktor) $7\mid k$ oder $7\mid l$, d. h. $\bar k=\bar0$ oder $\bar l=\bar0$. Also hat $\mathbb Z/7$ keine Nullteiler.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis D nur aus dem Rahmen, in beiden Richtungen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Übersetze: $\bar x=\bar0\iff n\mid x$ und $\bar k\cdot\bar l=\overline{kl}$.</li>
+  <li>„$\Rightarrow$“ durch Kontraposition: $n=kl$ mit $1&lt;k,l&lt;n$ ergibt $\bar k\bar l=\bar0$ mit $\bar k,\bar l\ne\bar0$.</li>
+  <li>„$\Leftarrow$“: $\bar k\bar l=\bar0$ ergibt $n\mid kl$; Euklids Lemma ergibt $n\mid k$ oder $n\mid l$.</li>
+</ol>
+<p><strong>Kurz:</strong> eine Zerlegung von $n$ ist ein Paar von Nullteilern, und Euklids Lemma verbietet sie, wenn $n$ prim ist. Bei einer Wahr-falsch-Frage prüf mit einer Zerlegung: $\mathbb Z/91$ ist kein Körper, weil $91=7\cdot13$.</p></div>
+<div class="box">
+<p><strong>Prim versus irreduzibel (Bemerkung 1.3.13, <a class="pl" href="../linalg-script.html#p19">S. 19</a>).</strong> In einem Ring $R$ ohne Nullteiler ist ein Element $p$</p>
+<ul>
+  <li><strong>prim</strong>, wenn $\forall a,b\in R:$ $p\mid ab\Rightarrow(p\mid a\vee p\mid b)$;</li>
+  <li><strong>irreduzibel</strong>, wenn $\forall a,b\in R:$ $p=ab\Rightarrow(a\in R^\times\vee b\in R^\times)$, d. h. $p$ ist kein Produkt zweier nicht invertierbarer Elemente.</li>
+</ul>
+<p>Die Schuldefinition einer Primzahl („nur die Teiler $1$ und sie selbst“) ist <em>irreduzibel</em>. Beweis D benutzt beides: „$\Rightarrow$“ benutzt, dass sich eine nicht prime Zahl $n$ zerlegen lässt (irreduzibel), „$\Leftarrow$“ benutzt Euklids Lemma (prim). In $\mathbb Z$ stimmen die beiden Eigenschaften überein; das ist gleichbedeutend mit der eindeutigen Primfaktorzerlegung, die wir aus der Schule und der Analysis übernehmen.</p></div>
+
+<h2 id="s6-a-finite-ring-without-zero">6. Ein endlicher Ring ohne Nullteiler ist ein Körper</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-03.html#s7-the-pigeonhole-principle">Lektion 3</a>)</span>
+<ul>
+  <li><strong>Schubfach für Abbildungen:</strong> eine injektive Abbildung einer endlichen Menge auf sich selbst ist auch surjektiv.</li>
+</ul></div>
+<p>Beweis D liefert „keine Nullteiler“ für prime $n$. Ein Körper braucht aber <em>Inverse</em>. In <a class="xl" href="linalg-03.html">Lektion 3</a> (Beweis G) hast du sie mit Potenzen $\bar a^0,\bar a^1,\dots$ gefunden. Das Skript benutzt einen saubereren Trick, der für jeden endlichen Ring funktioniert.</p>
+<h3 id="proof-e">Beweis E: endlich + kommutativ + $1\ne0$ + keine Nullteiler $\Rightarrow$ Körper (Lemma 1.3.14, <a class="pl" href="../linalg-script.html#p20">S. 20</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $R$ ein kommutativer Ring mit Eins, $1\ne0$, ohne Nullteiler. Ist $R$ endlich, so ist $R$ ein Körper.</p>
+<p><strong>Korollar</strong> (Korollar 1.3.15, <a class="pl" href="../linalg-script.html#p20">S. 20</a>; Serie 1, Aufgabe 8 (d)). Für jede Primzahl $p$ ist $\mathbb Z/p$ ein Körper mit $p$ Elementen, geschrieben $\mathbb F_p$.</p></div>
+<p><strong>Die Idee.</strong> Alles ausser den Inversen ist schon gegeben. Fixiere $a\ne0$ und betrachte die Abbildung „multipliziere mit $a$“, $m_a(b):=ab$, auf der endlichen Menge $R\setminus\{0\}$. Keine Nullteiler machen $m_a$ <em>injektiv</em>. Eine injektive Abbildung einer endlichen Menge auf sich selbst ist <em>surjektiv</em> (Schubfach, <a class="xl" href="linalg-03.html">Lektion 3</a>). Also wird $1$ getroffen: ein $b$ hat $ab=1$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Was fehlt:</strong> alle Körperaxiome ausser einem gelten nach Voraussetzung. <strong>Erste Zeile:</strong> „Sei $a\in R$, $a\ne0$. Wir finden $b$ mit $ab=1$.“ <strong>Letzte Zeile:</strong> „Also hat $a$ ein Inverses, und $R$ ist ein Körper.“</li>
+  <li><strong>Die Lücke:</strong> zeige, dass $m_a:R\setminus\{0\}\to R\setminus\{0\}$ wohldefiniert und injektiv ist, dann zähle.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine endliche Gilde, niemandes Produkt ist Schweigen. Wähle ein Mitglied $a$, und lass alle mit $a$ die Hand schütteln.</p></div><div class="sp-formal"><p>Sei $a\ne0$ und definiere $m_a:R\setminus\{0\}\to R\setminus\{0\}$, $m_a(b):=ab$. Die Abbildung ist wohldefiniert: für $b\ne0$ ist $ab\ne0$, da $R$ keine Nullteiler hat.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei verschiedene Mitglieder bekommen nie dasselbe Ergebnis beim Händeschütteln.</p></div><div class="sp-formal"><p>$m_a$ ist injektiv: aus $ab=ab'$ folgt $a(b-b')=0$ (Distributivgesetz), und da $a\ne0$, folgt $b-b'=0$ (keine Nullteiler), also $b=b'$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>So viele Ergebnisse wie Mitglieder, alle verschieden, also erscheint jedes Mitglied als Ergebnis. Darunter die Einheit.</p></div><div class="sp-formal"><p>$R\setminus\{0\}$ ist endlich und $m_a$ ist injektiv, also ist $m_a$ surjektiv (Schubfachprinzip). Da $1\ne0$, ist $1\in R\setminus\{0\}$, also gibt es $b$ mit $ab=m_a(b)=1$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Kommutativität macht den Partner auch von der anderen Seite wirksam.</p></div><div class="sp-formal"><p>Da $R$ kommutativ ist, gilt auch $ba=1$, also $b=a^{-1}$. Jedes $a\ne0$ ist invertierbar: $R$ ist ein Körper. Für $R=\mathbb Z/p$: kommutativer Ring mit Eins (<a class="xl" href="linalg-01.html">Lektion 1</a>), $\bar1\ne\bar0$ da $p\ge2$, keine Nullteiler (Beweis D). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_injfinite">auf einer endlichen Menge heisst injektiv surjektiv</a> <a class="mvl" href="../linalg-moves.html#m-la_pigeon">Schubfach: mehr Objekte als Schubladen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Sei $a\ne0$. Da $R$ keine Nullteiler hat, ist $m_a:R\setminus\{0\}\to R\setminus\{0\}$, $b\mapsto ab$, wohldefiniert und injektiv: aus $ab=ab'$ folgt $a(b-b')=0$, also $b=b'$. Da $R\setminus\{0\}$ endlich ist, ist die injektive Selbstabbildung surjektiv, also $ab=1$ für ein $b$; wegen Kommutativität $ba=1$. Somit ist jedes Element ungleich null invertierbar, und $R$ ist ein Körper. Für $\mathbb Z/p$ gelten alle Voraussetzungen (<a class="xl" href="linalg-01.html">Lektion 1</a> und Beweis D). <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Wo wird „endlich“ benutzt? Gib einen Ring an, in dem alles andere gilt und die Folgerung scheitert.
+  <details><summary>Antwort</summary><div><p>Nur bei „injektiv $\Rightarrow$ surjektiv“. $\mathbb Z$ ist ein kommutativer Ring mit $1\ne0$ und ohne Nullteiler, aber kein Körper: $m_2(b)=2b$ ist auf $\mathbb Z\setminus\{0\}$ injektiv, trifft aber nie $1$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Das Übungsbeispiel 1.3.17 des Skripts: der Beweis fand ein Rechtsinverses, $ab=1$. Warum ist es hier auch ein Linksinverses, und was würdest du ohne Kommutativität tun?
+  <details><summary>Antwort</summary><div><p>Hier gilt $ba=ab=1$ wegen der Kommutativität. Ohne sie: die Elemente ungleich null sind unter Multiplikation abgeschlossen, assoziativ, und $1$ ist neutral; jedes Element hat ein Rechtsinverses. Das Spiegelbild von Beweis A (rechtsneutral plus Rechtsinverse) zeigt dann, dass jedes Rechtsinverse auch ein Linksinverses ist.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis E nur aus dem Rahmen.</li>
+</ol></div>
+
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Liste auf, was gegeben ist, und beachte, dass nur die Inversen fehlen.</li>
+  <li>Fixiere $a\ne0$ und definiere $m_a(b)=ab$ auf $R\setminus\{0\}$; es landet in $R\setminus\{0\}$, weil es keine Nullteiler gibt.</li>
+  <li>Injektiv: $ab=ab'\Rightarrow a(b-b')=0\Rightarrow b=b'$.</li>
+  <li>Endliche Menge, injektive Selbstabbildung, also surjektiv; also $ab=1$ für ein $b$, und $ba=1$ wegen Kommutativität.</li>
+</ol>
+
+<p><strong>Kurz:</strong> mit $a$ multiplizieren; auf einer endlichen Menge heisst injektiv, dass $1$ getroffen wird. Serie 1, Aufgabe 8 (d) ist genau dies mit $R=\mathbb Z_m$.</p></div>
+
+<div class="explorer" id="ma-ex">
+<span class="label">Probier es aus: die Multiplikation mit $a$ auf $\mathbb Z/n$</span>
+<p>Wähle $n$ und $a$. Die Pfeile zeigen $m_a(b)=\bar a\cdot\bar b$ für alle $b\ne\bar0$. Auf einer Primzahluhr landet jeder Pfeil auf einer anderen von null verschiedenen Klasse, also landet einer auf $\bar1$: dieses $b$ ist $\bar a^{-1}$. Sonst sieht man Pfeile nach $\bar0$ (Nullteiler) und Pfeile, die zusammenfallen.</p>
+<div class="ex-nav">
+  <label>$n$ = <select id="ma-n" aria-label="n"></select></label>
+  <label>$a$ = <select id="ma-a" aria-label="a"></select></label>
+</div>
+<svg id="ma-svg" viewBox="0 0 300 280" width="100%" style="max-width:340px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="Pfeildiagramm der Multiplikation mit a"></svg>
+<p id="ma-verdict" aria-live="polite"></p>
+</div>
+<script>
+(function(){
+  var N=document.getElementById('ma-n'),A=document.getElementById('ma-a');
+  if(!N) return;
+  for(var i=2;i<=13;i++){var o=document.createElement('option');o.value=i;o.textContent=i;N.appendChild(o);}
+  N.value=7;
+  function fillA(){var n=+N.value,old=+A.value||3;A.innerHTML='';for(var i=1;i<n;i++){var o=document.createElement('option');o.value=i;o.textContent=i;A.appendChild(o);}A.value=Math.min(old,n-1);draw();}
+  function draw(){var n=+N.value,a=+A.value,svg=document.getElementById('ma-svg'),h='';
+    var step=Math.min(36,220/Math.max(n-1,1)),r=Math.min(11,step/2-1),fs=r>=10?13:11,H=Math.round(50+(n-1)*step);
+    svg.setAttribute('viewBox','0 0 300 '+H);
+    function yl(b){return 40+(b-1)*step;} function yr(v){return 40+(v===0?n-1:v-1)*step;}
+    h+='<text x="60" y="18" text-anchor="middle" font-size="13" style="fill:var(--muted)">b</text><text x="240" y="18" text-anchor="middle" font-size="13" style="fill:var(--muted)">a·b</text>';
+    var hits={},img=[];for(var b=1;b<n;b++){var v=(a*b)%n;img.push(v);(hits[v]=hits[v]||[]).push(b);}
+    var inv=null;
+    for(var b=1;b<n;b++){var v=img[b-1],col=v===0?'var(--k-c)':(hits[v].length>1?'var(--k-del)':'var(--accent)');if(v===1)inv=b;
+      var y1=yl(b),y2=yr(v);h+='<line x1="'+(60+r)+'" y1="'+y1+'" x2="'+(240-r-2)+'" y2="'+y2+'" style="stroke:'+col+'" stroke-width="'+(v===1?3.5:2)+'"/>';}
+    for(var b=1;b<n;b++){var y=yl(b);h+='<circle cx="60" cy="'+y+'" r="'+r+'" style="fill:var(--surface);stroke:'+(b===inv?'var(--accent)':'var(--rule)')+'" stroke-width="'+(b===inv?3:1.5)+'"/><text x="60" y="'+(y+fs/2.6)+'" text-anchor="middle" font-size="'+fs+'" style="fill:var(--ink)">'+b+'</text>';}
+    for(var v=1;v<=n;v++){var val=v===n?0:v,y=yr(val),hit=!!hits[val];h+='<circle cx="240" cy="'+y+'" r="'+r+'" style="fill:var(--surface);stroke:'+(val===0?'var(--k-c)':(val===1&&hit?'var(--accent)':'var(--rule)'))+'" stroke-width="'+(val===1&&hit?3:1.5)+'"'+(!hit&&val!==0?' stroke-dasharray="3 3"':'')+'/><text x="240" y="'+(y+fs/2.6)+'" text-anchor="middle" font-size="'+fs+'" style="fill:var(--ink)">'+val+'</text>';}
+    svg.innerHTML=h;
+    var zeros=hits[0]||[],coll=null;for(var v=1;v<n;v++){if(hits[v]&&hits[v].length>1){coll=[hits[v][0],hits[v][1],v];break;}}
+    function ov(x){return '<span style="text-decoration:overline">'+x+'</span>';}
+    var t;
+    if(inv!==null){t='<strong>Injective</strong>: the '+(n-1)+(n===2?' arrow lands':' arrows land')+' on different nonzero classes, so every nonzero class is hit, '+ov(1)+' included. '+a+' · '+inv+' = '+(a*inv)+' ≡ 1 (mod '+n+'), so the inverse of '+ov(a)+' is <strong>'+ov(inv)+'</strong>.';
+      if(zeros.length===0&&!isPrime(n))t+=' (Here '+ov(a)+' happens to be invertible although ℤ/'+n+' is not a field: try another a.)';}
+    else{t='<strong>'+ov(a)+' has no inverse in ℤ/'+n+'.</strong> ';
+      if(zeros.length)t+='Red arrows: '+a+' · '+zeros[0]+' = '+(a*zeros[0])+' ≡ 0, a pair of zero divisors, so m_a does not even map into the nonzero classes. ';
+      if(coll)t+='Purple arrows: '+a+' · '+coll[0]+' and '+a+' · '+coll[1]+' both give '+ov(coll[2])+', so m_a is not injective. ';
+      t+='This is why ℤ/'+n+' is not a field: '+n+' is not prime.';}
+    if(isPrime(n))t+=' Since '+n+' is prime, this works for every a: ℤ/'+n+' is a field (Proof E).';
+    document.getElementById('ma-verdict').innerHTML=t;}
+  function isPrime(n){if(n<2)return false;for(var d=2;d*d<=n;d++)if(n%d===0)return false;return true;}
+  N.addEventListener('change',fillA);A.addEventListener('change',draw);
+  fillA();
+})();
+</script>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: ist $\mathbb Z/n$ ein Körper? Finde Inverse.</h3>
+<ol class="gq">
+  <li>Kombiniere die Beweise D und E mit <a class="xl" href="linalg-01.html">Lektion 1</a>: für welche $n\ge2$ ist $\mathbb Z/n$ ein Körper?
+  <details><summary>Antwort</summary><div><p>Genau für $n$ prim. Ist $n$ prim, Beweis E. Ist sie nicht prim, so hat $\mathbb Z/n$ Nullteiler (Beweis D), und ein Körper hat keine (Beweis C). (Und $\mathbb Z/1=\{\bar0\}$ hat $\bar1=\bar0$, ist also nie ein Körper.)</p></div></details></li>
+  <li>Finde $\bar4^{-1}$ in $\mathbb Z/11$ so, wie es Beweis E tut: liste $m_{\bar4}$ auf.
+  <details><summary>Antwort</summary><div><p>$4\cdot1,\dots,4\cdot10$ modulo $11$: $4,8,1,5,9,2,6,10,3,7$. Alle verschieden (injektiv), und $\bar1$ erscheint bei $b=\bar3$. Also $\bar4^{-1}=\bar3$; Kontrolle: $12\equiv1\pmod{11}$.</p></div></details></li>
+  <li>Ist $\bar6$ in $\mathbb Z/9$ invertierbar?
+  <details><summary>Antwort</summary><div><p>Nein: $\bar6\cdot\bar3=\overline{18}=\bar0$, ein Nullteiler; hätte $\bar6$ ein Inverses, so wäre $\bar3=\bar6^{-1}\bar6\,\bar3=\bar0$. (In $\mathbb Z/9$ sind genau die Klassen der zu $9$ teilerfremden Zahlen invertierbar: $\bar1,\bar2,\bar4,\bar5,\bar7,\bar8$.)</p></div></details></li>
+</ol></div>
+
+<h2 id="s7-the-characteristic-of-a-field">7. Die Charakteristik eines Körpers</h2>
+<p>In $\mathbb F_p$ ergibt $\bar1$ zu sich selbst addiert $p$-mal $\bar0$. In $\mathbb Q$ geschieht das nie. Die Charakteristik misst dies.</p>
+<div class="box">
+<p><strong>Definition (Charakteristik; Definition 1.3.18, <a class="pl" href="../linalg-script.html#p21">S. 21</a>).</strong> Für $n\in\mathbb N$ sei $n\cdot1:=1+\dots+1$ ($n$ Summanden) in $K$ (rekursiv definiert: $1\cdot1:=1$, $(n+1)\cdot1:=n\cdot1+1$). Dann</p>
+<p>$\operatorname{char}(K):=0$, falls $n\cdot1\ne0$ für alle $n\in\mathbb N$ gilt; andernfalls</p><span class="math-display" style="display:block">$$\operatorname{char}(K):=\min\{n\in\mathbb N\mid n\cdot1=0\}.$$</span>
+<p><strong>Beispiele (Beispiel 1.3.19).</strong> $\operatorname{char}\mathbb Q=\operatorname{char}\mathbb R=\operatorname{char}\mathbb C=0$, da $n\cdot1=n\ne0$. $\operatorname{char}\mathbb F_p=p$, da $n\cdot\bar1=\bar n$ und dies zuerst gleich $\bar0$ für $n=p$ ist.</p></div>
+<h3 id="proof-f">Beweis F: die Charakteristik eines Körpers ist $0$ oder eine Primzahl (Bemerkung im Skript, <a class="pl" href="../linalg-script.html#p21">S. 21</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Ist $\operatorname{char}(K)=n\ne0$, so ist $n$ eine Primzahl.</p></div>
+<p><strong>Die Idee.</strong> Vielfache von $1$ multiplizieren sich wie ganze Zahlen: $(k\cdot1)(l\cdot1)=(kl)\cdot1$ (Distributivgesetz, $kl$ Summanden). Zerfällt $n=kl$, so ist $0=n\cdot1=(k\cdot1)(l\cdot1)$, und keine Nullteiler erzwingen, dass ein kleineres Vielfaches $0$ ist.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Sei $n=\operatorname{char}K\ne0$, also $n\cdot1=0$ und $m\cdot1\ne0$ für $1\le m&lt;n$ (Minimalität). Angenommen, im Gegenteil, $n$ ist nicht prim.“</li>
+  <li><strong>Letzte Zeile:</strong> „Das widerspricht der Minimalität von $n$. Also ist $n$ prim.“</li>
+  <li><strong>Die Lücke:</strong> schreibe $n=kl$, verwandle $n\cdot1$ in das Produkt $(k\cdot1)(l\cdot1)$, und benutze „keine Nullteiler“.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Angenommen, die „Stundenzahl“ des Körpers zerfällt in ein Rechteck.</p></div><div class="sp-formal"><p>Sei $n=\operatorname{char}K\ne0$. Dann $n\ge2$, da $1\cdot1=1\ne0$. Angenommen, im Gegenteil, $n=kl$ mit $1&lt;k,l&lt;n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$l$ Einsen $k$-mal zu zählen heisst, $kl$ Einsen zu zählen.</p></div><div class="sp-formal"><p>Nach dem Distributivgesetz gilt $(k\cdot1)(l\cdot1)=(kl)\cdot1=n\cdot1=0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Keine Nullteiler: eine der kürzeren Zählungen war schon Schweigen, bevor das Schweigen zum ersten Mal erreicht wurde.</p></div><div class="sp-formal"><p>Ein Körper hat keine Nullteiler (Beweis C), also $k\cdot1=0$ oder $l\cdot1=0$, mit $k,l&lt;n$. Das widerspricht der Minimalität von $n$. Also ist $n$ prim. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_contradiction">das Gegenteil annehmen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Sei $n=\operatorname{char}K\ne0$. Da $1\cdot1=1\ne0$, ist $n\ge2$. Angenommen, $n$ ist nicht prim, also $n=kl$ mit $1&lt;k,l&lt;n$. Nach dem Distributivgesetz ist $(k\cdot1)(l\cdot1)$ eine Summe von $kl$ Einsen, also $(k\cdot1)(l\cdot1)=(kl)\cdot1=n\cdot1=0$. Ein Körper hat keine Nullteiler, also $k\cdot1=0$ oder $l\cdot1=0$. Beide $k$ und $l$ sind kleiner als $n$, was der Minimalität von $n$ widerspricht. Also ist $n$ prim. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Prüfe $(2\cdot1)(3\cdot1)=6\cdot1$, indem du beide Seiten ausschreibst. Welches Axiom wird benutzt?
+  <details><summary>Antwort</summary><div><p>$(1+1)(1+1+1)=1\cdot1+1\cdot1+1\cdot1+1\cdot1+1\cdot1+1\cdot1=1+1+1+1+1+1=6\cdot1$: das Distributivgesetz (auf beiden Seiten) und $1\cdot1=1$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Warum ist $\operatorname{char}K=1$ unmöglich?
+  <details><summary>Antwort</summary><div><p>$\operatorname{char}K=1$ würde $1\cdot1=1=0$ bedeuten, aber $1\ne0$ in einem Körper. Also ist eine von null verschiedene Charakteristik mindestens $2$, und der Beweis zeigt, dass sie prim ist.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis F nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Nimm an, $n=\operatorname{char}K=kl$ mit $1&lt;k,l&lt;n$.</li>
+  <li>$(k\cdot1)(l\cdot1)=(kl)\cdot1=0$ nach dem Distributivgesetz.</li>
+  <li>Keine Nullteiler: $k\cdot1=0$ oder $l\cdot1=0$, im Widerspruch zur Minimalität von $n$.</li>
+</ol>
+<p><strong>Kurz:</strong> eine Zerlegung der Charakteristik wäre ein Paar von Nullteilern, genau wie in Beweis D.</p></div>
+<p><strong>Folgerungen, die du brauchen wirst.</strong> In Charakteristik $p$: $p\cdot x=(p\cdot1)x=0$ für jedes $x$. In Charakteristik $2$: $x+x=0$, also $-x=x$, und Vorzeichen verschwinden; in $\mathbb F_2$ ist die Gleichung $1+1=0$ kein Fehler. In Charakteristik $0$ darfst du durch $2$, $3$, … teilen (sie sind $\ne0$, also invertierbar); die Lineare Algebra braucht das manchmal, etwa um eine Matrix in einen symmetrischen und einen antisymmetrischen Anteil zu zerlegen, was über $\mathbb F_2$ scheitert.</p>
+
+<h2 id="s8-two-more-fields-and">8. Zwei weitere Körper: $\mathbb Q(\sqrt2)$ und $\mathbb F_4$</h2>
+<p>Die Liste der Körper aus der Vorlesung endet mit zwei, die weder „Zahlen aus der Analysis“ noch $\mathbb Z/p$ sind.</p>
+
+<div class="box"><h3 id="we-3">Musterbeispiel 3: $\mathbb Q(\sqrt2):=\{a+b\sqrt2\mid a,b\in\mathbb Q\}$ ist ein Körper (Vorlesung)</h3>
+<ol class="gq">
+  <li>Es ist eine Teilmenge von $\mathbb R$. Welche Axiome gibt es umsonst?
+  <details><summary>Antwort</summary><div><p>Alle „für alle“-Regeln: Assoziativität, Kommutativität, Distributivität gelten in $\mathbb R$, also gelten sie für Elemente der Teilmenge (sie werden von der grösseren Struktur übernommen, <a class="xl" href="linalg-01.html">Lektion 1</a>). Ausserdem liegen $0=0+0\sqrt2$ und $1=1+0\sqrt2$ in der Menge, und $1\ne0$. Zu prüfen bleibt: Abgeschlossenheit unter $+$, $\cdot$, Negativem und Inversen.</p></div></details></li>
+  <li>Abgeschlossenheit unter $+$ und $\cdot$?
+  <details><summary>Antwort</summary><div><p>$(a+b\sqrt2)+(c+d\sqrt2)$ $=(a+c)+(b+d)\sqrt2$ und $(a+b\sqrt2)(c+d\sqrt2)$ $=(ac+2bd)+(ad+bc)\sqrt2$, mit Koeffizienten in $\mathbb Q$. Negative: $-(a+b\sqrt2)=(-a)+(-b)\sqrt2$.</p></div></details></li>
+  <li>Inverses von $a+b\sqrt2\ne0$? Benutze den Trick aus den komplexen Zahlen.
+  <details><summary>Antwort</summary><div><p>Multipliziere mit der „Konjugierten“ $a-b\sqrt2$: $(a+b\sqrt2)(a-b\sqrt2)=a^2-2b^2$. Also</p>
+  <span class="math-display" style="display:block">$$\begin{aligned}\frac1{a+b\sqrt2}&amp;=\frac{a}{a^2-2b^2}\\&amp;\quad-\frac{b}{a^2-2b^2}\sqrt2,\end{aligned}$$</span>
+  <p>mit Koeffizienten in $\mathbb Q$, <em>vorausgesetzt</em> $a^2-2b^2\ne0$.</p></div></details></li>
+  <li>Warum ist $a^2-2b^2\ne0$, wenn $a+b\sqrt2\ne0$ ist?
+  <details><summary>Antwort</summary><div><p>Ist $b=0$, dann $a\ne0$ und $a^2\ne0$. Ist $b\ne0$ und $a^2=2b^2$, dann $(a/b)^2=2$, also $\sqrt2=\pm a/b\in\mathbb Q$, im Widerspruch zu <a class="xl" href="linalg-03.html">Lektion 3</a> (Beweis D). Also ist $\mathbb Q(\sqrt2)$ ein Körper. Beispiel: $\frac1{1+\sqrt2}=\frac{1-\sqrt2}{1-2}=-1+\sqrt2$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: ein Körper mit vier Elementen (Serie 1, Aufgabe 9)</h3>
+<p>Definiere $+$ und $\cdot$ auf $K=\{0,1,a,b\}$ so, dass $K$ ein Körper mit neutralen Elementen $0$ und $1$ ist. Hinweis: $\mathbb Z/4$ funktioniert <em>nicht</em> (es hat den Nullteiler $\bar2$). Die Tabellen müssen also neu sein. Die Überraschung: die Axiome legen sie vollständig fest.</p>
+<ol class="gq">
+  <li>Multiplikation: $K^\times=\{1,a,b\}$ ist eine Gruppe. Was kann $a\cdot a$ sein?
+  <details><summary>Antwort</summary><div><p>Nicht $0$ (keine Nullteiler). Nicht $a$: $a\cdot a=a\cdot1$ ergibt durch Kürzen $a=1$. Ist $a\cdot a=1$: dann liegt $a\cdot b\in\{1,a,b\}$, aber $ab=1=aa$ ergibt $b=a$, $ab=a=a\cdot1$ ergibt $b=1$, und $ab=b=1\cdot b$ ergibt $a=1$; alles unmöglich. Also <strong>$a\cdot a=b$</strong>.</p></div></details></li>
+  <li>Und dann $a\cdot b$ und $b\cdot b$?
+  <details><summary>Antwort</summary><div><p>$ab\ne a$ (sonst $b=1$), $ab\ne b$ (sonst $a=1$), $ab\ne0$: also <strong>$ab=1$</strong>. Und $bb=b\cdot(aa)=(ba)\cdot a=1\cdot a$ (da $b=aa$, Assoziativität, $ba=ab=1$), also <strong>$b\cdot b=a$</strong>.</p></div></details></li>
+  <li>Addition: was kann $a+1$ sein?
+  <details><summary>Antwort</summary><div><p>Nicht $1$ (sonst $a=0$), nicht $a$ (sonst $1=0$). Ist $a+1=0$, dann $a=-1$ und $a\cdot a=(-1)(-1)=1$ (Beweis B), aber $a\cdot a=b\ne1$. Also <strong>$a+1=b$</strong>. Dasselbe Argument mit $b\cdot b=a\ne1$ gibt <strong>$b+1=a$</strong>.</p></div></details></li>
+  <li>Vervollständige die Additionstabelle.
+  <details><summary>Antwort</summary><div><p>$a+1+1=b+1=a$, also $1+1=0$: $\operatorname{char}K=2$, und $x+x=(1+1)x=0$ für alle $x$. Dann $a+b=a+(a+1)$ $=(a+a)+1=1$. Die Tabellen:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>$+$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr></thead>
+    <tbody>
+      <tr><td>$0$</td><td>$0$</td><td>$1$</td><td>$a$</td><td>$b$</td></tr>
+      <tr><td>$1$</td><td>$1$</td><td>$0$</td><td>$b$</td><td>$a$</td></tr>
+      <tr><td>$a$</td><td>$a$</td><td>$b$</td><td>$0$</td><td>$1$</td></tr>
+      <tr><td>$b$</td><td>$b$</td><td>$a$</td><td>$1$</td><td>$0$</td></tr>
+    </tbody></table></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>$\cdot$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr></thead>
+    <tbody>
+      <tr><td>$0$</td><td>$0$</td><td>$0$</td><td>$0$</td><td>$0$</td></tr>
+      <tr><td>$1$</td><td>$0$</td><td>$1$</td><td>$a$</td><td>$b$</td></tr>
+      <tr><td>$a$</td><td>$0$</td><td>$a$</td><td>$b$</td><td>$1$</td></tr>
+      <tr><td>$b$</td><td>$0$</td><td>$b$</td><td>$1$</td><td>$a$</td></tr>
+    </tbody></table></div></div></details></li>
+  <li>Wir haben gezeigt: <em>falls</em> ein Körper mit vier Elementen existiert, sind dies seine Tabellen. Warum ist er wirklich ein Körper?
+  <details><summary>Antwort</summary><div><p>Die offizielle Lösung: $(K,+)$ hat dieselbe Tabelle wie $(\mathcal P(\{1,2\}),\triangle)$ aus <a class="xl" href="linalg-01.html">Lektion 1</a> (schicke $0,1,a,b$ auf $\emptyset,\{1\},\{2\},\{1,2\}$), ist also eine abelsche Gruppe. $(K^\times,\cdot)$ hat dieselbe Tabelle wie $(\mathbb Z/3,+)$ (schicke $1,a,b$ auf $\bar0,\bar1,\bar2$), ist also eine abelsche Gruppe. Das Distributivgesetz $x(y+z)=xy+xz$ wird Fall für Fall geprüft; $x=0$ und $x=1$ sind trivial, und der Rest führt auf sechs Fälle. Bemerkung: $a\cdot a=b=a+1$ besagt $a^2+a+1=0$: $\mathbb F_4$ ist $\mathbb F_2$ mit einer hinzugefügten Nullstelle von $X^2+X+1$, so wie $\mathbb C$ das ist, was $\mathbb R$ mit einer Nullstelle von $X^2+1$ ist.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Jeder QR-Code und jede CD, DVD und Weltraumfotografie ist durch Reed-Solomon-Codes geschützt, die im Körper mit $256=2^8$ Elementen rechnen, gebaut genau wie $\mathbb F_4$ (eine Nullstelle eines Polynoms zu $\mathbb F_2$ hinzugefügt). Ein verkratzter QR-Code wird trotzdem gelesen, weil das Lesegerät ein lineares Gleichungssystem über diesem Körper löst, den Gauss-Algorithmus, wobei „keine Nullteiler“ garantiert, dass die Lösung eindeutig ist. Die wenigen Zeilen von Beweis C machen Fehlerkorrektur möglich.</p></div>
+
+<div class="box"><h3 id="for-wonder-which-sizes-can">Zum Staunen: welche Grössen kann ein Körper haben?</h3>
+<p>Es gibt Körper mit $2,3,4,5,7,8,9,11,\dots$ Elementen, aber keinen mit $6$ oder $10$. Der Satz (Algebra, zweites Jahr): ein endlicher Körper hat $p^k$ Elemente für eine Primzahl $p$ und $k\ge1$, und zu jeder solchen Zahl gibt es genau einen, bis auf Umbenennung. Den Anfang siehst du schon: ein endlicher Körper hat eine prime Charakteristik $p$ (Beweis F, denn Charakteristik $0$ würde $1,2\cdot1,3\cdot1,\dots$ als unendlich viele verschiedene Elemente liefern), und in Lektion 5 siehst du, dass er dann ein Vektorraum über $\mathbb F_p$ ist. Ein Vektorraum der Dimension $k$ über $\mathbb F_p$ hat $p^k$ Elemente (Serie 2, Aufgabe 13). Das ist der ganze Grund.</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Versuch jedes im Kopf, bevor du die Schritte aufklappst.</p>
+
+<div class="box"><h3 id="we-5">Musterbeispiel 5: „in jeder Gruppe gilt $\forall a,b,c:\ b=c\iff a\circ b=a\circ c$.“ Und in jedem Körper, mit $\cdot$? (FS17, iv)</h3>
+<ol class="gq">
+  <li>Die Aussage für Gruppen?
+  <details><summary>Antwort</summary><div><p><strong>Wahr.</strong> „$\Rightarrow$“: gleiche Eingaben geben gleiche Ausgaben. „$\Leftarrow$“: multipliziere von links mit $a^{-1}$: $b=(a^{-1}\circ a)\circ b=a^{-1}\circ(a\circ c)=c$.</p></div></details></li>
+  <li>Dieselbe Aussage für $(K,\cdot)$, $K$ ein Körper?
+  <details><summary>Antwort</summary><div><p><strong>Falsch:</strong> $(K,\cdot)$ ist keine Gruppe. Mit $a=0$, $b=0$, $c=1$: $0\cdot0=0\cdot1$, aber $0\ne1$. Sie gilt für alle $a\ne0$ (Beweis C (e)). Die Prüfungsfalle ist das fehlende „$a\ne0$“.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: löse $x^2=\bar2$ und $\bar3x+\bar4=\bar1$ in $\mathbb F_7$</h3>
+<ol class="gq">
+  <li>Die lineare Gleichung.
+  <details><summary>Antwort</summary><div><p>$\bar3x=\bar1-\bar4=-\bar3=\bar4$. Das Inverse von $\bar3$ ist $\bar5$ ($15\equiv1$). Also $x=\bar5\cdot\bar4=\overline{20}=\bar6$. Kontrolle: $18+4=22\equiv1\pmod7$. In einem Körper hat eine lineare Gleichung $cx=d$ mit $c\ne0$ genau eine Lösung, $x=c^{-1}d$.</p></div></details></li>
+  <li>Die quadratische.
+  <details><summary>Antwort</summary><div><p>Quadrate in $\mathbb F_7$: $\bar1^2=\bar1$, $\bar2^2=\bar4$, $\bar3^2=\bar2$, $\bar4^2=\bar2$, $\bar5^2=\bar4$, $\bar6^2=\bar1$. Also $x=\bar3$ oder $x=\bar4$ $(=-\bar3)$. Mehr gibt es nicht: $x^2-\bar3^2=(x-\bar3)(x+\bar3)=0$ und keine Nullteiler.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-7">Musterbeispiel 7: welche schlanken Axiome? Auf einer Menge $M$ mit $|M|\ge2$ sei $a\ast b:=b$.</h3>
+<ol class="gq">
+  <li>Assoziativ? Neutrale Elemente? Inverse? Eine Gruppe?
+  <details><summary>Antwort</summary><div><p>Assoziativ: sowohl $(a\ast b)\ast c$ als auch $a\ast(b\ast c)$ sind gleich $c$. Jedes Element ist <em>links</em>-neutral ($e\ast x=x$); keines ist rechtsneutral ($x\ast e=e\ne x$ für $x\ne e$). Rechtsinverse zu einem linksneutralen $e$: $x\ast e=e$. Es hat also „linksneutral plus Rechtsinverse“, das Spiegelbild des Unbeispiels, und wieder ist es keine Gruppe. Beweis A braucht <em>linksneutral</em> mit <em>Linksinversen</em>.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-8">Musterbeispiel 8: die affinen Abbildungen der Geraden bilden eine Gruppe (Prüfungsstil: „zeige, dass … eine Gruppe ist“)</h3>
+<p>Sei $G=\{f_{a,b}\mid a,b\in\mathbb R,\ a\ne0\}$, wobei $f_{a,b}:\mathbb R\to\mathbb R$, $f_{a,b}(x)=ax+b$, mit der Komposition $\circ$ von Abbildungen. Zeige mit den drei schlanken Axiomen aus Beweis A, dass $(G,\circ)$ eine Gruppe ist, und entscheide, ob sie abelsch ist.</p>
+<ol class="gq">
+  <li>Vor jedem Axiom: ist $\circ$ eine Verknüpfung auf $G$, d. h. liegt $f_{a,b}\circ f_{c,d}$ wieder in $G$?
+  <details><summary>Antwort</summary><div><p>Für alle $x$: $(f_{a,b}\circ f_{c,d})(x)=a(cx+d)+b$ $=(ac)x+(ad+b)$. Also $f_{a,b}\circ f_{c,d}=f_{ac,\,ad+b}$, und $ac\ne0$, weil $a,c\ne0$ ($\mathbb R$ hat keine Nullteiler). Die Komposition bleibt in $G$. Diese Prüfung zu vergessen kostet in der Prüfung einen Punkt.</p></div></details></li>
+  <li>G0: warum ist $\circ$ assoziativ, ganz ohne Rechnung?
+  <details><summary>Antwort</summary><div><p>Die Komposition von Abbildungen ist immer assoziativ: $\big((f\circ g)\circ h\big)(x)=f(g(h(x)))=\big(f\circ(g\circ h)\big)(x)$ für jedes $x$ (<a class="xl" href="linalg-03.html">Lektion 3</a>).</p></div></details></li>
+  <li>G1: welches Element ist linksneutral?
+  <details><summary>Antwort</summary><div><p>$e=f_{1,0}=\mathrm{id}_{\mathbb R}$, das in $G$ liegt, da $1\ne0$. Nach der Formel ist $f_{1,0}\circ f_{c,d}=f_{1\cdot c,\,1\cdot d+0}=f_{c,d}$.</p></div></details></li>
+  <li>G2: finde ein Linksinverses von $f_{a,b}$.
+  <details><summary>Antwort</summary><div><p>Wir brauchen $f_{c,d}\circ f_{a,b}=f_{ca,\,cb+d}=f_{1,0}$, d. h. $ca=1$ und $cb+d=0$. Da $a\ne0$: $c=a^{-1}$ (das ist $\ne0$) und $d=-a^{-1}b$. Also $\overline{f_{a,b}}=f_{a^{-1},\,-a^{-1}b}\in G$. Kontrolle: $a^{-1}(ax+b)-a^{-1}b=x$.</p></div></details></li>
+  <li>Schluss, und ist $G$ abelsch?
+  <details><summary>Antwort</summary><div><p>G0, G1, G2 gelten, also ist nach Beweis A $(G,\circ)$ eine Gruppe (das Linksinverse ist automatisch ein zweiseitiges Inverses, und $f_{1,0}$ ist zweiseitig neutral). Sie ist <strong>nicht</strong> abelsch: $f_{2,0}\circ f_{1,1}=f_{2,2}$, aber $f_{1,1}\circ f_{2,0}=f_{2,1}$ (zuerst: $x\mapsto2(x+1)=2x+2$; danach: $x\mapsto2x+1$).</p></div></details></li>
+</ol>
+<p>Der Sinn von Beweis A in der Praxis: du prüfst ein neutrales Element und ein Inverses auf <em>einer</em> Seite, und der Satz gibt dir die andere Seite umsonst.</p></div>
+
+<h2 id="exercises">Aufgaben</h2>
+<p>Jede Lösung klappt sich unter ihrer Aufgabe auf. Aufgabe 1 ist die mit Stern markierte Aufgabe von Serie 1.</p>
+
+<h3 id="ex-1">Aufgabe 1 (Serie 1, Aufgabe 8 (d), mit Stern)</h3>
+<p>Zeige: ist $m$ prim, so ist $(\mathbb Z_m,+_m,\cdot_m)$ ein Körper. (Du darfst benutzen, dass es ein kommutativer Ring ist, Aufgabe 8 (b), das ist <a class="xl" href="linalg-01.html">Lektion 1</a>.)</p>
+<details class="hint"><summary>Tipp 1</summary><div><p>Die meisten Körperaxiome gelten schon, weil $\mathbb Z_m$ ein kommutativer Ring mit Eins ist. Welches einzelne Axiom fehlt noch?</p></div></details>
+<details class="hint"><summary>Tipp 2</summary><div><p>Die Serie verweist auf das Schubfach-Beispiel vom 23. Sep. (<a class="xl" href="linalg-03.html">Lektion 3</a>, Beweis G). Die Beweise D und E geben einen zweiten Weg.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> nur die Inversen der Klassen ungleich null fehlen. <strong>Züge:</strong> injektiv auf einer endlichen Menge heisst surjektiv; Schubfach.</p>
+<p>$\mathbb Z_m$ ist ein kommutativer Ring mit Eins (8 (b)), und $\bar1\ne\bar0$, da $m\ge2$. Er hat keine Nullteiler: ist $\bar k\cdot\bar l=\bar0$, so $m\mid kl$, und da $m$ prim ist, $m\mid k$ oder $m\mid l$, d. h. $\bar k=\bar0$ oder $\bar l=\bar0$ (Beweis D). Sei $\bar a\ne\bar0$. Die Abbildung $\bar b\mapsto\bar a\bar b$ auf $\mathbb Z_m\setminus\{\bar0\}$ ist wohldefiniert und injektiv ($\bar a\bar b=\bar a\bar b'$ ergibt $\bar a(\bar b-\bar b')=\bar0$, also $\bar b=\bar b'$). Eine injektive Abbildung der endlichen Menge $\mathbb Z_m\setminus\{\bar0\}$ auf sich selbst ist surjektiv, also $\bar a\bar b=\bar1$ für ein $\bar b$, und $\bar b\bar a=\bar1$ wegen Kommutativität. Also ist jede Klasse ungleich null invertierbar, und $\mathbb Z_m$ ist ein Körper.</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Rechenregeln)</h3>
+<p>Sei $K$ ein Körper und $x,y\in K$. Beweise aus den Axiomen und den Beweisen B, C: (a) $x^2=y^2\iff(x=y\vee x=-y)$; (b) ist $x\ne0$, so ist $(-x)^{-1}=-(x^{-1})$; (c) ist $x,y\ne0$, so ist $(xy)^{-1}=x^{-1}y^{-1}$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>(a) Zerlege $x^2-y^2$ in Faktoren. (b), (c) Um zu zeigen, dass etwas ein Inverses ist, multipliziere und erhalte $1$; dann benutze, dass Inverse eindeutig sind.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> um zu zeigen „$z$ ist das Inverse von $w$“, zeige $wz=1$ und benutze Eindeutigkeit. <strong>Züge:</strong> zeige, dass es das Inverse ist, dann Eindeutigkeit benutzen; keine Nullteiler.</p>
+<p>(a) $(x-y)(x+y)$ $=x^2+xy-yx-y^2$ $=x^2-y^2$ (Distributivgesetz, die Regel $a(-b)=-(ab)$, Kommutativität). Also $x^2=y^2\iff(x-y)(x+y)=0\iff$ $(x-y=0\vee x+y=0)$, denn ein Körper hat keine Nullteiler (und „$\Leftarrow$“ wegen $0\cdot a=0$), d. h. $x=y$ oder $x=-y$.</p>
+<p>(b) $(-x)\cdot(-(x^{-1}))=x\,x^{-1}=1$, nach der Regel $(-a)(-b)=ab$. Wegen der Eindeutigkeit des Inversen gilt $(-x)^{-1}=-(x^{-1})$.</p>
+<p>(c) $(xy)(x^{-1}y^{-1})$ $=(xx^{-1})(yy^{-1})$ $=1\cdot1=1$ (Assoziativität, Kommutativität); wegen der Eindeutigkeit gilt $(xy)^{-1}=x^{-1}y^{-1}$.</p>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (Inverse in endlichen Körpern)</h3>
+<p>(a) Finde $\bar3^{-1}$ und $\bar7^{-1}$ in $\mathbb F_{11}$, und löse $\bar7x=\bar2$. (b) Löse in $\mathbb F_4$ (Musterbeispiel 4) die Gleichung $a\cdot x+1=b$. (c) Berechne in $\mathbb F_5$ $(\bar2+\bar3)^{-1}$ und erkläre die Antwort.</p>
+<details class="hint"><summary>Tipp</summary><div><p>(a) Suche $3b\equiv1$ und $7b\equiv1$ modulo $11$ unter $b=1,\dots,10$. (b) In $\mathbb F_4$ gilt $1+1=0$, also $-1=1$. (c) Rechne zuerst die Summe aus.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> in einem Körper hat $cx=d$ mit $c\ne0$ die eindeutige Lösung $x=c^{-1}d$. <strong>Züge:</strong> mit einem Inversen kürzen.</p>
+<p>(a) $3\cdot4=12\equiv1$, also $\bar3^{-1}=\bar4$. $7\cdot8=56=55+1\equiv1$, also $\bar7^{-1}=\bar8$. Dann $x=\bar8\cdot\bar2=\overline{16}=\bar5$; Kontrolle $35=33+2$.</p>
+<p>(b) $ax=b-1=b+1=a$ (Charakteristik $2$: $-1=1$), also $x=a^{-1}a=1$. Kontrolle: $a\cdot1+1=a+1=b$.</p>
+<p>(c) $\bar2+\bar3=\bar5=\bar0$, und die Null hat kein Inverses. Die Frage hat keine Antwort: „jedes Element ausser $0$“ ist das Höchste, was ein Körper bietet (Abschnitt 3).</p>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 ($\mathbb Q(\sqrt3)$)</h3>
+<p>Zeige, dass $\mathbb Q(\sqrt3)=\{a+b\sqrt3\mid a,b\in\mathbb Q\}$ unter Multiplikation und Inversenbildung abgeschlossen ist, und berechne $(2+\sqrt3)^{-1}$ und $(1+\sqrt3)^{-1}$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Multipliziere aus mit $\sqrt3^2=3$. Für das Inverse multipliziere mit der Konjugierten $a-b\sqrt3$ und zeige $a^2-3b^2\ne0$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> wie in Musterbeispiel 3. <strong>Züge:</strong> von der grösseren Struktur übernehmen; mit der Konjugierten multiplizieren.</p>
+<p>$(a+b\sqrt3)(c+d\sqrt3)$ $=(ac+3bd)+(ad+bc)\sqrt3$. Für $a+b\sqrt3\ne0$: $(a+b\sqrt3)(a-b\sqrt3)=a^2-3b^2$, und das ist $\ne0$ (für $b\ne0$ würde $a^2=3b^2$ $\sqrt3\in\mathbb Q$ ergeben, unmöglich nach <a class="xl" href="linalg-03.html">Lektion 3</a>, Beweis D, Stufe 2). Also ist das Inverse $\frac a{a^2-3b^2}-\frac b{a^2-3b^2}\sqrt3\in\mathbb Q(\sqrt3)$.</p>
+<p>$(2+\sqrt3)^{-1}=\frac{2-\sqrt3}{4-3}=2-\sqrt3$. $(1+\sqrt3)^{-1}=\frac{1-\sqrt3}{1-3}=-\frac12+\frac12\sqrt3$.</p>
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (Charakteristik)</h3>
+<p>(a) Sei $\operatorname{char}K=2$. Zeige $(x+y)^2=x^2+y^2$ für alle $x,y$. (b) Sei $\operatorname{char}K=p$ prim. Zeige $p\cdot x=0$ für alle $x$, und dass $-x=(p-1)\cdot x$ ist. (c) Kann ein Körper $\mathbb Z/6$ enthalten, d. h. Charakteristik $6$ haben?</p>
+<details class="hint"><summary>Tipp</summary><div><p>Schreibe $n\cdot x=x+\dots+x$ als $(1+\dots+1)x$. Für (c) benutze, was Beweis F über die Charakteristik sagt.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> schreibe jedes „$n\cdot x$“ als $(n\cdot1)x$ um. <strong>Züge:</strong> die Definition entpacken; keine Nullteiler.</p>
+<p>(a) $(x+y)^2=x^2+xy+yx+y^2$ $=x^2+(1+1)xy+y^2$ $=x^2+0+y^2$.</p>
+<p>(b) $p\cdot x=x+\dots+x$ $=(1+\dots+1)x$ $=(p\cdot1)x=0\cdot x=0$. Dann $(p-1)\cdot x+x=p\cdot x=0$, also $(p-1)\cdot x=-x$ wegen der Eindeutigkeit des additiven Inversen.</p>
+<p>(c) Nein: die Charakteristik eines Körpers ist $0$ oder prim (Beweis F), und $6=2\cdot3$ ist nicht prim. Direkt: $(2\cdot1)(3\cdot1)=6\cdot1=0$ wäre ein Produkt zweier von null verschiedener Elemente, das $0$ ergibt.</p>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (wahr oder falsch, Altklausur-Stil)</h3>
+<p>(a) Jeder endliche kommutative Ring mit Eins und $1\ne0$ ist ein Körper. (b) In jedem Ring mit Eins gilt $(-1)\cdot(-1)=1$. (c) Jeder Körper hat mindestens zwei Elemente. (d) $\mathbb Z/91$ ist ein Körper. (e) Ist $K$ ein Körper und $a^3=0$, so ist $a=0$. (f) In jeder Gruppe mit $x\circ x=e$ für alle $x$ ist die Verknüpfung kommutativ.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Suche bei jeder „jeder …“-Aussage zuerst ein Gegenbeispiel unter $\mathbb Z/4$, $\mathbb Z/6$ und $\mathbb Z/91$; gibt es keins, beweise sie aus den Beweisen B–D.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p>(a) <strong>Falsch:</strong> $\mathbb Z/4$ ($\bar2\cdot\bar2=\bar0$). Beweis E braucht „keine Nullteiler“. (b) <strong>Wahr:</strong> nach der Regel $(-a)(-b)=ab$ mit $a=b=1$. (c) <strong>Wahr:</strong> ein Körper enthält $0$ und $1$, und $0\ne1$. (d) <strong>Falsch:</strong> $91=7\cdot13$, also $\bar7\cdot\overline{13}=\bar0$. (e) <strong>Wahr:</strong> $a\cdot a^2=0$ ergibt $a=0$ oder $a^2=0$, und $a^2=a\cdot a=0$ ergibt $a=0$ (keine Nullteiler, zweimal benutzt). (f) <strong>Wahr:</strong> dann ist jedes Element sein eigenes Inverses, also $x\circ y=(x\circ y)^{-1}=y^{-1}\circ x^{-1}=y\circ x$ (das Inverse eines Produkts kehrt die Reihenfolge um, wie bei Abbildungen in <a class="xl" href="linalg-03.html">Lektion 3</a>).</p>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Aufgaben 1–6 ergeben 6 Punkte, einen für jede Aufgabe, die du löst. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, ein Wahr-falsch-Block, wenn höchstens ein Teil falsch ist. Mit 4 von 6 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="skipped.html#linalg-04">Auslassungsliste</a>.</p>
+<ul>
+  <li><strong>Der Beweis des Euklidischen Lemmas</strong> („Primzahlen sind prim“, Bemerkung 1.3.13) und der eindeutigen Primfaktorzerlegung: aus der Schule und der Analysis übernommen, wie es das Skript tut. <em>Priorität: niedrig.</em></li>
+  <li><strong>Bemerkung 1.3.16:</strong> die „Spassaufgaben“ mit $\mathbb F_p$ aus einer späteren Serie. <em>Priorität: optional.</em></li>
+  <li><strong>Die allgemeine Theorie endlicher Körper</strong> (ein Körper jeder Grösse $p^k$): Algebra, zweites Jahr. Nur der Kasten „Zum Staunen“ oben. <em>Priorität: optional.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a href="../linalg-05.html">Lektion 5</a>, Vektorräume: ein Zahlenkörper und eine abelsche Gruppe von Vektoren, verbunden durch die Skalarmultiplikation. Dort beweist du $0\cdot v=0$ und $(-1)v=-v$ mit genau den Argumenten aus Beweis B.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg-03.html">← Lektion 3: Das Gericht der Freien Stadt</a>
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-05.html">Lektion 5: Die Pfeile der Freien Stadt →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="feedback.html">Feedback geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
