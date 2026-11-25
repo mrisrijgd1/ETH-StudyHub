@@ -441,7 +441,7 @@
         ['chemie', 'Allgemeine Chemie I (PC)', ROOT + 'chemie/', [['chemie-', 27, L('Lessons', 'Lektionen')]]],
         ['physics', L('Physics I', 'Physik I'), 'physics.html', [['phys-', 16, L('Lessons', 'Lektionen')], ['serie-p', 7, L('Serien explained', 'Serien erklärt')]]],
         ['linalg', L('Linear Algebra I', 'Lineare Algebra I'), 'linalg.html', [['linalg-', 21, L('Lessons (so far)', 'Lektionen (bisher)')], ['serie-l', 7, L('Serien explained', 'Serien erklärt')]]],
-        ['informatik', 'Informatik', 'informatik.html', [['inf-', 13, L('Lessons (so far)', 'Lektionen (bisher)')]]]];
+        ['informatik', 'Informatik', 'informatik.html', [['inf-', 14, L('Lessons', 'Lektionen')]]]];
       // Only the person's own subjects (study setup, else their path: Chemie only on the Interdisciplinary path).
       // A subject with saved progress is always shown, so nothing ever disappears.
       var mine = null;
