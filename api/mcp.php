@@ -38,21 +38,6 @@ function mcp_unauthorized(string $msg = 'Sign in to StudyHub to use this connect
 }
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-// Small request log for troubleshooting (no personal data: time, method, status, duration, client name). Last 300 lines.
-$MCP_T0 = microtime(true); $MCP_RPC = '-';
-register_shutdown_function(function () use ($method) {
-    global $MCP_T0, $MCP_RPC;
-    try {
-        $f = sh_data_dir('cache') . '/mcp-requests.log';
-        $line = gmdate('Y-m-d H:i:s') . " $method rpc=$MCP_RPC status=" . http_response_code() . ' ms=' . (int)((microtime(true) - $MCP_T0) * 1000)
-            . ' auth=' . ((($_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '') !== '') ? 'y' : 'n')
-            . ' accept=' . substr(preg_replace('/\s+/', '', (string)($_SERVER['HTTP_ACCEPT'] ?? '')), 0, 40)
-            . ' ua=' . substr(preg_replace('/[^\w .\/()-]/', '', (string)($_SERVER['HTTP_USER_AGENT'] ?? '')), 0, 60)
-            . ' err=' . substr(str_replace("\n", ' ', (string)(error_get_last()['message'] ?? '')), 0, 160) . "\n";
-        $old = is_file($f) ? array_slice(file($f) ?: [], -299) : [];
-        @file_put_contents($f, implode('', $old) . $line, LOCK_EX);
-    } catch (Throwable $e) {}
-});
 if ($method === 'OPTIONS') { http_response_code(204); exit; }
 if (isset($_GET['meta'])) {   // /.well-known/oauth-protected-resource/mcp (see .htaccess)
     mcp_json(['resource' => MCP_PUBLIC, 'authorization_servers' => [SH_SUPABASE_URL . '/auth/v1'], 'bearer_methods_supported' => ['header'],
@@ -81,7 +66,6 @@ $C = null;   // content: loaded on first use only (tools/list and personal tools
 function C(): array { global $C; if ($C === null) { $C = mcp_content(); } return $C; }
 
 $isBatch = array_is_list($msg) && $msg !== [];
-$MCP_RPC = implode(',', array_map(fn($m) => is_array($m) ? (string)($m['method'] ?? '?') : '?', $isBatch ? $msg : [$msg]));
 $out = [];
 foreach ($isBatch ? $msg : [$msg] as $m) { $r = mcp_handle(is_array($m) ? $m : []); if ($r !== null) { $out[] = $r; } }
 if (!$out) { http_response_code(202); exit; }
