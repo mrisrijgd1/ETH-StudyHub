@@ -44,7 +44,7 @@
         '<div class="box"><strong>' + L('What should I do today?', 'Was mache ich heute?') + '</strong> ' + L('Ask your own AI this question once the ', 'Frag das deine eigene KI, sobald der ') + '<a href="connect.html">' + L('connector', 'Connector') + '</a>' + L(' is added. It looks at your progress, marks and mistakes and suggests at most three small tasks.', ' eingerichtet ist. Sie schaut auf Fortschritt, Resultate und Fehler und schlägt höchstens drei kleine Aufgaben vor.') + '</div>' +
         secPlan() + secList('notes', L('Notes', 'Notizen'), L('Anything you want to keep: a trick, a summary, a reminder.', 'Alles, was du behalten willst: ein Trick, eine Zusammenfassung, eine Erinnerung.')) +
         secList('questions', L('Questions', 'Fragen'), L('Questions to ask in the exercise class, the forum or your AI. Tick them off when answered.', 'Fragen für die Übungsstunde, das Forum oder deine KI. Abhaken, wenn beantwortet.')) +
-        secCards() + '<section id="my-suggestions"><h2>' + L('Your suggestions', 'Deine Vorschläge') + '</h2><div id="my-sug">' + L('Loading…', 'Wird geladen …') + '</div></section>' + secDesign() + secHistory();
+        secCards() + secList('memory', L('What your AI remembers', 'Was deine KI sich merkt'), L('Preferences and decisions your AI keeps across chats when you use the ', 'Vorlieben und Entscheidungen, die sich deine KI über Chats hinweg merkt, wenn du den ') + '<a href="connect.html">' + L('connector', 'Connector') + '</a>' + L('. Add your own or remove any entry; your AI follows what is here.', ' nutzt. Füge eigene hinzu oder entferne Einträge; deine KI hält sich daran.')) + '<section id="my-suggestions"><h2>' + L('Your suggestions', 'Deine Vorschläge') + '</h2><div id="my-sug">' + L('Loading…', 'Wird geladen …') + '</div></section>' + secDesign() + secHistory();
       wire(); sug();
     });
   }
@@ -69,7 +69,7 @@
         return '<li><div>' + (key === 'questions' ? '<label><input type="checkbox" data-q="' + esc(x.id) + '"' + (x.status === 'answered' ? ' checked' : '') + '> </label>' : '') + (x.title ? '<strong>' + esc(x.title) + '</strong><br>' : '') + esc(x.text).replace(/\n/g, '<br>') +
           (x.answer ? '<br><em>' + esc(x.answer) + '</em>' : '') + '</div><div class="meta">' + (x.page ? esc(x.page) + ' · ' : '') + (x.created ? new Date(x.created).toLocaleDateString() : '') + ' · <button data-del="' + key + ':' + esc(x.id) + '">' + L('Remove', 'Entfernen') + '</button></div></li>';
       }).join('') + '</ul>' + (list.length ? '' : '<p class="meta">' + L('Nothing yet.', 'Noch nichts.') + '</p>') +
-      '<div class="row"><input type="text" id="my-' + key + '-in" placeholder="' + (key === 'notes' ? L('New note', 'Neue Notiz') : L('New question', 'Neue Frage')) + '"><input type="text" id="my-' + key + '-pg" placeholder="' + L('Lesson (optional), e.g. lesson-08', 'Lektion (optional), z. B. lesson-08') + '" style="flex:0 1 14rem"></div>' +
+      '<div class="row"><input type="text" id="my-' + key + '-in" placeholder="' + (key === 'notes' ? L('New note', 'Neue Notiz') : key === 'memory' ? L('Something your AI should remember, e.g. “hints before formulas”', 'Etwas, das sich deine KI merken soll, z. B. „Hinweise vor Formeln“') : L('New question', 'Neue Frage')) + '">' + (key === 'memory' ? '' : '<input type="text" id="my-' + key + '-pg" placeholder="' + L('Lesson (optional), e.g. lesson-08', 'Lektion (optional), z. B. lesson-08') + '" style="flex:0 1 14rem">') + '</div>' +
       '<div class="btns"><button class="main" data-add="' + key + '">' + L('Add', 'Hinzufügen') + '</button><button data-undo="' + key + '">' + L('Undo last change', 'Letzte Änderung rückgängig') + '</button></div><p class="st" id="my-' + key + '-st"></p></section>';
   }
   // ---------- flashcards ----------
@@ -162,7 +162,7 @@
   }
   // ---------- history ----------
   function secHistory() {
-    var keys = [['plan', L('Plan', 'Plan')], ['notes', L('Notes', 'Notizen')], ['questions', L('Questions', 'Fragen')], ['flashcards', L('Flashcards', 'Lernkarten')], ['design', L('Design', 'Design')]];
+    var keys = [['plan', L('Plan', 'Plan')], ['notes', L('Notes', 'Notizen')], ['questions', L('Questions', 'Fragen')], ['flashcards', L('Flashcards', 'Lernkarten')], ['memory', L('Memory', 'Gedächtnis')], ['design', L('Design', 'Design')]];
     return '<section id="my-history"><h2>' + L('History', 'Verlauf') + '</h2><p>' + L('Every change, by you or your AI, is kept. Pick an item to see its versions and bring an older one back. Lesson progress has a history too (“progress:lesson-08”).', 'Jede Änderung, von dir oder deiner KI, bleibt erhalten. Wähle einen Bereich, um seine Versionen zu sehen und eine ältere zurückzuholen. Auch der Lektionsfortschritt hat einen Verlauf („progress:lesson-08“).') + '</p>' +
       '<div class="row"><select id="my-hk">' + keys.map(function (k) { return '<option value="' + k[0] + '">' + k[1] + '</option>'; }).join('') + '</select><input type="text" id="my-hk2" placeholder="' + L('or e.g. progress:lesson-08', 'oder z. B. progress:lesson-08') + '"></div>' +
       '<div class="btns"><button class="main" id="my-hshow">' + L('Show versions', 'Versionen zeigen') + '</button></div><div id="my-hlist"></div></section>';
@@ -186,7 +186,7 @@
     root.querySelectorAll('[data-add]').forEach(function (b) {
       b.onclick = function () {
         var k = b.getAttribute('data-add'), t = g('my-' + k + '-in').value.trim(); if (!t) return;
-        var list = (items[k] || []).slice(); list.push({ id: nid(), created: new Date().toISOString(), text: t, page: g('my-' + k + '-pg').value.trim() || undefined, status: k === 'questions' ? 'open' : undefined });
+        var list = (items[k] || []).slice(); list.push({ id: nid(), created: new Date().toISOString(), text: k === 'memory' ? t.slice(0, 300) : t, kind: k === 'memory' ? 'preference' : undefined, page: (g('my-' + k + '-pg') && g('my-' + k + '-pg').value.trim()) || undefined, status: k === 'questions' ? 'open' : undefined });
         put(k, JSON.parse(JSON.stringify(list)), 'my-' + k + '-st').then(draw);
       };
     });
