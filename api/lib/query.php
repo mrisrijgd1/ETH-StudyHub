@@ -94,15 +94,18 @@ function sh_run(PDO $pdo, ?array $u, array $q) {
             // otherwise insert. Never "ON DUPLICATE KEY", which could touch another person's row through a unique nickname.
             $exists = null;
             if ($op === 'upsert' && count(array_intersect($t['pk'], array_keys($r))) === count($t['pk'])) {
-                $kf = []; foreach ($t['pk'] as $p) { $kf[] = [$p, 'eq', $r[$p]]; }
+                // Only the person's OWN row counts: a row with this key that belongs to someone else is never touched
+                // (the insert below then fails as "already taken"), so nobody can overwrite or take over another person's row.
+                $kf = [[$t['own'], 'eq', $u['id']]]; foreach ($t['pk'] as $p) { $kf[] = [$p, 'eq', $r[$p]]; }
                 $exists = sh_keys($pdo, $table, $kf)[0] ?? null;
             }
+            if ($exists && in_array($table, ['forum_threads', 'forum_posts', 'suggestions'], true)) { throw new ShError('Not allowed.'); }
             if ($exists) {
                 $set = []; $vals = [];
                 foreach ($r as $c => $v) { if (!in_array($c, $t['pk'], true)) { $set[] = "`$c` = ?"; $vals[] = sh_in($t['cols'][$c], $v); } }
                 sh_check($table, $r);
                 if ($set) {
-                    $kv = []; foreach ($t['pk'] as $p) { $kv[] = [$p, 'eq', $r[$p]]; }
+                    $kv = [[$t['own'], 'eq', $u['id']]]; foreach ($t['pk'] as $p) { $kv[] = [$p, 'eq', $r[$p]]; }
                     $pdo->prepare('UPDATE `' . $table . '` SET ' . implode(', ', $set) . sh_where($table, $kv, $vals))->execute($vals);
                 }
             } else {
