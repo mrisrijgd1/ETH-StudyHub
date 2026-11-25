@@ -1,0 +1,27 @@
+# Troubleshooting only: shows the connector's recent request log (time, method, status, client name; no personal data).
+name: Connector request log
+on:
+  workflow_dispatch:
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_HOST: 2r672z.ftp.infomaniak.com
+      DEPLOY_USER: 2r672z_deploy
+    steps:
+      - name: Show the log
+        env: { SSH_KEY: "${{ secrets.INFOMANIAK_SSH_KEY }}" }
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" '
+            echo "== connector request log"; tail -n 80 studyhub-data/cache/mcp-requests.log 2>/dev/null || echo "(none yet)"
+            echo "== php version"; php -v | head -1
+            echo "== web server log lines for /mcp (addresses removed)"
+            for f in $(find ~ -maxdepth 4 \( -name "*access*log*" -o -name "*error*log*" \) -type f 2>/dev/null | head -5); do
+              echo "-- $f"; grep -a "mcp" "$f" 2>/dev/null | tail -n 30 | sed -E "s/^[0-9a-fA-F.:]+ //; s/[0-9]{1,3}(\.[0-9]{1,3}){3}/x.x.x.x/g"
+            done'
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
