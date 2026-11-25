@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="The Golem Lays Out a Row">
+<script defer src="assets/tips.js?v=prv1123"></script>
+<script defer src="assets/listen.js?v=427792c7"></script>
+<script src="assets/move.js"></script><script defer src="assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Golem Lays Out a Row</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+
+/* Informatik: code blocks, program output, method and trace boxes */
+code, pre.code, pre.out { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+code { font-size: .88em; background: var(--accent-soft); padding: .05em .3em; border-radius: 4px; overflow-wrap: anywhere; }
+pre.code, pre.out { margin: 0; padding: .75rem .9rem; border-radius: 8px; overflow-x: auto; font-size: .84rem; line-height: 1.5; tab-size: 2; white-space: pre; }
+pre.code { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); }
+pre.code code, pre.out code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+pre.out { background: var(--exam); border: 1px solid var(--rule); border-left: 3px solid var(--exam-edge); }
+pre.out::before { content: "Output"; display: block; font-family: var(--font-util); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.tk-c { color: var(--muted); font-style: italic; }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-s { color: var(--exam-edge); }
+.tk-p { color: var(--story-edge); }
+.method { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: .9rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.method h3, .method h4 { margin: 0; }
+.method ol { gap: .5rem; }
+.method .q { font-weight: 600; }
+.trace td, .trace th { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85rem; white-space: nowrap; }
+.trace td.note, .trace th.note { font-family: var(--font-body); white-space: normal; }
+.task { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.task h3 { margin: 0; }
+.pill { font-family: var(--font-util); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: .1rem .5rem; color: var(--muted); }
+.small { font-size: .9rem; color: var(--muted); }
+details.hint > summary { color: var(--accent); }
+tr:target td { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.pat, a.mvl { display: inline-block; font-family: var(--font-util); font-size: .78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: .05rem .55rem; margin: .1rem .2rem .1rem 0; text-decoration: none; }
+@media (max-width: 480px) { pre.code, pre.out { font-size: .74rem; padding: .6rem .65rem; } ol.gq { padding-left: 1.1rem; } details > div { padding-left: .7rem; padding-right: .7rem; } }
+</style>
+
+<link rel="stylesheet" href="assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="assets/studyhub.css?v=onb1124">
+<script defer src="assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="informatik">
+<header class="study-shell" data-lang="en"><div class="study-upper"><a href="index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Main"><span class="study-nav-item">Subjects</span><a class="study-nav-item" href="FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=en">Flashcards</a><a class="study-nav-item" href="practice.html">Practice</a><span class="study-nav-item">About</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Subject modes"><a href="informatik.html#lessons" data-mode="lessons" aria-current="page">Lessons</a><a href="inf-method.html" data-mode="practice">Task method</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Informatik · Lesson 14</span>
+<h1>The Golem Lays Out a Row</h1>
+<p class="lead">Dynamic arrays: new T[n] and delete[]; pointer arithmetic, the subscript operator and pointer ranges; an array-based vector with the rule of three; and how a vector grows by doubling its memory.</p>
+</header>
+<details class="toc" open><summary>Contents</summary><ol>
+<ol>
+<li><a href="#recap">Recap of lesson 13 and lesson 11 (5 minutes)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story">1. The story: the golem lays out a row</a>
+</li>
+<li><a href="#s2-arrays">2. Dynamic arrays and pointer arithmetic (script 18.1.1)</a>
+<ol>
+<li><a href="#we-1">Worked example 1: where does it point?</a></li>
+</ol></li>
+<li><a href="#s3-ranges">3. Walking arrays, and arrays in functions (script 18.1.2–18.1.3)</a>
+<ol>
+<li><a href="#the-pointer-range-method">Pointer ranges in four questions</a></li>
+</ol></li>
+<li><a href="#s4-our-vector">4. An array-based vector (script 18.2)</a>
+</li>
+<li><a href="#s5-memory">5. Memory management with dynamic arrays (script 18.3)</a>
+</li>
+<li><a href="#s6-growing">6. Inserting and removing: how a vector grows (script 18.4)</a>
+<ol>
+<li><a href="#we-2">Worked example 2: counting the copies</a></li>
+</ol></li>
+<li><a href="#s7-coding-tasks">7. Working with arrays: coding tasks</a>
+<ol>
+<li><a href="#ct-1">Coding task 1: sum and fill on a range (script p. 219–221)</a></li>
+<li><a href="#ct-2">Coding task 2: cyclic shift (IFMP exam January 2017, task 4, 8 points)</a></li>
+<li><a href="#ct-3">Coding task 3: copying our_vector (script p. 225–227)</a></li>
+<li><a href="#ct-4">Coding task 4: a vector that doubles (Informatik exam winter 2018/19, task 6, 12 points)</a></li>
+</ol></li>
+<li><a href="#worked-examples">Worked examples: a mixed set before the exercises</a>
+<ol>
+<li><a href="#we-3">Worked example 3: index or pointer?</a></li>
+<li><a href="#we-4">Worked example 4: delete or delete[]?</a></li>
+</ol></li>
+<li><a href="#exercises">Exercises</a>
+<ol>
+<li><a href="#ex-1">Exercise 1 (Informatik exam summer 2019, task 2, parts (c) and (d), old exam) · 3 points</a></li>
+<li><a href="#ex-2">Exercise 2 (Informatik exam winter 2018/19, task 2, old exam) · 8 points</a></li>
+<li><a href="#ex-3">Exercise 3 (Informatik exam winter 2018/19, task 8, old exam) · 6 points</a></li>
+<li><a href="#ex-4">Exercise 4 (IFMP exam August 2016, task 8 (a) and (b), old exam) · 6 points</a></li>
+</ol></li>
+<li><a href="#summary">Summary: what to keep from lesson 14</a>
+</li>
+<li><a href="#for-wonder">For wonder: why exactly double? <span class="small">(optional, 5 min)</span></a>
+</li>
+<li><a href="#what-we-skipped">What we skipped</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Bad day?</strong> Do only sections 2 and 3: read what <code>new int[n]</code> gives you and how a pointer walks an array with the <a href="#ptr-method">pointer-range method</a>, then do <a href="#we-1">Worked example 1</a>. That counts. Tomorrow, simply carry on from here: a missed or light day is not a restart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>You're done when</dt><dd>you can (1) make an array with <code>new int[n]</code>, use it with <code>a[i]</code> and <code>*(a + i)</code>, and free it with <code>delete[]</code>; (2) compute what <code>p + i</code>, <code>p - i</code> and <code>p1 - p2</code> point to or are; (3) write a function on a pointer range <code>[begin, end)</code> and call it on part of an array; (4) give an array-based vector a destructor, a copy constructor and an assignment operator; (5) explain why a vector doubles its memory when it is full, and write that push_back.</dd></div>
+  <div><dt>Time</dt><dd>About 90 minutes. The last chapter, and it closes the circle: lesson 5's <code>std::vector</code>, lesson 11's iterators, lesson 12's pointers and lesson 13's rule of three all meet in one class.</dd></div>
+  <div><dt>Script (English lecture notes, printed pages)</dt><dd>
+    <ul>
+      <li><strong>Chapter 18, Dynamic Data Structures II, p. 216–228:</strong> dynamic arrays, pointer arithmetic, iterating over arrays, arrays in functions (18.1); the array-based vector our_vector (18.2); memory management with dynamic arrays (18.3); inserting and removing elements (18.4).</li>
+    </ul></dd></div>
+  <div><dt>In the lecture</dt><dd>The lecture on dynamic arrays, after the one on memory management (slides not yet in our folder). Code Expert: the exercise sheet after that lecture.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Why it matters for the exam</span>
+<p>Pointer arithmetic on arrays is in every "pointers" task of the old exams (summer 2019, task 2; winter 2018/19, task 2: exercises 1 and 2). Range functions with <code>int*</code> are a classic programming task (IFMP January 2017, task 4, 8 points: coding task 2, with the official solution). And the doubling vector is a 12-point task (winter 2018/19, task 6: coding task 4), with a cousin in IFMP August 2016, task 8 (exercise 4, official solution).</p></div>
+
+<div class="box"><h3 id="recap">Recap of <a class="xl" href="inf-13.html">lesson 13</a> and <a class="xl" href="inf-11.html">lesson 11</a> (5 minutes)</h3>
+<p>For each new, exactly one delete; a class that owns heap memory needs a destructor, a copy constructor and an assignment operator. Check yourself:</p>
+<ol class="gq">
+  <li>Why does <code>stack s2 = s1;</code> break a stack without its own copy constructor?
+  <details><summary>Answer</summary><div><p>The generated copy copies the pointer topn, so both stacks share the nodes, and at the end both destructors delete them: a double delete. Section 5 has the same problem with an array.</p></div></details></li>
+  <li>What does <code>neg(v.begin() + 1, v.begin() + 3)</code> change, for a vector v?
+  <details><summary>Answer</summary><div><p>The elements with index 1 and 2: the range [begin, end) includes begin and excludes end. In this lesson, the same is written with plain pointers: <code>neg(a + 1, a + 3)</code>.</p></div></details></li>
+</ol></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Words for this lesson · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>array, dynamic array</td><td>Feld (Array), dynamisches Feld</td></tr>
+    <tr><td>contiguous memory</td><td>zusammenhängender Speicher</td></tr>
+    <tr><td>pointer arithmetic</td><td>Zeigerarithmetik</td></tr>
+    <tr><td>subscript operator</td><td>Subskript-Operator (Indexoperator)</td></tr>
+    <tr><td>pointer difference</td><td>Zeigerdifferenz</td></tr>
+    <tr><td>sequential access, random access</td><td>sequentieller Zugriff, wahlfreier Zugriff</td></tr>
+    <tr><td>range, subarray</td><td>Bereich, Teilfeld</td></tr>
+    <tr><td>to resize, to double</td><td>vergrössern, verdoppeln</td></tr>
+    <tr><td>capacity (maximum size)</td><td>Kapazität (maximale Grösse)</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story">1. The story: the golem lays out a row</h2>
+<div class="story">
+<p>The train of lesson 12 was flexible, but slow to search: to reach wagon 500, the golem walked past 499 couplings. For its jars, the golem wants the opposite: a row of shelves side by side, all the same width, so that jar 500 is simply 500 shelf widths from the first. No walking, just measuring.</p>
+<p>So it asks the store room not for one shelf at a time but for a whole row at once: "Seven shelves, in one piece, please." It gets back a single note: where the row starts. Everything else follows from counting shelf widths.</p>
+<p>The trouble comes when the row is full and an eighth jar arrives. A row can't be stretched: there may be someone else's shelves right behind it. The golem has to ask for a new, longer row somewhere else, carry every jar over, and return the old row. If it asks for just one shelf more each time, it will be carrying jars all day. So it asks for twice as many.</p>
+</div>
+<p>In C++: the row is a <strong>dynamic array</strong>, made with <code>new int[7]</code>, which returns a pointer to the first element (p. 216–217). Measuring is <strong>pointer arithmetic</strong>: <code>p + 500</code>. Returning the row is <code>delete[]</code>. And asking for twice as many is how <code>std::vector</code> grows (p. 227–228).</p>
+
+<h2 id="s2-arrays">2. Dynamic arrays and pointer arithmetic (script 18.1.1)</h2>
+<p>A <code>std::vector</code> can have a size known only at runtime, can grow, and stores its elements <strong>contiguously</strong>, side by side in memory, which is what allows fast access by index (p. 216). Allocating each element with its own new would scatter them over the heap. Instead we allocate a whole chunk:</p>
+<div class="box">
+<p><code>new T[n]</code> allocates memory for n consecutive objects of type T, an <strong>array</strong> of length n (n is an int expression, possibly from input). Its value is the address of the first element; its type is <code>T*</code> (p. 216–217). An initialiser list may follow: <code>new int[7]{1, 2, 3, 4, 5, 6, 7}</code>. Without one, the ints are not initialised.</p>
+<p><strong>Pointer arithmetic</strong> (p. 217–219), for a pointer p to the first element of an array of length n:</p>
+<ul>
+  <li><code>p + i</code>, for 0 ≤ i ≤ n, points to the element with index i; <code>p + n</code> points <strong>behind</strong> the array, like end() (Figure 18.3). Anything outside [0, n] is undefined behaviour.</li>
+  <li><code>p[i]</code> is shorthand for <code>*(p + i)</code>, the <strong>subscript operator</strong>.</li>
+  <li><code>q - i</code> moves back, as long as you stay inside the array (or right behind it).</li>
+  <li><code>q1 - q2</code>, for two pointers into the same array at indices k1 and k2, is the number k1 − k2.</li>
+</ul>
+<p>Pointer arithmetic counts <em>elements</em>, not bytes: for an <code>int*</code> (4 bytes per int on usual machines), <code>p + 1</code> is 4 addresses further (p. 218). And pointers and integers don't mix: <code>int* ptr = 5;</code> and <code>int a = ptr;</code> are compiler errors.</p>
+</div>
+<p>The script's example (Figure 18.4):</p>
+<pre class="code" data-run="1"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span>* p0 = <span class="tk-k">new</span> <span class="tk-k">int</span>[7]{1, 2, 3, 4, 5, 6, 7};   <span class="tk-c">// p0 points to 1st element</span>
+  <span class="tk-k">int</span>* p3 = p0 + 3;                            <span class="tk-c">// p3 points to 4th element</span>
+  *(p3 + 2) = 600;                             <span class="tk-c">// set value of 6th element to 600</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; *(p0 + 5) &lt;&lt; <span class="tk-s">"\n"</span>;              <span class="tk-c">// output 6th element's value</span>
+  <span class="tk-k">std</span>::cout &lt;&lt; p0[5] &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; p3[-1] &lt;&lt; <span class="tk-s">" "</span> &lt;&lt; (p3 - p0) &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">delete</span>[] p0;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>600
+600 3 3</code></pre>
+<p><code>p3[-1]</code> is <code>*(p3 - 1)</code>, the element just before p3, which is fine because it is still inside the array. The last line frees the array; section 5 explains <code>delete[]</code>.</p>
+<div class="box"><h3 id="we-1">Worked example 1: where does it point?</h3>
+<pre class="code"><code><span class="tk-k">int</span>* a = <span class="tk-k">new</span> <span class="tk-k">int</span>[5]{10, 20, 30, 40, 50};
+<span class="tk-k">int</span>* p = a + 1;
+<span class="tk-k">int</span>* q = a + 4;
+*p += 5;
+*(q - 1) = *p + *a;</code></pre>
+<ol class="gq">
+  <li>Fill the table: the array after the last line.
+  <details><summary>Answer</summary><div>
+  <div class="table-wrap"><table class="trace" data-fill="1"><thead><tr><th>index</th><th>value</th></tr></thead><tbody>
+  <tr><td>0</td><td>10</td></tr>
+  <tr><td>1</td><td>25</td></tr>
+  <tr><td>2</td><td>30</td></tr>
+  <tr><td>3</td><td>35</td></tr>
+  <tr><td>4</td><td>50</td></tr>
+  </tbody></table></div>
+  <p>p is at index 1: 20 + 5 = 25. q − 1 is index 3, which gets 25 + 10 = 35.</p></div></details></li>
+  <li>What are <code>q - p</code>, <code>p[2]</code> and <code>*(a + 5)</code>?
+  <details><summary>Answer</summary><div><p><code>q - p</code> is 4 − 1 = 3. <code>p[2]</code> is index 1 + 2 = 3: 35. <code>*(a + 5)</code> is undefined behaviour: a + 5 is the address behind the array, which may be computed but never dereferenced.</p></div></details></li>
+</ol></div>
+
+<h2 id="s3-ranges">3. Walking arrays, and arrays in functions (script 18.1.2–18.1.3)</h2>
+<p>To visit every element, let a pointer start at the first and stop at the address behind the last (p. 219):</p>
+<pre class="code"><code><span class="tk-k">char</span>* p = <span class="tk-k">new</span> <span class="tk-k">char</span>[3]{<span class="tk-s">'x'</span>, <span class="tk-s">'y'</span>, <span class="tk-s">'z'</span>};
+<span class="tk-k">for</span> (<span class="tk-k">char</span>* it = p; it != p + 3; ++it)
+  <span class="tk-k">std</span>::cout &lt;&lt; *it &lt;&lt; <span class="tk-s">" "</span>;        <span class="tk-c">// output current element</span></code></pre>
+<p>That is the iterator loop of lesson 11, with a plain pointer as the iterator. The index loop <code>for (int i = 0; i &lt; 3; ++i) std::cout &lt;&lt; p[i];</code> does the same, but each <code>p[i]</code> computes the address p + i·s again, while <code>++it</code> just steps once. The script's picture (p. 220): reading a book page by page, against closing it after every page and opening it again at the next page number. For a walk, prefer the pointer.</p>
+<div class="box">
+<p><strong>Arrays in functions</strong> (p. 220–221): by convention, an array or part of one is passed as two pointers, <code>begin</code> to the first element and <code>end</code> behind the last. [begin, end) is the segment; it is empty if begin == end.</p>
+<pre class="code"><code><span class="tk-c">// PRE:  [begin, end) is a valid range</span>
+<span class="tk-c">// POST: every element within [begin, end) was set to value</span>
+<span class="tk-k">void</span> fill(<span class="tk-k">int</span>* begin, <span class="tk-k">int</span>* end, <span class="tk-k">int</span> value) {
+  <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = begin; p != end; ++p)
+    *p = value;
+}</code></pre>
+<p>Called as <code>fill(p, p + 5, 1);</code> for the whole array of 5, or <code>fill(p + 1, p + 3, 0);</code> for indices 1 and 2. A function that only reads takes <code>const int*</code> (lesson 12: the ints are read-only through the pointer).</p>
+</div>
+<div class="method" id="ptr-method">
+<h3 id="the-pointer-range-method">Pointer ranges in four questions</h3>
+<ol>
+  <li><span class="q">Which range?</span> Indices i to j − 1 are <code>[a + i, a + j)</code>; the whole array of n is <code>[a, a + n)</code>.</li>
+  <li><span class="q">Read or write?</span> Reading only: <code>const int*</code>. Writing: <code>int*</code>.</li>
+  <li><span class="q">The loop?</span> <code>for (int* p = begin; p != end; ++p)</code>, element <code>*p</code>, next element <code>*(p + 1)</code>, last element <code>*(end - 1)</code>.</li>
+  <li><span class="q">The empty range?</span> begin == end: the loop doesn't run; but <code>*begin</code> and <code>*(end - 1)</code> are forbidden, so guard them with <code>if (begin &lt; end)</code> or <code>if (begin != end)</code>.</li>
+</ol></div>
+
+<h2 id="s4-our-vector">4. An array-based vector (script 18.2)</h2>
+<p>With arrays we can build our own vector (p. 221):</p>
+<pre class="code"><code><span class="tk-k">class</span> our_vector {
+  <span class="tk-k">int</span>* elements;   <span class="tk-c">// pointer to first element in array</span>
+  <span class="tk-k">int</span> count;       <span class="tk-c">// number of elements</span>
+<span class="tk-k">public</span>:
+  our_vector(<span class="tk-k">int</span> size) : elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[size]), count(size) {}
+  <span class="tk-k">int</span> size() <span class="tk-k">const</span> { <span class="tk-k">return</span> count; }
+  <span class="tk-k">int</span>&amp; <span class="tk-k">operator</span>[](<span class="tk-k">int</span> i) { <span class="tk-k">return</span> elements[i]; }
+  <span class="tk-k">const</span> <span class="tk-k">int</span>&amp; <span class="tk-k">operator</span>[](<span class="tk-k">int</span> i) <span class="tk-k">const</span> { <span class="tk-k">return</span> elements[i]; }
+  <span class="tk-k">void</span> print(<span class="tk-k">std</span>::ostream&amp; sink) <span class="tk-k">const</span> {
+    <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = elements; p != elements + count; ++p)
+      sink &lt;&lt; *p &lt;&lt; <span class="tk-s">" "</span>;
+  }
+  <span class="tk-k">using</span> iterator = <span class="tk-k">int</span>*;                            <span class="tk-c">// pointers are iterators!</span>
+  iterator begin() { <span class="tk-k">return</span> elements; }             <span class="tk-c">// first element</span>
+  iterator end() { <span class="tk-k">return</span> elements + count; }       <span class="tk-c">// past the last element</span>
+};</code></pre>
+<p>(The script's constructor lists <code>count(size)</code> before <code>elements(…)</code>; we list them in the order they are declared, because members are always initialised in declaration order, whatever the list says.) Four things to notice (p. 222–224):</p>
+<ul>
+  <li><code>operator[]</code> returns <code>int&amp;</code>, so <code>v[0] = 123</code> works. A second, <strong>const</strong> version returning <code>const int&amp;</code> lets you read from a <code>const our_vector</code>; the compiler picks the right one. A checked variant <code>at(i)</code> would first <code>assert(0 &lt;= i &amp;&amp; i &lt; count)</code>.</li>
+  <li><code>print</code> walks the array with a pointer, and <code>operator&lt;&lt;</code> can call it, as in lesson 9.</li>
+  <li>The iterator is just <code>int*</code>: a pointer already has <code>*</code>, <code>++</code> and <code>!=</code>. So <code>for (int&amp; i : v) i += 3;</code> and the standard algorithms work at once.</li>
+  <li>The constructor leaves the elements uninitialised, like <code>new int[size]</code> itself.</li>
+</ul>
+
+<h2 id="s5-memory">5. Memory management with dynamic arrays (script 18.3)</h2>
+<p>What happens here (p. 224–225)?</p>
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; 1000000; ++i) {
+  our_vector v = our_vector(1000000);
+}</code></pre>
+<p>Each v dies at the end of the round, but its million ints stay: a leak of a million ints per round. Every <code>new[]</code> needs its matching <strong><code>delete[]</code></strong>: <code>delete[] a;</code> frees the array that a points to (a must come from <code>new T[]</code>; a is not reset and now dangles). Use <code>delete</code> for single objects from new, <code>delete[]</code> for arrays from new[]; mixing them up is undefined behaviour.</p>
+<div class="box">
+<p>The array is made in the constructor, so it is freed in the destructor. And then the rule of three of lesson 13 applies: <code>our_vector w = v;</code> would copy only the pointer, and both destructors would delete the same array (p. 225–226). So (p. 226–227):</p>
+<pre class="code"><code>our_vector::~our_vector() {
+  <span class="tk-k">delete</span>[] elements;
+}
+
+our_vector::our_vector(<span class="tk-k">const</span> our_vector&amp; v)
+  : elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[v.count]), count(v.count) {
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; count; ++i)
+    elements[i] = v.elements[i];
+}
+
+our_vector&amp; our_vector::<span class="tk-k">operator</span>=(<span class="tk-k">const</span> our_vector&amp; v) {
+  <span class="tk-k">if</span> (<span class="tk-k">this</span> != &amp;v) {                        <span class="tk-c">// no self assignment</span>
+    our_vector copy = v;                   <span class="tk-c">// copy constructor</span>
+    <span class="tk-k">std</span>::swap(elements, copy.elements);    <span class="tk-c">// swap pointer</span>
+    <span class="tk-k">std</span>::swap(count, copy.count);          <span class="tk-c">// swap count</span>
+  }
+  <span class="tk-k">return</span> *<span class="tk-k">this</span>;                            <span class="tk-c">// convention</span>
+}</code></pre>
+<p>Copy-and-swap now swaps both members, and the destructor of copy frees the old array.</p>
+</div>
+
+<h2 id="s6-growing">6. Inserting and removing: how a vector grows (script 18.4)</h2>
+<p>A vector must grow and shrink: <code>push_back</code>, <code>push_front</code>, <code>remove(i)</code> (p. 227). But an allocated block can't be resized. One idea: allocate more than needed and keep the elements in the middle, with pointers to the first and last element, so they can grow in both directions (Figure 18.8). Eventually the block is full anyway, and then there is no way around it: allocate a larger block, copy every element over, free the old block (p. 228). That is expensive, so it should happen rarely.</p>
+<p>Removing or inserting in the middle is costly too: every element behind the gap must be shifted by one to keep the array contiguous (Figure 18.10). That is where a linked list wins. Overall (p. 228), vectors are usually faster, except for inserting and removing at the front, and they need much less memory: about n ints for n elements, against about 3n for our list (each node also holds a pointer of 8 bytes).</p>
+<div class="box">
+<p><strong>Doubling.</strong> How much larger should the new block be? Growing by one element at a time means copying 1, then 2, then 3, … elements: for n push_backs about n²/2 copies. Growing to <strong>double</strong> the size means that a copy happens only at sizes 1, 2, 4, 8, …, and all copies together are fewer than 2n. On average, every push_back costs a constant amount of work. The winter 2018/19 exam (task 6) asks exactly for this push_back: coding task 4.</p>
+</div>
+<div class="box"><h3 id="we-2">Worked example 2: counting the copies</h3>
+<p>A vector starts with room for 1 element. We push_back 9 elements.</p>
+<ol class="gq">
+  <li>Growing by one each time it is full: how many element copies in total?
+  <details><summary>Answer</summary><div><p>It is full before every push from the second on, with 1, 2, …, 8 elements: 1 + 2 + … + 8 = 36 copies.</p></div></details></li>
+  <li>Doubling each time it is full: when does it grow, and how many copies?
+  <details><summary>Answer</summary><div><p>It is full at sizes 1, 2, 4 and 8: it grows to 2, 4, 8 and 16, copying 1 + 2 + 4 + 8 = 15 elements. For a million elements the difference is about 500 billion copies against 2 million.</p></div></details></li>
+</ol></div>
+
+<h2 id="s7-coding-tasks">7. Working with arrays: coding tasks</h2>
+<p>Each task gives you a contract; you write the body, with the six questions of the <a class="xl" href="inf-method.html">Task method</a> and the <a class="xl" href="#ptr-method">pointer-range method</a>. New patterns in this lesson:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>pattern</th><th>shape</th></tr></thead>
+<tbody>
+<tr><td>a pointer walks an array range</td><td><code>for (int* p = begin; p != end; ++p) … *p …</code></td></tr>
+<tr><td>save one, shift the rest</td><td><code>int first = *begin;</code> copy each <code>*(p + 1)</code> to <code>*p</code>; put first at <code>*(end - 1)</code></td></tr>
+<tr><td>deep copy of an array</td><td><code>elements(new int[v.count])</code>, then copy element by element</td></tr>
+<tr><td>grow by doubling</td><td>full? new array of twice the size, copy, <code>delete[]</code> the old one, switch the pointer</td></tr>
+</tbody></table></div>
+
+<div class="task" id="task-1"><h3 id="ct-1">Coding task 1: sum and fill on a range (script p. 219–221)</h3>
+<p>Write <code>sum(begin, end)</code>, which returns the sum of the elements in [begin, end), and <code>fill(begin, end, value)</code>, which sets them all to value. The program reads n numbers into a dynamic array and two indices from and to, prints the sum of the elements with indices from to to − 1, sets them to 0, and prints the array.</p>
+<div class="need"><span class="label">You'll need these</span><p>The pointer walk (<a class="xl" href="#s3-ranges">section 3</a>) and <code>const int*</code> for a read-only range (<a class="xl" href="inf-12.html#s2-pointers">lesson 12</a>).</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a valid range, possibly empty; the functions never see the array's length.</li>
+  <li><strong>Must hold at the end:</strong> sum: the sum, range unchanged. fill: exactly the elements in the range changed.</li>
+  <li><strong>The gap to fill:</strong> a loop that needs nothing but the two pointers.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write both bodies, then press <em>Check</em>. Input: n, n numbers, from, to.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;5 1 2 3 4 5 1 4&quot;,&quot;out&quot;:&quot;9 | 1 0 0 0 5&quot;},{&quot;in&quot;:&quot;3 7 8 9 0 3&quot;,&quot;out&quot;:&quot;24 | 0 0 0&quot;},{&quot;in&quot;:&quot;4 1 1 1 1 2 2&quot;,&quot;out&quot;:&quot;0 | 1 1 1 1&quot;},{&quot;in&quot;:&quot;1 -5 0 1&quot;,&quot;out&quot;:&quot;-5 | 0&quot;},{&quot;in&quot;:&quot;6 10 20 30 40 50 60 5 6&quot;,&quot;out&quot;:&quot;60 | 10 20 30 40 50 0&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range</span>
+<span class="tk-c">// POST: returns the sum of the elements in [begin, end)</span>
+<span class="tk-k">int</span> sum(<span class="tk-k">const</span> <span class="tk-k">int</span>* begin, <span class="tk-k">const</span> <span class="tk-k">int</span>* end) {
+  <span class="tk-c">// todo</span>
+  <span class="tk-k">return</span> 0;
+}
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range</span>
+<span class="tk-c">// POST: every element within [begin, end) was set to value</span>
+<span class="tk-k">void</span> fill(<span class="tk-k">int</span>* begin, <span class="tk-k">int</span>* end, <span class="tk-k">int</span> value) {
+  <span class="tk-c">// todo</span>
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">int</span>* a = <span class="tk-k">new</span> <span class="tk-k">int</span>[n];
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; a[i];
+  <span class="tk-k">int</span> from, to;
+  <span class="tk-k">std</span>::cin &gt;&gt; from &gt;&gt; to;
+  <span class="tk-k">std</span>::cout &lt;&lt; sum(a + from, a + to) &lt;&lt; <span class="tk-s">" | "</span>;
+  fill(a + from, a + to, 0);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = a; p != a + n; ++p)
+    <span class="tk-k">std</span>::cout &lt;&lt; *p &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">delete</span>[] a;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Why is sum's parameter <code>const int*</code> and fill's <code>int*</code>?</strong>
+  <details><summary>My answer</summary><div><p>sum only reads; with <code>const int*</code>, an accidental <code>*p = …</code> wouldn't compile. fill writes through the pointer, so it needs <code>int*</code>.</p></div></details></li>
+  <li><strong>How does main pass "indices from to to − 1"?</strong>
+  <details><summary>My answer</summary><div><p><code>a + from</code> and <code>a + to</code>: the half-open range of lesson 11, with pointers instead of iterators.</p></div></details></li>
+  <li><strong>What would go wrong without <code>delete[] a;</code> at the end?</strong>
+  <details><summary>My answer</summary><div><p>Nothing visible: the program ends and the system takes the memory back. But it would break the guideline, and in a function called a million times it would be a leak. And <code>delete a;</code> (without []) would be undefined behaviour.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (after the script p. 221, checked by compiling)</summary><div>
+<p><em>Frame:</em> two pointer walks: one with an accumulator, one that writes.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Walk from the first marked shelf to the stop mark, adding up what stands on each.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">int</span> s = 0;
+<span class="tk-k">for</span> (<span class="tk-k">const</span> <span class="tk-k">int</span>* p = begin; p != end; ++p)
+  s += *p;
+<span class="tk-k">return</span> s;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Walk the same way and put value on each shelf.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">int</span>* p = begin; p != end; ++p)
+  *p = value;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="5 1 2 3 4 5 1 4"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range</span>
+<span class="tk-c">// POST: returns the sum of the elements in [begin, end)</span>
+<span class="tk-k">int</span> sum(<span class="tk-k">const</span> <span class="tk-k">int</span>* begin, <span class="tk-k">const</span> <span class="tk-k">int</span>* end) {
+  <span class="tk-k">int</span> s = 0;
+  <span class="tk-k">for</span> (<span class="tk-k">const</span> <span class="tk-k">int</span>* p = begin; p != end; ++p)
+    s += *p;
+  <span class="tk-k">return</span> s;
+}
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range</span>
+<span class="tk-c">// POST: every element within [begin, end) was set to value</span>
+<span class="tk-k">void</span> fill(<span class="tk-k">int</span>* begin, <span class="tk-k">int</span>* end, <span class="tk-k">int</span> value) {
+  <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = begin; p != end; ++p)
+    *p = value;
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">int</span>* a = <span class="tk-k">new</span> <span class="tk-k">int</span>[n];
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; a[i];
+  <span class="tk-k">int</span> from, to;
+  <span class="tk-k">std</span>::cin &gt;&gt; from &gt;&gt; to;
+  <span class="tk-k">std</span>::cout &lt;&lt; sum(a + from, a + to) &lt;&lt; <span class="tk-s">" | "</span>;
+  fill(a + from, a + to, 0);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = a; p != a + n; ++p)
+    <span class="tk-k">std</span>::cout &lt;&lt; *p &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">delete</span>[] a;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>9 | 1 0 0 0 5</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>A middle range; the whole array; an empty range (2, 2: sum 0, nothing changed); a single element; the last element only (5, 6).</p></div></details></li>
+  <li><strong>Write sum with an index loop instead. What does the function then need?</strong>
+  <details><summary>My answer</summary><div><p>A length: <code>int sum(const int* a, int n)</code> with <code>a[i]</code>. The pointer pair needs nothing else, and works for any part of an array without converting indices.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-ptrrange">a pointer walks an array range</a> <a class="mvl" href="inf-method.html#p-acc">accumulator</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Two pointers in, nothing else.</strong></li>
+  <li><strong><code>p != end</code>,</strong> never <code>*end</code>.</li>
+  <li><strong>Every <code>new[]</code> gets a <code>delete[]</code>,</strong> with the brackets.</li>
+</ol>
+<p>In short: "begin in, end out, brackets on delete".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> For <code>int* a = new int[6];</code>, which call fills only the last three elements?</p>
+  <details><summary>Answer</summary><div><p><code>fill(a + 3, a + 6, value);</code></p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write <code>const int* find_max(const int* begin, const int* end)</code> for a non-empty range, returning a pointer to the largest element.</p>
+  <details><summary>Answer</summary><div><p><code>const int* m = begin; for (const int* p = begin + 1; p != end; ++p) if (*p &gt; *m) m = p; return m;</code>. The index of the maximum is then <code>m - begin</code>.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write sum and fill in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-2"><h3 id="ct-2">Coding task 2: cyclic shift (IFMP exam January 2017, task 4, 8 points)</h3>
+<p>Write <code>cyclic_shift(begin, end)</code>: every element of the range moves one place to the left, and the first element moves to the back. (1, 2, 3, 4, 5) becomes (2, 3, 4, 5, 1). An empty range is left alone. The exam's hint: store the first element; walk from the first to the second-to-last element, replacing each by its successor; finally put the stored element last.</p>
+<div class="need"><span class="label">You'll need these</span><p><code>*(p + 1)</code> and <code>*(end - 1)</code> (<a class="xl" href="#s2-arrays">section 2</a>) and the <a class="xl" href="#ptr-method">pointer-range method</a>, question 4.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a valid range, possibly empty.</li>
+  <li><strong>Must hold at the end:</strong> a_2, …, a_n, a_1 in the range; nothing outside it changed.</li>
+  <li><strong>The gap to fill:</strong> a_1 is overwritten in the first step, so it must be saved; and the loop must stop one early, because the last element has no successor.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the body, then press <em>Check</em>. Input: n, n numbers, from, to; the program shifts the elements with indices from to to − 1.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;5 1 2 3 4 5 0 5&quot;,&quot;out&quot;:&quot;2 3 4 5 1&quot;},{&quot;in&quot;:&quot;5 1 2 3 4 5 1 4&quot;,&quot;out&quot;:&quot;1 3 4 2 5&quot;},{&quot;in&quot;:&quot;3 7 8 9 1 1&quot;,&quot;out&quot;:&quot;7 8 9&quot;},{&quot;in&quot;:&quot;1 9 0 1&quot;,&quot;out&quot;:&quot;9&quot;},{&quot;in&quot;:&quot;4 4 3 2 1 2 4&quot;,&quot;out&quot;:&quot;4 3 1 2&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range, possibly empty</span>
+<span class="tk-c">// POST: the sequence a_1, a_2, ..., a_n of numbers in the range</span>
+<span class="tk-c">//       [begin, end) is replaced by the sequence a_2, ..., a_n, a_1</span>
+<span class="tk-k">void</span> cyclic_shift(<span class="tk-k">int</span>* begin, <span class="tk-k">int</span>* end) {
+  <span class="tk-c">// todo</span>
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">int</span>* a = <span class="tk-k">new</span> <span class="tk-k">int</span>[n];
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; a[i];
+  <span class="tk-k">int</span> from, to;
+  <span class="tk-k">std</span>::cin &gt;&gt; from &gt;&gt; to;
+  cyclic_shift(a + from, a + to);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cout &lt;&lt; a[i] &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">delete</span>[] a;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Why must the loop stop at <code>end - 1</code>?</strong>
+  <details><summary>My answer</summary><div><p>The body reads <code>*(p + 1)</code>. For p = end − 1 that would be *end, behind the range. The last element gets a_1 after the loop instead.</p></div></details></li>
+  <li><strong>What protects the empty range?</strong>
+  <details><summary>My answer</summary><div><p><code>if (begin &lt; end)</code>. Without it, <code>*begin</code> and <code>*(end - 1)</code> would read outside the range. (The official solution compares with &lt;; <code>begin != end</code> works as well.)</p></div></details></li>
+  <li><strong>Does a range of one element need a special case?</strong>
+  <details><summary>My answer</summary><div><p>No: the loop doesn't run (begin is not &lt; end − 1), and a_1 is written back to its own place.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (official solution, IFMP January 2017; checked by compiling)</summary><div>
+<p><em>Frame:</em> guard the empty range; save, shift, put back.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>If there is at least one jar: take the first jar off the row and hold it.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (begin &lt; end) {
+  <span class="tk-k">int</span> a_1 = *begin;</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>From the first shelf to the second-to-last: move the neighbour's jar onto this shelf.</p></div><div class="sp-formal">
+<pre class="code"><code>  <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = begin; p &lt; end - 1; ++p)
+    *p = *(p + 1);</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Put the held jar on the last shelf.</p></div><div class="sp-formal">
+<pre class="code"><code>  *(end - 1) = a_1;
+}</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="5 1 2 3 4 5 0 5"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-c">// PRE:  [begin, end) is a valid range, possibly empty</span>
+<span class="tk-c">// POST: the sequence a_1, a_2, ..., a_n of numbers in the range</span>
+<span class="tk-c">//       [begin, end) is replaced by the sequence a_2, ..., a_n, a_1</span>
+<span class="tk-k">void</span> cyclic_shift(<span class="tk-k">int</span>* begin, <span class="tk-k">int</span>* end) {
+  <span class="tk-k">if</span> (begin &lt; end) {
+    <span class="tk-k">int</span> a_1 = *begin;
+    <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = begin; p &lt; end - 1; ++p)
+      *p = *(p + 1);
+    *(end - 1) = a_1;
+  }
+}
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  <span class="tk-k">int</span>* a = <span class="tk-k">new</span> <span class="tk-k">int</span>[n];
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; a[i];
+  <span class="tk-k">int</span> from, to;
+  <span class="tk-k">std</span>::cin &gt;&gt; from &gt;&gt; to;
+  cyclic_shift(a + from, a + to);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cout &lt;&lt; a[i] &lt;&lt; <span class="tk-s">" "</span>;
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">delete</span>[] a;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>2 3 4 5 1</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>The exam's (1, 2, 3, 4, 5); a middle part (indices 1 to 3), so the elements outside must stay; an empty range; a single element; the last two elements.</p></div></details></li>
+  <li><strong>How would you shift to the right instead: (1, 2, 3) to (3, 1, 2)?</strong>
+  <details><summary>My answer</summary><div><p>Save the last, <code>int a_n = *(end - 1);</code>, walk backwards <code>for (int* p = end - 1; p &gt; begin; --p) *p = *(p - 1);</code>, then <code>*begin = a_n;</code>. The direction of the walk matters: forwards, you would overwrite the values you still need.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-shift">save one, shift the rest</a> <a class="mvl" href="inf-method.html#p-ptrrange">a pointer walks an array range</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Guard first:</strong> <code>if (begin &lt; end)</code>.</li>
+  <li><strong>Save what you will overwrite.</strong></li>
+  <li><strong>A loop reading <code>*(p + 1)</code> stops at <code>end - 1</code>.</strong></li>
+</ol>
+<p>In short: "guard, save, shift, put back".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Apply cyclic_shift three times to (1, 2, 3, 4, 5). What is the result?</p>
+  <details><summary>Answer</summary><div><p>(4, 5, 1, 2, 3). After 5 times it is back to the start.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write <code>void reverse(int* begin, int* end)</code> with two pointers moving towards each other.</p>
+  <details><summary>Answer</summary><div><p><code>while (begin &lt; end) { --end; std::swap(*begin, *end); ++begin; }</code>. Decrement end first, because it points behind the last element.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write cyclic_shift in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-3"><h3 id="ct-3">Coding task 3: copying our_vector (script p. 225–227)</h3>
+<p>our_vector has a constructor and a destructor with <code>delete[]</code>. Complete the copy constructor, so that <code>our_vector w = v;</code> gives w its own array with the same elements, and the assignment operator, so that <code>u = w;</code> makes u an independent copy of w. The program copies, changes the copies, and prints all three vectors.</p>
+<div class="need"><span class="label">You'll need these</span><p>Section 5, and the copy-and-swap assignment of <a class="xl" href="inf-13.html#s5-assignment">lesson 13</a>.</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> a vector v of any size, possibly 0.</li>
+  <li><strong>Must hold at the end:</strong> the copy has its own array of the same size and the same elements; changing one vector never changes another; old arrays are freed exactly once.</li>
+  <li><strong>The gap to fill:</strong> the initialiser list already allocates the new array; you copy the elements, and in operator= you exchange the contents with a copy.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> write the two bodies, then press <em>Check</em>. Input: n and n numbers.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;3 1 2 3&quot;,&quot;out&quot;:&quot;1 2 3 | 100 2 3 | 100 200 3&quot;},{&quot;in&quot;:&quot;0&quot;,&quot;out&quot;:&quot;| |&quot;},{&quot;in&quot;:&quot;1 7&quot;,&quot;out&quot;:&quot;7 | 100 | 100&quot;},{&quot;in&quot;:&quot;4 9 8 7 6&quot;,&quot;out&quot;:&quot;9 8 7 6 | 100 8 7 6 | 100 200 7 6&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;utility&gt;</span>
+
+<span class="tk-k">class</span> our_vector {
+  <span class="tk-k">int</span>* elements;   <span class="tk-c">// pointer to first element in array</span>
+  <span class="tk-k">int</span> count;       <span class="tk-c">// number of elements</span>
+<span class="tk-k">public</span>:
+  <span class="tk-c">// POST: a vector with size elements, all 0</span>
+  our_vector(<span class="tk-k">int</span> size) : elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[size]), count(size) {
+    <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; count; ++i)
+      elements[i] = 0;
+  }
+
+  <span class="tk-c">// POST: *this is initialized with a copy of v</span>
+  our_vector(<span class="tk-k">const</span> our_vector&amp; v) : elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[v.count]), count(v.count) {
+    <span class="tk-c">// todo: copy the elements of v</span>
+  }
+
+  <span class="tk-c">// POST: the array of *this is deleted</span>
+  ~our_vector() {
+    <span class="tk-k">delete</span>[] elements;
+  }
+
+  <span class="tk-c">// POST: *this becomes a copy of v</span>
+  our_vector&amp; <span class="tk-k">operator</span>=(<span class="tk-k">const</span> our_vector&amp; v) {
+    <span class="tk-c">// todo</span>
+    <span class="tk-k">return</span> *<span class="tk-k">this</span>;                             <span class="tk-c">// convention</span>
+  }
+
+  <span class="tk-k">int</span> size() <span class="tk-k">const</span> {
+    <span class="tk-k">return</span> count;
+  }
+
+  <span class="tk-k">int</span>&amp; <span class="tk-k">operator</span>[](<span class="tk-k">int</span> i) {
+    <span class="tk-k">return</span> elements[i];
+  }
+
+  <span class="tk-c">// POST: the elements have been written to sink, separated by spaces</span>
+  <span class="tk-k">void</span> print(<span class="tk-k">std</span>::ostream&amp; sink) <span class="tk-k">const</span> {
+    <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = elements; p != elements + count; ++p)
+      sink &lt;&lt; *p &lt;&lt; <span class="tk-s">" "</span>;
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  our_vector v(n);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; v[i];
+  our_vector w = v;            <span class="tk-c">// copy constructor</span>
+  <span class="tk-k">if</span> (w.size() &gt; 0)
+    w[0] = 100;
+  our_vector u(1);
+  u = w;                       <span class="tk-c">// assignment</span>
+  <span class="tk-k">if</span> (u.size() &gt; 1)
+    u[1] = 200;
+  v.print(<span class="tk-k">std</span>::cout);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"| "</span>;
+  w.print(<span class="tk-k">std</span>::cout);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"| "</span>;
+  u.print(<span class="tk-k">std</span>::cout);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<ol class="gq">
+  <li><strong>Which line of the program would go wrong with the generated copy constructor?</strong>
+  <details><summary>My answer</summary><div><p><code>w[0] = 100;</code> would change v too (the same array), and at the end of main, v's and w's destructors would both <code>delete[]</code> it: a double delete.</p></div></details></li>
+  <li><strong>Why must copy-and-swap swap count as well?</strong>
+  <details><summary>My answer</summary><div><p>After the swap, *this has the copy's array, which has the copy's length. If count stayed old, u would believe it had 1 element while its array has 4, or the other way round, and read beyond its array.</p></div></details></li>
+  <li><strong>Who frees u's old array of length 1?</strong>
+  <details><summary>My answer</summary><div><p>The local copy, which holds it after the swap: its destructor runs at the closing brace of the if.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (after the script p. 226–227, checked by compiling)</summary><div>
+<p><em>Frame:</em> copy constructor: element-by-element copy into the new array. Assignment: copy-and-swap with both members.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>The new row is already there; put a twin of every jar of v on the same shelf number.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; count; ++i)
+  elements[i] = v.elements[i];</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Not myself? Make a full copy of v, swap rows and lengths with it, and let the copy carry my old row away.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (<span class="tk-k">this</span> != &amp;v) {
+  our_vector copy = v;
+  <span class="tk-k">std</span>::swap(elements, copy.elements);
+  <span class="tk-k">std</span>::swap(count, copy.count);
+}</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="3 1 2 3"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-p">#include &lt;utility&gt;</span>
+
+<span class="tk-k">class</span> our_vector {
+  <span class="tk-k">int</span>* elements;   <span class="tk-c">// pointer to first element in array</span>
+  <span class="tk-k">int</span> count;       <span class="tk-c">// number of elements</span>
+<span class="tk-k">public</span>:
+  <span class="tk-c">// POST: a vector with size elements, all 0</span>
+  our_vector(<span class="tk-k">int</span> size) : elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[size]), count(size) {
+    <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; count; ++i)
+      elements[i] = 0;
+  }
+
+  <span class="tk-c">// POST: *this is initialized with a copy of v</span>
+  our_vector(<span class="tk-k">const</span> our_vector&amp; v) : elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[v.count]), count(v.count) {
+    <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; count; ++i)
+      elements[i] = v.elements[i];
+  }
+
+  <span class="tk-c">// POST: the array of *this is deleted</span>
+  ~our_vector() {
+    <span class="tk-k">delete</span>[] elements;
+  }
+
+  <span class="tk-c">// POST: *this becomes a copy of v</span>
+  our_vector&amp; <span class="tk-k">operator</span>=(<span class="tk-k">const</span> our_vector&amp; v) {
+    <span class="tk-k">if</span> (<span class="tk-k">this</span> != &amp;v) {                         <span class="tk-c">// no self assignment</span>
+      our_vector copy = v;                    <span class="tk-c">// copy constructor</span>
+      <span class="tk-k">std</span>::swap(elements, copy.elements);     <span class="tk-c">// swap pointer</span>
+      <span class="tk-k">std</span>::swap(count, copy.count);           <span class="tk-c">// swap count</span>
+    }
+    <span class="tk-k">return</span> *<span class="tk-k">this</span>;                             <span class="tk-c">// convention</span>
+  }
+
+  <span class="tk-k">int</span> size() <span class="tk-k">const</span> {
+    <span class="tk-k">return</span> count;
+  }
+
+  <span class="tk-k">int</span>&amp; <span class="tk-k">operator</span>[](<span class="tk-k">int</span> i) {
+    <span class="tk-k">return</span> elements[i];
+  }
+
+  <span class="tk-c">// POST: the elements have been written to sink, separated by spaces</span>
+  <span class="tk-k">void</span> print(<span class="tk-k">std</span>::ostream&amp; sink) <span class="tk-k">const</span> {
+    <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = elements; p != elements + count; ++p)
+      sink &lt;&lt; *p &lt;&lt; <span class="tk-s">" "</span>;
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  our_vector v(n);
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 0; i &lt; n; ++i)
+    <span class="tk-k">std</span>::cin &gt;&gt; v[i];
+  our_vector w = v;            <span class="tk-c">// copy constructor</span>
+  <span class="tk-k">if</span> (w.size() &gt; 0)
+    w[0] = 100;
+  our_vector u(1);
+  u = w;                       <span class="tk-c">// assignment</span>
+  <span class="tk-k">if</span> (u.size() &gt; 1)
+    u[1] = 200;
+  v.print(<span class="tk-k">std</span>::cout);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"| "</span>;
+  w.print(<span class="tk-k">std</span>::cout);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"| "</span>;
+  u.print(<span class="tk-k">std</span>::cout);
+  <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"\n"</span>;
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>1 2 3 | 100 2 3 | 100 200 3</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>Three elements (each vector shows its own change only); size 0 (copies of nothing, and u becomes empty although it had 1 element); size 1; a longer vector.</p></div></details></li>
+  <li><strong>The copy constructor in the script assigns <code>elements = new int[count];</code> in the body. Why does ours use the initialiser list?</strong>
+  <details><summary>My answer</summary><div><p>Both work. In the list, elements must come before count, because members are initialised in the order they are declared, and we use <code>v.count</code> (not count) for the size to be safe either way.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-arraycopy">deep copy of an array</a> <a class="mvl" href="inf-method.html#p-assign">assignment operator</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Rule of three:</strong> delete[] in the destructor means a copy constructor and an assignment.</li>
+  <li><strong>Copy: new array of the source's size, then the elements.</strong></li>
+  <li><strong>Swap every member.</strong></li>
+</ol>
+<p>In short: "own row, own jars".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> How many arrays exist just before the end of main in the first test, and how many delete[] run at the end?</p>
+  <details><summary>Answer</summary><div><p>Three arrays (v, w, u; u's old array of 1 was already freed), and three delete[], one per vector.</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write the assignment from scratch instead of copy-and-swap.</p>
+  <details><summary>Answer</summary><div><p><code>if (this != &amp;v) { int* e = new int[v.count]; for (int i = 0; i &lt; v.count; ++i) e[i] = v.elements[i]; delete[] elements; elements = e; count = v.count; } return *this;</code>. Copy first, free after: if new fails, the old vector is still intact.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write both bodies in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<div class="task" id="task-4"><h3 id="ct-4">Coding task 4: a vector that doubles (Informatik exam winter 2018/19, task 6, 12 points)</h3>
+<p>The class <code>avec</code> stores its elements in an array of <code>max_size</code> slots, of which the first <code>size</code> are used. Complete <code>push_back</code>: when the array is full, double max_size first: allocate an array of twice the size, copy the elements over, free the old array. Then append. Appending 3 to the full vector 1, 2 (maximum size 2) gives 1, 2, 3, _ (maximum size 4). The vector starts with room for 32. The program appends 1, …, n and reports size, maximum size and sum.</p>
+<div class="need"><span class="label">You'll need these</span><p><code>new int[…]</code> and <code>delete[]</code> (<a class="xl" href="#s5-memory">section 5</a>), a pointer walk with two pointers at once, and doubling (<a class="xl" href="#s6-growing">section 6</a>).</p></div>
+<div class="frame"><span class="label">What the contract forces (before any idea)</span>
+<ul>
+  <li><strong>Given:</strong> size ≤ max_size; the elements in elements[0 .. size − 1].</li>
+  <li><strong>Must hold at the end:</strong> the old elements in order, new_element after them, size one larger; max_size doubled exactly when it was full; no old array left behind.</li>
+  <li><strong>The gap to fill:</strong> the order of copy, free and switch, so that no element and no array is lost.</li>
+</ul></div>
+<p><strong>Try it yourself:</strong> complete push_back, then press <em>Check</em>. Input: n.</p>
+<pre class="code" data-tests="[{&quot;in&quot;:&quot;0&quot;,&quot;out&quot;:&quot;size 0 max 32 sum 0&quot;},{&quot;in&quot;:&quot;5&quot;,&quot;out&quot;:&quot;size 5 max 32 sum 15&quot;},{&quot;in&quot;:&quot;32&quot;,&quot;out&quot;:&quot;size 32 max 32 sum 528&quot;},{&quot;in&quot;:&quot;33&quot;,&quot;out&quot;:&quot;size 33 max 64 sum 561&quot;},{&quot;in&quot;:&quot;70&quot;,&quot;out&quot;:&quot;size 70 max 128 sum 2485&quot;},{&quot;in&quot;:&quot;129&quot;,&quot;out&quot;:&quot;size 129 max 256 sum 8385&quot;}]"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">class</span> avec {
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> size;       <span class="tk-c">// Current size (number of stored elements)</span>
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> max_size;   <span class="tk-c">// Current maximum size</span>
+  <span class="tk-k">int</span>* elements;           <span class="tk-c">// Array of elements</span>
+
+<span class="tk-k">public</span>:
+  avec() : size(0), max_size(32), elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[32]) {}
+
+  ~avec() {
+    <span class="tk-k">delete</span>[] elements;
+  }
+
+  <span class="tk-c">// POST: 'new_element' was appended to the sequence of elements</span>
+  <span class="tk-k">void</span> push_back(<span class="tk-k">int</span> new_element) {
+    <span class="tk-k">if</span> (size == max_size) {
+      <span class="tk-c">// todo: double the maximum size, moving the elements to a new array</span>
+    }
+    <span class="tk-c">// todo: store new_element</span>
+    ++size;
+  }
+
+  <span class="tk-c">// POST: size, maximum size and the sum of the elements have been printed</span>
+  <span class="tk-k">void</span> report() <span class="tk-k">const</span> {
+    <span class="tk-k">int</span> s = 0;
+    <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = elements; p != elements + size; ++p)
+      s += *p;
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"size "</span> &lt;&lt; size &lt;&lt; <span class="tk-s">" max "</span> &lt;&lt; max_size &lt;&lt; <span class="tk-s">" sum "</span> &lt;&lt; s &lt;&lt; <span class="tk-s">"\n"</span>;
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  avec v;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 1; i &lt;= n; ++i)
+    v.push_back(i);
+  v.report();
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<details class="hint"><summary>Hint</summary><div><p>The exam's skeleton names the parts: <code>int* new_elems = …;</code>, <code>int* itN = …;</code>, and a loop <code>for (int* itO = …; …; …) { …; ++itN; }</code>, then <code>delete[] elements;</code>. itO walks the old array, itN the new one, side by side.</p></div></details>
+<ol class="gq">
+  <li><strong>When is the array full?</strong>
+  <details><summary>My answer</summary><div><p>When <code>size == max_size</code>: every slot is used, and slot size doesn't exist.</p></div></details></li>
+  <li><strong>In which order: copy, <code>delete[] elements</code>, <code>elements = new_elems</code>?</strong>
+  <details><summary>My answer</summary><div><p>Exactly that order. Free before copying and you copy from freed memory; switch the pointer before freeing and you lose the only pointer to the old array (a leak) or free the new one.</p></div></details></li>
+  <li><strong>Why does the 33rd push_back double, but the 32nd doesn't?</strong>
+  <details><summary>My answer</summary><div><p>Before the 32nd, size is 31 &lt; 32: there is still a free slot. Before the 33rd, size is 32 == max_size.</p></div></details></li>
+  <li><strong>Write it.</strong>
+  <details><summary>Answer (written by StudyHub; no official solution exists; checked by compiling)</summary><div>
+<p><em>Frame:</em> if full: new array, two-pointer copy, free, switch, double. Then store and count.</p>
+<div class="sp">
+<div class="sp-head"><span class="label">The golem's steps</span><span class="label">What you write</span></div>
+<div class="sp-row"><div class="sp-story"><p>Row full? Ask the store room for a row twice as long, and walk both rows side by side, carrying each jar across.</p></div><div class="sp-formal">
+<pre class="code"><code><span class="tk-k">if</span> (size == max_size) {
+  <span class="tk-k">int</span>* new_elems = <span class="tk-k">new</span> <span class="tk-k">int</span>[2 * max_size];
+  <span class="tk-k">int</span>* itN = new_elems;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span>* itO = elements; itO != elements + size; ++itO) {
+    *itN = *itO;
+    ++itN;
+  }</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Return the old row, use the new one from now on, and note its length.</p></div><div class="sp-formal">
+<pre class="code"><code>  <span class="tk-k">delete</span>[] elements;
+  elements = new_elems;
+  max_size = 2 * max_size;
+}</code></pre>
+</div></div>
+<div class="sp-row"><div class="sp-story"><p>Put the new jar on the first free shelf.</p></div><div class="sp-formal">
+<pre class="code"><code>elements[size] = new_element;
+++size;</code></pre>
+</div></div>
+</div>
+<details><summary>The program in one piece</summary><div>
+<pre class="code" data-run="1" data-stdin="33"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+
+<span class="tk-k">class</span> avec {
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> size;       <span class="tk-c">// Current size (number of stored elements)</span>
+  <span class="tk-k">unsigned</span> <span class="tk-k">int</span> max_size;   <span class="tk-c">// Current maximum size</span>
+  <span class="tk-k">int</span>* elements;           <span class="tk-c">// Array of elements</span>
+
+<span class="tk-k">public</span>:
+  avec() : size(0), max_size(32), elements(<span class="tk-k">new</span> <span class="tk-k">int</span>[32]) {}
+
+  ~avec() {
+    <span class="tk-k">delete</span>[] elements;
+  }
+
+  <span class="tk-c">// POST: 'new_element' was appended to the sequence of elements</span>
+  <span class="tk-k">void</span> push_back(<span class="tk-k">int</span> new_element) {
+    <span class="tk-k">if</span> (size == max_size) {
+      <span class="tk-k">int</span>* new_elems = <span class="tk-k">new</span> <span class="tk-k">int</span>[2 * max_size];
+      <span class="tk-k">int</span>* itN = new_elems;
+      <span class="tk-k">for</span> (<span class="tk-k">int</span>* itO = elements; itO != elements + size; ++itO) {
+        *itN = *itO;
+        ++itN;
+      }
+      <span class="tk-k">delete</span>[] elements;
+      elements = new_elems;
+      max_size = 2 * max_size;
+    }
+    elements[size] = new_element;
+    ++size;
+  }
+
+  <span class="tk-c">// POST: size, maximum size and the sum of the elements have been printed</span>
+  <span class="tk-k">void</span> report() <span class="tk-k">const</span> {
+    <span class="tk-k">int</span> s = 0;
+    <span class="tk-k">for</span> (<span class="tk-k">int</span>* p = elements; p != elements + size; ++p)
+      s += *p;
+    <span class="tk-k">std</span>::cout &lt;&lt; <span class="tk-s">"size "</span> &lt;&lt; size &lt;&lt; <span class="tk-s">" max "</span> &lt;&lt; max_size &lt;&lt; <span class="tk-s">" sum "</span> &lt;&lt; s &lt;&lt; <span class="tk-s">"\n"</span>;
+  }
+};
+
+<span class="tk-k">int</span> main() {
+  <span class="tk-k">int</span> n;
+  <span class="tk-k">std</span>::cin &gt;&gt; n;
+  avec v;
+  <span class="tk-k">for</span> (<span class="tk-k">int</span> i = 1; i &lt;= n; ++i)
+    v.push_back(i);
+  v.report();
+  <span class="tk-k">return</span> 0;
+}</code></pre>
+<pre class="out"><code>size 33 max 64 sum 561</code></pre>
+</div></details></div></details></li>
+  <li><strong>Tests.</strong>
+  <details><summary>My answer</summary><div><p>No push; a few; exactly 32 (full, but no doubling yet); 33 (one doubling, all 32 old elements must survive: the sum checks it); 70 (two doublings); 129 (three).</p></div></details></li>
+  <li><strong>The exam's blanks also include the constructor: <code>avec() : size(…), max_size(32), elements(…) {}</code>. What goes in?</strong>
+  <details><summary>My answer</summary><div><p><code>size(0)</code> and <code>elements(new int[32])</code>. And by the rule of three the class needs a destructor with <code>delete[] elements;</code> (ours has one), a copy constructor and an assignment, or both deleted.</p></div></details></li>
+</ol>
+<p class="moves">Patterns used: <a class="mvl" href="inf-method.html#p-doubling">grow by doubling</a> <a class="mvl" href="inf-method.html#p-ptrrange">a pointer walks an array range</a></p>
+<div class="exam"><span class="label">How to write this under exam pressure</span>
+<ol>
+  <li><strong>Full means size == max_size.</strong></li>
+  <li><strong>New, copy, delete[], switch, double:</strong> in that order.</li>
+  <li><strong>Then the normal append:</strong> <code>elements[size] = …; ++size;</code></li>
+</ol>
+<p>In short: "full? double, carry over, give back".</p></div>
+<div class="ladder"><span class="label">Your turn: the coding ladder</span>
+<ol>
+  <li><p><strong>Rung 1 (1 min).</strong> Starting at max_size 32, what is max_size after 100 push_backs, and how many times was the vector copied?</p>
+  <details><summary>Answer</summary><div><p>128; copied twice (at 32 → 64 and 64 → 128).</p></div></details></li>
+  <li><p><strong>Rung 2 (3 min).</strong> Write <code>void pop_back()</code> (PRE: not empty), without ever shrinking the array.</p>
+  <details><summary>Answer</summary><div><p><code>assert(size &gt; 0); --size;</code>. The slot stays allocated and is simply overwritten by the next push_back.</p></div></details></li>
+  <li><p><strong>Rung 3 (4 min).</strong> With the answers closed, write push_back in the editor above and press Check.</p>
+  <details><summary>Answer</summary><div><p>The program in one piece above.</p></div></details></li>
+</ol></div>
+</div>
+
+<h2 id="worked-examples">Worked examples: a mixed set before the exercises</h2>
+<div class="box"><h3 id="we-3">Worked example 3: index or pointer?</h3>
+<pre class="code"><code><span class="tk-k">int</span>* a = <span class="tk-k">new</span> <span class="tk-k">int</span>[4]{3, 1, 4, 1};
+<span class="tk-k">int</span> s = 0;
+<span class="tk-k">for</span> (<span class="tk-k">int</span>* p = a + 1; p != a + 4; ++p)
+  s += *p - *(p - 1);</code></pre>
+<ol class="gq">
+  <li>What is s?
+  <details><summary>Answer</summary><div><p>(1 − 3) + (4 − 1) + (1 − 4) = −2 + 3 − 3 = −2. That is a[3] − a[0]: the differences telescope.</p></div></details></li>
+  <li>Write the same loop with indices.
+  <details><summary>Answer</summary><div><p><code>for (int i = 1; i &lt; 4; ++i) s += a[i] - a[i - 1];</code>. p = a + i, and <code>*(p - 1)</code> is <code>a[i - 1]</code>.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Worked example 4: delete or delete[]?</h3>
+<ol class="gq">
+  <li>Which is right for each: <code>int* x = new int(5);</code>, <code>int* y = new int[5];</code>, <code>lnode* n = new lnode(1, nullptr);</code>?
+  <details><summary>Answer</summary><div><p><code>delete x;</code>, <code>delete[] y;</code>, <code>delete n;</code>. Square brackets exactly when the object came from <code>new T[…]</code>. Note that <code>new int(5)</code> is one int with value 5, and <code>new int[5]</code> five ints.</p></div></details></li>
+  <li>And for <code>int* z = y + 2;</code>: may you write <code>delete[] z;</code>?
+  <details><summary>Answer</summary><div><p>No: delete[] needs the pointer that new[] returned, the start of the array. Freeing through z is undefined behaviour.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Exercises</h2>
+<p>Answers by StudyHub where no official solution exists; all code checked by compiling.</p>
+<div class="check">
+  <p><strong>Scoring yourself:</strong> use the points given; exercises 1–4 make 23 points. <strong>19 of 23 and you're done</strong> with lesson 14, and with the course.</p>
+</div>
+
+<h3 id="ex-1">Exercise 1 (Informatik exam summer 2019, task 2, parts (c) and (d), old exam) · 3 points</h3>
+<p>The parts left over from <a class="xl" href="inf-12.html#ex-1">lesson 12, exercise 1</a>. At this point, <code>*j</code> is 3.</p>
+<pre class="code"><code><span class="tk-k">int</span>* p = <span class="tk-k">new</span> <span class="tk-k">int</span>[2]{1,0};
+<span class="tk-k">int</span>* o = p;
+*(++o) = *j;
+<span class="tk-k">std</span>::cout &lt;&lt; *p &lt;&lt; <span class="tk-k">std</span>::endl; <span class="tk-c">// Output (c)</span>
+<span class="tk-k">std</span>::cout &lt;&lt; *o &lt;&lt; <span class="tk-k">std</span>::endl; <span class="tk-c">// Output (d)</span></code></pre>
+<details><summary>Solution</summary><div><p><em>Frame:</em> <code>++o</code> moves o to index 1 before the assignment. (1.5 points each, as in the exam.)</p>
+<p>(c) <strong>1</strong>: p still points to index 0, which wasn't changed. (d) <strong>3</strong>: index 1 got *j.</p></div></details>
+
+<h3 id="ex-2">Exercise 2 (Informatik exam winter 2018/19, task 2, old exam) · 8 points</h3>
+<pre class="code"><code><span class="tk-p">#include &lt;iostream&gt;</span>
+<span class="tk-k">int</span> main(){
+    <span class="tk-k">int</span>* j = <span class="tk-k">new</span> <span class="tk-k">int</span>[4]{1,2,0,1};
+    <span class="tk-k">int</span>* p = j;
+    p += 2;
+    <span class="tk-k">std</span>::cout &lt;&lt; *(j+1) &lt;&lt; <span class="tk-k">std</span>::endl; <span class="tk-c">// Output 1</span>
+    <span class="tk-k">std</span>::cout &lt;&lt; (p-j) &lt;&lt; <span class="tk-k">std</span>::endl; <span class="tk-c">// Output 2</span>
+
+    <span class="tk-k">int</span>&amp; k = *(j+2);
+    k++;
+    (*p)++;
+    <span class="tk-k">std</span>::cout &lt;&lt; k + *p &lt;&lt; <span class="tk-k">std</span>::endl; <span class="tk-c">// Output 3</span>
+
+    <span class="tk-k">int</span>* t = &amp;k;
+    ++t;
+    <span class="tk-k">std</span>::cout &lt;&lt; *t &lt;&lt; <span class="tk-k">std</span>::endl; <span class="tk-c">// Output 4</span>
+
+    <span class="tk-k">delete</span>[] j;
+    <span class="tk-k">return</span> 0;
+}</code></pre>
+<details class="hint"><summary>Hint</summary><div><p>Draw the array and mark where p, k and t are. k and *p are the same element.</p></div></details>
+<details><summary>Solution</summary><div><p><em>Frame:</em> pointer arithmetic counts elements; a reference is another name. (2 points each.)</p>
+<p>Output 1: <strong>2</strong> (index 1). Output 2: <strong>2</strong> (p is at index 2). Output 3: <strong>4</strong>: k is index 2; k++ makes it 1, (*p)++ makes the same element 2; 2 + 2. Output 4: <strong>1</strong>: t starts at index 2 and moves to index 3.</p></div></details>
+
+<h3 id="ex-3">Exercise 3 (Informatik exam winter 2018/19, task 8, old exam) · 6 points</h3>
+<pre class="code"><code>1  <span class="tk-k">int</span>* func(<span class="tk-k">int</span>* p, <span class="tk-k">int</span>* j) {
+2    <span class="tk-k">int</span>* tmp = j;
+3    j = p;
+4    p = tmp;
+5    <span class="tk-k">return</span> p;
+6  }
+7
+8  <span class="tk-c">// ...</span>
+9  <span class="tk-k">int</span>* p = <span class="tk-k">new</span> <span class="tk-k">int</span>[2]{0,0};
+10 <span class="tk-k">int</span>* j = <span class="tk-k">new</span> <span class="tk-k">int</span>[2]{1,1};
+11 <span class="tk-k">int</span>* k = func(p,j);
+12 <span class="tk-k">delete</span>[] k;
+13 <span class="tk-k">delete</span>[] j;
+14 <span class="tk-c">// ...</span></code></pre>
+<p>(a) The code contains two errors related to dynamically allocated memory. Explain both. (4 points) (b) Which single line must be changed, and how, to fix the problem? (2 points)</p>
+<details class="hint"><summary>Hint</summary><div><p>func swaps its own copies of the pointers (passed by value). So what does it return?</p></div></details>
+<details><summary>Solution</summary><div><p><em>Frame:</em> follow each new[] to its delete[]. Pointers passed by value: swapping them inside func changes nothing outside.</p>
+<p>(a) func returns its local p, which after the swap is the original j. So k == j. <strong>Error 1:</strong> the array of line 10 is deleted twice (lines 12 and 13): double delete, undefined behaviour. <strong>Error 2:</strong> the array of line 9 is never deleted: a memory leak. (2 points each.) (b) Change line 13 to <code>delete[] p;</code> (or line 12 to <code>delete[] p;</code>); then each array is deleted exactly once. (2 points.)</p></div></details>
+
+<h3 id="ex-4">Exercise 4 (IFMP exam August 2016, task 8 (a) and (b), old exam) · 6 points</h3>
+<p>A <code>DoublingStack</code> keeps its elements in a doubly linked list of arrays, each twice as large as the one before; new memory is needed only when the top array is full.</p>
+<pre class="code"><code><span class="tk-k">struct</span> Node { <span class="tk-c">// for one array in the list</span>
+  <span class="tk-k">int</span>* values; <span class="tk-k">int</span> size; Node* next; Node* prev; <span class="tk-c">// data members</span>
+
+  Node (<span class="tk-k">int</span> s, Node* p)
+   : values (<span class="tk-k">new</span> <span class="tk-k">int</span>[s]), size (s), next (0), prev (p) <span class="tk-c">// constructor</span>
+  {}
+  ~Node() { <span class="tk-k">delete</span>[] values; } <span class="tk-c">// destructor</span>
+};
+
+<span class="tk-k">class</span> DoublingStack {
+  Node* first; Node* top; <span class="tk-k">int</span> pos; <span class="tk-c">// data members</span>
+<span class="tk-k">public</span>:
+  DoublingStack ()
+  : first (<span class="tk-k">new</span> Node (1, 0)), top (first), pos (0) <span class="tk-c">// default constructor</span>
+  {}
+  <span class="tk-c">// POST: puts value on the stack</span>
+  <span class="tk-k">void</span> push (<span class="tk-k">int</span> value) {
+    <span class="tk-k">if</span> (pos == top-&gt;size) { <span class="tk-c">// top array full</span>
+      top-&gt;next = <span class="tk-k">new</span> Node (2 * top-&gt;size, top);
+      top = top-&gt;next; pos = 0;
+    }
+    top-&gt;values[pos++] = value;
+  }
+  ...
+};</code></pre>
+<p>(a) How many arrays does an initially empty DoublingStack contain after push has been called N times, for N = 7 and N = 33? (2 points) (b) Implement the destructor <code>~DoublingStack()</code>, so that it frees all allocated memory. (4 points)</p>
+<details><summary>Solution</summary><div><p><em>Frame:</em> (a) count capacities 1, 2, 4, …; (b) the stack destructor of lesson 13, walking from first. (Official solution, IFMP August 2016.)</p>
+<p>(a) <strong>N = 7: 3</strong> arrays (1 + 2 + 4 = 7 slots, all full). <strong>N = 33: 6</strong> arrays (1 + 2 + 4 + 8 + 16 = 31 &lt; 33, so a sixth array of 32 is needed). (b)</p>
+<pre class="code"><code>~DoublingStack() {
+  Node* node = first;
+  <span class="tk-k">while</span> (node != 0) {
+    Node* tmp = node;
+    node = node-&gt;next;
+    <span class="tk-k">delete</span> tmp;
+  }
+}</code></pre>
+<p><code>delete tmp</code> runs the Node's destructor, which does <code>delete[] values</code>: each node frees its own array. The exam's part (c), pop, deletes the top array when it is empty: try it as a challenge.</p></div></details>
+
+<h2 id="summary">Summary: what to keep from lesson 14</h2>
+<div class="box"><ul>
+  <li><strong>Arrays</strong>: <code>new T[n]</code> gives a <code>T*</code> to the first of n contiguous elements; free with <code>delete[]</code> (with brackets, through the start pointer).</li>
+  <li><strong>Pointer arithmetic</strong>: <code>p + i</code> is index i, <code>p + n</code> is behind the end (never dereference); <code>p[i]</code> is <code>*(p + i)</code>; <code>q - p</code> is the index distance. Stay inside [0, n].</li>
+  <li><strong>Ranges</strong>: functions take <code>(begin, end)</code>; loop <code>for (int* p = begin; p != end; ++p)</code>; guard <code>*begin</code> and <code>*(end - 1)</code> against the empty range. Pointers are iterators.</li>
+  <li><strong>Array-based vector</strong>: array plus count; <code>operator[]</code> in a non-const and a const version; rule of three with <code>delete[]</code> and deep copies.</li>
+  <li><strong>Growing</strong>: a block can't be resized; allocate a larger one, copy, free the old. Double the size, so copying stays rare. Inserting or removing in the middle shifts elements; that is where lists are better.</li>
+</ul></div>
+
+<h2 id="for-wonder">For wonder: why exactly double? <span class="small">(optional, 5 min)</span></h2>
+<p>Doubling makes every push_back cost a constant amount of work on average: in "amortised constant time", as the algorithms course will call it. But why 2? Any factor larger than 1 gives the same average; the factor only trades memory against copying. With factor 2 there is a curious catch: the new block is always larger than all the old blocks put together (1 + 2 + 4 = 7 &lt; 8), so the memory freed earlier can never be reused for the next block. That is why some libraries grow by 1.5 instead: after a few steps, the freed blocks add up to enough room for the next one. The C++ standard doesn't fix the factor; GCC's library doubles, Microsoft's grows by 1.5. You can watch your own: print <code>v.capacity()</code> after each <code>push_back</code>.</p>
+
+<h2 id="what-we-skipped">What we skipped</h2>
+<p>Also on the <a class="xl" href="skipped.html#informatik">skip list</a>.</p>
+<ul>
+  <li><strong>The Code Expert sheet on dynamic arrays.</strong> Priority: high. Hidden tests; draw the array and the pointers first.</li>
+  <li><strong>Chapter 19, Object-Oriented Programming</strong> (p. 229 onwards). Priority: low. Marked * (optional) in the script: inheritance, subtyping and polymorphism.</li>
+  <li><strong>The vector kept in the middle of a larger block</strong> (Figures 18.8 and 18.9, p. 227–228). Priority: low. An idea in the script, without code.</li>
+</ul>
+<p><strong>Next:</strong> this was the last lesson: you have worked through the whole script. From here, practise with complete old exams under time pressure, and go back to any lesson's exercises where you scored below the line. The <a class="xl" href="informatik.html">Informatik home page</a> has all 14 lessons and the <a class="xl" href="inf-method.html">Task method</a>.</p>
+
+<link rel="stylesheet" href="assets/inf-ide.css?v=inf1123f">
+<script src="assets/codemirror/cm5-cpp.min.js?v=5.65.16" defer></script>
+<script src="assets/inf-run.js?v=inf1123f" defer></script>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="inf-13.html">← Lesson 13: The Golem Returns What It Borrows</a>
+<a href="informatik.html">Informatik home</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe39md3GC3hyHaj6P2GtBLJB2W8UnFEi3NOHiRQUEPzbyUqag/viewform" target="_blank" rel="noopener">Give feedback</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
