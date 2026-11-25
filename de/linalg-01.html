@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Die Gilden der Freien Stadt">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Gilden der Freien Stadt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 1</span>
+<h1>Die Gilden der Freien Stadt</h1>
+<p class="lead">Halbgruppen, Monoide und Gruppen; die Uhrarithmetik $\mathbb Z/n$; Untergruppen und strukturerhaltende Abbildungen; Ringe und Körper, definiert und geprüft.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#how-the-linear-algebra-lessons">Wie die Lektionen zur Linearen Algebra funktionieren</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-guilds-of">1. Die Geschichte: die Gilden der Freien Stadt</a>
+</li>
+<li><a href="#s2-operations-what-the-ritual-must">2. Verknüpfungen: was das Ritual leisten muss</a>
+<ol>
+<li><a href="#examples-and-non-examples-from">Beispiele und Unbeispiele (aus der Vorlesung)</a></li>
+</ol></li>
+<li><a href="#s3-neutral-elements-inverses-groups">3. Neutralelemente, Inverse, Gruppen</a>
+<ol>
+<li><a href="#proof-a">Beweis A: ein links- und ein rechtsneutrales Element stimmen überein</a></li>
+<li><a href="#proof-b">Beweis B: Inverse sind eindeutig</a></li>
+<li><a href="#the-definition-of-a-group">Die Definition einer Gruppe, auf zwei Arten</a></li>
+<li><a href="#the-structure-checklist-use-it">Die Strukturcheckliste (für jedes „zeige, dass … eine abelsche Gruppe ist“ verwenden)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: $(\mathbb Q_{&gt;0},\cdot)$ ist eine abelsche Gruppe (Serie 0, Aufgabe 1 (a))</a></li>
+<li><a href="#we-2">Musterbeispiel 2: Welche Eigenschaft gilt nicht in jeder Gruppe? (FS19, Frage III)</a></li>
+</ol></li>
+<li><a href="#s4-the-clock-residue-classes">4. Die Uhr: Restklassen $\mathbb Z/n$</a>
+<ol>
+<li><a href="#proof-c">Beweis C: die Addition auf $\mathbb Z/n$ ist wohldefiniert (Lemma 1.1.13, S. 10)</a></li>
+<li><a href="#proof-d">Beweis D: $(\mathbb Z/n,+)$ ist eine abelsche Gruppe (Satz 1.1.14, S. 10–11)</a></li>
+</ol></li>
+<li><a href="#s5-subgroups-and-structure-preserving-maps">5. Untergruppen und strukturerhaltende Abbildungen</a>
+<ol>
+<li><a href="#proof-e">Beweis E: ein Homomorphismus bildet Neutral- auf Neutralelemente und Inverse auf Inverse ab (Lemma 1.1.20, S. 12)</a></li>
+</ol></li>
+<li><a href="#s6-rings-two-operations-that-must">6. Ringe: zwei Verknüpfungen, die zusammenarbeiten müssen</a>
+</li>
+<li><a href="#s7-fields-everything-except-zero-can">7. Körper: alles ausser der Null lässt sich teilen</a>
+<ol>
+<li><a href="#we-3">Musterbeispiel 3: In dem Körper $\mathbb F_{23}$ ist $8\cdot9$ gleich …? (FS19, Frage IV)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: Für welche Verknüpfung ist $(\mathbb R,\ast,0)$ eine Gruppe? (HS18, Frage VII)</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-5">Musterbeispiel 5: $(\mathcal P(M),\triangle)$ ist eine abelsche Gruppe (Serie 0, Aufgabe 4)</a></li>
+<li><a href="#we-6">Musterbeispiel 6: Welche davon sind Untergruppen von $(\mathbb Z/6,+)$: $\{\bar0,\bar3\}$, $\{\bar0,\bar2,\bar4\}$, $\{\bar0,\bar1,\bar5\}$?</a></li>
+<li><a href="#we-7">Musterbeispiel 7: Ist $(\mathbb Z/6,+,\cdot)$ ein Körper? Ist $(\mathbb Q[X],+,\cdot)$ einer?</a></li>
+</ol></li>
+<li><a href="#exercises">Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Serie 0, Aufgabe 0)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Serie 0, Aufgabe 1 (b))</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Serie 0, Aufgabe 3)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (Serie 0, Aufgabe 2)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (Serie 1, Aufgabe 6)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (Serie 1, Aufgabe 8 (a)–(c))</a></li>
+<li><a href="#ex-7">Aufgabe 7 (Altklausur-Stil)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schlechter Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Wiederholungsfragen oben. Das zählt. Morgen machst du einfach hier weiter: ein verpasster oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) die Definitionen von <strong>Gruppe, Ring und Körper</strong> genau angeben kannst, sowohl so, wie das Skript sie auflistet, als auch so, wie sie die Vorlesung aufbaut (Halbgruppe → Monoid → Gruppe); (2) mit der Strukturcheckliste <strong>prüfen</strong> kannst, ob eine gegebene Menge mit einer Verknüpfung eine abelsche Gruppe, ein Ring oder ein Körper ist, und ein Gegenbeispiel angeben kannst, wenn sie es nicht ist; (3) <strong>beweisen</strong> kannst, dass Neutralelement und Inverse eindeutig sind, dass die Addition auf $\mathbb Z/n$ wohldefiniert ist und dass ein Homomorphismus $e$ auf $e$ abbildet; (4) in $\mathbb Z/n$ <strong>rechnen</strong> und in seiner Multiplikationstabelle Nullteiler erkennen kannst.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 75 Minuten. Aufgaben zuerst im Kopf, Papier für die zwei Beweise, die du ausschreiben willst.</dd></div>
+  <div><dt>Skript (Englisch, Seitenzahlen des Drucks)</dt><dd>Skript EN 2023, Kapitel 1 „Vorwissen“. Du musst es nicht öffnen; nur falls du das Original sehen willst:
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p8">S. 8–11</a>, Abschnitt 1.1.2:</strong> Kongruenz modulo $n$, die Restklassen $\mathbb Z/n$, warum die Addition wohldefiniert ist (Lemma 1.1.13), $\mathbb Z/n$ ist eine abelsche Gruppe (Satz 1.1.14).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p11">S. 11–12</a>, Abschnitt 1.1.3:</strong> die Gruppenaxiome, Untergruppen (Definition 1.1.16), Homomorphismen und Isomorphismen (Definition 1.1.19, Lemma 1.1.20).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p16">S. 16–18</a>, Abschnitte 1.3.1–1.3.2:</strong> Ringe (Definition 1.3.1), der Ring $\mathbb Z/n$ (Beispiel 1.3.3), Nullteiler (Definition 1.3.5), Körper (Definitionen 1.3.7 und 1.3.9).</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §0 „Bekannte Beispiele algebraischer Strukturen“ (Notizen vom 16. Sep., Seiten 1–3). Er erreicht dieselben Strukturen über eine Leiter: Halbgruppe, Monoid, abelsche Gruppe, Ring, Körper. Abschnitt 3 stellt die beiden Fassungen nebeneinander, und die Randnotizen zeigen, wo sich seine Formulierung unterscheidet.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Halbeisens ersten beiden Serien bestehen nur aus „zeige, dass … eine abelsche Gruppe ist“ und „zeige, dass … ein Ring, aber kein Körper ist“, und seine Prüfung spricht dieselbe Sprache. Die alten Prüfungen der Linearen Algebra I stellen es als schnelle Multiple-Choice-Fragen: „Welche Eigenschaft gilt <em>nicht</em> in jeder Gruppe?“ (FS19, Frage III), „Für welche Verknüpfung $\ast$ ist $(\mathbb R,\ast,0)$ eine Gruppe?“ (HS18, Frage VII), „In dem Körper $\mathbb F_{23}$ ist $8\cdot9$ gleich …“ (FS19, Frage IV). Alle drei werden unten durchgearbeitet. Wichtiger noch: Jede spätere Definition (Vektorraum, Unterraum, lineare Abbildung) ist aus dem Vokabular dieser Lektion aufgebaut, also sind zehn Minuten hier eine Stunde später gespart.</p></div>
+
+<div class="box"><h3 id="how-the-linear-algebra-lessons">Wie die Lektionen zur Linearen Algebra funktionieren</h3>
+<ul>
+  <li><strong>Erst das Skript.</strong> Definitionen und Notation folgen dem Skript EN 2023, mit seinen gedruckten Seitenzahlen. Halbeisens Vorlesung erscheint in Randnotizen mit der Markierung <em>In der Vorlesung</em>; wo seine Definition wirklich abweicht, sagt die Notiz, was du in seiner Prüfung schreiben sollst.</li>
+  <li><strong>Jeder Beweis</strong> kommt mit der Idee, einem gestrichelten Rahmen (was die Definitionen erzwingen, noch bevor man eine Idee hat), einer Geschichtsspalte neben dem, was du schreibst, dem Beweis in einem Stück und einer dreistufigen Leiter zum Üben des Aufschreibens. Beweise, die alte Prüfungen verlangen, bekommen ausserdem einen Prüfungskasten.</li>
+  <li><strong>Vorgehensweisen.</strong> Die Pillen unter einem Beweis benennen den Schritt, den er verwendet; sie verlinken auf die <a href="../linalg-moves.html">Bibliothek der Vorgehensweisen der Linearen Algebra</a>.</li>
+  <li><strong>Deutsche Wörter</strong> stehen nur in der Tabelle unten; die Prüfung ist auf Deutsch, daher lohnt es sich, sie einmal zu lesen.</li>
+</ul></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Englisch</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>binary operation</td><td>2-stellige Operation, Verknüpfung</td></tr>
+    <tr><td>associative, commutative</td><td>assoziativ, kommutativ</td></tr>
+    <tr><td>semigroup, monoid</td><td>Halbgruppe, Monoid</td></tr>
+    <tr><td>neutral element (left, right), identity</td><td>Neutralelement (links-, rechtsneutral)</td></tr>
+    <tr><td>inverse (left, right)</td><td>Inverses (Links-, Rechtsinverses)</td></tr>
+    <tr><td>group, abelian group</td><td>Gruppe, abelsche Gruppe</td></tr>
+    <tr><td>subgroup</td><td>Untergruppe</td></tr>
+    <tr><td>homomorphism, isomorphism</td><td>Homomorphismus, Isomorphismus</td></tr>
+    <tr><td>congruent modulo $n$, residue class</td><td>kongruent modulo $n$, Restklasse</td></tr>
+    <tr><td>representative</td><td>Repräsentant, Vertreter</td></tr>
+    <tr><td>well defined</td><td>wohldefiniert</td></tr>
+    <tr><td>ring (with one), commutative ring</td><td>Ring (mit Eins), kommutativer Ring</td></tr>
+    <tr><td>distributive laws</td><td>Distributivgesetze</td></tr>
+    <tr><td>zero divisor, free of zero divisors</td><td>Nullteiler, nullteilerfrei</td></tr>
+    <tr><td>field</td><td>Körper</td></tr>
+    <tr><td>non-example</td><td>Unbeispiel (Halbeisens Wort)</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-guilds-of">1. Die Geschichte: die Gilden der Freien Stadt</h2>
+<div class="story">
+<p>Die Freie Stadt hat keinen König. Sie wird von ihren Gilden regiert, und eine Gilde ist eine seltsame Sache: eine Menge von Mitgliedern zusammen mit einem <em>Ritual</em>, das zwei beliebige Mitglieder nimmt und ein drittes hervorbringt. Das Ritual der Weberinnen: zwei Fäden werden zu einer Schnur verdreht. Das Ritual der Glockenschläger: zwei Glockentöne werden nacheinander angeschlagen. Die Stadtcharta kümmert sich nicht darum, was die Rituale bedeuten. Sie fragt nur, welchen <em>Regeln</em> ein Ritual gehorcht, und teilt der Gilde danach einen Rang zu.</p>
+<p>Eine Gilde, deren Ritual nie auf Klammern achtet (das Verdrehen von $a$ mit $b$ und danach mit $c$ ergibt dieselbe Schnur wie das Verdrehen von $a$ mit dem schon verdrehten $b$-und-$c$), erhält den niedrigsten Rang. Eine Gilde, die ausserdem ein <em>stilles Mitglied</em> hat, also eines, das im Ritual niemanden verändert, steigt um einen Rang auf. Eine Gilde, in der jedes Mitglied einen <em>Partner hat, der es rückgängig macht</em>, bekommt einen Sitz im Rat. Und die beiden grossen Häuser, Ring und Feld, führen zwei Rituale zugleich aus und werden von der Charta gezwungen, sie zusammenarbeiten zu lassen.</p>
+<p>Auf dem Uhrturm wickeln sich die Stunden im Kreis: Nach der Stunde $11$ kommt wieder die Stunde $0$. Die Uhrmachergilde rechnet mit Stunden, und sie hat etwas Beunruhigendes entdeckt. Manche Stunden ergeben miteinander multipliziert die Stunde $0$, obwohl keine von beiden $0$ ist. Der Rat hält sie aus dem Haus des Feldes fern. Du bist die neue Stadtschreiberin bzw. der neue Stadtschreiber. Deine Aufgabe: die Regeln der Charta, eine nach der anderen, mit einem Beweis prüfen.</p>
+</div>
+<p>Auf Deutsch: Eine Gilde ist eine <strong>algebraische Struktur</strong>, eine Menge $M$ mit einer oder mehreren Verknüpfungen. Die Ränge heissen <strong>Halbgruppe</strong>, <strong>Monoid</strong>, <strong>Gruppe</strong>, und mit zwei Verknüpfungen <strong>Ring</strong> und <strong>Körper</strong>. Die Uhr ist $\mathbb Z/n$, die ganzen Zahlen modulo $n$, und die störenden Stunden sind <strong>Nullteiler</strong>. Die Lineare Algebra braucht all das aus einem Grund: Ein Vektorraum (<a class="xl" href="../linalg-05.html">Lektion 5</a>) ist eine abelsche Gruppe von Vektoren zusammen mit einem Zahlkörper, der sie strecken kann. Die ersten beiden Lektionen bauen also den Körper und die Gruppe auf, und ab <a class="xl" href="../linalg-05.html">Lektion 5</a> führen wir beides zusammen.</p>
+
+<h2 id="s2-operations-what-the-ritual-must">2. Verknüpfungen: was das Ritual leisten muss</h2>
+<p>Eine <strong>2-stellige Verknüpfung</strong> auf einer Menge $M$ ist eine Abbildung</p>
+<span class="math-display" style="display:block">$$\circ:\ M\times M\to M,\qquad (a,b)\mapsto a\circ b.$$</span>
+<p>Sie nimmt ein geordnetes Paar von Elementen aus $M$ und liefert ein Element <em>wieder aus $M$</em>. Dieser letzte Teil ist die Falle jeder ersten Aufgabe. Wenn dir eine Aufgabe eine Formel gibt, ist das Erste, was du prüfen musst, dass das Ergebnis in $M$ landet. Das Skript nennt dies das <strong>Abgeschlossenheitsaxiom</strong> (<a class="pl" href="../linalg-script.html#p11">S. 11</a>); Halbeisen sagt „$\circ$ ist eine Verknüpfung auf $M$“. Dasselbe.</p>
+
+<div class="box"><h3 id="examples-and-non-examples-from">Beispiele und Unbeispiele (aus der Vorlesung)</h3>
+<ul>
+  <li>$+$ auf $\mathbb N_{&gt;0}=\{1,2,3,\dots\}$: die Summe zweier positiver ganzer Zahlen ist eine positive ganze Zahl. Eine Verknüpfung.</li>
+  <li>$+$ auf $2\mathbb N_{&gt;0}=\{2,4,6,\dots\}$: gerade plus gerade ist gerade. Eine Verknüpfung.</li>
+  <li>$\cdot$ auf $-\mathbb N=\{0,-1,-2,\dots\}$: <strong>keine</strong> Verknüpfung, denn $(-1)\cdot(-1)=1\notin-\mathbb N$. Halbeisens erstes „Unbeispiel“.</li>
+  <li>$-$ auf $\mathbb N$: keine Verknüpfung, da $2-5=-3\notin\mathbb N$. Auf $\mathbb Z$ ist es eine Verknüpfung (aber eine schlecht erzogene, wie du gleich siehst).</li>
+</ul></div>
+
+<p>Zwei Eigenschaften, die eine Verknüpfung haben kann oder nicht:</p>
+<ul>
+  <li><strong>assoziativ:</strong> $(a\circ b)\circ c=a\circ(b\circ c)$ für alle $a,b,c\in M$. Die Klammern spielen keine Rolle, daher dürfen wir $a\circ b\circ c$ schreiben.</li>
+  <li><strong>kommutativ:</strong> $a\circ b=b\circ a$ für alle $a,b\in M$. Die Reihenfolge spielt keine Rolle.</li>
+</ul>
+<p>Die Subtraktion auf $\mathbb Z$ ist keines von beiden: $(5-3)-1=1$, aber $5-(3-1)=3$, und $5-3\ne3-5$. Die Verkettung von Abbildungen (Skript <a class="pl" href="../linalg-script.html#p14">S. 14</a>) ist assoziativ, aber im Allgemeinen nicht kommutativ: „spiegeln, dann verschieben“ ist nicht dasselbe wie „verschieben, dann spiegeln“.</p>
+<p class="small"><strong>In der Vorlesung.</strong> Eine Menge mit einer assoziativen Verknüpfung heisst <strong>Halbgruppe</strong> (Halbeisens Definition 1); ist die Verknüpfung ausserdem kommutativ, eine kommutative Halbgruppe. Beispiele: $(\mathbb N_{&gt;0},+)$, $(2\mathbb N_{&gt;0},+)$, $(\mathbb R,\cdot)$. Das Skript verwendet das Wort nie, aber es ist ein praktischer Name für die erste Sprosse.</p>
+
+<h2 id="s3-neutral-elements-inverses-groups">3. Neutralelemente, Inverse, Gruppen</h2>
+<p>Betrachte $(\mathbb N,+)$ mit $0\in\mathbb N$. (Halbeisen zählt $0$ zu den natürlichen Zahlen und merkt an, dass dies nicht einheitlich gemacht wird; das Skript schreibt $\mathbb N_0=\{0,1,2,\dots\}$, wenn es die $0$ haben will.) Die Zahl $0$ ist besonders: $x+0=x$ und $0+x=x$ für jedes $x$.</p>
+<div class="box">
+<p><strong>Definition (Neutralelement).</strong> Sei $\circ$ eine Verknüpfung auf $M$ und $e\in M$.</p>
+<ul>
+  <li>$e$ heisst <strong>linksneutral</strong>, wenn $e\circ x=x$ für alle $x\in M$;</li>
+  <li>$e$ heisst <strong>rechtsneutral</strong>, wenn $x\circ e=x$ für alle $x\in M$;</li>
+  <li>$e$ heisst <strong>neutral</strong> (das Skript sagt <em>Einselement</em>), wenn es beides ist.</li>
+</ul></div>
+<p>Das Gruppenaxiom des Skripts sagt „es gibt ein Element $e$ … genannt <em>das</em> Einselement“ (<a class="pl" href="../linalg-script.html#p11">S. 11</a>), und Halbeisen verlangt „genau ein“ neutrales Element. Beides wird durch den ersten Beweis des Kurses gerechtfertigt.</p>
+
+<h3 id="proof-a">Beweis A: ein links- und ein rechtsneutrales Element stimmen überein</h3>
+<div class="box">
+<p><strong>Behauptung.</strong> Sei $\circ$ eine beliebige Verknüpfung auf $M$. Ist $e_l$ linksneutral und $e_r$ rechtsneutral, so gilt $e_l=e_r$. Insbesondere hat eine Verknüpfung <em>höchstens ein</em> neutrales Element.</p>
+</div>
+<p><strong>Die Idee.</strong> Wir wissen über $e_l$ und $e_r$ nur, wie sie sich neben <em>anderen</em> Elementen verhalten. Also stellen wir sie <em>nebeneinander</em>: $e_l\circ e_r$. Das linke ist stumm, also ist das Ergebnis $e_r$; das rechte ist stumm, also ist das Ergebnis $e_l$. Ein Ausdruck, zwei Werte, also sind die Werte gleich.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (noch vor jeder Idee)</span>
+<ul>
+  <li><strong>Gegeben:</strong> $e_l\circ x=x$ für <em>jedes</em> $x\in M$, und $x\circ e_r=x$ für <em>jedes</em> $x\in M$.</li>
+  <li><strong>Zu zeigen:</strong> $e_l=e_r$, eine Gleichung zwischen zwei bestimmten Elementen.</li>
+  <li><strong>Die Lücke:</strong> wähle das $x$ in jedem „für jedes“ geschickt.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Mitglieder behaupten beide, das stille Mitglied der Gilde zu sein. Die Stadtschreiberin lässt sie das Ritual miteinander ausführen.</p></div><div class="sp-formal"><p>Betrachte das Element $e_l\circ e_r\in M$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Das erste ist von links gesehen stumm, also kommt einfach das zweite heraus.</p></div><div class="sp-formal"><p>Da $e_l$ linksneutral ist, angewandt auf $x=e_r$: $\;e_l\circ e_r=e_r$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Das zweite ist von rechts gesehen stumm, also kommt einfach das erste heraus. Sie waren die ganze Zeit dasselbe Mitglied.</p></div><div class="sp-formal"><p>Da $e_r$ rechtsneutral ist, angewandt auf $x=e_l$: $\;e_l\circ e_r=e_l$. Also $e_l=e_l\circ e_r=e_r$. Sind $e$ und $e'$ beide neutral, wende dies mit $e_l=e$, $e_r=e'$ an: also $e=e'$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Vorgehensweisen: <a class="mvl" href="../linalg-moves.html#m-la_twoways">ein Element auf zwei Arten berechnen</a> <a class="mvl" href="../linalg-moves.html#m-la_unfold">die Definition entfalten</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Sei $e_l$ linksneutral und $e_r$ rechtsneutral bezüglich $\circ$. Da $e_r$ rechtsneutral ist, gilt $e_l\circ e_r=e_l$. Da $e_l$ linksneutral ist, gilt $e_l\circ e_r=e_r$. Also $e_l=e_r$. Insbesondere: Sind $e$ und $e'$ neutrale Elemente, so ist $e$ linksneutral und $e'$ rechtsneutral, also $e=e'$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+<li>Berechne $e_l\circ e_r$ auf zwei Arten.</li>
+<li>Rechtsneutralität liefert $e_l$; Linksneutralität liefert $e_r$.</li>
+<li>Also $e_l=e_r$; für zwei neutrale Elemente wende dies mit $e$ links und $e'$ rechts an.</li>
+</ol>
+<p><strong>Kurz gesagt:</strong> ein Produkt, auf zwei Arten gelesen.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><strong>Sprosse 1.</strong> Ergänze: „$e_l\circ e_r=\underline{\quad}$, weil $e_l$ linksneutral ist.“
+  <details><summary>Antwort</summary><div><p>$e_r$. (Linksneutral heisst $e_l\circ x=x$; hier ist $x=e_r$.)</p></div></details></li>
+  <li><strong>Sprosse 2.</strong> Wo hat der Beweis die Assoziativität verwendet?
+  <details><summary>Antwort</summary><div><p>Nirgends. Die Behauptung gilt für jede Verknüpfung, assoziativ oder nicht. Gut zu wissen: Zitiere in einer Prüfung keine Axiome, die du nicht gebraucht hast.</p></div></details></li>
+  <li><strong>Sprosse 3.</strong> Decke alles oben ab und schreibe den Beweis nur aus dem Rahmen.
+  <details><summary>Kontrolle</summary><div><p>Du brauchst: das Element $e_l\circ e_r$, zwei Auswertungen, jede mit ihrem Grund, und die Schlussfolgerung. Drei Zeilen.</p></div></details></li>
+</ol></div>
+
+<p>Als Nächstes $(\mathbb Z,+)$: Jetzt hat jedes $x$ einen Partner $-x$ mit $x+(-x)=0=(-x)+x$.</p>
+<div class="box">
+<p><strong>Definition (Inverses).</strong> Sei $\circ$ eine Verknüpfung auf $M$ mit Neutralelement $e$, und $x,x'\in M$. Gilt $x'\circ x=e$, so heisst $x'$ ein <strong>Linksinverses</strong> von $x$; gilt $x\circ x'=e$, ein <strong>Rechtsinverses</strong>; gelten beide, ein <strong>Inverses</strong> von $x$.</p></div>
+
+<h3 id="proof-b">Beweis B: Inverse sind eindeutig</h3>
+<div class="box">
+<p><strong>Behauptung.</strong> Sei $\circ$ eine <em>assoziative</em> Verknüpfung auf $M$ mit Neutralelement $e$. Ist $x'$ ein Linksinverses von $x$ und $x''$ ein Rechtsinverses von $x$, so gilt $x'=x''$. Insbesondere hat jedes $x$ höchstens ein Inverses. (Das Skript verwendet diese „Eindeutigkeit des Inversen“ in Lemma 1.1.20 und Lemma 1.3.10, <a class="pl" href="../linalg-script.html#p12">S. 12</a> und 19, ohne sie zu beweisen; die Vorlesung beweist sie in §2.)</p>
+</div>
+<p><strong>Die Idee.</strong> Wir wollen von $x'$ nach $x''$ gelangen, nur mit Gleichungen. Das Einzige, das sie verbindet, ist $x$: $x'\circ x=e$ und $x\circ x''=e$. Also beginne bei $x'$, schmuggle ein neutrales Element hinein, ersetze es durch $x\circ x''$, und lass die Assoziativität $x'$ und $x$ zusammenbringen, sodass sie zu $e$ zusammenfallen.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (noch vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Sei $x'$ ein Linksinverses und $x''$ ein Rechtsinverses von $x$, also $x'\circ x=e$ und $x\circ x''=e$.“</li>
+  <li><strong>Letzte Zeile:</strong> „Also $x'=x''$.“</li>
+  <li><strong>Die Lücke:</strong> eine Kette von Gleichheiten von $x'$ bis $x''$, jeder Schritt begründet durch ein Axiom oder eine gegebene Gleichung.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Partner behaupten beide, dasselbe Mitglied rückgängig zu machen. Die Stadtschreiberin beginnt mit dem ersten und fügt an seiner Seite das stille Mitglied hinzu, was nichts ändert.</p></div><div class="sp-formal"><p>$x'=x'\circ e\quad$ ($e$ ist neutral)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Aber das stille Mitglied ist dasselbe wie „das Mitglied, gefolgt vom zweiten Partner“.</p></div><div class="sp-formal"><p>$\phantom{x'}=x'\circ(x\circ x'')\quad$ ($x''$ ist ein Rechtsinverses von $x$)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Klammern spielen in dieser Gilde keine Rolle, also trifft der erste Partner zuerst das Mitglied, und die beiden heben sich zur Stille auf.</p></div><div class="sp-formal"><p>$\phantom{x'}=(x'\circ x)\circ x''\quad$ (Assoziativität)<br>$\phantom{x'}=e\circ x''\quad$ ($x'$ ist ein Linksinverses von $x$)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Stille neben dem zweiten Partner lässt den zweiten Partner übrig. Sie waren dasselbe.</p></div><div class="sp-formal"><p>$\phantom{x'}=x''\quad$ ($e$ ist neutral). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Vorgehensweisen: <a class="mvl" href="../linalg-moves.html#m-la_sneak">das Neutralelement hineinschmuggeln</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Sei $x'$ ein Linksinverses und $x''$ ein Rechtsinverses von $x$. Dann</p>
+<span class="math-display" style="display:block">$$\begin{aligned}x'&amp;=x'\circ e=x'\circ(x\circ x'')\\&amp;=(x'\circ x)\circ x''=e\circ x''=x'',\end{aligned}$$</span>
+<p>wobei nacheinander verwendet wird: $e$ ist neutral, $x''$ ist ein Rechtsinverses, Assoziativität, $x'$ ist ein Linksinverses, $e$ ist neutral. Sind $x'$ und $x''$ beide Inverse von $x$, so sind sie insbesondere ein Links- und ein Rechtsinverses, also $x'=x''$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><strong>Sprosse 1.</strong> Welches Axiom rechtfertigt $x'\circ(x\circ x'')=(x'\circ x)\circ x''$?
+  <details><summary>Antwort</summary><div><p>Die Assoziativität. Das ist der einzige Schritt, bei dem der Beweis sie braucht, und der Grund, warum die Behauptung für nicht-assoziative Verknüpfungen scheitert.</p></div></details></li>
+  <li><strong>Sprosse 2.</strong> Schreibe stattdessen die Kette von $x''$ nach $x'$ (beginne mit $x''=e\circ x''$).
+  <details><summary>Antwort</summary><div><span class="math-display" style="display:block">$$\begin{aligned}x''&amp;=e\circ x''=(x'\circ x)\circ x''\\&amp;=x'\circ(x\circ x'')=x'\circ e=x'.\end{aligned}$$</span><p>Dieselben Schritte, rückwärts gelesen.</p></div></details></li>
+  <li><strong>Sprosse 3.</strong> Schreibe den ganzen Beweis nur aus dem Rahmen, mit einer Begründung nach jedem Gleichheitszeichen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Benenne beide Inversen und schreibe die zwei Gleichungen $x'\circ x=e$, $x\circ x''=e$ hin.</li>
+  <li>Beginne mit $x'=x'\circ e$.</li>
+  <li>Ersetze $e$ durch $x\circ x''$.</li>
+  <li>Klammere um, fasse $x'\circ x=e$ zusammen, und beende mit $e\circ x''=x''$.</li>
+</ol>
+<p><strong>Kurz gesagt:</strong> $e$ hineinschmuggeln, umklammern, zusammenfallen lassen.</p></div>
+
+<h3 id="the-definition-of-a-group">Die Definition einer Gruppe, auf zwei Arten</h3>
+<div class="two-col">
+<div class="box"><span class="label">Skript EN 2023, <a class="pl" href="../linalg-script.html#p11">S. 11</a></span>
+<p>$(G,\circ)$ mit $\circ:G\times G\to G$ ist eine <strong>Gruppe</strong>, wenn:</p>
+<ol>
+  <li><strong>Abgeschlossenheit:</strong> $a\circ b\in G$ für alle $a,b\in G$;</li>
+  <li><strong>Assoziativität:</strong> $(a\circ b)\circ c=a\circ(b\circ c)$;</li>
+  <li><strong>Identität:</strong> es gibt $e\in G$ mit $a\circ e=e\circ a=a$ für alle $a$;</li>
+  <li><strong>Inverses:</strong> zu jedem $a$ gibt es $a^{-1}\in G$ mit $a\circ a^{-1}=a^{-1}\circ a=e$.</li>
+</ol>
+<p>Gilt zusätzlich $a\circ b=b\circ a$ für alle $a,b$, so heisst die Gruppe <strong>abelsch</strong>.</p></div>
+<div class="box"><span class="label">Vorlesung (Halbeisen), Definitionen 1–5</span>
+<ol>
+  <li><strong>Halbgruppe:</strong> assoziative Verknüpfung;</li>
+  <li><strong>(kommutatives) Monoid:</strong> eine (kommutative) Halbgruppe mit genau einem Neutralelement;</li>
+  <li><strong>abelsche Gruppe:</strong> ein kommutatives Monoid, in dem jedes Element genau ein Inverses hat.</li>
+</ol>
+<p>Beispiele: $(\mathbb N_{&gt;0},+)$ Halbgruppe; $(\mathbb N,+)$ und $(\mathbb Z,\cdot)$ Monoide; $(\mathbb Z,+)$ und $(\mathbb Q\setminus\{0\},\cdot)$ abelsche Gruppen.</p></div>
+</div>
+<p>Sie beschreiben genau dieselben Objekte. Die Worte „genau ein“ der Vorlesung sind frei: Die Beweise A und B zeigen, dass ein Neutralelement und Inverse, sobald sie existieren, automatisch eindeutig sind. In einer Prüfung prüfst du also die <em>Existenz</em> und darfst die Eindeutigkeit zitieren. Abelsche Gruppen werden meist <strong>additiv</strong> geschrieben: $+$, Neutralelement $0$, Inverses $-a$, und $a-b$ bedeutet $a+(-b)$ (Skript <a class="pl" href="../linalg-script.html#p11">S. 11–12</a>).</p>
+
+<figure style="margin:.4rem 0" aria-label="Eine Leiter aus fünf Sprossen von unten nach oben: Menge mit einer Verknüpfung, Halbgruppe, Monoid, Gruppe, abelsche Gruppe. Jede Sprosse nennt die Regel, die sie hinzufügt, und ein Beispiel.">
+<svg viewBox="0 0 420 300" width="100%" role="img" style="max-width:560px;display:block;font-family:var(--font-util)"><line x1="8" y1="10" x2="8" y2="290" style="stroke:var(--story-edge)" stroke-width="3"/><line x1="412" y1="10" x2="412" y2="290" style="stroke:var(--story-edge)" stroke-width="3"/><g font-size="17"><rect x="8" y="12" width="404" height="44" rx="6" style="fill:var(--story);stroke:var(--story-edge)"/><text x="18" y="40" style="fill:var(--ink);font-weight:600">abelsche Gruppe</text><text x="168" y="40" style="fill:var(--muted)">+ kommutativ</text><text x="300" y="40" style="fill:var(--accent)">(ℤ, +)</text><rect x="8" y="68" width="404" height="44" rx="6" style="fill:var(--surface);stroke:var(--rule)"/><text x="18" y="96" style="fill:var(--ink)">Gruppe</text><text x="168" y="96" style="fill:var(--muted)">+ Inverse x⁻¹</text><text x="300" y="96" style="fill:var(--accent)">Bijektionen</text><rect x="8" y="124" width="404" height="44" rx="6" style="fill:var(--surface);stroke:var(--rule)"/><text x="18" y="152" style="fill:var(--ink)">Monoid</text><text x="168" y="152" style="fill:var(--muted)">+ Neutralelement e</text><text x="300" y="152" style="fill:var(--accent)">(ℤ, ·)</text><rect x="8" y="180" width="404" height="44" rx="6" style="fill:var(--surface);stroke:var(--rule)"/><text x="18" y="208" style="fill:var(--ink)">Halbgruppe</text><text x="168" y="208" style="fill:var(--muted)">+ assoziativ</text><text x="300" y="208" style="fill:var(--accent)">(ℕ&gt;0, +)</text><rect x="8" y="236" width="404" height="44" rx="6" style="fill:var(--surface);stroke:var(--rule)"/><text x="18" y="264" style="fill:var(--ink)">Verknüpfung auf M</text><text x="168" y="264" style="fill:var(--muted)">Abgeschlossenheit</text><text x="300" y="264" style="fill:var(--accent)">(ℤ, −)</text></g></svg>
+<figcaption style="font-size:.88rem;color:var(--muted)">Jede Sprosse fügt eine Regel hinzu. Die Beispiele rechts sitzen genau auf ihrer Sprosse: $(\mathbb Z,-)$ ist nicht assoziativ, $(\mathbb N_{&gt;0},+)$ hat kein Neutralelement, $(\mathbb Z,\cdot)$ hat $1$, aber $2$ hat kein Inverses, die umkehrbaren Abbildungen einer Menge auf sich selbst bilden mit der Verkettung eine nicht-kommutative Gruppe, und $(\mathbb Z,+)$ hat alles. Halbeisens Leiter geht direkt zu den kommutativen Fassungen.</figcaption>
+</figure>
+
+<div class="box"><h3 id="the-structure-checklist-use-it">Die Strukturcheckliste (für jedes „zeige, dass … eine abelsche Gruppe ist“ verwenden)</h3>
+<ol>
+  <li><strong>Verknüpfung:</strong> $x\circ y\in M$ für alle $x,y\in M$.</li>
+  <li><strong>Assoziativität.</strong></li>
+  <li><strong>Neutralelement:</strong> nenne $e$ und prüfe $e\circ x=x$ (und $x\circ e=x$, oder zitiere die Kommutativität).</li>
+  <li><strong>Inverse:</strong> zu jedem $x$ <em>nenne</em> $x'$, prüfe $x'\in M$ und prüfe $x'\circ x=e$.</li>
+  <li><strong>Kommutativität</strong> (für „abelsch“).</li>
+</ol>
+<p><strong>Kurz gesagt:</strong> abgeschlossen, Klammern, neutral, rückgängig, vertauschbar. Um zu zeigen, dass etwas <em>keine</em> Gruppe ist, genügt ein scheiterndes Element.</p>
+<p class="moves">Vorgehensweisen: <a class="mvl" href="../linalg-moves.html#m-la_check">die Strukturcheckliste</a> <a class="mvl" href="../linalg-moves.html#m-la_inherit">von der grösseren Struktur erben</a> <a class="mvl" href="../linalg-moves.html#m-la_counter">ein Gegenbeispiel genügt</a></p></div>
+
+<div class="box"><h3 id="we-1">Musterbeispiel 1: $(\mathbb Q_{&gt;0},\cdot)$ ist eine abelsche Gruppe (Serie 0, Aufgabe 1 (a))</h3>
+<p>Hier ist $\mathbb Q_{&gt;0}=\{q\in\mathbb Q:q&gt;0\}$. Probiere jeden Schritt im Kopf, bevor du die Antwort öffnest.</p>
+<ol class="gq">
+  <li><p>Verknüpfung: Warum ist das Produkt zweier Elemente wieder in $\mathbb Q_{&gt;0}$?</p>
+  <details><summary>Antwort</summary><div><p>Für $p,q\in\mathbb Q_{&gt;0}$ ist $p\cdot q\in\mathbb Q$, und das Produkt zweier positiver Zahlen ist positiv. Also $p\cdot q\in\mathbb Q_{&gt;0}$.</p></div></details></li>
+  <li><p>Assoziativität und Kommutativität: Musst du sie von Grund auf beweisen?</p>
+  <details><summary>Antwort</summary><div><p>Nein. Sie gelten für alle rationalen Zahlen, also insbesondere für alle Elemente von $\mathbb Q_{&gt;0}\subseteq\mathbb Q$. Sprich diesen Satz ausdrücklich aus; er ist der ganze Beweis.</p></div></details></li>
+  <li><p>Nenne das Neutralelement und das Inverse von $q$, und prüfe, dass beide in $\mathbb Q_{&gt;0}$ liegen.</p>
+  <details><summary>Antwort</summary><div><p>$1&gt;0$, also $1\in\mathbb Q_{&gt;0}$, und $1\cdot q=q$. Für $q=\frac ab$ mit positiven ganzen Zahlen $a,b$ setze $q^{-1}:=\frac ba$. Es ist positiv, also $q^{-1}\in\mathbb Q_{&gt;0}$, und $q\cdot q^{-1}=\frac ab\cdot\frac ba=1$. Alle fünf Punkte gelten: eine abelsche Gruppe.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: Welche Eigenschaft gilt nicht in jeder Gruppe? (FS19, Frage III)</h3>
+<p>Die Optionen für eine Gruppe $(G,\circ,e)$: (a) $a\circ b=b\circ a$ für alle $a,b$; (b) $a\circ e=e\circ a=a$ für alle $a$; (c) zu jedem $a$ gibt es $b$ mit $a\circ b=b\circ a=e$; (d) $(a\circ b)\circ c=a\circ(b\circ c)$.</p>
+<ol class="gq">
+  <li><p>Welche drei Optionen sind Axiome?</p>
+  <details><summary>Antwort</summary><div><p>(b) ist das Identitätsaxiom, (c) das Inversenaxiom, (d) die Assoziativität. Sie gelten in jeder Gruppe per Definition.</p></div></details></li>
+  <li><p>Also ist die Antwort (a). Gib eine Gruppe an, in der es scheitert.</p>
+  <details><summary>Antwort</summary><div><p>Die Bijektionen von $\{1,2,3\}$ auf sich selbst unter der Verkettung. Sei $f$ die Vertauschung von $1$ und $2$, und $g$ die Vertauschung von $2$ und $3$. Dann ist $(g\circ f)(1)=g(2)=3$, aber $(f\circ g)(1)=f(1)=2$. Also $g\circ f\ne f\circ g$. Kommutativität macht eine Gruppe <em>abelsch</em>; sie gehört nicht zu „Gruppe“. (Halbeisen begegnet in §0 nur abelschen Gruppen, aber die Prüfungsfrage verwendet die allgemeine Definition.)</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-the-clock-residue-classes">4. Die Uhr: Restklassen $\mathbb Z/n$</h2>
+<p>Das Beispiel der Uhr nennt das Skript „zentral für uns“ (<a class="pl" href="../linalg-script.html#p8">S. 8</a>): Es ist unsere erste endliche Gruppe, unser erster endlicher Ring und für eine Primzahl $n$ unser erster endlicher Körper. Fixiere $n\in\mathbb N$, $n\ge1$.</p>
+<div class="box">
+<p><strong>Definition (Kongruenz modulo $n$, <a class="pl" href="../linalg-script.html#p8">S. 8</a>).</strong> Für $a,b\in\mathbb Z$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;a\equiv b\pmod n\\ &amp;\quad:\iff n\text{ teilt }b-a\\ &amp;\quad\iff\exists\,l\in\mathbb Z:\ b-a=ln.\end{aligned}$$</span>
+<p>Das ist eine Äquivalenzrelation (Aufgabe 1.1.7; <a class="xl" href="../linalg-03.html">Lektion 3</a> beweist sie). Die <strong>Restklasse</strong> von $a$ ist</p>
+<span class="math-display" style="display:block">$$\bar a:=a+n\mathbb Z=\{a+nl:\ l\in\mathbb Z\},$$</span>
+<p>alle ganzen Zahlen mit demselben Rest wie $a$ bei Division durch $n$. Die Menge der Klassen ist (Definition 1.1.11, <a class="pl" href="../linalg-script.html#p10">S. 10</a>)</p>
+<span class="math-display" style="display:block">$$\mathbb Z/n\mathbb Z=\{\bar0,\bar1,\dots,\overline{n-1}\}.$$</span></div>
+<p>Wir schreiben kurz $\mathbb Z/n$. Jede Klasse hat <em>viele Namen</em>: für $n=3$ ist $\bar1=\bar4=\overline{-2}=\overline{10}$ (Beispiel 1.1.10). Die Namen $0,1,\dots,n-1$ sind die Standardnamen. Für $n=2$ sind die beiden Klassen „die geraden Zahlen“ und „die ungeraden Zahlen“, und die Regel „ungerade plus ungerade ist gerade“ wird zu $\bar1+\bar1=\bar0$.</p>
+<div class="box">
+<p><strong>Definition (modulare Addition, Definition 1.1.12, <a class="pl" href="../linalg-script.html#p10">S. 10</a>).</strong> Für $\bar a,\bar b\in\mathbb Z/n$:</p>
+<span class="math-display" style="display:block">$$\bar a+\bar b:=\overline{a+b}.$$</span></div>
+<p>Diese Definition nimmt einen <em>Namen</em> $a$ der ersten Klasse und einen Namen $b$ der zweiten und rechnet mit den Namen. Würde eine andere Wahl der Namen eine andere Klasse ergeben, würde die „Definition“ nichts definieren. Das bedeutet <strong>wohldefiniert</strong>, und es braucht einen Beweis.</p>
+
+<h3 id="proof-c">Beweis C: die Addition auf $\mathbb Z/n$ ist wohldefiniert (Lemma 1.1.13, <a class="pl" href="../linalg-script.html#p10">S. 10</a>)</h3>
+<div class="box">
+<p><strong>Behauptung.</strong> Seien $a,a',b,b'\in\mathbb Z$ mit $\bar a=\overline{a'}$ und $\bar b=\overline{b'}$. Dann gilt $\overline{a+b}=\overline{a'+b'}$.</p></div>
+<p><strong>Die Idee.</strong> „Gleiche Klasse“ heisst „die Differenz ist ein Vielfaches von $n$“. Also subtrahiere die beiden Summen und gruppiere um: Die Differenz der Summen ist die Summe der Differenzen, und das ist eine Summe zweier Vielfacher von $n$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (noch vor jeder Idee)</span>
+<ul>
+  <li><strong>Gegeben (ausgeschrieben):</strong> $a-a'=ln$ und $b-b'=kn$ für gewisse $l,k\in\mathbb Z$.</li>
+  <li><strong>Zu zeigen (ausgeschrieben):</strong> $(a+b)-(a'+b')=mn$ für ein $m\in\mathbb Z$.</li>
+  <li><strong>Die Lücke:</strong> schreibe $(a+b)-(a'+b')$ mit Hilfe der beiden gegebenen Differenzen um.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Reisende nennen dieselbe Stunde mit verschiedenen Zahlen, und zwei andere ebenso. Die Stadtschreiberin schreibt auf, was „dieselbe Stunde“ bedeutet.</p></div><div class="sp-formal"><p>Seien $\bar a=\overline{a'}$ und $\bar b=\overline{b'}$. Per Definition gibt es $l,k\in\mathbb Z$ mit $a-a'=ln$ und $b-b'=kn$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Dann vergleicht sie die beiden Summen, indem sie sie subtrahiert.</p></div><div class="sp-formal"><p>$(a+b)-(a'+b')=(a-a')+(b-b')$ $=ln+kn=(l+k)n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Differenz ist eine ganze Zahl von Umläufen der Uhr, also benennen beide Summen dieselbe Stunde.</p></div><div class="sp-formal"><p>Da $l+k\in\mathbb Z$, folgt $\overline{a+b}=\overline{a'+b'}$: Die Summe hängt nicht von der Wahl der Repräsentanten ab. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Vorgehensweisen: <a class="mvl" href="../linalg-moves.html#m-la_reps">zwei Namen, subtrahieren</a> <a class="mvl" href="../linalg-moves.html#m-la_unfold">die Definition entfalten</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Seien $a,a',b,b'\in\mathbb Z$ mit $\bar a=\overline{a'}$ und $\bar b=\overline{b'}$. Dann gibt es $l,k\in\mathbb Z$ mit $a-a'=ln$ und $b-b'=kn$. Es folgt $(a+b)-(a'+b')$ $=(a-a')+(b-b')$ $=(l+k)n$ mit $l+k\in\mathbb Z$, also $\overline{a+b}=\overline{a'+b'}$. Also ist die Addition auf $\mathbb Z/n$ wohldefiniert. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><strong>Sprosse 1.</strong> Ergänze: „$\bar a=\overline{a'}$ bedeutet, dass es $l\in\mathbb Z$ gibt mit $\underline{\qquad}$.“
+  <details><summary>Antwort</summary><div><p>$a-a'=ln$ (oder $a'-a=ln$; beides passt, $l$ wechselt nur das Vorzeichen).</p></div></details></li>
+  <li><strong>Sprosse 2.</strong> Mach dasselbe für die Multiplikation: zeige $\overline{ab}=\overline{a'b'}$ (Skript <a class="pl" href="../linalg-script.html#p17">S. 17</a>). Hinweis: $ab-a'b'=(a-a')b+a'(b-b')$.
+  <details><summary>Antwort</summary><div><p>$ab-a'b'=(a-a')b+a'(b-b')$ $=lnb+a'kn=(lb+a'k)n$ mit $lb+a'k\in\mathbb Z$, also $\overline{ab}=\overline{a'b'}$. Der Trick „subtrahiere und addiere $a'b$“ ist derselbe wie bei der Produktregel für Grenzwerte in der Analysis.</p></div></details></li>
+  <li><strong>Sprosse 3.</strong> Schreibe Beweis C nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Wähle zwei Namen für jede Klasse; schreibe die zwei Gleichungen „Differenz $=$ Vielfaches von $n$“ hin.</li>
+  <li>Subtrahiere die beiden Ergebnisse.</li>
+  <li>Gruppiere in die gegebenen Differenzen um und klammere $n$ aus.</li>
+</ol>
+<p><strong>Kurz gesagt:</strong> zwei Namen, subtrahieren, $n$ ausklammern. Jedes „zeige, dass dies wohldefiniert ist“ in diesem Kurs funktioniert so, auch die Quotientenräume in <a class="xl" href="../linalg-09.html">Lektion 9</a>.</p></div>
+
+<h3 id="proof-d">Beweis D: $(\mathbb Z/n,+)$ ist eine abelsche Gruppe (Satz 1.1.14, <a class="pl" href="../linalg-script.html#p10">S. 10–11</a>)</h3>
+<p><strong>Die Idee.</strong> Jede Regel, die wir brauchen, gilt bereits in $\mathbb Z$. Der Strich trägt sie nur hinüber: Rechne mit Namen in $\mathbb Z$, dann setze den Strich darüber. Wegen Beweis C hängt das Ergebnis nicht von den Namen ab.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (noch vor jeder Idee)</span>
+<ul>
+  <li><strong>Zu zeigen:</strong> die fünf Punkte der Checkliste für $(\mathbb Z/n,+)$.</li>
+  <li><strong>Werkzeuge:</strong> die Definition $\bar a+\bar b=\overline{a+b}$ (wohldefiniert nach Beweis C) und die Regeln von $(\mathbb Z,+)$.</li>
+  <li><strong>Die Lücke:</strong> benenne das Neutralelement und die inverse Klasse.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Stunden zu addieren ergibt immer eine Stunde.</p></div><div class="sp-formal"><p><strong>Verknüpfung:</strong> für $\bar a,\bar b\in\mathbb Z/n$ ist $\overline{a+b}$ wieder eine Klasse, und nach Beweis C hängt sie nicht von den Namen ab.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Uhr erbt die alten Zählregeln: Klammern und Reihenfolge spielen keine Rolle.</p></div><div class="sp-formal"><p><strong>Assoziativität:</strong></p><span class="math-display" style="display:block">$$\begin{aligned}(\bar a+\bar b)+\bar c&amp;=\overline{a+b}+\bar c=\overline{(a+b)+c}\\&amp;=\overline{a+(b+c)}=\bar a+\overline{b+c}\\&amp;=\bar a+(\bar b+\bar c).\end{aligned}$$</span><p><strong>Kommutativität:</strong> $\bar a+\bar b=\overline{a+b}=\overline{b+a}=\bar b+\bar a$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Stunde null ändert nichts; zurückdrehen um $a$ Stunden macht das Vorwärtsdrehen um $a$ Stunden rückgängig.</p></div><div class="sp-formal"><p><strong>Neutralelement:</strong> $\bar0+\bar a=\overline{0+a}=\bar a$.<br><strong>Inverse:</strong> $\overline{-a}+\bar a=\overline{-a+a}=\bar0$. Also $-\bar a=\overline{-a}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Vorgehensweisen: <a class="mvl" href="../linalg-moves.html#m-la_check">die Strukturcheckliste</a> <a class="mvl" href="../linalg-moves.html#m-la_inherit">von der grösseren Struktur erben</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Nach Beweis C ist $\bar a+\bar b:=\overline{a+b}$ eine wohldefinierte Verknüpfung auf $\mathbb Z/n$. Für $\bar a,\bar b,\bar c\in\mathbb Z/n$ gilt, mit den Regeln von $(\mathbb Z,+)$: $(\bar a+\bar b)+\bar c=\overline{(a+b)+c}$ $=\overline{a+(b+c)}=\bar a+(\bar b+\bar c)$ und $\bar a+\bar b=\overline{a+b}$ $=\overline{b+a}=\bar b+\bar a$. Die Klasse $\bar0$ ist neutral, da $\bar0+\bar a=\overline{0+a}=\bar a$, und $\overline{-a}$ ist invers zu $\bar a$, da $\overline{-a}+\bar a=\overline{(-a)+a}=\bar0$. Also ist $(\mathbb Z/n,+)$ eine abelsche Gruppe. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+<li>Wohldefiniert: Beweis C.</li>
+<li>Assoziativ und kommutativ: schreibe jede Seite als eine Klasse und verwende die Regel in $\mathbb Z$.</li>
+<li>Neutral $\bar0$, Inverses $\overline{-a}$: je eine Zeile.</li>
+</ol>
+<p><strong>Kurz gesagt:</strong> jedes Axiom wird über die Repräsentanten nach $\mathbb Z$ hinuntergereicht.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><strong>Sprosse 1.</strong> Was ist in $\mathbb Z/7$ das Inverse $-\bar3$, mit einem Standardnamen geschrieben?
+  <details><summary>Antwort</summary><div><p>$\overline{-3}=\bar4$, denn $-3+7=4$. Kontrolle: $\bar3+\bar4=\bar7=\bar0$.</p></div></details></li>
+  <li><strong>Sprosse 2.</strong> Wo genau verwendet Beweis D den Beweis C?
+  <details><summary>Antwort</summary><div><p>Im Punkt „Verknüpfung“: Ohne Wohldefiniertheit wäre $+$ gar keine Abbildung $\mathbb Z/n\times\mathbb Z/n\to\mathbb Z/n$. Jede spätere Zeile verlässt sich ebenfalls stillschweigend darauf, weil sie mit beliebigen Namen rechnet.</p></div></details></li>
+  <li><strong>Sprosse 3.</strong> Schreibe den Beweis nur aus dem Rahmen.</li>
+</ol></div>
+
+<p class="small"><strong>In der Vorlesung und in Serie 0.</strong> Halbeisens Serie 0, Aufgabe 5, definiert $\mathbb Z_m$ ohne Klassen: Seine Elemente sind die Zahlen $\bar0,\dots,\overline{m-1}$, und $\bar k+_m\bar l:=\bar a$, wobei $a$ der Rest von $k+l$ ist (das eindeutige $0\le a&lt;m$ mit $mq+a=k+l$). Dann gibt es nichts wohldefiniert zu machen, aber du musst zeigen, dass der Rest existiert und eindeutig ist (Aufgabe 5 (a)), und die Assoziativität braucht eine kurze Rechnung mit Resten. Beide Wege ergeben dieselbe Tafel. Der Weg des Skripts (Klassen) ist der, der auf Quotientenräume verallgemeinert, daher verwenden wir ihn.</p>
+
+<div class="explorer" id="clock-ex">
+<span class="label">Probier es aus: die Uhr von $\mathbb Z/n$</span>
+<p>Wähle $n$ und zwei Klassen. Die Uhr zeigt $\bar a+\bar b$ als Weg um das Zifferblatt; die Tabelle unten zeigt die ganze Multiplikation von $\mathbb Z/n$. Felder, in denen zwei nicht-null Klassen zu $\bar0$ multiplizieren, sind markiert: das sind die Nullteiler aus Abschnitt 6.</p>
+<div class="ex-nav">
+  <label>$n$ = <select id="ck-n" aria-label="n"></select></label>
+  <label>$a$ = <select id="ck-a" aria-label="a"></select></label>
+  <label>$b$ = <select id="ck-b" aria-label="b"></select></label>
+</div>
+<svg id="ck-svg" viewBox="0 0 300 300" width="100%" style="max-width:320px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="Zifferblatt mit den Klassen von Z mod n"></svg>
+<p id="ck-sum" aria-live="polite"></p>
+<div class="table-wrap"><table id="ck-tab" style="text-align:center"></table></div>
+<p id="ck-verdict" aria-live="polite"></p>
+</div>
+<script>
+(function(){
+  var N=document.getElementById('ck-n'),A=document.getElementById('ck-a'),B=document.getElementById('ck-b');
+  if(!N) return;
+  for(var k=2;k<=12;k++){var o=document.createElement('option');o.value=k;o.textContent=k;if(k===6)o.selected=true;N.appendChild(o);}
+  function fill(sel,n,v){sel.innerHTML='';for(var i=0;i<n;i++){var o=document.createElement('option');o.value=i;o.textContent=i;sel.appendChild(o);}sel.value=Math.min(v,n-1);}
+  function draw(){
+    var n=+N.value,a=+A.value,b=+B.value,s=(a+b)%n,svg=document.getElementById('ck-svg'),h='';
+    h+='<circle cx="150" cy="150" r="118" style="fill:var(--surface);stroke:var(--rule)" stroke-width="2"/>';
+    function pt(i,r){var t=2*Math.PI*i/n-Math.PI/2;return [150+r*Math.cos(t),150+r*Math.sin(t)];}
+    for(var j=1;j<=b;j++){var p=pt(a+j-1,96),q=pt(a+j,96);h+='<path d="M'+p[0].toFixed(1)+' '+p[1].toFixed(1)+' A96 96 0 0 1 '+q[0].toFixed(1)+' '+q[1].toFixed(1)+'" style="fill:none;stroke:var(--story-edge)" stroke-width="5" stroke-linecap="round"/>';}
+    for(var i=0;i<n;i++){var c=pt(i,118),l=pt(i,138),cls=(i===s)?'var(--accent)':(i===a?'var(--story-edge)':'var(--muted)');
+      h+='<circle cx="'+c[0].toFixed(1)+'" cy="'+c[1].toFixed(1)+'" r="'+(i===s||i===a?8:5)+'" style="fill:'+cls+'"/>';
+      h+='<text x="'+l[0].toFixed(1)+'" y="'+(l[1]+5).toFixed(1)+'" text-anchor="middle" font-size="15" style="fill:var(--ink)">'+i+'</text>';}
+    h+='<text x="150" y="146" text-anchor="middle" font-size="15" style="fill:var(--muted)">ℤ/'+n+'</text>';
+    h+='<text x="150" y="168" text-anchor="middle" font-size="14" style="fill:var(--accent)">'+a+' + '+b+' → '+s+'</text>';
+    svg.innerHTML=h;
+    function ob(x){return '<span style="text-decoration:overline">'+x+'</span>';}
+    document.getElementById('ck-sum').innerHTML='Start at '+a+' and walk '+b+' steps: you land on '+s+'. So <strong>'+ob(a)+' + '+ob(b)+' = '+ob(s)+'</strong> in ℤ/'+n+', because '+a+' + '+b+' = '+(a+b)+' = '+Math.floor((a+b)/n)+'·'+n+' + '+s+'. And '+ob(a)+' · '+ob(b)+' = '+ob((a*b)%n)+', because '+a+'·'+b+' = '+(a*b)+' = '+Math.floor((a*b)/n)+'·'+n+' + '+((a*b)%n)+'.';
+    var t='<tr><th>·</th>';for(var x=0;x<n;x++)t+='<th>'+x+'</th>';t+='</tr>';var zd=[],inv=0;
+    for(var r=0;r<n;r++){t+='<tr><th>'+r+'</th>';var hasOne=false;for(var c2=0;c2<n;c2++){var v=(r*c2)%n,st='';
+      if(r&&c2&&v===0){st=' style="background:color-mix(in srgb,var(--k-c) 30%,transparent);font-weight:600"';if(zd.indexOf(r)<0)zd.push(r);}
+      else if(v===1){st=' style="background:var(--accent-soft);font-weight:600"';hasOne=true;}
+      t+='<td'+st+'>'+v+'</td>';}t+='</tr>';if(r&&hasOne)inv++;}
+    document.getElementById('ck-tab').innerHTML=t;
+    var msg=zd.length?('Zero divisors: '+zd.join(', ')+' (red cells). These classes have no multiplicative inverse, so ℤ/'+n+' is <strong>not a field</strong>.'):('No zero divisors, and every nonzero row contains a 1 (the shaded cells): every nonzero class has an inverse, so ℤ/'+n+' <strong>is a field</strong>. Notice: '+n+' is prime.');
+    document.getElementById('ck-verdict').innerHTML=msg;
+  }
+  N.addEventListener('change',function(){fill(A,+N.value,+A.value);fill(B,+N.value,+B.value);draw();});
+  A.addEventListener('change',draw);B.addEventListener('change',draw);
+  fill(A,6,4);fill(B,6,5);draw();
+})();
+</script>
+
+<h2 id="s5-subgroups-and-structure-preserving-maps">5. Untergruppen und strukturerhaltende Abbildungen</h2>
+<p>Innerhalb von $(\mathbb Z,+)$ liegen die geraden Zahlen $2\mathbb Z$: Die Summe zweier gerader Zahlen ist gerade, und $-x$ ist gerade, wenn $x$ gerade ist. Sie bilden eine eigene Gruppe mit derselben Verknüpfung.</p>
+<div class="box">
+<p><strong>Definition (Untergruppe, Definition 1.1.16, <a class="pl" href="../linalg-script.html#p11">S. 11</a>).</strong> Sei $(G,\circ)$ eine Gruppe. Eine Teilmenge $H\subseteq G$ heisst <strong>Untergruppe</strong>, wenn</p>
+<ol>
+  <li>$H\ne\emptyset$;</li>
+  <li>$h_1\circ h_2\in H$ für alle $h_1,h_2\in H$;</li>
+  <li>$h^{-1}\in H$ für alle $h\in H$.</li>
+</ol></div>
+<p><strong>Beispiele (Beispiel 1.1.17).</strong> $\mathbb Z\subseteq\mathbb Q$ unter $+$; $\{0\}\subseteq\mathbb Z$; $m\mathbb Z=\{ml:l\in\mathbb Z\}\subseteq\mathbb Z$ für jedes $m$; $\{e\}$ und $G$ in jeder Gruppe $G$; $\{\bar0,\bar2\}\subseteq\mathbb Z/4$. <strong>Unbeispiele:</strong> $\mathbb N\subseteq\mathbb Z$ (keine Inversen: $-1\notin\mathbb N$); $\{\bar0,\bar1\}\subseteq\mathbb Z/4$ ($\bar1+\bar1=\bar2\notin H$).</p>
+<p><strong>Eine Untergruppe ist eine Gruppe</strong> mit der eingeschränkten Verknüpfung (Anmerkung 1.1.18, <a class="pl" href="../linalg-script.html#p12">S. 12</a>). Abgeschlossenheit ist Bedingung 2. Assoziativität gilt für alle Elemente von $G$, also insbesondere in $H$. Inverse sind Bedingung 3. Und das Neutralelement liegt in $H$: Wähle ein beliebiges $h\in H$ (möglich nach Bedingung 1), dann $h^{-1}\in H$ nach 3, und $e=h\circ h^{-1}\in H$ nach 2. Deshalb verlangt die Definition „$H\ne\emptyset$“ statt „$e\in H$“: Das Neutralelement kommt gratis mit.</p>
+<p class="small"><strong>Warum du dem wieder begegnest.</strong> In <a class="xl" href="../linalg-08.html">Lektion 8</a> wird ein <em>Unterraum</em> genau so geprüft: nichtleer, abgeschlossen unter den Verknüpfungen, und der Rest wird geerbt. Lerne das Muster einmal.</p>
+
+<p>Als Nächstes Abbildungen, die die Verknüpfung respektieren. Die Abbildung $\mathbb Z\to\mathbb Z/n$, $a\mapsto\bar a$, verwandelt Summen in Summen: $\overline{a+b}=\bar a+\bar b$. Das Verdoppeln $x\mapsto2x$ auf $\mathbb Z$ tut dasselbe: $2(a+b)=2a+2b$.</p>
+<div class="box">
+<p><strong>Definition (Homomorphismus, Isomorphismus, Definition 1.1.19, <a class="pl" href="../linalg-script.html#p12">S. 12</a>).</strong> Seien $(G,\circ)$ und $(H,\star)$ Gruppen. Eine Abbildung $\varphi:G\to H$ heisst <strong>Homomorphismus</strong>, wenn</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\varphi(g_1\circ g_2)=\varphi(g_1)\star\varphi(g_2)\\ &amp;\text{für alle }g_1,g_2\in G.\end{aligned}$$</span>
+<p>Ein bijektiver Homomorphismus ist ein <strong>Isomorphismus</strong>.</p></div>
+<p>Vorsicht: Links ist die Verknüpfung von $G$, rechts die von $H$. Beispiele (Beispiel 1.1.22): $\varphi_m:\mathbb Z\to\mathbb Z$, $a\mapsto ma$ (ein Isomorphismus genau dann, wenn $m=\pm1$; das „genau dann, wenn $m=1$“ des Skripts vergisst $-1$), und $\pi_n:\mathbb Z\to\mathbb Z/n$, $a\mapsto\bar a$. Die Exponentialfunktion $\exp:(\mathbb R,+)\to(\mathbb R_{&gt;0},\cdot)$ ist ein Isomorphismus: $e^{x+y}=e^x\cdot e^y$, und sie ist bijektiv. Sie verwandelt Addition in Multiplikation, und genau darauf beruhen Rechenschieber und Logarithmentafeln.</p>
+
+<h3 id="proof-e">Beweis E: ein Homomorphismus bildet Neutral- auf Neutralelemente und Inverse auf Inverse ab (Lemma 1.1.20, <a class="pl" href="../linalg-script.html#p12">S. 12</a>)</h3>
+<div class="box">
+<p><strong>Behauptung.</strong> Sei $\varphi:(G,\circ)\to(H,\star)$ ein Homomorphismus mit Neutralelementen $e_G$, $e_H$. Dann gilt (a) $\varphi(e_G)=e_H$ und (b) $\varphi(a^{-1})=\varphi(a)^{-1}$ für alle $a\in G$.</p></div>
+<p><strong>Die Idee.</strong> Zu (a): $e_G=e_G\circ e_G$, also liefert Anwenden von $\varphi$: $\varphi(e_G)=\varphi(e_G)\star\varphi(e_G)$. Ein Element, das in einer Gruppe gleich seinem eigenen Quadrat ist, muss $e_H$ sein: kürze eine Kopie mit ihrem Inversen. Zu (b): $\varphi(a^{-1})$ tut, was ein Inverses von $\varphi(a)$ tut, und Inverse sind eindeutig (Beweis B).</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (noch vor jeder Idee)</span>
+<ul>
+  <li><strong>Gegeben:</strong> $\varphi(g_1\circ g_2)=\varphi(g_1)\star\varphi(g_2)$ für alle $g_1,g_2$. Über $e$ oder Inverse wird direkt nichts gesagt.</li>
+  <li><strong>(a) Zu zeigen:</strong> $\varphi(e_G)$ ist in $H$ neutral, also gleich $e_H$.</li>
+  <li><strong>(b) Zu zeigen:</strong> $\varphi(a^{-1})\star\varphi(a)=e_H=\varphi(a)\star\varphi(a^{-1})$; danach Eindeutigkeit der Inversen.</li>
+  <li><strong>Die Lücke:</strong> füttere $\varphi$ mit Produkten, deren Wert du kennst ($e_G\circ e_G$, $a\circ a^{-1}$).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Übersetzerin trägt Rituale treu von einer Gilde in die andere. Was macht sie mit dem stillen Mitglied? Stille, mit Stille ausgeführt, ist Stille.</p></div><div class="sp-formal"><p>(a) Da $e_G=e_G\circ e_G$, $\;\varphi(e_G)=\varphi(e_G\circ e_G)=\varphi(e_G)\star\varphi(e_G)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>In der anderen Gilde macht man eine Kopie mit ihrem Partner rückgängig. Nur Stille bleibt übrig.</p></div><div class="sp-formal"><p>Multipliziere von links mit $\varphi(e_G)^{-1}\in H$:</p><span class="math-display" style="display:block">$$\begin{aligned}e_H&amp;=\varphi(e_G)^{-1}\star\varphi(e_G)\\&amp;=\varphi(e_G)^{-1}\star\bigl(\varphi(e_G)\star\varphi(e_G)\bigr)\\&amp;=\bigl(\varphi(e_G)^{-1}\star\varphi(e_G)\bigr)\star\varphi(e_G)\\&amp;=e_H\star\varphi(e_G)=\varphi(e_G).\end{aligned}$$</span></div></div>
+<div class="sp-row"><div class="sp-story"><p>Ein Mitglied und sein Partner heben sich, übersetzt, immer noch zur Stille auf. Also ist der übersetzte Partner der Partner der Übersetzung.</p></div><div class="sp-formal"><p>(b) Nach (a) ist $\varphi(a)\star\varphi(a^{-1})=\varphi(a\circ a^{-1})$ $=\varphi(e_G)=e_H$, und ebenso $\varphi(a^{-1})\star\varphi(a)$ $=\varphi(a^{-1}\circ a)=e_H$. Also ist $\varphi(a^{-1})$ ein Inverses von $\varphi(a)$, und nach der Eindeutigkeit der Inversen (Beweis B) gilt $\varphi(a^{-1})=\varphi(a)^{-1}$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Vorgehensweisen: <a class="mvl" href="../linalg-moves.html#m-la_cancel">mit einem Inversen kürzen</a> <a class="mvl" href="../linalg-moves.html#m-la_sneak">das Neutralelement hineinschmuggeln</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(a) Es gilt $\varphi(e_G)=\varphi(e_G\circ e_G)=\varphi(e_G)\star\varphi(e_G)$. Multiplikation von links mit $\varphi(e_G)^{-1}$ und Assoziativität ergeben</p><span class="math-display" style="display:block">$$\begin{aligned}e_H&amp;=\varphi(e_G)^{-1}\star\varphi(e_G)\\&amp;=\bigl(\varphi(e_G)^{-1}\star\varphi(e_G)\bigr)\star\varphi(e_G)\\&amp;=e_H\star\varphi(e_G)=\varphi(e_G).\end{aligned}$$</span>
+<p>(b) Sei $a\in G$. Nach (a) ist $\varphi(a)\star\varphi(a^{-1})=\varphi(a\circ a^{-1})$ $=\varphi(e_G)=e_H$ und $\varphi(a^{-1})\star\varphi(a)$ $=\varphi(a^{-1}\circ a)=e_H$. Also ist $\varphi(a^{-1})$ ein Inverses von $\varphi(a)$, und da Inverse eindeutig sind, gilt $\varphi(a^{-1})=\varphi(a)^{-1}$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter zum Beweisschreiben</span>
+<ol>
+  <li><strong>Sprosse 1.</strong> Warum dürfen wir überhaupt $\varphi(e_G)^{-1}$ verwenden?
+  <details><summary>Antwort</summary><div><p>$\varphi(e_G)$ ist ein Element der <em>Gruppe</em> $H$, und in einer Gruppe hat jedes Element ein Inverses. (In einem blossen Monoid würde dieser Schritt scheitern.)</p></div></details></li>
+  <li><strong>Sprosse 2.</strong> Übersetze (a) und (b) in die additive Schreibweise für $\varphi:(G,+)\to(H,+)$.
+  <details><summary>Antwort</summary><div><p>(a) $\varphi(0)=0$; (b) $\varphi(-a)=-\varphi(a)$. Für $\pi_n$: $\bar0$ ist das Bild von $0$, und $\overline{-a}=-\bar a$, was wir in Beweis D gesehen haben.</p></div></details></li>
+  <li><strong>Sprosse 3.</strong> Schreibe (a) und (b) nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>(a) Schreibe $\varphi(e)=\varphi(e\circ e)=\varphi(e)\star\varphi(e)$.</li>
+  <li>Multipliziere von links mit $\varphi(e)^{-1}$; klammere um; erhalte $e_H=\varphi(e)$.</li>
+  <li>(b) Zeige $\varphi(a)\star\varphi(a^{-1})=e_H$ in beiden Richtungen, mit (a).</li>
+  <li>Zitiere die Eindeutigkeit der Inversen.</li>
+</ol>
+<p><strong>Kurz gesagt:</strong> $e$ ist sein eigenes Quadrat; kürzen; dann „verhält sich wie das Inverse, ist also das Inverse“. In Lektion 11 beweisen dieselben zwei Zeilen, dass eine lineare Abbildung $0$ auf $0$ schickt.</p></div>
+
+<h2 id="s6-rings-two-operations-that-must">6. Ringe: zwei Verknüpfungen, die zusammenarbeiten müssen</h2>
+<p>$\mathbb Z$ hat zwei Verknüpfungen. $(\mathbb Z,+)$ ist eine abelsche Gruppe, $(\mathbb Z,\cdot)$ ist ein kommutatives Monoid, und beide sind durch die Distributivgesetze verbunden: $x\cdot(y+z)=x\cdot y+x\cdot z$.</p>
+<div class="box">
+<p><strong>Definition (Ring, Definition 1.3.1, <a class="pl" href="../linalg-script.html#p16">S. 16</a>).</strong> Eine Menge $R$ mit zwei Verknüpfungen $+:R\times R\to R$ und $\cdot:R\times R\to R$ heisst <strong>Ring</strong>, wenn</p>
+<ul>
+  <li><strong>(R1)</strong> $(R,+)$ eine abelsche Gruppe ist;</li>
+  <li><strong>(R2)</strong> $\cdot$ assoziativ ist;</li>
+  <li><strong>(R3)</strong> für alle $a,b,c\in R$: $a\cdot(b+c)=a\cdot b+a\cdot c$ und $(a+b)\cdot c=a\cdot c+b\cdot c$.</li>
+</ul>
+<p>$R$ heisst <strong>kommutativ</strong>, wenn $a\cdot b=b\cdot a$ für alle $a,b$ gilt, und ein <strong>Ring mit Eins</strong>, wenn es ein $1\in R$ gibt mit $1\cdot a=a\cdot1=a$ für alle $a$.</p></div>
+<div class="exam"><span class="label">In der Vorlesung: ein echter Unterschied</span>
+<p>Halbeisens Ring (Definition 6) verlangt, dass $(M,\ast)$ ein <strong>Monoid</strong> ist: Seine Ringe <strong>haben immer eine Eins</strong>. Also ist $(2\mathbb Z,+,\cdot)$ im Skript ein Ring (kommutativ, ohne Eins), aber <em>kein</em> Ring in der Vorlesung. In Halbeisens Prüfung bedeutet „Ring“ „Ring mit Eins“; um sicher zu gehen, schreibe „Ring mit Eins“ und prüfe die $1$. Für Körper stimmen beide Definitionen überein, also ändert sich ab Abschnitt 7 nichts.</p></div>
+<p><strong>Beispiele.</strong> $(\mathbb Z,+,\cdot)$, ein kommutativer Ring mit Eins (Beispiel 1.3.2). $\mathbb Q[X]$, Polynome mit rationalen Koeffizienten, mit der üblichen Addition und Multiplikation (Serie 1, Aufgabe 7). Die Menge $M_{n\times n}(\mathbb R)$ der quadratischen Matrizen, ein Ring mit Eins, der für $n\ge2$ <em>nicht kommutativ</em> ist (Lektion 12 und Serie 7). Und unsere Uhr:</p>
+<div class="box">
+<p><strong>Der Ring $\mathbb Z/n$ (Beispiel 1.3.3, <a class="pl" href="../linalg-script.html#p16">S. 16</a>).</strong> Definiere $\bar a\cdot\bar b:=\overline{ab}$. Das ist wohldefiniert (Sprosse 2 von Beweis C), und $(\mathbb Z/n,+,\cdot)$ ist ein endlicher kommutativer Ring mit Eins $\bar1$: Assoziativität, Kommutativität und Distributivität werden genau wie in Beweis D von $\mathbb Z$ geerbt, z.B. $\bar a(\bar b+\bar c)=\overline{a(b+c)}=\overline{ab+ac}=\bar a\bar b+\bar a\bar c$.</p></div>
+<div class="two-col">
+<div class="table-wrap"><table style="text-align:center">
+<tr><th>$\cdot$ in $\mathbb Z/4$</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+<tr><th>0</th><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><th>1</th><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+<tr><th>2</th><td>0</td><td>2</td><td><strong>0</strong></td><td>2</td></tr>
+<tr><th>3</th><td>0</td><td>3</td><td>2</td><td>1</td></tr>
+</table></div>
+<div class="table-wrap"><table style="text-align:center">
+<tr><th>$\cdot$ in $\mathbb Z/5$</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+<tr><th>0</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><th>1</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+<tr><th>2</th><td>0</td><td>2</td><td>4</td><td>1</td><td>3</td></tr>
+<tr><th>3</th><td>0</td><td>3</td><td>1</td><td>4</td><td>2</td></tr>
+<tr><th>4</th><td>0</td><td>4</td><td>3</td><td>2</td><td>1</td></tr>
+</table></div>
+</div>
+<p>Schau dir den fett gedruckten Eintrag an: $\bar2\cdot\bar2=\bar0$ in $\mathbb Z/4$, obwohl $\bar2\ne\bar0$. Ebenso $\bar2\cdot\bar3=\bar0$ in $\mathbb Z/6$ (probiere $n=6$ in der Uhr oben). In $\mathbb Z/5$ passiert so etwas nicht, und jede Zeile ohne Null enthält eine $1$.</p>
+<div class="box">
+<p><strong>Definition (Nullteiler, Definition 1.3.5, <a class="pl" href="../linalg-script.html#p17">S. 17</a>).</strong> Ein Ring $R$ ist <strong>nullteilerfrei</strong>, wenn für alle $a,b\in R$ gilt:</p>
+<span class="math-display" style="display:block">$$ab=0\ \Rightarrow\ a=0\ \text{ oder }\ b=0.$$</span>
+<p>Gleichwertig (Kontraposition, Anmerkung 1.3.6): $a\ne0$ und $b\ne0$ $\Rightarrow$ $ab\ne0$. Elemente $a,b\ne0$ mit $ab=0$ heissen <strong>Nullteiler</strong>.</p></div>
+<p>Noch eine Tatsache, die du schon beweisen kannst und ständig brauchen wirst: In jedem Ring gilt $0\cdot a=0$ (Lemma 1.3.4, <a class="pl" href="../linalg-script.html#p17">S. 17</a>). Da $0+0=0$, liefert das Distributivgesetz $0\cdot a=(0+0)\cdot a=0\cdot a+0\cdot a$, und Addieren von $-(0\cdot a)$ auf beiden Seiten lässt $0=0\cdot a$ übrig. <a class="xl" href="../linalg-04.html">Lektion 4</a> sammelt alle solchen Regeln sauber.</p>
+
+<h2 id="s7-fields-everything-except-zero-can">7. Körper: alles ausser der Null lässt sich teilen</h2>
+<div class="box">
+<p><strong>Definition (Körper, Definition 1.3.7, <a class="pl" href="../linalg-script.html#p18">S. 18</a>).</strong> Eine Menge $K$ mit zwei Verknüpfungen $+$ und $\cdot$ heisst <strong>Körper</strong>, wenn</p>
+<ol>
+  <li>$(K,+)$ eine abelsche Gruppe ist (Neutralelement $0$, Inverses $-a$);</li>
+  <li>$K^\times:=K\setminus\{0\}$ mit $\cdot$ eine abelsche Gruppe ist (Neutralelement $1$, Inverses $a^{-1}=\frac1a$);</li>
+  <li>die Distributivgesetze gelten.</li>
+</ol>
+<p>Mit anderen Worten: ein kommutativer Ring mit Eins, in dem jedes nicht-null Element ein multiplikatives Inverses hat.</p></div>
+<p>Das Skript gibt dieselbe Definition auch als eine flache Liste von zehn Axiomen (Definition 1.3.9, <a class="pl" href="../linalg-script.html#p18">S. 18</a>), was eine praktische Checkliste ist: für $+$ Assoziativität, Kommutativität, $0$, $-x$; für $\cdot$ Assoziativität, $1$, $x^{-1}$ für $x\ne0$; Distributivität; $1\ne0$; Kommutativität von $\cdot$.</p>
+<p class="small"><strong>In der Vorlesung.</strong> Halbeisens Definition 7 sagt genau dies: $(M,\circ,\ast)$ ist ein kommutativer Ring und $(M\setminus\{e_\circ\},\ast)$ ist eine abelsche Gruppe, wobei $e_\circ$ das Neutralelement von $\circ$ ist. Sein Beispiel ist $(\mathbb Q,+,\cdot)$, in drei Aufzählungspunkten geprüft.</p>
+<p><strong>Warum wird die $0$ entfernt?</strong> Weil in jedem Ring $0\cdot a=0$ gilt, könnte $0$ nur dann ein Inverses haben, wenn $0=1$ wäre. „Jedes Element ausser $0$ ist invertierbar“ ist also das Höchste, was man verlangen kann. Und „$K^\times$ ist eine Gruppe“ enthält stillschweigend zwei Tatsachen: <strong>$1\ne0$</strong> (die Gruppe $K^\times$ enthält ihr Neutralelement $1$, aber nicht $0$), und <strong>ein Körper hat keine Nullteiler</strong> (Abgeschlossenheit von $K^\times$: nicht-null mal nicht-null ist nicht-null). Das ist Lemma 1.3.10 (a) und (c), <a class="pl" href="../linalg-script.html#p19">S. 19</a>, bewiesen in <a class="xl" href="../linalg-04.html">Lektion 4</a>.</p>
+<p><strong>Beispiele.</strong> $\mathbb Q$, $\mathbb R$, $\mathbb C$ (Beispiel 1.3.11). $\mathbb Z/5$: die Tabelle oben zeigt ein Inverses für jede nicht-null Klasse ($\bar2^{-1}=\bar3$, $\bar4^{-1}=\bar4$). Allgemein ist $\mathbb Z/p$ für jede Primzahl $p$ ein Körper, geschrieben $\mathbb F_p$ (Korollar 1.3.15; <a class="xl" href="../linalg-04.html">Lektion 4</a> beweist es mit dem Schubfachprinzip aus <a class="xl" href="../linalg-03.html">Lektion 3</a>).</p>
+<p><strong>Unbeispiele.</strong> $\mathbb Z$: $2$ hat in $\mathbb Z$ kein Inverses, da $2x=1$ keine ganzzahlige Lösung hat. $\mathbb Z/4$ und $\mathbb Z/6$: sie haben Nullteiler, und ein Körper hat keine. Direkter: $\bar2$ hat in $\mathbb Z/4$ kein Inverses, denn seine Zeile $0,2,0,2$ zeigt nie eine $1$.</p>
+<div class="box"><h3 id="we-3">Musterbeispiel 3: In dem Körper $\mathbb F_{23}$ ist $8\cdot9$ gleich …? (FS19, Frage IV)</h3>
+<p>Optionen: (a) 3, (b) 20, (c) 22, (d) 8.</p>
+<ol class="gq">
+  <li><p>Berechne $8\cdot9$ in $\mathbb Z$ und dividiere durch $23$ mit Rest.</p>
+  <details><summary>Antwort</summary><div><p>$72=3\cdot23+3$. Also $\bar8\cdot\bar9=\overline{72}=\bar3$: Antwort (a).</p></div></details></li>
+  <li><p>Prüfe ohne Division: Welches Vielfache von $23$ liegt nahe bei $72$?</p>
+  <details><summary>Antwort</summary><div><p>$69=3\cdot23$, und $72-69=3$. Dasselbe Ergebnis. Schreibe in der Prüfung das Vielfache von $n$ auf, das du abgezogen hast; so ist die Antwort nachprüfbar.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: Für welche Verknüpfung ist $(\mathbb R,\ast,0)$ eine Gruppe? (HS18, Frage VII)</h3>
+<p>Optionen: (a) $a\ast b=ab^2+a^2b$; (b) $a\ast b=a+ab+b$; (c) $a\ast b=a+a^2b^2+b$; (d) $a\ast b=(a^3+b^3)^{1/3}$. Die Schreibweise $(\mathbb R,\ast,0)$ sagt: $0$ soll das Neutralelement sein.</p>
+<ol class="gq">
+  <li><p>Prüfe zuerst das Neutralelement: In welchen Optionen gilt $a\ast0=a$?</p>
+  <details><summary>Antwort</summary><div><p>(a): $a\ast0=0$, nicht $a$ (für $a\ne0$). Raus. (b): $a+0+0=a$. (c): $a+0+0=a$. (d): $(a^3)^{1/3}=a$ (die reelle Kubikwurzel). Also bleiben (b), (c), (d).</p></div></details></li>
+  <li><p>Prüfe die Inversen in (b): Löse $a+ab+b=0$ nach $b$. Für welches $a$ scheitert es?</p>
+  <details><summary>Antwort</summary><div><p>$b(1+a)=-a$, also $b=\frac{-a}{1+a}$, unmöglich für $a=-1$: dann lautet die Gleichung $-1+0=0$, falsch für jedes $b$. Also hat $-1$ kein Inverses. Raus. (Gut zu wissen: $a\ast b=(a+1)(b+1)-1$, also ist es auf $\mathbb R\setminus\{-1\}$ <em>tatsächlich</em> eine Gruppe, eine verkleidete Kopie von $(\mathbb R\setminus\{0\},\cdot)$.)</p></div></details></li>
+  <li><p>Prüfe die Inversen in (c) für $a=1$.</p>
+  <details><summary>Antwort</summary><div><p>$1+b^2+b=0$ hat die Diskriminante $1-4&lt;0$: keine reelle Lösung. Raus.</p></div></details></li>
+  <li><p>Warum ist (d) eine Gruppe?</p>
+  <details><summary>Antwort</summary><div><p>Setze $c(x)=x^3$, eine Bijektion $\mathbb R\to\mathbb R$ mit Umkehrung der reellen Kubikwurzel. Dann gilt $a\ast b=c^{-1}\bigl(c(a)+c(b)\bigr)$: Wir kubieren, addieren und ziehen die Kubikwurzel. Also ist $\ast$ die Verknüpfung $+$, „übertragen“ durch $c$. Assoziativität: $(a\ast b)\ast c'=\sqrt[3]{a^3+b^3+c'^3}$ $=a\ast(b\ast c')$. Neutral $0$, Inverses $-a$ (da $(-a)^3=-a^3$), kommutativ. Antwort (d). In der Sprache von Abschnitt 5: $c$ ist ein Isomorphismus von $(\mathbb R,\ast)$ nach $(\mathbb R,+)$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Ab <a class="xl" href="../linalg-05.html">Lektion 5</a> wird alles „über einem Körper $K$“ gemacht. Jeder Satz, den du dort beweist, gilt gleichzeitig für $\mathbb Q$, $\mathbb R$, $\mathbb C$ und für die endlichen Körper $\mathbb F_p$, wo $\bar1+\bar1=\bar0$ in $\mathbb F_2$ gilt. Diese letzte Welt ist nicht exotisch: Fehlerkorrekturcodes in jedem Handy, QR-Codes und Festplatten sind lineare Algebra über $\mathbb F_2$ und seinen Verwandten. Eine Liste von Axiomen, viele Welten, und die Beweise müssen nur einmal geschrieben werden.</p></div>
+
+<details><summary>Zum Staunen (optional, 5 Min.): die Uhr, die dein Bankkonto prüft</summary><div>
+<p>Jede IBAN (die lange Schweizer Kontonummer, CH…) enthält zwei Prüfziffern, die so gewählt sind, dass eine bestimmte Zahl aus der IBAN $\equiv1\pmod{97}$ ist. Wenn du eine Ziffer falsch tippst, ändert sich der Rest modulo $97$, und der Computer der Bank lehnt die Nummer ab, bevor Geld bewegt wird. Warum $97$? Es ist eine Primzahl, also ist $\mathbb Z/97$ ein Körper, und in einem Körper macht die Multiplikation mit einer nicht-null Zahl nie einen nicht-null Fehler zu $0$: keine Nullteiler bedeuten keine unentdeckten Einzelfehler und keine unentdeckten Vertauschungen zweier Nachbarziffern. Die Nullteiler von $\mathbb Z/4$, die der Rat aus dem Haus des Feldes ferngehalten hat, sind genau der Grund, warum eine Prüfung modulo $100$ schlechter wäre.</p>
+</div></details>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Eine schnelle Wiederholung der ganzen Lektion. Probiere jeden Schritt im Kopf, bevor du die Antwort öffnest.</p>
+
+<div class="box"><h3 id="we-5">Musterbeispiel 5: $(\mathcal P(M),\triangle)$ ist eine abelsche Gruppe (Serie 0, Aufgabe 4)</h3>
+<p>Für eine nichtleere Menge $M$ ist $\mathcal P(M)$ die Menge aller Teilmengen von $M$, und für $x,y\subseteq M$ ist die <strong>symmetrische Differenz</strong> $x\triangle y:=(x\setminus y)\cup(y\setminus x)$.</p>
+<ol class="gq">
+  <li><p>Sag in Worten, wann $t\in x\triangle y$ ist.</p>
+  <details><summary>Antwort</summary><div><p>Genau dann, wenn $t$ in <em>genau einer</em> der Mengen $x$ und $y$ liegt. (Nenne dies $(\ast)$; die offizielle Lösung baut alles darauf auf.)</p></div></details></li>
+  <li><p>Verknüpfung, Kommutativität, Neutralelement, Inverse?</p>
+  <details><summary>Antwort</summary><div><p>Verknüpfung: $x\triangle y\subseteq x\cup y\subseteq M$, also $x\triangle y\in\mathcal P(M)$. Kommutativ: $(\ast)$ ist symmetrisch in $x$ und $y$. Neutral: $\emptyset\triangle x=(\emptyset\setminus x)\cup(x\setminus\emptyset)=x$. Inverse: $x\triangle x=\emptyset$, also ist jedes Element sein eigenes Inverses.</p></div></details></li>
+  <li><p>Assoziativität: Wann ist $t\in(x\triangle y)\triangle z$? Zerlege in $t\in z$ und $t\notin z$.</p>
+  <details><summary>Antwort</summary><div><p>Ist $t\in z$: nach $(\ast)$ gilt $t\in(x\triangle y)\triangle z$ genau dann, wenn $t\notin x\triangle y$, also wenn $t$ in keiner oder in beiden von $x,y$ liegt; zusammen mit $z$: in genau einer oder allen dreien von $x,y,z$. Ist $t\notin z$: genau dann, wenn $t\in x\triangle y$, also wenn $t$ in genau einer von $x,y,z$ liegt. In beiden Fällen gilt: <strong>$t$ liegt in einer ungeraden Anzahl der Mengen $x,y,z$</strong>. Diese Bedingung hängt nicht von der Reihenfolge von $x,y,z$ ab, also gilt (mit der Kommutativität) $t\in x\triangle(y\triangle z)=(y\triangle z)\triangle x$ genau dann, wenn dieselbe Bedingung erfüllt ist. Gleiche Elemente, gleiche Mengen.</p></div></details></li>
+</ol>
+<p class="moves">Vorgehensweisen: <a class="mvl" href="../linalg-moves.html#m-la_member">Zugehörigkeit Element für Element entscheiden</a> <a class="mvl" href="../linalg-moves.html#m-la_check">die Strukturcheckliste</a></p></div>
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: Welche davon sind Untergruppen von $(\mathbb Z/6,+)$: $\{\bar0,\bar3\}$, $\{\bar0,\bar2,\bar4\}$, $\{\bar0,\bar1,\bar5\}$?</h3>
+<ol class="gq">
+  <li><p>$\{\bar0,\bar3\}$?</p>
+  <details><summary>Antwort</summary><div><p>Ja. Nichtleer; Summen: $\bar3+\bar3=\bar6=\bar0$, alle anderen enthalten $\bar0$; Inverse: $-\bar3=\bar3$.</p></div></details></li>
+  <li><p>$\{\bar0,\bar2,\bar4\}$?</p>
+  <details><summary>Antwort</summary><div><p>Ja. $\bar2+\bar2=\bar4$, $\bar2+\bar4=\bar0$, $\bar4+\bar4=\bar2$; $-\bar2=\bar4$, $-\bar4=\bar2$. Es ist das Bild von $2\mathbb Z$ unter $\pi_6$.</p></div></details></li>
+  <li><p>$\{\bar0,\bar1,\bar5\}$?</p>
+  <details><summary>Antwort</summary><div><p>Nein: $\bar1+\bar1=\bar2\notin H$. Die Inversen wären in Ordnung ($-\bar1=\bar5$), aber die Abgeschlossenheit scheitert, und ein Fehler genügt.</p></div></details></li>
+<div class="box"><h3 id="we-7">Musterbeispiel 7: Ist $(\mathbb Z/6,+,\cdot)$ ein Körper? Ist $(\mathbb Q[X],+,\cdot)$ einer?</h3>
+<ol class="gq">
+  <li><p>$\mathbb Z/6$: Gib eine nicht-null Klasse ohne Inverses an.</p>
+  <details><summary>Antwort</summary><div><p>$\bar2$: seine Vielfachen sind $\bar0,\bar2,\bar4,\bar0,\bar2,\bar4$, nie $\bar1$. Ausserdem zeigt $\bar2\cdot\bar3=\bar0$ Nullteiler, die ein Körper nicht haben kann. Kein Körper (aber ein kommutativer Ring mit Eins).</p></div></details></li>
+  <li><p>$\mathbb Q[X]$: Welches Polynom hat kein Inverses? (Serie 1, Aufgabe 7 (b))</p>
+  <details><summary>Antwort</summary><div><p>$X$. Wäre $X\cdot g=1$ für ein Polynom $g\ne0$, vergleiche die Grade: $\deg(X\cdot g)=1+\deg g\ge1$, aber $\deg1=0$. Widerspruch. Also ist $\mathbb Q[X]$ ein kommutativer Ring mit Eins, aber kein Körper. (Das Gradargument braucht, dass $\mathbb Q$ keine Nullteiler hat, damit sich die Leitkoeffizienten nicht gegenseitig aufheben.)</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Aufgaben</h2>
+<p>Offizielle Lösungen gibt es für Serie 0 und 1 (Musterlösungen); die Lösungen unten folgen ihnen. Prüfungsfragen sind mit ihrer Prüfung markiert.</p>
+
+<h3 id="ex-1">Aufgabe 1 (Serie 0, Aufgabe 0)</h3>
+<p>Zeige: Ist $G:=\{0\}$ und $0\circ0:=0$, dann ist $(G,\circ)$ eine abelsche Gruppe.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Nur ein Element, also hat jedes Axiom die Form $0=0$. Benenne das Neutralelement und das Inverse von $0$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> die Strukturcheckliste mit nur einem Element. <strong>Vorgehensweisen:</strong> die Strukturcheckliste.</p>
+<p>Verknüpfung: $(0,0)$ ist das einzige Paar, und $0\circ0=0\in G$. Assoziativität: $(0\circ0)\circ0=0\circ0=0=0\circ(0\circ0)$. Kommutativität: beide Argumente sind gleich. Neutralelement: $0$, da $0\circ0=0$. Inverse: $0$ ist sein eigenes Inverses, da $0\circ0=0$, das Neutralelement. Also ist $(G,\circ)$ eine abelsche Gruppe, die <strong>triviale Gruppe</strong>. (Sie ist die einzige Gruppe mit einem Element; jede Gruppe enthält mindestens $e$, also ist keine Gruppe leer.)</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Serie 0, Aufgabe 1 (b))</h3>
+<p>Zeige, dass $(\mathbb Q\setminus\{0\},\cdot)$ eine abelsche Gruppe ist.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Die Abgeschlossenheit braucht „ein Produkt von nicht-null rationalen Zahlen ist eine nicht-null rationale Zahl“. Das Inverse von $\frac pq$ ist $\frac qp$; warum ist das erlaubt?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> wie bei Musterbeispiel 1; der einzige neue Punkt ist die Abgeschlossenheit. <strong>Vorgehensweisen:</strong> die Strukturcheckliste, von der grösseren Struktur erben.</p>
+<p>Verknüpfung: Seien $p,q\in\mathbb Q\setminus\{0\}$. Wäre $pq=0$, so folgte wegen $p\ne0$: $q=\frac1p\cdot(pq)=\frac1p\cdot0=0$, Widerspruch zu $q\ne0$. Also $pq\ne0$, d.h. $pq\in\mathbb Q\setminus\{0\}$. Assoziativität und Kommutativität gelten in $\mathbb Q$, also insbesondere auf der Teilmenge. Neutralelement: $1\ne0$ und $1\cdot q=q$. Inverse: $q=\frac ab$ mit $a,b\in\mathbb Z\setminus\{0\}$; dann ist $q^{-1}:=\frac ba\in\mathbb Q\setminus\{0\}$ und $q\cdot q^{-1}=1$. Also ist es eine abelsche Gruppe.</p>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (Serie 0, Aufgabe 3)</h3>
+<p>Sei $S$ die Menge aller reellen Folgen $(a_0,a_1,a_2,\dots)$ mit gliedweiser Addition, und $\mathrm{Fib}\subseteq S$ die Menge der Folgen mit $f_{i+2}=f_{i+1}+f_i$ für alle $i\in\mathbb N$. (a) Zeige, dass $(S,+)$ eine abelsche Gruppe ist. (b) Zeige, dass $(\mathrm{Fib},+)$ eine abelsche Gruppe ist.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Für (b) nutze (a): Assoziativität und Kommutativität werden geerbt. Übrig bleiben Abgeschlossenheit, die Nullfolge und die Negativen.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) die Checkliste gliedweise; (b) eine Untergruppen-artige Prüfung innerhalb von $S$. <strong>Vorgehensweisen:</strong> die Strukturcheckliste, von der grösseren Struktur erben.</p>
+<p>(a) Zwei Folgen sind genau dann gleich, wenn sie in jedem Glied übereinstimmen, und $(a_n)+(b_n)=(a_n+b_n)$. Verknüpfung: $a_n+b_n\in\mathbb R$ für jedes $n$. Assoziativität und Kommutativität gelten in jedem Glied, weil sie in $\mathbb R$ gelten. Neutral: die Nullfolge $(0,0,\dots)$. Inverses von $(a_n)$: $(-a_n)$, da $(a_n+(-a_n))=(0)$.</p>
+<p>(b) Assoziativität und Kommutativität gelten für alle Elemente von $S$, insbesondere für die von $\mathrm{Fib}$. Abgeschlossenheit: Sind $(f_n),(g_n)\in\mathrm{Fib}$ und $h_n:=f_n+g_n$, dann gilt für jedes $i$</p>
+<span class="math-display" style="display:block">$$\begin{aligned}h_{i+2}&amp;=f_{i+2}+g_{i+2}\\&amp;=(f_{i+1}+f_i)+(g_{i+1}+g_i)\\&amp;=(f_{i+1}+g_{i+1})+(f_i+g_i)\\&amp;=h_{i+1}+h_i,\end{aligned}$$</span>
+<p>wobei Assoziativität und Kommutativität in $\mathbb R$ verwendet werden. Also $(h_n)\in\mathrm{Fib}$. Die Nullfolge liegt in $\mathrm{Fib}$ ($0=0+0$) und ist in ganz $S$ neutral. Ist $(f_n)\in\mathrm{Fib}$, so gilt $-f_{i+2}=-(f_{i+1}+f_i)=(-f_{i+1})+(-f_i)$, also $(-f_n)\in\mathrm{Fib}$, und es ist nach (a) das Inverse. Also ist $(\mathrm{Fib},+)$ eine abelsche Gruppe. (In <a class="xl" href="../linalg-05.html">Lektion 5</a> wird sie zu einem Vektorraum, und in Serie 6 liefert ihre Basis die geschlossene Formel für die Fibonacci-Zahlen.)</p>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 (Serie 0, Aufgabe 2)</h3>
+<p>Sei $V=\mathbb Z^4$, die Menge der 4-Tupel ganzer Zahlen, mit komponentenweiser Addition $+_V$. Zeige, dass $(V,+_V)$ eine abelsche Gruppe ist.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Alles geschieht komponentenweise, und $(\mathbb Z,+)$ ist bereits eine abelsche Gruppe. Benenne das Neutralelement und das Inverse von $(a_1,a_2,a_3,a_4)$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> die Checkliste, jeweils eine Komponente. <strong>Vorgehensweisen:</strong> die Strukturcheckliste.</p>
+<p>Schreibe $v=(v_1,v_2,v_3,v_4)$; zwei Tupel sind genau dann gleich, wenn alle vier Komponenten übereinstimmen, und $(v+_Vw)_i=v_i+w_i$. Verknüpfung: $v_i+w_i\in\mathbb Z$, also $v+_Vw\in V$. Assoziativität: $((u+_Vv)+_Vw)_i=(u_i+v_i)+w_i$ $=u_i+(v_i+w_i)$ $=(u+_V(v+_Vw))_i$ für jedes $i$. Kommutativität genauso. Neutral: $0_V=(0,0,0,0)$. Inverses: $-v=(-v_1,-v_2,-v_3,-v_4)\in V$ und $v+_V(-v)=0_V$. Also ist $(V,+_V)$ eine abelsche Gruppe. (Jedes Argument funktioniert für $K^n$ über jedem Körper $K$: der Koordinatenraum aus <a class="xl" href="../linalg-05.html">Lektion 5</a>.)</p>
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (Serie 1, Aufgabe 6)</h3>
+<p>(a) Zeige, dass $(\mathcal P(M),\triangle,\cap)$ für nichtleeres $M$ ein kommutativer Ring mit Eins ist. (b) Zeige, dass er kein Körper ist, sobald $|M|&gt;1$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(a) Die additive Gruppe ist Musterbeispiel 5. Was ist die „Eins“ für $\cap$? Für die Distributivität zerlege in $t\in x$ und $t\notin x$. (b) Nimm eine einelementige Teilmenge.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (R1) erledigt; (R2), Kommutativität, Eins, (R3) über die Zugehörigkeit Element für Element; (b) ein Gegenbeispiel. <strong>Vorgehensweisen:</strong> Zugehörigkeit Element für Element entscheiden, ein Gegenbeispiel genügt.</p>
+<p>(a) (R1) ist Musterbeispiel 5. $\cap$ ist eine Verknüpfung auf $\mathcal P(M)$ ($x\cap y\subseteq M$), assoziativ und kommutativ, weil „$t\in x$ und $t\in y$“ es ist. Die Eins ist $M$: $M\cap x=x$ für $x\subseteq M$. Distributivität $x\cap(y\triangle z)=(x\cap y)\triangle(x\cap z)$: Sei $t\in M$. Ist $t\notin x$, liegt $t$ auf keiner Seite. Ist $t\in x$, so gilt $t\in x\cap y\iff t\in y$ und $t\in x\cap z\iff t\in z$, also liegt $t$ auf beiden Seiten genau dann, wenn $t$ in genau einer von $y,z$ liegt. Das andere Distributivgesetz folgt aus der Kommutativität.</p>
+<p>(b) Seien $p\ne q$ in $M$. Dann ist $\{p\}\ne\emptyset$, die Null dieses Rings. Für jedes $y$ gilt $\{p\}\cap y\subseteq\{p\}$, was $q$ nicht enthält, also $\{p\}\cap y\ne M$. Daher hat $\{p\}$ kein Inverses bezüglich $\cap$, und der Ring ist kein Körper. (Ausserdem zeigt $\{p\}\cap\{q\}=\emptyset$ Nullteiler.)</p>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (Serie 1, Aufgabe 8 (a)–(c))</h3>
+<p>Zeige, dass $\bar a\cdot\bar b:=\overline{ab}$ auf $\mathbb Z/m$ wohldefiniert ist, dass $(\mathbb Z/m,+,\cdot)$ ein kommutativer Ring mit Eins ist, und dass er kein Körper ist, wenn $m$ keine Primzahl ist.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Wohldefiniert: Sind $\bar a=\bar a'$ und $\bar b=\bar b'$, schreibe $a'=a+km$, $b'=b+lm$ und multipliziere $a'b'$ aus. Kein Körper: für $m=rs$ mit $1&lt;r,s&lt;m$ betrachte $\bar r\cdot\bar s$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> Wohldefiniertheit mit zwei Namen; Ringaxiome von $\mathbb Z$ geerbt; ein Gegenbeispiel aus einer Faktorisierung. <strong>Vorgehensweisen:</strong> zwei Namen, subtrahieren; von der grösseren Struktur erben; ein Gegenbeispiel genügt.</p>
+<p>Wohldefiniert: Sprosse 2 von Beweis C. Ring mit Eins: $(\mathbb Z/m,+)$ ist eine abelsche Gruppe (Beweis D); für die Multiplikation gilt $(\bar a\bar b)\bar c=\overline{(ab)c}=\overline{a(bc)}=\bar a(\bar b\bar c)$, $\bar a\bar b=\overline{ab}=\overline{ba}=\bar b\bar a$, $\bar1\bar a=\bar a$, und $\bar a(\bar b+\bar c)=\overline{a(b+c)}=\overline{ab+ac}=\bar a\bar b+\bar a\bar c$, alles aus den Regeln in $\mathbb Z$. Kein Körper: Ist $m$ keine Primzahl und $m&gt;1$, schreibe $m=kl$ mit $1&lt;k,l&lt;m$. Dann gilt $\bar k\ne\bar0\ne\bar l$ (sie sind Standardnamen zwischen $1$ und $m-1$), aber $\bar k\cdot\bar l=\bar m=\bar0$: Nullteiler. Hätte $\bar k$ ein Inverses, so wäre $\bar l=\bar k^{-1}\bar k\bar l=\bar k^{-1}\cdot\bar0=\bar0$, ein Widerspruch. (Für $m=1$ ist $\mathbb Z/1=\{\bar0\}$ mit $\bar1=\bar0$, was kein Körper erlaubt.) Teil (d), „$m$ prim ⇒ Körper“, steht in <a class="xl" href="../linalg-04.html">Lektion 4</a>.</p>
+</div></details>
+
+<h3 id="ex-7">Aufgabe 7 (Altklausur-Stil)</h3>
+<p>Wahr oder falsch? (a) $(\mathbb N,+)$ ist eine Gruppe. (b) $(\mathbb Z/7\setminus\{\bar0\},\cdot)$ ist eine Gruppe. (c) Jede Untergruppe von $(\mathbb Z,+)$ enthält $0$. (d) $\exp:(\mathbb R,+)\to(\mathbb R_{&gt;0},\cdot)$ ist ein Homomorphismus. (e) Es gibt einen Körper mit genau einem Element.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Prüfe bei jedem Punkt die Axiome in der Reihenfolge Abgeschlossenheit, Neutralelement, Inverse; ein scheiterndes Axiom genügt für „falsch“.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> „wahr“ braucht eine Begründung, die jeden Fall abdeckt; „falsch“ braucht ein konkretes Gegenbeispiel.</p>
+<p>(a) <strong>Falsch:</strong> $1$ hat in $\mathbb N$ kein Inverses. (b) <strong>Wahr:</strong> $7$ ist prim, also ist $\mathbb Z/7$ ein Körper (<a class="xl" href="../linalg-04.html">Lektion 4</a>), und $K^\times$ ist für jeden Körper eine Gruppe; prüfe ein Inverses: $\bar3\cdot\bar5=\overline{15}=\bar1$. (c) <strong>Wahr:</strong> jede Untergruppe enthält das Neutralelement (Abschnitt 5). (d) <strong>Wahr:</strong> $e^{x+y}=e^xe^y$. (e) <strong>Falsch:</strong> ein Körper hat $1\ne0$, also mindestens zwei Elemente.</p>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Die Aufgaben 1–7 ergeben 7 Punkte, einen für jede Aufgabe, die du löst. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, eine Wahr-oder-falsch-Reihe, wenn höchstens ein Punkt falsch ist. Mit 5 von 7 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="../skipped.html#linalg-01">Auslassungsliste</a>.</p>
+<ul>
+  <li><strong>Aufgabe 1.1.23</strong> (der Kern von $\pi_n$ ist eine Untergruppe): eine kurze Aufgabe; die Idee kehrt als Kern einer linearen Abbildung zurück. <em>Priorität: niedrig.</em></li>
+  <li><strong>Polynomdivision</strong> (Skript 1.4): in der Linearen Algebra I nicht nötig. <em>Priorität: niedrig.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a href="../linalg-02.html">Lektion 2</a>, die Sprache der Mathematik: Aussagen, Wahrheitstabellen und Quantoren, und wie man eine Definition verneint, ohne sich zu verirren. Halbeisens Quiz 1 und Quiz 5 drehen sich ganz darum.</p>
+
+<nav class="site foot" aria-label="Lektionsnavigation">
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-02.html">Lektion 2: Die Schreiber der Freien Stadt →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="../feedback.html">Rückmeldung geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
+
