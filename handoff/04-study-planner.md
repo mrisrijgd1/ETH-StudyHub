@@ -160,7 +160,7 @@ The team keeps a working copy of the question set outside this repo; this sectio
    pre-filled; the student only confirms or corrects it.
 3. **No exam-style test questions** on the material: the questionnaire must never feel like an exam.
 4. Skip logic hides questions that don't apply. The student can pause after any module; only B is required.
-5. Every question works as a plain form field. An Apertus conversation is an optional layer on top.
+5. Form-first: every question is a plain form field. A chat button on every screen lets the student ask Apertus questions about the questionnaire; answers never change the form by themselves. Every module has a small question mark beside its title that opens a one-line "why we ask", closed by default.
 6. Time estimates per module are guesses until 3 to 5 students have been timed on a click prototype.
 
 Answer types: **single** = pick one, **multi** = pick several, **scale** = 1 to 5 with labelled ends,
@@ -185,7 +185,7 @@ Answer types: **single** = pick one, **multi** = pick several, **scale** = 1 to 
 | B4 | If repeat: what went wrong last time? | multi: ran out of time / proofs / computations / exam nerves / didn't study enough / other | Weights proof or computation practice, adds mock exams |
 | B5 | Do you know your exam dates yet? Enter them | date per course, or "not yet" | Hard deadline per course; until known, plans to session start |
 | B6 | Exam mode, per course | pre-filled from the exam map, student confirms: written / oral, length, allowed aids, session exam or during the semester | Mock exam length, oral practice (explain out loud), summary sheet tasks |
-| B7 | How much does each subject weigh, and how do earlier grades or bonuses count? | pre-filled from the programme file (credits, Basisprüfung block, bonus rules); student enters bonuses or Vornoten already earned | Weight in the priority formula; an earned bonus lowers the score needed (block rules: guess, to verify per programme) |
+| B7 | How much does each subject weigh, and how do earlier grades or bonuses count? | pre-filled from the programme file (credits, Basisprüfung block, bonus rules); student enters bonuses or Vornoten already earned | Weight in the priority formula; an earned bonus lowers the score needed. Verified (26 Nov): weight 1 each, the block passes with an average of at least 4.0, compensation only within the block, one repeat of the whole block, bonus up to +0.25 in Analysis I and Physik I; rounding of the block average not yet verified |
 | B8 | Which courses do you want to secure most? Rank them | drag to order | Tie-breaker in time allocation |
 | B9 | For which subjects is there a PVK (exam preparation course), and will you attend? | pre-filled list with dates where known (guess: we collect them per programme), yes / no / not sure | PVK days become fixed blocks; that subject's first revision pass is placed before the PVK so it is used for questions |
 
@@ -199,7 +199,7 @@ Answer types: **single** = pick one, **multi** = pick several, **scale** = 1 to 
 | C4 | How confident are you right now, per subject? | scale 1 (very unsure) to 5 (very confident) | Compared with chapter ratings; low confidence + high rating gets an early mock to reassure |
 | C5 | Why does this exam session matter to you? | text, optional | Companion uses it for encouragement, never quoted back verbatim |
 | C6 | What would a good Lernphase look like for you on 1 February? | multi: all material seen twice / did all past exams / kept sport / slept well / stayed calm / other | Turns into the plan's success checks shown each week |
-| C7 | How many hours per week do you realistically want to study in the Lernphase? | number, with a hint showing the typical range (guess: 35 to 50 h) | Weekly cap; the planner warns if material needs more |
+| C7 | How many hours per week do you realistically want to study in the Lernphase? | number, with a hint showing the typical range (default 40 to 48 h in the Lernphase, about 15 to 25 h of self-study on top of the timetable in the lecture period) | Weekly cap; the planner warns if material needs more |
 
 #### D. Where you stand in your three subjects (about 5 min)
 
@@ -233,7 +233,7 @@ Steps in the pop-up:
 | E2 | Weekly recurring activities | drag boxes on a week plan, repeated in all weeks, with per-week exceptions; optional broad label | Blocked slots in every week |
 | E3 | Which lectures and exercise classes do you attend in person, watch as recordings, or skip? | single per course, shown on the lecture boxes: attend / recording / script only / StudyHub only | Turns lecture boxes into study time or keeps them |
 | E4 | Events already planned | drag one-off boxes in the month view; title optional | Removed from the calendar; the day before and after gets a lighter load |
-| E5 | Rest days | click days or half-days; recommended rest days shown shaded (guess: one per week, more after each exam) | Protected rest, never overwritten by replanning |
+| E5 | Rest days | click days or half-days; recommended rest days shown shaded (one per week, a lighter day after each exam, and 3 to 4 days at Christmas: 24 to 26 Dec and 1 Jan; the Christmas number is a guess, no study tests it) | Protected rest, never overwritten by replanning |
 | E6 | Most hours you can study in one day without losing quality | single: 4 / 6 / 8 | Daily cap, never above 8 h (Rachel, 26 Nov) |
 | E7 | Advice after "Done" | 1 to 3 tips from simple rules, each with a one-click fix | Examples: no Movement box in the week → suggest 2 to 3 short exercise sessions; fewer than one rest day a week → suggest one; rest days bunched together → suggest spreading them; less free time than the material needs → says so honestly |
 
@@ -259,10 +259,10 @@ The LLM then adds the study sessions into the free time, with the topic, a study
 | G1 | What do you usually do when you study? | multi: reread notes / write summaries / flashcards / solve Serien / past exams / explain to others / watch videos / other | Plan keeps familiar methods but shifts time to practice and recall; explains why |
 | G2 | Roughly what share of your study time is solving problems vs reading? | slider 0 to 100 % | Sets how strongly the plan nudges towards practice |
 | G3 | How long can you focus before you need a break? | single: 25 / 50 / 90 min / it varies | Block length |
-| G4 | Where do you study best? | multi: home / library / HG or other ETH rooms / café | Location hint per block type, e.g. mocks in a quiet room |
+| G4 | What matters most to you in a study space? Pick up to 3 | multi, max 3: quiet / group work allowed / power and WiFi / long opening hours / close to where I live / daylight / coffee and food nearby / free of charge / seat I can reserve / I study best at home; plus: where do you live during the Lernphase? (town or district only, e.g. Zürich Kreis 6, Winterthur) | Study-space recommendations in that region, and a daily tip after the morning check-in that matches today's mood and the usual occupancy at that time and day (data source to be built, see open questions) |
 | G5 | Alone or with others? | single: alone / sometimes in a group / mostly in a group | Schedules group sessions for Serien and exam discussion |
 | G6 | How often do you start later than you planned? | scale 1 (rarely) to 5 (almost always) | Starts days with a short, easy task; adds reminders |
-| G7 | In your last exam phase, how much of what you planned did you actually get done? | single: under 50 % / 50 to 75 % / 75 to 90 % / almost all / first exam phase | Buffer factor: the plan fills only that share of the available time (guess: 60 to 85 %) |
+| G7 | In your last exam phase, how much of what you planned did you actually get done? | single: under 50 % / 50 to 75 % / 75 to 90 % / almost all / first exam phase | Buffer factor: the plan fills only that share of the available time (default: fill 80 to 85 % of free time, plus 1.5 times padding on first time estimates; planning-fallacy research, to tune in the pilot) |
 | G8 | What usually knocks a study day off track? | multi: phone / tiredness / unclear what to do next / one task taking too long / social plans / worry | Matching countermeasures, e.g. a clear first task, time caps per exercise |
 | G9 | What worked well for you in a past exam phase, and what didn't? | text, optional | Companion adapts the plan, e.g. keeps a routine that worked |
 
@@ -274,7 +274,7 @@ The LLM then adds the study sessions into the free time, with the topic, a study
 | H2 | One course per day, or mixed? | single: one per day / two per day / mixed | Interleaving level; the planner explains the benefit of mixing in the Lernphase |
 | H3 | Start the day with something easy or the hardest task? | single | Order of blocks inside a day |
 | H4 | The plan always includes 5 to 7 full mock exams per subject (3 to 4 for Informatik), at most 1 to 2 a day, Analysis I and Physik I first. Do you prefer each mock in one sitting, or split into two halves on busy days? | single: one sitting / split when needed | Placement of the mock exams, timed like the real exam, in the student's peak focus window (F3) |
-| H5 | When should the daily check-in happen? | time picker, default 30 min after the last block | Reminder for the daily check-in: rating 1 to 5 of topics covered, number of exercises solved and mocks done, difficulties and doubts, sleep and energy |
+| H5 | When should the evening check-in happen? (A short morning check-in, "How do you feel today?", comes with the day's study-space tip.) | time picker, default 30 min after the last block | Reminder for the daily check-in: rating 1 to 5 of topics covered, number of exercises solved and mocks done, difficulties and doubts, sleep and energy |
 | H6 | When you fall behind, should the planner reschedule automatically or propose a change first? | single | Replanning mode |
 | H7 | How should the companion talk to you? | single: short and factual / encouraging / direct, push me | Tone of AI messages |
 | H8 | Reminders | single: none / start of each block / once a day | Notifications |
@@ -305,8 +305,8 @@ any time from the plan page.
   The planner never asks what a box is for.
 - **Import:** an uploaded `.ics` is parsed in `api/` into busy boxes (start, end, recurrence only);
   titles, places and notes are dropped, and the file itself is deleted right after parsing.
-- **Recommended rest days** are shown shaded (default one per week, a lighter day after each exam;
-  guess, to be tuned with the research) and become real with one click.
+- **Recommended rest days** are shown shaded (one per week, a lighter day after each exam, and 3 to 4
+  days at Christmas: 24 to 26 Dec and 1 Jan) and become real with one click.
 - **Advice after "Done":** simple, deterministic rules produce at most 3 tips, each with a one-click
   fix, for example: no Movement box in a week → suggest 2 to 3 short exercise sessions; fewer than one
   rest day a week → suggest one; rest days bunched together → suggest spreading them; less free time
@@ -332,8 +332,10 @@ for overlaps; every LLM proposal goes through the scheduler's checks before it i
 ### 5.2 Priorities
 Time per chapter ∝ exam weight × gap (5 − rating, refined by progress, results and mistake patterns) ×
 remaining time, within the subject shares the student set in D6, with a floor so nothing taught is
-dropped silently. The plan only fills the share of free time that the student actually manages
-(G7 at first, then the real completion rate from the trial period and check-ins).
+dropped silently. The plan fills only 80 to 85 % of free time and pads first time estimates by 1.5
+(planning fallacy, Buehler et al. 1994), adjusted by G7 at first and then by the real completion rate
+from the trial period and check-ins. Default weekly load: 40 to 48 h in the Lernphase (8 h cap, one
+rest day), about 15 to 25 h of self-study on top of the timetable in the lecture period.
 
 ### 5.3 Session content (learning-research rules)
 - **Theory with past exam questions:** each theory block ends with single past exam questions on that
@@ -387,7 +389,11 @@ The first plan runs as a trial period (3 days, Rachel 26 Nov). Then a longer che
 | K9 | What should change? Any difficulties or doubts so far? | text, optional, encouraged | LLM context for the replan; companion follows up |
 | K10 | Summary: "Here is how we'll change your plan" | editable list | Student approves the adjusted plan |
 
-### 6.2 Daily check-in (every day, about 2 minutes)
+### 6.2 Daily check-ins (morning about 30 seconds, evening about 2 minutes)
+- **Morning:** "How do you feel today?" (energy 1 to 5, optional mood word), then the day's plan and a
+  **study-space tip** (6.3).
+
+Evening:
 - **Short test questions** on the day's topics (a few, low stakes, never graded as a score).
 - **Self-evaluation:** a 1 to 5 rating of each topic covered.
 - **Counts:** exercises solved, mock exams done, blocks done / partly / not done.
@@ -398,6 +404,17 @@ The first plan runs as a trial period (3 days, Rachel 26 Nov). Then a longer che
   just pushed onto tomorrow. If there is less time than material, the planner says so honestly and
   drops the lowest-priority items first instead of piling on hours. Replanning is automatic or
   proposed first, as the student chose (H6).
+
+### 6.3 Study-space recommendations
+- From G4: what matters most to the student in a study space (up to 3) and the town or district where
+  they live during the Lernphase (never an exact address).
+- A curated list of study spaces per region, starting with Zürich (ETH and UZH libraries and learning
+  rooms, city libraries), with opening hours and features, kept by the Maintainer AI from public pages
+  and reviewed by a human; usual occupancy by weekday and hour where a public source exists. The LLM
+  does not browse the web per student: it ranks this list.
+- After the morning check-in the companion suggests 1 or 2 places that fit the student's priorities,
+  today's mood (e.g. low energy → somewhere close by and calm) and the usual occupancy at that time.
+- Data sources and occupancy feeds are still to be found (open question 1).
 
 ## 7. The plan page (`plan.html`, signed-in only)
 
@@ -547,20 +564,22 @@ on the production hosting.
 | 26 Nov 2026 | Daily check-in: test questions, topic ratings, counts, doubts encouraged, sleep and energy | 6.2 |
 | 26 Nov 2026 | Calendar pop-up up to the exams, students give only broad labels; advice after "Done"; LLM adds sessions with goals and tasks | 4 |
 | 26 Nov 2026 | 3-day trial period, then calibration of up to 7 minutes | 6.1 |
+| 26 Nov 2026 | About 21 minutes is fine; form-first with an optional chat for questions; "why we ask" behind a question mark per module | 3 |
+| 26 Nov 2026 | Study-space questions and recommendations for the student's region, daily after the morning check-in with occupancy | G4, 6.3 |
+| 26 Nov 2026 | Defaults from the research evidence base: 40 to 48 h a week in the Lernphase, 3 to 4 Christmas rest days, fill 80 to 85 % of free time | 5.2, 4 |
 
 ## 13. Open questions
 
-1. Cut to under 20 minutes? Candidates: G4 (where you study), F4 (lowest energy), H3 (easy or hard first).
-2. Form-first with optional Apertus chat (assumed), or chat-first?
+1. Study spaces: which public sources list study spaces in Zürich with opening hours, and which publish
+   occupancy? Who keeps the list up to date?
+2. Rounding of the Basisprüfung block average (not yet verified); VMP pass statistics are optional.
 3. Plan export as `.ics`: wanted in v1?
-4. Default weekly hours (guess 35 to 50 h in the Lernphase), Christmas rest days and the shaded rest-day
-   rule: to be set from the research evidence base.
-5. Does the Informatik exam include correctness proofs (D3)?
-6. Mock stock per subject: how many full past exams and mocks StudyHub has, and whether more must be built.
-7. Mridul: OK for `plan.html`, a nav entry for signed-in users and the new `my_items` keys?
-8. Research consent (9.1): who is the responsible researcher or institute, and should ETH data
+4. Does the Informatik exam include correctness proofs (D3)?
+5. Mock stock per subject: how many full past exams and mocks StudyHub has, and whether more must be built.
+6. Mridul: OK for `plan.html`, a nav entry for signed-in users and the new `my_items` keys?
+7. Research consent (9.1): who is the responsible researcher or institute, and should ETH data
    protection or the Ethics Commission review the text before launch?
-9. Lecture position: may we email lecturers or head TAs once per semester (layer A), and who signs?
+8. Lecture position: may we email lecturers or head TAs once per semester (layer A), and who signs?
 
 ## Sources
 - ETH PAKETH calendar change from HS 2028: https://ethz.ch/students/en/studies/paketh-studies/adjustments/
