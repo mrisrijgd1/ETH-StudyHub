@@ -222,25 +222,31 @@ a.subject:hover strong { text-decoration: underline; }
 <header>
 <span class="eyebrow">StudyHub · Feedback</span>
 <h1>Give feedback</h1>
-<p class="lead">Found a mistake, have an idea, or got stuck? Tell us here. It goes straight to the StudyHub team.</p>
+<p class="lead">Found a mistake, have an idea, or got stuck? Tell us here. It goes straight to the StudyHub team. After sending, you get a private link where our answer appears and you can write back, still without a name.</p>
 </header>
 <p class="fbmsg" id="fb-status" role="status" hidden></p>
+<p class="fbmsg" id="fb-mine" hidden></p>
 <form class="fbform" method="post" action="api/feedback.php">
 <input type="hidden" name="lang" value="en">
 <input type="hidden" name="page" id="fb-page" value="">
 <label>What is it about?<select name="kind"><option value="idea">An idea or wish</option><option value="mistake">Something is wrong</option><option value="question">A question</option><option value="other">Something else</option></select></label>
 <label>Your message <small>If it is about a page, say which one and where.</small><textarea name="message" required maxlength="4000"></textarea></label>
-<label>Your e-mail, if you would like an answer <small>Optional. Only used to reply to you.</small><input type="email" name="email" autocomplete="email" maxlength="200"></label>
+<label>Your e-mail, if you would like to be told when we answer <small>Optional. You can also just come back to your private link. Only used to tell you about our answer.</small><input type="email" name="email" autocomplete="email" maxlength="200"></label>
 <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 <button type="submit">Send feedback</button>
 </form>
-<p class="muted">Your message is stored privately on our Swiss server (Infomaniak) and sent to the team mailbox. No name needed. More in the <a href="privacy.html">privacy notice</a>.</p>
+<p class="muted">Your message is stored privately on our Swiss server (Infomaniak) and sent to the team mailbox. No name needed, and the team cannot see who you are. More in the <a href="privacy.html">privacy notice</a>.</p>
 </main>
 <script>
 (function () {
   var msgs = {"sent": "Thank you! Your message has reached the team.", "empty": "Please write a message first.", "limit": "That was a lot of messages in a short time. Please try again in an hour.", "error": "Sorry, that did not work. Please write to contact@study-hub.ch instead."};
   var st = new URLSearchParams(location.search).get('status'), box = document.getElementById('fb-status');
   if (st && msgs[st]) { box.textContent = msgs[st]; box.hidden = false; }
+  // Conversations started on this device (remembered by feedback-chat.html, nowhere else).
+  try {
+    var mine = (JSON.parse(localStorage.getItem('sh-feedback-links') || '[]') || []).filter(function (t) { return /^[0-9a-f]{32}$/.test(t); });
+    if (mine.length) { var m = document.getElementById('fb-mine'); m.innerHTML = 'Your earlier messages from this device: ' + mine.map(function (t, i) { return '<a href="feedback-chat.html#' + t + '">conversation ' + (mine.length - i) + '</a>'; }).join(', ') + '. Open one to see our answer.'; m.hidden = false; }
+  } catch (e) {}
   // Remember which StudyHub page the person came from (path only, same site only).
   try {
     var r = document.referrer ? new URL(document.referrer) : null;
