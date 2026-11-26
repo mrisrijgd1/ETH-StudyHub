@@ -16,7 +16,7 @@ self.addEventListener('activate', e => {
 
 const skip = u => /\.pdf($|\?)/i.test(u.pathname) || /\/docs\//.test(u.pathname) || /\/pdf\//.test(u.pathname) || /\/assets\/pdf[._]/.test(u.pathname);
 const isPage = (req, u) => req.mode === 'navigate' || /\.html$|\/$/.test(u.pathname);
-const extOk = u => /(^|\.)cdn\.jsdelivr\.net$/.test(u.hostname) && /mathjax/.test(u.pathname) || /fonts\.(googleapis|gstatic)\.com$/.test(u.hostname);
+const extOk = u => /(^|\.)cdn\.jsdelivr\.net$/.test(u.hostname) && /mathjax/.test(u.pathname);
 
 async function netFirst(req, name, page) {
   const c = await caches.open(name);
