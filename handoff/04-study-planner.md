@@ -76,9 +76,10 @@ timetable per programme, semester and study year**, not one per student.
   upload after 30 days. The upload form says so.
 
 **Pipeline (who does what):**
-1. Upload goes to a private Supabase bucket `timetable-inbox`; a row in `timetable_submissions`
+1. Upload goes through `api/` to a private folder `studyhub-data/timetable-inbox/` on our Infomaniak
+   hosting (outside the website); a row in the MariaDB table `timetable_submissions`
    (programme, semester, status, file hash, submitter id, date).
-2. A database webhook opens a GitHub issue "Timetable submission: Physik BSc HS26" (no personal data in it),
+2. The server opens a GitHub issue "Timetable submission: Physik BSc HS26" (no personal data in it),
    which wakes the Maintainer AI.
 3. The Maintainer AI parses the upload, **cross-checks every slot against the public VVZ**, and opens a PR
    with `planner/data/<semester>-<programme>.json`, listing any mismatches.
@@ -124,7 +125,7 @@ semester; the Maintainer AI does the drafting and weekly checks.
 - **Exam weights** from the existing exam maps (e.g. Analysis I: Rechnungen ~20 of ~60 points, two
   theorems to prove): topics that come up every time get more time.
 
-### 2.5 The student's own signals (already in Supabase)
+### 2.5 The student's own signals (already stored on Infomaniak)
 `progress` (lessons done), `attempts` and `results` (exercises, mocks), `my_items`. Used to check and
 refine the self-assessment, never to judge the student.
 
@@ -223,10 +224,16 @@ remaining time, with a floor so nothing taught is dropped silently.
   needs **explicit consent**, a clear purpose and data minimisation.
 - **Consent screen** before the questionnaire: what is stored, why, where, who can see it, how to
   delete it. Separate opt-in for the optional free text and the "ways of working" section.
-- **Storage:** Supabase with row-level security, one row per student (`my_items` keys
-  `planner_profile`, `planner_plan`, `planner_checkins`); admins cannot read it (no admin policy on
-  these keys); never in analytics (Umami) or logs.
-- **LLM calls:** Swiss-hosted provider with no retention (same Infomaniak setup as the eval); no names
+- **Storage:** our own MariaDB database on the Infomaniak Web Hosting in Switzerland, read and written
+  only through `api/` with the per-user check in `api/lib/shdb.php` (each student sees only their own
+  rows). One row per student per key (`my_items` keys `planner_profile`, `planner_plan`,
+  `planner_checkins`, `planner_research_consent`); these keys must be added to the allowed list in
+  `shdb.php`. No admin view of these keys; never in analytics (Umami) or logs. Backups stay on the
+  same hosting (`studyhub-data/backups/`, nightly job). **Supabase only handles login** and never sees
+  planner data.
+- **LLM calls:** Infomaniak AI Tools in Switzerland (requests not stored, not used for training, per
+  Infomaniak), called only from the server (`api/`), never from the browser; the token lives in
+  `studyhub-data/ai-config.php`, not in the repo; no names
   or emails in prompts; free text only sent when the student opted in.
 - **Delete and export** buttons on the plan page. Nothing is ever used to train a model or for the
   model eval. Research use happens only with the separate, optional consent in 7.1.
