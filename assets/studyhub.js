@@ -325,7 +325,8 @@
   aboutPop.panel.append(
     group(L('Über StudyHub', 'About StudyHub'), [
       richLink(L('Über diesen Hub', 'About this hub'), prefix + 'about.html'),
-      richLink(L('Team und Dank', 'Team and credits'), 'credits.html')
+      richLink(L('Team und Dank', 'Team and credits'), 'credits.html'),
+      richLink(L('Datenschutz', 'Privacy'), 'privacy.html')
     ]),
     group(L('Hilfe und Mitmachen', 'Help and joining in'), [
       richLink(L('Brauchst du Hilfe?', 'Need help?'), prefix + 'help.html'),
