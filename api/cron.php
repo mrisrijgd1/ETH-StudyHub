@@ -27,6 +27,12 @@ foreach ($old as $uid) {
 }
 echo 'Inactive for 2 years, deleted: ' . count($old) . "\n";
 
+// 1b. Feedback conversations: deleted 2 years after their last message (privacy notice).
+fb_ready($pdo);
+$pdo->exec('DELETE m FROM fb_messages m JOIN fb_threads t ON t.id = m.thread_id WHERE t.updated_at < UTC_TIMESTAMP(3) - INTERVAL 2 YEAR');
+$n = $pdo->exec('DELETE FROM fb_threads WHERE updated_at < UTC_TIMESTAMP(3) - INTERVAL 2 YEAR');
+echo 'Feedback conversations older than 2 years, deleted: ' . (int)$n . "\n";
+
 // 2. Backup
 $dir = sh_data_dir('backups');
 $out = ['created_utc' => gmdate('c'), 'source' => 'infomaniak-mariadb', 'tables' => []];
@@ -34,6 +40,9 @@ foreach (array_keys(SH_TABLES) as $table) {
     $out['tables'][$table] = array_map(fn($r) => sh_out($table, $r), $pdo->query("SELECT * FROM `$table`")->fetchAll(PDO::FETCH_ASSOC));
 }
 $name = $dir . '/studyhub-db-' . gmdate('Y-m-d') . '.json.gz';
+foreach (['fb_threads', 'fb_messages'] as $table) {   // feedback conversations (not in SH_TABLES on purpose)
+    $out['tables'][$table] = $pdo->query("SELECT * FROM `$table`")->fetchAll(PDO::FETCH_ASSOC);
+}
 file_put_contents($name, gzencode(json_encode($out, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 9), LOCK_EX);
 @chmod($name, 0600);
 foreach (glob($dir . '/studyhub-*.json.gz') ?: [] as $f) {

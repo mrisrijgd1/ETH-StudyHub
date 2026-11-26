@@ -44,7 +44,7 @@
         '<div class="box"><strong>' + L('What should I do today?', 'Was mache ich heute?') + '</strong> ' + L('Ask your own AI this question once the ', 'Frag das deine eigene KI, sobald der ') + '<a href="connect.html">' + L('connector', 'Connector') + '</a>' + L(' is added. It looks at your progress, marks and mistakes and suggests at most three small tasks.', ' eingerichtet ist. Sie schaut auf Fortschritt, Resultate und Fehler und schlägt höchstens drei kleine Aufgaben vor.') + '</div>' +
         secPlan() + secList('notes', L('Notes', 'Notizen'), L('Anything you want to keep: a trick, a summary, a reminder.', 'Alles, was du behalten willst: ein Trick, eine Zusammenfassung, eine Erinnerung.')) +
         secList('questions', L('Questions', 'Fragen'), L('Questions to ask in the exercise class, the forum or your AI. Tick them off when answered.', 'Fragen für die Übungsstunde, das Forum oder deine KI. Abhaken, wenn beantwortet.')) +
-        secCards() + secList('memory', L('What your AI remembers', 'Was deine KI sich merkt'), L('Preferences and decisions your AI keeps across chats when you use the ', 'Vorlieben und Entscheidungen, die sich deine KI über Chats hinweg merkt, wenn du den ') + '<a href="connect.html">' + L('connector', 'Connector') + '</a>' + L('. Add your own or remove any entry; your AI follows what is here.', ' nutzt. Füge eigene hinzu oder entferne Einträge; deine KI hält sich daran.')) + '<section id="my-suggestions"><h2>' + L('Your suggestions', 'Deine Vorschläge') + '</h2><div id="my-sug">' + L('Loading…', 'Wird geladen …') + '</div></section>' + secDesign() + secHistory();
+        secCards() + secList('memory', L('What your AI remembers', 'Was deine KI sich merkt'), L('Preferences and decisions your AI keeps across chats when you use the ', 'Vorlieben und Entscheidungen, die sich deine KI über Chats hinweg merkt, wenn du den ') + '<a href="connect.html">' + L('connector', 'Connector') + '</a>' + L('. Add your own or remove any entry; your AI follows what is here.', ' nutzt. Füge eigene hinzu oder entferne Einträge; deine KI hält sich daran.')) + '<section id="my-suggestions"><h2>' + L('Your suggestions', 'Deine Vorschläge') + '</h2><div id="my-sug">' + L('Loading…', 'Wird geladen …') + '</div></section><section id="my-feedback" hidden></section>' + secDesign() + secHistory();
       wire(); sug();
     });
   }
@@ -113,7 +113,7 @@
         (mine.length ? '<ul class="it">' + mine.map(function (x) { return sugItem(x, false); }).join('') + '</ul>' : '<p class="meta">' + L('None yet.', 'Noch keine.') + '</p>') +
         (admin ? '<h3>' + L('Review (only you see this)', 'Prüfen (nur du siehst das)') + '</h3><div class="row"><select id="my-sugf"><option value="new">' + L('Waiting', 'Wartend') + '</option><option value="accepted">' + L('Accepted', 'Angenommen') + '</option><option value="">' + L('All', 'Alle') + '</option></select></div><div id="my-sugadm"></div><p class="st" id="my-sug-st"></p>' : '');
       el.querySelectorAll('[data-sdel]').forEach(function (b) { b.onclick = function () { S.sb.from('suggestions').delete().eq('id', Number(b.getAttribute('data-sdel'))).then(sug); }; });
-      if (admin) { document.getElementById('my-sugf').onchange = sugAdmin; sugAdmin(); }
+      if (admin) { document.getElementById('my-sugf').onchange = sugAdmin; sugAdmin(); fbInbox(); }
     });
   }
   function sugAdmin() {
@@ -124,6 +124,54 @@
       el.querySelectorAll('[data-sset]').forEach(function (b) {
         b.onclick = function () { var p = b.getAttribute('data-sset').split(':'), n = el.querySelector('[data-sn="' + p[0] + '"]');
           S.sb.rpc('suggestions_admin_set', { p_id: Number(p[0]), p_status: p[1], p_note: n && n.value.trim() || null }).then(function (x) { status('my-sug-st', x.error ? x.error.message : L('Saved.', 'Gespeichert.')); sugAdmin(); }); };
+      });
+    });
+  }
+  // ---------- feedback inbox (team only): anonymous conversations from the feedback form ----------
+  function fbInbox() {
+    var sec = document.getElementById('my-feedback'); if (!sec) return;
+    sec.hidden = false;
+    sec.innerHTML = '<h2>Feedback inbox (team only)</h2><p>Messages from the <a href="feedback.html">feedback form</a>. Senders are anonymous; your reply appears on their private link' +
+      ' (and they get an e-mail if they left an address). Newest unanswered first.</p><div class="row"><select id="fb-f"><option value="open">Open</option><option value="done">Done</option><option value="">All</option></select></div><div id="fb-list"></div><p class="st" id="fb-st"></p>';
+    document.getElementById('fb-f').onchange = fbList;
+    fbList();
+    if (location.hash === '#my-feedback') setTimeout(function () { sec.scrollIntoView(); }, 300);
+  }
+  function fbList() {
+    var el = document.getElementById('fb-list'), f = document.getElementById('fb-f').value || null;
+    S.sb.rpc('feedback_admin_list', { p_status: f }).then(function (r) {
+      var v = r.data || [];
+      if (r.error) { el.innerHTML = '<p class="meta">' + esc(r.error.message) + '</p>'; return; }
+      el.innerHTML = v.length ? '<ul class="it">' + v.map(function (x) {
+        return '<li><div class="meta">' + (x.status === 'open' && x.last_from === 'student' ? '<strong>Waiting for us</strong> · ' : '') + esc(x.kind) + (x.page ? ' · ' + esc(x.page) : '') + ' · ' + esc(x.lang) +
+          ' · ' + x.n + (x.n === 1 ? ' message' : ' messages') + ' · ' + new Date(x.updated_at).toLocaleString() + (x.has_email ? ' · gets an e-mail' : ' · link only') + (x.status === 'done' ? ' · done' : '') + '</div>' +
+          '<div class="fbt" data-fbt="' + x.id + '"></div><div class="btns"><button data-fbo="' + x.id + '">Open</button></div></li>';
+      }).join('') + '</ul>' : '<p class="meta">Nothing here.</p>';
+      el.querySelectorAll('[data-fbo]').forEach(function (b) { b.onclick = function () { fbOpen(Number(b.getAttribute('data-fbo'))); }; });
+    });
+  }
+  function fbOpen(id) {
+    var box = document.querySelector('[data-fbt="' + id + '"]');
+    S.sb.rpc('feedback_admin_thread', { p_id: id }).then(function (r) {
+      if (r.error) { box.innerHTML = '<p class="meta">' + esc(r.error.message) + '</p>'; return; }
+      box.innerHTML = (r.data || []).map(function (m) {
+        return '<div class="meta">' + (m.from === 'team' ? 'StudyHub team' : 'Student') + ' · ' + new Date(m.at).toLocaleString() + '</div><div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(m.body) + '</div>';
+      }).join('') + '<textarea rows="4" style="width:100%;box-sizing:border-box" data-fbm="' + id + '" placeholder="Your reply (the student sees it as “StudyHub team”)" maxlength="4000"></textarea>' +
+        '<div class="btns"><button class="main" data-fbr="' + id + '">Send reply</button><button data-fbs="' + id + ':done">Mark done</button><button data-fbs="' + id + ':open">Reopen</button><button data-fbs="' + id + ':delete">Delete</button></div>';
+      box.parentNode.querySelector('[data-fbo]').hidden = true;
+      box.querySelector('[data-fbr]').onclick = function () {
+        var t = box.querySelector('[data-fbm]').value.trim(); if (!t) return;
+        S.sb.rpc('feedback_admin_reply', { p_id: id, p_message: t }).then(function (x) {
+          status('fb-st', x.error ? x.error.message : (x.data && x.data.emailed ? 'Sent, and the student got an e-mail.' : 'Sent. It shows on the student’s private link.'));
+          if (!x.error) fbOpen(id);
+        });
+      };
+      box.querySelectorAll('[data-fbs]').forEach(function (b) {
+        b.onclick = function () {
+          var st = b.getAttribute('data-fbs').split(':')[1];
+          if (st === 'delete' && !window.confirm('Delete this conversation for good? The student’s link will stop working.')) return;
+          S.sb.rpc('feedback_admin_set', { p_id: id, p_status: st }).then(function (x) { status('fb-st', x.error ? x.error.message : 'Saved.'); fbList(); });
+        };
       });
     });
   }
