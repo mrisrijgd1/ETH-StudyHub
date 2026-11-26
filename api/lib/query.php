@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 require_once __DIR__ . '/shdb.php';
+require_once __DIR__ . '/feedback-lib.php';
 
 function sh_ident(string $table, string $c): string {
     if (!isset(SH_TABLES[$table]['cols'][$c])) { throw new ShError("Unknown column $c."); }
@@ -275,6 +276,49 @@ function sh_rpc(PDO $pdo, ?array $u, string $name, array $a) {
             }
             if ($content === null) { return sh_run($pdo, $u, ['t' => 'my_items', 'op' => 'delete', 'f' => [['key', 'eq', $v['key']]]]); }
             return sh_run($pdo, $u, ['t' => 'my_items', 'op' => 'upsert', 'v' => ['key' => $v['key'], 'content' => $content, 'source' => 'restore', 'updated_at' => 'now']]);
+        }
+        // ---- Feedback inbox (team only). Conversations are anonymous: the team sees no name, only the text.
+        case 'feedback_admin_list': {
+            if (!sh_is_admin($pdo, $u)) { return []; }
+            fb_ready($pdo);
+            $args = []; $where = '';
+            if (in_array($a['p_status'] ?? null, ['open', 'done'], true)) { $where = ' WHERE t.status = ?'; $args[] = $a['p_status']; }
+            $s = $pdo->prepare("SELECT t.id, t.kind, t.page, t.lang, (t.email IS NOT NULL) AS has_email, t.status, t.last_from, t.created_at, t.updated_at,
+                    (SELECT COUNT(*) FROM fb_messages m WHERE m.thread_id = t.id) AS n
+                FROM fb_threads t$where ORDER BY (t.status = 'open' AND t.last_from = 'student') DESC, t.updated_at DESC LIMIT 300");
+            $s->execute($args);
+            return array_map(function ($r) { return ['id' => (int)$r['id'], 'kind' => $r['kind'], 'page' => $r['page'], 'lang' => $r['lang'], 'has_email' => (bool)$r['has_email'],
+                'status' => $r['status'], 'last_from' => $r['last_from'], 'n' => (int)$r['n'], 'created_at' => sh_ts_out($r['created_at']), 'updated_at' => sh_ts_out($r['updated_at'])]; }, $s->fetchAll());
+        }
+        case 'feedback_admin_thread': {
+            if (!sh_is_admin($pdo, $u)) { throw new ShError('Only the team can read feedback.'); }
+            fb_ready($pdo);
+            return fb_messages($pdo, (int)($a['p_id'] ?? 0));
+        }
+        case 'feedback_admin_reply': {
+            if (!sh_is_admin($pdo, $u)) { throw new ShError('Only the team can reply to feedback.'); }
+            fb_ready($pdo);
+            $msg = fb_clean_text((string)($a['p_message'] ?? ''));
+            if ($msg === '') { throw new ShError('Please write a reply first.'); }
+            $s = $pdo->prepare('SELECT * FROM fb_threads WHERE id = ?');
+            $s->execute([(int)($a['p_id'] ?? 0)]);
+            $t = $s->fetch();
+            if (!$t) { throw new ShError('Conversation not found.'); }
+            fb_add($pdo, (int)$t['id'], 'team', $msg);
+            return ['emailed' => fb_notify_student($t)];
+        }
+        case 'feedback_admin_set': {
+            if (!sh_is_admin($pdo, $u)) { throw new ShError('Only the team can change feedback.'); }
+            fb_ready($pdo);
+            $id = (int)($a['p_id'] ?? 0); $st = (string)($a['p_status'] ?? '');
+            if ($st === 'delete') {
+                $pdo->prepare('DELETE FROM fb_messages WHERE thread_id = ?')->execute([$id]);
+                $pdo->prepare('DELETE FROM fb_threads WHERE id = ?')->execute([$id]);
+                return null;
+            }
+            if (!in_array($st, ['open', 'done'], true)) { throw new ShError('Unknown status.'); }
+            $pdo->prepare('UPDATE fb_threads SET status = ? WHERE id = ?')->execute([$st, $id]);
+            return null;
         }
         case 'suggestions_admin_list': {
             if (!sh_is_admin($pdo, $u)) { return []; }
