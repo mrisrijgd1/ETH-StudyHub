@@ -139,7 +139,8 @@
      One row per app in public.app_state. Rule: a side that did not change since the last sync takes the
      other side; if both changed, the two are merged (Dive: best of both + all dives; Chemie: union). */
   var APPS = { dive: 'studyhub.dive.v1', chemie: 'studyhub-chemie-v1', flashcards: 'studyhub-analysis-flashcards-v1', // flashcards: OK'd by the app's owner via Srish, 20 Nov
-    linalg: 'studyhub-linalg-flashcards-v1' }; // Linear Algebra flashcards: same shape as the Analysis key (needs connector/sql/009_app_state_linalg.sql)
+    linalg: 'studyhub-linalg-flashcards-v1', // Linear Algebra flashcards: same shape as the Analysis key (needs connector/sql/009_app_state_linalg.sql)
+    physik: 'studyhub-physik-flashcards-v1' }; // Physik I flashcards: same shape; allowed in api/lib/shdb.php (app_state 'physik', OK'd on #177, 24 Nov)
   var SYNCMETA = 'sh-appsync';
   function hsh(str) { var h = 5381; for (var i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return String(h); }
   function lget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -177,6 +178,7 @@
     }
   };
   MERGE.linalg = MERGE.flashcards; // the Linear Algebra cards use the same engine and state shape
+  MERGE.physik = MERGE.flashcards; // so do the Physik I cards
   function appSync() {
     if (!sb || !user) return Promise.resolve();
     var ownerId = user.id;
