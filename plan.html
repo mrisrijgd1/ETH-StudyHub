@@ -397,7 +397,7 @@ SC.J=()=>{const sum=el("ul",{style:"margin:0;padding-left:18px"});const add=(m,t
  add("B",(get("B1")||"Programme not chosen")+"; exams: "+SUBJ.map(s=>s.n+(get("B5_"+s.k)?" "+get("B5_"+s.k):"")).join(", "));
  add("C","Goal: "+(get("C1")||"not set")+"; "+(get("C7")?get("C7")+" h per week":"weekly hours not set"));
  add("D","Time split: "+SUBJ.map(s=>s.n+" "+get("D6",{})[s.k]+" %").join(", "));
- add("E",S.cal.done?S.cal.boxes.filter(b=>!b.week).length+" weekly boxes, "+Object.keys(S.cal.rest).length+" rest days, "+Object.keys(S.cal.events).length+" events":"Calendar not filled in");
+ add("E",S.cal.done?S.cal.boxes.filter(b=>!b.week&&!b.fixed).length+" weekly boxes of your own, "+Object.keys(S.cal.rest).length+" rest days, "+Object.keys(S.cal.events).length+" events":"Calendar not filled in");
  add("F","Focus: "+(get("F3",[]).join(", ")||"not set")+"; day "+get("F5_s","08:30")+" to "+get("F5_e","18:00"));
  add("H","Plan view: "+(get("H1")||"not set"));
  return [...head("J"),
@@ -520,7 +520,7 @@ function drawCal(keep){const sh=$("#sheet");const old=sh.querySelector(".body");
  body.scrollTop=y;}
 function stepNav(prev,next,label){return el("div",{class:"nav"},prev?el("button",{type:"button",class:"btn ghost",onclick:()=>{calStep=prev;drawCal();}},"Back"):el("span"),el("button",{type:"button",class:"btn",onclick:()=>{calStep=next;drawCal();}},label||"Next"));}
 function calImport(){const st=el("p",{class:"note"},S.imported?S.imported+" entries imported.":"");const f=el("input",{type:"file",accept:".ics,text/calendar","aria-label":"Calendar file",onchange:e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{const n=parseIcs(String(r.result));S.imported+=n;st.textContent=n+" entries imported as busy boxes. Titles and places were not kept.";};r.readAsText(file);}});
- return el("div",{style:"max-width:640px"},el("h2",null,"Import your calendar (optional)"),el("p",{class:"lead"},"Upload a calendar file (.ics) from myStudies, Google, Apple or Outlook. We only keep start and end times; titles, places and notes are dropped, and the file is deleted after reading."),f,st,el("p",{class:"note"},"No file? Skip this step and draw your lectures and other fixed times in the next step."),stepNav(null,"weekly",S.imported?"Next":"Skip"));}
+ return el("div",{style:"max-width:640px"},el("h2",null,"Import your calendar (optional)"),el("p",{class:"lead"},"Upload a calendar file (.ics) from myStudies, Google, Apple or Outlook. We only keep start and end times; titles, places and notes are dropped, and the file is deleted after reading."),f,st,el("p",{class:"note"},"No file? Skip this step. Your lectures and exercise classes (HS26 timetable for Mathematics and Physics, 1st semester) are already in the calendar; you can change them in the next step."),stepNav(null,"weekly",S.imported?"Next":"Skip"));}
 function parseIcs(t){t=t.replace(/\r?\n[ \t]/g,"");let n=0;const evs=t.split("BEGIN:VEVENT").slice(1);for(const ev of evs){const g=k=>{const m=ev.match(new RegExp("\\n"+k+"[^:\\n]*:([^\\n\\r]+)"));return m?m[1].trim():null;};const ds=g("DTSTART"),de=g("DTEND"),rr=g("RRULE");if(!ds)continue;const p=s=>{const m=s.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2}))?/);return m?{d:new Date(+m[1],+m[2]-1,+m[3]),h:m[4]?+m[4]:null,mi:m[5]?+m[5]:0}:null;};const a=p(ds),b=de?p(de):null;if(!a)continue;
   if(a.h===null){if(a.d>=TODAY&&a.d<=LAST){addEv(iso(a.d),{all:true});n++;}continue;}
   const dow=(a.d.getDay()+6)%7;const s=Math.max(0,Math.round(((a.h-START_H)*60+a.mi)/30));const e=b&&b.h!==null?Math.min(ROWS,Math.round(((b.h-START_H)*60+b.mi)/30)):s+2;if(e<=s)continue;
@@ -532,7 +532,7 @@ function calWeekly(){const wk=weeks();const tpl=calWeek==="template";const sel=e
  const grid=el("div",{class:"wgrid",id:"wgrid"});grid.append(el("div",{class:"hd"},""),...DAYS.map(d=>el("div",{class:"hd"},d)));
  for(let r=0;r<ROWS;r++){grid.append(el("div",{class:"hr"},r%2===0?String(START_H+r/2).padStart(2,"0"):""));for(let d=0;d<7;d++)grid.append(el("div",{class:"cell"+(r%2===0?" h":""),"data-d":d,"data-r":r}));}
  const wrap=el("div",{class:"gridwrap"},grid);
- const help=tpl?"Drag over a day's empty time to block it; the box repeats every week. Give lectures and exercise classes the label Lecture: they stop after "+short(LECT_END)+". Drag a box to move it, pull its bottom edge to change its length, and click it to change the time or label, or to delete it.":"This is one week only. Click a weekly box to skip it in this week (an exception). Drag over empty time to add something for this week only. Lectures end on "+short(LECT_END)+".";
+ const help=tpl?"Your lectures and exercise classes from the HS26 timetable are already here; they stop after "+short(LECT_END)+". Move exercise classes to your own group's time. Drag over a day's empty time to block it; the box repeats every week. Drag a box to move it, pull its bottom edge to change its length, and click it to change the time or label, or to delete it.":"This is one week only. Click a weekly box to skip it in this week (an exception). Drag over empty time to add something for this week only. Lectures end on "+short(LECT_END)+".";
  const addBtn=el("button",{type:"button",class:"btn small",onclick:()=>{const b={id:boxId++,d:0,s:22,e:24,lab:"plain",t:null};if(!tpl)b.week=calWeek;S.cal.boxes.push(b);layoutBoxes(grid);const bx=grid.querySelector('.box[data-id="'+b.id+'"]');if(bx){boxPop(grid,b,bx);bx.scrollIntoView({block:"nearest"});}}},tpl?"+ Add weekly activity":"+ Add for this week");
  const out=el("div",null,el("h2",null,"Weekly recurring activities"),el("p",{class:"lead"},help),el("div",{class:"row"},sel,addBtn),lg,wrap,stepNav("import","events"));
  requestAnimationFrame(()=>layoutBoxes(grid));
@@ -565,7 +565,7 @@ function boxPop(grid,b,bx){grid.querySelectorAll(".pop").forEach(p=>p.remove());
  const labs=LABELS;
  const chips=el("div",{class:"chips"},labs.map(([k,l])=>el("button",{type:"button",class:"chip","aria-pressed":String(b.lab===k),onclick:e=>{b.lab=k;if(k!=="lecture")b.t=null;[...chips.children].forEach(c=>c.setAttribute("aria-pressed",String(c===e.currentTarget)));redraw();}},l)));
  p.append(title,el("div",{class:"tm"},el("span",null,"Day"),daySel,el("span",null,"From"),sSel,el("span",null,"To"),eSel),el("span",{class:"note"},"Label (optional)"),chips,
-  b.lab==="lecture"?el("span",{class:"note"},"Not going to this lecture? Delete it and the time becomes study time."):null,
+  b.lab==="lecture"?el("span",{class:"note"},(b.fixed&&/exercise/.test(b.t||"")?"Pre-filled with the usual group time: move it to your own group. ":"")+"Not going? Delete it and the time becomes study time. Lectures and exercise classes stop after "+short(LECT_END)+"."):null,
   el("div",{class:"row"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{S.cal.boxes=S.cal.boxes.filter(x=>x!==b);p.remove();layoutBoxes(grid);}},"Delete"),el("button",{type:"button",class:"btn small",onclick:()=>p.remove()},"Done")));
  grid.append(p);redraw();}
 function enableDrag(grid){let st=null,ghost=null;
@@ -637,7 +637,11 @@ function calAdvice(){S.cal.done=true;const tips=[];const hasMove=S.cal.boxes.som
 $("#calbtn").onclick=()=>openCal();
 
 /* ---------- render ---------- */
-function render(){rail();const app=$("#app");app.textContent="";(SC[S.cur]()||[]).forEach(n=>n&&app.append(n));}
+/* lectures and exercise classes from the programme timetable, added once per calendar; the student can move or delete them */
+function seedTimetable(){if(!PROG||!PROG.timetable||S.cal.tt===PROG.id)return;const rowOf=t=>{const [h,m]=t.split(":").map(Number);return Math.max(0,Math.round((h*60+m-START_H*60)/30));};
+ PROG.timetable.slots.forEach(x=>{if(S.cal.boxes.some(b=>b.fixed&&b.d===x.day&&b.s===rowOf(x.from)&&b.t===x.title))return;S.cal.boxes.push({id:boxId++,d:x.day,s:rowOf(x.from),e:rowOf(x.to),lab:"lecture",t:x.title,fixed:true});});
+ S.cal.tt=PROG.id;}
+function render(){seedTimetable();rail();const app=$("#app");app.textContent="";(SC[S.cur]()||[]).forEach(n=>n&&app.append(n));}
 boot();
 })();
 </script>
