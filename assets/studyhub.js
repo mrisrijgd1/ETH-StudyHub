@@ -698,6 +698,7 @@
       ? pending ? '' : L('Melde dich an, um diese geschützte Aktivität zu öffnen.', 'Log in to open this protected activity.')
       : L('Alles funktioniert auch ohne Konto. Melde dich optional an, um deinen Lernstand auf deinen Geräten zu synchronisieren.', 'Everything works without an account. Optionally log in to save your place and sync across your devices.');
     gateButton.hidden = pending;
+    if (window.SH?.loginLabel) gateButton.textContent = window.SH.loginLabel();
     gateDismiss.hidden = protectedActivity;
   }
 
