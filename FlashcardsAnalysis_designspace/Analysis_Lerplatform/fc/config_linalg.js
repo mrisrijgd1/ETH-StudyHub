@@ -25,17 +25,17 @@ window.FC_CONFIG = {
 
   /* Script chapters. Titles exactly as in the lecture notes. */
   chapters: [
-    { id: 0,  title: "Bekannte Beispiele alg. Strukturen", course: "LA1", icon: "groupop" },
-    { id: 1,  title: "Die Sprache der Mathematik", course: "LA1", icon: "quantifiers" },
-    { id: 2,  title: "Einfache Beweise", course: "LA1", icon: "axioms" },
-    { id: 3,  title: "Definitionen und Beispiele", course: "LA1", icon: "vectors" },
-    { id: 4,  title: "Basen und Dimension", course: "LA1", icon: "basis" },
-    { id: 5,  title: "Unterräume, affine Räume, und Quotientenräume", course: "LA1", icon: "subspace" },
-    { id: 6,  title: "Der Dualraum", course: "LA1", icon: "dual" },
-    { id: 7,  title: "Der Vektorraum Hom(V, W)", course: "LA1", icon: "matrix" },
-    { id: 8,  title: "Basiswechsel", course: "LA1", icon: "basischange" },
-    { id: 9,  title: "Der Bidualraum und die duale Abbildung", course: "LA1", icon: "transpose" },
-    { id: 10, title: "Kern, Bild und Rang einer linearen Abbildung", course: "LA1", icon: "kernel" }
+    { id: 0,  title: "Bekannte Beispiele alg. Strukturen", titleEn: "Familiar examples of algebraic structures", course: "LA1", icon: "groupop" },
+    { id: 1,  title: "Die Sprache der Mathematik", titleEn: "The language of mathematics", course: "LA1", icon: "quantifiers" },
+    { id: 2,  title: "Einfache Beweise", titleEn: "Simple proofs", course: "LA1", icon: "axioms" },
+    { id: 3,  title: "Definitionen und Beispiele", titleEn: "Definitions and examples", course: "LA1", icon: "vectors" },
+    { id: 4,  title: "Basen und Dimension", titleEn: "Bases and dimension", course: "LA1", icon: "basis" },
+    { id: 5,  title: "Unterräume, affine Räume, und Quotientenräume", titleEn: "Subspaces, affine spaces and quotient spaces", course: "LA1", icon: "subspace" },
+    { id: 6,  title: "Der Dualraum", titleEn: "The dual space", course: "LA1", icon: "dual" },
+    { id: 7,  title: "Der Vektorraum Hom(V, W)", titleEn: "The vector space Hom(V, W)", course: "LA1", icon: "matrix" },
+    { id: 8,  title: "Basiswechsel", titleEn: "Change of basis", course: "LA1", icon: "basischange" },
+    { id: 9,  title: "Der Bidualraum und die duale Abbildung", titleEn: "The bidual space and the dual map", course: "LA1", icon: "transpose" },
+    { id: 10, title: "Kern, Bild und Rang einer linearen Abbildung", titleEn: "Kernel, image and rank of a linear map", course: "LA1", icon: "kernel" }
   ],
 
   /* Mastery and streak rules */
