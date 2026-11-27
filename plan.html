@@ -148,15 +148,25 @@ table.res td.n{text-align:right;font-family:var(--f-mono)}
 .pop select{font-size:13px;padding:4px 6px}
 .pop .tm{display:grid;grid-template-columns:auto 1fr;gap:6px 8px;align-items:center;font-size:13px}
 .pop{position:absolute;z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 8px 24px #0003;display:grid;gap:8px;width:250px}
-.month{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:16px}
+.month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin-bottom:16px;position:relative}
 .month .wd{font:600 11px var(--f-mono);color:var(--muted);text-align:center}
-.mday{min-height:46px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font:12px var(--f-mono);padding:3px 4px;cursor:pointer;position:relative;text-align:left;color:var(--ink)}
+.mday{height:58px;overflow:hidden;min-width:0;border:1px solid var(--line);border-radius:6px;background:var(--surface);font:12px var(--f-mono);padding:3px 4px;cursor:pointer;position:relative;text-align:left;color:var(--ink)}
 .mday.out{visibility:hidden}
 .mday.rec{background-image:var(--shade)}
 .mday.rest{background:var(--rest)}
 .mday.ev{background:var(--social)}
 .mday.exam{outline:2px solid var(--accent);outline-offset:-2px}
-.mday small{display:block;font-family:var(--f-body);font-size:10px;color:var(--muted);line-height:1.2}
+.mday small{display:block;font-family:var(--f-body);font-size:10px;color:var(--muted);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mday.open{box-shadow:0 0 0 2px var(--accent)}
+@media (max-width:520px){.mday{height:50px;padding:2px 3px}.mday small{font-size:9px}}
+.bubble{position:absolute;z-index:45;width:min(340px,100%);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px #0003;padding:12px;display:grid;gap:8px;font-size:14px}
+.bubble::after{content:"";position:absolute;left:var(--ax,40px);width:14px;height:14px;background:var(--surface);border:1px solid var(--line);transform:rotate(45deg)}
+.bubble.above::after{bottom:-8px;border-top:0;border-left:0}
+.bubble.below::after{top:-8px;border-bottom:0;border-right:0}
+.bubble h4{margin:0;font-size:15px}
+.bubble .rec{font-size:13px;color:var(--muted);display:grid;gap:2px}
+.bubble .evrow{display:grid;gap:6px;padding:8px 0;border-top:1px solid var(--line)}
+.bubble input[type=text]{width:100%}
 .mtitle{font-weight:600;margin:8px 0 4px}
 /* plan view */
 .brand a{color:inherit;text-decoration:none}
@@ -678,7 +688,7 @@ function boxPop(grid,b,bx){grid.querySelectorAll(".pop").forEach(p=>p.remove());
  sSel.onchange=()=>{const len=b.e-b.s;b.s=+sSel.value;b.e=Math.min(ROWS,b.s+len);eSel.value=b.e;redraw();};
  eSel.onchange=()=>{let v=+eSel.value;if(v<=b.s){v=b.s+1;eSel.value=v;}b.e=v;redraw();};
  const labs=LABELS;
- const chips=el("div",{class:"chips"},labs.map(([k,l])=>el("button",{type:"button",class:"chip","aria-pressed":String(b.lab===k),onclick:e=>{b.lab=k;if(k!=="lecture")b.t=null;[...chips.children].forEach(c=>c.setAttribute("aria-pressed",String(c===e.currentTarget)));redraw();}},l)));
+ const chips=el("div",{class:"chips"},labs.map(([k,l])=>el("button",{type:"button",class:"chip","aria-pressed":String(b.lab===k),onclick:e=>{b.lab=k;[...chips.children].forEach(c=>c.setAttribute("aria-pressed",String(c===e.currentTarget)));redraw();}},l)));
  const wkList=weeks().filter(w=>new Date(w.getFullYear(),w.getMonth(),w.getDate()+6)>=new Date(new Date().setHours(0,0,0,0)));
  const reopen=()=>{drawCal(true);requestAnimationFrame(()=>requestAnimationFrame(()=>{const g=document.getElementById("wgrid");const nb=g&&g.querySelector('.box[data-id="'+b.id+'"]');if(nb)boxPop(g,b,nb);}));};
  const wkSel=el("select",{"aria-label":"Which week",onchange:e=>{b.week=e.target.value;calWeek=b.week;reopen();}},wkList.map(w=>el("option",{value:iso(w)},"Week of "+short(w))));
@@ -686,7 +696,8 @@ function boxPop(grid,b,bx){grid.querySelectorAll(".pop").forEach(p=>p.remove());
  const rep=el("div",{class:"chips"},
   el("button",{type:"button",class:"chip","aria-pressed":String(!b.week),onclick:()=>{if(!b.week)return;delete b.week;calWeek="template";reopen();}},"Every week"),
   el("button",{type:"button",class:"chip","aria-pressed":String(!!b.week),onclick:()=>{if(b.week)return;b.week=calWeek!=="template"?calWeek:iso(wkList[0]||TODAY);calWeek=b.week;reopen();}},"Only one week"));
- p.append(title,el("div",{class:"tm"},el("span",null,"Day"),daySel,el("span",null,"From"),sSel,el("span",null,"To"),eSel),el("span",{class:"note"},"Repeats"),rep,b.week?wkSel:null,el("span",{class:"note"},"Label (optional)"),chips,
+ const tIn=el("input",{type:"text",placeholder:"Title (optional), e.g. Football training","aria-label":"Title",maxlength:"40",style:"width:100%",oninput:e=>{b.t=e.target.value.slice(0,40)||null;},onchange:()=>redraw()});tIn.value=b.t||"";
+ p.append(title,tIn,el("div",{class:"tm"},el("span",null,"Day"),daySel,el("span",null,"From"),sSel,el("span",null,"To"),eSel),el("span",{class:"note"},"Repeats"),rep,b.week?wkSel:null,el("span",{class:"note"},"Label (optional)"),chips,
   b.lab==="lecture"?el("span",{class:"note"},(b.fixed&&/exercise/.test(b.t||"")?"Pre-filled with the usual group time: move it to your own group. ":"")+"Not going? Delete it and the time becomes study time. Lectures and exercise classes stop after "+short(LECT_END)+"."):null,
   el("div",{class:"row"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{S.cal.boxes=S.cal.boxes.filter(x=>x!==b);p.remove();layoutBoxes(grid);}},"Delete"),el("button",{type:"button",class:"btn small",onclick:()=>p.remove()},"Done")));
  grid.append(p);redraw();}
@@ -714,32 +725,45 @@ function recRest(){const o={};const ex=examDays();let d=new Date(TODAY);while(d<
 function addEv(k,o){(S.cal.events[k]=S.cal.events[k]||[]).push(Object.assign({t:"",all:true,s:4,e:28},o));}
 function evLabel(v){return v.all?"all day":hm(v.s)+"–"+hm(v.e);}
 let evDay=null;
-function evEditor(k){const list=S.cal.events[k]||[];const d=new Date(k);const box=el("div",{class:"q",id:"evedit",style:"margin:4px 0 14px;max-width:560px"});
- box.append(el("div",{class:"t"},"Events on "+DAYS[(d.getDay()+6)%7]+" "+short(d)));
+function dayBoxes(k){const d=new Date(k);const dw=(d.getDay()+6)%7;const mon=iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()-dw));
+ return S.cal.boxes.filter(b=>{if(b.week)return b.week===mon&&b.d===dw;if(b.d!==dw)return false;if(S.cal.skips[b.id+"@"+mon])return false;if((b.fixed||b.lab==="lecture")&&d>LECT_END)return false;return true;}).sort((a,b)=>a.s-b.s);}
+function evBubble(k){const list=S.cal.events[k]||[];const d=new Date(k);const box=el("div",{class:"bubble",id:"evedit",role:"dialog","aria-label":"Day details"});
+ box.addEventListener("pointerdown",e=>e.stopPropagation());
+ box.append(el("h4",null,DAYS[(d.getDay()+6)%7]+" "+short(d)+(S.cal.rest[k]?" · rest day":"")));
+ const ex=examDays();if(ex[k])box.append(el("div",null,el("b",null,"Exam: "),ex[k]));
+ const bx=dayBoxes(k);
+ if(bx.length)box.append(el("div",{class:"rec"},el("span",{class:"note"},"Every week / this week:"),bx.map(b=>el("span",null,hm(b.s)+"–"+hm(b.e)+" "+(b.t||labelName(b.lab))))));
  const opts=(from,to)=>{const o=[];for(let r=from;r<=to;r++)o.push(el("option",{value:r},hm(r)));return o;};
  list.forEach((v,i)=>{const sSel=el("select",{"aria-label":"From",disabled:v.all},opts(0,ROWS-1)),eSel=el("select",{"aria-label":"To",disabled:v.all},opts(1,ROWS));sSel.value=v.s;eSel.value=v.e;
   sSel.onchange=()=>{const len=v.e-v.s;v.s=+sSel.value;v.e=Math.min(ROWS,v.s+len);drawCal(true);};
   eSel.onchange=()=>{v.e=Math.max(v.s+1,+eSel.value);drawCal(true);};
   const all=el("input",{type:"checkbox",id:"evall_"+i,onchange:e=>{v.all=e.target.checked;drawCal(true);}});all.checked=v.all;
-  const t=el("input",{type:"text",placeholder:"Title (optional)","aria-label":"Title (optional)",style:"width:170px",onchange:e=>{v.t=e.target.value.slice(0,30);drawCal(true);}});t.value=v.t||"";
-  box.append(el("div",{class:"row",style:"padding:8px 0;border-top:1px solid var(--line)"},el("label",{class:"check",for:"evall_"+i,style:"padding:0"},all,el("span",null,"Whole day")),el("span",{class:"note"},"From"),sSel,el("span",{class:"note"},"to"),eSel,t,el("button",{type:"button",class:"btn small ghost",onclick:()=>{list.splice(i,1);if(!list.length){delete S.cal.events[k];evDay=null;}drawCal(true);}},"Remove")));});
- box.append(el("div",{class:"row",style:"margin-top:8px"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{addEv(k,{all:false,s:22,e:28});drawCal(true);}},"+ Another event this day"),el("button",{type:"button",class:"btn small",onclick:()=>{evDay=null;drawCal(true);}},"Done")));
+  const t=el("input",{type:"text",placeholder:"Title, e.g. Grandma's birthday","aria-label":"Event title",maxlength:"40",oninput:e=>{v.t=e.target.value.slice(0,40);},onchange:()=>drawCal(true)});t.value=v.t||"";
+  box.append(el("div",{class:"evrow"},t,el("div",{class:"row"},el("label",{class:"check",for:"evall_"+i,style:"padding:0"},all,el("span",null,"Whole day")),el("span",{class:"note"},"From"),sSel,el("span",{class:"note"},"to"),eSel),
+   el("div",null,el("button",{type:"button",class:"btn small ghost",onclick:()=>{list.splice(i,1);if(!list.length)delete S.cal.events[k];drawCal(true);}},"Remove event"))));});
+ box.append(el("div",{class:"row"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{addEv(k,{all:false,s:22,e:28});drawCal(true);}},list.length?"+ Another event":"+ Add an event"),el("button",{type:"button",class:"btn small",onclick:()=>{evDay=null;drawCal(true);}},"Done")));
  return box;}
+function placeBubble(g,cell,bub){const gw=g.clientWidth;const w=Math.min(340,gw);let left=cell.offsetLeft+cell.offsetWidth/2-w/2;left=Math.max(0,Math.min(gw-w,left));
+ bub.style.left=left+"px";bub.style.setProperty("--ax",Math.max(12,Math.min(w-26,cell.offsetLeft+cell.offsetWidth/2-left-7))+"px");
+ const h=bub.offsetHeight;const sheetBody=g.closest(".body");const cellTopInSheet=cell.getBoundingClientRect().top-(sheetBody?sheetBody.getBoundingClientRect().top:0);
+ if(cellTopInSheet>h+16){bub.classList.add("above");bub.style.top=(cell.offsetTop-h-10)+"px";}else{bub.classList.add("below");bub.style.top=(cell.offsetTop+cell.offsetHeight+10)+"px";}}
 function calMonth(mode){const ex=examDays(),rec=recRest();const out=el("div");
- out.append(el("h2",null,mode==="events"?"Events already planned":"Rest days"),el("p",{class:"lead"},mode==="events"?"Click a day with a celebration, trip, appointment or holiday. Then choose whether it takes the whole day or set the hours it takes up. A title is optional and never needed.":"Click your rest days. Shaded days are the planner's suggestion: one per week, 24 to 26 Dec, 1 Jan and the day after each exam."));
+ out.append(el("h2",null,mode==="events"?"Events already planned":"Rest days"),el("p",{class:"lead"},mode==="events"?"Click a day to see what is on it and to add a celebration, trip, appointment or holiday: give it a title, and choose the whole day or the hours it takes up. Click anywhere else to close.":"Click your rest days. Shaded days are the planner's suggestion: one per week, 24 to 26 Dec, 1 Jan and the day after each exam."));
  if(mode==="rest")out.append(el("div",{class:"row",style:"margin-bottom:10px"},el("button",{type:"button",class:"btn small",onclick:()=>{Object.keys(rec).forEach(k=>S.cal.rest[k]=true);drawCal(true);}},"Accept all suggested rest days"),el("button",{type:"button",class:"btn small ghost",onclick:()=>{S.cal.rest={};drawCal(true);}},"Clear")));
  const lg=el("div",{class:"legend"},el("span",null,el("i",{style:"background:var(--social)"}),"Event"),el("span",null,el("i",{style:"background:var(--rest)"}),"Rest day"),el("span",null,el("i",{style:"background-image:var(--shade);border:1px solid var(--line)"}),"Suggested rest"),el("span",null,el("i",{style:"outline:2px solid var(--accent);outline-offset:-2px"}),"Exam (from module B)"));out.append(lg);
  let m=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
  while(m<=LAST){const mt=["January","February","March","April","May","June","July","August","September","October","November","December"][m.getMonth()]+" "+m.getFullYear();out.append(el("div",{class:"mtitle"},mt));const g=el("div",{class:"month"});DAYS.forEach(d=>g.append(el("div",{class:"wd"},d)));
-  const first=(m.getDay()+6)%7;for(let i=0;i<first;i++)g.append(el("div",{class:"mday out","aria-hidden":"true"}));
+  const startDay=(m.getFullYear()===TODAY.getFullYear()&&m.getMonth()===TODAY.getMonth())?TODAY.getDate():1;   // no empty rows for weeks already past
+  const first=(new Date(m.getFullYear(),m.getMonth(),startDay).getDay()+6)%7;for(let i=0;i<first;i++)g.append(el("div",{class:"mday out","aria-hidden":"true"}));
   const days=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();let editHere=null;
-  for(let i=1;i<=days;i++){const d=new Date(m.getFullYear(),m.getMonth(),i);const k=iso(d);const inR=d>=TODAY&&d<=LAST;const ev=S.cal.events[k],rs=S.cal.rest[k];
+  for(let i=startDay;i<=days;i++){const d=new Date(m.getFullYear(),m.getMonth(),i);const k=iso(d);const inR=d>=TODAY&&d<=LAST;const ev=S.cal.events[k],rs=S.cal.rest[k];
    const cls="mday"+(!inR?" out":"")+(mode==="rest"&&rec[k]&&!rs?" rec":"")+(rs?" rest":"")+(ev?" ev":"")+(ex[k]?" exam":"");
-   const b=el("button",{type:"button",class:cls,"aria-pressed":String(mode==="events"?(evDay===k||!!ev):!!rs),"aria-label":short(d)},String(i),ex[k]?el("small",null,ex[k]):null,ev?ev.map(v=>el("small",null,(v.t?v.t+" ":"")+evLabel(v))):null,rs&&mode==="events"?el("small",null,"rest"):null);
-   if(mode==="events"&&evDay===k)editHere=k;
-   if(inR)b.onclick=()=>{if(mode==="events"){if(!S.cal.events[k])addEv(k,{all:true});evDay=k;}else{if(S.cal.rest[k])delete S.cal.rest[k];else S.cal.rest[k]=true;}drawCal(true);if(mode==="events"){const ed=document.querySelector("#evedit");if(ed)ed.scrollIntoView({block:"nearest"});}};
+   const lines=[];if(ex[k])lines.push(ex[k]);(ev||[]).forEach(v=>lines.push(v.t||(v.all?"Event (all day)":"Event "+hm(v.s))));if(rs&&mode==="events")lines.push("rest");
+   const b=el("button",{type:"button",class:cls+(mode==="events"&&evDay===k?" open":""),"aria-pressed":String(mode==="events"?evDay===k:!!rs),"aria-label":short(d)+(lines.length?": "+lines.join(", "):""),"aria-haspopup":mode==="events"?"dialog":null},String(i),lines.slice(0,1).map(t=>el("small",null,t)),lines.length>1?el("small",null,"+"+(lines.length-1)+" more"):null);
+   if(mode==="events"&&evDay===k)editHere=b;
+   if(inR)b.onclick=e=>{e.stopPropagation();if(mode==="events"){evDay=evDay===k?null:k;}else{if(S.cal.rest[k])delete S.cal.rest[k];else S.cal.rest[k]=true;}drawCal(true);};
    g.append(b);}
-  out.append(g);if(editHere)out.append(evEditor(editHere));m=new Date(m.getFullYear(),m.getMonth()+1,1);}
+  out.append(g);if(editHere){const bub=evBubble(evDay);g.append(bub);requestAnimationFrame(()=>placeBubble(g,editHere,bub));}m=new Date(m.getFullYear(),m.getMonth()+1,1);}
  out.append(stepNav(mode==="events"?"weekly":"events",mode==="events"?"rest":"advice",mode==="rest"?"Done":"Next"));return out;}
 function blockedHoursWeek(){let rows=0;S.cal.boxes.forEach(b=>{if(b.lab!=="lecture"&&!b.week)rows+=b.e-b.s;});return rows/2;}
 function calAdvice(){S.cal.done=true;const tips=[];const hasMove=S.cal.boxes.some(b=>b.lab==="move");
@@ -757,6 +781,7 @@ function calAdvice(){S.cal.done=true;const tips=[];const hasMove=S.cal.boxes.som
  return out;}
 
 $("#calbtn").onclick=()=>openCal();
+$("#sheet").addEventListener("pointerdown",e=>{if(evDay&&!e.target.closest(".bubble,.mday")){evDay=null;drawCal(true);}});
 
 /* ---------- render ---------- */
 /* lectures and exercise classes from the programme timetable, added once per calendar; the student can move or delete them */
