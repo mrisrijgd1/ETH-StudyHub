@@ -268,9 +268,9 @@
     var p = load(); p[k] = Object.assign(p[k] || {}, v, { t: Date.now() }); store(p);
     if (sb && user) { clearTimeout(timer); timer = setTimeout(function () { sb.from('progress').upsert([row(k)]).then(function (r) { status(r.error ? L('Could not sync, saved in this browser.', 'Sync fehlgeschlagen, im Browser gespeichert.') : null); }); }, 600); }
   }
-  /* ETH login (SWITCH edu-ID, Supabase custom OIDC provider). Off until tested; testers turn it on with
-     ?eth-login=1 (remembered in this browser, ?eth-login=0 turns it off again). */
-  var ETH_PROVIDER = 'custom:eduid', ETH_LIVE = false;
+  /* ETH login (SWITCH edu-ID, Supabase custom OIDC provider). ETH_LIVE switches it on for everyone;
+     ?eth-login=0 / =1 overrides it in one browser (for testing). */
+  var ETH_PROVIDER = 'custom:eduid', ETH_LIVE = true;   // live since 27 Nov 2026
   var ethLogin = ETH_LIVE;
   try {
     var q = /[?&]eth-login=([01])/.exec(location.search);
