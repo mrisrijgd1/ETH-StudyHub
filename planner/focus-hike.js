@@ -674,24 +674,33 @@ let A=null;
 function audioWake(){
   if(!A){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
     const ctx=new AC(),master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
-    const len=ctx.sampleRate*4,wb=ctx.createBuffer(2,len,ctx.sampleRate),bb=ctx.createBuffer(2,len,ctx.sampleRate);
-    for(let ch=0;ch<2;ch++){const w=wb.getChannelData(ch),b=bb.getChannelData(ch);let last=0;
-      for(let i=0;i<len;i++){const r=Math.random()*2-1;w[i]=r;last=(last+.02*r)/1.02;b[i]=last*3.5;}}
+    const len=ctx.sampleRate*8,wb=ctx.createBuffer(2,len,ctx.sampleRate),bb=ctx.createBuffer(2,len,ctx.sampleRate),pb=ctx.createBuffer(2,len,ctx.sampleRate);
+    for(let ch=0;ch<2;ch++){const w=wb.getChannelData(ch),b=bb.getChannelData(ch),pk=pb.getChannelData(ch);let last=0,b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+      for(let i=0;i<len;i++){const r=Math.random()*2-1;w[i]=r;last=(last+.02*r)/1.02;b[i]=last*3.5;
+        /* pink noise (Paul Kellet's filter) */
+        b0=.99886*b0+r*.0555179;b1=.99332*b1+r*.0750759;b2=.969*b2+r*.153852;b3=.8665*b3+r*.3104856;b4=.55*b4+r*.5329522;b5=-.7616*b5-r*.016898;
+        pk[i]=(b0+b1+b2+b3+b4+b5+b6+r*.5362)*.11;b6=r*.115926;}
+      /* fade the loop seam so no click repeats every 8 s */
+      const fd=Math.floor(ctx.sampleRate*.05);for(const arr of [w,b,pk])for(let i=0;i<fd;i++){const k=i/fd;arr[i]=arr[i]*k+arr[len-fd+i]*(1-k);}}
     const src=(buf)=>{const s=ctx.createBufferSource();s.buffer=buf;s.loop=true;s.loopStart=Math.random();s.start(0,Math.random()*3);return s;};
     const gain=(v)=>{const g=ctx.createGain();g.gain.value=v;return g;};
     const filt=(type,f,q)=>{const b=ctx.createBiquadFilter();b.type=type;b.frequency.value=f;b.Q.value=q||.7;return b;};
     const ch={birds:gain(0),wind:gain(0),water:gain(0),rain:gain(0)};for(const k in ch)ch[k].connect(master);
     /* wind: brown noise through a moving low-pass */
     const wl=filt("lowpass",420,.6);src(bb).connect(wl);wl.connect(ch.wind);
-    /* water: band-passed noise with a soft flutter, plus small bubbles */
-    const wbp=filt("bandpass",1100,.5),whp=filt("highpass",300),flut=gain(.7),lfo=ctx.createOscillator(),lfoG=gain(.3);
-    lfo.frequency.value=4.3;lfo.connect(lfoG);lfoG.connect(flut.gain);lfo.start();
-    src(wb).connect(wbp);wbp.connect(whp);whp.connect(flut);flut.connect(ch.water);
-    const wlow=filt("lowpass",500),wlowG=gain(.5);src(bb).connect(wlow);wlow.connect(wlowG);wlowG.connect(ch.water);
+    /* brook: a steady, soft rush (pink noise, gently filtered) plus a quiet high trickle.
+       Both drift slowly and at random, never in a rhythm. */
+    const sHp=filt("highpass",220,.5),sLp=filt("lowpass",2600,.4),streamMix=gain(0),streamDrift=gain(.85);
+    src(pb).connect(sHp);sHp.connect(sLp);sLp.connect(streamDrift);streamDrift.connect(streamMix);streamMix.connect(ch.water);
+    const tBp=filt("bandpass",3600,.7),trickle=gain(.12);src(pb).connect(tBp);tBp.connect(trickle);trickle.connect(streamDrift);
+    /* lake: slow, irregular swells of low noise, like small waves lapping on the shore */
+    const lLp=filt("lowpass",650,.4),lakeMix=gain(0),swell=gain(.3);
+    src(pb).connect(lLp);lLp.connect(swell);swell.connect(lakeMix);lakeMix.connect(ch.water);
+    const fBp=filt("bandpass",1500,.35),foam=gain(0);src(pb).connect(fBp);fBp.connect(foam);foam.connect(lakeMix);
     /* rain: bright noise */
     const rh=filt("highpass",1400),rl=filt("lowpass",8000),rg=gain(.55);src(wb).connect(rh);rh.connect(rl);rl.connect(rg);rg.connect(ch.rain);
     const chimeG=gain(.5);chimeG.connect(ctx.destination);
-    A={ctx,master,ch,wl,chimeG,on:false,nextBird:0,nextPlip:0,nextGust:0};
+    A={ctx,master,ch,wl,chimeG,on:false,nextBird:0,nextGust:0,streamMix,streamDrift,sLp,trickle,lakeMix,swell,foam,nextDrift:0,nextWave:0};
   }
   if(A.ctx.state==="suspended")A.ctx.resume();
   return A;
@@ -700,19 +709,26 @@ function env(){/* what the landscape sounds like right here */
   const q=P(S.pos),day=sky.day,rain=W.rain;
   return {birds:clamp(day*(1-rain*.7)*(.35+q.trees*.55+q.flowers*.2-q.rock*.25),0,1),
     wind:clamp(.3+q.elev*.6+W.cloud*.15+rain*.2,0,1),
-    water:clamp(Math.max(q.stream,q.pond*.55,q.water*.5,.06),0,1),
+    water:1,stream:clamp(Math.max(q.stream,q.pond*.2,.06),0,1),lake:clamp(Math.max(q.water,q.pond*.45),0,1),
     rain:clamp(rain*1.2,0,1),night:sky.night};
 }
 function soundTick(){
   if(!A||!A.on)return;
   const c=A.ctx,n=c.currentTime,e=env(),f=S.snd.follow;
   A.master.gain.setTargetAtTime(S.snd.vol*.9,n,.4);
-  for(const k of ["birds","wind","water","rain"]){const v=S.snd[k]*(f?e[k]:(k==="rain"?e.rain:1))*(k==="water"?.9:k==="wind"?.55:k==="rain"?.7:1);A.ch[k].gain.setTargetAtTime(v,n,1.2);}
+  for(const k of ["birds","wind","water","rain"]){const v=S.snd[k]*(f?e[k]:(k==="rain"?e.rain:1))*(k==="water"?1:k==="wind"?.55:k==="rain"?.7:1);A.ch[k].gain.setTargetAtTime(v,n,1.2);}
   if(n>A.nextGust){A.wl.frequency.setTargetAtTime(250+Math.random()*700*(.5+e.wind),n,2.5);A.nextGust=n+2+Math.random()*4;}
   if(n>A.nextBird){const busy=S.snd.birds*(f?e.birds:1);
     if(e.night>.65){if(Math.random()<.35)owl(n+.1);A.nextBird=n+6+Math.random()*10;}
     else{if(busy>.03)birdCall(n+.05,Math.floor(Math.random()*4));A.nextBird=n+(1.2+Math.random()*4.5)/(.4+busy);}}
-  if(n>A.nextPlip){if(S.snd.water*(f?e.water:1)>.2)plip(n+.02);A.nextPlip=n+.12+Math.random()*.7;}
+  /* water: brook and lake share the "Stream and lake" slider */
+  A.streamMix.gain.setTargetAtTime(f?e.stream*.9:.6,n,2);A.lakeMix.gain.setTargetAtTime(f?e.lake*1.1:.5,n,2);
+  if(n>A.nextDrift){A.streamDrift.gain.setTargetAtTime(.72+Math.random()*.28,n,2.5);A.sLp.frequency.setTargetAtTime(2100+Math.random()*1100,n,3);
+    A.trickle.gain.setTargetAtTime(.06+Math.random()*.12,n,2);A.nextDrift=n+3+Math.random()*5;}
+  if(n>A.nextWave){const up=1.8+Math.random()*1.6,down=2.6+Math.random()*2.4,peak=.6+Math.random()*.4,t0=Math.max(n,A.nextWave)+.05;
+    const sg=A.swell.gain,fg=A.foam.gain;sg.cancelScheduledValues(t0);sg.setValueAtTime(sg.value,t0);sg.linearRampToValueAtTime(peak,t0+up);sg.linearRampToValueAtTime(.22+Math.random()*.1,t0+up+down);
+    fg.cancelScheduledValues(t0);fg.setValueAtTime(fg.value,t0);fg.linearRampToValueAtTime(0,t0+up*.6);fg.linearRampToValueAtTime(.18*peak,t0+up+.3);fg.linearRampToValueAtTime(0,t0+up+down*.8);
+    A.nextWave=t0+up+down+.5+Math.random()*3.5;}
 }
 function voice(t0,dest,pan){const c=A.ctx,o=c.createOscillator(),g=c.createGain();g.gain.value=0;o.connect(g);
   if(c.createStereoPanner){const p=c.createStereoPanner();p.pan.value=pan;g.connect(p);p.connect(dest);}else g.connect(dest);return [o,g];}
@@ -731,8 +747,6 @@ function birdCall(t0,type){
 }
 function owl(t0){for(let i=0;i<2;i++){const [o,g]=voice(t0,A.ch.birds,-.3),s=t0+i*.9,d=i?.6:.35;o.type="sine";o.frequency.setValueAtTime(400,s);o.frequency.linearRampToValueAtTime(370,s+d);
   g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.07,s+.06);g.gain.linearRampToValueAtTime(0,s+d);o.start(s);o.stop(s+d+.05);}}
-function plip(t0){const [o,g]=voice(t0,A.ch.water,Math.random()*.8-.4),f=500+Math.random()*900,d=.05+Math.random()*.04;o.type="sine";o.frequency.setValueAtTime(f,t0);o.frequency.exponentialRampToValueAtTime(f*1.9,t0+d);
-  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.025,t0+.008);g.gain.exponentialRampToValueAtTime(.0003,t0+d);o.start(t0);o.stop(t0+d+.02);}
 function chime(n){
   if(!S.timer.chime)return;const a=audioWake();if(!a)return;const c=a.ctx,t0=c.currentTime+.05;
   for(let r=0;r<n;r++)for(const [f,v] of [[659,.22],[988,.12],[1318,.06]]){const o=c.createOscillator(),g=c.createGain(),s=t0+r*.7;o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(v,s+.01);g.gain.exponentialRampToValueAtTime(.0004,s+2.6);o.connect(g);g.connect(a.chimeG);o.start(s);o.stop(s+2.7);}
