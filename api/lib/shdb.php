@@ -156,7 +156,8 @@ function sh_http_get_user(string $token): ?array {
     if ($status !== 200) { return null; }
     $j = json_decode($body, true);
     if (!is_array($j) || !preg_match('/^[0-9a-f-]{36}$/', (string)($j['id'] ?? ''))) { return null; }
-    return ['id' => $j['id']];
+    // 'provider' = how this login was made (google or custom:eduid), needed for the move to edu-ID.
+    return ['id' => $j['id'], 'provider' => (string)($j['app_metadata']['provider'] ?? '')];
 }
 
 function sh_touch_user(PDO $pdo, array $u): void {

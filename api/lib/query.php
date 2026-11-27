@@ -262,6 +262,7 @@ function sh_rpc(PDO $pdo, ?array $u, string $name, array $a) {
     switch ($name) {
         case 'is_admin': return sh_is_admin($pdo, $u);
         case 'delete_my_data': sh_delete_user($pdo, $uid); return null;
+        case 'import_to_eduid': return sh_import_to_eduid($pdo, $u, (string)($a['p_target_token'] ?? ''));
         case 'my_restore_version': {
             $s = $pdo->prepare('SELECT * FROM my_versions WHERE id = ? AND user_id = ?');
             $s->execute([(int)($a['p_id'] ?? 0), $uid]);
@@ -348,4 +349,45 @@ function sh_delete_user(PDO $pdo, string $uid): void {
         if ($name === 'admins') { continue; }
         $pdo->prepare('DELETE FROM `' . $name . '` WHERE `' . $t['own'] . '` = ?')->execute([$uid]);
     }
+}
+
+// Move everything from an old Google login to the same student's new SWITCH edu-ID login.
+// Called while signed in with the OLD Google login; p_target_token is the edu-ID login's access token,
+// so only someone holding both logins can move data. Where both logins have a row for the same
+// page/key, the newer one wins. Afterwards nothing is left under the old id, and the browser deletes
+// the old Google login itself.
+function sh_import_to_eduid(PDO $pdo, array $old, string $targetToken): array {
+    $new = sh_user_from_token($targetToken);
+    if (!$new) { throw new ShError('Your edu-ID login has expired. Please sign in with SWITCH edu-ID again.'); }
+    if (($new['provider'] ?? '') !== 'custom:eduid') { throw new ShError('The target account is not a SWITCH edu-ID login.'); }
+    if (($old['provider'] ?? '') === 'custom:eduid') { throw new ShError('This is already an edu-ID login.'); }
+    $o = $old['id']; $n = $new['id'];
+    if ($o === $n) { return ['moved' => 0, 'same' => true]; }
+    sh_touch_user($pdo, $new);
+    $moved = 0;
+    $zero = "'1970-01-01'";
+    $keyed = ['progress' => 'page', 'my_items' => 'key', 'item_state' => 'item_id', 'app_state' => 'app'];
+    foreach ($keyed as $t => $k) {
+        // 1. old rows that the new login already has in a newer (or equal) version: drop the old copy
+        $pdo->prepare("DELETE x FROM `$t` x JOIN `$t` y ON y.`$k` = x.`$k` AND y.user_id = ?
+                       WHERE x.user_id = ? AND COALESCE(y.updated_at, $zero) >= COALESCE(x.updated_at, $zero)")->execute([$n, $o]);
+        // 2. new rows that are older than the old login's copy: drop the new copy
+        $pdo->prepare("DELETE y FROM `$t` y JOIN `$t` x ON x.`$k` = y.`$k` AND x.user_id = ? WHERE y.user_id = ?")->execute([$o, $n]);
+        // 3. move the rest
+        $s = $pdo->prepare("UPDATE `$t` SET user_id = ? WHERE user_id = ?"); $s->execute([$n, $o]); $moved += $s->rowCount();
+    }
+    // Profile (nickname, leaderboard): keep the new one if it exists, else move the old one.
+    $s = $pdo->prepare('SELECT 1 FROM profiles WHERE id = ?'); $s->execute([$n]);
+    if ($s->fetchColumn()) { $pdo->prepare('DELETE FROM profiles WHERE id = ?')->execute([$o]); }
+    else { $s = $pdo->prepare('UPDATE profiles SET id = ? WHERE id = ?'); $s->execute([$n, $o]); $moved += $s->rowCount(); }
+    // Rows with their own ids: just hand them over.
+    foreach (['forum_threads', 'forum_posts', 'my_versions', 'attempts', 'results', 'mocks', 'suggestions', 'dive_runs'] as $t) {
+        $s = $pdo->prepare("UPDATE `$t` SET user_id = ? WHERE user_id = ?"); $s->execute([$n, $o]); $moved += $s->rowCount();
+    }
+    // Team members keep their team rights.
+    $s = $pdo->prepare('SELECT 1 FROM admins WHERE user_id = ?'); $s->execute([$o]);
+    if ($s->fetchColumn()) { $pdo->prepare('INSERT IGNORE INTO admins (user_id) VALUES (?)')->execute([$n]); }
+    sh_delete_user($pdo, $o);   // anything left under the old id (only duplicates by now)
+    $pdo->prepare('DELETE FROM admins WHERE user_id = ?')->execute([$o]);
+    return ['moved' => $moved, 'same' => false];
 }

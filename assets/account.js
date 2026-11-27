@@ -111,6 +111,9 @@
       accountDataPending = !!user;
       if (user) restoreLoginDestination();
       publishAccount();
+      return (user ? finishImport() : Promise.resolve()).then(function () { return sb.auth.getSession(); });
+    }).then(function (r) {
+      if (r.data && r.data.session && (!user || r.data.session.user.id !== user.id)) user = r.data.session.user;
       sb.auth.onAuthStateChange(function (ev, session) {
         var next = session ? session.user : null;
         if ((next && next.id) === (user && user.id)) return;
@@ -276,6 +279,36 @@
     if (localStorage.getItem('sh-eth-login') === '0') ethLogin = ETH_LIVE;
   } catch (e) {}
   function loginLabel() { return ethLogin ? L('Sign in with SWITCH edu-ID', 'Mit SWITCH edu-ID anmelden') : L('Sign in with Google', 'Mit Google anmelden'); }
+  /* Move from an old Google login to SWITCH edu-ID: while signed in with edu-ID, the student signs in
+     once with Google; our server moves all data to the edu-ID login (newer wins), then the Google
+     login is deleted and the edu-ID login comes back. */
+  var importKey = 'sh-import-eduid', importMsg = '';
+  function isEduId(u) { return !!(u && u.app_metadata && u.app_metadata.provider === ETH_PROVIDER); }
+  function startImport() {
+    return sb.auth.getSession().then(function (r) {
+      var se = r.data && r.data.session;
+      if (!se || !isEduId(se.user)) throw new Error('not edu-ID');
+      sessionStorage.setItem(importKey, JSON.stringify({ access_token: se.access_token, refresh_token: se.refresh_token, t: Date.now() }));
+      return signIn('google');
+    });
+  }
+  function finishImport() {
+    var stash = null;
+    if (!user || isEduId(user)) return Promise.resolve();   // still on edu-ID: the Google step hasn't happened yet
+    try { stash = JSON.parse(sessionStorage.getItem(importKey)); sessionStorage.removeItem(importKey); } catch (e) {}
+    if (!stash || !stash.access_token || Date.now() - (stash.t || 0) > 30 * 60 * 1000) return Promise.resolve();
+    var back = function () { return sb.auth.setSession({ access_token: stash.access_token, refresh_token: stash.refresh_token }).then(function (r) { if (r.data && r.data.session) user = r.data.session.user; }); };
+    return sb.rpc('import_to_eduid', { p_target_token: stash.access_token }).then(function (r) {
+      if (r.error) throw new Error(r.error.message);
+      return sb.raw.rpc('delete_my_account').then(function (d) {
+        importMsg = d && d.error
+          ? L('Your data is now in your edu-ID account. The old Google login could not be removed; we will remove it for you.', 'Deine Daten sind jetzt in deinem edu-ID-Konto. Das alte Google-Login konnte nicht entfernt werden; wir entfernen es für dich.')
+          : L('Done: your data is now in your edu-ID account, and the old Google login is deleted.', 'Erledigt: Deine Daten sind jetzt in deinem edu-ID-Konto, und das alte Google-Login ist gelöscht.');
+      });
+    }).catch(function (e) {
+      importMsg = L('Could not bring your data over: ', 'Daten konnten nicht übernommen werden: ') + (e && e.message || '') + ' ' + L('Nothing was deleted.', 'Es wurde nichts gelöscht.');
+    }).then(back, back);
+  }
   function signIn(provider) {
     if (typeof provider !== 'string') provider = ethLogin ? ETH_PROVIDER : 'google';
     track('login');
@@ -410,8 +443,16 @@
         '<input type="text" maxlength="30" value="' + esc(nick) + '" placeholder="' + L('e.g. quiet-fox', 'z. B. stiller-fuchs') + '"></label>' +
         '<label class="sh-field sh-check"><input type="checkbox"' + (lb ? ' checked' : '') + '> ' + L('Show my nickname on the leaderboard (consistency, not speed). Off by default.', 'Meinen Spitznamen in der Bestenliste zeigen (Regelmässigkeit, nicht Tempo). Standardmässig aus.') + '</label>' +
         '<p><button type="button" class="start-btn sh-save">' + L('Save', 'Speichern') + '</button> <span class="sh-msg"></span></p>' +
-        '<p><button type="button" class="sh-plain sh-out">' + L('Sign out', 'Abmelden') + '</button> · <button type="button" class="sh-plain sh-del">' + L('Delete my account', 'Mein Konto löschen') + '</button></p>';
+        '<p><button type="button" class="sh-plain sh-out">' + L('Sign out', 'Abmelden') + '</button> · <button type="button" class="sh-plain sh-del">' + L('Delete my account', 'Mein Konto löschen') + '</button></p>' +
+        (ethLogin && !isEduId(user) ? '<div class="sh-import"><p><strong>' + L('Google sign-in is ending.', 'Die Anmeldung mit Google endet.') + '</strong> ' +
+          L('Sign out, sign in with SWITCH edu-ID, then press "Bring over my Google data" on this page. Your progress comes with you.', 'Melde dich ab, melde dich mit SWITCH edu-ID an und tippe dann hier auf „Meine Google-Daten übernehmen“. Dein Fortschritt kommt mit.') + '</p></div>' : '') +
+        (isEduId(user) ? '<div class="sh-import"><p><strong>' + L('Used StudyHub with Google before?', 'StudyHub früher mit Google genutzt?') + '</strong> ' +
+          L('Bring your progress, notes and nickname over to this edu-ID account. You sign in with Google once; afterwards the old Google login is deleted.', 'Hol deinen Fortschritt, deine Notizen und deinen Spitznamen in dieses edu-ID-Konto. Du meldest dich einmal mit Google an; danach wird das alte Google-Login gelöscht.') +
+          '</p><p><button type="button" class="sh-plain sh-import-btn">' + L('Bring over my Google data', 'Meine Google-Daten übernehmen') + '</button></p></div>' : '') +
+        (importMsg ? '<p class="sh-msg sh-import-msg" role="status">' + esc(importMsg) + '</p>' : '');
       var inp = box.querySelector('input[type=text]'), chk = box.querySelector('.sh-check input'), msg = box.querySelector('.sh-msg');
+      var ib = box.querySelector('.sh-import-btn');
+      if (ib) ib.onclick = function () { startImport().catch(function () { msg.textContent = L('Could not start. Please try again.', 'Konnte nicht starten. Bitte versuche es erneut.'); }); };
       box.querySelector('.sh-save').onclick = function () {
         updateProfile(inp.value, chk.checked).then(function () { msg.textContent = L('Saved.', 'Gespeichert.'); })
           .catch(function (error) { msg.textContent = error.message; });
