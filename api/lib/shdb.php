@@ -219,6 +219,42 @@ function sh_out(string $table, array $row): array {
 }
 function sh_ts_out($v): ?string { return $v === null ? null : str_replace(' ', 'T', substr((string)$v, 0, 23)) . '+00:00'; }
 
+// ---------------------------------------------------------------- study planner (handoff/04-study-planner.md, section 9)
+// The planner keeps its data in my_items, one row per student per key. Like every my_items row they are
+// read and written only by the signed-in student (owner filter in query.php); there is no admin view.
+const SH_PLANNER_KEYS = ['planner_profile', 'planner_plan', 'planner_checkins', 'planner_research_consent', 'planner_calendar'];
+function sh_is_planner_key($k): bool { return is_string($k) && in_array($k, SH_PLANNER_KEYS, true); }
+
+// Consent to store planner data (questionnaire module A1) lives in planner_profile.content.consent:
+// {"storage": true, "version": "<consent text version>", "at": "<ISO time>"}.
+function sh_planner_has_consent($content): bool {
+    if (is_string($content)) { $content = json_decode($content, true); }
+    return is_array($content) && is_array($content['consent'] ?? null) && ($content['consent']['storage'] ?? null) === true;
+}
+
+// Checked on the server before ANY write of a planner key (insert, upsert, update, restore, AI connector).
+// - planner_profile: the new content itself must carry consent.storage === true (withdrawing = deleting it).
+// - every other planner key: the student's stored planner_profile must carry that consent.
+// $content is the new content when the write sets it, or null when it does not.
+function sh_planner_guard(PDO $pdo, string $uid, string $key, bool $setsContent, $content): void {
+    if (!sh_is_planner_key($key)) { return; }
+    if ($key === 'planner_profile' && $setsContent) {
+        if (!sh_planner_has_consent($content)) { throw new ShError('Planner data needs your consent to store it first.'); }
+        return;
+    }
+    $s = $pdo->prepare('SELECT content FROM my_items WHERE user_id = ? AND `key` = ?');
+    $s->execute([$uid, 'planner_profile']);
+    $row = $s->fetchColumn();
+    if ($row === false || !sh_planner_has_consent($row)) { throw new ShError('Planner data needs your consent to store it first.'); }
+}
+
+// Deleting planner_profile withdraws the consent: all planner keys go, with their version history.
+function sh_planner_withdraw(PDO $pdo, string $uid): void {
+    $in = implode(',', array_fill(0, count(SH_PLANNER_KEYS), '?'));
+    $pdo->prepare("DELETE FROM my_items WHERE user_id = ? AND `key` IN ($in)")->execute(array_merge([$uid], SH_PLANNER_KEYS));
+    $pdo->prepare("DELETE FROM my_versions WHERE user_id = ? AND `key` IN ($in)")->execute(array_merge([$uid], SH_PLANNER_KEYS));
+}
+
 // ---------------------------------------------------------------- checks (the old SQL CHECK rules)
 function sh_check(string $table, array $r): void {
     $len = function ($k, $min, $max) use ($r) {
@@ -238,7 +274,7 @@ function sh_check(string $table, array $r): void {
             if (isset($r['rating']) && ($r['rating'] < 1 || $r['rating'] > 5)) { throw new ShError('Rating must be 1 to 5.'); } break;
         case 'forum_threads': $len('topic', 0, 100); $len('title', 3, 150); $len('body', 1, 5000); break;
         case 'forum_posts': $len('body', 1, 5000); break;
-        case 'my_items': $in('key', ['plan', 'notes', 'questions', 'flashcards', 'design', 'study_setup', 'memory']);
+        case 'my_items': $in('key', array_merge(['plan', 'notes', 'questions', 'flashcards', 'design', 'study_setup', 'memory'], SH_PLANNER_KEYS));
             $in('source', ['site', 'ai', 'undo', 'restore', 'reset']); $big('content'); break;
         case 'attempts': $len('attempt', 0, 20000); break;
         case 'results': $in('kind', ['exercise', 'exam', 'mock', 'check']); $len('summary', 0, 5000); break;

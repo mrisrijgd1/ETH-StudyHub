@@ -101,6 +101,7 @@ function sh_run(PDO $pdo, ?array $u, array $q) {
                 $exists = sh_keys($pdo, $table, $kf)[0] ?? null;
             }
             if ($exists && in_array($table, ['forum_threads', 'forum_posts', 'suggestions'], true)) { throw new ShError('Not allowed.'); }
+            if ($table === 'my_items') { sh_planner_guard($pdo, $u['id'], (string)($r['key'] ?? ''), array_key_exists('content', $r), $r['content'] ?? null); }
             if ($exists) {
                 $set = []; $vals = [];
                 foreach ($r as $c => $v) { if (!in_array($c, $t['pk'], true)) { $set[] = "`$c` = ?"; $vals[] = sh_in($t['cols'][$c], $v); } }
@@ -134,6 +135,9 @@ function sh_run(PDO $pdo, ?array $u, array $q) {
         if (!$v) { return null; }
         sh_check($table, $v);
         $keys = sh_keys($pdo, $table, $filters);
+        if ($table === 'my_items') {
+            foreach ($keys as $k) { sh_planner_guard($pdo, $u['id'], (string)$k['key'], array_key_exists('content', $v), $v['content'] ?? null); }
+        }
         $set = []; $vals = [];
         foreach ($v as $c => $x) { $set[] = sh_ident($table, (string)$c) . ' = ?'; $vals[] = sh_in($t['cols'][$c], $x); }
         $sql = 'UPDATE `' . $table . '` SET ' . implode(', ', $set) . sh_where($table, $filters, $vals);
@@ -151,6 +155,7 @@ function sh_run(PDO $pdo, ?array $u, array $q) {
             $pdo->prepare('DELETE FROM forum_posts WHERE thread_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')')->execute($ids);
         }
         foreach ($keys as $k) { sh_after_write($pdo, $table, $k, 'delete'); }
+        if ($table === 'my_items' && in_array('planner_profile', array_column($keys, 'key'), true)) { sh_planner_withdraw($pdo, $u['id']); }
         return null;
     }
     throw new ShError('Unknown operation.');
