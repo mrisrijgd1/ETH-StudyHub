@@ -439,7 +439,7 @@
       if (oldBtn) oldBtn.onclick = function () { signIn('google').catch(loginFail); };
     } else {
       var nick = profile && profile.nickname || '', lb = !!(profile && profile.leaderboard);
-      box.innerHTML = '<p>' + L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email || '') + '</strong>.</p>' +
+      box.innerHTML = '<p>' + (user.email ? L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email) + '</strong>.' : (isEduId(user) ? L('Signed in with SWITCH edu-ID.', 'Angemeldet mit SWITCH edu-ID.') : L('Signed in.', 'Angemeldet.'))) + '</p>' +
         '<label class="sh-field"><span>' + L('Nickname (shown instead of your name, e.g. in the forum later)', 'Spitzname (wird statt deines Namens gezeigt, z. B. später im Forum)') + '</span>' +
         '<input type="text" maxlength="30" value="' + esc(nick) + '" placeholder="' + L('e.g. quiet-fox', 'z. B. stiller-fuchs') + '"></label>' +
         '<label class="sh-field sh-check"><input type="checkbox"' + (lb ? ' checked' : '') + '> ' + L('Show my nickname on the leaderboard (consistency, not speed). Off by default.', 'Meinen Spitznamen in der Bestenliste zeigen (Regelmässigkeit, nicht Tempo). Standardmässig aus.') + '</label>' +
