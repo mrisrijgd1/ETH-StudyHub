@@ -231,11 +231,12 @@ a.subject:hover strong { text-decoration: underline; }
 <p class="legend">All documents: <a href="docs.html">Analysis</a> · <a href="phys-docs.html">Physics</a>. Links inside a file work, and your browser's back button undoes a jump.</p>
 <script src="assets/pdf.min.js"></script>
 <script src="assets/pdf_viewer.js"></script>
+<script src="assets/officialdoc.js?v=doc1127"></script>
 <script>
 (function () {
   var OFFSET = 0;
   var params = new URLSearchParams(location.search); var FILE = params.get('f') || ''; var TITLE = params.get('t') || 'Document';
-  if (!/^docs\/[a-z0-9-]+\.pdf$/.test(FILE)) FILE = '';
+  if (!/^(docs|lernblatt)\/[a-z0-9-]+\.pdf$/.test(FILE)) FILE = '';
   document.title = TITLE; var h1 = document.querySelector('h1'); if (h1) h1.textContent = TITLE;
   var lib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
   lib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.min.js';
@@ -300,13 +301,11 @@ a.subject:hover strong { text-decoration: underline; }
     return ul;
   }
 
-  lib.getDocument({ url: FILE }).promise.then(function (doc) {
+  SHDoc.load(lib, FILE, container).then(function (doc) {
     viewer.setDocument(doc); links.setDocument(doc, null);
     of.textContent = 'of ' + (doc.numPages - OFFSET);
     doc.getOutline().then(function (o) { if (o && o.length) outline.appendChild(build(o, 0)); else tocBtn.hidden = true; });
-  }, function (e) {
-    container.textContent = 'The official file is offline for now: it comes back behind ETH sign-in. Until then, ask your AI with the StudyHub connector, which can read it for you. (' + e.message + ')';
-  });
+  }, function () { /* SHDoc already showed what to do */ });
 })();
 </script>
 

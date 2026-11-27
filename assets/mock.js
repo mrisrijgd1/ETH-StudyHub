@@ -21,7 +21,8 @@
   document.head.appendChild(css);
 
   function exam(id) { for (var i = 0; i < EX.length; i++) if (EX[i].id === id) return EX[i]; return null; }
-  function pdf(id) { return (DE ? '../' : '') + 'docs/' + id + '.pdf'; }
+  // Official exam PDFs open in the StudyHub viewer, which loads them behind the ETH login (no public file URL).
+  function pdf(id) { return (DE ? '../' : '') + 'pdf.html?f=docs/' + id + '.pdf'; }
   function fmt(ms) { var neg = ms < 0; ms = Math.abs(ms); var s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); s = s % 60;
     return (neg ? '+' : '') + (h ? h + ':' : '') + (h && m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s; }
   function when(t) { try { return new Date(t).toLocaleString(DE ? 'de-CH' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { return t; } }
