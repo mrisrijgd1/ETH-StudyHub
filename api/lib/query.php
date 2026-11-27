@@ -136,6 +136,8 @@ function sh_run(PDO $pdo, ?array $u, array $q) {
         sh_check($table, $v);
         $keys = sh_keys($pdo, $table, $filters);
         if ($table === 'my_items') {
+            // A row's key is its identity: an update may not rename it (that would slip past the planner consent check).
+            if (array_key_exists('key', $v)) { throw new ShError('Not allowed.'); }
             foreach ($keys as $k) { sh_planner_guard($pdo, $u['id'], (string)$k['key'], array_key_exists('content', $v), $v['content'] ?? null); }
         }
         $set = []; $vals = [];
