@@ -283,6 +283,7 @@
      once with Google; our server moves all data to the edu-ID login (newer wins), then the Google
      login is deleted and the edu-ID login comes back. */
   var importKey = 'sh-import-eduid', importMsg = '';
+  var loginError = (function () { var m = /error_description=([^&]+)/.exec(location.hash + '&' + location.search); try { return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; } catch (e) { return m ? m[1] : ''; } })();
   function isEduId(u) { return !!(u && u.app_metadata && u.app_metadata.provider === ETH_PROVIDER); }
   function startImport() {
     return sb.auth.getSession().then(function (r) {
@@ -431,14 +432,14 @@
       box.innerHTML = '<p>' + L('You are using StudyHub as a guest. Your progress is saved in this browser.', 'Du nutzt StudyHub als Gast. Dein Fortschritt wird in diesem Browser gespeichert.') + '</p>' +
         '<p><button type="button" class="start-btn sh-google">' + loginLabel() + '</button></p>' +
         (ethLogin ? '<p><button type="button" class="sh-plain sh-google-old">' + L('Made your account with Google before? Sign in with Google', 'Konto früher mit Google erstellt? Mit Google anmelden') + '</button></p>' : '') +
-        '<p>' + L('Signing in stores account and progress information so StudyHub can sync it across your devices. See the privacy information below.', 'Bei der Anmeldung werden Konto- und Fortschrittsdaten gespeichert, damit StudyHub sie zwischen deinen Geräten synchronisieren kann. Details stehen unten im Datenschutzabschnitt.') + '</p><p class="sh-msg" role="status"></p>';
+        '<p>' + L('Signing in stores account and progress information so StudyHub can sync it across your devices. See the privacy information below.', 'Bei der Anmeldung werden Konto- und Fortschrittsdaten gespeichert, damit StudyHub sie zwischen deinen Geräten synchronisieren kann. Details stehen unten im Datenschutzabschnitt.') + '</p><p class="sh-msg" role="status">' + (loginError ? esc(L('Sign-in did not finish: ', 'Anmeldung nicht abgeschlossen: ') + loginError) : '') + '</p>';
       var loginFail = function () { box.querySelector('.sh-msg').textContent = L('Could not log in. Please try again.', 'Anmeldung fehlgeschlagen. Bitte versuche es erneut.'); };
       box.querySelector('.sh-google').onclick = function () { signIn().catch(loginFail); };
       var oldBtn = box.querySelector('.sh-google-old');
       if (oldBtn) oldBtn.onclick = function () { signIn('google').catch(loginFail); };
     } else {
       var nick = profile && profile.nickname || '', lb = !!(profile && profile.leaderboard);
-      box.innerHTML = '<p>' + L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email || '') + '</strong>.</p>' +
+      box.innerHTML = '<p>' + (user.email ? L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email) + '</strong>.' : (isEduId(user) ? L('Signed in with SWITCH edu-ID.', 'Angemeldet mit SWITCH edu-ID.') : L('Signed in.', 'Angemeldet.'))) + '</p>' +
         '<label class="sh-field"><span>' + L('Nickname (shown instead of your name, e.g. in the forum later)', 'Spitzname (wird statt deines Namens gezeigt, z. B. später im Forum)') + '</span>' +
         '<input type="text" maxlength="30" value="' + esc(nick) + '" placeholder="' + L('e.g. quiet-fox', 'z. B. stiller-fuchs') + '"></label>' +
         '<label class="sh-field sh-check"><input type="checkbox"' + (lb ? ' checked' : '') + '> ' + L('Show my nickname on the leaderboard (consistency, not speed). Off by default.', 'Meinen Spitznamen in der Bestenliste zeigen (Regelmässigkeit, nicht Tempo). Standardmässig aus.') + '</label>' +
