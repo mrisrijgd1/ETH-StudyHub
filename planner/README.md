@@ -26,3 +26,11 @@ On any host other than study-hub.ch (e.g. test.study-hub.ch) the page sends data
 - Daily check-in, calibration after the 3 trial days, replanning from check-ins (spec v2).
 - Programme timetable (lectures are drawn by the student with the label "Lecture"), `.ics` export, study-space tips, German version.
 - Physik I and Informatik chapter weights are a first guess; please check them.
+
+## Focus trail (header window)
+`focus-hike.js` + `focus-hike.css`, hooked into `plan.html` with one empty `<div id="focus-hike">` outside `#app`.
+A small hiker walks through an endless landscape (meadow, mountain lake, forest, pond, brook, alpine pasture, rocky ridge) with weather (clouds, drizzle, rain, mist, snow up high, rainbows), a sky that follows the local clock (or "always daylight"), and animals to spot (trail journal).
+- Focus timer 25/5, 50/10 or 90/20: the hiker walks briskly while you focus, sits down in the break, strolls otherwise. Optional soft bell.
+- Nature sounds (birds, wind, water, rain) are **generated live with the Web Audio API**; the landscape is drawn on a canvas in code. No images, audio files, fonts or third-party requests, so there is nothing to license: all of it is original code in this repository.
+- Personalisation (name, skin, hair, hairstyle, hat, jacket, backpack, trousers, stick, dog), timer, volumes and journal stay in this browser only: `localStorage` key `sh-focus-hike`. Nothing is sent to the server.
+- `prefers-reduced-motion`: a still picture, refreshed every 15 s. Animation pauses when the window is off-screen or the tab is hidden, and the landscape can be folded away (chevron).
