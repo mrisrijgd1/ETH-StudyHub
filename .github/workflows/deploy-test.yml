@@ -1,0 +1,161 @@
+name: Deploy a branch to the test site (test.study-hub.ch)
+
+# Copies a chosen branch to the TEST site test.study-hub.ch over SSH. The test site runs on
+# Rachel's own Infomaniak student Web Hosting (her own organisation), not on the production
+# hosting. It holds made-up data only. Production (study-hub.ch) is deployed only by
+# deploy-infomaniak.yml; this workflow refuses to run against the production host.
+#
+# Only started by hand (Actions tab -> this workflow -> "Run workflow"). A run is a dry run
+# unless you untick it.
+#
+# Needs (Settings -> Secrets and variables -> Actions), entered by Rachel or Mridul, never in the repo:
+#   secret   TEST_SSH_KEY      the private deploy key for Rachel's hosting
+#   variable TEST_DEPLOY_HOST  SSH host of Rachel's hosting (e.g. xxxx.ftp.infomaniak.com)
+#   variable TEST_DEPLOY_USER  SSH user on that hosting
+#   variable TEST_DEPLOY_PATH  site folder relative to that user's home, e.g. sites/test.study-hub.ch/
+#   secret   TEST_BASIC_AUTH   optional "user:password" for a browser password on the whole test site.
+#                              When set, every run writes the password file OUTSIDE the site folder
+#                              (~/.htpasswd-test-studyhub, hashed) and turns the protection on in .htaccess.
+#
+# DNS: test.study-hub.ch needs an A (and AAAA) record in the study-hub.ch zone pointing at
+# Rachel's hosting. Nothing else is needed from the production organisation.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch to deploy to test.study-hub.ch"
+        type: string
+        required: true
+        default: main
+      dry_run:
+        description: "Dry run (only list what would change, copy nothing)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-test
+  cancel-in-progress: false
+
+env:
+  DEPLOY_HOST: ${{ vars.TEST_DEPLOY_HOST }}
+  DEPLOY_USER: ${{ vars.TEST_DEPLOY_USER }}
+  DEPLOY_PATH: ${{ vars.TEST_DEPLOY_PATH }}
+  PROD_HOST: 2r672z.ftp.infomaniak.com   # the production hosting: never a target here
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the settings
+        env:
+          REF: ${{ inputs.ref }}
+        run: |
+          for v in DEPLOY_HOST DEPLOY_USER DEPLOY_PATH; do
+            if [ -z "${!v}" ]; then echo "::error::The repository variable TEST_${v} is missing."; exit 1; fi
+          done
+          if [ "$DEPLOY_HOST" = "$PROD_HOST" ]; then
+            echo "::error::TEST_DEPLOY_HOST is the production hosting. This workflow only deploys to the test site."; exit 1
+          fi
+          if [ "${DEPLOY_PATH%/}" = "sites/study-hub.ch" ]; then
+            echo "::error::TEST_DEPLOY_PATH points at the production site folder."; exit 1
+          fi
+          case "$DEPLOY_PATH" in
+            *studyhub-data*|/*|*..*) echo "::error::TEST_DEPLOY_PATH must be a site folder under the home folder, never studyhub-data/."; exit 1 ;;
+          esac
+          echo "Deploying '$REF' to $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+
+      - name: Check out the branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Mark it as a test site (no search engines)
+        run: |
+          printf 'User-agent: *\nDisallow: /\n' > robots.txt
+          printf '\n# Test site: keep it out of search engines\n<IfModule mod_headers.c>\nHeader set X-Robots-Tag "noindex, nofollow"\n</IfModule>\n' >> .htaccess
+
+      - name: Set up the SSH key
+        env:
+          SSH_KEY: ${{ secrets.TEST_SSH_KEY }}
+        run: |
+          if [ -z "$SSH_KEY" ]; then
+            echo "::error::The secret TEST_SSH_KEY is missing."
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Check the login works
+        run: |
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+            "echo 'Login OK.'; if test -d '$DEPLOY_PATH'; then echo 'Site folder found.'; \
+             else echo 'Site folder NOT found at $DEPLOY_PATH'; exit 1; fi"
+
+      - name: Password protection (when TEST_BASIC_AUTH is set)
+        env:
+          BASIC_AUTH: ${{ secrets.TEST_BASIC_AUTH }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ -z "$BASIC_AUTH" ]; then
+            echo "::warning::TEST_BASIC_AUTH is not set: the test site is open to anyone who knows the address."
+            exit 0
+          fi
+          AUTH_USER="${BASIC_AUTH%%:*}"; AUTH_PASS="${BASIC_AUTH#*:}"
+          if [ -z "$AUTH_USER" ] || [ "$AUTH_USER" = "$BASIC_AUTH" ] || [ -z "$AUTH_PASS" ]; then
+            echo "::error::TEST_BASIC_AUTH must look like user:password."; exit 1
+          fi
+          echo "::add-mask::$AUTH_PASS"
+          HOME_DIR=$(ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" 'printf %s "$HOME"')
+          LINE="$AUTH_USER:$(printf '%s' "$AUTH_PASS" | openssl passwd -apr1 -stdin)"
+          if [ "$DRY_RUN" != "true" ]; then
+            printf '%s\n' "$LINE" | ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+              'umask 022; cat > "$HOME/.htpasswd-test-studyhub"'
+          fi
+          # The data API and the connector are left out: they send their own "Authorization: Bearer" login
+          # header (which would clash with the browser password) and already refuse requests without a login.
+          cat >> .htaccess <<EOF
+          
+          # Test site: browser password (password file outside the site folder)
+          SetEnvIf Request_URI "^/(api/|mcp|\.well-known/)" sh_noauth
+          AuthType Basic
+          AuthName "StudyHub test site"
+          AuthUserFile $HOME_DIR/.htpasswd-test-studyhub
+          <RequireAny>
+            Require env sh_noauth
+            Require valid-user
+          </RequireAny>
+          EOF
+          echo "Password protection on for user $AUTH_USER."
+
+      - name: Copy the site
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          FLAGS="-rlvz --delete --itemize-changes"
+          if [ "$DRY_RUN" = "true" ]; then
+            FLAGS="$FLAGS --dry-run"
+            echo "DRY RUN: nothing will be changed on the server."
+          fi
+          # Same exclusions as production. Protected on the server: Infomaniak's settings file,
+          # the private folder and any password protection (.htpasswd) set up for the test site.
+          rsync $FLAGS \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='connector/' \
+            --exclude='handoff/' \
+            --filter='P /.user.ini' \
+            --filter='P /_private/' \
+            --filter='P /.htpasswd' \
+            -e "ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
