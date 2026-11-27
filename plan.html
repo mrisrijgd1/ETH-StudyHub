@@ -596,14 +596,52 @@ function drawCal(keep){const sh=$("#sheet");const old=sh.querySelector(".body");
  if(calStep==="advice")body.append(calAdvice());
  body.scrollTop=y;}
 function stepNav(prev,next,label){return el("div",{class:"nav"},prev?el("button",{type:"button",class:"btn ghost",onclick:()=>{calStep=prev;drawCal();}},"Back"):el("span"),el("button",{type:"button",class:"btn",onclick:()=>{calStep=next;drawCal();}},label||"Next"));}
-function calImport(){const st=el("p",{class:"note"},S.imported?S.imported+" entries imported.":"");const f=el("input",{type:"file",accept:".ics,text/calendar","aria-label":"Calendar file",onchange:e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{const n=parseIcs(String(r.result));S.imported+=n;st.textContent=n+" entries imported as busy boxes. Titles and places were not kept.";};r.readAsText(file);}});
- return el("div",{style:"max-width:640px"},el("h2",null,"Import your calendar (optional)"),el("p",{class:"lead"},"Upload a calendar file (.ics) from myStudies, Google, Apple or Outlook. We only keep start and end times; titles, places and notes are dropped, and the file is deleted after reading."),f,st,el("p",{class:"note"},"No file? Skip this step. Your lectures and exercise classes (HS26 timetable for Mathematics and Physics, 1st semester) are already in the calendar; you can change them in the next step."),stepNav(null,"weekly",S.imported?"Next":"Skip"));}
-function parseIcs(t){t=t.replace(/\r?\n[ \t]/g,"");let n=0;const evs=t.split("BEGIN:VEVENT").slice(1);for(const ev of evs){const g=k=>{const m=ev.match(new RegExp("\\n"+k+"[^:\\n]*:([^\\n\\r]+)"));return m?m[1].trim():null;};const ds=g("DTSTART"),de=g("DTEND"),rr=g("RRULE");if(!ds)continue;const p=s=>{const m=s.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2}))?/);return m?{d:new Date(+m[1],+m[2]-1,+m[3]),h:m[4]?+m[4]:null,mi:m[5]?+m[5]:0}:null;};const a=p(ds),b=de?p(de):null;if(!a)continue;
-  if(a.h===null){if(a.d>=TODAY&&a.d<=LAST){addEv(iso(a.d),{all:true});n++;}continue;}
-  const dow=(a.d.getDay()+6)%7;const s=Math.max(0,Math.round(((a.h-START_H)*60+a.mi)/30));const e=b&&b.h!==null?Math.min(ROWS,Math.round(((b.h-START_H)*60+b.mi)/30)):s+2;if(e<=s)continue;
-  if(rr&&/FREQ=WEEKLY/.test(rr)){S.cal.boxes.push({id:boxId++,d:dow,s,e,lab:"plain",t:"Imported"});n++;}
-  else if(a.d>=TODAY&&a.d<=LAST){addEv(iso(a.d),{all:false,s:Math.max(0,s),e:Math.max(s+1,e)});n++;}}
- return n;}
+function calImport(){const log=S.imports||[];const last=log[log.length-1];
+ const st=el("div",{"aria-live":"polite"});
+ const f=el("input",{type:"file",accept:".ics,text/calendar","aria-label":"Calendar file",onchange:e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();
+  r.onload=()=>{const res=parseIcs(String(r.result));res.file=file.name.slice(0,60);res.at=new Date().toISOString();(S.imports=S.imports||[]).push(res);S.imported+=res.weekly+res.once+res.allday;persist();drawCal(true);};
+  r.onerror=()=>{st.textContent="The file could not be read. Please try again.";};r.readAsText(file);}});
+ const body=[el("h2",null,"Import your calendar (optional)"),el("p",{class:"lead"},"Upload a calendar file (.ics) from myStudies, Google, Apple or Outlook. We only keep start and end times; titles, places and notes are dropped, and the file is not kept."),
+  el("p",{class:"note"},"Your lectures and exercise classes (HS26 timetable, Mathematics and Physics, 1st semester) are already in the calendar, so you only need a file for your other appointments.")];
+ if(last){const n=last.weekly+last.once+last.allday;
+  const card=el("div",{class:"tip",style:n?"":"border-left-color:var(--warn)"},
+   el("p",null,el("b",null,n?"✓ "+last.file+" imported":"Nothing imported from "+last.file)),
+   n?el("ul",{style:"margin:0 0 8px;padding-left:18px"},
+     last.weekly?el("li",null,last.weekly+" weekly appointment"+(last.weekly>1?"s":"")+" added to your weekly template"+(last.until?" ("+(last.until===1&&last.weekly===1?"it ends":last.until===1?"one of them ends":last.until+" of them end")+" with the lecture period)":"")):null,
+     last.once?el("li",null,last.once+" one-off appointment"+(last.once>1?"s":"")+(last.once>1?" added on their dates":" added on its date")):null,
+     last.allday?el("li",null,last.allday+" all-day entr"+(last.allday>1?"ies":"y")+" (whole day blocked)"):null,
+     last.outside?el("li",{class:"note"},last.outside+" entr"+(last.outside>1?"ies":"y")+" outside "+short(TODAY)+" to "+short(LAST)+" left out"):null)
+    :el("p",{class:"note"},last.found?"The file has "+last.found+" entries, but none fall between "+short(TODAY)+" and "+short(LAST)+".":"No calendar entries were found. Is it an .ics calendar file?"),
+   n?el("p",{class:"note"},"You can check and change them in the next steps."):null,
+   n?el("button",{type:"button",class:"btn small ghost",onclick:()=>{undoImport(last);S.imports.pop();persist();drawCal(true);}},"Undo this import"):null);
+  body.push(card,el("p",{class:"note",style:"margin-top:12px"},"Another calendar? Choose a further file:"),f,st);}
+ else body.push(f,st);
+ body.push(stepNav(null,"weekly",last&&(last.weekly+last.once+last.allday)?"Next: check your week":"Continue without a file"));
+ return el("div",{style:"max-width:640px"},...body);}
+function undoImport(res){S.cal.boxes=S.cal.boxes.filter(b=>!(res.ids||[]).includes(b.id));
+ (res.evs||[]).forEach(([k,i])=>{const l=S.cal.events[k];if(!l)return;const at=l.findIndex(v=>v._imp===i);if(at>=0)l.splice(at,1);if(!l.length)delete S.cal.events[k];});
+ S.imported=Math.max(0,S.imported-(res.weekly+res.once+res.allday));}
+function parseIcs(t){t=t.replace(/\r?\n[ \t]/g,"");const res={found:0,weekly:0,once:0,allday:0,outside:0,until:0,ids:[],evs:[]};const tag=Date.now();
+ const DAYK={MO:0,TU:1,WE:2,TH:3,FR:4,SA:5,SU:6};
+ const evs=t.split("BEGIN:VEVENT").slice(1);
+ for(const ev of evs){res.found++;const g=k=>{const m=ev.match(new RegExp("(?:^|\\n)"+k+"[^:\\n]*:([^\\n\\r]+)"));return m?m[1].trim():null;};
+  const ds=g("DTSTART"),de=g("DTEND"),rr=g("RRULE");if(!ds)continue;
+  const p=s=>{const m=s.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z?))?/);if(!m)return null;
+   if(m[4]&&m[7]==="Z"){const d=new Date(Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5]));return {d:new Date(d.getFullYear(),d.getMonth(),d.getDate()),h:d.getHours(),mi:d.getMinutes()};}
+   return {d:new Date(+m[1],+m[2]-1,+m[3]),h:m[4]?+m[4]:null,mi:m[5]?+m[5]:0};};
+  const a=p(ds),b=de?p(de):null;if(!a)continue;
+  const inRange=d=>d>=TODAY&&d<=LAST;
+  const mark=(k,o)=>{const id=tag+"-"+res.evs.length;o._imp=id;addEv(k,o);res.evs.push([k,id]);};
+  if(a.h===null){if(inRange(a.d)){mark(iso(a.d),{all:true});res.allday++;}else res.outside++;continue;}
+  const s=Math.max(0,Math.round(((a.h-START_H)*60+a.mi)/30));const e=b&&b.h!==null?Math.min(ROWS,Math.round(((b.h-START_H)*60+b.mi)/30)):s+2;if(e<=s){res.outside++;continue;}
+  if(rr&&/FREQ=WEEKLY/.test(rr)){const um=rr.match(/UNTIL=(\d{8})/);const until=um?p(um[1]).d:null;
+   if(until&&until<TODAY){res.outside++;continue;}
+   const lect=until&&until<=new Date(LECT_END.getFullYear(),LECT_END.getMonth(),LECT_END.getDate()+7);if(lect)res.until++;
+   const bd=(rr.match(/BYDAY=([A-Z,]+)/)||[])[1];const days=bd?bd.split(",").map(x=>DAYK[x]).filter(x=>x!==undefined):[(a.d.getDay()+6)%7];
+   days.forEach(dw=>{const box={id:boxId++,d:dw,s,e,lab:lect?"lecture":"plain",t:"Imported"};S.cal.boxes.push(box);res.ids.push(box.id);});res.weekly++;}
+  else if(inRange(a.d)){mark(iso(a.d),{all:false,s:Math.max(0,s),e:Math.max(s+1,e)});res.once++;}
+  else res.outside++;}
+ return res;}
 function calWeekly(){const wk=weeks();const tpl=calWeek==="template";const sel=el("select",{"aria-label":"Week",onchange:e=>{calWeek=e.target.value;drawCal();}},el("option",{value:"template"},"Every week (template)"),wk.map(w=>el("option",{value:iso(w)},"Week of "+short(w))));sel.value=calWeek;
  const lg=el("div",{class:"legend"},LABELS.map(([k,l])=>el("span",null,el("i",{style:"background:var(--"+k+")"}),l)));
  const grid=el("div",{class:"wgrid",id:"wgrid"});grid.append(el("div",{class:"hd"},""),...DAYS.map(d=>el("div",{class:"hd"},d)));
