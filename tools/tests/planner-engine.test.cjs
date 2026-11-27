@@ -139,3 +139,17 @@ test('random calendars never break a hard rule', () => {
     assert.deepEqual(E.check(p, P, Object.assign({}, base, a), c), [], 'run ' + n);
   }
 });
+
+test('half-days: the afternoon starts when the student says, and a chosen subject is kept', () => {
+  const c = JSON.parse(JSON.stringify(cal));
+  c.half = { '2027-01-12:am': { subj: ['inf'] }, '2027-01-12:pm': { subj: ['phy'] } };
+  const a = { F5_l: '12:00', F5_pm: '14:00' };
+  const p = plan(a, c);
+  assert.deepEqual(E.check(p, P, Object.assign({}, base, a), c), []);
+  const d = p.days.find((x) => x.date === '2027-01-12');
+  for (const s of d.sessions) {
+    assert.ok(!(E._.toMin(s.from) < 840 && E._.toMin(s.to) > 720), 'no study 12:00-14:00: ' + s.from);
+    if (s.kind !== 'mock') assert.equal(s.k, E._.toMin(s.from) < 840 ? 'inf' : 'phy');
+  }
+  assert.deepEqual(p.settings.half, { am: ['08:30', '12:00'], pm: ['14:00', '18:30'] });
+});

@@ -77,7 +77,7 @@
     var completion = { 'under 50 %': 0.6, '50 to 75 %': 0.75, '75 to 90 %': 0.85, 'almost all': 0.95 }[a.G7] || 0.8;
     return {
       dayStart: dayStart, dayEnd: dayEnd, weekendStart: weekendStart, weekendEnd: weekendEnd,
-      lunch: toMin(a.F5_l, 750), cap: cap,
+      lunch: toMin(a.F5_l, 750), pmStart: Math.max(toMin(a.F5_l, 750), toMin(a.F5_pm, toMin(a.F5_l, 750) + 60)), cap: cap,
       weekly: Math.min(7 * cap, num(a.C7, 44) * 60), lectureWeekly: Math.min(num(a.C7, 44), 25) * 60,
       block: block, brk: brk, shares: shares,
       peak: (a.F3 && a.F3.length ? a.F3 : ['late morning']).map(function (p) { return PERIODS[p]; }).filter(Boolean),
@@ -118,7 +118,7 @@
     var s = weekend ? st.weekendStart : st.dayStart, e = weekend ? st.weekendEnd : st.dayEnd;
     if (e - s < 30) return [];
     var free = [[s, e]];
-    free = subtract(free, st.lunch, st.lunch + 60);
+    free = subtract(free, st.lunch, st.pmStart);   // the break between the morning and the afternoon half-day
     (cal.boxes || []).forEach(function (b) {
       if (boxApplies(b, day, cal, prog)) free = subtract(free, CAL_START + b.s * ROW, CAL_START + b.e * ROW);
     });
@@ -276,10 +276,18 @@
         var light = day.light || inPeriod(bl.from, st.low);
         var hard = st.peak.some(function (p) { return inPeriod(bl.from, p); });
         if (bi === 0 && !st.hardFirst && !day.light) light = true;
-        var pick = pickWork(day, chs, subjectsToday, minutesBy, st, light, hard, exams, prog);
+        // the student's own choice for this half-day (week view): only these subjects here
+        var half = (cal.half || {})[day.date + ':' + (bl.from < st.pmStart ? 'am' : 'pm')];
+        var here = subjectsToday;
+        if (half && half.subj && half.subj.length) {
+          here = half.subj.filter(function (k) { return subj[k] && day.date < exams[k]; });
+          if (day.examTomorrow) here = here.filter(function (k) { return day.examTomorrow.indexOf(k) >= 0; });
+          if (!here.length) here = subjectsToday;
+        }
+        var pick = pickWork(day, chs, here, minutesBy, st, light, hard, exams, prog);
         if (!pick) return;
         var t = taskFor(pick.ch, pick.kind, prog);
-        day.sessions.push({ from: hm(bl.from), to: hm(bl.from + bl.len), min: bl.len, k: pick.ch.k, ch: pick.ch.id,
+        day.sessions.push({ from: hm(bl.from), to: hm(bl.from + bl.len), min: bl.len, k: pick.ch.k, ch: pick.ch.id, half: bl.from < st.pmStart ? 'am' : 'pm',
           kind: t.kind, title: t.title, tasks: t.tasks, links: t.links });
         used += bl.len;
         minutesBy[pick.ch.k] += bl.len;
@@ -307,7 +315,8 @@
       version: VERSION, llm: false, made: today, programme: prog.id,
       exams: Object.keys(exams).map(function (k) { return { k: k, name: subj[k].name, date: exams[k], known: !!a['B5_' + k] }; }),
       trial: { from: today, to: trialEnd },
-      settings: { cap: st.cap, weekly: st.weekly, block: st.block, brk: st.brk, shares: st.shares },
+      settings: { cap: st.cap, weekly: st.weekly, block: st.block, brk: st.brk, shares: st.shares,
+        half: { am: [hm(st.dayStart), hm(st.lunch)], pm: [hm(st.pmStart), hm(st.dayEnd)] } },
       totals: { minutes: minutesBy, mocks: mocksPlanned },
       coverage: coverage, warnings: warnings, days: outDays
     };

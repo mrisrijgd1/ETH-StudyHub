@@ -183,6 +183,21 @@ table.res td.n{text-align:right;font-family:var(--f-mono)}
 .wk{display:grid;grid-template-columns:110px 1fr 56px;gap:10px;align-items:center;font-size:13px}
 .wk .bars{display:flex;height:12px;border-radius:4px;overflow:hidden;background:var(--bg);border:1px solid var(--line)}
 .wk .n{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.wkgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:6px}
+.wdcol{display:grid;gap:4px;align-content:start}
+.wdh{font:600 12px var(--f-mono);text-align:center;color:var(--muted);padding:2px 0}
+.wdcol.today .wdh{color:var(--accent)}
+.half{display:flex;flex-direction:column;gap:3px;align-items:flex-start;text-align:left;min-height:84px;border:1px solid var(--line);border-radius:8px;padding:6px 7px;font:inherit;font-size:12px;cursor:pointer;min-width:0;overflow:hidden}
+.half.off,.half.out{cursor:default;color:var(--muted);background-image:var(--shade);justify-content:center;align-items:center}
+.half .hl{font:600 10px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.half .tags{display:flex;flex-wrap:wrap;gap:3px}
+.half .tags i{font-style:normal;color:#fff;border-radius:4px;padding:1px 5px;font-size:11px}
+.half .hm{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.half .pl{color:var(--muted);font-size:11px;overflow-wrap:anywhere}
+html body.sh-unified .half{background:var(--surface);color:var(--ink);border-color:var(--line)}
+html body.sh-unified .half.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+html body.sh-unified .half.off,html body.sh-unified .half.out{background:var(--bg);background-image:var(--shade);color:var(--muted)}
+@media (max-width:640px){.wkgrid{grid-template-columns:1fr}.wdcol{grid-template-columns:64px 1fr 1fr;align-items:stretch}.wdh{text-align:left;align-self:center}.half{min-height:64px}}
 .c-ana{background:#1865f2}.c-phy{background:#0a7558}.c-inf{background:#a15c00}
 .legend .c-ana,.legend .c-phy,.legend .c-inf{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
 /* the site's appearance.css colours every button; the planner's own buttons keep their meaning */
@@ -349,8 +364,8 @@ SC.E=()=>{const st=el("p",{class:"note"},S.cal.done?"Calendar saved. You can ope
  nav("D","F")];};
 
 SC.F=()=>{const sleep=opt("sleep");const tp=(id,def)=>{const i=el("input",{type:"time",step:"900","aria-label":id,oninput:e=>{set(id,e.target.value);bar();}});i.value=get(id,def);if(get(id)===undefined)set(id,def);return i;};
- const barBox=el("div");const bar=()=>{const s=toMin(get("F5_s","08:30")),e=toMin(get("F5_e","18:00")),blk=+get("F5_b","50"),brk=blk>=90?20:blk>=50?10:5,lunch=toMin(get("F5_l","12:30"));barBox.textContent="";if(e<=s+60){barBox.append(el("p",{class:"note"},"End must be after start."));return;}
-  const parts=[];let t=s,n=0,study=0;while(t+blk<=e){if(t<lunch+60&&t+blk>lunch&&t<=lunch){parts.push(["d-lunch",lunch+60-t,"lunch"]);t=lunch+60;continue;}parts.push(["d-study",blk,blk+"′"]);t+=blk;study+=blk;n++;if(t+brk<=e){parts.push(["d-break",brk,""]);t+=brk;}}
+ const barBox=el("div");const bar=()=>{const s=toMin(get("F5_s","08:30")),e=toMin(get("F5_e","18:00")),blk=+get("F5_b","50"),brk=blk>=90?20:blk>=50?10:5,lunch=toMin(get("F5_l","12:30")),lunchEnd=Math.max(lunch,toMin(get("F5_pm","13:30")));barBox.textContent="";if(e<=s+60){barBox.append(el("p",{class:"note"},"End must be after start."));return;}
+  const parts=[];let t=s,n=0,study=0;while(t+blk<=e){if(t<lunchEnd&&t+blk>lunch&&t<=lunch){parts.push(["d-lunch",lunchEnd-t,"break"]);t=lunchEnd;continue;}parts.push(["d-study",blk,blk+"′"]);t+=blk;study+=blk;n++;if(t+brk<=e){parts.push(["d-break",brk,""]);t+=brk;}}
   const tot=e-s;const d=el("div",{class:"daybar",role:"img","aria-label":n+" study blocks, "+(study/60).toFixed(1)+" hours"});parts.forEach(p=>d.append(el("div",{class:p[0],style:"width:"+(p[1]/tot*100)+"%"},p[2])));
   barBox.append(d,el("div",{class:"dayscale"},el("span",null,get("F5_s","08:30")),el("span",null,n+" blocks · "+(study/60).toFixed(1)+" h study"),el("span",null,get("F5_e","18:00"))));};
  const blk=el("select",{"aria-label":"Block length",onchange:e=>{set("F5_b",e.target.value);bar();}},["25","50","90"].map(v=>el("option",{value:v},v+" min")));blk.value=get("F5_b","50");
@@ -359,7 +374,7 @@ SC.F=()=>{const sleep=opt("sleep");const tp=(id,def)=>{const i=el("input",{type:
  sleep?q("F2","Same for weekends",el("div",{class:"row"},"Bed",tp("F2_b","00:30"),"Wake",tp("F2_w","09:00"))):null,
  q("F3","When are your strongest concentration times?",chipsMulti("F3",["early morning","late morning","early afternoon","late afternoon","evening"])),
  q("F4","When is your energy usually lowest?",chipsSingle("F4",["early morning","late morning","early afternoon","late afternoon","evening"])),
- q("F5","Your optimal study day",el("div",null,el("div",{class:"row"},"Start",tp("F5_s","08:30"),"End",tp("F5_e","18:00"),"Lunch",tp("F5_l","12:30"),"Blocks",blk),barBox),"This becomes the template for every Lernphase day."),
+ q("F5","Your optimal study day",el("div",null,el("div",{class:"row"},"Morning from",tp("F5_s","08:30"),"to",tp("F5_l","12:30"),"Afternoon from",tp("F5_pm","13:30"),"to",tp("F5_e","18:00"),"Blocks",blk),barBox),"Your usual half-days. This becomes the template for every Lernphase day; you can change it later in the week view."),
  q("F6","What is a good break for you?",el("div",null,chipsMulti("F6",["short walk","fresh air","snack or coffee","talk to someone","stretching","music","lying down","phone or social media"]),el("div",{style:"margin-top:8px"},chipsSingle("F6_len",["5 min","10 min","15 min","30 min"])))),
  sleep?q("F7","How rested do you usually feel?",scale("F7","exhausted","well rested")):null,
  q("F8","How do you recharge best during the Lernphase?",chipsMulti("F8",["sport","time outside","friends","music or hobby","cooking","sleeping in","other"])),
@@ -416,7 +431,7 @@ const KIND={theory:"Theory","worked-examples":"Worked examples",proof:"Proofs","
 const WD=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 function dIso(s){const p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
 function dayTitle(s){const d=dIso(s);return WD[(d.getDay()+6)%7]+", "+short(d);}
-function hrs(m){const h=Math.floor(m/60),mm=m%60;return h+" h"+(mm?" "+mm+" min":"");}
+function hrs(m){const h=Math.floor(m/60),mm=m%60;return h?h+" h"+(mm?" "+mm+" min":""):mm+" min";}
 function dayCard(d,isToday){const box=el("div",{class:"day"+(isToday?" today":"")});
  const sub=d.kind==="rest"?"rest day":d.kind==="exam"?"exam: "+d.exams.join(", "):d.kind==="off"?"no free time in your calendar":hrs(d.minutes)+(d.light==="before-exam"?" · light day before the exam":d.light==="after-exam"?" · lighter day after the exam":"");
  box.append(el("h3",null,(isToday?"Today · ":"")+dayTitle(d.date),el("small",null,sub)));
@@ -430,6 +445,65 @@ function dayCard(d,isToday){const box=el("div",{class:"day"+(isToday?" today":""
 function weekRows(plan){const W={};plan.days.forEach(d=>{const dt=dIso(d.date);const mon=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate()-((dt.getDay()+6)%7));const k=iso(mon);W[k]=W[k]||{ana:0,phy:0,inf:0,t:0};d.sessions.forEach(s=>{W[k][s.k]=(W[k][s.k]||0)+s.min;W[k].t+=s.min;});});
  const max=Math.max(...Object.values(W).map(w=>w.t),60);
  return el("div",{class:"weeks"},Object.keys(W).sort().map(k=>el("div",{class:"wk"},el("span",null,"Week of "+short(dIso(k))),el("div",{class:"bars",role:"img","aria-label":SUBJ.map(s=>s.n+" "+hrs(W[k][s.k]||0)).join(", ")},SUBJ.map(s=>el("div",{class:"c-"+s.k,style:"width:"+((W[k][s.k]||0)/max*100)+"%"}))),el("span",{class:"n"},Math.round(W[k].t/60)+" h"))));}
+/* ---------- week view: 7 days × morning and afternoon (Rachel, 27 Nov) ---------- */
+let wkStart=null,halfOpen=null,halfTimes=false,PLACES=[];
+function mondayOf(isoS){const d=dIso(isoS);return iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7)));}
+function addD(isoS,n){const d=dIso(isoS);return iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()+n));}
+function remake(){try{const p=PlannerEngine.makePlan(PROG,S.a,S.cal,{today:TODAY_ISO,progress:progressMap()});S.plan=p;}catch(e){console.warn(e);}persist();render();}
+function halfOf(p,s){return s.half||(PlannerEngine._.toMin(s.from)<PlannerEngine._.toMin(p.settings.half.pm[0])?"am":"pm");}
+function subjName(k){const s=SUBJ.find(x=>x.k===k);return s?s.n:k;}
+function weekView(p){if(!wkStart)wkStart=mondayOf(TODAY_ISO);
+ const H=p.settings.half;const byDate=Object.fromEntries(p.days.map(d=>[d.date,d]));S.cal.half=S.cal.half||{};
+ const first=mondayOf(p.days[0].date),last=mondayOf(p.days[p.days.length-1].date);
+ const nav=el("div",{class:"row"},el("button",{type:"button",class:"btn small ghost",disabled:wkStart<=first,onclick:()=>{wkStart=addD(wkStart,-7);halfOpen=null;render();}},"‹ Previous week"),
+  el("b",null,"Week of "+short(dIso(wkStart))),
+  el("button",{type:"button",class:"btn small ghost",disabled:wkStart>=last,onclick:()=>{wkStart=addD(wkStart,7);halfOpen=null;render();}},"Next week ›"));
+ const times=el("p",{class:"note",style:"margin:8px 0"},"Morning "+H.am[0]+"–"+H.am[1]+" · Afternoon "+H.pm[0]+"–"+H.pm[1]+" ",el("button",{type:"button",class:"btn small ghost",onclick:()=>{halfTimes=!halfTimes;render();}},halfTimes?"Close":"Change times"));
+ const out=[nav,times];
+ if(halfTimes){const t=(id,def,label)=>{const i=el("input",{type:"time",step:"900","aria-label":label});i.value=get(id,def);i.onchange=()=>{set(id,i.value);};return el("span",{class:"row"},label,i);};
+  out.push(el("div",{class:"q"},el("div",{class:"t"},"Your usual half-days"),el("p",{class:"hint"},"When your study morning and afternoon usually start and end. The plan only puts study blocks inside them."),
+   el("div",{class:"row"},t("F5_s",H.am[0],"Morning from"),t("F5_l",H.am[1],"to"),t("F5_pm",H.pm[0],"Afternoon from"),t("F5_e",H.pm[1],"to")),
+   el("div",{class:"row",style:"margin-top:10px"},el("button",{type:"button",class:"btn small",onclick:()=>{halfTimes=false;remake();}},"Save and update my plan"))));}
+ const grid=el("div",{class:"wkgrid"});
+ for(let i=0;i<7;i++){const date=addD(wkStart,i);const d=byDate[date];const col=el("div",{class:"wdcol"+(date===TODAY_ISO?" today":"")});
+  col.append(el("div",{class:"wdh"},WD[i].slice(0,3)+" "+short(dIso(date))));
+  ["am","pm"].forEach(h=>{const key=date+":"+h;const mine=S.cal.half[key]||{};
+   if(!d){col.append(el("div",{class:"half out"},"–"));return;}
+   if(d.kind!=="study"){col.append(el("div",{class:"half off"},d.kind==="rest"?"Rest day":d.kind==="exam"?"Exam":"Busy"));return;}
+   const ss=d.sessions.filter(s=>halfOf(p,s)===h);const mins=ss.reduce((t,s)=>t+s.min,0);
+   const subs=[...new Set((mine.subj&&mine.subj.length?mine.subj:ss.map(s=>s.k)))];
+   col.append(el("button",{type:"button",class:"half"+(halfOpen===key?" sel":""),"aria-pressed":String(halfOpen===key),"aria-label":WD[i]+" "+short(dIso(date))+(h==="am"?" morning":" afternoon"),onclick:()=>{halfOpen=halfOpen===key?null:key;render();}},
+    el("span",{class:"hl"},h==="am"?"Morning":"Afternoon"),
+    el("span",{class:"tags"},subs.map(k=>el("i",{class:"c-"+k},subjName(k).split(" ")[0]))),
+    el("span",{class:"hm"},mins?hrs(mins):"no blocks"),
+    mine.place?el("span",{class:"pl"},"📍 "+mine.place):null,
+    (mine.points||[]).length||mine.own?el("span",{class:"pl"},"✓ "+((mine.points||[]).length+(mine.own?mine.own.split("\n").filter(Boolean).length:0))+" points"):null));});
+  grid.append(col);}
+ out.push(grid);
+ if(halfOpen&&halfOpen.slice(0,10)>=wkStart&&halfOpen.slice(0,10)<=addD(wkStart,6))out.push(halfEditor(p,halfOpen,byDate[halfOpen.slice(0,10)]));
+ return out;}
+function halfEditor(p,key,d){const h=key.slice(11);const H=p.settings.half[h];const cur=Object.assign({subj:[],points:[],place:"",own:""},S.cal.half[key]||{});
+ const ss=d.sessions.filter(s=>halfOf(p,s)===h);
+ const box=el("div",{class:"q",id:"halfedit"});
+ box.append(el("div",{class:"t"},dayTitle(d.date)+", "+(h==="am"?"morning":"afternoon")+" ("+H[0]+"–"+H[1]+")"));
+ const open=SUBJ.filter(s=>{const e=p.exams.find(x=>x.k===s.k);return !e||d.date<e.date;});
+ const sc=el("div",{class:"chips"},open.map(s=>el("button",{type:"button",class:"chip","aria-pressed":String(cur.subj.includes(s.k)),onclick:e=>{cur.subj=cur.subj.includes(s.k)?cur.subj.filter(x=>x!==s.k):cur.subj.concat(s.k);e.currentTarget.setAttribute("aria-pressed",String(cur.subj.includes(s.k)));}},s.n)));
+ box.append(el("p",{class:"hint",style:"margin:6px 0"},"Subjects for this half-day. Leave empty to let the plan choose; your choice changes the plan's blocks here."),sc);
+ const pl=el("input",{type:"text",list:"places-list",placeholder:"e.g. ETH HG library, at home","aria-label":"Where you want to study"});pl.value=cur.place;
+ box.append(el("div",{class:"t",style:"margin-top:14px"},"Where do you want to study?"),pl,el("datalist",{id:"places-list"},PLACES.map(x=>el("option",{value:x.name},x.area))));
+ const pts=el("div");
+ if(ss.length){pts.append(el("p",{class:"hint",style:"margin:6px 0"},"Tick what you plan to cover:"));ss.forEach(s=>{const id=s.from+" "+s.title;const c=el("input",{type:"checkbox"});c.checked=cur.points.includes(id);c.onchange=()=>{cur.points=c.checked?cur.points.concat(id):cur.points.filter(x=>x!==id);};pts.append(el("label",{class:"check"},c,el("span",null,el("b",null,s.from+"–"+s.to+" "),s.title,el("span",{class:"note",style:"display:block"},KIND[s.kind]||s.kind))));});}
+ else pts.append(el("p",{class:"note"},"No blocks planned here yet."));
+ const own=el("textarea",{placeholder:"Your own points, one per line (e.g. finish Serie 11, ask about exercise 3)","aria-label":"Your own points"});own.value=cur.own;
+ box.append(el("div",{class:"t",style:"margin-top:14px"},"What you want to cover"),pts,own);
+ box.append(el("div",{class:"row",style:"margin-top:12px"},
+  el("button",{type:"button",class:"btn small",onclick:()=>{cur.place=pl.value.trim().slice(0,80);cur.own=own.value.slice(0,1000);const before=JSON.stringify((S.cal.half[key]||{}).subj||[]);
+   if(!cur.subj.length&&!cur.place&&!cur.points.length&&!cur.own.trim())delete S.cal.half[key];else S.cal.half[key]=cur;
+   halfOpen=null;if(before!==JSON.stringify(cur.subj))remake();else{persist();render();}}},"Save"),
+  el("button",{type:"button",class:"btn small ghost",onclick:()=>{const had=(S.cal.half[key]||{}).subj;delete S.cal.half[key];halfOpen=null;if(had&&had.length)remake();else{persist();render();}}},"Clear"),
+  el("button",{type:"button",class:"btn small ghost",onclick:()=>{halfOpen=null;render();}},"Cancel")));
+ return box;}
+
 let showAll=false;
 SC.plan=()=>{const p=S.plan;if(!p)return SC.intro();
  const today=p.days.find(d=>d.date>=TODAY_ISO&&d.kind!=="off")||p.days[0];
@@ -446,6 +520,9 @@ SC.plan=()=>{const p=S.plan;if(!p)return SC.intro();
   el("p",{class:"note"},"A bad day? Do just the first block: that still counts. A missed or light day is never a restart; the plan moves the rest for you."),
   el("h2",null,"Today"),
   today?dayCard(today,today.date===TODAY_ISO):el("p",null,"Nothing planned."),
+  el("h2",null,"Your week"),
+  el("p",{class:"note"},"Click a morning or afternoon to choose where you study, which subjects, and what you want to cover."),
+  ...weekView(p),
   el("h2",null,showAll?"All following days":"The next two weeks"),
   ...next.map(d=>dayCard(d,false)),
   el("div",{class:"row",style:"margin-top:10px"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{showAll=!showAll;render();}},showAll?"Show only two weeks":"Show all days to the exams")),
@@ -492,7 +569,7 @@ async function boot(){$("#app").append(el("p",{class:"lead",style:"margin-top:28
  SUBJ=PROG.subjects.map(s=>({k:s.k,n:s.name,min:s.exam_min,aids:s.aids}));
  PROG.subjects.forEach(s=>{CH[s.k]=s.chapters.map(c=>c.n);PREFILL[s.k]={};});
  const pr=progressMap();PROG.subjects.forEach(s=>s.chapters.forEach((c,i)=>{if(pr[c.href])PREFILL[s.k][i]=3;}));
- LAST=dIso(PROG.exam_session.to);LECT_END=dIso(PROG.lecture_period.end);
+ LAST=dIso(PROG.exam_session.to);fetch("planner/data/study-spaces-zh.json").then(r=>r.json()).then(j=>{PLACES=j.places||[];}).catch(()=>{});LECT_END=dIso(PROG.lecture_period.end);
  let g=null;try{g=JSON.parse(localStorage.getItem(LOCAL+"guest"));}catch(e){}restore(g);
  if(S.plan)S.cur="plan";
  render();
@@ -533,8 +610,8 @@ function calWeekly(){const wk=weeks();const tpl=calWeek==="template";const sel=e
  for(let r=0;r<ROWS;r++){grid.append(el("div",{class:"hr"},r%2===0?String(START_H+r/2).padStart(2,"0"):""));for(let d=0;d<7;d++)grid.append(el("div",{class:"cell"+(r%2===0?" h":""),"data-d":d,"data-r":r}));}
  const wrap=el("div",{class:"gridwrap"},grid);
  const help=tpl?"Your lectures and exercise classes from the HS26 timetable are already here; they stop after "+short(LECT_END)+". Move exercise classes to your own group's time. Drag over a day's empty time to block it; the box repeats every week. Drag a box to move it, pull its bottom edge to change its length, and click it to change the time or label, or to delete it.":"This is one week only. Click a weekly box to skip it in this week (an exception). Drag over empty time to add something for this week only. Lectures end on "+short(LECT_END)+".";
- const addBtn=el("button",{type:"button",class:"btn small",onclick:()=>{const b={id:boxId++,d:0,s:22,e:24,lab:"plain",t:null};if(!tpl)b.week=calWeek;S.cal.boxes.push(b);layoutBoxes(grid);const bx=grid.querySelector('.box[data-id="'+b.id+'"]');if(bx){boxPop(grid,b,bx);bx.scrollIntoView({block:"nearest"});}}},tpl?"+ Add weekly activity":"+ Add for this week");
- const out=el("div",null,el("h2",null,"Weekly recurring activities"),el("p",{class:"lead"},help),el("div",{class:"row"},sel,addBtn),lg,wrap,stepNav("import","events"));
+ const addBtn=el("button",{type:"button",class:"btn small",onclick:()=>{const b={id:boxId++,d:0,s:22,e:24,lab:"plain",t:null};if(!tpl)b.week=calWeek;S.cal.boxes.push(b);layoutBoxes(grid);const bx=grid.querySelector('.box[data-id="'+b.id+'"]');if(bx){boxPop(grid,b,bx);bx.scrollIntoView({block:"nearest"});}}},tpl?"+ Add activity":"+ Add for this week");
+ const out=el("div",null,el("h2",null,"Your activities: every week or one week only"),el("p",{class:"lead"},help),el("div",{class:"row"},sel,addBtn),lg,wrap,stepNav("import","events"));
  requestAnimationFrame(()=>layoutBoxes(grid));
  enableDrag(grid);
  return out;}
@@ -552,10 +629,10 @@ function layoutBoxes(grid){grid.querySelectorAll(".box:not(.ghost)").forEach(b=>
 function openBox(grid,b,bx){const wk=calWeek==="template"?null:calWeek;if(wk&&!b.week){const k=b.id+"@"+wk;if(S.cal.skips[k])delete S.cal.skips[k];else S.cal.skips[k]=true;layoutBoxes(grid);return;}boxPop(grid,b,bx);}
 function labelName(k){const f=LABELS.find(l=>l[0]===k);return f?f[1]:k==="lecture"?"Lecture":"Busy";}
 function hm(r){const m=START_H*60+r*30;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");}
-function boxPop(grid,b,bx){grid.querySelectorAll(".pop").forEach(p=>p.remove());const left=Math.max(0,Math.min(bx.offsetLeft,grid.scrollWidth-260));const below=bx.offsetTop+bx.offsetHeight+4;const top=below+260>grid.scrollHeight?Math.max(0,bx.offsetTop-264):below;
+function boxPop(grid,b,bx){grid.querySelectorAll(".pop").forEach(p=>p.remove());const left=Math.max(0,Math.min(bx.offsetLeft,grid.scrollWidth-260));const below=bx.offsetTop+bx.offsetHeight+4;const top=below+330>grid.scrollHeight?Math.max(0,bx.offsetTop-334):below;
  const p=el("div",{class:"pop",role:"dialog","aria-label":"Edit activity",style:"left:"+left+"px;top:"+top+"px"});
  p.addEventListener("pointerdown",e=>e.stopPropagation());
- const redraw=()=>{layoutBoxes(grid);const nb=grid.querySelector('.box[data-id="'+b.id+'"]');if(nb){p.style.top=(nb.offsetTop+nb.offsetHeight+4+260>grid.scrollHeight?Math.max(0,nb.offsetTop-264):nb.offsetTop+nb.offsetHeight+4)+"px";p.style.left=Math.max(0,Math.min(nb.offsetLeft,grid.scrollWidth-260))+"px";}title.textContent=(b.week?"Week of "+short(new Date(b.week))+", ":"Every ")+DAYS[b.d]+", "+hm(b.s)+"–"+hm(b.e);};
+ const redraw=()=>{layoutBoxes(grid);const nb=grid.querySelector('.box[data-id="'+b.id+'"]');if(nb){p.style.top=(nb.offsetTop+nb.offsetHeight+4+330>grid.scrollHeight?Math.max(0,nb.offsetTop-334):nb.offsetTop+nb.offsetHeight+4)+"px";p.style.left=Math.max(0,Math.min(nb.offsetLeft,grid.scrollWidth-260))+"px";}title.textContent=(b.week?"Week of "+short(new Date(b.week))+", ":"Every ")+DAYS[b.d]+", "+hm(b.s)+"–"+hm(b.e);};
  const title=el("strong");
  const daySel=el("select",{"aria-label":"Day",onchange:e=>{b.d=+e.target.value;redraw();}},DAYS.map((d,i)=>el("option",{value:i},d)));daySel.value=b.d;
  const opts=(from,to)=>{const o=[];for(let r=from;r<=to;r++)o.push(el("option",{value:r},hm(r)));return o;};
@@ -564,7 +641,14 @@ function boxPop(grid,b,bx){grid.querySelectorAll(".pop").forEach(p=>p.remove());
  eSel.onchange=()=>{let v=+eSel.value;if(v<=b.s){v=b.s+1;eSel.value=v;}b.e=v;redraw();};
  const labs=LABELS;
  const chips=el("div",{class:"chips"},labs.map(([k,l])=>el("button",{type:"button",class:"chip","aria-pressed":String(b.lab===k),onclick:e=>{b.lab=k;if(k!=="lecture")b.t=null;[...chips.children].forEach(c=>c.setAttribute("aria-pressed",String(c===e.currentTarget)));redraw();}},l)));
- p.append(title,el("div",{class:"tm"},el("span",null,"Day"),daySel,el("span",null,"From"),sSel,el("span",null,"To"),eSel),el("span",{class:"note"},"Label (optional)"),chips,
+ const wkList=weeks().filter(w=>new Date(w.getFullYear(),w.getMonth(),w.getDate()+6)>=new Date(new Date().setHours(0,0,0,0)));
+ const reopen=()=>{drawCal(true);requestAnimationFrame(()=>requestAnimationFrame(()=>{const g=document.getElementById("wgrid");const nb=g&&g.querySelector('.box[data-id="'+b.id+'"]');if(nb)boxPop(g,b,nb);}));};
+ const wkSel=el("select",{"aria-label":"Which week",onchange:e=>{b.week=e.target.value;calWeek=b.week;reopen();}},wkList.map(w=>el("option",{value:iso(w)},"Week of "+short(w))));
+ if(b.week)wkSel.value=b.week;
+ const rep=el("div",{class:"chips"},
+  el("button",{type:"button",class:"chip","aria-pressed":String(!b.week),onclick:()=>{if(!b.week)return;delete b.week;calWeek="template";reopen();}},"Every week"),
+  el("button",{type:"button",class:"chip","aria-pressed":String(!!b.week),onclick:()=>{if(b.week)return;b.week=calWeek!=="template"?calWeek:iso(wkList[0]||TODAY);calWeek=b.week;reopen();}},"Only one week"));
+ p.append(title,el("div",{class:"tm"},el("span",null,"Day"),daySel,el("span",null,"From"),sSel,el("span",null,"To"),eSel),el("span",{class:"note"},"Repeats"),rep,b.week?wkSel:null,el("span",{class:"note"},"Label (optional)"),chips,
   b.lab==="lecture"?el("span",{class:"note"},(b.fixed&&/exercise/.test(b.t||"")?"Pre-filled with the usual group time: move it to your own group. ":"")+"Not going? Delete it and the time becomes study time. Lectures and exercise classes stop after "+short(LECT_END)+"."):null,
   el("div",{class:"row"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{S.cal.boxes=S.cal.boxes.filter(x=>x!==b);p.remove();layoutBoxes(grid);}},"Delete"),el("button",{type:"button",class:"btn small",onclick:()=>p.remove()},"Done")));
  grid.append(p);redraw();}
