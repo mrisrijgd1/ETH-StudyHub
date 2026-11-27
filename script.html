@@ -231,6 +231,7 @@ a.subject:hover strong { text-decoration: underline; }
 <p class="legend">Page numbers are the printed ones, as in the lessons. Scroll through the whole script; links inside it (contents, references to theorems) work, and your browser's back button undoes a jump.</p>
 <script src="assets/pdf.min.js"></script>
 <script src="assets/pdf_viewer.js"></script>
+<script src="assets/officialdoc.js?v=doc1127"></script>
 <script>
 (function () {
   var OFFSET = 15;            // PDF page = printed page + 15
@@ -297,13 +298,11 @@ a.subject:hover strong { text-decoration: underline; }
     return ul;
   }
 
-  lib.getDocument({ url: 'script.pdf' }).promise.then(function (doc) {
+  SHDoc.load(lib, 'script.pdf', container).then(function (doc) {
     viewer.setDocument(doc); links.setDocument(doc, null);
     of.textContent = 'of ' + (doc.numPages - OFFSET);
     doc.getOutline().then(function (o) { if (o && o.length) outline.appendChild(build(o, 0)); else tocBtn.hidden = true; });
-  }, function (e) {
-    container.textContent = 'The official script is offline for now: it comes back behind ETH sign-in. StudyHub gives printed page numbers, so open your own copy at that page, or ask your AI with the StudyHub connector (it can read it for you). (' + e.message + ')';
-  });
+  }, function () { /* SHDoc already showed what to do */ });
 })();
 </script>
 
