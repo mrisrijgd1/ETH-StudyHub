@@ -669,84 +669,55 @@ $("fh-reset").addEventListener("click",()=>{const t=S.timer;t.running=false;t.mo
 setInterval(()=>{if(S.timer.running&&Date.now()>=S.timer.endAt)finish();timerUI();},1000);
 timerUI();
 
-/* ---------------- nature sounds, generated live ---------------- */
+/* ---------------- nature sounds: real field recordings ----------------
+   Seamless loops in planner/sounds/ (sources and licences: planner/sounds/LICENSES.md).
+   Served from our own server; each file is loaded only when it is first needed. */
+const SND_BASE=(()=>{try{return new URL("sounds/",document.currentScript.src).href;}catch(e){return "planner/sounds/";}})();
+const TRACKS={"birds-meadow":"birds","birds-forest":"birds","stream":"water","lake":"water","rain-light":"rain","rain-heavy":"rain","wind-breeze":"wind","wind-gusty":"wind","wind-ridge":"wind"};
+const SND_V="1";
+/* AAC (.m4a) where the browser plays it (Safari, Chrome, Edge), otherwise Opus (.ogg); both loop without gaps */
+const SND_EXT=(()=>{try{return new Audio().canPlayType('audio/mp4; codecs="mp4a.40.2"')?".m4a":".ogg";}catch(e){return ".m4a";}})();
 let A=null;
 function audioWake(){
   if(!A){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
     const ctx=new AC(),master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
-    const len=ctx.sampleRate*8,wb=ctx.createBuffer(2,len,ctx.sampleRate),bb=ctx.createBuffer(2,len,ctx.sampleRate),pb=ctx.createBuffer(2,len,ctx.sampleRate);
-    for(let ch=0;ch<2;ch++){const w=wb.getChannelData(ch),b=bb.getChannelData(ch),pk=pb.getChannelData(ch);let last=0,b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-      for(let i=0;i<len;i++){const r=Math.random()*2-1;w[i]=r;last=(last+.02*r)/1.02;b[i]=last*3.5;
-        /* pink noise (Paul Kellet's filter) */
-        b0=.99886*b0+r*.0555179;b1=.99332*b1+r*.0750759;b2=.969*b2+r*.153852;b3=.8665*b3+r*.3104856;b4=.55*b4+r*.5329522;b5=-.7616*b5-r*.016898;
-        pk[i]=(b0+b1+b2+b3+b4+b5+b6+r*.5362)*.11;b6=r*.115926;}
-      /* fade the loop seam so no click repeats every 8 s */
-      const fd=Math.floor(ctx.sampleRate*.05);for(const arr of [w,b,pk])for(let i=0;i<fd;i++){const k=i/fd;arr[i]=arr[i]*k+arr[len-fd+i]*(1-k);}}
-    const src=(buf)=>{const s=ctx.createBufferSource();s.buffer=buf;s.loop=true;s.loopStart=Math.random();s.start(0,Math.random()*3);return s;};
     const gain=(v)=>{const g=ctx.createGain();g.gain.value=v;return g;};
-    const filt=(type,f,q)=>{const b=ctx.createBiquadFilter();b.type=type;b.frequency.value=f;b.Q.value=q||.7;return b;};
     const ch={birds:gain(0),wind:gain(0),water:gain(0),rain:gain(0)};for(const k in ch)ch[k].connect(master);
-    /* wind: brown noise through a moving low-pass */
-    const wl=filt("lowpass",420,.6);src(bb).connect(wl);wl.connect(ch.wind);
-    /* brook: a steady, soft rush (pink noise, gently filtered) plus a quiet high trickle.
-       Both drift slowly and at random, never in a rhythm. */
-    const sHp=filt("highpass",220,.5),sLp=filt("lowpass",2600,.4),streamMix=gain(0),streamDrift=gain(.85);
-    src(pb).connect(sHp);sHp.connect(sLp);sLp.connect(streamDrift);streamDrift.connect(streamMix);streamMix.connect(ch.water);
-    const tBp=filt("bandpass",3600,.7),trickle=gain(.12);src(pb).connect(tBp);tBp.connect(trickle);trickle.connect(streamDrift);
-    /* lake: slow, irregular swells of low noise, like small waves lapping on the shore */
-    const lLp=filt("lowpass",650,.4),lakeMix=gain(0),swell=gain(.3);
-    src(pb).connect(lLp);lLp.connect(swell);swell.connect(lakeMix);lakeMix.connect(ch.water);
-    const fBp=filt("bandpass",1500,.35),foam=gain(0);src(pb).connect(fBp);fBp.connect(foam);foam.connect(lakeMix);
-    /* rain: bright noise */
-    const rh=filt("highpass",1400),rl=filt("lowpass",8000),rg=gain(.55);src(wb).connect(rh);rh.connect(rl);rl.connect(rg);rg.connect(ch.rain);
+    const tr={};for(const n in TRACKS){const g=gain(0);g.connect(ch[TRACKS[n]]);tr[n]={g,state:"idle",level:0};}
     const chimeG=gain(.5);chimeG.connect(ctx.destination);
-    A={ctx,master,ch,wl,chimeG,on:false,nextBird:0,nextGust:0,streamMix,streamDrift,sLp,trickle,lakeMix,swell,foam,nextDrift:0,nextWave:0};
+    A={ctx,master,ch,tr,chimeG,on:false};
   }
   if(A.ctx.state==="suspended")A.ctx.resume();
   return A;
 }
-function env(){/* what the landscape sounds like right here */
-  const q=P(S.pos),day=sky.day,rain=W.rain;
-  return {birds:clamp(day*(1-rain*.7)*(.35+q.trees*.55+q.flowers*.2-q.rock*.25),0,1),
-    wind:clamp(.3+q.elev*.6+W.cloud*.15+rain*.2,0,1),
-    water:1,stream:clamp(Math.max(q.stream,q.pond*.2,.06),0,1),lake:clamp(Math.max(q.water,q.pond*.45),0,1),
-    rain:clamp(rain*1.2,0,1),night:sky.night};
+function loadTrack(n){
+  const t=A.tr[n];if(t.state!=="idle")return;t.state="loading";
+  fetch(SND_BASE+n+SND_EXT+"?v="+SND_V).then(r=>{if(!r.ok)throw new Error(r.status);return r.arrayBuffer();})
+   .then(b=>new Promise((ok,no)=>A.ctx.decodeAudioData(b,ok,no)))
+   .then(buf=>{const s=A.ctx.createBufferSource();s.buffer=buf;s.loop=true;s.connect(t.g);s.start(0,Math.random()*buf.duration);t.src=s;t.state="playing";})
+   .catch(()=>{t.state="failed";});
 }
+function env(){/* how much of each recording fits this place, weather and time of day */
+  const q=P(S.pos),day=sky.day,rain=W.rain,e=elevNow;
+  const birds=clamp(sm((day-.15)/.5)*(1-rain*.85)*(.55+q.trees*.3+q.flowers*.15-q.rock*.45),0,1);
+  const forest=clamp(q.trees*1.25-.25,0,1);
+  const ridge=clamp((e-.55)*2.2,0,1),gusty=clamp(W.cloud*.55+rain*.55+e*.25-.25,0,1);
+  return {"birds-meadow":birds*(1-forest),"birds-forest":birds*forest,
+    "stream":clamp(Math.max(q.stream,q.pond*.3),0,1),"lake":clamp(Math.max(q.water,q.pond*.55),0,1),
+    "rain-light":clamp(rain<.5?rain*2.2:1-(rain-.5)*1.6,0,1),"rain-heavy":clamp((rain-.35)*1.7,0,1),
+    "wind-breeze":clamp(1-Math.max(gusty,ridge)*.7,0,1)*(.45+q.trees*.4),"wind-gusty":gusty*(1-ridge*.5),"wind-ridge":ridge};
+}
+const FIXED={"birds-meadow":.6,"birds-forest":.5,"stream":.7,"lake":.35,"wind-breeze":.7,"wind-gusty":.15,"wind-ridge":0};
 function soundTick(){
   if(!A||!A.on)return;
-  const c=A.ctx,n=c.currentTime,e=env(),f=S.snd.follow;
-  A.master.gain.setTargetAtTime(S.snd.vol*.9,n,.4);
-  for(const k of ["birds","wind","water","rain"]){const v=S.snd[k]*(f?e[k]:(k==="rain"?e.rain:1))*(k==="water"?1:k==="wind"?.55:k==="rain"?.7:1);A.ch[k].gain.setTargetAtTime(v,n,1.2);}
-  if(n>A.nextGust){A.wl.frequency.setTargetAtTime(250+Math.random()*700*(.5+e.wind),n,2.5);A.nextGust=n+2+Math.random()*4;}
-  if(n>A.nextBird){const busy=S.snd.birds*(f?e.birds:1);
-    if(e.night>.65){if(Math.random()<.35)owl(n+.1);A.nextBird=n+6+Math.random()*10;}
-    else{if(busy>.03)birdCall(n+.05,Math.floor(Math.random()*4));A.nextBird=n+(1.2+Math.random()*4.5)/(.4+busy);}}
-  /* water: brook and lake share the "Stream and lake" slider */
-  A.streamMix.gain.setTargetAtTime(f?e.stream*.9:.6,n,2);A.lakeMix.gain.setTargetAtTime(f?e.lake*1.1:.5,n,2);
-  if(n>A.nextDrift){A.streamDrift.gain.setTargetAtTime(.72+Math.random()*.28,n,2.5);A.sLp.frequency.setTargetAtTime(2100+Math.random()*1100,n,3);
-    A.trickle.gain.setTargetAtTime(.06+Math.random()*.12,n,2);A.nextDrift=n+3+Math.random()*5;}
-  if(n>A.nextWave){const up=1.8+Math.random()*1.6,down=2.6+Math.random()*2.4,peak=.6+Math.random()*.4,t0=Math.max(n,A.nextWave)+.05;
-    const sg=A.swell.gain,fg=A.foam.gain;sg.cancelScheduledValues(t0);sg.setValueAtTime(sg.value,t0);sg.linearRampToValueAtTime(peak,t0+up);sg.linearRampToValueAtTime(.22+Math.random()*.1,t0+up+down);
-    fg.cancelScheduledValues(t0);fg.setValueAtTime(fg.value,t0);fg.linearRampToValueAtTime(0,t0+up*.6);fg.linearRampToValueAtTime(.18*peak,t0+up+.3);fg.linearRampToValueAtTime(0,t0+up+down*.8);
-    A.nextWave=t0+up+down+.5+Math.random()*3.5;}
+  const n=A.ctx.currentTime,e=env(),f=S.snd.follow;
+  A.master.gain.setTargetAtTime(S.snd.vol,n,.4);
+  for(const k of ["birds","wind","water","rain"])A.ch[k].gain.setTargetAtTime(S.snd[k],n,.6);
+  for(const name in A.tr){const t=A.tr[name];
+    const lv=(f||name.startsWith("rain"))?e[name]:FIXED[name];
+    if(lv>.02&&S.snd[TRACKS[name]]>0)loadTrack(name);
+    t.g.gain.setTargetAtTime(lv,n,2.5);}
 }
-function voice(t0,dest,pan){const c=A.ctx,o=c.createOscillator(),g=c.createGain();g.gain.value=0;o.connect(g);
-  if(c.createStereoPanner){const p=c.createStereoPanner();p.pan.value=pan;g.connect(p);p.connect(dest);}else g.connect(dest);return [o,g];}
-function birdCall(t0,type){
-  const pan=Math.random()*1.6-.8,base=2400+Math.random()*1400;
-  if(type===0){const n=3+Math.floor(Math.random()*4);for(let i=0;i<n;i++){const [o,g]=voice(t0,A.ch.birds,pan),s=t0+i*.17,d=.09+Math.random()*.04,up=Math.random()<.5;
-    o.type="sine";o.frequency.setValueAtTime(base*(up?.85:1.15),s);o.frequency.exponentialRampToValueAtTime(base*(up?1.2:.8),s+d);
-    g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.09,s+.015);g.gain.exponentialRampToValueAtTime(.0005,s+d);o.start(s);o.stop(s+d+.02);}}
-  else if(type===1){const [o,g]=voice(t0,A.ch.birds,pan),d=.55+Math.random()*.4;o.type="sine";o.frequency.setValueAtTime(base*1.4,t0);o.frequency.linearRampToValueAtTime(base*1.25,t0+d);
-    for(let k=0;k<d/.04;k++){const s=t0+k*.04;g.gain.setValueAtTime(.05,s);g.gain.setValueAtTime(.004,s+.022);}g.gain.setValueAtTime(0,t0+d);o.start(t0);o.stop(t0+d+.05);}
-  else if(type===2){const [o,g]=voice(t0,A.ch.birds,pan),m=A.ctx.createOscillator(),mg=A.ctx.createGain(),d=.45+Math.random()*.3;m.frequency.value=16+Math.random()*10;mg.gain.value=380;m.connect(mg);mg.connect(o.frequency);
-    o.type="sine";o.frequency.setValueAtTime(base,t0);o.frequency.linearRampToValueAtTime(base*1.15,t0+d);g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.06,t0+.05);g.gain.linearRampToValueAtTime(.05,t0+d-.08);g.gain.linearRampToValueAtTime(0,t0+d);
-    o.start(t0);m.start(t0);o.stop(t0+d+.05);m.stop(t0+d+.05);}
-  else{/* a soft two-note call from further away */const f0=620+Math.random()*120;for(let i=0;i<2;i++){const [o,g]=voice(t0,A.ch.birds,pan*.5),s=t0+i*.36;o.type="triangle";o.frequency.setValueAtTime(i?f0*.8:f0,s);
-    g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.035,s+.04);g.gain.linearRampToValueAtTime(0,s+.26);o.start(s);o.stop(s+.3);}}
-}
-function owl(t0){for(let i=0;i<2;i++){const [o,g]=voice(t0,A.ch.birds,-.3),s=t0+i*.9,d=i?.6:.35;o.type="sine";o.frequency.setValueAtTime(400,s);o.frequency.linearRampToValueAtTime(370,s+d);
-  g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.07,s+.06);g.gain.linearRampToValueAtTime(0,s+d);o.start(s);o.stop(s+d+.05);}}
 function chime(n){
   if(!S.timer.chime)return;const a=audioWake();if(!a)return;const c=a.ctx,t0=c.currentTime+.05;
   for(let r=0;r<n;r++)for(const [f,v] of [[659,.22],[988,.12],[1318,.06]]){const o=c.createOscillator(),g=c.createGain(),s=t0+r*.7;o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(v,s+.01);g.gain.exponentialRampToValueAtTime(.0004,s+2.6);o.connect(g);g.connect(a.chimeG);o.start(s);o.stop(s+2.7);}
@@ -754,7 +725,7 @@ function chime(n){
 setInterval(soundTick,400);
 const sndBtn=$("fh-snd");
 function soundUI(){const on=!!(A&&A.on);sndBtn.setAttribute("aria-pressed",String(on));sndBtn.innerHTML=(on?IC.snd:IC.mute)+"<span>"+(on?"Sounds on":"Nature sounds")+"</span>";}
-sndBtn.addEventListener("click",()=>{const a=audioWake();if(!a)return;a.on=!a.on;if(!a.on){a.master.gain.setTargetAtTime(0,a.ctx.currentTime,.3);}else{a.nextBird=0;soundTick();}soundUI();});
+sndBtn.addEventListener("click",()=>{const a=audioWake();if(!a)return;a.on=!a.on;if(!a.on){a.master.gain.setTargetAtTime(0,a.ctx.currentTime,.3);}else{soundTick();}soundUI();});
 soundUI();
 
 /* ---------------- pop-up panels ---------------- */
@@ -772,8 +743,8 @@ function renderMixer(){
   pop.setAttribute("aria-label","Sound mixer");
   const row=(k,l)=>'<label class="fh-sl"><span>'+l+'</span><input type="range" min="0" max="1" step="0.05" data-k="'+k+'" value="'+S.snd[k]+'"></label>';
   pop.innerHTML=head("Nature sounds")+row("vol","Volume")+row("birds","Birds")+row("wind","Wind")+row("water","Stream and lake")+row("rain","Rain")+
-   '<label class="fh-ck"><input type="checkbox" data-k="follow"'+(S.snd.follow?" checked":"")+'> Follow the landscape (birds in the forest, water by the brook, wind on the ridge)</label>'+
-   '<p class="fh-note">All sounds are generated live in your browser. Nothing is downloaded or recorded.</p>';
+   '<label class="fh-ck"><input type="checkbox" data-k="follow"'+(S.snd.follow?" checked":"")+'> Follow the landscape and weather (forest or meadow birds, the brook, the lake, rain, a breeze or stronger wind up on the ridge)</label>'+
+   '<p class="fh-note">Real field recordings, loaded from StudyHub only when you switch sounds on: birds in Záhorie (Slovakia) and the Sidobre woods (France), a mountain creek in the Valle del Carro (Italian Alps), a lake shore in Lithuania, rain and wind from public sound libraries. All public domain or CC0. <a href="planner/sounds/LICENSES.md" target="_blank" rel="noopener">Sources and licences</a></p>';
 }
 function renderTimerSet(){
   pop.setAttribute("aria-label","Timer settings");
