@@ -66,7 +66,8 @@ export const RECENT_DIVES = 5;
 
 export const REPORT_REPO = 'mrisrijgd1/ETH-StudyHub';
 
-export const MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js';
+// Served from our own server (same file as the lessons use), so nothing loads from a US CDN.
+export const MATHJAX_URL = '../assets/mathjax/tex-svg-full.js';
 
 // Sea renderer
 export const FPS = 30;
