@@ -283,6 +283,7 @@
      once with Google; our server moves all data to the edu-ID login (newer wins), then the Google
      login is deleted and the edu-ID login comes back. */
   var importKey = 'sh-import-eduid', importMsg = '';
+  var loginError = (function () { var m = /error_description=([^&]+)/.exec(location.hash + '&' + location.search); try { return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; } catch (e) { return m ? m[1] : ''; } })();
   function isEduId(u) { return !!(u && u.app_metadata && u.app_metadata.provider === ETH_PROVIDER); }
   function startImport() {
     return sb.auth.getSession().then(function (r) {
@@ -431,7 +432,7 @@
       box.innerHTML = '<p>' + L('You are using StudyHub as a guest. Your progress is saved in this browser.', 'Du nutzt StudyHub als Gast. Dein Fortschritt wird in diesem Browser gespeichert.') + '</p>' +
         '<p><button type="button" class="start-btn sh-google">' + loginLabel() + '</button></p>' +
         (ethLogin ? '<p><button type="button" class="sh-plain sh-google-old">' + L('Made your account with Google before? Sign in with Google', 'Konto früher mit Google erstellt? Mit Google anmelden') + '</button></p>' : '') +
-        '<p>' + L('Signing in stores account and progress information so StudyHub can sync it across your devices. See the privacy information below.', 'Bei der Anmeldung werden Konto- und Fortschrittsdaten gespeichert, damit StudyHub sie zwischen deinen Geräten synchronisieren kann. Details stehen unten im Datenschutzabschnitt.') + '</p><p class="sh-msg" role="status"></p>';
+        '<p>' + L('Signing in stores account and progress information so StudyHub can sync it across your devices. See the privacy information below.', 'Bei der Anmeldung werden Konto- und Fortschrittsdaten gespeichert, damit StudyHub sie zwischen deinen Geräten synchronisieren kann. Details stehen unten im Datenschutzabschnitt.') + '</p><p class="sh-msg" role="status">' + (loginError ? esc(L('Sign-in did not finish: ', 'Anmeldung nicht abgeschlossen: ') + loginError) : '') + '</p>';
       var loginFail = function () { box.querySelector('.sh-msg').textContent = L('Could not log in. Please try again.', 'Anmeldung fehlgeschlagen. Bitte versuche es erneut.'); };
       box.querySelector('.sh-google').onclick = function () { signIn().catch(loginFail); };
       var oldBtn = box.querySelector('.sh-google-old');

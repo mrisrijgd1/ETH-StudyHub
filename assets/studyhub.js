@@ -385,8 +385,8 @@
   choices.append(switchLanguage);
   panel.append(choices);
   const guestOptions = document.createElement('div'); guestOptions.className = 'study-guest-options';
-  const guestSignIn = link(L('Mit ETH-Konto anmelden', 'Sign in with your ETH account'), prefix + 'account.html', 'study-login');
-  const guestDesignHint = document.createElement('p'); guestDesignHint.textContent = L('Melde dich mit deinem ETH-Konto an, um das Design zu ändern.', 'Sign in with your ETH account to change the design.');
+  const guestSignIn = link(L('Mit SWITCH edu-ID anmelden', 'Sign in with SWITCH edu-ID'), prefix + 'account.html', 'study-login');
+  const guestDesignHint = document.createElement('p'); guestDesignHint.textContent = L('Melde dich mit SWITCH edu-ID an, um das Design zu ändern.', 'Sign in with SWITCH edu-ID to change the design.');
   guestOptions.append(guestSignIn, guestDesignHint); panel.append(guestOptions);
   // The Design chooser is always open (no dropdown inside the panel): two theme tiles, then one tile per palette.
   const chooser = document.createElement('section'); chooser.className = 'design-chooser'; chooser.setAttribute('aria-label', 'Design');
@@ -676,6 +676,11 @@
     if (!window.SH || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
     event.preventDefault();
     if (!login.hasAttribute('aria-disabled')) startLogin(login);
+  });
+  guestSignIn.addEventListener('click', event => {
+    if (!window.SH || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+    event.preventDefault();
+    if (!guestSignIn.hasAttribute('aria-disabled')) startLogin(guestSignIn);
   });
   gateButton.addEventListener('click', () => {
     if (window.SH && !gateButton.hasAttribute('aria-disabled')) startLogin(gateButton, gateStatus);
