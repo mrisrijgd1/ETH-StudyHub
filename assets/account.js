@@ -283,7 +283,7 @@
      once with Google; our server moves all data to the edu-ID login (newer wins), then the Google
      login is deleted and the edu-ID login comes back. */
   var importKey = 'sh-import-eduid', importMsg = '';
-  var loginError = (function () { var m = /error_description=([^&]+)/.exec(location.hash + '&' + location.search); try { return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; } catch (e) { return m ? m[1] : ''; } })();
+  var loginError = (function () { if (/access_token=/.test(location.hash)) return ''; var m = /error_description=([^&]+)/.exec(location.hash + '&' + location.search); try { return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; } catch (e) { return m ? m[1] : ''; } })();
   function isEduId(u) { return !!(u && u.app_metadata && u.app_metadata.provider === ETH_PROVIDER); }
   function startImport() {
     return sb.auth.getSession().then(function (r) {
@@ -310,13 +310,19 @@
       importMsg = L('Could not bring your data over: ', 'Daten konnten nicht übernommen werden: ') + (e && e.message || '') + ' ' + L('Nothing was deleted.', 'Es wurde nichts gelöscht.');
     }).then(back, back);
   }
+  // Where to come back after login: this page, without any old login error or token in the address.
+  function cleanReturnUrl() {
+    var u = new URL(location.href.split('#')[0]);
+    ['error', 'error_code', 'error_description', 'code', 'sb'].forEach(function (k) { u.searchParams.delete(k); });
+    return u.toString();
+  }
   function signIn(provider) {
     if (typeof provider !== 'string') provider = ethLogin ? ETH_PROVIDER : 'google';
     track('login');
     var hash = /access_token=|error_description=/.test(location.hash) ? '' : location.hash;
     try { sessionStorage.setItem(returnKey, JSON.stringify({ path: location.pathname, hash: hash })); } catch (e) {}
     return sdk().then(function () {
-      return sb.auth.signInWithOAuth({ provider: provider, options: { redirectTo: location.href.split('#')[0] } });
+      return sb.auth.signInWithOAuth({ provider: provider, options: { redirectTo: cleanReturnUrl() } });
     }).then(function (result) { if (result.error) throw result.error; });
   }
   function restoreLoginDestination() {
