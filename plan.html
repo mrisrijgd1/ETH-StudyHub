@@ -59,6 +59,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 #mapbtn{margin-left:auto}
 /* the site styles widen #app to 1160px: keep the planner bar's buttons on the same right edge (Rachel, 27 Nov) */
 html body.sh-unified .rail .in{max-width:1192px}
+/* the site's box padding made short boxes in the week grid taller than their time */
+html body.sh-unified .wgrid .box{padding:2px 5px;border-radius:5px;min-height:0}
 .ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:6px}
 .pl .ico{width:13px;height:13px;margin-right:3px;vertical-align:-2px}
 .mods button{font:600 12px var(--f-mono);width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
@@ -174,6 +176,19 @@ table.res td.n{text-align:right;font-family:var(--f-mono)}
 .mday small{display:block;font-family:var(--f-body);font-size:10px;color:var(--muted);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mday.open{box-shadow:0 0 0 2px var(--accent)}
 @media (max-width:520px){.mday{height:50px;padding:2px 3px}.mday small{font-size:9px}}
+.vtabs{display:flex;gap:4px;flex-wrap:wrap}
+.calnav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
+.calnav b{min-width:0;font-size:15px}
+.wgrid .hd.dt{cursor:pointer;line-height:1.2}.wgrid .hd.dt small{display:block;font:400 10px var(--f-body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+.wgrid .hd.dt.today{color:var(--accent)}.wgrid .hd.dt.rest small{color:var(--rest-ink,var(--muted))}
+.box.evbox{border:1px solid var(--ink);background:var(--social)!important;cursor:pointer;touch-action:auto}
+.box.studybox{background:var(--soft)!important;border:1px dashed var(--accent);color:var(--accent);cursor:default;touch-action:auto}
+.dayv{display:grid;gap:12px;max-width:640px}
+.dayv .blk{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:12px 14px;display:grid;gap:8px}
+.dayv .blk h4{margin:0;font-size:14px}
+.dayv .it{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px}
+.dayv .it time{font:600 12px var(--f-mono);color:var(--muted);min-width:92px}
+.dayv .it.off{opacity:.55;text-decoration:line-through}
 .bubble{position:absolute;z-index:45;width:min(340px,100%);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px #0003;padding:12px;display:grid;gap:8px;font-size:14px}
 .bubble::after{content:"";position:absolute;left:var(--ax,40px);width:14px;height:14px;background:var(--surface);border:1px solid var(--line);transform:rotate(45deg)}
 .bubble.above::after{bottom:-8px;border-top:0;border-left:0}
@@ -645,7 +660,7 @@ async function boot(){$("#app").append(el("p",{class:"lead",style:"margin-top:28
  document.addEventListener("sh-auth",onAuth);onAuth();}
 
 /* ---------- calendar sheet ---------- */
-let calStep="import",calWeek="template";
+let calStep="import",calWeek="template",calMode=null,calDayK=null;
 /* ---------- study-places map (Rachel, 27 Nov): its own tab, and a picker for every place choice ---------- */
 const ICONS={map:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 3.5 6.5v13l5.5-2 6 2 5.5-2v-13l-5.5 2-6-2Z"/><path d="M9 4.5v13M15 6.5v13"/></svg>',pin:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>',cal:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>'};
 function icon(n){const t=document.createElement("template");t.innerHTML=ICONS[n];return t.content.firstChild;}
@@ -663,12 +678,23 @@ function openMap(pick,currentName){const w=$("#pmap");mapPick=pick||null;mapBack
 function closeMap(){const w=$("#pmap");w.hidden=true;w.textContent="";document.body.style.overflow="";mapPick=null;if(location.hash==="#places")history.replaceState(null,"",location.pathname+location.search);if(mapBack&&mapBack.focus)mapBack.focus();}
 addEventListener("message",e=>{if(e.origin!==location.origin||!e.data||e.data.type!=="sh-place-pick")return;const f=mapPick;closeMap();if(f)f(String(e.data.name||"").slice(0,80));});
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#pmap").hidden)closeMap();});
-function openCal(){S.cal.opened++;$("#sheet").hidden=false;document.body.style.overflow="hidden";drawCal();}
-function closeCal(){$("#sheet").hidden=true;document.body.style.overflow="";persist();render();}
+/* After the set-up, the Calendar button opens the calendar itself, with day, week and month views (Rachel, 27 Nov) */
+function openCal(){S.cal.opened++;if(S.cal.done){if(!calMode||calMode==="setup")calMode="week";if(calWeek==="template")calWeek=mondayOf(TODAY_ISO);}else calMode="setup";
+ $("#sheet").hidden=false;document.body.style.overflow="hidden";drawCal();}
+function setView(m,k){calMode=m;evDay=null;if(k)calDayK=k;if(m==="week"&&calWeek==="template")calWeek=mondayOf(calDayK||TODAY_ISO);if(m==="week"&&k)calWeek=mondayOf(k);drawCal();}
+function closeCal(){evDay=null;$("#sheet").hidden=true;document.body.style.overflow="";persist();render();}
 function weeks(){const out=[];let d=new Date(TODAY);while(d<=LAST){out.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+7);}return out;}
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function short(d){return d.getDate()+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()];}
 function drawCal(keep){const sh=$("#sheet");const old=sh.querySelector(".body");const y=keep&&old?old.scrollTop:0;sh.textContent="";
+ if(calMode&&calMode!=="setup"){const tabs=[["day","Day"],["week","Week"],["month","Month"]];
+  sh.append(el("div",{class:"top"},el("h3",null,"Your calendar"),el("div",{class:"vtabs",role:"group","aria-label":"View"},tabs.map(([k,l])=>el("button",{type:"button",class:"chip","aria-pressed":String(calMode===k),onclick:()=>setView(k)},l))),
+   el("button",{type:"button",class:"btn small ghost",onclick:()=>{calMode="setup";calStep="import";calWeek="template";evDay=null;drawCal();}},"Set-up steps"),el("button",{type:"button",class:"btn small ghost",onclick:closeCal},"Close")));
+  const body=el("div",{class:"body"});sh.append(body);
+  if(calMode==="day")body.append(calDay());
+  if(calMode==="week")body.append(calWeekly());
+  if(calMode==="month")body.append(calMonth("events"));
+  body.scrollTop=y;return;}
  const steps=[["import","1 Import"],["weekly","2 Weekly"],["events","3 Events"],["rest","4 Rest days"],["advice","5 Done"]];
  sh.append(el("div",{class:"top"},el("h3",null,"Your calendar to "+short(LAST)+" "+LAST.getFullYear()),el("div",{class:"steps"},steps.map(([k,l])=>el("button",{type:"button",class:"chip","aria-pressed":String(calStep===k),onclick:()=>{calStep=k;drawCal();}},l))),el("button",{type:"button",class:"btn small ghost",onclick:closeCal},"Close")));
  const body=el("div",{class:"body"});sh.append(body);
@@ -727,13 +753,18 @@ function parseIcs(t){t=t.replace(/\r?\n[ \t]/g,"");const res={found:0,weekly:0,o
  return res;}
 function calWeekly(){const wk=weeks();const tpl=calWeek==="template";const sel=el("select",{"aria-label":"Week",onchange:e=>{calWeek=e.target.value;drawCal();}},el("option",{value:"template"},"Every week (template)"),wk.map(w=>el("option",{value:iso(w)},"Week of "+short(w))));sel.value=calWeek;
  const lg=el("div",{class:"legend"},LABELS.map(([k,l])=>el("span",null,el("i",{style:"background:var(--"+k+")"}),l)));
- const grid=el("div",{class:"wgrid",id:"wgrid"});grid.append(el("div",{class:"hd"},""),...DAYS.map(d=>el("div",{class:"hd"},d)));
+ const grid=el("div",{class:"wgrid",id:"wgrid"});const view=calMode&&calMode!=="setup";
+ grid.append(el("div",{class:"hd"},""),...DAYS.map((d,i)=>{if(tpl)return el("div",{class:"hd"},d);const k=addD(calWeek,i);const ex=examDays()[k],ev=(S.cal.events[k]||[]).filter(v=>v.all),rs=S.cal.rest[k];
+  const sub=ex?"Exam":rs?"Rest day":ev.length?(ev[0].t||"Event"):"";
+  return el("div",{class:"hd dt"+(k===TODAY_ISO?" today":"")+(rs?" rest":""),role:"button",tabindex:"0",title:"Open "+short(dIso(k)),onclick:()=>setView("day",k),onkeydown:e=>{if(e.key==="Enter")setView("day",k);}},d+" "+dIso(k).getDate(),sub?el("small",null,sub):null);}));
  for(let r=0;r<ROWS;r++){grid.append(el("div",{class:"hr"},r%2===0?String(START_H+r/2).padStart(2,"0"):""));for(let d=0;d<7;d++)grid.append(el("div",{class:"cell"+(r%2===0?" h":""),"data-d":d,"data-r":r}));}
  const wrap=el("div",{class:"gridwrap"},grid);
  const help=tpl?"Your lectures and exercise classes from the HS26 timetable are already here; they stop after "+short(LECT_END)+". Move exercise classes to your own group's time. Drag over a day's empty time to block it; the box repeats every week. Drag a box to move it, pull its bottom edge to change its length, and click it to change the time or label, or to delete it.":"This is one week only. Click a weekly box to skip it in this week (an exception). Drag over empty time to add something for this week only. Lectures end on "+short(LECT_END)+".";
  const addBtn=el("button",{type:"button",class:"btn small",onclick:()=>{const b={id:boxId++,d:0,s:22,e:24,lab:"plain",t:null};if(!tpl)b.week=calWeek;S.cal.boxes.push(b);layoutBoxes(grid);const bx=grid.querySelector('.box[data-id="'+b.id+'"]');if(bx){boxPop(grid,b,bx);bx.scrollIntoView({block:"nearest"});}}},tpl?"+ Add activity":"+ Add for this week");
- const out=el("div",null,el("h2",null,"Your activities: every week or one week only"),el("p",{class:"lead"},help),el("div",{class:"row"},sel,addBtn),lg,wrap,stepNav("import","events"));
- requestAnimationFrame(()=>layoutBoxes(grid));
+ const wkNav=(n)=>{const i=wk.findIndex(w=>iso(w)===mondayOf(calWeek));const t=wk[Math.max(0,Math.min(wk.length-1,(i<0?0:i)+n))];if(t){calWeek=iso(t);drawCal();}};
+ const navRow=view?el("div",{class:"calnav"},el("button",{type:"button",class:"btn small ghost","aria-label":"Previous week",onclick:()=>wkNav(-1)},"‹"),sel,el("button",{type:"button",class:"btn small ghost","aria-label":"Next week",onclick:()=>wkNav(1)},"›"),addBtn):el("div",{class:"row"},sel,addBtn);
+ const out=el("div",null,view?null:el("h2",null,"Your activities: every week or one week only"),el("p",{class:view?"note":"lead"},view?(tpl?"Your weekly template: changes here apply to every week.":"Click a day's date to open it. Drag to add or move an activity; click one to change or remove it. Events and your planned study blocks are shown too."):help),navRow,lg,wrap,view?null:stepNav("import","events"));
+ requestAnimationFrame(()=>{layoutBoxes(grid);if(view&&!tpl)layoutExtras(grid);});
  enableDrag(grid);
  return out;}
 function cellRect(grid,d,r){const c=grid.querySelector('.cell[data-d="'+d+'"][data-r="'+r+'"]');return c?{x:c.offsetLeft,y:c.offsetTop,w:c.offsetWidth,h:c.offsetHeight}:null;}
@@ -747,6 +778,13 @@ function layoutBoxes(grid){grid.querySelectorAll(".box:not(.ghost)").forEach(b=>
   bx._b=b;
   bx.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openBox(grid,b,bx);}};
   grid.append(bx);});}
+function layoutExtras(grid){grid.querySelectorAll(".evbox,.studybox").forEach(b=>b.remove());
+ for(let i=0;i<7;i++){const k=addD(calWeek,i);
+  (S.cal.events[k]||[]).forEach(v=>{if(v.all)return;const a=cellRect(grid,i,Math.max(0,v.s)),z=cellRect(grid,i,Math.min(ROWS,v.e)-1);if(!a||!z)return;
+   grid.append(el("div",{class:"box evbox",role:"button",tabindex:"0","aria-label":(v.t||"Event")+" "+short(dIso(k))+" "+hm(v.s)+" to "+hm(v.e),style:"left:"+(a.x+2)+"px;top:"+a.y+"px;width:"+(a.w-4)+"px;height:"+(z.y+z.h-a.y-1)+"px",onclick:e=>{e.stopPropagation();setView("day",k);},onpointerdown:e=>e.stopPropagation()},(v.t||"Event")+" · "+hm(v.s)+"–"+hm(v.e)));});
+  const pd=S.plan&&S.plan.days.find(d=>d.date===k);
+  (pd?pd.sessions:[]).forEach(se=>{const r0=Math.round((PlannerEngine._.toMin(se.from)-START_H*60)/30),r1=Math.round((PlannerEngine._.toMin(se.to)-START_H*60)/30);if(r1<=0||r0>=ROWS)return;const a=cellRect(grid,i,Math.max(0,r0)),z=cellRect(grid,i,Math.min(ROWS,r1)-1);if(!a||!z)return;
+   grid.append(el("div",{class:"box studybox","aria-hidden":"true",style:"left:"+(a.x+2)+"px;top:"+a.y+"px;width:"+(a.w-4)+"px;height:"+(z.y+z.h-a.y-1)+"px",onpointerdown:e=>e.stopPropagation()},"Study: "+subjName(se.k)));});}}
 function openBox(grid,b,bx){const wk=calWeek==="template"?null:calWeek;if(wk&&!b.week){const k=b.id+"@"+wk;if(S.cal.skips[k])delete S.cal.skips[k];else S.cal.skips[k]=true;layoutBoxes(grid);return;}boxPop(grid,b,bx);}
 function labelName(k){const f=LABELS.find(l=>l[0]===k);return f?f[1]:k==="lecture"?"Lecture":"Busy";}
 function hm(r){const m=START_H*60+r*30;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");}
@@ -814,14 +852,20 @@ function evBubble(k){const list=S.cal.events[k]||[];const d=new Date(k);const bo
   const t=el("input",{type:"text",placeholder:"Title, e.g. Grandma's birthday","aria-label":"Event title",maxlength:"40",oninput:e=>{v.t=e.target.value.slice(0,40);},onchange:()=>drawCal(true)});t.value=v.t||"";
   box.append(el("div",{class:"evrow"},t,el("div",{class:"row"},el("label",{class:"check",for:"evall_"+i,style:"padding:0"},all,el("span",null,"Whole day")),el("span",{class:"note"},"From"),sSel,el("span",{class:"note"},"to"),eSel),
    el("div",null,el("button",{type:"button",class:"btn small ghost",onclick:()=>{list.splice(i,1);if(!list.length)delete S.cal.events[k];drawCal(true);}},"Remove event"))));});
- box.append(el("div",{class:"row"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{addEv(k,{all:false,s:22,e:28});drawCal(true);}},list.length?"+ Another event":"+ Add an event"),el("button",{type:"button",class:"btn small",onclick:()=>{evDay=null;drawCal(true);}},"Done")));
+ const rid="evrest_"+k,rc=el("input",{type:"checkbox",id:rid,onchange:e=>{if(e.target.checked)S.cal.rest[k]=true;else delete S.cal.rest[k];drawCal(true);}});rc.checked=!!S.cal.rest[k];
+ box.append(el("label",{class:"check",for:rid,style:"padding:0"},rc,el("span",null,"Rest day (no study)")));
+ box.append(el("div",{class:"row"},el("button",{type:"button",class:"btn small ghost",onclick:()=>{addEv(k,{all:false,s:22,e:28});drawCal(true);}},list.length?"+ Another event":"+ Add an event"),
+  calMode&&calMode!=="setup"?el("button",{type:"button",class:"btn small ghost",onclick:()=>setView("day",k)},"Open day"):null,
+  el("button",{type:"button",class:"btn small",onclick:()=>{evDay=null;drawCal(true);}},"Done")));
  return box;}
 function placeBubble(g,cell,bub){const gw=g.clientWidth;const w=Math.min(340,gw);let left=cell.offsetLeft+cell.offsetWidth/2-w/2;left=Math.max(0,Math.min(gw-w,left));
  bub.style.left=left+"px";bub.style.setProperty("--ax",Math.max(12,Math.min(w-26,cell.offsetLeft+cell.offsetWidth/2-left-7))+"px");
  const h=bub.offsetHeight;const sheetBody=g.closest(".body");const cellTopInSheet=cell.getBoundingClientRect().top-(sheetBody?sheetBody.getBoundingClientRect().top:0);
  if(cellTopInSheet>h+16){bub.classList.add("above");bub.style.top=(cell.offsetTop-h-10)+"px";}else{bub.classList.add("below");bub.style.top=(cell.offsetTop+cell.offsetHeight+10)+"px";}}
 function calMonth(mode){const ex=examDays(),rec=recRest();const out=el("div");
- out.append(el("h2",null,mode==="events"?"Events already planned":"Rest days"),el("p",{class:"lead"},mode==="events"?"Click a day to see what is on it and to add a celebration, trip, appointment or holiday: give it a title, and choose the whole day or the hours it takes up. Click anywhere else to close.":"Click your rest days. Shaded days are the planner's suggestion: one per week, 24 to 26 Dec, 1 Jan and the day after each exam."));
+ const view=calMode&&calMode!=="setup";
+ if(view)out.append(el("p",{class:"note"},"Click a day to see it, add or change events, or mark it as a rest day."));
+ else out.append(el("h2",null,mode==="events"?"Events already planned":"Rest days"),el("p",{class:"lead"},mode==="events"?"Click a day to see what is on it and to add a celebration, trip, appointment or holiday: give it a title, and choose the whole day or the hours it takes up. Click anywhere else to close.":"Click your rest days. Shaded days are the planner's suggestion: one per week, 24 to 26 Dec, 1 Jan and the day after each exam."));
  if(mode==="rest")out.append(el("div",{class:"row",style:"margin-bottom:10px"},el("button",{type:"button",class:"btn small",onclick:()=>{Object.keys(rec).forEach(k=>S.cal.rest[k]=true);drawCal(true);}},"Accept all suggested rest days"),el("button",{type:"button",class:"btn small ghost",onclick:()=>{S.cal.rest={};drawCal(true);}},"Clear")));
  const lg=el("div",{class:"legend"},el("span",null,el("i",{style:"background:var(--social)"}),"Event"),el("span",null,el("i",{style:"background:var(--rest)"}),"Rest day"),el("span",null,el("i",{style:"background-image:var(--shade);border:1px solid var(--line)"}),"Suggested rest"),el("span",null,el("i",{style:"outline:2px solid var(--accent);outline-offset:-2px"}),"Exam (from module B)"));out.append(lg);
  let m=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
@@ -837,7 +881,35 @@ function calMonth(mode){const ex=examDays(),rec=recRest();const out=el("div");
    if(inR)b.onclick=e=>{e.stopPropagation();if(mode==="events"){evDay=evDay===k?null:k;}else{if(S.cal.rest[k])delete S.cal.rest[k];else S.cal.rest[k]=true;}drawCal(true);};
    g.append(b);}
   out.append(g);if(editHere){const bub=evBubble(evDay);g.append(bub);requestAnimationFrame(()=>placeBubble(g,editHere,bub));}m=new Date(m.getFullYear(),m.getMonth()+1,1);}
- out.append(stepNav(mode==="events"?"weekly":"events",mode==="events"?"rest":"advice",mode==="rest"?"Done":"Next"));return out;}
+ if(!calMode||calMode==="setup")out.append(stepNav(mode==="events"?"weekly":"events",mode==="events"?"rest":"advice",mode==="rest"?"Done":"Next"));return out;}
+function calDay(){const k=calDayK&&calDayK>=iso(TODAY)&&calDayK<=iso(LAST)?calDayK:TODAY_ISO;calDayK=k;const d=dIso(k),dw=(d.getDay()+6)%7,mon=mondayOf(k);
+ const go2=n=>{const t=addD(k,n);if(t<iso(TODAY)||t>iso(LAST))return;calDayK=t;drawCal();};
+ const di=el("input",{type:"date",min:iso(TODAY),max:iso(LAST),value:k,"aria-label":"Date",onchange:e=>{if(e.target.value){calDayK=e.target.value;drawCal();}}});
+ const out=el("div",{class:"dayv"},el("div",{class:"calnav"},el("button",{type:"button",class:"btn small ghost","aria-label":"Previous day",onclick:()=>go2(-1)},"‹"),el("b",null,WD[dw]+", "+short(d)),el("button",{type:"button",class:"btn small ghost","aria-label":"Next day",onclick:()=>go2(1)},"›"),di,k!==TODAY_ISO?el("button",{type:"button",class:"btn small ghost",onclick:()=>{calDayK=TODAY_ISO;drawCal();}},"Today"):null));
+ const ex=examDays()[k];if(ex)out.append(el("div",{class:"banner"},el("b",null,"Exam: "),ex));
+ // regular activities: skip this day only, or open the week to change them
+ const all=S.cal.boxes.filter(b=>b.d===dw&&(b.week?b.week===mon:true)&&!((b.fixed||b.lab==="lecture")&&d>LECT_END)).sort((a,b)=>a.s-b.s);
+ const acts=el("div",{class:"blk"},el("h4",null,"Activities"));
+ if(!all.length)acts.append(el("p",{class:"note",style:"margin:0"},"Nothing blocked on this day."));
+ all.forEach(b=>{const sk=!b.week&&S.cal.skips[b.id+"@"+mon];
+  acts.append(el("div",{class:"it"+(sk?" off":"")},el("time",null,hm(b.s)+"–"+hm(b.e)),el("span",null,(b.t||labelName(b.lab))+(b.week?" (this week only)":" (every week)")),
+   b.week?el("button",{type:"button",class:"btn small ghost",onclick:()=>{S.cal.boxes=S.cal.boxes.filter(x=>x!==b);drawCal(true);}},"Remove")
+    :el("button",{type:"button",class:"btn small ghost",onclick:()=>{const kk=b.id+"@"+mon;if(S.cal.skips[kk])delete S.cal.skips[kk];else S.cal.skips[kk]=true;drawCal(true);}},sk?"Back in this week":"Not this week")));});
+ const ns=el("select",{"aria-label":"From"}),ne=el("select",{"aria-label":"To"});for(let r=0;r<ROWS;r++)ns.append(el("option",{value:r},hm(r)));for(let r=1;r<=ROWS;r++)ne.append(el("option",{value:r},hm(r)));ns.value=22;ne.value=24;
+ const nt=el("input",{type:"text",maxlength:"40",placeholder:"Title (optional)","aria-label":"Title"});
+ acts.append(el("div",{class:"it"},nt,ns,el("span",{class:"note"},"to"),ne,el("button",{type:"button",class:"btn small",onclick:()=>{const s=+ns.value,e=Math.max(s+1,+ne.value);S.cal.boxes.push({id:boxId++,d:dw,s,e,lab:"plain",t:nt.value.trim().slice(0,40)||null,week:mon});drawCal(true);}},"+ Add for this day")),
+  el("p",{class:"note",style:"margin:0"},"To change an activity for every week, open the ",el("a",{href:"#",onclick:e=>{e.preventDefault();calWeek="template";setView("week");}},"weekly template"),"."));
+ out.append(acts);
+ // events and rest day: the same editor as in the month view
+ const ed=evBubble(k);ed.classList.remove("bubble");ed.classList.add("blk");ed.removeAttribute("role");ed.querySelector("h4").textContent="Events and rest";
+ const done=[...ed.querySelectorAll("button")].find(b=>b.textContent==="Done");if(done)done.remove();
+ const op=[...ed.querySelectorAll("button")].find(b=>b.textContent==="Open day");if(op)op.remove();
+ const rec=ed.querySelector(".rec");if(rec)rec.remove();
+ out.append(ed);
+ const pd=S.plan&&S.plan.days.find(x=>x.date===k);
+ if(pd&&pd.sessions.length)out.append(el("div",{class:"blk"},el("h4",null,"Planned study"),pd.sessions.map(se=>el("div",{class:"it"},el("time",null,se.from+"–"+se.to),el("span",null,subjName(se.k)+": "+se.title))),
+  el("p",{class:"note",style:"margin:0"},"After changing your calendar, press \"Make the plan again\" on your plan page.")));
+ return out;}
 function blockedHoursWeek(){let rows=0;S.cal.boxes.forEach(b=>{if(b.lab!=="lecture"&&!b.week)rows+=b.e-b.s;});return rows/2;}
 function calAdvice(){S.cal.done=true;const tips=[];const hasMove=S.cal.boxes.some(b=>b.lab==="move");
  if(!hasMove)tips.push(["No Movement in your weeks yet. Short exercise sessions help concentration and sleep.","Add 3 × 45 min (Mon, Wed, Fri 18:00)",()=>{[0,2,4].forEach(d=>S.cal.boxes.push({id:boxId++,d,s:22,e:24,lab:"move",t:null}));}]);
@@ -856,7 +928,7 @@ function calAdvice(){S.cal.done=true;const tips=[];const hasMove=S.cal.boxes.som
 $("#calbtn").onclick=()=>openCal();
 $("#mapbtn").onclick=()=>openMap();
 if(location.hash==="#places")setTimeout(()=>openMap(),0);
-$("#sheet").addEventListener("pointerdown",e=>{if(evDay&&!e.target.closest(".bubble,.mday")){evDay=null;drawCal(true);}});
+$("#sheet").addEventListener("pointerdown",e=>{if(evDay&&e.target.closest("#sheet .body")&&!e.target.closest(".bubble,.mday")){evDay=null;drawCal(true);}});
 
 /* ---------- render ---------- */
 /* lectures and exercise classes from the programme timetable, added once per calendar; the student can move or delete them */
