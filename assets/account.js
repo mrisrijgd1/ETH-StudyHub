@@ -265,12 +265,24 @@
     var p = load(); p[k] = Object.assign(p[k] || {}, v, { t: Date.now() }); store(p);
     if (sb && user) { clearTimeout(timer); timer = setTimeout(function () { sb.from('progress').upsert([row(k)]).then(function (r) { status(r.error ? L('Could not sync, saved in this browser.', 'Sync fehlgeschlagen, im Browser gespeichert.') : null); }); }, 600); }
   }
-  function signIn() {
+  /* ETH login (SWITCH edu-ID, Supabase custom OIDC provider). Off until tested; testers turn it on with
+     ?eth-login=1 (remembered in this browser, ?eth-login=0 turns it off again). */
+  var ETH_PROVIDER = 'custom:eduid', ETH_LIVE = false;
+  var ethLogin = ETH_LIVE;
+  try {
+    var q = /[?&]eth-login=([01])/.exec(location.search);
+    if (q) localStorage.setItem('sh-eth-login', q[1]);
+    if (localStorage.getItem('sh-eth-login') === '1') ethLogin = true;
+    if (localStorage.getItem('sh-eth-login') === '0') ethLogin = ETH_LIVE;
+  } catch (e) {}
+  function loginLabel() { return ethLogin ? L('Sign in with your ETH account', 'Mit deinem ETH-Konto anmelden') : L('Sign in with Google', 'Mit Google anmelden'); }
+  function signIn(provider) {
+    if (typeof provider !== 'string') provider = ethLogin ? ETH_PROVIDER : 'google';
     track('login');
     var hash = /access_token=|error_description=/.test(location.hash) ? '' : location.hash;
     try { sessionStorage.setItem(returnKey, JSON.stringify({ path: location.pathname, hash: hash })); } catch (e) {}
     return sdk().then(function () {
-      return sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href.split('#')[0] } });
+      return sb.auth.signInWithOAuth({ provider: provider, options: { redirectTo: location.href.split('#')[0] } });
     }).then(function (result) { if (result.error) throw result.error; });
   }
   function restoreLoginDestination() {
@@ -384,11 +396,13 @@
     var box = document.getElementById('sh-account'); if (!box) return;
     if (!user) {
       box.innerHTML = '<p>' + L('You are using StudyHub as a guest. Your progress is saved in this browser.', 'Du nutzt StudyHub als Gast. Dein Fortschritt wird in diesem Browser gespeichert.') + '</p>' +
-        '<p><button type="button" class="start-btn sh-google">' + L('Sign in with Google', 'Mit Google anmelden') + '</button></p>' +
+        '<p><button type="button" class="start-btn sh-google">' + loginLabel() + '</button></p>' +
+        (ethLogin ? '<p><button type="button" class="sh-plain sh-google-old">' + L('Made your account with Google before? Sign in with Google', 'Konto früher mit Google erstellt? Mit Google anmelden') + '</button></p>' : '') +
         '<p>' + L('Signing in stores account and progress information so StudyHub can sync it across your devices. See the privacy information below.', 'Bei der Anmeldung werden Konto- und Fortschrittsdaten gespeichert, damit StudyHub sie zwischen deinen Geräten synchronisieren kann. Details stehen unten im Datenschutzabschnitt.') + '</p><p class="sh-msg" role="status"></p>';
-      box.querySelector('.sh-google').onclick = function () {
-        signIn().catch(function () { box.querySelector('.sh-msg').textContent = L('Could not log in. Please try again.', 'Anmeldung fehlgeschlagen. Bitte versuche es erneut.'); });
-      };
+      var loginFail = function () { box.querySelector('.sh-msg').textContent = L('Could not log in. Please try again.', 'Anmeldung fehlgeschlagen. Bitte versuche es erneut.'); };
+      box.querySelector('.sh-google').onclick = function () { signIn().catch(loginFail); };
+      var oldBtn = box.querySelector('.sh-google-old');
+      if (oldBtn) oldBtn.onclick = function () { signIn('google').catch(loginFail); };
     } else {
       var nick = profile && profile.nickname || '', lb = !!(profile && profile.leaderboard);
       box.innerHTML = '<p>' + L('Signed in as', 'Angemeldet als') + ' <strong>' + esc(user.email || '') + '</strong>.</p>' +
@@ -648,7 +662,7 @@
 
   function render() { banner(); refreshPanel(); ticks(); accountPage(); forumPage(); leaderboardPage(); publishAccount(); }
   function publishAccount() {
-    window.SH = { sb: sb, user: user, profile: profile, authPending: authPending, accountDataPending: accountDataPending, signIn: signIn, sdk: sdk, L: L, esc: esc,
+    window.SH = { sb: sb, user: user, profile: profile, authPending: authPending, accountDataPending: accountDataPending, signIn: signIn, loginLabel: loginLabel, ethLogin: ethLogin, sdk: sdk, L: L, esc: esc,
       updateProfile: updateProfile, signOut: function () { return sb.auth.signOut(); },
       studySetup: { read: readStudySetup, save: saveStudySetup, skipped: studySetupWasSkipped, skip: skipStudySetup },
       resume: { read: readResume, write: writeResume }, courseProgress: load, saveCourseProgress: function(entries) {
