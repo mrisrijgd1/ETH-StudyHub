@@ -121,7 +121,7 @@ host.innerHTML=
   '</div>'+
   '<div class="fh-ctl fh-r">'+
    '<button type="button" class="fh-pill fh-time" data-a="timerset" aria-haspopup="dialog" title="Timer settings"><small id="fh-mode">Focus</small><b id="fh-clock">25:00</b></button>'+
-   '<button type="button" class="fh-pill fh-sq fh-go" id="fh-go" title="Start focus">'+IC.play+'<span class="fh-sr">Start</span></button>'+
+   '<button type="button" class="fh-pill fh-sq fh-go" id="fh-go" title="Start focus timer" aria-label="Start focus timer">'+IC.play+'<span class="fh-sr">Start focus timer</span></button>'+
    '<button type="button" class="fh-pill fh-sq" id="fh-reset" title="Reset timer">'+IC.reset+'<span class="fh-sr">Reset timer</span></button>'+
   '</div>'+
  '</div>'+
@@ -645,8 +645,8 @@ function timerUI(){
   const t=S.timer,l=leftMs();
   clockEl.textContent=fmt(l);modeEl.textContent=t.mode==="break"?"Break":"Focus";
   host.classList.toggle("fh-onbreak",t.mode==="break");host.classList.toggle("fh-running",t.running);
-  goBtn.innerHTML=(t.running?IC.pause:IC.play)+'<span class="fh-sr">'+(t.running?"Pause":"Start")+'</span>';
-  goBtn.title=t.running?"Pause":(t.mode==="break"?"Start break":"Start focus");
+  const gl=t.running?(t.mode==="break"?"Pause break timer":"Pause focus timer"):(t.mode==="break"?"Start break timer":"Start focus timer");
+  goBtn.innerHTML=(t.running?IC.pause:IC.play)+'<span class="fh-sr">'+gl+'</span>';goBtn.title=gl;goBtn.setAttribute("aria-label",gl);
   miniEl.textContent=(t.mode==="break"?"Break ":"Focus ")+fmt(l);miniEl.hidden=!S.collapsed;
   document.title=t.running?fmt(l)+" "+(t.mode==="break"?"break":"focus")+" · "+baseTitle:baseTitle;
 }
