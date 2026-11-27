@@ -2,8 +2,8 @@
    - Pages (HTML): network first, saved copy when offline, offline.html as last resort.
    - Versioned files (?v=): the saved copy at once. Other files: network first, saved copy offline.
    - MathJax (jsDelivr) and Google Fonts: saved on first use.
-   - Never saved: PDFs and the docs/ folder (too big), Supabase (accounts), analytics. */
-const VERSION = 'sw-2026-11-22-versioned-assets';
+   - Never saved: PDFs and the docs/ folder (too big), /api/ (signed-in data and official PDFs), Supabase (accounts), analytics. */
+const VERSION = 'sw-2026-11-27-api-never-cached';
 const PAGES = 'sh-pages', FILES = 'sh-files', EXT = 'sh-ext';
 const CORE = ['./', 'index.html', 'offline.html', 'manifest.webmanifest', 'assets/icons/icon-192.png'];
 
@@ -14,7 +14,7 @@ self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => ![PAGES, FILES, EXT].includes(k)).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
-const skip = u => /\.pdf($|\?)/i.test(u.pathname) || /\/docs\//.test(u.pathname) || /\/pdf\//.test(u.pathname) || /\/assets\/pdf[._]/.test(u.pathname);
+const skip = u => /\/api\//.test(u.pathname) ||/\.pdf($|\?)/i.test(u.pathname) || /\/docs\//.test(u.pathname) || /\/pdf\//.test(u.pathname) || /\/assets\/pdf[._]/.test(u.pathname);
 const isPage = (req, u) => req.mode === 'navigate' || /\.html$|\/$/.test(u.pathname);
 const extOk = u => /(^|\.)cdn\.jsdelivr\.net$/.test(u.hostname) && /mathjax/.test(u.pathname);
 
