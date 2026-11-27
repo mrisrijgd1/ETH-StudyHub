@@ -248,6 +248,6 @@ function sh_check(string $table, array $r): void {
         case 'dive_runs': $in('subject', ['analysis', 'physics', 'mixed']); $in('timer', [30, 60, 120, 180, 300]);
             if (isset($r['depth']) && ($r['depth'] < 0 || $r['depth'] > 11000)) { throw new ShError('Bad depth.'); }
             if (isset($r['answers']) && ($r['answers'] < 0 || $r['answers'] > 24)) { throw new ShError('Bad answers.'); } break;
-        case 'app_state': $in('app', ['dive', 'chemie', 'flashcards', 'linalg']); $big('data'); break;
+        case 'app_state': $in('app', ['dive', 'chemie', 'flashcards', 'linalg', 'physik']); $big('data'); break;
     }
 }
