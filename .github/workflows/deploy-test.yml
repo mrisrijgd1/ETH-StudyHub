@@ -13,6 +13,9 @@ name: Deploy a branch to the test site (test.study-hub.ch)
 #   variable TEST_DEPLOY_HOST  SSH host of Rachel's hosting (e.g. xxxx.ftp.infomaniak.com)
 #   variable TEST_DEPLOY_USER  SSH user on that hosting
 #   variable TEST_DEPLOY_PATH  site folder relative to that user's home, e.g. sites/test.study-hub.ch/
+#   secret   TEST_BASIC_AUTH   optional "user:password" for a browser password on the whole test site.
+#                              When set, every run writes the password file OUTSIDE the site folder
+#                              (~/.htpasswd-test-studyhub, hashed) and turns the protection on in .htaccess.
 #
 # DNS: test.study-hub.ch needs an A (and AAAA) record in the study-hub.ch zone pointing at
 # Rachel's hosting. Nothing else is needed from the production organisation.
@@ -94,6 +97,42 @@ jobs:
           ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
             "echo 'Login OK.'; if test -d '$DEPLOY_PATH'; then echo 'Site folder found.'; \
              else echo 'Site folder NOT found at $DEPLOY_PATH'; exit 1; fi"
+
+      - name: Password protection (when TEST_BASIC_AUTH is set)
+        env:
+          BASIC_AUTH: ${{ secrets.TEST_BASIC_AUTH }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ -z "$BASIC_AUTH" ]; then
+            echo "::warning::TEST_BASIC_AUTH is not set: the test site is open to anyone who knows the address."
+            exit 0
+          fi
+          AUTH_USER="${BASIC_AUTH%%:*}"; AUTH_PASS="${BASIC_AUTH#*:}"
+          if [ -z "$AUTH_USER" ] || [ "$AUTH_USER" = "$BASIC_AUTH" ] || [ -z "$AUTH_PASS" ]; then
+            echo "::error::TEST_BASIC_AUTH must look like user:password."; exit 1
+          fi
+          echo "::add-mask::$AUTH_PASS"
+          HOME_DIR=$(ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" 'printf %s "$HOME"')
+          LINE="$AUTH_USER:$(printf '%s' "$AUTH_PASS" | openssl passwd -apr1 -stdin)"
+          if [ "$DRY_RUN" != "true" ]; then
+            printf '%s\n' "$LINE" | ssh -i ~/.ssh/deploy_key -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+              'umask 022; cat > "$HOME/.htpasswd-test-studyhub"'
+          fi
+          # The data API and the connector are left out: they send their own "Authorization: Bearer" login
+          # header (which would clash with the browser password) and already refuse requests without a login.
+          cat >> .htaccess <<EOF
+          
+          # Test site: browser password (password file outside the site folder)
+          SetEnvIf Request_URI "^/(api/|mcp|\.well-known/)" sh_noauth
+          AuthType Basic
+          AuthName "StudyHub test site"
+          AuthUserFile $HOME_DIR/.htpasswd-test-studyhub
+          <RequireAny>
+            Require env sh_noauth
+            Require valid-user
+          </RequireAny>
+          EOF
+          echo "Password protection on for user $AUTH_USER."
 
       - name: Copy the site
         env:
