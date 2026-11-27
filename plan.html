@@ -56,6 +56,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .brand{font-weight:700;letter-spacing:.01em;margin-right:auto}
 .brand small{display:block;font-weight:400;color:var(--muted);font-size:12px}
 .mods{display:flex;gap:4px;flex-wrap:wrap}
+#mapbtn{margin-left:auto}
+.ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:6px}
+.pl .ico{width:13px;height:13px;margin-right:3px;vertical-align:-2px}
 .mods button{font:600 12px var(--f-mono);width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
 .mods button.done{color:var(--second);border-color:var(--second)}
 .mods button.cur{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -257,10 +260,9 @@ header.rail{z-index:50}
 <body>
 
 <header class="rail"><div class="in">
-  <div class="brand">Study planner <small>Test version: rule-based, no AI</small></div>
   <nav class="mods" id="mods" aria-label="Modules"></nav>
-  <button type="button" class="btn small ghost" id="mapbtn" title="Map of study places in Zürich, with live occupancy">🗺 Study places</button>
-  <button type="button" class="btn small" id="calbtn" title="Open the interactive calendar set-up">📅 Calendar</button>
+  <button type="button" class="btn small ghost" id="mapbtn" title="Map of study places in Zürich, with live occupancy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 3.5 6.5v13l5.5-2 6 2 5.5-2v-13l-5.5 2-6-2Z"/><path d="M9 4.5v13M15 6.5v13"/></svg>Study places</button>
+  <button type="button" class="btn small" id="calbtn" title="Open the interactive calendar set-up"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Calendar</button>
   </div></header>
 
 <!-- Focus trail window (planner/focus-hike.js + .css): kept outside #app, which the planner re-renders -->
@@ -523,7 +525,7 @@ function weekView(p){if(!wkStart)wkStart=mondayOf(TODAY_ISO);
     el("span",{class:"hl"},h==="am"?"Morning":"Afternoon"),
     el("span",{class:"tags"},subs.map(k=>el("i",{class:"c-"+k},subjName(k).split(" ")[0]))),
     el("span",{class:"hm"},mins?hrs(mins):"no blocks"),
-    mine.place?el("span",{class:"pl"},"📍 "+mine.place):null,
+    mine.place?el("span",{class:"pl"},icon("pin"),mine.place):null,
     (mine.points||[]).length||mine.own?el("span",{class:"pl"},"✓ "+((mine.points||[]).length+(mine.own?mine.own.split("\n").filter(Boolean).length:0))+" points"):null));});
   grid.append(col);}
  out.push(grid);
@@ -537,7 +539,7 @@ function halfEditor(p,key,d){const h=key.slice(11);const H=p.settings.half[h];co
  const sc=el("div",{class:"chips"},open.map(s=>el("button",{type:"button",class:"chip","aria-pressed":String(cur.subj.includes(s.k)),onclick:e=>{cur.subj=cur.subj.includes(s.k)?cur.subj.filter(x=>x!==s.k):cur.subj.concat(s.k);e.currentTarget.setAttribute("aria-pressed",String(cur.subj.includes(s.k)));}},s.n)));
  box.append(el("p",{class:"hint",style:"margin:6px 0"},"Subjects for this half-day. Leave empty to let the plan choose; your choice changes the plan's blocks here."),sc);
  const pl=el("input",{type:"text",list:"places-list",placeholder:"e.g. ETH HG library, at home","aria-label":"Where you want to study"});pl.value=cur.place;
- box.append(el("div",{class:"t",style:"margin-top:14px"},"Where do you want to study?"),el("div",{class:"place-row"},pl,el("button",{type:"button",class:"btn small ghost",onclick:()=>openMap(n=>{pl.value=n;},pl.value.trim())},"🗺 Choose on the map")),el("datalist",{id:"places-list"},PLACES.map(x=>el("option",{value:x.name},x.area))));
+ box.append(el("div",{class:"t",style:"margin-top:14px"},"Where do you want to study?"),el("div",{class:"place-row"},pl,el("button",{type:"button",class:"btn small ghost",onclick:()=>openMap(n=>{pl.value=n;},pl.value.trim())},icon("map"),"Choose on the map")),el("datalist",{id:"places-list"},PLACES.map(x=>el("option",{value:x.name},x.area))));
  const pts=el("div");
  if(ss.length){pts.append(el("p",{class:"hint",style:"margin:6px 0"},"Tick what you plan to cover:"));ss.forEach(s=>{const id=s.from+" "+s.title;const c=el("input",{type:"checkbox"});c.checked=cur.points.includes(id);c.onchange=()=>{cur.points=c.checked?cur.points.concat(id):cur.points.filter(x=>x!==id);};pts.append(el("label",{class:"check"},c,el("span",null,el("b",null,s.from+"–"+s.to+" "),s.title,el("span",{class:"note",style:"display:block"},KIND[s.kind]||s.kind))));});}
  else pts.append(el("p",{class:"note"},"No blocks planned here yet."));
@@ -643,6 +645,8 @@ async function boot(){$("#app").append(el("p",{class:"lead",style:"margin-top:28
 /* ---------- calendar sheet ---------- */
 let calStep="import",calWeek="template";
 /* ---------- study-places map (Rachel, 27 Nov): its own tab, and a picker for every place choice ---------- */
+const ICONS={map:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 3.5 6.5v13l5.5-2 6 2 5.5-2v-13l-5.5 2-6-2Z"/><path d="M9 4.5v13M15 6.5v13"/></svg>',pin:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>',cal:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>'};
+function icon(n){const t=document.createElement("template");t.innerHTML=ICONS[n];return t.content.firstChild;}
 const ETH_OCC="https://ethz.ch/studierende/de/campus/arbeitsplaetze-studierende/auslastung-studierendenarbeitsplaetze.html";
 let mapPick=null,mapBack=null;
 function openMap(pick,currentName){const w=$("#pmap");mapPick=pick||null;mapBack=document.activeElement;

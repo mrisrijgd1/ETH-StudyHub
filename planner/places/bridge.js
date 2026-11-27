@@ -13,6 +13,7 @@
 
   var css = document.createElement('style');
   css.textContent =
+    '[hidden]{display:none!important}' +   /* the detail sheet is display:flex, which beat the hidden attribute: it could not be closed (Rachel, 27 Nov) */
     '.shb{margin:0 0 4px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel-2);font-size:13px}' +
     '.shb b{font-weight:600}.shb ul{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:3px}' +
     '.shb li{display:flex;gap:8px;align-items:center}.shb .lt{width:10px;height:10px;border-radius:50%;flex:none}' +
@@ -57,6 +58,13 @@
       mark.after(b);
     }
   }
+
+  // Tap on the map itself (not a pin or a control) closes the open detail sheet
+  document.addEventListener('click', function (e) {
+    var sh = document.getElementById('sheet'), m = document.getElementById('map');
+    if (!sh || sh.hidden || !m || !m.contains(e.target) || e.target.closest('.leaflet-marker-icon,.leaflet-control,.leaflet-popup')) return;
+    var x = document.getElementById('closeSheet'); if (x) x.click();
+  }, true);
 
   function loadLive() {
     return fetch('../../api/occupancy.php', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })

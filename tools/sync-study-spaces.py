@@ -47,6 +47,6 @@ n = h.count('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js
 assert n == 1, 'Leaflet script tag not found once'
 h = h.replace('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js', 'leaflet-1.9.4.min.js')
 assert not re.search(r'<script[^>]+src="https?:|<link[^>]+href="https?:', h), 'external asset left'
-h = '<!doctype html>\n<html lang="en">\n' + h.rstrip() + '\n<script src="bridge.js?v=1"></script>\n</html>\n'
+h = '<!doctype html>\n<html lang="en">\n' + h.rstrip() + '\n<script src="bridge.js?v=2"></script>\n</html>\n'
 (dst / 'index.html').write_text(h)
 print('copied', len(d['places']), 'places,', len(used), 'photos to', dst)
