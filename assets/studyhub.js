@@ -387,7 +387,8 @@
   const guestOptions = document.createElement('div'); guestOptions.className = 'study-guest-options';
   const guestSignIn = link(L('Mit SWITCH edu-ID anmelden', 'Sign in with SWITCH edu-ID'), prefix + 'account.html', 'study-login');
   const guestDesignHint = document.createElement('p'); guestDesignHint.textContent = L('Melde dich mit SWITCH edu-ID an, um das Design zu ändern.', 'Sign in with SWITCH edu-ID to change the design.');
-  guestOptions.append(guestSignIn, guestDesignHint); panel.append(guestOptions);
+  const guestPlanner = link(L('Lernplaner (auch ohne Anmeldung)', 'Study planner (also without signing in)'), 'plan.html', 'study-guest-planner');
+  guestOptions.append(guestSignIn, guestDesignHint, guestPlanner); panel.append(guestOptions);
   // The Design chooser is always open (no dropdown inside the panel): two theme tiles, then one tile per palette.
   const chooser = document.createElement('section'); chooser.className = 'design-chooser'; chooser.setAttribute('aria-label', 'Design');
   const themeTitle = document.createElement('p'); themeTitle.className = 'design-group'; themeTitle.textContent = L('Hell oder dunkel', 'Light or dark');
@@ -420,7 +421,10 @@
   editStudySetup.innerHTML = '<strong>' + L('Nutzer', 'User') + '</strong><span>' + L('Fächer und Lernzeit ändern', 'Change subjects and study time') + '</span>';
   const progressLink = richLink(L('Fortschritt · Mein StudyHub', 'Progress · My StudyHub'), prefix + 'account.html', L('Lektionen, Notizen und Resultate', 'Lessons, notes and results'));
   progressLink.classList.add('study-profile-progress');
-  profileActions.append(editStudySetup, progressLink);
+  // Study planner (plan.html): opened from the profile menu (Rachel, 27 Nov)
+  const plannerLink = richLink(L('Lernplaner', 'Study planner'), 'plan.html', L('Dein Plan bis zu den Prüfungen (vorerst auf Englisch)', 'Your plan up to the exams'));
+  plannerLink.classList.add('study-profile-progress', 'study-profile-planner');
+  profileActions.append(editStudySetup, progressLink, plannerLink);
   panel.append(profileActions);
   design.append(panel); utilities.append(design);
   // Every picker on the page (header panel, settings, My StudyHub) shows the same choice at once, without a reload.

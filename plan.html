@@ -334,12 +334,13 @@ SC.intro=()=>{const signed=!!S.user;return [
  S.plan?el("div",{class:"q"},el("div",{class:"t"},"You already have a plan"),el("p",{class:"note"},"Made on "+S.plan.made+"."),el("div",{class:"row"},el("button",{type:"button",class:"btn",onclick:()=>go("plan")},"Show my plan"))):null,
  el("div",{class:"nav"},el("span"),el("button",{type:"button",class:"btn",onclick:()=>go(S.visits.A?"J":"A")},S.visits.A?"Continue the questionnaire":"Start"))];};
 
+const RESEARCH_HINT="Anonymised means without your name, e-mail address or free-text answers. Saying yes or no changes nothing for your plan. You can change it any time on your plan page under \"Your data\".";
 SC.A=()=>{const warn=el("p",{class:"note",hidden:true,style:"color:var(--warn)"},"Please agree to the storage of your planner data to continue.");
  const cb=(id,label,hint)=>{const i=el("input",{type:"checkbox",id:"f_"+id,onchange:e=>set(id,e.target.checked)});i.checked=!!get(id);return el("label",{class:"check",for:"f_"+id},i,el("span",null,label,hint?el("span",{class:"note",style:"display:block"},hint):null));};
  return [...head("A"),
  q("A1","Storing your planner data",cb("A1","I agree that StudyHub stores my planner data on its own server in Switzerland, so it can make and adjust my plan.","You can export or delete everything at any time."),null),
  q("A2","Optional parts (all off by default)",el("div",null,cb("A2_sleep","Sleep and energy questions"),cb("A2_ways","Ways of working that help (for example shorter blocks, or ADHD or dyslexia if you want to mention it)"),cb("A2_text","Free-text answers")),"Without a tick, the matching questions are hidden."),
- q("A3","Help research on how students learn with AI (optional)",cb("A3","Yes, use my anonymised data for future educational research.","Saying yes or no changes nothing for you. You can change it any time in your settings."),null),
+ q("A3","Educational research (optional, off by default)",cb("A3","Yes, my planner data may be used anonymised for future educational research.",RESEARCH_HINT),null),
  q("A4","Language",chipsSingle("A4",["English","Deutsch"]),"The test version is in English only. German follows."),
  warn, nav(null,"B","Next",()=>{if(!get("A1")){warn.hidden=false;return false;}return true;})];};
 
@@ -578,7 +579,10 @@ SC.plan=()=>{const p=S.plan;if(!p)return SC.intro();
    el("p",{class:"note"},"Mock exams planned: "+SUBJ.map(s=>s.n+" "+(p.totals.mocks[s.k]||0)+" (target "+tgt[s.k]+")").join(", ")+". Daily maximum "+hrs(p.settings.cap)+"; blocks of "+p.settings.block+" min with "+p.settings.brk+" min breaks.")]),
   sec("change","Change your plan",[el("div",{class:"row"},el("button",{type:"button",class:"btn",onclick:()=>openCal()},"Edit my calendar"),el("button",{type:"button",class:"btn ghost",onclick:()=>go("J")},"Change my answers"),el("button",{type:"button",class:"btn ghost",onclick:()=>go("make")},"Make the plan again")),
    el("p",{class:"note"},"After editing your calendar or answers, press \"Make the plan again\".")]),
-  sec("data","Your data",[el("div",{class:"q"},el("p",{class:"note"},S.user?"Saved on StudyHub's server in Switzerland, readable only by you.":"Saved only in this browser. Sign in to keep it on all your devices."),del)])];};
+  sec("data","Your data",[el("div",{class:"q"},el("p",{class:"note"},S.user?"Saved on StudyHub's server in Switzerland, readable only by you.":"Saved only in this browser. Sign in to keep it on all your devices."),researchBox(),del)])];};
+function researchBox(){const msg=el("span",{class:"note",role:"status"});
+ const i=el("input",{type:"checkbox",id:"f_A3_later",onchange:e=>{set("A3",e.target.checked);persist();msg.textContent=e.target.checked?" Saved: yes.":" Saved: no.";}});i.checked=!!get("A3");
+ return el("label",{class:"check",for:"f_A3_later",style:"margin:10px 0"},i,el("span",null,"My planner data may be used anonymised for future educational research.",msg,el("span",{class:"note",style:"display:block"},RESEARCH_HINT.replace(/ You can change it.*$/,""))));}
 
 /* ---------- saving: this browser always, StudyHub's server when signed in and consent is given ---------- */
 const LOCAL="sh-planner:v1:";
