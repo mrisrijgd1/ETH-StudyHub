@@ -28,20 +28,20 @@ window.FC_CONFIG = {
 
   /* Script chapters. Titles exactly as in the script. */
   chapters: [
-    { id: 1,  title: "Einleitung", course: "P1", icon: "units" },
-    { id: 2,  title: "Kinematik des Massenpunktes", course: "P1", icon: "trajectory" },
-    { id: 3,  title: "Dynamik des Massenpunktes", course: "P1", icon: "newton" },
-    { id: 4,  title: "Arbeit und Energie", course: "P1", icon: "energy" },
-    { id: 5,  title: "Drehbewegungen", course: "P1", icon: "rotation" },
-    { id: 6,  title: "Vielteilchensysteme", course: "P1", icon: "manybody" },
-    { id: 7,  title: "Gravitationstheorie", course: "P1", icon: "orbit" },
-    { id: 8,  title: "Dynamik des starren Körpers", course: "P1", icon: "rigidbody" },
-    { id: 9,  title: "Schwingungen", course: "P1", icon: "oscillation" },
-    { id: 10, title: "Wärmelehre und Thermodynamik", course: "P1", icon: "thermo" },
-    { id: 11, title: "Anhang: Differential- und Integralrechnung, Vektoren", course: "P1A", icon: "vectorcalc" },
-    { id: 12, title: "Anhang: Differentialgleichungen", course: "P1A", icon: "ode" },
-    { id: 13, title: "Zusatzabschnitt: Kreiselbewegung", course: "P1A", icon: "gyro" },
-    { id: 14, title: "Zusatzabschnitt: Statistische Mechanik", course: "P1A", icon: "maxwell" }
+    { id: 1,  title: "Einleitung", titleEn: "Introduction", course: "P1", icon: "units" },
+    { id: 2,  title: "Kinematik des Massenpunktes", titleEn: "Kinematics of a point mass", course: "P1", icon: "trajectory" },
+    { id: 3,  title: "Dynamik des Massenpunktes", titleEn: "Dynamics of a point mass", course: "P1", icon: "newton" },
+    { id: 4,  title: "Arbeit und Energie", titleEn: "Work and energy", course: "P1", icon: "energy" },
+    { id: 5,  title: "Drehbewegungen", titleEn: "Rotational motion", course: "P1", icon: "rotation" },
+    { id: 6,  title: "Vielteilchensysteme", titleEn: "Many-particle systems", course: "P1", icon: "manybody" },
+    { id: 7,  title: "Gravitationstheorie", titleEn: "Gravitation", course: "P1", icon: "orbit" },
+    { id: 8,  title: "Dynamik des starren Körpers", titleEn: "Dynamics of rigid bodies", course: "P1", icon: "rigidbody" },
+    { id: 9,  title: "Schwingungen", titleEn: "Oscillations", course: "P1", icon: "oscillation" },
+    { id: 10, title: "Wärmelehre und Thermodynamik", titleEn: "Heat and thermodynamics", course: "P1", icon: "thermo" },
+    { id: 11, title: "Anhang: Differential- und Integralrechnung, Vektoren", titleEn: "Appendix: differential and integral calculus, vectors", course: "P1A", icon: "vectorcalc" },
+    { id: 12, title: "Anhang: Differentialgleichungen", titleEn: "Appendix: differential equations", course: "P1A", icon: "ode" },
+    { id: 13, title: "Zusatzabschnitt: Kreiselbewegung", titleEn: "Extra section: gyroscopic motion", course: "P1A", icon: "gyro" },
+    { id: 14, title: "Zusatzabschnitt: Statistische Mechanik", titleEn: "Extra section: statistical mechanics", course: "P1A", icon: "maxwell" }
   ],
 
   /* Mastery and streak rules */

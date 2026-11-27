@@ -69,6 +69,7 @@
   /* ------------------------------------------------------------------ */
   /* Data                                                                */
   /* ------------------------------------------------------------------ */
+  const EN_FIELDS = ["title", "front", "back", "meta", "explanation", "example", "counterexample", "derivation", "pitfalls"];
   const chapters = C.chapters.map(ch => {
     const raw = window["FLASHCARDS_KAPITEL_" + ch.id] || null;
     const cards = raw ? raw.map((c, i) => ({
@@ -79,8 +80,30 @@
     })) : null;
     const cats = cards ? [...new Set(cards.map(c => c.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "de", { numeric: true })) : [];
     if (cards) chronoKeys(cards, ch.id, cats);
-    return Object.assign({}, ch, { cards, cats });
+    const catEn = {};
+    if (cards) withEnglish(cards, window["FLASHCARDS_EN_KAPITEL_" + ch.id] || null, catEn);
+    return Object.assign({}, ch, { cards, cats, catEn });
   });
+
+  /* English cards (en: fallback). An optional file data_kapitel<N>.en.js next to the German one defines
+     window.FLASHCARDS_EN_KAPITEL_<N> = { "<card id>": { title, category, front, back, … } }. In English the
+     card shows each field from there; a missing card or field falls back to the German text. Ids, order,
+     sections (category stays the German key) and progress are the same in both languages. */
+  function withEnglish(cards, en, catEn) {
+    if (!en) return;
+    cards.forEach(c => {
+      const e = en[c.id];
+      if (!e || typeof e !== "object") return;
+      if (e.category && c.category && !catEn[c.category]) catEn[c.category] = e.category;
+      const de = {};
+      EN_FIELDS.forEach(f => {
+        de[f] = c[f];
+        if (!e[f]) return;
+        Object.defineProperty(c, f, { enumerable: true, configurable: true, get: () => (LANG === "en" ? e[f] : de[f]) });
+      });
+      c.de = de; c.hasEn = true;
+    });
+  }
   const scriptCards = chapters.flatMap(ch => ch.cards || []);
   const byId = new Map(scriptCards.map(c => [c.id, c]));
 
@@ -199,7 +222,7 @@
       if (raw.shuffled) u.prefs.shuffle = true;
       Object.keys(raw.ratings).forEach(key => {
         let card = byId.get(key);
-        if (!card) { const t = key.replace(/^\d+:/, ""); card = ch.cards.find(c => c.title === t); }   // old Kapitel 2 keys
+        if (!card) { const t = key.replace(/^\d+:/, ""); card = ch.cards.find(c => (c.de ? c.de.title : c.title) === t); }   // old Kapitel 2 keys
         if (!card) return;
         const r = raw.ratings[key] === "gotit" ? "g" : raw.ratings[key] === "repeat" ? "a" : null;
         if (!r) return;
@@ -342,7 +365,9 @@
                   st.mastered + " mastered, " + st.unsure + " unsure, " + (st.total - st.mastered - st.unsure) + " open of " + st.total);
     return `<div class="fc-meter" title="${esc(lab)}"><div class="fc-bar" role="img" aria-label="${esc(lab)}"><span class="g" style="width:${g}%"></span><span class="u" style="width:${u}%"></span></div><span>${Math.round(g)} %${extra || ""}</span></div>`;
   }
-  const chTitle = ch => (LANG === "de" ? "Kapitel " : "Chapter ") + ch.id + " – " + ch.title;
+  const chName = ch => (LANG === "en" && ch.titleEn) ? ch.titleEn : ch.title;
+  const chTitle = ch => (LANG === "de" ? "Kapitel " : "Chapter ") + ch.id + " – " + chName(ch);
+  const catName = (cat, chId) => { const ch = chapters.find(x => x.id === chId); return (LANG === "en" && ch && ch.catEn && ch.catEn[cat]) || cat; };
   function strip(html) { const d = document.createElement("div"); d.innerHTML = html; $$("svg,script,style", d).forEach(n => n.remove()); return (d.textContent || "").replace(/\s+/g, " ").trim(); }
 
   /* Icons: currentColor line drawings, one per chapter */
@@ -600,7 +625,7 @@
     $$(".fc-week-nav button").forEach(b => b.onclick = () => { weekOffset = Math.max(0, weekOffset + (+b.dataset.week)); const box = $(".fc-week"); if (box) { box.outerHTML = weekView(); wireWeek(); } });
   }
   function radar(ch) {
-    const data = ch.cats.map(cat => { const cards = ch.cards.filter(c => c.category === cat); const s = stats(cards); return { cat, v: s.total ? s.mastered / s.total : 0, n: s.total, m: s.mastered }; });
+    const data = ch.cats.map(cat => { const cards = ch.cards.filter(c => c.category === cat); const s = stats(cards); return { cat: catName(cat, ch.id), v: s.total ? s.mastered / s.total : 0, n: s.total, m: s.mastered }; });
     const short = s => s.length > 30 ? s.slice(0, 29) + "…" : s;
     if (data.length < 3) {
       return `<div class="fc-subs">` + data.map(d => `<div><div class="fc-muted" style="font-size:13px;margin-bottom:4px">${esc(d.cat)}</div>${bar({ total: d.n, mastered: d.m, unsure: 0 })}</div>`).join("") + `</div>`;
@@ -722,12 +747,12 @@
     if (!ch || !ch.cards) { $("#fc-view").innerHTML = crumbs([[L("Lernkarten", "Flashcards"), "#/"], [L("Kapitel", "Chapter") + " " + id, ""]]) + `<div class="fc-panel fc-empty"><span class="kao">(´･_･\`)</span>${L("Für dieses Kapitel gibt es noch keine Karten.", "There are no cards for this chapter yet.")}</div>`; return; }
     const st = stats(ch.cards);
     $("#fc-view").innerHTML = crumbs([[L("Lernkarten", "Flashcards"), "#/"], [L("Kapitel", "Chapter") + " " + ch.id, ""]]) +
-      `<div class="fc-row" style="justify-content:space-between;align-items:flex-end"><div><span class="fc-muted">${L("Kapitel", "Chapter")} ${ch.id}</span><h1>${esc(ch.title)}</h1></div>
+      `<div class="fc-row" style="justify-content:space-between;align-items:flex-end"><div><span class="fc-muted">${L("Kapitel", "Chapter")} ${ch.id}</span><h1>${esc(chName(ch))}</h1></div>
         <a class="fc-btn primary" href="#/kapitel-${ch.id}/session">${L("Ganzes Kapitel üben", "Practise whole chapter")} (${st.total})</a></div>
       <div class="fc-panel" style="margin-top:18px">${bar(st)}<p class="fc-muted" style="margin-top:8px">${st.mastered} ${L("gewusst", "mastered")} · ${st.unsure} ${L("unsicher", "unsure")} · ${st.weak} ${L("schwach", "weak")} · ${st.fresh} ${L("neu", "new")}</p></div>
       <section class="fc-section"><h2>${L("Abschnitte", "Sections")}</h2><div class="fc-subs">` +
       ch.cats.map((cat, i) => { const cards = ch.cards.filter(c => c.category === cat); const s = stats(cards);
-        return `<div class="fc-sub-row"><h3>${esc(cat)}</h3>${bar(s)}<a class="fc-btn" href="#/kapitel-${ch.id}/${i + 1}/session">${L("Üben", "Practise")} (${s.total})</a></div>`; }).join("") +
+        return `<div class="fc-sub-row"><h3>${esc(catName(cat, ch.id))}</h3>${bar(s)}<a class="fc-btn" href="#/kapitel-${ch.id}/${i + 1}/session">${L("Üben", "Practise")} (${s.total})</a></div>`; }).join("") +
       `</div></section>`;
   }
 
@@ -792,7 +817,7 @@
         <label>${L("Deck", "Deck")} <select id="wk-deck">${decks.map(d => `<option value="${d[0]}"${d[0] === w.deck ? " selected" : ""}>${esc(d[1])}</option>`).join("")}</select></label>
         <label>${L("Typ", "Type")} <select id="wk-type">${types.map(d => `<option value="${d[0]}"${d[0] === w.type ? " selected" : ""}>${esc(d[1])}</option>`).join("")}</select></label>
         <a class="fc-btn primary" href="#/weak/session"${deck.length ? "" : ' aria-disabled="true"'}>${L("Üben", "Practise")} (${deck.length})</a></div></div>
-      ${deck.length ? `<ul class="fc-list" style="margin-top:16px">${deck.slice(0, 40).map(c => `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front))}</span><span class="n">${peek(c.id).wrong}× ${C.ratings.again.kaomoji} · ${peek(c.id).unsure}× ${C.ratings.unsure.kaomoji}<small class="fc-hist">${L("zuletzt", "recent")}: ${(peek(c.id).h || []).map(r => r === "g" ? "✓" : r === "u" ? "?" : "✗").join(" ")}</small></span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + c.category : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)} · ${typeLabel(c.type)}</span></a></li>`).join("")}</ul>`
+      ${deck.length ? `<ul class="fc-list" style="margin-top:16px">${deck.slice(0, 40).map(c => `<li><a href="#/session/card/${encodeURIComponent(c.id)}"><span class="q">${esc(strip(c.front))}</span><span class="n">${peek(c.id).wrong}× ${C.ratings.again.kaomoji} · ${peek(c.id).unsure}× ${C.ratings.unsure.kaomoji}<small class="fc-hist">${L("zuletzt", "recent")}: ${(peek(c.id).h || []).map(r => r === "g" ? "✓" : r === "u" ? "?" : "✗").join(" ")}</small></span><span class="m">${esc(c.src === "script" ? "Kap. " + c.chapter + (c.category ? " · " + catName(c.category, c.chapter) : "") : L("Beweistraining · Lektion ", "Proof practice · Lesson ") + c.lesson)} · ${typeLabel(c.type)}</span></a></li>`).join("")}</ul>`
         : `<div class="fc-panel fc-empty" style="margin-top:16px"><span class="kao">｡^‿^｡</span>${L("Keine schwachen Karten – stark!", "No weak cards – well done!")}</div>`}`;
     $$(".fc-list").forEach(typeset);
     $("#wk-deck").onchange = e => { w.deck = e.target.value; save(); render(); };
@@ -812,7 +837,7 @@
       const sec = p.length === 3 ? parseInt(p[1], 10) : 0; const cat = sec ? ch.cats[sec - 1] : null;
       return { cards: ch.cards.filter(c => !cat || c.category === cat), back: "#/kapitel-" + ch.id, order: true,
         crumbs: [home, [L("Kapitel ", "Chapter ") + ch.id, "#/kapitel-" + ch.id]].concat(cat ? [[cat, "#/kapitel-" + ch.id]] : []).concat([[L("Üben", "Practice"), ""]]),
-        title: cat || chTitle(ch) };
+        title: cat ? catName(cat, ch.id) : chTitle(ch) };
     }
     if (p[0] === "proof-practice") return { cards: proofDeck(), back: "#/proof-practice", order: true, needsLessons: true,
       crumbs: [home, [L("Beweistraining", "Proof practice"), "#/proof-practice"], [L("Üben", "Practice"), ""]], title: L("Beweistraining", "Proof practice") };
@@ -1008,7 +1033,7 @@
       e.preventDefault();
       const text = ta.value.trim(); if (text.length < 3) { msg.textContent = L("Schreib bitte ein paar Worte mehr.", "Please write a few more words."); ta.focus(); return; }
       const k = kinds.find(x => x.id === d.kind) || kinds[0], kl = L(k.de, k.en), topic = topicOf(c);
-      const where = c.src === "script" ? `${SUBJECT} · ${L("Kapitel", "Chapter")} ${c.chapter}${c.category ? " · " + c.category : ""}` : `${L("Beweistraining · Lektion", "Proof practice · Lesson")} ${c.lesson}`;
+      const where = c.src === "script" ? `${SUBJECT} · ${L("Kapitel", "Chapter")} ${c.chapter}${c.category ? " · " + catName(c.category, c.chapter) : ""}` : `${L("Beweistraining · Lektion", "Proof practice · Lesson")} ${c.lesson}`;
       const title = (kl + " · " + cardLabel(c)).slice(0, 150);
       const full = (text + "\n\n— " + L("Lernkarte", "Flashcard") + ": " + cardLabel(c) + " (" + where + ")\n" + idLine(c)).slice(0, 5000);
       send.disabled = true; msg.textContent = L("Wird gesendet …", "Sending …");
@@ -1016,7 +1041,6 @@
         send.disabled = false;
         if (r.error) { msg.textContent = L("Senden fehlgeschlagen: ", "Could not send: ") + r.error.message; return; }
         notifyTeam({ app: "studyhub-analysis-flashcards", topic, card: c.id, cardTitle: cardLabel(c), where, kind: k.id, text, anonymous: d.anon, lang: LANG, at: new Date().toISOString() });
-        try { window.umami && window.umami.track("fc-comment", { kind: k.id, deck: c.deck }); } catch (er) {}
         d.text = ""; ta.value = ""; msg.innerHTML = `${L("Danke! Dein Kommentar steht jetzt im", "Thanks! Your comment is now in the")} <a href="${esc(hubLink("forumPage") + "?topic=" + encodeURIComponent(topic) + "#forum")}">${L("Forum", "forum")}</a>.`;
         noteCount(c, true);
       }, () => { send.disabled = false; msg.textContent = L("Senden fehlgeschlagen – bitte später nochmal.", "Could not send – please try again later."); });
@@ -1029,7 +1053,7 @@
   }
   function badges(c) {
     const t = c.type ? `<span class="fc-tag t-${esc(c.type)}">${esc(typeLabel(c.type))}</span>` : "";
-    const where = c.src === "script" ? (c.category ? `<span class="fc-tag">${esc(c.category)}</span>` : "") : `<span class="fc-tag">${L("Lektion ", "Lesson ")}${c.lesson}</span>`;
+    const where = c.src === "script" ? (c.category ? `<span class="fc-tag">${esc(catName(c.category, c.chapter))}</span>` : "") : `<span class="fc-tag">${L("Lektion ", "Lesson ")}${c.lesson}</span>`;
     return t + where;
   }
   function show(i, keepNote) {

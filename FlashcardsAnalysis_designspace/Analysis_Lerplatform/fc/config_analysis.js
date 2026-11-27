@@ -12,17 +12,17 @@ window.FC_CONFIG = {
      A chapter becomes active as soon as window.FLASHCARDS_KAPITEL_<id> exists
      (add the data file and one <script> tag in index.html). */
   chapters: [
-    { id: 1,  title: "Einführung", course: "A1", icon: "quantifiers" },
-    { id: 2,  title: "Die reellen Zahlen", course: "A1", icon: "supremum" },
-    { id: 3,  title: "Funktionen und die reellen Zahlen", course: "A1", icon: "mapping" },
-    { id: 4,  title: "Das Riemann-Integral", course: "A1", icon: "riemann" },
-    { id: 5,  title: "Metrische Räume, Folgen und Stetigkeit", course: "A1", icon: "ball" },
-    { id: 6,  title: "Grenzwerte reeller Folgen und Funktionen", course: "A1", icon: "limit" },
-    { id: 7,  title: "Reihen, Funktionenfolgen und Potenzreihen", course: "A1", icon: "series" },
-    { id: 8,  title: "Differentialrechnung", course: "A1", icon: "tangent" },
-    { id: 9,  title: "Die Ableitung und das Riemann-Integral", course: "A1", icon: "ftc" },
-    { id: 10, title: "Metrische Räume", course: "A2", icon: "metric" },
-    { id: 11, title: "Mehrdimensionale Differentialrechnung", course: "A2", icon: "multi" }
+    { id: 1,  title: "Einführung", titleEn: "Introduction", course: "A1", icon: "quantifiers" },
+    { id: 2,  title: "Die reellen Zahlen", titleEn: "The real numbers", course: "A1", icon: "supremum" },
+    { id: 3,  title: "Funktionen und die reellen Zahlen", titleEn: "Functions and the real numbers", course: "A1", icon: "mapping" },
+    { id: 4,  title: "Das Riemann-Integral", titleEn: "The Riemann integral", course: "A1", icon: "riemann" },
+    { id: 5,  title: "Metrische Räume, Folgen und Stetigkeit", titleEn: "Metric spaces, sequences and continuity", course: "A1", icon: "ball" },
+    { id: 6,  title: "Grenzwerte reeller Folgen und Funktionen", titleEn: "Limits of real sequences and functions", course: "A1", icon: "limit" },
+    { id: 7,  title: "Reihen, Funktionenfolgen und Potenzreihen", titleEn: "Series, sequences of functions and power series", course: "A1", icon: "series" },
+    { id: 8,  title: "Differentialrechnung", titleEn: "Differential calculus", course: "A1", icon: "tangent" },
+    { id: 9,  title: "Die Ableitung und das Riemann-Integral", titleEn: "The derivative and the Riemann integral", course: "A1", icon: "ftc" },
+    { id: 10, title: "Metrische Räume", titleEn: "Metric spaces", course: "A2", icon: "metric" },
+    { id: 11, title: "Mehrdimensionale Differentialrechnung", titleEn: "Multivariable differential calculus", course: "A2", icon: "multi" }
   ],
 
   /* Mastery and streak rules */

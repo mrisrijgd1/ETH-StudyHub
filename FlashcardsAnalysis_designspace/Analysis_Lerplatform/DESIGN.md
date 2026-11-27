@@ -14,9 +14,9 @@ fc/hub.js             start page logic (reads each subject's storage; same user 
 fc/flame.js           the flame creature: drawing, moods, hover/poke/idle-thought behaviour (subjects and start page)
 fc/app.js, app.css    the engine shared by all subjects (+ start-page and thermometer styles at the end of app.css)
 fc/config_<id>.js     everything meant to be tuned per subject (chapters, icons, thresholds, greetings, …)
-analysis/             Analysis I: index.html, data_kapitel1–9.js, classic.html
-linalg/               Lineare Algebra I: index.html, data_kapitel0–10.js
-physik/               Physik I: index.html, data_kapitel1–14.js
+analysis/             Analysis I: index.html, data_kapitel1–9.js (+ .en.js), classic.html
+linalg/               Lineare Algebra I: index.html, data_kapitel0–10.js (+ .en.js)
+physik/               Physik I: index.html, data_kapitel1–14.js (+ .en.js)
 ```
 
 The hub's "Lernkarten" button (next to the subjects in the shared header) should link to `index.html` of this folder.
@@ -28,12 +28,13 @@ Progress is kept: localStorage belongs to the origin, not the path.
 | File | What it is |
 |---|---|
 | `index.html` | Start page shell: `fc/app.css`, `fc/subjects.js`, `fc/flame.js`, `fc/hub.js`, `../../assets/account.js` |
-| `<subject>/index.html` | Subject shell: MathJax 3.2.2 `tex-svg-full`, the deck files, `../fc/subjects.js`, `../fc/config_<id>.js`, `../fc/app.js`, `../../../assets/account.js` |
+| `<subject>/index.html` | Subject shell: MathJax 3.2.2 `tex-svg-full` (from StudyHub's own `assets/mathjax/`, jsDelivr only when the repo runs on its own; no analytics), the deck files, `../fc/subjects.js`, `../fc/config_<id>.js`, `../fc/app.js`, `../../../assets/account.js` |
 | `fc/subjects.js` | List of subjects. A new subject = an entry here + its folder + `fc/config_<id>.js` |
 | `fc/config_analysis.js`, `fc/config_linalg.js`, `fc/config_physik.js` | **Everything meant to be tuned** per subject: chapters and icons, mastery/weak/streak thresholds, kaomojis, greeting pool, lesson-card sources |
 | `fc/app.js` | Router, storage, mastery rules, overview page, chapter pages, Proof practice, Weak cards, the card environment; writes a small `summary` per user for the start page |
 | `fc/app.css` | All styles. The only colour definitions are in the theme block at the top (`.fc-app { --fc-* }`); the flame colour is set per subject |
 | `<subject>/data_kapitel<N>.js` | Script-chapter decks (`window.FLASHCARDS_KAPITEL_<N>`). Card text is never changed by the app |
+| `<subject>/data_kapitel<N>.en.js` | Optional English text per card (`window.FLASHCARDS_EN_KAPITEL_<N>`, keyed by card id). With the language set to EN the app shows these fields; a missing card or field falls back to German. Ids, order, sections (the German `category` stays the key) and progress are shared. English chapter names: `titleEn` in `fc/config_<id>.js` |
 | `analysis/classic.html` | The previous single-page Analysis version, kept for comparison |
 
 ## Start page (`index.html`, `fc/hub.js`)
