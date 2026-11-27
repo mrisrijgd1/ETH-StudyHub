@@ -275,7 +275,7 @@
     if (localStorage.getItem('sh-eth-login') === '1') ethLogin = true;
     if (localStorage.getItem('sh-eth-login') === '0') ethLogin = ETH_LIVE;
   } catch (e) {}
-  function loginLabel() { return ethLogin ? L('Sign in with your ETH account', 'Mit deinem ETH-Konto anmelden') : L('Sign in with Google', 'Mit Google anmelden'); }
+  function loginLabel() { return ethLogin ? L('Sign in with SWITCH edu-ID', 'Mit SWITCH edu-ID anmelden') : L('Sign in with Google', 'Mit Google anmelden'); }
   function signIn(provider) {
     if (typeof provider !== 'string') provider = ethLogin ? ETH_PROVIDER : 'google';
     track('login');
