@@ -131,6 +131,16 @@ table.res td.n{text-align:right;font-family:var(--f-mono)}
 .sheet .top h3{margin:0 auto 0 0;font-size:17px}
 .sheet .body{flex:1;overflow:auto;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .steps{display:flex;gap:4px;flex-wrap:wrap}
+/* study-places map (planner/places/), shown as its own tab over the planner */
+.pmap{position:fixed;inset:0;z-index:2001;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.pmap[hidden]{display:none}
+.pmap .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);background:var(--surface)}
+.pmap .top h3{margin:0;font-size:17px}
+.pmap .top .note{margin:0 auto 0 0;font-size:13px}
+.pmap iframe{flex:1;width:100%;border:0;display:block}
+.place-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.place-row input{flex:1 1 200px;min-width:0}
+@media (max-width:520px){.pmap .top .note{display:none}.pmap .top h3{margin-right:auto}}
 .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:6px 0 10px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
 .gridwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
@@ -249,6 +259,7 @@ header.rail{z-index:50}
 <header class="rail"><div class="in">
   <div class="brand">Study planner <small>Test version: rule-based, no AI</small></div>
   <nav class="mods" id="mods" aria-label="Modules"></nav>
+  <button type="button" class="btn small ghost" id="mapbtn" title="Map of study places in Zürich, with live occupancy">🗺 Study places</button>
   <button type="button" class="btn small" id="calbtn" title="Open the interactive calendar set-up">📅 Calendar</button>
   </div></header>
 
@@ -260,6 +271,7 @@ header.rail{z-index:50}
 <main class="wrap" id="app"></main>
 
 <div class="sheet" id="sheet" hidden></div>
+<div class="pmap" id="pmap" hidden role="dialog" aria-modal="true" aria-labelledby="pmap-h"></div>
 
 <script>
 (function(){
@@ -418,6 +430,7 @@ SC.G=()=>[...head("G"),
  q("G2","Share of your study time spent solving problems",(()=>{const o=el("output",null,get("G2",40)+" % problems");const r=el("input",{type:"range",min:"0",max:"100",step:"10",value:String(get("G2",40)),"aria-label":"Share solving problems",oninput:e=>{set("G2",+e.target.value);o.textContent=e.target.value+" % problems";}});return el("div",{class:"slider",style:"grid-template-columns:1fr 110px"},r,o);})(),"The rest is reading or watching."),
  q("G3","How long can you focus before you need a break?",chipsSingle("G3",["25 min","50 min","90 min","it varies"])),
  q("G4","What matters most to you in a study space? Pick up to 3",el("div",null,chipsMulti("G4",["quiet","group work allowed","power and WiFi","long opening hours","close to where I live","daylight","coffee and food nearby","free of charge","seat I can reserve","I study best at home"],3),el("label",{for:"f_G4_town",class:"note",style:"display:block;margin-top:10px"},"Where do you live during the Lernphase? Town or district only"),text("G4_town","e.g. Zürich Kreis 6, Winterthur")),"Each morning the planner suggests a place that fits, today's mood and how full it usually is."),
+ el("p",{class:"note",style:"margin:-4px 0 14px"},"Want to see your options? ",el("a",{href:"#places",onclick:e=>{e.preventDefault();openMap();}},"Open the map of study places in Zürich"),", with live occupancy for ETH rooms."),
  q("G5","Alone or with others?",chipsSingle("G5",["alone","sometimes in a group","mostly in a group"])),
  q("G6","How often do you start later than you planned?",scale("G6","rarely","almost always")),
  q("G7","In your last exam phase, how much of your plan did you actually get done?",chipsSingle("G7",["under 50 %","50 to 75 %","75 to 90 %","almost all","this is my first exam phase"])),
@@ -524,7 +537,7 @@ function halfEditor(p,key,d){const h=key.slice(11);const H=p.settings.half[h];co
  const sc=el("div",{class:"chips"},open.map(s=>el("button",{type:"button",class:"chip","aria-pressed":String(cur.subj.includes(s.k)),onclick:e=>{cur.subj=cur.subj.includes(s.k)?cur.subj.filter(x=>x!==s.k):cur.subj.concat(s.k);e.currentTarget.setAttribute("aria-pressed",String(cur.subj.includes(s.k)));}},s.n)));
  box.append(el("p",{class:"hint",style:"margin:6px 0"},"Subjects for this half-day. Leave empty to let the plan choose; your choice changes the plan's blocks here."),sc);
  const pl=el("input",{type:"text",list:"places-list",placeholder:"e.g. ETH HG library, at home","aria-label":"Where you want to study"});pl.value=cur.place;
- box.append(el("div",{class:"t",style:"margin-top:14px"},"Where do you want to study?"),pl,el("datalist",{id:"places-list"},PLACES.map(x=>el("option",{value:x.name},x.area))));
+ box.append(el("div",{class:"t",style:"margin-top:14px"},"Where do you want to study?"),el("div",{class:"place-row"},pl,el("button",{type:"button",class:"btn small ghost",onclick:()=>openMap(n=>{pl.value=n;},pl.value.trim())},"🗺 Choose on the map")),el("datalist",{id:"places-list"},PLACES.map(x=>el("option",{value:x.name},x.area))));
  const pts=el("div");
  if(ss.length){pts.append(el("p",{class:"hint",style:"margin:6px 0"},"Tick what you plan to cover:"));ss.forEach(s=>{const id=s.from+" "+s.title;const c=el("input",{type:"checkbox"});c.checked=cur.points.includes(id);c.onchange=()=>{cur.points=c.checked?cur.points.concat(id):cur.points.filter(x=>x!==id);};pts.append(el("label",{class:"check"},c,el("span",null,el("b",null,s.from+"–"+s.to+" "),s.title,el("span",{class:"note",style:"display:block"},KIND[s.kind]||s.kind))));});}
  else pts.append(el("p",{class:"note"},"No blocks planned here yet."));
@@ -577,7 +590,7 @@ SC.plan=()=>{const p=S.plan;if(!p)return SC.intro();
   sec("hours","Hours per week",[el("div",{class:"legend"},SUBJ.map(s=>el("span",null,el("i",{class:"c-"+s.k}),s.n))),
    weekRows(p),
    el("p",{class:"note"},"Mock exams planned: "+SUBJ.map(s=>s.n+" "+(p.totals.mocks[s.k]||0)+" (target "+tgt[s.k]+")").join(", ")+". Daily maximum "+hrs(p.settings.cap)+"; blocks of "+p.settings.block+" min with "+p.settings.brk+" min breaks.")]),
-  sec("change","Change your plan",[el("div",{class:"row"},el("button",{type:"button",class:"btn",onclick:()=>openCal()},"Edit my calendar"),el("button",{type:"button",class:"btn ghost",onclick:()=>go("J")},"Change my answers"),el("button",{type:"button",class:"btn ghost",onclick:()=>go("make")},"Make the plan again")),
+  sec("change","Change your plan",[el("div",{class:"row"},el("button",{type:"button",class:"btn",onclick:()=>openCal()},"Edit my calendar"),el("button",{type:"button",class:"btn ghost",onclick:()=>go("J")},"Change my answers"),el("button",{type:"button",class:"btn ghost",onclick:()=>go("make")},"Make the plan again"),el("button",{type:"button",class:"btn ghost",onclick:()=>openMap()},"Study places map")),
    el("p",{class:"note"},"After editing your calendar or answers, press \"Make the plan again\".")]),
   sec("data","Your data",[el("div",{class:"q"},el("p",{class:"note"},S.user?"Saved on StudyHub's server in Switzerland, readable only by you.":"Saved only in this browser. Sign in to keep it on all your devices."),researchBox(),del)])];};
 function researchBox(){const msg=el("span",{class:"note",role:"status"});
@@ -618,7 +631,7 @@ async function boot(){$("#app").append(el("p",{class:"lead",style:"margin-top:28
  SUBJ=PROG.subjects.map(s=>({k:s.k,n:s.name,min:s.exam_min,aids:s.aids}));
  PROG.subjects.forEach(s=>{CH[s.k]=s.chapters.map(c=>c.n);PREFILL[s.k]={};});
  const pr=progressMap();PROG.subjects.forEach(s=>s.chapters.forEach((c,i)=>{if(pr[c.href])PREFILL[s.k][i]=3;}));
- LAST=dIso(PROG.exam_session.to);fetch("planner/data/study-spaces-zh.json").then(r=>r.json()).then(j=>{PLACES=j.places||[];}).catch(()=>{});LECT_END=dIso(PROG.lecture_period.end);
+ LAST=dIso(PROG.exam_session.to);fetch("planner/places/study-spaces.json").then(r=>r.json()).then(j=>{PLACES=(j.places||[]).map(x=>({id:x.id,name:x.name,area:x.area||""}));}).catch(()=>{});LECT_END=dIso(PROG.lecture_period.end);
  let g=null;try{g=JSON.parse(localStorage.getItem(LOCAL+"guest"));}catch(e){}restore(g);
  if(S.plan)S.cur="plan";
  render();
@@ -629,6 +642,21 @@ async function boot(){$("#app").append(el("p",{class:"lead",style:"margin-top:28
 
 /* ---------- calendar sheet ---------- */
 let calStep="import",calWeek="template";
+/* ---------- study-places map (Rachel, 27 Nov): its own tab, and a picker for every place choice ---------- */
+const ETH_OCC="https://ethz.ch/studierende/de/campus/arbeitsplaetze-studierende/auslastung-studierendenarbeitsplaetze.html";
+let mapPick=null,mapBack=null;
+function openMap(pick,currentName){const w=$("#pmap");mapPick=pick||null;mapBack=document.activeElement;
+ const cur=currentName&&PLACES.find(x=>x.name===currentName);
+ const src="planner/places/index.html"+(pick?"?pick=1"+(cur?"&place="+encodeURIComponent(cur.id):""):"");
+ w.textContent="";
+ const close=el("button",{type:"button",class:"btn small",onclick:closeMap},pick?"Cancel":"Back to my plan");
+ w.append(el("div",{class:"top"},el("h3",{id:"pmap-h"},pick?"Choose a study place":"Study places in Zürich"),
+  el("p",{class:"note"},pick?"Tap a place, then \"Choose this place for my plan\".":["Live occupancy for ETH rooms comes from ",el("a",{href:ETH_OCC,target:"_blank",rel:"noopener"},"ETH's live traffic light"),"."]),close),
+  el("iframe",{src:src,title:"Map of study places in Zürich"}));
+ w.hidden=false;document.body.style.overflow="hidden";if(!pick&&location.hash!=="#places")history.replaceState(null,"","#places");close.focus();}
+function closeMap(){const w=$("#pmap");w.hidden=true;w.textContent="";document.body.style.overflow="";mapPick=null;if(location.hash==="#places")history.replaceState(null,"",location.pathname+location.search);if(mapBack&&mapBack.focus)mapBack.focus();}
+addEventListener("message",e=>{if(e.origin!==location.origin||!e.data||e.data.type!=="sh-place-pick")return;const f=mapPick;closeMap();if(f)f(String(e.data.name||"").slice(0,80));});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#pmap").hidden)closeMap();});
 function openCal(){S.cal.opened++;$("#sheet").hidden=false;document.body.style.overflow="hidden";drawCal();}
 function closeCal(){$("#sheet").hidden=true;document.body.style.overflow="";persist();render();}
 function weeks(){const out=[];let d=new Date(TODAY);while(d<=LAST){out.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+7);}return out;}
@@ -820,6 +848,8 @@ function calAdvice(){S.cal.done=true;const tips=[];const hasMove=S.cal.boxes.som
  return out;}
 
 $("#calbtn").onclick=()=>openCal();
+$("#mapbtn").onclick=()=>openMap();
+if(location.hash==="#places")setTimeout(()=>openMap(),0);
 $("#sheet").addEventListener("pointerdown",e=>{if(evDay&&!e.target.closest(".bubble,.mday")){evDay=null;drawCal(true);}});
 
 /* ---------- render ---------- */
