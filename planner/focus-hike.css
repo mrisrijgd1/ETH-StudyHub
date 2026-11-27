@@ -1,0 +1,86 @@
+/* Focus trail window above the study planner (planner/focus-hike.js). Uses the page's colour tokens. */
+.fh{--fh-surface:var(--surface,#fff);--fh-ink:var(--ink,#21242c);--fh-muted:var(--muted,#5b616e);--fh-line:var(--line,#e1e5ec);--fh-accent:var(--accent,#1865f2);--fh-accent-ink:var(--accent-ink,#fff);
+  position:relative;max-width:1040px;margin:14px auto 0;width:calc(100% - 2*max(16px,env(safe-area-inset-left,0px)));
+  border:1px solid var(--fh-line);border-radius:14px;background:var(--fh-surface);color:var(--fh-ink);
+  box-shadow:0 1px 2px rgba(20,30,40,.06),0 8px 24px -12px rgba(20,30,40,.18);overflow:hidden;font-family:var(--f-body,system-ui,sans-serif)}
+#focus-hike *{box-sizing:border-box}
+#focus-hike button{font:inherit;color:inherit}
+#focus-hike .fh-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#focus-hike svg{width:18px;height:18px;flex:none;display:block}
+#focus-hike .fh-bar{display:flex;align-items:center;gap:6px;padding:5px 6px 5px 12px;border-bottom:1px solid var(--fh-line);min-height:38px}
+#focus-hike .fh-dots{display:flex;gap:5px;margin-right:6px}
+#focus-hike .fh-dots i{width:9px;height:9px;border-radius:50%;background:#e9a29a;display:block}
+#focus-hike .fh-dots i:nth-child(2){background:#ecd08a}#focus-hike .fh-dots i:nth-child(3){background:#9ccf9a}
+#focus-hike .fh-title{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px;color:var(--fh-muted)}
+#focus-hike .fh-title b{color:var(--fh-ink);font-weight:600}
+#focus-hike .fh-mini{font:600 13px var(--f-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;color:var(--fh-ink);padding:0 6px}
+#focus-hike .fh-ib{width:32px;height:32px;display:grid;place-items:center;border:0;background:transparent;border-radius:8px;cursor:pointer;color:var(--fh-muted)}
+#focus-hike .fh-ib:hover{background:color-mix(in srgb,var(--fh-ink) 8%,transparent);color:var(--fh-ink)}
+#focus-hike button:focus-visible,#focus-hike input:focus-visible{outline:2px solid var(--fh-accent);outline-offset:2px}
+#focus-hike .fh-scene{position:relative;height:clamp(170px,24vw,250px);background:#cfe3ee}
+#focus-hike .fh-scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#focus-hike.fh-collapsed .fh-scene{display:none}
+#focus-hike.fh-collapsed .fh-bar{border-bottom:0}
+#focus-hike .fh-ctl{position:absolute;bottom:10px;display:flex;gap:6px;align-items:center}
+#focus-hike .fh-l{left:10px}#focus-hike .fh-r{right:10px}
+#focus-hike .fh-pill{display:flex;align-items:center;gap:7px;height:36px;padding:0 13px 0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.6);
+  background:rgba(255,255,255,.78);color:#22313a;cursor:pointer;font-size:13px;font-weight:600;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 2px 8px -2px rgba(20,40,50,.25)}
+#focus-hike .fh-pill:hover{background:rgba(255,255,255,.92)}
+#focus-hike .fh-pill[aria-pressed="true"]{background:#2f6d4f;color:#fff;border-color:#2f6d4f}
+#focus-hike .fh-sq{width:36px;padding:0;justify-content:center}
+#focus-hike .fh-time{flex-direction:column;align-items:flex-start;justify-content:center;gap:0;padding:0 14px;line-height:1.05}
+#focus-hike .fh-time small{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#4d6470}
+#focus-hike .fh-time b{font:700 16px var(--f-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums}
+#focus-hike .fh-go{background:#2f6d4f;color:#fff;border-color:#2f6d4f}
+#focus-hike .fh-go:hover{background:#285e44}
+#focus-hike.fh-running .fh-time small{color:#2f6d4f}
+#focus-hike.fh-onbreak .fh-time small{color:#a15c00}
+#focus-hike .fh-toast{position:absolute;left:50%;top:10px;transform:translate(-50%,-6px);max-width:min(460px,calc(100% - 24px));padding:7px 13px;border-radius:10px;
+  background:rgba(255,255,255,.88);color:#22313a;font-size:13px;line-height:1.35;text-align:center;opacity:0;pointer-events:none;box-shadow:0 2px 10px -3px rgba(20,40,50,.3)}
+#focus-hike .fh-toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:no-preference){#focus-hike .fh-toast{transition:opacity .4s,transform .4s}#focus-hike .fh-pill,#focus-hike .fh-ib{transition:background .15s}}
+#focus-hike .fh-pop{position:absolute;z-index:3;top:46px;right:8px;width:min(380px,calc(100% - 16px));max-height:calc(100% - 54px);overflow:auto;
+  background:var(--fh-surface);color:var(--fh-ink);border:1px solid var(--fh-line);border-radius:12px;padding:6px 14px 12px;box-shadow:0 10px 30px -10px rgba(20,30,40,.35);font-size:14px}
+#focus-hike .fh-pop-mixer{left:8px;right:auto}
+#focus-hike .fh-pop-look{width:min(560px,calc(100% - 16px))}
+#focus-hike:has(.fh-pop:not([hidden])){overflow:visible}
+#focus-hike:has(.fh-pop:not([hidden])) .fh-pop{max-height:none}
+#focus-hike .fh-ph{display:flex;align-items:center;justify-content:space-between;margin:0 -8px 4px 0}
+#focus-hike .fh-ph b{font-size:15px}
+#focus-hike .fh-sl{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;margin:8px 0}
+#focus-hike .fh-sl input{width:100%;accent-color:#2f6d4f}
+#focus-hike .fh-ck{display:flex;gap:8px;align-items:flex-start;margin:10px 0;font-size:13px}
+#focus-hike .fh-ck input{margin-top:3px;accent-color:#2f6d4f}
+#focus-hike .fh-note{color:var(--fh-muted);font-size:12.5px;margin:8px 0 0}
+#focus-hike .fh-stat{margin:8px 0;font-size:13.5px}
+#focus-hike .fh-chips{display:flex;flex-wrap:wrap;gap:6px}
+#focus-hike .fh-chip{border:1px solid var(--fh-line);background:transparent;border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer}
+#focus-hike .fh-chip[aria-checked="true"]{background:#2f6d4f;color:#fff;border-color:#2f6d4f}
+#focus-hike .fh-look{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
+#focus-hike .fh-look canvas{width:150px;height:auto;aspect-ratio:240/260;border-radius:10px;border:1px solid var(--fh-line);position:sticky;top:0}
+#focus-hike .fh-opts{display:grid;gap:8px}
+#focus-hike .fh-opt{display:grid;gap:4px}
+#focus-hike .fh-opt>span{font-size:12px;font-weight:600;color:var(--fh-muted);text-transform:uppercase;letter-spacing:.05em}
+#focus-hike .fh-opt input[type=text]{font:inherit;padding:6px 9px;border:1px solid var(--fh-line);border-radius:8px;background:transparent;color:inherit;width:100%}
+#focus-hike .fh-sw{display:flex;flex-wrap:wrap;gap:6px}
+#focus-hike .fh-sw button{width:26px;height:26px;border-radius:50%;border:2px solid var(--fh-surface);background:var(--c);box-shadow:0 0 0 1px var(--fh-line);cursor:pointer;padding:0}
+#focus-hike .fh-sw button[aria-checked="true"]{box-shadow:0 0 0 2px var(--fh-ink)}
+@media (max-width:520px){#focus-hike .fh-look{grid-template-columns:1fr}#focus-hike .fh-look canvas{width:110px;position:static}}
+#focus-hike .fh-pop h4{font-size:13px;margin:14px 0 6px}
+#focus-hike .fh-spot{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:5px}
+#focus-hike .fh-spot li{font-size:12.5px;padding:5px 8px;border-radius:8px;border:1px dashed var(--fh-line);color:var(--fh-muted);text-align:center}
+#focus-hike .fh-spot li.on{border-style:solid;border-color:#9ccf9a;background:color-mix(in srgb,#9ccf9a 22%,transparent);color:var(--fh-ink)}
+#focus-hike .fh-places{font-size:13px;color:var(--fh-muted);margin:0}
+#focus-hike .fh-days{display:flex;gap:6px;align-items:flex-end;height:70px;margin:6px 0}
+#focus-hike .fh-days span{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}
+#focus-hike .fh-days i{width:100%;max-width:26px;background:#7fb37a;border-radius:4px 4px 0 0;min-height:2px;display:block}
+#focus-hike .fh-days small{font-size:10px;color:var(--fh-muted)}
+@media (max-width:560px){
+  .fh{border-radius:12px;margin-top:10px}
+  #focus-hike .fh-pill span:not(.fh-sr){display:none}
+  #focus-hike .fh-pill{padding:0 10px}
+  #focus-hike .fh-time{padding:0 11px}
+  #fh-km{display:none}
+  #focus-hike .fh-ctl{bottom:8px}#focus-hike .fh-l{left:8px}#focus-hike .fh-r{right:8px}
+}
