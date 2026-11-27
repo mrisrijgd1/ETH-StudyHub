@@ -43,8 +43,10 @@
   var L = de ? DE : EN;
   // What's new: newest first. Add an entry whenever a lesson or feature goes live (id must be unique).
   // Shown once per visitor as a "New" card, only within 21 days of its date; all entries are listed on tips.html.
+  // pin: N = an announcement shown on every page view for N days from its date until the visitor closes it,
+  // also when tips are switched off; closing it brings up the next card (Rachel, 27 Nov).
   var NEWS = [
-  { id: 'planner-1', d: '2026-11-27', en: 'New: the <a href="plan.html">study planner</a> makes you a day-by-day plan up to your exams, around your own <b>calendar</b> (day, week and month view). Plus a <a href="plan.html#places">map of study places</a> in Zürich with live ETH occupancy, and a focus timer that walks you along a trail while you work. You find it any time in the profile menu.', de: 'Neu: Der <a href="../plan.html">Lernplaner</a> macht dir einen Plan Tag für Tag bis zu den Prüfungen, rund um deinen eigenen <b>Kalender</b> (Tages-, Wochen- und Monatsansicht). Dazu eine <a href="../plan.html#places">Karte der Lernorte</a> in Zürich mit Live-Auslastung der ETH und ein Fokus-Timer, bei dem du einen Wanderweg entlanggehst, während du lernst. Du findest ihn jederzeit im Profil-Menü (vorerst auf Englisch).' },
+  { id: 'planner-1', d: '2026-11-27', pin: 4, en: 'New: the <a href="plan.html">study planner</a> makes you a day-by-day plan up to your exams, around your own <b>calendar</b> (day, week and month view). Plus a <a href="plan.html#places">map of study places</a> in Zürich with live ETH occupancy, and a focus timer that walks you along a trail while you work. You find it any time in the profile menu.', de: 'Neu: Der <a href="../plan.html">Lernplaner</a> macht dir einen Plan Tag für Tag bis zu den Prüfungen, rund um deinen eigenen <b>Kalender</b> (Tages-, Wochen- und Monatsansicht). Dazu eine <a href="../plan.html#places">Karte der Lernorte</a> in Zürich mit Live-Auslastung der ETH und ein Fokus-Timer, bei dem du einen Wanderweg entlanggehst, während du lernst. Du findest ihn jederzeit im Profil-Menü (vorerst auf Englisch).' },
   { id: 'intro-video', d: '2026-11-23', en: 'New: a <a href="index.html#intro-video">short video</a> that shows StudyHub in under two minutes.', de: 'Neu: ein <a href="index.html#intro-video">kurzes Video</a>, das StudyHub in unter zwei Minuten zeigt (auf Englisch).' },
   { id: 'search-icon', d: '2026-11-23', en: 'New: the search icon at the top finds any lesson, exercise or page.', de: 'Neu: Die Lupe oben findet jede Lektion, Aufgabe und Seite.' },
   { id: 'refresher-all', d: '2026-11-23', en: 'All 12 Analysis <a href="analysis.html#refresher">refresher units</a> are online.', de: 'Alle 12 Analysis-<a href="analysis.html#refresher">Repetitionseinheiten</a> sind online (vorerst auf Englisch).' },
@@ -75,10 +77,22 @@
   ];
   var newsSeen = {};
   try { newsSeen = JSON.parse(get('sh-news-seen') || '{}') || {}; } catch (e) { newsSeen = {}; }
+  var pinDone = {};
+  try { pinDone = JSON.parse(get('sh-news-pin-done') || '{}') || {}; } catch (e) { pinDone = {}; }
+  function pinned() {
+    var now = Date.now();
+    for (var n = 0; n < NEWS.length; n++) {
+      var it = NEWS[n];
+      if (it.pin && !pinDone[it.id] && now - Date.parse(it.d + 'T00:00:00Z') < it.pin * 864e5) return { t: de ? it.de : it.en, news: it.id, pin: 1 };
+    }
+    return null;
+  }
+  function unpin(t) { if (t && t.pin) { pinDone[t.news] = 1; newsSeen[t.news] = 1; set('sh-news-pin-done', JSON.stringify(pinDone)); set('sh-news-seen', JSON.stringify(newsSeen)); } }
   function freshNews() {
     var now = Date.now();
     for (var n = 0; n < NEWS.length; n++) {
       var it = NEWS[n];
+      if (it.pin && !pinDone[it.id]) continue;
       if (!newsSeen[it.id] && now - Date.parse(it.d + 'T00:00:00Z') < 21 * 864e5) {
         newsSeen[it.id] = 1; set('sh-news-seen', JSON.stringify(newsSeen));
         return { t: de ? it.de : it.en, news: it.id };
@@ -143,7 +157,7 @@
     seen[key(i)] = 1; set('sh-tips-seen', JSON.stringify(seen));
     return L[i];
   }
-  tip = tipsOff ? null : (freshNews() || pick()); // "Don't show tips" also silences the What's-new cards
+  tip = pinned() || (tipsOff ? null : (freshNews() || pick())); // "Don't show tips" also silences the What's-new cards, but not a pinned announcement
   if (!tip) return;
   var css = '#sh-tip{position:fixed;right:16px;bottom:16px;z-index:30;max-width:340px;width:calc(100% - 32px);box-sizing:border-box;' +
     'background:var(--surface,#fff);color:var(--ink,#222);border:1px solid var(--rule,#ccd);border-left:4px solid var(--accent,#5b5bd6);' +
@@ -178,9 +192,10 @@
       html += '<button class="x" aria-label="' + (de ? 'Schliessen' : 'Close') + '">×</button>' +
         '<div class="f"><span><button class="nx">' + (de ? 'Nächster Tipp ›' : 'Next tip ›') + '</button> · <a class="all" href="tips.html">' + (de ? 'Alle Tipps' : 'All tips') + '</a></span><button class="off">' + (de ? 'Keine Tipps mehr' : 'Don’t show tips') + '</button></div>';
       box.innerHTML = html;
-      box.querySelector('.x').onclick = function () { track('tip-close', { i: i }); close(); };
-      box.querySelector('.off').onclick = function () { set('sh-tips-off', '1'); track('tips-off', { i: i }); close(); };
-      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); var t = tipsOff ? null : (freshNews() || pick()); if (t) { tip = t; render(); } else close(); };
+      function next() { var t = tipsOff ? null : (freshNews() || pick()); if (t) { tip = t; render(); } else close(); }
+      box.querySelector('.x').onclick = function () { track('tip-close', { i: i, news: tip.news || '' }); if (tip.pin) { unpin(tip); next(); } else close(); };
+      box.querySelector('.off').onclick = function () { unpin(tip); set('sh-tips-off', '1'); track('tips-off', { i: i }); close(); };
+      box.querySelector('.nx').onclick = function () { track('tip-next', { i: i }); unpin(tip); next(); };
       var links = box.querySelectorAll('.t a');
       for (var k = 0; k < links.length; k++) links[k].addEventListener('click', function () { track('tip-click', { i: i, href: this.getAttribute('href') }); });
       if (tip.q) {
