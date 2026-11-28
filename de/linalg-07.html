@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Die Volkszählung der Strassen">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Volkszählung der Strassen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 7</span>
+<h1>Die Volkszählung der Strassen</h1>
+<p class="lead">Der Austauschsatz von Steinitz (erzeugende Listen sind mindestens so lang wie unabhängige Listen) mit einem Schritt-für-Schritt-Werkzeug, alle Basen haben dieselbe Länge, Dimension, Verkleinern und Ergänzen zu einer Basis, der Gleichgewichtssatz, Serie 3 Aufgabe 16 und Quiz 3.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-6-5">Rückblick auf Lektion 6 (5 Minuten)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-census-of">1. Die Geschichte: die Volkszählung der Strassen</a>
+</li>
+<li><a href="#s2-two-small-tools">2. Zwei kleine Werkzeuge</a>
+<ol>
+<li><a href="#proof-a">Beweis A: der wegzulassende Vektor kommt nach dem unabhängigen Teil (Lemma 2.3.4, S. 51)</a></li>
+</ol></li>
+<li><a href="#s3-the-exchange-spanning-lists-are">3. Der Austausch: erzeugende Listen sind mindestens so lang wie unabhängige Listen</a>
+<ol>
+<li><a href="#proof-b">Beweis B: der Austauschsatz (Lemma 2.3.6, S. 52; Vorlesung, Satz 4.5, der Austauschsatz von Steinitz)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: der Austausch von Hand (Serie 3, Aufgabe 16)</a></li>
+</ol></li>
+<li><a href="#s4-dimension">4. Dimension</a>
+<ol>
+<li><a href="#proof-c">Beweis C: alle Basen haben dieselbe Länge (Satz 2.3.8, zweiter Teil, S. 52–53; Vorlesung, Satz 4.6)</a></li>
+<li><a href="#proof-d">Beweis D: jedes Erzeugendensystem enthält eine Basis (Lemma 2.3.9 und Lemma 2.3.10, S. 53; Vorlesung, Satz 4.4)</a></li>
+<li><a href="#proof-e">Beweis E: jede unabhängige Liste lässt sich zu einer Basis ergänzen (Lemma 2.3.14, S. 54; Vorlesung, Satz 4.3)</a></li>
+</ol></li>
+<li><a href="#s5-equilibrium-vectors-in-an-dimensional">5. Gleichgewicht: $n$ Vektoren in einem $n$-dimensionalen Raum</a>
+<ol>
+<li><a href="#proof-f">Beweis F: der Gleichgewichtssatz (Satz 2.3.15, S. 55)</a></li>
+<li><a href="#we-2">Musterbeispiel 2: Basis oder nicht? Mit dem Gleichgewicht (eine Prüfung statt zwei)</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+<li><a href="#for-wonder-why-every-finite">Zum Staunen: warum jeder endliche Körper eine Primzahlpotenz als Anzahl Elemente hat</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-3">Musterbeispiel 3: ein Erzeugendensystem auf eine Basis verkleinern (das Sieb)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: zu einer Basis ergänzen</a></li>
+<li><a href="#we-5">Musterbeispiel 5: drei Wahr-falsch-Aussagen (FS17, ix; FS20, VII; Probeklausur HS20, (4))</a></li>
+<li><a href="#we-6">Musterbeispiel 6: die Dimension eines Spanns (HS21, Frage XV)</a></li>
+<li><a href="#we-7">Musterbeispiel 7: Unterräume von $\mathbb R^3$ (HS21, Frage VIII)</a></li>
+</ol></li>
+<li><a href="#exercises">Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Quiz 3)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Dimensionen)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (FS17, Problem 3 (a), der kurze Weg)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (ein Unterraum voller Dimension)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (wahr oder falsch)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (der Austausch braucht Unabhängigkeit)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schwerer Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Rückblickfragen oben. Das zählt. Morgen machst du einfach hier weiter: ein ausgelassener oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) <strong>„erzeugende Listen sind mindestens so lang wie unabhängige Listen“</strong> (den Austauschsatz von Steinitz) formulieren und beweisen kannst und den Austausch von Hand durchführst, wie in Serie 3, Aufgabe 16, und Quiz 3; (2) beweisen kannst, dass <strong>jede Basis dieselbe Länge hat</strong>, sodass die <strong>Dimension</strong> wohldefiniert ist; (3) ein Erzeugendensystem auf eine Basis verkleinern und eine unabhängige Liste zu einer Basis ergänzen kannst; (4) den <strong>Gleichgewichtssatz</strong> benutzen kannst: in einem $n$-dimensionalen Raum sind $n$ Vektoren unabhängig $\iff$ sie erzeugen $\iff$ sie bilden eine Basis; weniger als $n$ erzeugen nie, mehr als $n$ sind immer abhängig; (5) die Dimensionsfragen der Wahr-falsch-Blöcke beantworten kannst.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 115 Minuten: 55 für die Abschnitte 1–3 mit dem Werkzeug, eine Pause, 60 für die Abschnitte 4–5 und die Aufgaben. Eine natürliche Pause kommt nach Abschnitt 3 (Austausch fertig, als Nächstes Dimension).</dd></div>
+  <div><dt>Skript (Englisch, gedruckte Seiten)</dt><dd>Skript EN 2023, Abschnitt 2.3 „Finite-dimensional vector spaces“:
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p51">S. 51–52</a>, der Austausch:</strong> Bemerkung 2.3.1 (Listen), Lemma 2.3.2 (in <a class="xl" href="linalg-06.html">Lektion 6</a> erledigt), Bemerkung 2.3.3, Lemma 2.3.4, Lemma 2.3.5, Lemma 2.3.6 (Spann gegen lineare Unabhängigkeit), Bemerkung 2.3.7 (Steinitz).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p52">S. 52–54</a>, Dimension:</strong> Satz 2.3.8 (Existenz einer Basis; alle Basen haben dieselbe Länge), Lemma 2.3.9 (Erzeugendensysteme enthalten Basen), Lemma 2.3.10, Definition 2.3.11 (Dimension), Beispiel 2.3.12, Satz 2.3.13 (Hamel-Basis, nur angegeben), Lemma 2.3.14 (Ergänzen zu einer Basis).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p54">S. 54–56</a>, 2.3.1 Gleichgewicht:</strong> Satz 2.3.15, Bemerkung 2.3.16, Korollar 2.3.17 (fehlendes Gleichgewicht), Bemerkung 2.3.18 (Basen und Gauss-Verfahren).</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §4, zweite Hälfte (Notizen vom 5. Okt.): Satz 4.3 (eine unabhängige Menge zu einer Basis ergänzen), Satz 4.4 (eine erzeugende Menge enthält eine Basis), <strong>Satz 4.5, der Austauschsatz von Steinitz</strong>, und Satz 4.6 (alle Basen haben dieselbe Grösse). Die Vorlesung nennt $V$ endlichdimensional, wenn es eine endliche <em>Basis</em> gibt; das Skript sagt ein endliches <em>Erzeugendensystem</em>. Nach Beweis D unten stimmen beide überein. Serie 3, Aufgabe 16, und Quiz 3 gehören hierher.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Die Dimension ist die meistbenutzte Zahl der linearen Algebra, und die Wahr-falsch-Blöcke prüfen genau die Aussagen dieser Lektion: „je zwei Erzeugendensysteme haben dieselbe Kardinalität“ (FS17, ix), „ist $S$ ein endliches Erzeugendensystem, so …“ (FS20, VII), „ein Vektorraum über $\mathbb F_2$ mit unendlich vielen Elementen hat unendliche Dimension“ (Probeklausur HS20, (4)), „zu jedem Unterraum $V\subseteq\mathbb R^3$ gibt es ein $W$ mit …“ (HS21, VIII), und „das Spann dieser drei Vektoren in $\mathbb R^4$ hat Dimension 2“ (HS21, XV). Der Austausch selbst ist eine typische Quiz-Aufgabe (Quiz 3; Serie 3, Aufgabe 16). Alle davon kommen unten vor.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-6-5">Rückblick auf <a class="xl" href="linalg-06.html">Lektion 6</a> (5 Minuten)</h3>
+<p>Eine Basis ist eine Liste, die linear unabhängig ist und $V$ erzeugt; sie gibt jedem Vektor eindeutige Koordinaten. Lemma 2.3.2: in einer abhängigen Liste $v_1,\dots,v_m$ liegt ein $v_j$ im Spann $\mathrm{Sp}(v_1,\dots,v_{j-1})$, und das Weglassen lässt das Spann unverändert. Prüf dich selbst: welchen Vektor darfst du in $(1,0),(0,1),(1,1)$ nach Lemma 2.3.2 weglassen?</p>
+<details><summary>Antwort</summary><div><p>$(1,1)=(1,0)+(0,1)$ ist eine Kombination der beiden vorherigen, also $j=3$: lass $(1,1)$ weg, und $(1,0),(0,1)$ erzeugen immer noch $\mathbb R^2$. Heute beweist genau dieser Schritt, immer wieder wiederholt, dass die Anzahl der Vektoren einer Basis sich nie ändert.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Deutsch</th><th>Englisch</th></tr></thead>
+  <tbody>
+    <tr><td>Liste (Folge, Sequenz), Länge</td><td>list, length of a list</td></tr>
+    <tr><td>Austauschsatz von Steinitz</td><td>exchange theorem of Steinitz</td></tr>
+    <tr><td>dimension, $\dim V$</td><td>Dimension</td></tr>
+    <tr><td>endlich-dimensional / unendlich-dimensional</td><td>finite-dimensional / infinite-dimensional</td></tr>
+    <tr><td>zu einer Basis ergänzen (erweitern)</td><td>to extend to a basis</td></tr>
+    <tr><td>ein Erzeugendensystem enthält eine Basis</td><td>a generating system contains a basis</td></tr>
+    <tr><td>maximal linear unabhängig, minimal erzeugend</td><td>maximal linearly independent, minimal generating</td></tr>
+    <tr><td>Kardinalität (Mächtigkeit)</td><td>cardinality</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-census-of">1. Die Geschichte: die Volkszählung der Strassen</h2>
+<div class="story">
+<p>Die Kartenmacher aus <a class="xl" href="linalg-06.html">Lektion 6</a> fanden Mengen von Strassen, von denen aus jeder Ort des Landes erreichbar ist, ohne dass eine Strasse verschwendet wird. Aber zwei Gilden fanden zwei solche Mengen: die alte Gilde benutzt vier Strassen, und die neue sagt, sie habe drei gefunden. Können beide recht haben?</p>
+<p>Der Rat ordnet eine Volkszählung an. Die Strassen der neuen Gilde werden eine nach der anderen in die alte Karte eingetragen. Jedes Mal, wenn eine neue Strasse hinzukommt, hat die Karte eine Strasse zu viel, also ist irgendeine Strasse zur Mischung der anderen geworden und kann eingezogen werden. Der Zähler zeigt, dass es immer eine der <em>alten</em> Strassen ist, die geht, nie eine neue, weil die neuen Strassen keine Mischungen voneinander sind. Hätte die neue Gilde mehr Strassen als die alte Karte, so gingen der alten Karte die Strassen zuerst aus, und eine neue Strasse müsste eine Mischung der anderen neuen sein. Das kann nicht passieren.</p>
+<p>Also ist keine Menge unverschwendeter Strassen länger als eine Menge, die überall hinreicht. Zwei Mengen mit beiden Eigenschaften haben dieselbe Anzahl Strassen, und diese Zahl ist die wahre Anzahl der Richtungen des Landes.</p>
+</div>
+<p>In der Mathematik: die Strassen, die überall hinreichen, sind eine <strong>erzeugende Liste</strong>, die unverschwendeten Strassen eine <strong>unabhängige Liste</strong>, das Einziehen einer Strasse ist <strong>Lemma 2.3.2</strong>, und die Volkszählung ist der <strong>Austauschsatz</strong> (Lemma 2.3.6; in der Vorlesung der <strong>Austauschsatz von Steinitz</strong>). Seine Folgerung, dass alle Basen gleich lang sind, macht die <strong>Dimension</strong> wohldefiniert.</p>
+
+<h2 id="s2-two-small-tools">2. Zwei kleine Werkzeuge</h2>
+<p>Im Folgenden ist $V$ ein Vektorraum über einem Körper $K$. Wie im Skript (Bemerkung 2.3.1) arbeiten wir mit <strong>Listen</strong> $v_1,\dots,v_m$: geordnet, und die Reihenfolge zählt für „früher“ und „später“. Die leere Liste (Länge $0$) ist erlaubt und erzeugt $\{0\}$.</p>
+
+<h3 id="proof-a">Beweis A: der wegzulassende Vektor kommt nach dem unabhängigen Teil (Lemma 2.3.4, <a class="pl" href="../linalg-script.html#p51">S. 51</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Seien $v_1,\dots,v_m$ linear abhängig, und sei $j$ ein Index mit $v_j\in\mathrm{Sp}(v_1,\dots,v_{j-1})$ (er existiert nach Lemma 2.3.2). Sind die ersten $k$ Vektoren $v_1,\dots,v_k$ (mit $k&lt;m$) linear unabhängig, so gilt $j&gt;k$.</p></div>
+<p><strong>Die Idee.</strong> Ein Vektor, der eine Kombination der Vektoren vor ihm ist, ergibt eine nichttriviale Kombination, die gleich $0$ ist unter $v_1,\dots,v_j$. Ist $j\le k$, so liegt diese Kombination im unabhängigen Teil.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Die Behauptung ist „$j&gt;k$“</strong>, eine Aussage über einen Index. Der einzige Zugriff ist ihre Verneinung, also: <strong>erste Zeile</strong> „Angenommen, $j\le k$.“</li>
+  <li><strong>Die Voraussetzung über $j$ auflösen:</strong> $v_j=a_1v_1+\dots+a_{j-1}v_{j-1}$ für gewisse Skalare.</li>
+  <li><strong>Letzte Zeile:</strong> „… im Widerspruch zur Unabhängigkeit von $v_1,\dots,v_k$. Also $j&gt;k$.“</li>
+  <li><strong>Die Lücke:</strong> mache aus „$v_j$ ist eine Kombination früherer Vektoren“ eine Aussage „eine nichttriviale Kombination von $v_1,\dots,v_k$ ist $0$“.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Angenommen, die einzuziehende Strasse wäre eine der unverschwendeten vorne.</p></div><div class="sp-formal"><p>Angenommen $j\le k$. Dann $v_j=a_1v_1+\dots+a_{j-1}v_{j-1}$ für gewisse $a_i\in K$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Dann führt eine Mischung vorderer Strassen zurück zum Tor.</p></div><div class="sp-formal"><p>Also $a_1v_1+\dots+a_{j-1}v_{j-1}+(-1)v_j=0$, eine Kombination von $v_1,\dots,v_j$ mit dem Koeffizienten $-1\ne0$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Aber die vorderen Strassen verschwenden nichts.</p></div><div class="sp-formal"><p>Wegen $j\le k$ widerspricht dies der linearen Unabhängigkeit von $v_1,\dots,v_k$. Also $j&gt;k$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_contradiction">das Gegenteil annehmen</a> <a class="mvl" href="../linalg-moves.html#m-la_solvefor">nichttriviale Kombination: nach dem Vektor mit nichtnullem Koeffizienten auflösen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Angenommen $j\le k$. Nach der Wahl von $j$ gibt es $a_1,\dots,a_{j-1}\in K$ mit $v_j=a_1v_1+\dots+a_{j-1}v_{j-1}$, also $a_1v_1+\dots+a_{j-1}v_{j-1}+(-1)v_j=0$. Mit dem Koeffizienten $0$ bei $v_{j+1},\dots,v_k$ ist dies eine Kombination von $v_1,\dots,v_k$, die $0$ ist und bei der $v_j$ den Koeffizienten $-1\ne0$ hat. Das widerspricht der linearen Unabhängigkeit von $v_1,\dots,v_k$. Also $j&gt;k$. (Für $j=1$ ist die Summe leer: $v_1=0$, und $(-1)v_1=0$ ist die nichttriviale Kombination.) <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+<li>Angenommen $j\le k$.</li>
+<li>Schreibe $v_j$ als Kombination der früheren Vektoren und bring es auf eine Seite: Koeffizient $-1$.</li>
+<li>Das ist eine nichttriviale Relation unter $v_1,\dots,v_k$: Widerspruch.</li>
+</ol>
+<p><strong>Kurz:</strong> der weggeworfene Vektor kann nicht im unabhängigen Teil liegen.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> In der Liste $(1,0),(0,1),(1,1),(2,0)$ sind die ersten zwei Vektoren unabhängig. Welche Indizes $j$ erfüllen $v_j\in\mathrm{Sp}(v_1,\dots,v_{j-1})$? Passt das zu Beweis A?
+  <details><summary>Antwort</summary><div><p>$j=3$ ($(1,1)=(1,0)+(0,1)$) und $j=4$ ($(2,0)=2(1,0)$). $j=1$ scheitert ($v_1\ne0$), $j=2$ scheitert ($(0,1)$ ist kein Vielfaches von $(1,0)$). Beide möglichen $j$ sind $&gt;k=2$, wie Beweis A sagt.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Warum haben wir Nullkoeffizienten bei $v_{j+1},\dots,v_k$ hinzugefügt?
+  <details><summary>Antwort</summary><div><p>Die Unabhängigkeit von $v_1,\dots,v_k$ ist eine Aussage über Kombinationen <em>aller</em> $k$ Vektoren (oder jeder Teilliste, was dasselbe ist, sobald man Nullkoeffizienten zulässt). Das Auffüllen mit Nullen macht die Kombination wörtlich zu einer, von der die Definition spricht.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis A nur aus dem Rahmen, einschliesslich des Falls $j=1$.</li>
+</ol></div>
+
+<div class="box"><p><strong>Lemma 2.3.5 (<a class="pl" href="../linalg-script.html#p52">S. 52</a>).</strong> Erzeugen $w_1,\dots,w_n$ den Raum $V$ und ist $v\in V$, so sind $v,w_1,\dots,w_n$ linear abhängig.</p>
+<p><em>Beweis.</em> Schreibe $v=a_1w_1+\dots+a_nw_n$. Dann ist $(-1)v+a_1w_1+\dots+a_nw_n=0$ eine nichttriviale Kombination: der Koeffizient von $v$ ist $-1\ne0$. <span class="qed">∎</span></p>
+<p>In Worten: <strong>eine erzeugende Liste plus ein weiterer Vektor ist immer abhängig.</strong></p></div>
+
+<h2 id="s3-the-exchange-spanning-lists-are">3. Der Austausch: erzeugende Listen sind mindestens so lang wie unabhängige Listen</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-06.html#proof-b">Lektion 6</a>)</span>
+<ul>
+  <li><strong>Das Spann</strong> ist die Menge aller Linearkombinationen (Beweis B); ein Vektor, der bereits Kombination der anderen ist, ändert es nicht, wenn man ihn hinzufügt.</li>
+  <li><strong>In einer abhängigen Liste</strong> ist ein Vektor eine Kombination der früheren (Beweis D). Das ist der Vektor, den der Austausch hinauswirft.</li>
+</ul></div>
+
+<h3 id="proof-b">Beweis B: der Austauschsatz (Lemma 2.3.6, <a class="pl" href="../linalg-script.html#p52">S. 52</a>; Vorlesung, Satz 4.5, der Austauschsatz von Steinitz)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Seien $v_1,\dots,v_n$ ein Erzeugendensystem von $V$, und seien $u_1,\dots,u_m\in V$ linear unabhängig. Dann gilt $m\le n$. Ausserdem lassen sich $m$ der $v_i$ gegen $u_1,\dots,u_m$ austauschen: es gibt $n-m$ Vektoren $w_1,\dots,w_{n-m}$ unter den $v_i$, sodass $u_1,\dots,u_m,w_1,\dots,w_{n-m}$ immer noch $V$ erzeugt.</p>
+<p><em>Namen in der Vorlesung, Serie 3 und Quiz 3:</em> $x_1,\dots,x_n$ erzeugen, $y_1,\dots,y_m$ sind unabhängig; die Folgerung ist $n\ge m$ und eine Menge $X\subseteq\{x_1,\dots,x_n\}$ mit $|X|=n-m$ und $\langle\{y_1,\dots,y_m\}\cup X\rangle=V$.</p></div>
+<p><strong>Die Idee.</strong> Bringe die $u$ einzeln herein. Jedes neue $u$ macht das erzeugende System abhängig (Lemma 2.3.5), also kann ein Vektor weggelassen werden, ohne das Spann zu ändern (Lemma 2.3.2). Der weggelassene Vektor ist nie ein $u$, weil die $u$ unabhängig sind (Beweis A). Also tauscht jeder Schritt ein $v$ gegen ein $u$, und die $v$ dürfen nicht ausgehen, bevor die $u$ ausgehen.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Zwei Folgerungen:</strong> $m\le n$, und eine ausgetauschte Liste, die erzeugt. Beide betreffen einen Prozess mit $m$ Stufen, die natürliche Form ist also <strong>Induktion über die Stufe $j$</strong>.</li>
+  <li><strong>Die mitzutragende Aussage:</strong> „nach Stufe $j$ gibt es eine erzeugende Liste $u_1,\dots,u_j,w_1,\dots,w_{n-j}$, deren $w$ unter den $v$ sind.“ Stufe $0$ ist die gegebene Liste.</li>
+  <li><strong>Letzte Zeile:</strong> „für $j=m$: $n-m\ge0$, und die ausgetauschte Liste erzeugt $V$.“</li>
+  <li><strong>Die Lücke:</strong> in jeder Stufe zeigen, dass der weggeworfene Vektor ein alter ist. Das ist genau Beweis A, und hier wird die Unabhängigkeit der $u$ benutzt.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Stufe 1: die erste neue Strasse tritt der alten Karte bei.</p></div><div class="sp-formal"><p>Die Liste $u_1,v_1,\dots,v_n$ ist abhängig, da $u_1$ eine Kombination der erzeugenden $v_i$ ist (das Kästchen oben).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Strasse ist nun eine Mischung der Strassen vor ihr und kann gehen, ohne einen Ort zu verlieren.</p></div><div class="sp-formal"><p>Nach der Weglassregel (<a class="xl" href="linalg-06.html">Lektion 6</a>, Beweis D) liegt ein Vektor dieser Liste im Spann der Vektoren vor ihm, und Weglassen lässt das Spann gleich $V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Es ist eine alte Strasse, nie die neue.</p></div><div class="sp-formal"><p>Nach Beweis A mit $k=1$ ($u_1\ne0$, da $u_1,\dots,u_m$ unabhängig sind, ist die Liste $u_1$ unabhängig) ist der weggelassene Vektor nicht $u_1$. Wir erhalten ein erzeugendes System der Länge $n$: $u_1$ gefolgt von $n-1$ der $v_i$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Stufe $j$: die Volkszählung wiederholt sich mit der nächsten neuen Strasse.</p></div><div class="sp-formal"><p>Nach Stufe $j-1$ haben wir eine erzeugende Liste $u_1,\dots,u_{j-1},w_1,\dots,w_{n-j+1}$ mit den $w$ unter den $v_i$. Füge $u_j$ nach $u_{j-1}$ ein. Die neue Liste $u_1,\dots,u_j,w_1,\dots,w_{n-j+1}$ ist abhängig (das Kästchen). Wirf nach der Weglassregel (<a class="xl" href="linalg-06.html">Lektion 6</a>, Beweis D) einen Vektor weg. Das Spann bleibt $V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Wieder muss eine alte Strasse gehen; also muss noch eine alte da sein.</p></div><div class="sp-formal"><p>Nach Beweis A mit $k=j$ ($u_1,\dots,u_j$ sind unabhängig) ist der weggelassene Vektor eines der $w$. Insbesondere <strong>blieb mindestens ein $w$ übrig</strong>: $n-j+1\ge1$, d. h. $j\le n$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Nach der letzten neuen Strasse ist die Volkszählung fertig.</p></div><div class="sp-formal"><p>Stufe $j$ funktioniert für jedes $j=1,\dots,m$, also $m\le n$. Nach Stufe $m$ erzeugt die Liste $u_1,\dots,u_m,w_1,\dots,w_{n-m}$ den Raum $V$, und die $w$ sind $n-m$ der $v_i$. <span class="qed">∎</span></p></div></div>
+</div>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Wir zeigen durch Induktion über $j\in\{0,\dots,m\}$: es gibt ein erzeugendes System von $V$ der Länge $n$ der Form $u_1,\dots,u_j,w_1,\dots,w_{n-j}$ mit $w_1,\dots,w_{n-j}\in\{v_1,\dots,v_n\}$. Für $j=0$ nimm $v_1,\dots,v_n$. Sei $1\le j\le m$ und erzeuge $u_1,\dots,u_{j-1},w_1,\dots,w_{n-j+1}$ den Raum $V$. Nach dem Kästchen ist die Liste $u_1,\dots,u_j,w_1,\dots,w_{n-j+1}$ linear abhängig. Nach der Weglassregel (<a class="xl" href="linalg-06.html">Lektion 6</a>, Beweis D) enthält sie einen Vektor im Spann der Vektoren vor ihm, und das Entfernen dieses Vektors lässt eine Liste mit demselben Spann $V$. Da $u_1,\dots,u_j$ linear unabhängig sind, zeigt Beweis A, dass dieser Vektor eines von $w_1,\dots,w_{n-j+1}$ ist; insbesondere $n-j+1\ge1$. Das Entfernen ergibt ein erzeugendes System $u_1,\dots,u_j,w'_1,\dots,w'_{n-j}$ wie verlangt. Für $j=m$ erhalten wir $n-m\ge0$, also $m\le n$, und die ausgetauschte Liste. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> In jeder Stufe werden drei Werkzeuge benutzt. Nenne sie und sag, was jedes beiträgt.
+  <details><summary>Antwort</summary><div><p>„Ein erzeugendes System plus ein weiterer Vektor ist abhängig“ (also kann etwas weggeworfen werden); „in einer abhängigen Liste liegt ein Vektor im Spann der früheren, und das Weglassen lässt das Spann unverändert“ (also ist das Weglassen sicher); und Beweis A, „dieser Vektor kommt nach dem unabhängigen Teil“ (also ist der weggeworfene Vektor ein alter, nie ein $u$).</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Wo genau taucht die Ungleichung $m\le n$ im Beweis auf?
+  <details><summary>Antwort</summary><div><p>In Stufe $j$: der weggeworfene Vektor ist eines von $w_1,\dots,w_{n-j+1}$, diese Liste ist also nicht leer, $n-j+1\ge1$, d. h. $j\le n$. Da Stufe $j$ für jedes $j\le m$ gelingt, insbesondere für $j=m$, folgt $m\le n$. Die Ungleichung ist kein eigenes Argument: sie ist die Tatsache, dass die alten Vektoren nie ausgehen.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis B aus dem Rahmen: Induktion über $j$, die drei Werkzeuge und die letzte Zeile.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Formuliere die Behauptung mit Namen: $v_1,\dots,v_n$ erzeugen, $u_1,\dots,u_m$ unabhängig; Folgerung $m\le n$ und eine ausgetauschte erzeugende Liste.</li>
+  <li>Induktionsaussage: nach $j$ Stufen spannen $u_1,\dots,u_j$ zusammen mit $n-j$ der $v$ den Raum $V$ auf. Basis $j=0$.</li>
+  <li>Schritt: füge $u_j$ ein; die Liste ist abhängig (sie verlängert ein erzeugendes System); ein Vektor liegt im Spann der früheren; wirf ihn weg, das Spann bleibt $V$.</li>
+  <li>Der weggeworfene Vektor ist kein $u$, da $u_1,\dots,u_j$ unabhängig sind (Beweis A). Also war noch ein alter Vektor da: $n-j+1\ge1$.</li>
+  <li>Schliesse für $j=m$.</li>
+</ol>
+<p><strong>Kurz:</strong> hereinbringen, es wird abhängig, die erste überflüssige Strasse weglassen, und es ist nie eine neue. Halbeisen prüft den Austausch von Hand (Serie 3, Aufgabe 16; Quiz 3), und sein Beweis ist das Herz der wahrscheinlichsten Frage „beweise einen Satz der Vorlesung über Basen“.</p></div>
+<p>Die Vorlesung macht dasselbe mit einem Unterschied in der Buchführung: sie stellt die neuen Vektoren <em>nach vorn</em> (zuerst $y_m$, dann $y_{m-1}$ und so weiter) und wirft das erste $x_i$ weg, das eine Kombination der vorherigen Vektoren ist. Das ist die Version, die du in Serie 3 und in Quiz 3 benutzt, und die Version im Werkzeug unten.</p>
+
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_exchange">einen Vektor hereinbringen, einen hinauswerfen: der Austauschschritt</a> <a class="mvl" href="../linalg-moves.html#m-la_solvefor">nichttriviale Kombination: nach dem Vektor mit nichtnullem Koeffizienten auflösen</a> <a class="mvl" href="../linalg-moves.html#m-la_induct">Induktion: Basis, Voraussetzung, Schritt</a></p>
+
+<div class="box"><h3 id="we-1">Musterbeispiel 1: der Austausch von Hand (Serie 3, Aufgabe 16)</h3>
+<p>In $V=\mathbb Q^4$ sei $x_1,\dots,x_4$ die Standardbasis $e_1,\dots,e_4$, und $y_1=(1,1,1,0)$, $y_2=(0,1,1,0)$. Sie sind unabhängig (keiner ist ein Vielfaches des anderen). Tausche mit dem Austausch zwei der $x_i$ gegen $y_1,y_2$ aus, sodass $\{y_1,y_2,x_{i_1},x_{i_2}\}$ eine Basis ist. Hinweis vom Blatt: beginne mit der Folge $S_2=(y_2,x_1,x_2,x_3,x_4)$.</p>
+<ol class="steps">
+  <li>Schritt 1: durchsuche $S_2=(y_2,x_1,x_2,x_3,x_4)$ von links. Welches ist der erste Vektor, der eine Kombination der vorherigen ist?
+  <details><summary>Antwort</summary><div><p>$x_1$ ist kein Vielfaches von $y_2$ (es hat eine $1$ im ersten Eintrag, $y_2$ hat dort $0$). $x_2=(0,1,0,0)$ liegt nicht in $\mathrm{Sp}(y_2,x_1)$: eine Kombination $a\,y_2+b\,x_1=(b,a,a,0)$ hat gleiche zweite und dritte Einträge. Aber $x_3=y_2-x_2$. <strong>Wirf $x_3$ weg</strong>: $S_2'=(y_2,x_1,x_2,x_4)$ erzeugt immer noch $V$.</p></div></details></li>
+  <li>Schritt 2: stelle $y_1$ nach vorn: $S_1=(y_1,y_2,x_1,x_2,x_4)$. Welcher Vektor geht?
+  <details><summary>Antwort</summary><div><p>$y_2$ ist kein Vielfaches von $y_1$. Und $x_1=y_1-y_2$ ist eine Kombination von $y_1,y_2$. <strong>Wirf $x_1$ weg</strong>: $S_1'=(y_1,y_2,x_2,x_4)$.</p></div></details></li>
+  <li>Warum ist $\{y_1,y_2,x_2,x_4\}$ eine Basis und nicht nur ein Erzeugendensystem?
+  <details><summary>Antwort</summary><div><p>Es erzeugt $V$ und hat $4$ Elemente, und $\dim\mathbb Q^4=4$, also ist es nach dem Gleichgewichtssatz (Beweis F unten) eine Basis. Ohne diesen Satz prüfe die Unabhängigkeit direkt: $a\,y_1+b\,y_2+c\,x_2+d\,x_4$ $=(a,\;a+b+c,\;a+b,\;d)=0$ erzwingt $a=0$, dann $b=0$, $c=0$, $d=0$.</p></div></details></li>
+</ol>
+<p>Die offizielle Lösung formuliert das Ergebnis als „zuerst $x_3$ streichen, dann $x_1$“, was die Basis $\{y_1,y_2,x_2,x_4\}$ ergibt. (Ihre gedruckte Zeile „$x_3=y_2-x_3$“ ist ein Tippfehler für $x_3=y_2-x_2$.)</p></div>
+
+<div class="explorer" id="st-ex">
+<span class="label">Probier es aus: der Austausch von Steinitz, Schritt für Schritt</span>
+<p>Wähle ein Beispiel und drücke „Nächster Schritt“. Jeder Schritt stellt das nächste $y$ nach vorn, durchsucht die Folge von links nach dem ersten Vektor, der eine Kombination der vorherigen Vektoren ist, zeigt die Kombination und streicht diesen Vektor. Das letzte Beispiel hat abhängige $y$, um zu zeigen, wo der Satz seine Voraussetzung braucht.</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label>Beispiel <select id="st-set" aria-label="Beispiel"></select></label>
+  <button type="button" id="st-next">Nächster Schritt</button>
+  <button type="button" id="st-reset">Neu beginnen</button>
+</div>
+<div id="st-vecs" style="font-family:var(--font-util);font-size:.92em"></div>
+<p id="st-seq" style="font-size:1.1em;line-height:2" aria-live="polite"></p>
+<p id="st-msg" aria-live="polite"></p>
+</div>
+<script>
+(function(){
+  var sel=document.getElementById('st-set');if(!sel)return;
+  var SETS=[
+    {name:'Serie 3, exercise 16 (ℚ⁴)',x:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],y:[[1,1,1,0],[0,1,1,0]]},
+    {name:'A small one in ℝ³',x:[[1,0,0],[0,1,0],[0,0,1]],y:[[1,2,0],[0,1,1]]},
+    {name:'Quiz 3 (ℚ⁵): check your Exercise 1',x:[[1,0,0,0,0],[0,1,0,0,0],[0,0,1,0,0],[0,0,0,1,0],[0,0,0,0,1]],y:[[1,1,1,1,1],[1,0,1,1,1],[1,1,0,1,1]]},
+    {name:'Dependent y’s: y₂ = 2y₁ (ℝ³)',x:[[1,0,0],[0,1,0],[0,0,1]],y:[[1,1,0],[2,2,0]]}
+  ];
+  SETS.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
+  var SUB='₀₁₂₃₄₅₆₇₈₉';function sub(n){return String(n).split('').map(function(d){return SUB[+d];}).join('');}
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a||1;}
+  function fr(n,d){if(d<0){n=-n;d=-d;}var g=gcd(n,d);return [n/g,d/g];}
+  function add(p,q){return fr(p[0]*q[1]+q[0]*p[1],p[1]*q[1]);}
+  function mul(p,q){return fr(p[0]*q[0],p[1]*q[1]);}
+  function div(p,q){return fr(p[0]*q[1],p[1]*q[0]);}
+  function neg(p){return [-p[0],p[1]];}
+  /* solve sum c_k cols[k] = v exactly; returns coefficients or null */
+  function solve(cols,v){var m=v.length,k=cols.length,A=[],r,c,i;
+    for(r=0;r<m;r++){A.push([]);for(c=0;c<k;c++)A[r].push([cols[c][r],1]);A[r].push([v[r],1]);}
+    var piv=[],row=0;
+    for(c=0;c<k&&row<m;c++){var p=-1;for(r=row;r<m;r++)if(A[r][c][0]!==0){p=r;break;}if(p<0)continue;
+      var t=A[p];A[p]=A[row];A[row]=t;
+      for(r=0;r<m;r++)if(r!==row&&A[r][c][0]!==0){var f=div(A[r][c],A[row][c]);for(i=c;i<=k;i++)A[r][i]=add(A[r][i],neg(mul(f,A[row][i])));}
+      piv.push([row,c]);row++;}
+    for(r=row;r<m;r++)if(A[r][k][0]!==0)return null;
+    var sol=[];for(c=0;c<k;c++)sol.push([0,1]);
+    piv.forEach(function(pc){sol[pc[1]]=div(A[pc[0]][k],A[pc[0]][pc[1]]);});return sol;}
+  function fs(p){return p[1]===1?String(p[0]):p[0]+'/'+p[1];}
+  var S,seq,step,struck,done;
+  function lab(e){return (e.t==='y'?'y':'x')+sub(e.i);}
+  function vec(a){return '('+a.join(', ')+')';}
+  function reset(){S=SETS[+sel.value];seq=S.x.map(function(v,i){return {t:'x',i:i+1,v:v};});step=0;struck=null;done=false;
+    var h='';S.x.forEach(function(v,i){h+='x'+sub(i+1)+' = '+vec(v)+(i<S.x.length-1?', ':'');});h+='<br>';S.y.forEach(function(v,i){h+='y'+sub(i+1)+' = '+vec(v)+(i<S.y.length-1?', ':'');});
+    document.getElementById('st-vecs').innerHTML=h;
+    show('Start: the x’s span the space and the y’s are to be brought in, last one first (as in the lecture). Press “Next step”.');}
+  function show(msg){var h='(';seq.forEach(function(e,k){h+=(k?', ':'')+(e.t==='y'?'<strong>'+lab(e)+'</strong>':lab(e));});h+=')';
+    if(struck)h+='&nbsp;&nbsp;struck: <s>'+struck+'</s>';
+    document.getElementById('st-seq').innerHTML=h;document.getElementById('st-msg').innerHTML=msg;
+    document.getElementById('st-next').disabled=done;}
+  function next(){if(done)return;var m=S.y.length;var j=m-step;var y={t:'y',i:j,v:S.y[j-1]};seq.unshift(y);step++;
+    var notes=[];
+    for(var i=1;i<seq.length;i++){var sol=solve(seq.slice(0,i).map(function(e){return e.v;}),seq[i].v);
+      if(sol){var terms=[];sol.forEach(function(c,k){if(c[0]!==0)terms.push((terms.length&&c[0]>0?'+ ':'')+(c[0]<0?'− ':'')+(Math.abs(c[0])===1&&c[1]===1?'':fs([Math.abs(c[0]),c[1]])+'·')+lab(seq[k]));});
+        var comb=terms.length?terms.join(' '):'0';var e=seq[i];
+        if(e.t==='y'){done=true;struck=null;show('Step '+step+': put '+lab(y)+' in front. The first vector that is a combination of the earlier ones is <strong>'+lab(e)+' = '+comb+'</strong>, a <strong>y</strong>. The exchange stops: the y’s were not linearly independent, so Lemma 2.3.4 does not apply. This is why the theorem assumes that the y’s are independent.');return;}
+        seq.splice(i,1);struck=lab(e);
+        var msg='Step '+step+': put <strong>'+lab(y)+'</strong> in front. '+(notes.length?notes.join(' ')+' ':'')+'<strong>'+lab(e)+' = '+comb+'</strong> is a combination of the vectors before it: strike it. The span is still the whole space (Lemma 2.3.2 (b)).';
+        if(step===m){done=true;msg+=' <strong>Done:</strong> {'+seq.map(lab).join(', ')+'} spans and has '+seq.length+' = dim elements, so it is a basis.';}
+        show(msg);return;}
+      notes.push(lab(seq[i])+' is not a combination of '+seq.slice(0,i).map(lab).join(', ')+'.');}
+    done=true;show('No vector is a combination of the earlier ones.');}
+  sel.addEventListener('change',reset);document.getElementById('st-next').addEventListener('click',next);document.getElementById('st-reset').addEventListener('click',reset);reset();
+})();
+</script>
+
+
+<h2 id="s4-dimension">4. Dimension</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-06.html#s5-bases-and-coordinates">Lektion 6</a>)</span>
+<ul>
+  <li><strong>Basis:</strong> eine linear unabhängige Liste, die $V$ erzeugt. Eine Basis ist beides, also kann der Austauschsatz in beiden Richtungen benutzt werden.</li>
+</ul></div>
+
+<h3 id="proof-c">Beweis C: alle Basen haben dieselbe Länge (Satz 2.3.8, zweiter Teil, <a class="pl" href="../linalg-script.html#p52">S. 52–53</a>; Vorlesung, Satz 4.6)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $V$ endlichdimensional, und seien $A$ und $B$ Basen von $V$. Dann sind $A$ und $B$ endlich und $|A|=|B|$.</p></div>
+<p><strong>Die Idee.</strong> Eine Basis ist sowohl erzeugend als auch unabhängig, also gilt der Austauschsatz in beide Richtungen.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Zwei Behauptungen:</strong> „endlich“ und „gleich gross“. Gleiche Grösse zweier endlicher Mengen: <strong>zwei Ungleichungen</strong>.</li>
+  <li><strong>„Endlichdimensional“ auflösen</strong> (Skript): ein endliches Erzeugendensystem $v_1,\dots,v_n$ erzeugt $V$. Das ist das einzige endliche Objekt in der Voraussetzung, die Endlichkeit von $A$ und $B$ muss also aus dem Vergleich mit ihm folgen.</li>
+  <li><strong>Letzte Zeile:</strong> „$|A|\le|B|$ und $|B|\le|A|$, also $|A|=|B|$.“</li>
+  <li><strong>Die Lücke:</strong> keine über Beweis B hinaus; die Arbeit besteht darin, ihn mit den richtigen Rollen anzuwenden (wer erzeugt, wer ist unabhängig).</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Strassenmengen beider Gilden sind endlich.</p></div><div class="sp-formal"><p>$V$ wird von einer endlichen Liste $v_1,\dots,v_n$ erzeugt. Jede endliche Liste verschiedener Vektoren aus $B$ ist unabhängig, hat also nach Beweis B höchstens $n$ Elemente. Also ist $B$ endlich; ebenso $A$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die alte Menge reicht überall hin, die neue verschwendet nichts.</p></div><div class="sp-formal"><p>$A$ erzeugt $V$ und $B$ ist linear unabhängig, also $|B|\le|A|$ nach Beweis B.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Und umgekehrt.</p></div><div class="sp-formal"><p>$B$ erzeugt $V$ und $A$ ist linear unabhängig, also $|A|\le|B|$. Somit $|A|=|B|$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_exchange">einen Vektor hereinbringen, einen hinauswerfen: der Austauschschritt</a> <a class="mvl" href="../linalg-moves.html#m-la_dimcount">zuerst zählen: $n$ Vektoren in einem $n$-dimensionalen Raum</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Da $V$ endlichdimensional ist, erzeugt eine Liste $v_1,\dots,v_n$ den Raum $V$. Wären $n+1$ verschiedene Vektoren aus $B$ gegeben, so bildeten sie eine unabhängige Liste der Länge $n+1$ (eine Teilmenge einer unabhängigen Menge ist unabhängig), im Widerspruch zum Austauschsatz ($m\le n$). Also $|B|\le n$; insbesondere ist $B$ endlich, ebenso $A$. Nun erzeugt $A$ den Raum $V$ und $B$ ist linear unabhängig, also liefert der Austauschsatz $|B|\le|A|$; mit vertauschten Rollen erzeugt $B$, und $A$ ist unabhängig, also $|A|\le|B|$. Somit $|A|=|B|$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Warum können wir den Austauschsatz nicht sofort auf $A$ und $B$ anwenden, bevor wir gezeigt haben, dass sie endlich sind?
+  <details><summary>Antwort</summary><div><p>Der Austauschsatz handelt von <em>endlichen Listen</em> $v_1,\dots,v_n$ und $u_1,\dots,u_m$. Bei einer unendlichen Menge hat „$m\le n$“ noch keine Bedeutung. Also vergleichen wir zuerst mit der endlichen erzeugenden Liste, die wir gegeben haben, und erst dann $A$ mit $B$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige mit derselben Idee: hat $V$ eine Basis mit $n$ Elementen, so hat jede unabhängige Liste höchstens $n$ Elemente und jede erzeugende Liste mindestens $n$.
+  <details><summary>Antwort</summary><div><p>Die Basis erzeugt, also ist eine unabhängige Liste nach dem Austauschsatz von Länge $\le n$. Die Basis ist unabhängig, also ist eine erzeugende Liste nach dem Austauschsatz mit vertauschten Rollen von Länge $\ge n$. Das ist das Korollar „fehlendes Gleichgewicht“ unten.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis C nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Endlich: vergleiche jede Basis über den Austauschsatz mit einer endlichen erzeugenden Liste.</li>
+  <li>$A$ erzeugt, $B$ unabhängig: $|B|\le|A|$.</li>
+  <li>$B$ erzeugt, $A$ unabhängig: $|A|\le|B|$.</li>
+</ol>
+<p><strong>Kurz:</strong> der Austauschsatz, zweimal mit vertauschten Rollen. Gefragt als „zeige, dass die Dimension wohldefiniert ist“ oder hinter Wahr-falsch-Items wie FS17, ix.</p></div>
+
+<h3 id="proof-d">Beweis D: jedes Erzeugendensystem enthält eine Basis (Lemma 2.3.9 und Lemma 2.3.10, <a class="pl" href="../linalg-script.html#p53">S. 53</a>; Vorlesung, Satz 4.4)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Erzeugen $v_1,\dots,v_n$ den Raum $V$, so bilden einige der $v_i$ eine Basis von $V$. Insbesondere (Satz 2.3.8, erster Teil) <strong>hat jeder endlichdimensionale Vektorraum eine endliche Basis</strong>.</p></div>
+<p><strong>Die Idee: das Sieb.</strong> Gehe die Liste einmal durch. Behalte $v_j$, wenn es neu ist (nicht im Spann der Vektoren davor), wirf es weg, wenn nicht. Weggeworfene Vektoren werden für das Spann nicht gebraucht. Behaltene Vektoren sind unabhängig, weil keiner eine Kombination der früher behaltenen ist.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Was zu liefern ist:</strong> eine Teilliste von $v_1,\dots,v_n$, die eine Basis ist, also <strong>erzeugt</strong> $V$ und ist <strong>unabhängig</strong>. Zwei Prüfungen.</li>
+  <li><strong>Erste Zeile:</strong> beschreibe die Teilliste (das Sieb). <strong>Letzte Zeile:</strong> „Also erzeugt $w_1,\dots,w_l$ den Raum $V$ und ist unabhängig: eine Basis.“</li>
+  <li><strong>Die Lücke:</strong> Erzeugen, weil das Weggeworfene schon im Spann war; Unabhängigkeit, wegen „eine abhängige Liste hat einen Vektor im Spann der früheren“, in Kontraposition gelesen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Geh die alten Strassen einzeln entlang und behalte nur die, die etwas Neues öffnen.</p></div><div class="sp-formal"><p>Schritt $1$: behalte $v_1$, es sei denn $v_1=0$. Schritt $j\ge2$: wirf $v_j$ weg, wenn $v_j\in\mathrm{Sp}(v_1,\dots,v_{j-1})$, sonst behalte es. Die behaltene Liste heisse $w_1,\dots,w_l$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Kein Ort geht verloren.</p></div><div class="sp-formal"><p>Ein weggeworfenes $v_j$ ist eine Kombination von $v_1,\dots,v_{j-1}$, und jedes davon ist entweder behalten oder (nach demselben Argument, induktiv) eine Kombination behaltener. Also $\mathrm{Sp}(w_1,\dots,w_l)=\mathrm{Sp}(v_1,\dots,v_n)=V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Keine behaltene Strasse ist verschwendet.</p></div><div class="sp-formal"><p>Jedes $w_j$ erfüllt $w_j\notin\mathrm{Sp}(w_1,\dots,w_{j-1})$ (dieses Spann liegt im Spann der $v$ vor ihm). Wären die $w$ abhängig, so gäbe die Weglassregel (<a class="xl" href="linalg-06.html">Lektion 6</a>, Beweis D) ein $j$ mit $w_j\in\mathrm{Sp}(w_1,\dots,w_{j-1})$. Widerspruch. Also ist $w_1,\dots,w_l$ eine Basis. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_solvefor">nichttriviale Kombination: nach dem Vektor mit nichtnullem Koeffizienten auflösen</a> <a class="mvl" href="../linalg-moves.html#m-la_contradiction">das Gegenteil annehmen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Gehe $v_1,\dots,v_n$ durch und wirf jedes $v_j$ mit $v_j\in\mathrm{Sp}(v_1,\dots,v_{j-1})$ weg (für $j=1$: wirf $v_1$ weg, wenn $v_1=0$); die verbleibende Liste heisse $w_1,\dots,w_l$. <em>Erzeugen.</em> Durch Induktion über $j$ gilt $\mathrm{Sp}(v_1,\dots,v_j)=\mathrm{Sp}(\text{kept vectors among }v_1,\dots,v_j)$: ist $v_j$ behalten, gewinnen beide Seiten $v_j$; ist $v_j$ weggeworfen, liegt es schon in $\mathrm{Sp}(v_1,\dots,v_{j-1})$, und das Hinzufügen eines Vektors aus einem Spann ändert das Spann nicht. Für $j=n$: $\mathrm{Sp}(w_1,\dots,w_l)=\mathrm{Sp}(v_1,\dots,v_n)=V$. <em>Unabhängigkeit.</em> Jedes behaltene $w_i=v_j$ liegt nicht in $\mathrm{Sp}(v_1,\dots,v_{j-1})$, das $\mathrm{Sp}(w_1,\dots,w_{i-1})$ enthält. Wären $w_1,\dots,w_l$ abhängig, läge ein $w_i$ im Spann von $w_1,\dots,w_{i-1}$ (Lemma über abhängige Listen), ein Widerspruch. Also ist $w_1,\dots,w_l$ eine Basis. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Führe das Sieb auf $(0,0),(1,2),(2,4),(0,1),(1,1)$ in $\mathbb R^2$ aus.
+  <details><summary>Antwort</summary><div><p>$(0,0)$: weggeworfen ($=0$). $(1,2)$: behalten. $(2,4)=2(1,2)$: weggeworfen. $(0,1)$: kein Vielfaches von $(1,2)$, behalten. $(1,1)$: liegt in $\mathrm{Sp}((1,2),(0,1))=\mathbb R^2$, weggeworfen. Basis $(1,2),(0,1)$.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Warum braucht Beweis D ein <em>endliches</em> Erzeugendensystem?
+  <details><summary>Antwort</summary><div><p>Das Sieb geht die Liste der Reihe nach durch, und der Erzeugungsbeweis ist eine Induktion über die Positionen $1,\dots,n$. Bei einer unendlichen erzeugenden Menge gibt es keinen letzten Schritt, und „jeder Vektorraum hat eine Basis“ braucht stattdessen das Lemma von Zorn.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis D nur aus dem Rahmen, mit beiden Prüfungen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Definiere das Sieb genau (behalte $v_j$ genau dann, wenn $v_j\notin\mathrm{Sp}(v_1,\dots,v_{j-1})$).</li>
+  <li>Erzeugen: weggeworfene Vektoren sind Kombinationen früherer, das Spann schrumpft nie (Induktion über $j$).</li>
+  <li>Unabhängigkeit: kein behaltener Vektor ist eine Kombination früher behaltener; Kontraposition von „eine abhängige Liste hat einen Vektor im Spann der früheren“.</li>
+</ol>
+<p><strong>Kurz:</strong> behalte, was neu ist, wirf weg, was nicht neu ist. FS20, VII (d) ist genau diese Aussage.</p></div>
+<p>Bemerkung: Ein Vektorraum ist im Sinne des Skripts endlichdimensional (ein endliches Erzeugendensystem) genau dann, wenn er es im Sinne der Vorlesung ist (eine endliche Basis). Die eine Richtung ist Beweis D, die andere trivial, weil eine Basis erzeugt.</p>
+
+<div class="box"><p><strong>Definition (Dimension; Definition 2.3.11, <a class="pl" href="../linalg-script.html#p53">S. 53</a>).</strong> Ist $V$ endlichdimensional, so ist seine <strong>Dimension</strong> $\dim V$ die Länge einer Basis von $V$. Nach den Beweisen C und D existiert diese Zahl und hängt nicht von der Basis ab. Ist $V$ nicht endlichdimensional, so schreiben wir $\dim V=\infty$.</p>
+<p><strong>Die Standarddimensionen (Beispiel 2.3.12, <a class="pl" href="../linalg-script.html#p54">S. 54</a>)</strong>, abgelesen an den Standardbasen aus <a class="xl" href="linalg-06.html">Lektion 6</a>:</p>
+<ul>
+  <li>$\dim K^n=n$, $\dim K[x]_n=n+1$ (Polynome vom Grad höchstens $n$: Basis $1,x,\dots,x^n$), $\dim M_{m\times n}(K)=mn$;</li>
+  <li>$\dim\mathcal P(X)=|X|$ über $\mathbb F_2$, für eine endliche Menge $X$ (Basis: die einelementigen Teilmengen);</li>
+  <li>$\dim K^S=|S|$ für eine endliche Menge $S$ (Basis: die Funktionen $\delta_s$, die den Wert $1$ bei $s$ und sonst $0$ haben);</li>
+  <li>$\dim\{0\}=0$: die leere Liste ist eine Basis. Der Nullvektor ist <em>keine</em> Basis von $\{0\}$, da $\{0\}$ abhängig ist.</li>
+</ul>
+<p>Und $K[x]$, der Folgenraum $K^\infty$ und $\mathbb R$ über $\mathbb Q$ sind unendlichdimensional. Satz 2.3.13 (Hamel): jeder Vektorraum hat eine Basis, und je zwei haben dieselbe Kardinalität; das braucht das Auswahlaxiom und wird im Kurs nicht bewiesen.</p></div>
+<p>Der Körper zählt: $\mathbb C$ hat Dimension $1$ über $\mathbb C$ (Basis $1$), aber Dimension $2$ über $\mathbb R$ (Basis $1,i$). Frag immer: „über welchem Körper?“</p>
+
+
+<h3 id="proof-e">Beweis E: jede unabhängige Liste lässt sich zu einer Basis ergänzen (Lemma 2.3.14, <a class="pl" href="../linalg-script.html#p54">S. 54</a>; Vorlesung, Satz 4.3)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $V$ endlichdimensional und seien $u_1,\dots,u_l$ linear unabhängig. Dann gibt es Vektoren $w_1,\dots,w_r$, sodass $u_1,\dots,u_l,w_1,\dots,w_r$ eine Basis von $V$ ist.</p></div>
+<p><strong>Die Idee.</strong> Setze eine Basis hinter die $u$ und lass das Sieb aus Beweis D laufen. Das Sieb wirft nie ein $u$ weg.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Was zu liefern ist:</strong> Vektoren $w_1,\dots,w_r$, sodass die lange Liste eine Basis ist. Eine Basis zu liefern ist das, was Beweis D tut, also gib Beweis D ein erzeugendes System, das mit den $u$ beginnt.</li>
+  <li><strong>Erste Zeile:</strong> „Sei $v_1,\dots,v_m$ eine Basis von $V$.“ (Sie existiert nach Beweis D.) <strong>Letzte Zeile:</strong> „Die gesiebte Liste ist eine Basis, die mit $u_1,\dots,u_l$ beginnt.“</li>
+  <li><strong>Die Lücke:</strong> zeige, dass das Sieb jedes $u_j$ behält; hier wird die Unabhängigkeit der $u$ benutzt.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Stell die neuen Strassen nach vorn und eine vollständige Karte dahinter.</p></div><div class="sp-formal"><p>Sei $v_1,\dots,v_m$ eine Basis von $V$ (Beweis D). Die Liste $u_1,\dots,u_l,v_1,\dots,v_m$ erzeugt $V$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Siebe sie: die neuen Strassen bleiben alle.</p></div><div class="sp-formal"><p>Wende das Sieb aus Beweis D an. Kein $u_j$ wird weggeworfen: $u_j\in\mathrm{Sp}(u_1,\dots,u_{j-1})$ würde der Unabhängigkeit der $u$ widersprechen (und $u_1\ne0$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Was übrig bleibt, ist eine Karte, die mit den neuen Strassen beginnt.</p></div><div class="sp-formal"><p>Das Ergebnis ist eine Basis von $V$, die mit $u_1,\dots,u_l$ beginnt, gefolgt von einigen der $v_i$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_solvefor">nichttriviale Kombination: nach dem Vektor mit nichtnullem Koeffizienten auflösen</a> <a class="mvl" href="../linalg-moves.html#m-la_contradiction">das Gegenteil annehmen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Nach Beweis D hat $V$ eine Basis $v_1,\dots,v_m$. Die Liste $u_1,\dots,u_l,v_1,\dots,v_m$ erzeugt $V$, da schon die $v_i$ es tun. Wende darauf das Sieb aus Beweis D an. Das Sieb wirft $u_j$ nur weg, wenn $u_j\in\mathrm{Sp}(u_1,\dots,u_{j-1})$ (für $j=1$: nur wenn $u_1=0$); beides widerspräche der linearen Unabhängigkeit von $u_1,\dots,u_l$. Also werden alle $u_j$ behalten, und das Ergebnis ist eine Basis $u_1,\dots,u_l,w_1,\dots,w_r$ mit $w_1,\dots,w_r$ unter den $v_i$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Wie viele Vektoren $r$ werden hinzugefügt, ausgedrückt durch $\dim V$ und $l$? Welcher Beweis sagt es dir?
+  <details><summary>Antwort</summary><div><p>$r=\dim V-l$, denn das Ergebnis ist eine Basis, und jede Basis hat $\dim V$ Elemente (Beweis C).</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Ergänze $u_1=(1,2)$ mit der Methode des Beweises zu einer Basis von $\mathbb R^2$, mit der Basis $e_1,e_2$.
+  <details><summary>Antwort</summary><div><p>Sieb $(1,2),e_1,e_2$: $(1,2)$ behalten; $e_1$ ist kein Vielfaches von $(1,2)$, behalten; $e_2=\frac12\big((1,2)-e_1\big)$, weggeworfen. Basis $(1,2),(1,0)$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis E nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Nimm eine Basis $v_1,\dots,v_m$ (sie existiert, da $V$ endlichdimensional ist).</li>
+  <li>Die Liste $u_1,\dots,u_l,v_1,\dots,v_m$ erzeugt.</li>
+  <li>Siebe sie; kein $u_j$ wird weggeworfen, wegen der Unabhängigkeit der $u$.</li>
+</ol>
+<p><strong>Kurz:</strong> die $u$ zuerst, eine Basis dahinter, und sieben. Prüfungsbezug: „ergänze $u_1,u_2$ zu einer Basis von $\mathbb R^4$“ (eine Rechnung), und in jedem Beweis der Dimensionsformel (<a class="xl" href="../linalg-08.html">Lektion 8</a>).</p></div>
+<p>Vergleiche mit Beweis B: auch der Austausch liefert eine solche Basis und sagt mehr: du brauchst genau $\dim V-l$ der alten Basisvektoren.</p>
+
+<h2 id="s5-equilibrium-vectors-in-an-dimensional">5. Gleichgewicht: $n$ Vektoren in einem $n$-dimensionalen Raum</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-06.html#proof-e">Lektion 6</a>)</span>
+<ul>
+  <li><strong>Eindeutige Koordinaten:</strong> $v_1,\dots,v_n$ ist genau dann eine Basis, wenn sich jedes $v$ auf genau eine Weise als $a_1v_1+\dots+a_nv_n$ schreiben lässt.</li>
+</ul></div>
+<p>Das Bild des Skripts (Abschnitt 2.3.1): je grösser eine Menge, desto eher erzeugt sie; je kleiner, desto eher ist sie unabhängig. „Erzeugen“ zieht nach oben, „unabhängig“ zieht nach unten, und sie treffen sich genau bei der Grösse $\dim V$.</p>
+
+<h3 id="proof-f">Beweis F: der Gleichgewichtssatz (Satz 2.3.15, <a class="pl" href="../linalg-script.html#p55">S. 55</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $\dim V=n$ und seien $v_1,\dots,v_n\in V$ eine Liste der <strong>Länge $n$</strong>. Dann sind äquivalent: (1) $v_1,\dots,v_n$ sind linear unabhängig; (2) $v_1,\dots,v_n$ erzeugen $V$; (3) $v_1,\dots,v_n$ ist eine Basis.</p></div>
+<p><strong>Die Idee.</strong> Ergänze oder verkleinere zu einer Basis; da jede Basis Länge $n$ hat, wurde nichts hinzugefügt oder entfernt.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Drei äquivalente Aussagen:</strong> beweise einen Kreis oder einen Stern. Hier folgen (1) und (2) aus (3) schon per Definition, also genügt es, (1) ⇒ (3) und (2) ⇒ (3) zu zeigen.</li>
+  <li><strong>(1) ⇒ (3):</strong> wir haben Unabhängigkeit und brauchen Erzeugen. <strong>(2) ⇒ (3):</strong> wir haben Erzeugen und brauchen Unabhängigkeit.</li>
+  <li><strong>Die Lücke:</strong> ein Werkzeug, das eine unabhängige Liste zu einer Basis macht (Beweis E), und eines, das eine erzeugende Liste zu einer Basis macht (Beweis D); dann zählen mit Beweis C.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>$n$ unverschwendete Strassen: ergänze sie zu einer vollständigen Karte; sie hat schon die richtige Anzahl Strassen.</p></div><div class="sp-formal"><p>(1) $\Rightarrow$ (3): nach Beweis E lässt sich $v_1,\dots,v_n$ zu einer Basis ergänzen. Jede Basis hat Länge $n$ (Beweis C), also wurde nichts hinzugefügt: $v_1,\dots,v_n$ ist eine Basis.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>$n$ Strassen, die überall hinreichen: dünne sie aus; nichts kann gehen.</p></div><div class="sp-formal"><p>(2) $\Rightarrow$ (3): nach Beweis D enthält $v_1,\dots,v_n$ eine Basis, die Länge $n$ hat, also ist es die ganze Liste.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Karte hat beide Eigenschaften.</p></div><div class="sp-formal"><p>(3) $\Rightarrow$ (1) und (3) $\Rightarrow$ (2): Definition einer Basis. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_dimcount">zuerst zählen: $n$ Vektoren in einem $n$-dimensionalen Raum</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Sei $\dim V=n$ und $v_1,\dots,v_n$ eine Liste der Länge $n$. (3) ⇒ (1) und (3) ⇒ (2) gelten nach der Definition einer Basis. (1) ⇒ (3): eine unabhängige Liste ergänzt sich zu einer Basis $v_1,\dots,v_n,w_1,\dots,w_r$; jede Basis von $V$ hat $n$ Elemente, also $n+r=n$, $r=0$, und $v_1,\dots,v_n$ ist selbst eine Basis. (2) ⇒ (3): eine erzeugende Liste enthält eine Basis; diese hat $n$ Elemente, ist also die ganze Liste (wären die $v_i$ nicht paarweise verschieden, hätte die Basis weniger als $n$ Elemente, was unmöglich ist), und $v_1,\dots,v_n$ ist eine Basis. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Ist $1+x,\ 1-x,\ x^2$ eine Basis von $\mathbb R[x]_2$? Benutze den Satz, um nur eine Eigenschaft zu prüfen.
+  <details><summary>Antwort</summary><div><p>$\dim\mathbb R[x]_2=3$ und es gibt $3$ Polynome, also genügt Unabhängigkeit. $a(1+x)+b(1-x)+cx^2=0$: der Koeffizient von $x^2$ gibt $c=0$, das konstante Glied $a+b=0$, der Koeffizient von $x$ gibt $a-b=0$; also $a=b=0$. Unabhängig, also eine Basis.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Wo benutzt Beweis F, dass die Liste die Länge <em>genau</em> $n$ hat? Gib eine Liste der Länge $n+1$ an, die erzeugt, aber keine Basis ist.
+  <details><summary>Antwort</summary><div><p>Bei „$n+r=n$, also $r=0$“ und bei „eine Teilliste mit $n$ Elementen ist die ganze Liste“. Bei Länge $n+1$ scheitern beide: $e_1,e_2,e_1+e_2$ erzeugt $\mathbb R^2$, ist aber abhängig.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis F nur aus dem Rahmen.</li>
+</ol></div>
+
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Sag: „(3) liefert (1) und (2) nach Definition“.</li>
+  <li>(1) ⇒ (3): ergänze zu einer Basis; sie hat $n$ Elemente; nichts wurde hinzugefügt.</li>
+  <li>(2) ⇒ (3): verkleinere zu einer Basis; sie hat $n$ Elemente; nichts wurde entfernt.</li>
+</ol>
+<p><strong>Kurz:</strong> ergänzen oder verkleinern, dann zählen. In Prüfungen ist der Satz vor allem ein Werkzeug: „diese vier Polynome bilden eine Basis“ braucht nur Unabhängigkeit (FS17, Problem 3 (a); Aufgabe 3 unten), und Wahr-falsch-Items wie FS20, VII (a).</p></div>
+<div class="box"><p><strong>Korollar 2.3.17 (fehlendes Gleichgewicht, <a class="pl" href="../linalg-script.html#p55">S. 55</a>).</strong> Sei $\dim V=n&lt;\infty$.</p>
+<ul>
+  <li>(a) Eine Liste von $k&lt;n$ Vektoren <strong>erzeugt</strong> $V$ <strong>nicht</strong>. (Sonst enthielte sie nach Beweis D eine Basis der Länge $\le k&lt;n$.)</li>
+  <li>(b) Eine Liste von $k&gt;n$ Vektoren ist <strong>linear abhängig</strong>. (Sonst ergänzte sie sich nach Beweis E zu einer Basis der Länge $\ge k&gt;n$. Oder direkt aus Beweis B: eine Basis der Länge $n$ erzeugt, also haben unabhängige Listen Länge $\le n$.)</li>
+</ul>
+<p>Also in der Praxis: um zu zeigen, dass $n$ Vektoren eine Basis eines $n$-dimensionalen Raums bilden, prüfe nur <strong>eine</strong> der beiden Eigenschaften „unabhängig“ und „erzeugend“. Meist ist Unabhängigkeit leichter.</p></div>
+<p><strong>In $K^m$ (Bemerkung 2.3.18).</strong> Schreibe $v_1,\dots,v_n$ als Spalten in eine Matrix $A$. Sie sind genau dann unabhängig, wenn $Ax=0$ nur die Lösung $x=0$ hat, was das Gauss-Verfahren entscheidet. Für $n=m$ ist das eine einzige Rechnung, die „Basis oder nicht“ entscheidet.</p>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: Basis oder nicht? Mit dem Gleichgewicht (eine Prüfung statt zwei)</h3>
+<ol class="steps">
+  <li>Sind $(1,1,0,0),(0,1,1,0),(0,0,1,1),(1,0,0,1)$ eine Basis von $\mathbb R^4$?
+  <details><summary>Antwort</summary><div><p>Vier Vektoren in einem $4$-dimensionalen Raum: prüfe nur Unabhängigkeit. $a(1,1,0,0)+b(0,1,1,0)+c(0,0,1,1)+d(1,0,0,1)$ $=(a+d,\,a+b,\,b+c,\,c+d)$. Das ist $0$ für $a=1,b=-1,c=1,d=-1$. Also sind sie <strong>abhängig, keine Basis</strong>: der erste minus den zweiten plus den dritten minus den vierten ergibt $0$.</p></div></details></li>
+  <li>Dieselbe Frage mit $(1,1,0),(0,1,1),(1,0,1)$ in $\mathbb R^3$, und dann in $\mathbb F_2^3$.
+  <details><summary>Antwort</summary><div><p>Über $\mathbb R$: unabhängig (<a class="xl" href="linalg-06.html">Lektion 6</a>, Musterbeispiel 6 (d)), drei Vektoren, $\dim\mathbb R^3=3$, also eine <strong>Basis</strong>. Über $\mathbb F_2$: ihre Summe ist $(2,2,2)=0$, also sind sie abhängig; sie erzeugen nur einen $2$-dimensionalen Unterraum und sind <strong>keine Basis</strong> von $\mathbb F_2^3$.</p></div></details></li>
+  <li>Kann $(1,2,3),(4,5,6)$ den $\mathbb R^3$ erzeugen? Können $(1,2),(3,4),(5,7)$ unabhängig sein?
+  <details><summary>Antwort</summary><div><p>Keines von beiden, nach dem Korollar zum fehlenden Gleichgewicht: $2&lt;3$ Vektoren erzeugen $\mathbb R^3$ nie, und $3&gt;2$ Vektoren in $\mathbb R^2$ sind immer abhängig. Keine Rechnung nötig.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Eine einzige Zahl beschreibt einen endlichdimensionalen Raum vollständig. In <a class="xl" href="../linalg-12.html">Lektion 12</a> siehst du, dass jeder $n$-dimensionale Raum über $K$ „dasselbe“ wie $K^n$ ist (isomorph): wähle eine Basis und nimm die Koordinaten. Also sind die Ebene der Pfeile, die Polynome $a+bx$, die Fibonacci-artigen Folgen und die komplexen Zahlen über $\mathbb R$ alle derselbe Raum $\mathbb R^2$ in Verkleidung. Und der Austauschsatz, ein fünfzeiliges Argument über das Weglassen von Vektoren, ist das Einzige, was zwischen „einer Basis“ und „der Dimension“ steht.</p></div>
+
+<div class="box"><h3 id="for-wonder-why-every-finite">Zum Staunen: warum jeder endliche Körper eine Primzahlpotenz als Anzahl Elemente hat</h3>
+<p>Sei $F$ ein endlicher Körper. Seine Charakteristik ist eine Primzahl $p$ (<a class="xl" href="linalg-04.html">Lektion 4</a>), und die Vielfachen $0,1,1+1,\dots$ von $1$ bilden eine Kopie von $\mathbb F_p$ in $F$. Dann ist $F$ ein Vektorraum über $\mathbb F_p$ (addiere in $F$, multipliziere mit Elementen aus $\mathbb F_p$), endlichdimensional, weil $F$ selbst ein endliches Erzeugendensystem ist. Ist $\dim F=n$ mit Basis $b_1,\dots,b_n$, so hat jedes Element genau eine Darstellung $a_1b_1+\dots+a_nb_n$ mit $a_i\in\mathbb F_p$ (<a class="xl" href="linalg-06.html">Lektion 6</a>). Das sind $p$ Wahlmöglichkeiten für jeden von $n$ Koeffizienten, also $|F|=p^n$. Es gibt keinen Körper mit $6$ oder $10$ Elementen, und der $\mathbb F_4$, den du in <a class="xl" href="linalg-04.html">Lektion 4</a> aus den Axiomen gebaut hast, hat $4=2^2$ Elemente: er ist $2$-dimensional über $\mathbb F_2$.</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Versuch jedes im Kopf, bevor du die Schritte aufklappst.</p>
+
+<div class="box"><h3 id="we-3">Musterbeispiel 3: ein Erzeugendensystem auf eine Basis verkleinern (das Sieb)</h3>
+<p>Sei $v_1=(1,2,1)$, $v_2=(2,4,2)$, $v_3=(0,1,1)$, $v_4=(1,3,2)$, $v_5=(0,0,1)$ in $\mathbb R^3$. Sie erzeugen $\mathbb R^3$. Finde unter ihnen eine Basis mit dem Sieb aus Beweis D.</p>
+<ol class="steps">
+  <li>Behalten oder wegwerfen: $v_1$, dann $v_2$, dann $v_3$?
+  <details><summary>Antwort</summary><div><p>$v_1\ne0$: behalten. $v_2=2v_1$: wegwerfen. $v_3$ ist kein Vielfaches von $v_1$ (erster Eintrag $0$, aber $v_3\ne0$): behalten.</p></div></details></li>
+  <li>Und $v_4$, $v_5$?
+  <details><summary>Antwort</summary><div><p>$v_4=v_1+v_3$: wegwerfen. $v_5$: ist $(0,0,1)=a(1,2,1)+b(0,1,1)$? Der erste Eintrag gibt $a=0$, der zweite $b=0$, dann gibt der dritte $0\ne1$. Also $v_5\notin\mathrm{Sp}(v_1,\dots,v_4)$: behalten.</p></div></details></li>
+  <li>Ergebnis, und eine Kontrolle mit der Dimension.
+  <details><summary>Antwort</summary><div><p>$v_1,v_3,v_5$: eine Basis von $\mathbb R^3$. Kontrolle: drei behaltene Vektoren, und $\dim\mathbb R^3=3$, wie es sein muss. Das Ergebnis des Siebs hängt von der Reihenfolge der Liste ab; eine andere Reihenfolge kann eine andere Basis liefern, aber immer eine der Länge $3$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: zu einer Basis ergänzen</h3>
+<p>Ergänze $u_1=(1,1,0)$, $u_2=(0,1,1)$ zu einer Basis von $\mathbb R^3$.</p>
+<ol class="steps">
+  <li>Wie viele Vektoren musst du hinzufügen, und welche Kandidaten benutzt Beweis E?
+  <details><summary>Antwort</summary><div><p>$\dim\mathbb R^3=3$, also genau einen. Lass das Sieb über $u_1,u_2,e_1,e_2,e_3$ laufen.</p></div></details></li>
+  <li>Führe das Sieb aus.
+  <details><summary>Antwort</summary><div><p>$u_1,u_2$ bleiben (unabhängig). $e_1$: ist $(1,0,0)=a(1,1,0)+b(0,1,1)$? Dritter Eintrag $b=0$, erster $a=1$, zweiter $1\ne0$. Nein, also $e_1$ behalten. Jetzt haben wir $3$ unabhängige Vektoren in einem $3$-dimensionalen Raum, nach Beweis F sind sie also eine Basis, und das Sieb wirft $e_2$, $e_3$ weg. <strong>Basis: $(1,1,0),(0,1,1),(1,0,0)$.</strong></p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-5">Musterbeispiel 5: drei Wahr-falsch-Aussagen (FS17, ix; FS20, VII; Probeklausur HS20, (4))</h3>
+<ol class="steps">
+  <li>FS17, ix: „Sei $V$ ein Vektorraum. Dann haben je zwei Erzeugendensysteme dieselbe Kardinalität.“
+  <details><summary>Antwort</summary><div><p><strong>Falsch.</strong> $\{e_1,e_2\}$ und $\{e_1,e_2,e_1+e_2\}$ erzeugen beide $\mathbb R^2$. Nur <em>Basen</em> haben dieselbe Grösse (Beweis C). Ein Erzeugendensystem ist mindestens so gross wie eine Basis.</p></div></details></li>
+  <li>FS20, VII: „$V$ endlichdimensional, $S$ ein endliches Erzeugendensystem. Dann: (a) ist $|S|&gt;\dim V$, so ist $S$ eine Basis; (b) für jede Basis $\mathcal B$ gilt $|S|\le|\mathcal B|$; (c) jede Basis enthält alle Vektoren von $S$; (d) durch Weglassen von Elementen aus $S$ erhält man eine Basis.“ Welche ist wahr?
+  <details><summary>Antwort</summary><div><p>(a) Falsch: mehr als $\dim V$ Vektoren sind abhängig (fehlendes Gleichgewicht). (b) Falsch: die umgekehrte Ungleichung $|S|\ge|\mathcal B|$ gilt (Beweis B: $S$ erzeugt, $\mathcal B$ ist unabhängig). (c) Falsch: $S=\{e_1,e_2,e_1+e_2\}$ und $\mathcal B=\{e_1,e_2\}$. (d) Wahr: das ist Beweis D. <strong>Antwort (d).</strong></p></div></details></li>
+  <li>Probeklausur HS20, (4): „Sei $V$ ein Vektorraum über $\mathbb F_2$. Ist $|V|=\infty$, so ist $\dim V=\infty$.“
+  <details><summary>Antwort</summary><div><p><strong>Wahr.</strong> Kontraposition: Ist $\dim V=n&lt;\infty$ mit Basis $b_1,\dots,b_n$, so ist jeder Vektor eindeutig $a_1b_1+\dots+a_nb_n$ mit $a_i\in\mathbb F_2$ (<a class="xl" href="linalg-06.html">Lektion 6</a>), also ist $|V|=2^n$ endlich.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: die Dimension eines Spanns (HS21, Frage XV)</h3>
+<p>Für $a=(3,-1,2,0)$, $b=(3,0,1,-1)$, $c=(0,-2,2,2)$ in $\mathbb R^4$: (a) das Spann hat Dimension $2$; (b) das Spann hat Dimension $3$; (c) es gibt $d\in\mathbb R^4$, sodass $\{a,b,c,d\}$ eine Basis von $\mathbb R^4$ ist; (d) $\alpha a+\beta b+\gamma c=0$ hat keine nichttriviale Lösung.</p>
+<ol class="steps">
+  <li>Ist $c$ eine Kombination von $a$ und $b$?
+  <details><summary>Antwort</summary><div><p>$a-b=(0,-1,1,1)$, und $c=2(a-b)$. Also $2a-2b-c=0$, und $a,b,c$ sind abhängig.</p></div></details></li>
+  <li>Jetzt entscheide.
+  <details><summary>Antwort</summary><div><p>$\mathrm{Sp}(a,b,c)=\mathrm{Sp}(a,b)$ (Weglassen eines Vektors, der Kombination der anderen ist, lässt das Spann unverändert), und $a,b$ sind unabhängig (der zweite Eintrag von $b$ ist $0$, der von $a$ nicht, und $b\ne0$). Also ist die Dimension $2$: <strong>(a) ist wahr</strong>, (b) ist falsch. (c) ist falsch: eine Basis ist unabhängig, und jede Teilmenge einer unabhängigen Menge ist unabhängig, aber $a,b,c$ sind abhängig. (d) ist falsch: $(\alpha,\beta,\gamma)=(2,-2,-1)$. <strong>Antwort (a).</strong></p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-7">Musterbeispiel 7: Unterräume von $\mathbb R^3$ (HS21, Frage VIII)</h3>
+<p>Für jeden Unterraum $V\subseteq\mathbb R^3$: (a) gibt es einen Unterraum $W\subseteq\mathbb R^3$ mit $\dim(V+W)=\dim W$; (b) es gibt einen Unterraum $W$ mit $V\cap W=\emptyset$; (c) für jeden Unterraum $W$ gilt $|V\cap W|=1$; (d) ist $\dim V=2$, so gibt es einen Unterraum $W$ der Dimension $2$ mit $|V\cap W|=1$. Dabei ist $V+W=\{v+w\mid v\in V,\,w\in W\}$ (<a class="xl" href="../linalg-08.html">Lektion 8</a>).</p>
+<ol class="steps">
+  <li>(a), (b), (c): schnelle Prüfung.
+  <details><summary>Antwort</summary><div><p>(a) <strong>Wahr:</strong> nimm $W=\mathbb R^3$; dann ist $V+W=\mathbb R^3$, und beide Dimensionen sind $3$. (b) Falsch: $0$ liegt in jedem Unterraum, also $0\in V\cap W$. (c) Falsch: für $W=V=\mathbb R^3$ ist der Durchschnitt unendlich.</p></div></details></li>
+  <li>(d) sagt, dass zwei Ebenen durch $0$ im $\mathbb R^3$ sich nur in $0$ treffen können. Zeige, dass das nicht geht, nur mit dieser Lektion.
+  <details><summary>Antwort</summary><div><p>Seien $v_1,v_2$ eine Basis von $V$ und $w_1,w_2$ eine von $W$. Vier Vektoren im $\mathbb R^3$ sind abhängig (fehlendes Gleichgewicht): $a_1v_1+a_2v_2+b_1w_1+b_2w_2=0$, nicht alle Koeffizienten $0$. Setze $x:=a_1v_1+a_2v_2$ $=-(b_1w_1+b_2w_2)$. Dann $x\in V\cap W$. Ist $V\cap W=\{0\}$, so $x=0$, also $a_1=a_2=0$ und $b_1=b_2=0$ nach der Unabhängigkeit jedes Paares. Widerspruch. Also $V\cap W\ne\{0\}$, und (d) ist falsch. <strong>Antwort (a).</strong> (Die Dimensionsformel aus <a class="xl" href="../linalg-08.html">Lektion 8</a> gibt in einer Zeile $\dim(V\cap W)\ge2+2-3=1$.)</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Übungen</h2>
+<p>Jede Lösung klappt unter ihrer Aufgabe auf. Aufgabe 1 ist ein echtes Quiz; prüfe sie danach mit dem Explorer.</p>
+
+<h3 id="ex-1">Aufgabe 1 (Quiz 3)</h3>
+<p>Sei $V=\mathbb Q^5$ mit der Standardbasis $x_1,\dots,x_5$, und seien $y_1=(1,1,1,1,1)$, $y_2=(1,0,1,1,1)$, $y_3=(1,1,0,1,1)$. Finde mit dem Austauschsatz von Steinitz (oder anders) zwei Vektoren $x_i,x_j$, sodass $\{y_1,y_2,y_3,x_i,x_j\}$ eine Basis von $V$ ist. (Für den Quizpunkt zählte nur die Antwort.)</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Beginne mit $(y_3,x_1,\dots,x_5)$. Beachte $y_3=x_1+x_2+x_4+x_5$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> der Austausch in drei Schritten. <strong>Vorgehen:</strong> suche den ersten Vektor, der im Spann der vorherigen liegt.</p>
+<p><strong>Schritt 1.</strong> In $(y_3,x_1,x_2,x_3,x_4,x_5)$: $x_1$, $x_2$, $x_3$, $x_4$ sind keine Kombinationen der vorherigen Vektoren (jede vorherige Kombination hat fünften Eintrag gleich dem Koeffizienten von $y_3$, der dann $0$ sein muss). Aber $x_5=y_3-x_1-x_2-x_4$. Streiche $x_5$.</p>
+<p><strong>Schritt 2.</strong> In $(y_2,y_3,x_1,x_2,x_3,x_4)$: eine Kombination $a\,y_2+b\,y_3+c\,x_1+d\,x_2$ hat vierten und fünften Eintrag $a+b$; für $x_1$, $x_2$, $x_3$ müssen diese $0$ sein, also $b=-a$, und die Kombination ist $(c,\,-a+d,\,a,\,0,\,0)$. Ihr dritter Eintrag ist $a$, also braucht $x_1$ (mit $d=0$) und $x_2$ den Wert $a=0$; dann ist $x_1\notin\mathrm{Sp}(y_2,y_3)$ und $x_2\notin\mathrm{Sp}(y_2,y_3,x_1)$. Aber $x_3$ geht mit $a=1$, $d=1$: $x_3=y_2-y_3+x_2$. Streiche $x_3$.</p>
+<p><strong>Schritt 3.</strong> In $(y_1,y_2,y_3,x_1,x_2,x_4)$: $x_1$ liegt nicht in $\mathrm{Sp}(y_1,y_2,y_3)$ (vierter und fünfter Eintrag einer Kombination sind gleich ihrem ersten Eintrag). Aber $x_2=y_1-y_2$. Streiche $x_2$.</p>
+<p><strong>Antwort:</strong> $\{y_1,y_2,y_3,x_1,x_4\}$ ist eine Basis. Die offizielle Lösung nennt drei Antworten: $\{x_1,x_4\}$, $\{x_1,x_5\}$ und $\{x_4,x_5\}$. Grund: $\mathrm{Sp}(y_1,y_2,y_3)$ besteht aus den Vektoren $(s,t,u,s,s)$ (erster, vierter und fünfter Eintrag gleich), enthält also schon $x_2=y_1-y_2$ und $x_3=y_1-y_3$. Zwei beliebige der Vektoren $x_1,x_4,x_5$ brechen die Gleichheit dieser drei Einträge; $x_2$ und $x_3$ bringen nichts Neues.</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Dimensionen)</h3>
+<p>Bestimme Dimension und eine Basis von: (a) den symmetrischen $2\times2$-Matrizen über $K$; (b) $\{p\in\mathbb R[x]_3\mid p(1)=0\}$; (c) $\mathbb C^n$ als Vektorraum über $\mathbb R$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Schreibe ein allgemeines Element mit freien Parametern; jeder freie Parameter ergibt einen Basisvektor. In (b) bedeutet $p(1)=0$, dass $p=(x-1)q$ mit $\deg q\le2$ ist.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> schreibe für jeden Raum das allgemeine Element mit freien Parametern hin, lies ein Erzeugendensystem ab und prüfe die Unabhängigkeit.</p>
+<p>(a) $\begin{pmatrix}a&amp;b\\b&amp;d\end{pmatrix}=a\begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}+b\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}+d\begin{pmatrix}0&amp;0\\0&amp;1\end{pmatrix}$. Diese drei erzeugen, und die Kombination ist $0$ nur für $a=b=d=0$ (lies die Einträge ab). <strong>Dimension $3$.</strong></p>
+<p>(b) $p=c_0+c_1x+c_2x^2+c_3x^3$ mit $c_0+c_1+c_2+c_3=0$, also $c_0=-c_1-c_2-c_3$ und</p>
+<span class="math-display" style="display:block">$$\begin{aligned}p&amp;=c_1(x-1)+c_2(x^2-1)\\&amp;\quad+c_3(x^3-1).\end{aligned}$$</span>
+<p>Die drei Polynome erzeugen den Unterraum, und sie sind unabhängig (sie haben verschiedene Grade). <strong>Dimension $3$.</strong> (Eins weniger als $\dim\mathbb R[x]_3=4$: eine lineare Bedingung nimmt eine Dimension weg. Lektion 15, der Rang-Nullraum-Satz, macht das genau.)</p>
+<p>(c) $e_1,ie_1,e_2,ie_2,\dots,e_n,ie_n$ ist eine Basis über $\mathbb R$: $(z_1,\dots,z_n)$ mit $z_k=a_k+ib_k$ ist $\sum(a_ke_k+b_k\,ie_k)$, und das ist $0$ nur, wenn alle $a_k=b_k=0$ sind. <strong>Dimension $2n$.</strong></p>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (FS17, Problem 3 (a), der kurze Weg)</h3>
+<p><a class="xl" href="linalg-06.html">Lektion 6</a> hat gezeigt, dass $p_1=4x^3+3x^2+2x+7$, $p_2=x^3+x^2+x$, $p_3=3x^3+2x^2+x$, $p_4=9x^3+4x^2+x$ eine Basis von $\mathbb R[x]_3$ bilden, indem beides bewiesen wurde: Unabhängigkeit und Erzeugen. Welche Hälfte kannst du jetzt überspringen, und warum?</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Zähle: wie viele Polynome gibt es, und was ist $\dim\mathbb R[x]_3$?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> eine Basis ist „unabhängig und erzeugend“; der Gleichgewichtssatz sagt, dass eines davon genügt, wenn die Anzahl der Vektoren gleich der Dimension ist.</p>
+<p>$\dim\mathbb R[x]_3=4$ (Basis $1,x,x^2,x^3$), und es gibt $4$ Polynome. Nach dem Gleichgewichtssatz genügt Unabhängigkeit allein für eine Basis. Also ist die Unabhängigkeitsrechnung aus <a class="xl" href="linalg-06.html">Lektion 6</a> (der konstante Term ergibt $a=0$, dann ein $3\times3$-System $b=c=d=0$) eine vollständige Lösung, und die Erzeugungsrechnung lässt sich durch einen Satz ersetzen: „vier unabhängige Vektoren in einem $4$-dimensionalen Raum bilden eine Basis, nach dem Gleichgewichtssatz“. In der Prüfung nennst du den Satz beim Namen.</p>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 (ein Unterraum voller Dimension)</h3>
+<p>Sei $V$ endlichdimensional und $U\subseteq V$ ein Unterraum. Zeige: (a) $U$ ist endlichdimensional und $\dim U\le\dim V$; (b) ist $\dim U=\dim V$, so gilt $U=V$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(a) Eine unabhängige Liste in $U$ ist unabhängig in $V$. Nimm eine unabhängige Liste in $U$, die so lang wie möglich ist. (b) Gleichgewicht.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) hat zwei Behauptungen, „endlichdimensional“ und „$\le$“; wir müssen eine endliche Basis von $U$ bauen, ohne vorauszusetzen, dass es eine gibt. (b) ist „$U\subseteq V$ und $V\subseteq U$“; nur die zweite Richtung braucht Arbeit.</p>
+<p><strong>(a)</strong> Sei $n=\dim V$. Jede unabhängige Liste in $U$ ist eine unabhängige Liste in $V$, hat also Länge $\le n$ (mehr als $\dim V$ Vektoren sind immer abhängig). Wähle eine unabhängige Liste $u_1,\dots,u_k$ in $U$ maximaler Länge $k\le n$. Sie erzeugt $U$: für $u\in U$ ist die Liste $u_1,\dots,u_k,u$ nach Maximalität abhängig, also liegt ein Vektor im Spann der vorherigen (das Lemma über abhängige Listen), und da $u_1,\dots,u_k$ unabhängig sind, ist dieser Vektor der letzte, also $u$ (Beweis A). Also $u\in\mathrm{Sp}(u_1,\dots,u_k)$. Somit ist $u_1,\dots,u_k$ eine Basis von $U$ und $\dim U=k\le n$.</p>
+<p><strong>(b)</strong> Eine Basis von $U$ ist eine Liste von $n=\dim V$ unabhängigen Vektoren in $V$, nach dem Gleichgewichtssatz also eine Basis von $V$. Also $V=\mathrm{Sp}(\text{basis of }U)\subseteq U$, und $U=V$.</p>
+<p>(Die Sorgfalt in (a) ist nötig: wir dürfen nicht voraussetzen, dass $U$ endlichdimensional ist, denn das gehört zur Behauptung.)</p>
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (wahr oder falsch)</h3>
+<p>(a) Jede Liste von $3$ Vektoren in $\mathbb R^2$ ist abhängig. (b) Jede Liste von $2$ Vektoren in $\mathbb R^3$ ist unabhängig. (c) Wenn $v_1,\dots,v_4$ den Raum $V$ erzeugen und $u_1,u_2,u_3$ in $V$ unabhängig sind, dann ist $\dim V\in\{3,4\}$. (d) $\mathbb F_2^3$ hat genau $8$ Elemente und die Dimension $8$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>„Mehr als $\dim V$ Vektoren sind abhängig; weniger als $\dim V$ erzeugen nie.“ Mehr braucht es nicht.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> jeder Punkt vergleicht eine Anzahl von Vektoren mit der Dimension; entscheide, welche Hälfte des fehlenden Gleichgewichts gilt.</p>
+<ol>
+<li>(a) <strong>Wahr.</strong> $\dim\mathbb R^2=2$, und mehr Vektoren als die Dimension sind immer linear abhängig (fehlendes Gleichgewicht).</li>
+<li>(b) <strong>Falsch.</strong> $e_1,2e_1$ ist abhängig ($2\cdot e_1-1\cdot2e_1=0$). Weniger Vektoren als die Dimension erzeugen nie, <em>aber</em> sie können durchaus abhängig sein.</li>
+<li>(c) <strong>Wahr.</strong> Aus der erzeugenden Liste $v_1,\dots,v_4$ lässt sich eine Basis aussortieren, also $\dim V\le4$; die unabhängige Liste $u_1,u_2,u_3$ lässt sich zu einer Basis ergänzen, also $\dim V\ge3$.</li>
+<li>(d) <strong>Falsch.</strong> $\mathbb F_2^3$ hat $2^3=8$ Elemente, aber seine Standardbasis $e_1,e_2,e_3$ hat $3$ Elemente, also ist die Dimension $3$. Die Anzahl der Elemente ist $2^{\dim}$, nicht die Dimension.</li>
+</ol>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (der Austausch braucht Unabhängigkeit)</h3>
+<p>Wo genau benutzt beweis B, dass $u_1,\dots,u_m$ unabhängig sind? Gib ein Beispiel, in dem $u_1,\dots,u_m$ abhängig sind, die $v_i$ erzeugen und $m&gt;n$ ist.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Schau auf den Schritt, der sagt, welcher Vektor gestrichen wird. Probiere dann das kleinstmögliche Beispiel: $n=1$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> finde den Schritt, dessen Begründung „die $u$ sind unabhängig“ lautet, und zerstöre sie dann.</p>
+<p>In Beweis A: der gestrichene Vektor ist kein $u_1,\dots,u_j$, <em>weil</em> diese unabhängig sind. Ohne das könnte der Schritt ein $u$ streichen, und das Zählen „ein $v$ raus pro $u$ rein“ scheitert. Beispiel: $v_1=e_1$ erzeugt $\mathbb R^1$, und $u_1=e_1$, $u_2=2e_1$ ergeben $m=2&gt;1=n$. Das letzte Beispiel des Explorers zeigt dasselbe in $\mathbb R^3$.</p>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Die Aufgaben 1–6 ergeben 6 Punkte, einen für jede gelöste Aufgabe. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, eine Wahr-falsch-Reihe, wenn höchstens ein Item falsch ist. Mit 4 von 6 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="skipped.html#linalg-07">Überspringliste</a>.</p>
+<ul>
+  <li><strong>Satz 2.3.13 (Hamel-Basen)</strong>: jeder Vektorraum hat eine Basis, und alle Basen haben dieselbe Kardinalität. Braucht das Lemma von Zorn; nur angegeben. <em>Priorität: optional.</em></li>
+  <li><strong>Bemerkung 2.3.16</strong> (maximale unabhängige Mengen und minimale Erzeugendensysteme sind Basen): eine Umformulierung von Beweis F; Aufgabe 4 (a) enthält die Hälfte „maximal unabhängig“. <em>Priorität: niedrig.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a href="../linalg-08.html">Lektion 8</a>: Summen und Durchschnitte von Unterräumen, die Dimensionsformel und Komplemente.</p>
+
+<nav class="site foot" aria-label="Lektionsnavigation">
+<a href="linalg-06.html">← Lektion 6: Die Kartenmacher der Freien Stadt</a>
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-08.html">Lektion 8: Die beiden Viertel →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="feedback.html">Feedback geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

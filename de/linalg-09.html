@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Die parallelen Gassen">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die parallelen Gassen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 9</span>
+<h1>Die parallelen Gassen</h1>
+<p class="lead">Affine Unterräume und die drei Nebenklassenregeln, Nebenklassen als Äquivalenzklassen, der Quotientenraum V/W und warum seine Operationen wohldefiniert sind (und eine, die es nicht ist), dim V/W = dim V - dim W, ein Nebenklassen-Explorer, Serie 4 Aufgaben 22 (c) und 23, Serie 5 Aufgabe 24.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-8-5">Rückblick auf Lektion 8 (5 Minuten)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Begriffe für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-parallel-streets">1. Die Geschichte: die parallelen Gassen</a>
+</li>
+<li><a href="#s2-affine-subspaces">2. Affine Unterräume</a>
+<ol>
+<li><a href="#proof-a">Beweis A: ein affiner Unterraum ist nur dann ein Unterraum, wenn er durch $0$ geht (Vorlesung, Lemma 5.2)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: Lösungsmengen sind affine Unterräume</a></li>
+<li><a href="#proof-b">Beweis B: die drei Nebenklassenregeln (Vorlesung, Lemma 5.3)</a></li>
+</ol></li>
+<li><a href="#s3-cosets-are-equivalence-classes">3. Nebenklassen sind Äquivalenzklassen</a>
+<ol>
+<li><a href="#we-2">Musterbeispiel 2: alle affinen Geraden von $\mathbb F_4^2$ (Serie 4, Aufgabe 22 (c))</a></li>
+<li><a href="#we-3">Musterbeispiel 3: die drei parallelen Geraden einer Geraden in $\mathbb F_3^2$</a></li>
+</ol></li>
+<li><a href="#s4-the-quotient-space">4. Der Quotientenraum $V/W$</a>
+<ol>
+<li><a href="#proof-c">Beweis C: die Operationen auf $V/W$ sind wohldefiniert (Lemma 3.7.9 und Aufgabe 3.7.10, S. 115; Vorlesung §5)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: eine Addition, die nicht wohldefiniert ist (Serie 5, Aufgabe 24)</a></li>
+</ol></li>
+<li><a href="#s5-the-dimension-of">5. Die Dimension von $V/W$</a>
+<ol>
+<li><a href="#proof-d">Beweis D: $\dim V/W=\dim V-\dim W$ (Vorlesung, Lemma 5.6; Korollar 3.7.15, S. 116)</a></li>
+<li><a href="#we-5">Musterbeispiel 5: eine Basis eines Quotienten von $\mathbb R^4$</a></li>
+<li><a href="#we-6">Musterbeispiel 6: wie viele Elemente hat ein Quotient? (HS17, viii)</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+<li><a href="#for-wonder-euler-s-officers">Zum Staunen: Eulers Offiziere und die Geraden von $\mathbb F_4^2$ (Serie 4, Aufgabe 23)</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-7">Musterbeispiel 7: wann sind zwei Nebenklassen gleich?</a></li>
+<li><a href="#we-8">Musterbeispiel 8: eine Wahr-falsch-Aussage (HS17, ix)</a></li>
+<li><a href="#we-9">Musterbeispiel 9: Polynome bis auf eine Konstante</a></li>
+</ol></li>
+<li><a href="#exercises">Übungen</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (der Quotient von $\mathbb F_2^3$ nach einer Geraden)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Nebenklassenregel (2), selbstständig)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Durchschnitte affiner Unterräume)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (eine Wohldefiniertheitsprüfung, klausurartig)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (wahr oder falsch)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (eine Abbildung auf $V/W$: das Aufwärmen für FS17, Problem 6)</a></li>
+<li><a href="#ex-7">Aufgabe 7 (der Unterraum eines affinen Unterraums ist eindeutig)</a></li>
+<li><a href="#ex-8">Aufgabe 8 (die Gerade durch zwei Punkte)</a></li>
+<li><a href="#ex-9">Aufgabe 9 (Serie 4, Aufgabe 23 (a): zwei orthogonale lateinische Quadrate aus $\mathbb F_4^2$)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schwerer Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Rückblick-Fragen oben. Das zählt. Morgen machst du einfach hier weiter: ein ausgelassener oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) einen <strong>affinen Unterraum</strong> $a+W$ definieren und beweisen kannst, dass er nur dann ein Unterraum ist, wenn $a\in W$; (2) die drei Regeln beweisen kannst: „gleiche Nebenklasse $\iff$ Differenz in $W$“, „$a+W=b+W\iff a-b\in W$“, „zwei Nebenklassen sind gleich oder disjunkt“; (3) die Nebenklassen als Äquivalenzklassen von $x\sim y:\iff x-y\in W$ siehst; (4) den <strong>Quotientenraum</strong> $V/W$ definieren, beweisen kannst, dass seine Operationen <strong>wohldefiniert</strong> sind, und eine Operation erkennst, die es nicht ist; (5) $\dim V/W=\dim V-\dim W$ beweisen kannst, indem du eine Basis angibst; (6) Nebenklassen über endlichen Körpern zählen kannst.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 115 Minuten: 50 für die Abschnitte 1–3, eine Pause, 65 für die Abschnitte 4–5 mit dem Explorer und den Übungen. Eine natürliche Pause kommt nach Abschnitt 3 (Nebenklassen fertig, als Nächstes der Quotientenraum).</dd></div>
+  <div><dt>Skript (Englisch, gedruckte Seiten)</dt><dd>Skript EN 2023, Abschnitt 3.7 „Fibers and quotient spaces“ (im Kapitel des Skripts über lineare Abbildungen; wir nehmen die Teile, die keine linearen Abbildungen brauchen, jetzt, in der Reihenfolge der Vorlesung):
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p112">S. 112–113</a>, 3.7.1 Fasern:</strong> die Schreibweise $a+B$; Proposition 3.7.1 und Beispiel 3.7.2 (Fasern einer linearen Abbildung; hier vorausgenommen, in Lektion 11 gemacht).</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p113">S. 113–116</a>, 3.7.2 Quotientenraum:</strong> Lemma 3.7.3 (die Relation $\sim_U$ ist eine Äquivalenzrelation), Lemma 3.7.4 ($[v]=v+U$), Definition 3.7.7 (affine Unterräume, ihre Dimension, parallel), Definition 3.7.8 (der Quotientenraum), Lemma 3.7.9 und Aufgabe 3.7.10 (wohldefiniert), Proposition 3.7.11, Beispiel 3.7.12, Proposition 3.7.13 (die kanonische Quotientenabbildung), Korollar 3.7.15 ($\dim V/U=\dim V-\dim U$).</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §5, zweite Hälfte (Notizen vom 12., 14. und 19. Okt.): affine Räume $a+W$, Lemma 5.2 ($a+W$ ist ein Unterraum $\iff a\in W$), Lemma 5.3 (die drei Nebenklassenregeln), die Beispiele $U_\lambda$ und parallele Geraden im $\mathbb R^2$, Lemma 5.4 und 5.5 (die Relation $x\sim y:\iff x-y\in W$ und ihre Klassen), die Operationen auf $V/W$ und warum sie wohldefiniert sind, und Lemma 5.6 ($\dim V/W=n-m$, mit Basis). Serie 4, Aufgaben 22 (c) und 23, und Serie 5, Aufgabe 24, gehören hierher.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Quotienten tauchen in Wahr-falsch-Blöcken auf („$W\subseteq\mathbb F_5^3$ von $(1,1,1)$ erzeugt: der Quotient $\mathbb F_5^3/W$ hat zehn Elemente“, HS17, viii) und in grösseren Beweisen: die schriftliche Aufgabe FS17, Problem 6 (15 Punkte) verlangt zu zeigen, dass eine auf $V/W$ definierte Abbildung <strong>wohldefiniert</strong> ist, genau die Prüfung aus Abschnitt 4. Die Nebenklassenregeln sind auch der Weg, alle Lösungen eines linearen Systems zu beschreiben: eine spezielle Lösung plus die Lösungen des homogenen Systems (Lektion 11). Und Serie 4, Aufgabe 23, macht aus den affinen Geraden von $\mathbb F_4^2$ drei orthogonale lateinische Quadrate.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-8-5">Rückblick auf <a class="xl" href="linalg-08.html">Lektion 8</a> (5 Minuten)</h3>
+<p>$U+W=\{u+w\}$ ist der kleinste Unterraum, der $U$ und $W$ enthält; $\dim(U+W)=\dim U+\dim W-\dim(U\cap W)$; die Summe ist direkt genau dann, wenn $U\cap W=\{0\}$; jeder Unterraum hat ein Komplement. Prüfe dich selbst: im $\mathbb R^2$ sei $W$ die $x$-Achse. Nenne zwei verschiedene Komplemente von $W$.</p>
+<details><summary>Antwort</summary><div><p>Die $y$-Achse $\mathrm{Sp}(e_2)$ und die Diagonale $\mathrm{Sp}(e_1+e_2)$ (jede Gerade durch $0$ ausser $W$). Komplemente sind nicht eindeutig. Heute bauen wir einen Raum, der die Rolle von „dem“ Komplement spielt, ohne eines zu wählen: den Quotienten $V/W$.</p></div></details>
+<p>Zwei weitere: (a) $\dim U=3$, $\dim W=4$ im $\mathbb R^6$; was kann $\dim(U\cap W)$ sein? (b) Was haben in <a class="xl" href="linalg-03.html">Lektion 3</a> die Klassen einer Äquivalenzrelation mit der Menge gemacht?</p>
+<details><summary>Antwort</summary><div><p>(a) $\dim(U\cap W)=3+4-\dim(U+W)\ge7-6=1$, und $\le3$ (ein Unterraum von $U$): also $1$, $2$ oder $3$. (b) Sie zerlegen sie: jedes Element liegt in genau einer Klasse. Die heutigen Nebenklassen sind die Klassen von „die Differenz liegt in $W$“.</p></div></details></div>
+
+
+<h2 id="words-for-this-lesson-fachbegriffe">Begriffe für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>English</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>affine subspace $a+W$, coset</td><td>affiner Raum (affiner Unterraum), Nebenklasse</td></tr>
+    <tr><td>parallel</td><td>parallel</td></tr>
+    <tr><td>representative</td><td>Vertreter (Repräsentant)</td></tr>
+    <tr><td>equivalence class</td><td>Äquivalenzklasse</td></tr>
+    <tr><td>quotient space $V/W$</td><td>Quotientenraum (Faktorraum)</td></tr>
+    <tr><td>well defined</td><td>wohldefiniert</td></tr>
+    <tr><td>canonical quotient map (projection)</td><td>kanonische Projektion</td></tr>
+    <tr><td>fiber</td><td>Faser</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-parallel-streets">1. Die Geschichte: die parallelen Gassen</h2>
+<div class="story">
+<p>Die Freie Stadt hat eine Hauptallee $W$, die durch das Tor läuft. Jede andere Strasse der Stadt verläuft parallel dazu. Ein Briefträger kümmert sich nicht darum, wie weit entlang einer Strasse ein Haus liegt; für ihn ist die Adresse nur <em>welche Strasse</em>. Zwei Häuser liegen genau dann in derselben Strasse, wenn der Weg von einem zum anderen der Richtung der Allee folgt.</p>
+<p>Die Briefträger entdecken dann, dass man Strassen addieren kann. „Nimm ein Haus in Strasse $A$ und ein Haus in Strasse $B$, addiere die beiden Wege vom Tor aus, und schau, auf welcher Strasse du landest.“ Die Sorge ist, dass die Antwort davon abhängen könnte, welche Häuser man genommen hat. Das tut sie nicht: entlang einer Strasse ändert sich der Weg nur um ein Stück der Allee, und die Richtung der Allee ändert die Strasse nicht. Also bilden die Strassen selbst eine neue Abbildung, gröber als die Stadt, mit der Allee als Tor.</p>
+</div>
+<p>Mathematisch: die Allee ist ein Unterraum $W\subseteq V$; eine Strasse ist ein <strong>affiner Unterraum</strong> (Nebenklasse) $a+W$; „dieselbe Strasse“ ist die Äquivalenzrelation $x\sim y:\iff x-y\in W$; die Menge der Strassen mit der induzierten Addition und Skalarmultiplikation ist der <strong>Quotientenraum</strong> $V/W$; „es hängt nicht von den Häusern ab“ heisst <strong>wohldefiniert</strong>.</p>
+
+<h2 id="s2-affine-subspaces">2. Affine Unterräume</h2>
+<p>Im Folgenden ist $V$ ein Vektorraum über $K$ und $W\subseteq V$ ein Unterraum. Für $a\in V$ und $B\subseteq V$ schreiben wir $a+B:=\{a+b\mid b\in B\}$ (Skript, <a class="pl" href="../linalg-script.html#p112">S. 112</a>).</p>
+<div class="box">
+<p><strong>Definition (affiner Unterraum; Vorlesung §5; Definition 3.7.7, <a class="pl" href="../linalg-script.html#p114">S. 114</a>).</strong> Eine Menge der Form $a+W=\{a+w\mid w\in W\}$ mit $a\in V$ ist ein <strong>affiner Unterraum</strong> (affiner Raum von $W$). Seine Dimension ist $\dim W$, er ist <strong>parallel</strong> zu $W$, und $W$ ist der dazugehörige lineare Unterraum.</p>
+<p>Bilder: im $\mathbb R^2$ sind die affinen Unterräume einer Geraden $W$ durch $0$ die Geraden parallel zu $W$; im $\mathbb R^3$ sind die einer Ebene $W$ die parallelen Ebenen. Ein Punkt $\{a\}=a+\{0\}$ ist ein $0$-dimensionaler affiner Unterraum.</p></div>
+
+<h3 id="proof-a">Beweis A: ein affiner Unterraum ist nur dann ein Unterraum, wenn er durch $0$ geht (Vorlesung, Lemma 5.2)</h3>
+<div class="box"><p><strong>Behauptung.</strong> $a+W$ ist ein Unterraum von $V$ genau dann, wenn $a\in W$. In diesem Fall ist $a+W=W$.</p></div>
+<p><strong>Die Idee.</strong> Jeder Unterraum enthält $0$; und $0\in a+W$ heisst, dass $a$ sich von $0$ um einen Vektor aus $W$ unterscheidet. Umgekehrt: ist $a\in W$, so bewegt das Verschieben von $W$ um einen seiner eigenen Vektoren es nicht.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Eine Äquivalenz:</strong> zwei Richtungen. Dazu eine Mengengleichheit $a+W=W$ im Fall „$\Leftarrow$“: zwei Inklusionen.</li>
+  <li><strong>„$\Rightarrow$“, erste Zeile:</strong> „Sei $a+W$ ein Unterraum.“ Die eine Tatsache, die jeder Unterraum gratis liefert, ist $0\in a+W$. <strong>Letzte Zeile:</strong> „also $a\in W$.“</li>
+  <li><strong>„$\Leftarrow$“, erste Zeile:</strong> „Sei $a\in W$.“ <strong>Letzte Zeile:</strong> „also $a+W=W$, und das ist ein Unterraum.“</li>
+  <li><strong>Die Lücke:</strong> „$x\in a+W$“ jedes Mal als „$x=a+w$ für ein $w\in W$“ auflösen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Strasse durch das Tor ist die Allee selbst.</p></div><div class="sp-formal"><p>„$\Leftarrow$“: sei $a\in W$. Dann $a+w\in W$ für $w\in W$, also $a+W\subseteq W$; und $w=a+(w-a)$ mit $w-a\in W$, also $W\subseteq a+W$. Somit $a+W=W$, ein Unterraum.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Strasse, die ein Viertel ist, muss das Tor enthalten.</p></div><div class="sp-formal"><p>„$\Rightarrow$“: ist $a+W$ ein Unterraum, so $0\in a+W$, also $0=a+y$ für ein $y\in W$. Somit $a=-y\in W$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_member">Zugehörigkeit Element für Element entscheiden</a> <a class="mvl" href="../linalg-moves.html#m-la_subspace">der Unterraumtest: Null, Summen, Vielfache</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>„$\Leftarrow$“: sei $a\in W$. Für $w\in W$ ist $a+w\in W$, da $W$ unter Addition abgeschlossen ist; also $a+W\subseteq W$. Für $w\in W$ ist $w=a+(w-a)$ mit $w-a\in W$; also $W\subseteq a+W$. Somit $a+W=W$, ein Unterraum. „$\Rightarrow$“: ist $a+W$ ein Unterraum, so enthält er $0$, also $0=a+y$ für ein $y\in W$, und $a=-y\in W$, da $W$ unter Negation abgeschlossen ist. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Ist $\{(x,y)\in\mathbb R^2\mid y=2x+1\}$ ein affiner Unterraum? Von welchem $W$? Ist er ein Unterraum?
+  <details><summary>Antwort</summary><div><p>Er ist $(0,1)+\mathrm{Sp}\big((1,2)\big)$: ein Punkt ist $(x,2x+1)=(0,1)+x(1,2)$. Also ist er ein affiner Unterraum mit $W=\{y=2x\}$. Er ist kein Unterraum, da $(0,1)\notin W$ (äquivalent: $0$ liegt nicht auf der Geraden).</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige, dass $a+W=W$ schon aus $a+W\subseteq W$ folgt.
+  <details><summary>Antwort</summary><div><p>$a=a+0\in a+W\subseteq W$, also $a\in W$, und dann liefert „$\Leftarrow$“ $a+W=W$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe Beweis A nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>„$\Rightarrow$“: ein Unterraum enthält $0$; schreibe $0=a+y$; also $a=-y\in W$.</li>
+  <li>„$\Leftarrow$“: $a+W=W$ durch zwei Inklusionen, mit Abgeschlossenheit von $W$ unter Addition und $a\in W$.</li>
+</ol>
+<p><strong>Kurz:</strong> prüfe die $0$. Das ist der Grund, warum „die Lösungen von $Ax=b$ bilden einen Unterraum“ für $b\ne0$ falsch ist, ein Standard-Wahr-falsch-Item.</p></div>
+<div class="box"><h3 id="we-1">Musterbeispiel 1: Lösungsmengen sind affine Unterräume</h3>
+<ol class="steps">
+  <li>Schreibe $L=\{(x,y)\in\mathbb R^2\mid x+2y=3\}$ in der Form $a+W$.
+  <details><summary>Antwort</summary><div><p>Eine spezielle Lösung: $a=(3,0)$. Die homogene Gleichung $x+2y=0$ hat die Lösungen $W=\mathrm{Sp}\big((-2,1)\big)$. Dann $L=(3,0)+W$: ist $x+2y=3$, so löst $(x,y)-(3,0)$ die homogene Gleichung; umgekehrt erfüllt $(3,0)+t(-2,1)=(3-2t,t)$ die Gleichung $3-2t+2t=3$.</p></div></details></li>
+  <li>Würde eine andere spezielle Lösung, sagen wir $(1,1)$, eine andere Antwort geben?
+  <details><summary>Antwort</summary><div><p>Nein: $(1,1)-(3,0)=(-2,1)\in W$, also $(1,1)+W=(3,0)+W$ nach der Nebenklassenregel (2) unten. Jede Lösung kann als Grundpunkt dienen; die Menge ist dieselbe.</p></div></details></li>
+  <li>Ist $\{x\in\mathbb R^3\mid x_1+x_2+x_3=\lambda\}$ ein Unterraum? (Beispiel $U_\lambda$ der Vorlesung)
+  <details><summary>Antwort</summary><div><p>Er ist $(\lambda,0,0)+U_0$. Nach Beweis A ist er genau dann ein Unterraum, wenn $(\lambda,0,0)\in U_0$, d. h. wenn $\lambda=0$.</p></div></details></li>
+</ol></div>
+<p>Beispiel aus der Vorlesung: $U_\lambda=\{x\in K^3\mid$ $x_1+x_2+x_3=\lambda\}$ ist nur für $\lambda=0$ ein Unterraum; für $\lambda\ne0$ ist er der affine Unterraum $(\lambda,0,0)+U_0$, eine zu $U_0$ parallele Ebene.</p>
+
+<h3 id="proof-b">Beweis B: die drei Nebenklassenregeln (Vorlesung, Lemma 5.3)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Für $a,b,x,y\in V$:</p>
+<ol>
+  <li>$x$ und $y$ liegen in einem gemeinsamen affinen Unterraum von $W$ $\iff x-y\in W$;</li>
+  <li>$a+W=b+W\iff a-b\in W$;</li>
+  <li>$a+W\ne b+W\Rightarrow(a+W)\cap(b+W)=\emptyset$. <em>Zwei Nebenklassen sind gleich oder disjunkt.</em></li>
+</ol></div>
+<p><strong>Die Idee.</strong> Alles reduziert sich auf einen Zug: eine Differenz zweier Elemente derselben Nebenklasse $a+W$ ist $(a+w_1)-(a+w_2)$ $=w_1-w_2\in W$, weil sich die $a$ wegheben.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>(1) und (2) sind Äquivalenzen:</strong> je zwei Richtungen. (2) enthält ausserdem eine Mengengleichheit: zwei Inklusionen.</li>
+  <li><strong>(3) ist eine Implikation mit verneinter Voraussetzung:</strong> beweise die Kontraposition, „wenn die Nebenklassen ein Element gemeinsam haben, sind sie gleich“.</li>
+  <li><strong>Jede Zugehörigkeit</strong> „$x\in a+W$“ wird als „$x=a+w$ für ein $w\in W$“ aufgelöst; jede Folgerung „$\in W$“ benutzt, dass $W$ unter Addition und Negation abgeschlossen ist.</li>
+  <li><strong>Die Lücke:</strong> in jedem Teil die richtige Differenz bilden und zeigen, dass sie in $W$ liegt.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Häuser in einer Strasse: der Weg zwischen ihnen verläuft entlang der Allee.</p></div><div class="sp-formal"><p>(1) „$\Rightarrow$“: $x=a+w_1$, $y=a+w_2$ ergeben $x-y=w_1-w_2\in W$. „$\Leftarrow$“: ist $x-y\in W$, so $x=y+(x-y)\in y+W$, und $y=y+0\in y+W$: beide liegen in $y+W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Zwei Namen für dieselbe Strasse unterscheiden sich um einen Weg entlang der Allee.</p></div><div class="sp-formal"><p>(2) „$\Rightarrow$“: $a=a+0\in a+W=b+W$, also $a=b+w_0$ mit $w_0\in W$, d. h. $a-b\in W$. „$\Leftarrow$“: ist $a-b=w_0\in W$, so $a+w=b+(w_0+w)\in b+W$, also $a+W\subseteq b+W$; und symmetrisch ($b-a=-w_0\in W$) $b+W\subseteq a+W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Strassen, die ein Haus gemeinsam haben, sind dieselbe Strasse.</p></div><div class="sp-formal"><p>(3) Kontraposition: sei $x\in(a+W)\cap(b+W)$, also $x=a+w_1=b+w_2$. Dann $a-b=w_2-w_1\in W$, und nach (2) $a+W=b+W$. <span class="qed">∎</span></p></div></div>
+
+</div>
+<p>Regel (2) ist die, die du am meisten brauchst: <strong>um zwei Nebenklassen zu vergleichen, subtrahiere die Vertreter und prüfe die Zugehörigkeit zu $W$.</strong> Eine Folgerung: <em>jedes</em> Element einer Nebenklasse kann als ihr Name dienen: ist $x\in a+W$, so $x+W=a+W$.</p>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_cosetdiff">Nebenklassen vergleichen, indem man die Vertreter subtrahiert</a> <a class="mvl" href="../linalg-moves.html#m-la_contra">die Kontraposition beweisen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>(1) Sind $x=a+w_1$ und $y=a+w_2$ mit $w_1,w_2\in W$, so ist $x-y=w_1-w_2\in W$. Umgekehrt liegen, ist $x-y\in W$, $x=y+(x-y)$ und $y=y+0$ beide in $y+W$. (2) Gilt $a+W=b+W$, so $a=a+0\in b+W$, also $a=b+w_0$ mit $w_0\in W$ und $a-b=w_0\in W$. Umgekehrt sei $a-b=w_0\in W$. Für jedes $w\in W$ ist $a+w=b+(w_0+w)\in b+W$, also $a+W\subseteq b+W$; da $b-a=-w_0\in W$, gibt dasselbe Argument $b+W\subseteq a+W$. (3) Angenommen $x\in(a+W)\cap(b+W)$, etwa $x=a+w_1=b+w_2$. Dann $a-b=w_2-w_1\in W$, also $a+W=b+W$ nach (2). Das ist die Kontraposition von (3). <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Welche Eigenschaft von $W$ benutzt jeder Teil? (Abgeschlossen unter Addition, unter Negation, enthält $0$.)
+  <details><summary>Antwort</summary><div><p>(1) „$\Rightarrow$“: $w_1-w_2\in W$ (Addition und Negation); „$\Leftarrow$“: $0\in W$ (also $y\in y+W$). (2) „$\Rightarrow$“: $0\in W$; „$\Leftarrow$“: Addition, und für die symmetrische Hälfte Negation. (3): Addition und Negation, dann (2).</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Beweise (3) direkt aus der Äquivalenzrelation von Abschnitt 3, ohne (2).
+  <details><summary>Antwort</summary><div><p>Nebenklassen sind die Klassen von $x\sim y:\iff x-y\in W$ (Abschnitt 3), und Klassen einer Äquivalenzrelation sind gleich oder disjunkt: liegt $x\in[a]\cap[b]$, so $a\sim x$ und $x\sim b$, also $a\sim b$ durch Transitivität, und dann erfüllt jedes $y\sim a$ auch $y\sim b$ (und umgekehrt), d. h. $[a]=[b]$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe Beweis B nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Löse jede Nebenklassen-Zugehörigkeit auf: $x\in a+W\iff x=a+w$, $w\in W$.</li>
+  <li>(2) „$\Rightarrow$“: $a\in a+W=b+W$. „$\Leftarrow$“: $a+w=b+(w_0+w)$, zwei Inklusionen.</li>
+  <li>(3) per Kontraposition: ein gemeinsames Element ergibt $a-b\in W$, dann (2).</li>
+  <li>Nenne die Unterraum-Eigenschaft nach jedem „$\in W$“.</li>
+</ol>
+<p><strong>Kurz:</strong> subtrahiere, die Basispunkte heben sich weg, und der Rest liegt in $W$. Jeder Wohldefiniertheitsbeweis (FS17, Problem 6 (b)) beginnt mit Regel (2).</p></div>
+
+<h2 id="s3-cosets-are-equivalence-classes">3. Nebenklassen sind Äquivalenzklassen</h2>
+
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-03.html#proof-h">Lektion 3</a>)</span>
+<ul>
+  <li><strong>Äquivalenzklassen bilden eine Zerlegung:</strong> zwei Klassen sind gleich oder disjunkt, und jedes Element liegt in seiner eigenen Klasse (Beweis H).</li>
+</ul></div>
+<div class="box">
+<p><strong>Die Relation (Vorlesung, Lemma 5.4; Lemma 3.7.3, <a class="pl" href="../linalg-script.html#p113">S. 113–114</a>).</strong> $x\sim_W y:\iff x-y\in W$ ist eine Äquivalenzrelation auf $V$: reflexiv ($x-x=0\in W$), symmetrisch ($y-x=-(x-y)\in W$), transitiv ($x-z=(x-y)+(y-z)\in W$). Jede Eigenschaft benutzt ein Unterraum-Axiom: $0\in W$, abgeschlossen unter Negation, abgeschlossen unter Summen.</p>
+<p><strong>Ihre Klassen (Vorlesung, Lemma 5.5; Lemma 3.7.4, <a class="pl" href="../linalg-script.html#p114">S. 114</a>).</strong> $[a]_\sim=a+W$: $x\in[a]\iff x-a\in W\iff x=a+w$ für ein $w\in W$.</p>
+<p>Also <strong>zerlegen die affinen Unterräume von $W$ den $V$</strong>: jeder Vektor liegt in genau einem von ihnen (<a class="xl" href="linalg-03.html">Lektion 3</a>: die Klassen einer Äquivalenzrelation zerlegen die Menge). Beweis B (3) ist genau diese Tatsache noch einmal.</p></div>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: alle affinen Geraden von $\mathbb F_4^2$ (Serie 4, Aufgabe 22 (c))</h3>
+<p>$\mathbb F_4^2$ hat $16$ Elemente und genau fünf nichttriviale Unterräume, die Geraden $g_0,g_1,g_a,g_b,g_\infty$ durch $0$, jede mit $4$ Elementen (<a class="xl" href="linalg-08.html">Lektion 8</a>, Aufgabe 2). Wie viele nichttriviale affine Unterräume (affine Geraden) gibt es?</p>
+<ol class="steps">
+  <li>Wie viele Nebenklassen hat eine Gerade $g$?
+  <details><summary>Antwort</summary><div><p>Jede Nebenklasse $v+g$ hat genau $4$ Elemente ($v+u=v+u'$ erzwingt $u=u'$), und die Nebenklassen zerlegen die $16$ Vektoren. Also gibt es $16/4=4$ Nebenklassen von $g$.</p></div></details></li>
+  <li>Können Nebenklassen verschiedener Geraden zusammenfallen? Zähle.
+  <details><summary>Antwort</summary><div><p>Nein: die Gerade ist durch die Nebenklasse bestimmt, denn $g=\{p-p'\mid p,p'\in v+g\}$ (Differenzen von Elementen einer Nebenklasse füllen $g$ aus). Also gibt es $5\cdot4=$ <strong>$20$ affine Geraden</strong>. Fünf davon sind die Geraden $g_i$ durch $0$; die anderen $15$ verfehlen $0$ und sind keine Unterräume (Beweis A). Konkret: für die Steigung $m\in\{0,1,a,b\}$ sind sie $\{y=mx+q\}$ mit $q\in\mathbb F_4$, und für $g_\infty$ die „senkrechten“ Geraden $\{x=q\}$, genau wie im $\mathbb R^2$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-3">Musterbeispiel 3: die drei parallelen Geraden einer Geraden in $\mathbb F_3^2$</h3>
+<p>$W=\mathrm{Sp}\big((1,1)\big)=\{(0,0),(1,1),(2,2)\}\subseteq\mathbb F_3^2$.</p>
+<ol class="steps">
+  <li>Liste alle Nebenklassen von $W$ auf.
+  <details><summary>Antwort</summary><div><p>$9/3=3$ Nebenklassen. $0+W=W$; $(1,0)+W=\{(1,0),(2,1),(0,2)\}$; $(2,0)+W=\{(2,0),(0,1),(1,2)\}$. Jeder Vektor von $\mathbb F_3^2$ erscheint genau einmal: die Nebenklassen zerlegen die Ebene. Es sind die drei „diagonalen“ Geraden $y=x$, $y=x+2$, $y=x+1$.</p></div></details></li>
+  <li>Ist $(0,2)+W=(2,1)+W$? Ist $(0,1)+W=(1,0)+W$?
+  <details><summary>Antwort</summary><div><p>$(0,2)-(2,1)=(-2,1)=(1,1)\in W$: gleich (beide liegen in $(1,0)+W$). $(0,1)-(1,0)=(-1,1)=(2,1)\notin W$: verschieden, also disjunkt.</p></div></details></li>
+  <li>Was ist $\big((1,0)+W\big)+\big((1,0)+W\big)$? Welche Zahl beschreibt eine Nebenklasse?
+  <details><summary>Antwort</summary><div><p>$(2,0)+W$. Eine Nebenklasse ist durch $x-y$ bestimmt (konstant auf jeder Nebenklasse, da Addition von $(t,t)$ nichts ändert): $0$, $1$, $2$ für die drei Nebenklassen oben. Die Summe von Nebenklassen addiert diese Zahlen in $\mathbb F_3$; also verhält sich $\mathbb F_3^2/W$ wie $\mathbb F_3$, und $\dim=2-1=1$.</p></div></details></li>
+</ol></div>
+
+<h2 id="s4-the-quotient-space">4. Der Quotientenraum $V/W$</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-01.html#proof-c">Lektion 1</a>)</span>
+<ul>
+  <li><strong>Wohldefiniert:</strong> $\bar a+\bar b:=\overline{a+b}$ auf $\mathbb Z/n$ hängt nicht von den Vertretern ab (Beweis C). Die Operationen auf $V/W$ werden genau auf dieselbe Weise geprüft.</li>
+</ul></div>
+<div class="box">
+<p><strong>Definition (Quotientenraum; Definition 3.7.8, <a class="pl" href="../linalg-script.html#p114">S. 114</a>; Vorlesung §5).</strong> $V/W:=\{a+W\mid a\in V\}$, die Menge aller Nebenklassen von $W$ (die Menge $V/{\sim}$ der Äquivalenzklassen). Definiere</p>
+<span class="math-display" style="display:block">$$\begin{aligned}(a+W)+(b+W)&amp;:=(a+b)+W,\\ \lambda\cdot(a+W)&amp;:=(\lambda a)+W.\end{aligned}$$</span>
+<p>In der Klassenschreibweise: $[a]+[b]:=[a+b]$, $\lambda[a]:=[\lambda a]$. (Die Vorlesung definiert die Summe zuerst als die Menge $\{(a+w_1)+(b+w_2)\}$ und zeigt, dass sie $(a+b)+W$ ist.)</p></div>
+<p>Diese Definitionen rechnen mit <strong>Vertretern</strong> $a,b$. Aber eine Nebenklasse hat viele Namen: $a+W=a'+W$ immer dann, wenn $a-a'\in W$. Die Definition ergibt nur Sinn, wenn das Ergebnis nicht von den gewählten Namen abhängt. Genau das bedeutet <strong>wohldefiniert</strong>.</p>
+
+<h3 id="proof-c">Beweis C: die Operationen auf $V/W$ sind wohldefiniert (Lemma 3.7.9 und Aufgabe 3.7.10, <a class="pl" href="../linalg-script.html#p115">S. 115</a>; Vorlesung §5)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Ist $a+W=a'+W$ und $b+W=b'+W$, so ist $(a+b)+W=(a'+b')+W$ und $(\lambda a)+W=(\lambda a')+W$ für alle $\lambda\in K$.</p></div>
+<p><strong>Die Idee.</strong> Übersetze beide Voraussetzungen und das Ziel mit Nebenklassenregel (2) in „eine Differenz liegt in $W$“. Dann ist das Ziel eine Summe (oder ein Vielfaches) der Voraussetzungen.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>„Wohldefiniert“</strong> heisst: gleiche Eingaben ergeben gleiche Ausgaben, für <em>jede</em> Wahl der Vertreter. <strong>Erste Zeile:</strong> „Seien $a+W=a'+W$ und $b+W=b'+W$.“ <strong>Letzte Zeile:</strong> „also $(a+b)+W=(a'+b')+W$“, ebenso für $\lambda$.</li>
+  <li><strong>Übersetze</strong> Voraussetzungen und Ziel mit Nebenklassenregel (2): $a-a'\in W$, $b-b'\in W$; Ziel $(a+b)-(a'+b')\in W$.</li>
+  <li><strong>Die Lücke:</strong> schreibe die Differenz des Ziels durch die Differenzen der Voraussetzungen.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Verschiedene Häuser in denselben Strassen.</p></div><div class="sp-formal"><p>Nach Beweis B (2): $a-a'\in W$ und $b-b'\in W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die beiden Wege unterscheiden sich um zwei Stücke Allee, die zusammen wieder ein Stück Allee sind.</p></div><div class="sp-formal"><p>$(a+b)-(a'+b')=(a-a')+(b-b')\in W$ (abgeschlossen unter Addition). Nach (2): $(a+b)+W=(a'+b')+W$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Einen Weg entlang der Allee zu strecken, hält ihn entlang der Allee.</p></div><div class="sp-formal"><p>$\lambda a-\lambda a'=\lambda(a-a')\in W$ (abgeschlossen unter Skalaren). Nach (2): $(\lambda a)+W=(\lambda a')+W$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_welldef">wohldefiniert: ändere den Vertreter und zeige, dass sich nichts ändert</a> <a class="mvl" href="../linalg-moves.html#m-la_cosetdiff">Nebenklassen vergleichen, indem man die Vertreter subtrahiert</a></p>
+
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Seien $a+W=a'+W$ und $b+W=b'+W$, und sei $\lambda\in K$. Nach Nebenklassenregel (2) ist $a-a'\in W$ und $b-b'\in W$. Dann $(a+b)-(a'+b')=(a-a')+(b-b')\in W$, da $W$ unter Addition abgeschlossen ist, und $\lambda a-\lambda a'=\lambda(a-a')\in W$, da $W$ unter Skalarmultiplikation abgeschlossen ist. Nach Nebenklassenregel (2) noch einmal: $(a+b)+W=(a'+b')+W$ und $(\lambda a)+W=(\lambda a')+W$. Also hängen Summe und Vielfaches von Nebenklassen nicht von den gewählten Vertretern ab. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> In $\mathbb R^2/\mathrm{Sp}(e_1)$ prüfe von Hand: $(1,2)+W=(7,2)+W$ und $(0,3)+W=(-4,3)+W$; vergleiche die beiden Summen.
+  <details><summary>Antwort</summary><div><p>$(1,2)+(0,3)=(1,5)$ und $(7,2)+(-4,3)=(3,5)$; die Differenz $(-2,0)\in W$, also sind beide Summen die Nebenklasse $\{y=5\}$. Wie versprochen.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Versuche, ein Produkt von Nebenklassen zu definieren, $(a+W)\cdot(b+W):=ab+W$, auf $\mathbb R/\mathbb Z$ (eine Gruppe, kein Vektorraum, aber dieselbe Frage). Ist es wohldefiniert?
+  <details><summary>Antwort</summary><div><p>Nein: $\tfrac12+\mathbb Z=\tfrac32+\mathbb Z$, aber $\tfrac12\cdot\tfrac12=\tfrac14$ und $\tfrac32\cdot\tfrac12=\tfrac34$, und $\tfrac34-\tfrac14=\tfrac12\notin\mathbb Z$. Der Beweis bricht bei „die Differenz des Ziels ist aus den Differenzen der Voraussetzungen gebaut“: $ab-a'b$ $=(a-a')b$ muss nicht in $\mathbb Z$ liegen.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe Beweis C nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Sage, was zu zeigen ist: das Ergebnis hängt nicht von den Vertretern ab.</li>
+  <li>Nimm zwei Vertretersysteme derselben Nebenklassen; übersetze mit Nebenklassenregel (2).</li>
+  <li>Drücke die Differenz der Ergebnisse durch die gegebenen Differenzen aus; schliesse mit der Unterraum-Eigenschaft und Regel (2).</li>
+</ol>
+<p><strong>Kurz:</strong> gleiche Eingaben, dann gleiche Ausgaben, über „Differenz in $W$“. FS17, Problem 6 (b) verlangt genau das für eine auf $V/W$ definierte Abbildung (Aufgabe 6 unten ist das Aufwärmen); rechne mit 3–4 Punkten allein für die Prüfung.</p></div>
+<div class="box"><p><strong>Proposition 3.7.11 (<a class="pl" href="../linalg-script.html#p115">S. 115</a>).</strong> Mit diesen Operationen ist $V/W$ ein Vektorraum über $K$. Jedes Axiom wird von $V$ geerbt, indem man mit Vertretern rechnet. Der Nullvektor ist $0+W=W$; das Negative von $a+W$ ist $(-a)+W$.</p>
+<p><strong>Die kanonische Quotientenabbildung (Proposition 3.7.13, <a class="pl" href="../linalg-script.html#p115">S. 115</a>).</strong> $\pi:V\to V/W$, $\pi(v):=v+W$. Sie ist linear (das ist die Definition der Operationen), surjektiv, und $\pi(v)=0_{V/W}$ $\iff v+W=W\iff v\in W$. In der Sprache von Lektion 15 (Kerne): $\ker\pi=W$.</p></div>
+
+<div class="explorer" id="q-ex">
+<span class="label">Probier es aus: Strassen addieren in $\mathbb R^2/W$</span>
+<p>$W$ ist die Gerade durch $0$ in der Richtung, die du wählst. Die farbigen Geraden sind die Nebenklassen $a+W$, $b+W$ und $(a+b)+W$. Schiebe die Vertreter $a'$ entlang $a+W$ und $b'$ entlang $b+W$: die Summe $a'+b'$ verlässt $(a+b)+W$ nie. Die „Strassennummer“ ist der vorzeichenbehaftete Abstand von $W$; sie addiert sich, deshalb verhält sich $\mathbb R^2/W$ wie $\mathbb R$.</p>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label>Richtung von $W$ <input id="q-th" type="range" min="0" max="175" step="5" value="30" aria-label="Richtungswinkel"> <span id="q-thv">30°</span></label>
+</div>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label style="white-space:nowrap">$a$ = (<input id="q-a1" type="number" value="1" style="width:2.6em" aria-label="a erste Koordinate">, <input id="q-a2" type="number" value="2" style="width:2.6em" aria-label="a zweite Koordinate">)</label>
+  <label style="white-space:nowrap">$b$ = (<input id="q-b1" type="number" value="2" style="width:2.6em" aria-label="b erste Koordinate">, <input id="q-b2" type="number" value="-2" style="width:2.6em" aria-label="b zweite Koordinate">)</label>
+</div>
+<div class="ex-nav" style="flex-wrap:wrap">
+  <label>bewege $a'$ <input id="q-t" type="range" min="-4" max="4" step="0.25" value="0" aria-label="bewege a Strich"></label>
+  <label>bewege $b'$ <input id="q-s" type="range" min="-4" max="4" step="0.25" value="0" aria-label="bewege b Strich"></label>
+</div>
+<svg id="q-svg" viewBox="-150 -150 300 300" width="100%" style="max-width:330px;display:block;margin:0 auto;font-family:var(--font-util)" role="img" aria-label="Nebenklassen einer Geraden in der Ebene und die Summe zweier Nebenklassen"></svg>
+<p id="q-verdict" aria-live="polite"></p>
+</div>
+<script>
+(function(){
+  var E={};['th','a1','a2','b1','b2','t','s'].forEach(function(k){E[k]=document.getElementById('q-'+k);});if(!E.th)return;
+  var K=18;function X(x){return (x*K).toFixed(1);}function Y(y){return (-y*K).toFixed(1);}
+  function line(p,d,col,w,op){return '<line x1="'+X(p[0]-20*d[0])+'" y1="'+Y(p[1]-20*d[1])+'" x2="'+X(p[0]+20*d[0])+'" y2="'+Y(p[1]+20*d[1])+'" style="stroke:'+col+'" stroke-width="'+w+'" opacity="'+(op||1)+'"/>';}
+  function dot(p,col,lab,dy){return '<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="4.5" style="fill:'+col+'"/><text x="'+(+X(p[0])+7)+'" y="'+(+Y(p[1])+(dy||-7))+'" font-size="13" style="fill:'+col+'">'+lab+'</text>';}
+  function f(x){var r=+x.toFixed(2);if(Object.is(r,-0))r=0;return r<0?'−'+(-r):String(r);}function pl(x){var r=+x.toFixed(2);return r<0?'('+f(r)+')':f(r);}
+  function draw(){var th=+E.th.value*Math.PI/180,d=[Math.cos(th),Math.sin(th)],n=[-d[1],d[0]];
+    document.getElementById('q-thv').textContent=E.th.value+'°';
+    var a=[+E.a1.value||0,+E.a2.value||0],b=[+E.b1.value||0,+E.b2.value||0],t=+E.t.value,s=+E.s.value;
+    var ap=[a[0]+t*d[0],a[1]+t*d[1]],bp=[b[0]+s*d[0],b[1]+s*d[1]],sm=[ap[0]+bp[0],ap[1]+bp[1]],ab=[a[0]+b[0],a[1]+b[1]];
+    var h='<line x1="-150" y1="0" x2="150" y2="0" style="stroke:var(--rule)"/><line x1="0" y1="-150" x2="0" y2="150" style="stroke:var(--rule)"/>';
+    for(var k=-8;k<=8;k++){h+=line([k*n[0],k*n[1]],d,'var(--muted)',1,.25);}
+    var CA='var(--k-c)',CB='var(--k-eps)',CS='currentColor';
+    function lab(p,txt,col){var q=1e9;for(var i=0;i<2;i++){if(d[i]>1e-6)q=Math.min(q,(7.6-p[i])/d[i]);else if(d[i]<-1e-6)q=Math.min(q,(-7.6-p[i])/d[i]);}q-=0.4;var z=[p[0]+q*d[0]+.35*n[0],p[1]+q*d[1]+.35*n[1]];return '<text x="'+X(z[0])+'" y="'+Y(z[1])+'" font-size="12" text-anchor="end" style="fill:'+col+'">'+txt+'</text>';}
+    h+=line([0,0],d,'var(--accent)',3.5)+line(a,d,CA,2.2)+line(b,d,CB,2.2)+line(ab,d,CS,1.6,.85);
+    h+=lab([0,0],'W','var(--accent)')+lab(a,'a+W',CA)+lab(b,'b+W',CB)+lab(ab,'(a+b)+W',CS);
+    h+='<line x1="0" y1="0" x2="'+X(ap[0])+'" y2="'+Y(ap[1])+'" style="stroke:'+CA+'" stroke-dasharray="4 3"/><line x1="0" y1="0" x2="'+X(bp[0])+'" y2="'+Y(bp[1])+'" style="stroke:'+CB+'" stroke-dasharray="4 3"/>';
+    h+='<line x1="'+X(ap[0])+'" y1="'+Y(ap[1])+'" x2="'+X(sm[0])+'" y2="'+Y(sm[1])+'" style="stroke:'+CB+'" stroke-dasharray="2 3" opacity=".7"/><line x1="'+X(bp[0])+'" y1="'+Y(bp[1])+'" x2="'+X(sm[0])+'" y2="'+Y(sm[1])+'" style="stroke:'+CA+'" stroke-dasharray="2 3" opacity=".7"/>';
+    h+=dot(ap,CA,"a′")+dot(bp,CB,"b′",16)+dot(sm,CS,"a′+b′");
+    document.getElementById('q-svg').innerHTML=h;
+    var na=a[0]*n[0]+a[1]*n[1],nb=b[0]*n[0]+b[1]*n[1],ns=sm[0]*n[0]+sm[1]*n[1];
+    var inW=Math.abs(na)<1e-9;
+    document.getElementById('q-verdict').innerHTML='Street numbers (signed distance from W): a + W → '+f(na)+', b + W → '+f(nb)+', and a′ + b′ lies on the street '+f(+na.toFixed(2)+ +nb.toFixed(2))+' = '+f(na)+' + '+pl(nb)+'. '+
+      'Here a′ + b′ − (a + b) = ('+f(t)+' + '+pl(s)+')·d lies in W, so <strong>a′ + b′ ∈ (a + b) + W for every choice of representatives</strong>: the sum of cosets is well defined.'+
+      (inW?' Note: a ∈ W, so a + W = W is the zero vector of ℝ²/W, and (a + b) + W = b + W.':'');}
+  ['th','a1','a2','b1','b2','t','s'].forEach(function(k){E[k].addEventListener('input',draw);});draw();
+})();
+</script>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: eine Addition, die nicht wohldefiniert ist (Serie 5, Aufgabe 24)</h3>
+<p>Auf $V=\mathbb R^2$ sei $x\sim y:\iff$ es gibt ein $\lambda\in\mathbb R\setminus\{0\}$ mit $\lambda x=y$. Definiere $[a]\oplus[b]:=[a+b]$ auf $V/{\sim}$. (a) Zeige, dass $\sim$ eine Äquivalenzrelation ist. (b) Zeige, dass $\oplus$ nicht wohldefiniert ist.</p>
+<ol class="steps">
+  <li>(a) Prüfe die drei Eigenschaften.
+  <details><summary>Antwort</summary><div><p>Reflexiv: $1\cdot x=x$. Symmetrisch: $\lambda x=y$ mit $\lambda\ne0$ ergibt $\lambda^{-1}y=x$. Transitiv: $\lambda x=y$, $\mu y=z$ ergeben $(\mu\lambda)x=z$ mit $\mu\lambda\ne0$. Die Klassen sind $\{0\}$ und, für $x\ne0$, die Gerade durch $x$ <em>ohne</em> $0$. Insbesondere $[x]=[-x]$.</p></div></details></li>
+  <li>(b) Finde zwei Namen derselben Klasse, die verschiedene Summen ergeben.
+  <details><summary>Antwort</summary><div><p>$a=b=(1,0)$ und $b'=(-1,0)$: $[b]=[b']$ (nimm $\lambda=-1$). Aber $[a+b]=[(2,0)]$ und $[a+b']=[(0,0)]=\{0\}$, und diese Klassen sind verschieden, da $\lambda(2,0)\ne(0,0)$ für $\lambda\ne0$. Die „Summe“ von $[(1,0)]$ und $[(1,0)]$ wäre also zwei verschiedene Dinge: <strong>nicht wohldefiniert</strong>.</p></div></details></li>
+  <li>Warum greift Beweis C nicht?
+  <details><summary>Antwort</summary><div><p>Hier ist $x\sim y$ nicht von der Form „$x-y\in W$“ für einen Unterraum $W$. Nebenklassen eines Unterraums lassen sich addieren, weil die Differenzen der Vertreter in $W$ liegen und $W$ unter Addition abgeschlossen ist. Das Skalieren von Klassen, wie hier, hat keine solche Struktur.</p></div></details></li>
+  <li>Überraschung: ist die Skalarmultiplikation $\lambda\odot[a]:=[\lambda a]$ für dieselbe Relation wohldefiniert?
+  <details><summary>Antwort</summary><div><p><strong>Ja.</strong> Sei $[a]=[a']$, also $a'=\mu a$ mit $\mu\ne0$. Dann $\lambda a'=\mu(\lambda a)$, also $[\lambda a']=[\lambda a]$ (mit demselben $\mu$; ist $\lambda=0$, sind beide $[0]$). Also kann eine Operation wohldefiniert sein, während eine andere es nicht ist: jede Operation braucht ihre eigene Prüfung.</p></div></details></li>
+</ol></div>
+
+<h2 id="s5-the-dimension-of">5. Die Dimension von $V/W$</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-07.html#proof-e">Lektion 7</a>, <a class="xl" href="linalg-08.html#proof-d">Lektion 8</a>)</span>
+<ul>
+  <li><strong>Eine Basis</strong> von $W$ zu einer Basis von $V$ ergänzen (Beweis E aus Lektion 7); die hinzugefügten Vektoren erzeugen ein Komplement von $W$ (Beweis D aus Lektion 8).</li>
+</ul></div>
+<h3 id="proof-d">Beweis D: $\dim V/W=\dim V-\dim W$ (Vorlesung, Lemma 5.6; Korollar 3.7.15, <a class="pl" href="../linalg-script.html#p116">S. 116</a>)</h3>
+<div class="box"><p><strong>Behauptung.</strong> Sei $\dim V=n$ und $\dim W=m$. Ist $y_1,\dots,y_m$ eine Basis von $W$ und $y_1,\dots,y_m,x_{m+1},\dots,x_n$ eine Basis von $V$, dann ist $x_{m+1}+W,\dots,x_n+W$ eine Basis von $V/W$. Insbesondere $\dim V/W=n-m$.</p></div>
+<p><strong>Die Idee.</strong> Die $y$ werden zu $0$ in $V/W$ (sie liegen in $W$), also überleben nur die hinzugefügten Vektoren $x_k$. Unabhängigkeit in $V/W$ heisst „eine Kombination liegt in $W$“, und das wird durch die Unabhängigkeit der ganzen Basis ausgeschlossen. (Das Skript leitet dies aus dem Rang-Nullraum-Satz aus Lektion 15 ab; der direkte Beweis der Vorlesung ist der hier.)</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Eine Dimension ist die Länge einer Basis:</strong> also gib eine explizite Basis von $V/W$ mit $n-m$ Elementen an und prüfe <strong>Unabhängigkeit</strong> und <strong>Erzeugen</strong>.</li>
+  <li><strong>Unabhängigkeit, erste Zeile:</strong> „Sei $\sum_k\lambda_k(x_k+W)=0+W$.“ Die Null von $V/W$ ist $W$, also übersetze mit Nebenklassenregel (2). <strong>Letzte Zeile:</strong> „also alle $\lambda_k=0$.“</li>
+  <li><strong>Erzeugen, erste Zeile:</strong> „Sei $a+W\in V/W$.“ <strong>Letzte Zeile:</strong> „$a+W=\sum_k\lambda_k(x_k+W)$.“</li>
+  <li><strong>Die Lücke:</strong> „eine Kombination liegt in $W$“ muss zu „eine Kombination der Basis von $V$ ist $0$“ werden.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Ergänzung existiert.</p></div><div class="sp-formal"><p>Ergänze die Basis $y_1,\dots,y_m$ von $W$ zu einer Basis von $V$ (<a class="xl" href="linalg-07.html">Lektion 7</a>, Beweis E oder der Austausch).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine Mischung der neuen Strassen, die auf der Allee landet.</p></div><div class="sp-formal"><p>Unabhängigkeit: sei $\sum_{k=m+1}^n\lambda_k(x_k+W)=0+W$. Nach der Definition der Operationen ist $\big(\sum\lambda_kx_k\big)+W=W$, also $\sum\lambda_kx_k\in W$ (Beweis B (2)), d. h. $\sum\lambda_kx_k=\sum_{j=1}^m\mu_jy_j$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Das wäre eine Verschwendung unter den Richtungen der Stadt.</p></div><div class="sp-formal"><p>Dann $\sum\mu_jy_j-\sum\lambda_kx_k=0$, und die Unabhängigkeit von $y_1,\dots,y_m,x_{m+1},\dots,x_n$ gibt alle $\lambda_k=0$ (und $\mu_j=0$).</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jede Strasse wird erreicht.</p></div><div class="sp-formal"><p>Erzeugen: sei $a+W\in V/W$. Schreibe $a=\sum\mu_jy_j+\sum\lambda_kx_k$ und $b:=\sum\lambda_kx_k$. Dann $a-b\in W$, also $a+W=b+W$ $=\sum\lambda_k(x_k+W)$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_cosetdiff">Nebenklassen vergleichen, indem man die Vertreter subtrahiert</a> <a class="mvl" href="../linalg-moves.html#m-la_dimcount">zuerst zählen: $n$ Vektoren in einem $n$-dimensionalen Raum</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Ergänze eine Basis $y_1,\dots,y_m$ von $W$ zu einer Basis $y_1,\dots,y_m,x_{m+1},\dots,x_n$ von $V$. <em>Unabhängig:</em> ist $\sum_{k=m+1}^n\lambda_k(x_k+W)=0+W$, so ist $\big(\sum_k\lambda_kx_k\big)+W=W$ nach der Definition der Operationen, also $\sum_k\lambda_kx_k\in W$ nach Nebenklassenregel (2), etwa $\sum_k\lambda_kx_k=\sum_{j=1}^m\mu_jy_j$. Dann $\sum_j\mu_jy_j-\sum_k\lambda_kx_k=0$, und die lineare Unabhängigkeit der Basis von $V$ gibt $\lambda_k=0$ für alle $k$. <em>Erzeugen:</em> für $a\in V$ schreibe $a=\sum_j\mu_jy_j+\sum_k\lambda_kx_k$ und setze $b=\sum_k\lambda_kx_k$; dann $a-b\in W$, also $a+W=b+W=\sum_k\lambda_k(x_k+W)$. Also ist $x_{m+1}+W,\dots,x_n+W$ eine Basis von $V/W$, und $\dim V/W=n-m$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Beweis-Leiter</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Warum sind die Nebenklassen $y_j+W$ aus der Basis weggelassen?
+  <details><summary>Antwort</summary><div><p>$y_j\in W$, also $y_j+W=W=0_{V/W}$: sie sind der Nullvektor des Quotienten, und eine Liste, die $0$ enthält, ist nie unabhängig.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Finde eine Basis von $\mathbb R^3/W$ für $W=\mathrm{Sp}(e_1,e_2)$, und die Koordinaten von $(4,-1,7)+W$.
+  <details><summary>Antwort</summary><div><p>Ergänze $e_1,e_2$ durch $e_3$: Basis $e_3+W$. Da $(4,-1,7)-7e_3=(4,-1,0)\in W$, ist $(4,-1,7)+W=7(e_3+W)$: die Koordinate ist $7$, die „Höhe“ der Ebene.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreibe Beweis D nur aus dem Rahmen.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Basis von $W$, ergänzt zu einer Basis von $V$ (nenne den Grund).</li>
+  <li>Behauptung: die Nebenklassen der hinzugefügten Vektoren bilden eine Basis von $V/W$.</li>
+  <li>Unabhängig: eine Kombination, die gleich $0+W$ ist, liegt in $W$; umschreiben mit den $y$; Unabhängigkeit der Basis von $V$.</li>
+  <li>Erzeugen: wirf den $y$-Teil eines Vertreters weg; er liegt in $W$.</li>
+</ol>
+<p><strong>Kurz:</strong> die hinzugefügten Vektoren überleben, die $y$ werden $0$. Benutzt in HS17, viii (einen Quotienten zählen) und in jeder späteren Dimensionszählung mit Quotienten (Lektion 14: $(V/U)^*\cong U^0$).</p></div>
+<div class="box"><h3 id="we-5">Musterbeispiel 5: eine Basis eines Quotienten von $\mathbb R^4$</h3>
+<p>$W=\mathrm{Sp}\big((1,1,0,0),(0,0,1,1)\big)\subseteq\mathbb R^4$.</p>
+<ol class="steps">
+  <li>Ergänze die Basis von $W$ zu einer Basis des $\mathbb R^4$ und lies eine Basis von $\mathbb R^4/W$ ab.
+  <details><summary>Antwort</summary><div><p>Füge $e_1$ und $e_3$ hinzu: die vier Vektoren $(1,1,0,0),(0,0,1,1),e_1,e_3$ sind unabhängig (aus ihnen erhältst du $e_2=(1,1,0,0)-e_1$ und $e_4=(0,0,1,1)-e_3$, sie erzeugen also $\mathbb R^4$, und vier erzeugende Vektoren in einem $4$-dimensionalen Raum bilden eine Basis). Also ist $e_1+W,\ e_3+W$ eine Basis von $\mathbb R^4/W$, und $\dim\mathbb R^4/W=2$.</p></div></details></li>
+  <li>Koordinaten von $(5,2,-1,4)+W$ in dieser Basis?
+  <details><summary>Antwort</summary><div><p>Ziehe Vielfache der $W$-Basis ab, um die Einträge 2 und 4 zu töten: $(5,2,-1,4)-2(1,1,0,0)-4(0,0,1,1)=(3,0,-5,0)=3e_1-5e_3$. Also $(5,2,-1,4)+W=3(e_1+W)-5(e_3+W)$: Koordinaten $(3,-5)$. Kontrolle: die Koordinaten sind $x_1-x_2$ und $x_3-x_4$, und die sind auf jeder Nebenklasse konstant, da die Addition von $(s,s,t,t)\in W$ nichts ändert.</p></div></details></li>
+</ol></div>
+<p><strong>Beispiel 3.7.12.</strong> Für eine Gerade $U$ durch $0$ im $\mathbb R^3$ ist $\mathbb R^3/U$ die Menge der zu $U$ parallelen Geraden, und $\dim\mathbb R^3/U=2$. Für eine Ebene $W$ durch $0$ ist $\mathbb R^3/W$ die Menge der zu $W$ parallelen Ebenen, von der Dimension $1$. Beachte: ein Komplement von $W$ hat ebenfalls die Dimension $n-m$, und $x_{m+1},\dots,x_n$ erzeugen eines (<a class="xl" href="linalg-08.html">Lektion 8</a>, Beweis D). Der Quotient ist die Version von „dem Komplement“, die keine Wahl braucht.</p>
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: wie viele Elemente hat ein Quotient? (HS17, viii)</h3>
+<p>„Sei $\mathbb F_5$ der Körper mit fünf Elementen und $W\subseteq\mathbb F_5^3$ der von $(1,1,1)$ aufgespannte Unterraum. Dann hat der Quotient $\mathbb F_5^3/W$ zehn Elemente.“ Wahr oder falsch?</p>
+<ol class="steps">
+  <li>Was ist $\dim\mathbb F_5^3/W$?
+  <details><summary>Antwort</summary><div><p>$(1,1,1)\ne0$, also $\dim W=1$, und $\dim\mathbb F_5^3/W=3-1=2$ (Beweis D).</p></div></details></li>
+  <li>Wie viele Elemente hat ein $2$-dimensionaler Raum über $\mathbb F_5$? Prüfe durch Zählen der Nebenklassen.
+  <details><summary>Antwort</summary><div><p>$5^2=25$ (jeder Vektor ist eindeutig $\lambda_1b_1+\lambda_2b_2$, <a class="xl" href="linalg-07.html">Lektion 7</a>). Zählen: $|\mathbb F_5^3|=125$, jede Nebenklasse hat $|W|=5$ Elemente, und die Nebenklassen zerlegen den Raum, also gibt es $125/5=25$ Nebenklassen. <strong>Falsch</strong>: $25$, nicht $10$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Quotienten sind die Art, wie die Mathematik absichtlich vergisst. Vergiss die Vielfachen von $n$ in $\mathbb Z$, und du erhältst die Uhrenarithmetik $\mathbb Z/n$ aus <a class="xl" href="linalg-01.html">Lektion 1</a>, dieselbe Konstruktion für Gruppen. Vergiss Konstanten, und du erhältst Funktionen „bis auf eine Konstante“, die natürliche Heimat der Stammfunktionen in der Analysis. Vergiss den Kern einer linearen Abbildung, und was übrig bleibt, ist genau ihr Bild (Proposition 3.7.16, der Isomorphiesatz, Lektion 11). Und jedes Mal, wenn eine Definition Vertreter benutzt, ist die erste Frage genau die, die du heute geübt hast: ist sie wohldefiniert?</p></div>
+
+<div class="box"><h3 id="for-wonder-euler-s-officers">Zum Staunen: Eulers Offiziere und die Geraden von $\mathbb F_4^2$ (Serie 4, Aufgabe 23)</h3>
+<p>Euler fragte, ob $36$ Offiziere, mit $6$ Rängen und $6$ Regimentern, in einem $6\times6$-Quadrat so aufgestellt werden können, dass in jeder Zeile und jeder Spalte jeder Rang und jedes Regiment genau einmal vorkommt. Das braucht zwei <em>orthogonale lateinische Quadrate</em> der Ordnung $6$. Euler fand keine und vermutete, dass es keine gibt; bewiesen wurde das 1900, und 1959 zeigte man, dass die Ordnungen $2$ und $6$ die einzigen Ausnahmen sind. Für die Ordnung $4$ liefern die affinen Geraden von $\mathbb F_4^2$ drei auf einmal. Nimm die Geraden $g_1,g_a,g_b$ durch $0$ (Steigungen $1,a,b$). Für jede beschrifte die $16$ Felder $(x,y)$ danach, auf welcher ihrer $4$ parallelen Geraden sie liegen ($\alpha$ für die Gerade selbst, $\beta,\gamma,\delta$ für $y=mx+1$, $y=mx+a$, $y=mx+b$). Eine Zeile ($y$ fest) trifft jede nicht waagerechte Gerade genau einmal, und ebenso eine Spalte. Zwei Geraden mit verschiedenen Steigungen treffen sich in genau einem Punkt (ihre Richtungen spannen $\mathbb F_4^2$ auf), also erscheint jedes Buchstabenpaar genau einmal, wenn man zwei Quadrate übereinanderlegt. Mit den Steigungen $1$ und $b$ erhältst du das Kartenquadrat der Aufgabe: vier Werte, vier Farben, jeder einmal in jeder Zeile und Spalte.</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Versuch jedes im Kopf, bevor du die Schritte aufklappst.</p>
+
+<div class="box"><h3 id="we-7">Musterbeispiel 7: wann sind zwei Nebenklassen gleich?</h3>
+<p>Sei $W=\{x\in\mathbb R^3\mid x_1+x_2+x_3=0\}$. (a) Ist $(1,2,3)+W=(6,0,0)+W$? (b) Ist $(1,0,0)+W=(0,1,1)+W$? (c) Beschreibe alle Nebenklassen von $W$ durch eine Zahl, und finde $\dim\mathbb R^3/W$.</p>
+<ol class="steps">
+  <li>(a) und (b): subtrahiere die Vertreter.
+  <details><summary>Antwort</summary><div><p>(a) $(1,2,3)-(6,0,0)=(-5,2,3)$, und $-5+2+3=0$: in $W$, also <strong>gleich</strong>. (b) $(1,0,0)-(0,1,1)=(1,-1,-1)$ mit Summe $-1\ne0$: <strong>nicht gleich</strong>, also disjunkt.</p></div></details></li>
+  <li>(c) Was haben alle Vektoren einer Nebenklasse gemeinsam?
+  <details><summary>Antwort</summary><div><p>$a+W=b+W\iff a-b\in W\iff a_1+a_2+a_3=b_1+b_2+b_3$. Die Nebenklasse ist also durch die Zahl $s=a_1+a_2+a_3$ bestimmt: sie ist die Ebene $\{x_1+x_2+x_3=s\}=U_s$. Die Abbildung $a+W\mapsto a_1+a_2+a_3$ ist eine Bijektion $\mathbb R^3/W\to\mathbb R$, verträglich mit den Operationen, und $\dim\mathbb R^3/W=3-2=1$ (Beweis D). Eine Basis: $(1,0,0)+W$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-8">Musterbeispiel 8: eine Wahr-falsch-Aussage (HS17, ix)</h3>
+<p>„Sei $V$ endlichdimensional und $W\subseteq V$ ein Unterraum mit $\dim V=\dim W+1$. Ist $v\in V\setminus W$, so gilt $V=W\cup\langle v\rangle$.“</p>
+<ol class="steps">
+  <li>Prüfe es im $\mathbb R^2$.
+  <details><summary>Antwort</summary><div><p>$W$ die $x$-Achse, $v=e_2$. Dann ist $W\cup\langle v\rangle$ die Vereinigung der beiden Achsen, und die verfehlt $(1,1)$. <strong>Falsch.</strong> (Die Aussage kann nur gelten, wenn $W=\{0\}$.)</p></div></details></li>
+  <li>Was ist die richtige Aussage?
+  <details><summary>Antwort</summary><div><p>$V=W\oplus\langle v\rangle$: die Summe, nicht die Vereinigung. $W\cap\langle v\rangle=\{0\}$ (da $v\notin W$), und $\dim W+1=\dim V$ (<a class="xl" href="linalg-08.html">Lektion 8</a>). In der Quotientensprache: $V/W$ ist $1$-dimensional mit Basis $v+W$, also hat jede Nebenklasse die Form $\lambda v+W$.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-9">Musterbeispiel 9: Polynome bis auf eine Konstante</h3>
+<p>$V=\mathbb R[x]_3$ (Grad höchstens $3$), $W=\mathrm{Sp}(1)$, die Konstanten.</p>
+<ol class="steps">
+  <li>Wann ist $p+W=q+W$? Gib eine Basis von $V/W$ an.
+  <details><summary>Antwort</summary><div><p>$p+W=q+W\iff p-q$ ist konstant: $p$ und $q$ unterscheiden sich nur im konstanten Term. Ergänzt man die Basis $1$ von $W$ um $x,x^2,x^3$, so gibt Beweis D die Basis $x+W,\ x^2+W,\ x^3+W$; $\dim V/W=4-1=3$.</p></div></details></li>
+  <li>Ist $D(p+W):=p'$ (die Ableitung) eine wohldefinierte Abbildung $V/W\to\mathbb R[x]_2$? Ist $E(p+W):=p(0)$?
+  <details><summary>Antwort</summary><div><p>$D$: ist $p+W=q+W$, so ist $p-q=c$ konstant, also $p'-q'=c'=0$ und $p'=q'$: <strong>wohldefiniert</strong>. $E$: $x+W=(x+1)+W$, aber $E$ würde $0$ und $1$ liefern: <strong>nicht wohldefiniert</strong>. Eine Regel auf $V/W$ ist genau dann wohldefiniert, wenn sie $0$ auf $W$ ergibt und Differenzen respektiert; die Ableitung „vergisst Konstanten“, das Auswerten nicht.</p></div></details></li>
+  <li>Was macht $D$ mit der Basis $x+W,x^2+W,x^3+W$?
+  <details><summary>Antwort</summary><div><p>Sie schickt sie auf $1,\ 2x,\ 3x^2$, eine Basis von $\mathbb R[x]_2$. Also paart $D$ den $V/W$ perfekt mit $\mathbb R[x]_2$, und „die Ableitung ist auf Polynomen bis auf eine Konstante umkehrbar“: Stammfunktionen sind nur bis auf eine Konstante definiert. Das ist der Isomorphiesatz aus Lektion 11 an einem ersten Beispiel.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Übungen</h2>
+<p>Jede Lösung klappt unter ihrer Aufgabe auf. Aufgabe 6 ist der erste Teil einer 15-Punkte-Klausuraufgabe.</p>
+
+<h3 id="ex-1">Aufgabe 1 (der Quotient von $\mathbb F_2^3$ nach einer Geraden)</h3>
+<p>Sei $W=\mathrm{Sp}((1,1,1))\subseteq\mathbb F_2^3$. (a) Liste die Elemente jeder Nebenklasse von $W$ auf. (b) Wie viele Elemente hat $\mathbb F_2^3/W$, und welche Dimension hat er? (c) Berechne $\big((1,0,0)+W\big)+\big((0,1,0)+W\big)$ und benenne das Ergebnis durch seinen kleinsten Vertreter.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>$W=\{(0,0,0),(1,1,1)\}$. Jede Nebenklasse ist $\{a,\,a+(1,1,1)\}$: kippe alle drei Bits.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> eine Nebenklasse ist $a+W$; liste $a$ und $a+(1,1,1)$ für jedes $a$; zähle mit Beweis D; berechne Summen mit Vertretern.</p>
+<p>(a) Die $8$ Vektoren paaren sich mit ihrem bitgekippten Partner: $W=\{000,111\}$, $\{100,011\}$, $\{010,101\}$, $\{001,110\}$. (b) $4$ Nebenklassen; $\dim\mathbb F_2^3/W=3-1=2$, und tatsächlich $2^2=4$. Eine Basis nach Beweis D: ergänze $(1,1,1)$ um $(1,0,0),(0,1,0)$ (zusammen enthalten sie $(0,0,1)=(1,1,1)+(1,0,0)+(0,1,0)$, sie erzeugen also), das gibt $(1,0,0)+W,\ (0,1,0)+W$. (c) $(1,0,0)+(0,1,0)=(1,1,0)$, also ist die Summe $(1,1,0)+W=\{110,001\}=(0,0,1)+W$. Mit anderen Vertretern, etwa $(0,1,1)$ und $(1,0,1)$: $(0,1,1)+(1,0,1)=(1,1,0)$, dieselbe Nebenklasse, wie Beweis C verspricht.</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Nebenklassenregel (2), selbstständig)</h3>
+<p>Beweise ohne Blick auf Beweis B: $a+W=b+W$ $\iff$ $a-b\in W$. Beweise dann: ist $x\in a+W$, so ist $x+W=a+W$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Für „$\Rightarrow$“: $a$ liegt in seiner eigenen Nebenklasse. Für „$\Leftarrow$“: schreibe $a+w$ als $b+(\dots)$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> eine Äquivalenz, zwei Richtungen; die Richtung „$\Leftarrow$“ ist eine Mengengleichheit, zwei Inklusionen.</p>
+<p>„$\Rightarrow$“: $a=a+0\in a+W=b+W$, also $a=b+w$ für ein $w\in W$, und $a-b=w\in W$. „$\Leftarrow$“: sei $a-b=w_0\in W$. Für $w\in W$ ist $a+w=b+(w_0+w)\in b+W$, also $a+W\subseteq b+W$. Da $b-a=-w_0\in W$, gibt dasselbe Argument $b+W\subseteq a+W$.</p>
+<p>Zweiter Teil: $x=a+w$ mit $w\in W$, also $x-a=w\in W$, und der erste Teil gibt $x+W=a+W$.</p>
+<p>Die Züge: „ein Element liegt in seiner eigenen Nebenklasse, weil $0\in W$“ und „abgeschlossen unter Addition und Negation“.</p>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (Durchschnitte affiner Unterräume)</h3>
+<p>Seien $A=a+U$ und $B=b+W$ affine Unterräume von $V$. Zeige: $A\cap B$ ist leer oder ein affiner Unterraum mit zugehörigem Unterraum $U\cap W$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Ist der Durchschnitt nicht leer, benenne beide Nebenklassen mit einem gemeinsamen Element $c$ um.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> zwei Fälle, $A\cap B=\emptyset$ oder nicht; im zweiten wähle $c\in A\cap B$ und zeige $A\cap B=c+(U\cap W)$ durch eine Kette von Äquivalenzen.</p>
+<p>Sei $c\in A\cap B$. Dann $A=c+U$ und $B=c+W$ (jedes Element benennt seine Nebenklasse, Aufgabe 2). Nun $x\in A\cap B$ $\iff x-c\in U$ und $x-c\in W$ $\iff x-c\in U\cap W$ $\iff x\in c+(U\cap W)$. Also $A\cap B=c+(U\cap W)$, ein affiner Unterraum, da $U\cap W$ ein Unterraum ist (<a class="xl" href="linalg-08.html">Lektion 8</a>). Beispiel: zwei nicht parallele Geraden im $\mathbb R^2$ treffen sich in einem Punkt, $c+\{0\}$ (wie die Vorlesung für $a+G_1$ und $b+G_2$ festhält); zwei verschiedene parallele Geraden treffen sich nicht.</p>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 (eine Wohldefiniertheitsprüfung, klausurartig)</h3>
+<p>Sei $W=\{(x,y)\in\mathbb R^2\mid y=0\}$. Welche der folgenden Regeln definieren eine Abbildung auf $\mathbb R^2/W$? (a) $f\big((x,y)+W\big):=y$; (b) $g\big((x,y)+W\big):=x$; (c) $h\big((x,y)+W\big):=x+y$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Zwei Vertreter derselben Nebenklasse unterscheiden sich um ein Element $(t,0)$ von $W$. Welche Regeln ignorieren eine solche Änderung?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> für jede Regel: „Sei $(x,y)+W=(x',y')+W$; stimmen die Werte überein?“ Ein einziges Paar von Vertretern mit verschiedenen Werten zeigt „nicht wohldefiniert“.</p>
+<p>$(x,y)+W=(x',y')+W\iff(x-x',y-y')\in W\iff y=y'$ (und $x$, $x'$ beliebig).</p>
+<p>(a) <strong>Wohldefiniert</strong>: gleiche Nebenklassen haben gleiches $y$. (b) <strong>Nicht wohldefiniert</strong>: $(0,1)+W=(5,1)+W$, aber $g$ würde $0$ und $5$ liefern. (c) <strong>Nicht wohldefiniert</strong>: dasselbe Paar liefert $1$ und $6$.</p>
+<p>Schreibe die Prüfung immer in dieser Form: „Sei $a+W=a'+W$, d. h. $a-a'\in W$. Dann … also hängt der Wert nicht vom Vertreter ab.“ Das ist der erste Schritt von FS17, Problem 6 (b).</p>
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (wahr oder falsch)</h3>
+<p>(a) Jeder affine Unterraum enthält $0$. (b) $V/V$ hat genau ein Element. (c) $V/\{0\}$ „ist“ $V$: die Abbildung $v\mapsto v+\{0\}$ ist eine Bijektion. (d) Ist $\dim V=7$ und $\dim W=3$, so ist $\dim V/W=4$. (e) Die Nebenklassen von $W$ sind Unterräume von $V$.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Für (b) und (c) benutze Nebenklassenregel (2) mit $W=V$ und $W=\{0\}$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> „wahr“ braucht einen Grund für jeden Fall, „falsch“ ein Gegenbeispiel.</p>
+<ol>
+<li>(a) <strong>Falsch.</strong> $(0,1)+\mathrm{Sp}(e_1)$ ist die Gerade $y=1$, die $0$ verfehlt.</li>
+<li>(b) <strong>Wahr.</strong> Für jedes $a\in V$ ist $a-0=a\in V$, also $a+V=0+V=V$ nach Nebenklassenregel (2): es gibt nur eine Nebenklasse, den Nullvektor von $V/V$, und $\dim V/V=\dim V-\dim V=0$.</li>
+<li>(c) <strong>Wahr.</strong> $v+\{0\}=\{v\}$, und $\{v\}=\{v'\}$ nur für $v=v'$; jede Nebenklasse hat diese Form, also ist $v\mapsto\{v\}$ eine Bijektion.</li>
+<li>(d) <strong>Wahr.</strong> $\dim V/W=\dim V-\dim W=7-3=4$.</li>
+<li>(e) <strong>Falsch.</strong> Eine Nebenklasse $a+W$ ist nur dann ein Unterraum, wenn $a\in W$, und dann ist sie $W$ selbst; alle anderen Nebenklassen verfehlen $0$. Die Nebenklassen sind die <em>Elemente</em> des Vektorraums $V/W$, keine Unterräume von $V$.</li>
+</ol>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (eine Abbildung auf $V/W$: das Aufwärmen für FS17, Problem 6)</h3>
+<p>Sei $W\subseteq V$ ein Unterraum und $f:V\to K$ eine Abbildung mit $f(v+v')=f(v)+f(v')$ und $f(\lambda v)=\lambda f(v)$ für alle $v,v'\in V$, $\lambda\in K$ (ein <em>Funktional</em>, <a class="xl" href="../linalg-10.html">Lektion 10</a>), und angenommen $f(w)=0$ für alle $w\in W$. (a) Zeige, dass $\bar f(v+W):=f(v)$ auf $V/W$ wohldefiniert ist. (b) Zeige, dass $\bar f$ mit den Operationen von $V/W$ verträglich ist. (c) Zeige an einem Beispiel, dass (a) ohne die Voraussetzung $f(W)=\{0\}$ scheitert.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(a) Beginne mit „Sei $v+W=v'+W$.“ Was ergibt Nebenklassenregel (2), und was macht $f$ damit?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) „Sei $v+W=v'+W$ … also $f(v)=f(v')$.“ (b) berechne $\bar f$ einer Summe und eines Vielfachen mit Vertretern. (c) ein Gegenbeispiel.</p>
+<ol>
+<li>(a) Sei $v+W=v'+W$. Nach Nebenklassenregel (2) ist $v-v'\in W$, also nach Voraussetzung $f(v-v')=0$. Da $f$ Summen und Skalare respektiert, ist $f(v-v')=f(v)+f((-1)v')=f(v)-f(v')$. Also $f(v)=f(v')$: der Wert hängt nicht vom Vertreter ab.</li>
+
+<li>(b) $\bar f\big((v+W)+(v'+W)\big)=\bar f\big((v+v')+W\big)=f(v+v')=f(v)+f(v')=\bar f(v+W)+\bar f(v'+W)$, und $\bar f\big(\lambda(v+W)\big)=\bar f(\lambda v+W)=f(\lambda v)=\lambda f(v)=\lambda\bar f(v+W)$. Jeder Schritt benutzt entweder die Definition der Operationen auf $V/W$ (wohldefiniert nach Beweis C), die Definition von $\bar f$ (wohldefiniert nach (a)) oder die Eigenschaften von $f$.</li>
+<li>(c) $V=\mathbb R^2$, $W=\mathrm{Sp}(e_1)$, $f(x,y)=x$. Dann $f(e_1)=1\ne0$, und tatsächlich ist $(0,0)+W=(1,0)+W$, während $f(0,0)=0\ne1=f(1,0)$: nicht wohldefiniert.</li>
+</ol>
+<p>Das ist genau FS17, Problem 6 (b), wo die Abbildung $f\mapsto\bar f$ vom Annullator $W^\perp$ nach $(V/W)^*$ geht; <a class="xl" href="../linalg-10.html">Lektion 10</a>, Aufgabe 5, und Lektion 14 erledigen diese Aufgabe.</p>
+</div></details>
+
+<h3 id="ex-7">Aufgabe 7 (der Unterraum eines affinen Unterraums ist eindeutig)</h3>
+<p>Seien $U,W\subseteq V$ Unterräume und $a,b\in V$. (a) Zeige: ist $a+U\subseteq b+W$, so ist $U\subseteq W$. (b) Folgere: ist $a+U=b+W$, so ist $U=W$ und $a-b\in W$. Also ist die Dimension eines affinen Unterraums (die Dimension seines Unterraums) wohldefiniert.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>Differenzen zweier Elemente von $a+U$ füllen $U$ aus. Wo liegen sie, wenn $a+U\subseteq b+W$ gilt?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) eine Inklusion: „Sei $u\in U$ … also $u\in W$.“ (b) zwei Inklusionen aus (a), dann Nebenklassenregel (2).</p>
+<ol>
+<li>(a) Sei $u\in U$. Die Vektoren $a=a+0$ und $a+u$ liegen in $a+U\subseteq b+W$, also $a=b+w_1$ und $a+u=b+w_2$ mit $w_1,w_2\in W$. Subtrahiere: $u=w_2-w_1\in W$, da $W$ unter Addition und Negation abgeschlossen ist.</li>
+<li>(b) Aus $a+U\subseteq b+W$ folgt mit (a) $U\subseteq W$; aus $b+W\subseteq a+U$ folgt mit (a) und vertauschten Rollen $W\subseteq U$. Also $U=W$, und dann gibt $a+W=b+W$ nach Nebenklassenregel (2) $a-b\in W$.</li>
+</ol>
+<p>Ohne (b) wäre „die Dimension von $a+W$ ist $\dim W$“ mehrdeutig: dieselbe Menge könnte mit zwei verschiedenen Unterräumen geschrieben werden. (b) zeigt, dass das nicht geht.</p>
+</div></details>
+
+<h3 id="ex-8">Aufgabe 8 (die Gerade durch zwei Punkte)</h3>
+<p>Seien $p\ne q$ in $V$. (a) Zeige, dass $L=p+\mathrm{Sp}(q-p)$ ein $1$-dimensionaler affiner Unterraum ist, der $p$ und $q$ enthält. (b) Zeige, dass jeder affine Unterraum $A=a+W$, der $p$ und $q$ enthält, $L$ enthält. (c) Schreibe im $\mathbb R^3$ die Gerade durch $(1,0,2)$ und $(3,1,1)$ in dieser Form, und entscheide, ob $(7,3,-1)$ auf ihr liegt.</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(b) Benenne $A$ durch sein Element $p$ um, dann benutze $q-p\in W$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) Zugehörigkeit von $p$, $q$ und die Dimension; (b) eine Inklusion $L\subseteq A$; (c) eine Rechnung mit Nebenklassenregel (2).</p>
+<ol>
+<li>(a) $p=p+0\cdot(q-p)\in L$ und $q=p+1\cdot(q-p)\in L$. Da $q-p\ne0$, hat $\mathrm{Sp}(q-p)$ die Dimension $1$, also ist $L$ ein $1$-dimensionaler affiner Unterraum.</li>
+<li>(b) Da $p\in A$, ist $A=p+W$ (jedes Element benennt seine Nebenklasse). Da $q\in A=p+W$, ist $q-p\in W$, also $\mathrm{Sp}(q-p)\subseteq W$ ($W$ ist ein Unterraum). Also $L=p+\mathrm{Sp}(q-p)\subseteq p+W=A$.</li>
+<li>(c) $q-p=(2,1,-1)$, also $L=(1,0,2)+\mathrm{Sp}\big((2,1,-1)\big)$. $(7,3,-1)-(1,0,2)=(6,3,-3)=3\cdot(2,1,-1)$: ja, $(7,3,-1)\in L$ (Parameter $3$).</li>
+</ol>
+<p>Die Gerade durch zwei Punkte ist also der kleinste affine Unterraum, der sie enthält, wie in der Schulgeometrie, jetzt über jedem Körper.</p>
+</div></details>
+
+<h3 id="ex-9">Aufgabe 9 (Serie 4, Aufgabe 23 (a): zwei orthogonale lateinische Quadrate aus $\mathbb F_4^2$)</h3>
+<p>In $\mathbb F_4=\{0,1,a,b\}$ ($1+a=b$, $a^2=b$, $ab=1$, $x+x=0$) beschrifte die Zelle $(x,y)$ eines $4\times4$-Gitters mit der Nebenklasse von $g_1=\mathrm{Sp}\big((1,1)\big)$, auf der sie liegt, und in einem zweiten Gitter mit der Nebenklasse von $g_b=\mathrm{Sp}\big((1,b)\big)$. (a) Zeige, dass die Nebenklasse von $g_m$ durch $(x,y)$ durch $q=y-mx$ bestimmt ist. (b) Fülle beide Gitter mit den Beschriftungen $q$ aus. (c) Prüfe, dass jedes ein lateinisches Quadrat ist und dass die beiden orthogonal sind (jedes Paar von Beschriftungen erscheint einmal, wenn man sie übereinanderlegt).</p>
+<details class="hint"><summary>Hinweis</summary><div><p>(a) Nebenklassenregel (2): $(x,y)$ und $(x',y')$ liegen genau dann auf derselben Nebenklasse von $g_m$, wenn $(x-x',y-y')\in g_m$, d. h. $y-y'=m(x-x')$. In Charakteristik $2$ ist $y-mx=y+mx$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> (a) eine Äquivalenz aus Nebenklassenregel (2); (b) Rechnung in $\mathbb F_4$; (c) „jede Zeile, jede Spalte, jedes Paar“, was die Geometrie aus Abschnitt 3 erklärt.</p>
+<ol>
+<li>(a) $(x-x',y-y')\in g_m=\{(t,mt)\}$ $\iff y-y'=m(x-x')$ $\iff y-mx=y'-mx'$. Zwei Zellen liegen also genau dann auf derselben Nebenklasse, wenn sie dasselbe $q=y-mx$ haben, und die vier Werte von $q$ benennen die vier Nebenklassen (die Gerade $y=mx+q$).</li>
+<li>(b) Für $g_1$: $q=x+y$. Für $g_b$: $q=y+bx$, mit $b\cdot0=0$, $b\cdot1=b$, $b\cdot a=1$, $b\cdot b=a$.</li>
+</ol>
+<p>Beschriftungen für $g_1$ ($q=x+y$):</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>$y\backslash x$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr></thead>
+  <tbody>
+    <tr><td>$0$</td><td>$0$</td><td>$1$</td><td>$a$</td><td>$b$</td></tr>
+    <tr><td>$1$</td><td>$1$</td><td>$0$</td><td>$b$</td><td>$a$</td></tr>
+    <tr><td>$a$</td><td>$a$</td><td>$b$</td><td>$0$</td><td>$1$</td></tr>
+    <tr><td>$b$</td><td>$b$</td><td>$a$</td><td>$1$</td><td>$0$</td></tr>
+  </tbody>
+</table></div>
+<p>Beschriftungen für $g_b$ ($q=y+bx$):</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>$y\backslash x$</th><th>$0$</th><th>$1$</th><th>$a$</th><th>$b$</th></tr></thead>
+  <tbody>
+    <tr><td>$0$</td><td>$0$</td><td>$b$</td><td>$1$</td><td>$a$</td></tr>
+    <tr><td>$1$</td><td>$1$</td><td>$a$</td><td>$0$</td><td>$b$</td></tr>
+    <tr><td>$a$</td><td>$a$</td><td>$1$</td><td>$b$</td><td>$0$</td></tr>
+    <tr><td>$b$</td><td>$b$</td><td>$0$</td><td>$a$</td><td>$1$</td></tr>
+  </tbody>
+</table></div>
+<ol start="3">
+<li>(c) <em>Lateinisch:</em> eine Zeile ($y$ fest) trifft jede Nebenklasse einer nicht waagerechten Geraden genau einmal, da $x\mapsto y+mx$ für $m\ne0$ eine Bijektion von $\mathbb F_4$ ist; ebenso eine Spalte ($x$ fest), da $y\mapsto y+mx$ eine Bijektion ist. In den Tabellen sieht man es: jede Zeile und jede Spalte enthält $0,1,a,b$ einmal. <em>Orthogonal:</em> ein Paar von Beschriftungen $(q_1,q_2)$ ist ein Paar von Nebenklassen, eine von $g_1$ und eine von $g_b$; sie sind nicht parallel, also treffen sie sich in genau einem Punkt (Aufgabe 3: ihr Durchschnitt ist ein Punkt plus $g_1\cap g_b=\{0\}$, und er ist nicht leer, da die beiden Richtungen $\mathbb F_4^2$ aufspannen). Abgelesen: die $16$ Paare, Zeile für Zeile, sind $00,1b,a1,ba,\ 11,0a,b0,ab,\ aa,b1,0b,10,\ bb,a0,1a,01$, alle verschieden.</li>
+</ol>
+<p>Ersetze die Beschriftungen des einen Quadrats durch Kartenwerte und die des anderen durch Farben: das ist die Jass-Kartenanordnung aus Serie 4, Aufgabe 23 (b).</p>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Die Aufgaben 1–9 ergeben 9 Punkte, einen für jede gelöste Aufgabe. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, eine Wahr-falsch-Reihe, wenn höchstens ein Item falsch ist. Mit 7 von 9 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="skipped.html#linalg-09">Überspringliste</a>.</p>
+<ul>
+  <li><strong>Serie 4, Aufgabe 23 (b)</strong> (die Jass-Karten): lies sie aus den beiden Quadraten von Aufgabe 9 ab; die offizielle Lösung hat das Bild. <em>Priorität: optional.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a class="xl" href="../linalg-10.html">Lektion 10</a>: Funktionale und der Dualraum.</p>
+
+<nav class="site foot" aria-label="Lektionsnavigation">
+<a href="linalg-08.html">← Lektion 8: Die beiden Viertel</a>
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-10.html">Lektion 10: Die Vermesser der Freien Stadt →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="feedback.html">Feedback geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>

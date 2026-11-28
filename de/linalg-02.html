@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1865f2">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta property="og:site_name" content="StudyHub">
+<meta property="og:title" content="Die Schreiber der Freien Stadt">
+<script defer src="../assets/tips.js?v=prv1123"></script>
+<script defer src="../assets/listen.js?v=427792c7"></script>
+<script src="../assets/move.js"></script><script defer src="../assets/account.js?v=dsn1124"></script>
+<script>(function(){var r=document.documentElement,t="light",p="",c;try{var a=JSON.parse(localStorage.getItem("sh-appearance")||"{}")||{};t=a.theme==="dark"||a.theme==="light"?a.theme:(localStorage.getItem("sh-theme")==="dark"?"dark":"light");p=a.palette||"";c=JSON.parse(localStorage.getItem("sh-appearance-css")||"null");if(c&&c.t===t&&c.p&&c.css)r.setAttribute("style",c.css)}catch(e){}r.setAttribute("data-theme",t);r.setAttribute("data-appearance-theme",t);if(p)r.setAttribute("data-appearance-palette",p)})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Schreiber der Freien Stadt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script>window.MathJax.startup={pageReady:function(){return MathJax.startup.defaultPageReady().then(function(){window.__siteMathDone&&window.__siteMathDone();});}};</script>
+<script src="../assets/mathjax/tex-svg-full.js?v=322" defer></script>
+<style>
+/* Layout: a single reading column like a well-set script, with story passages, exam notes and solutions as distinct marked blocks */
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 44rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+header { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.eyebrow { font-family: var(--font-util); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; margin: 1.6rem 0 0; text-wrap: balance; color: var(--accent); }
+h3 { font-size: 1.05rem; margin: .8rem 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: .35rem; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.meta { display: grid; gap: .6rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; font-size: .95rem; }
+.meta dt { font-family: var(--font-util); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; }
+.story { background: var(--story); border-left: 3px solid var(--story-edge); padding: 1rem 1.1rem; border-radius: 0 8px 8px 0; display: flex; flex-direction: column; gap: .8rem; }
+.exam { background: var(--exam); border-left: 3px solid var(--exam-edge); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; }
+.label { font-family: var(--font-util); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .2rem; }
+.box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .7rem; }
+.box h3 { margin: 0; }
+.math-display { overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-util); font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+summary { cursor: pointer; padding: .8rem 1.1rem; font-weight: 600; list-style-position: inside; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details > div { padding: 0 1.1rem 1rem; display: flex; flex-direction: column; gap: .7rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+.check { background: var(--accent-soft); border-radius: 8px; padding: .8rem 1.1rem; }
+.qed { float: right; color: var(--muted); }
+.cmap { display: flex; flex-direction: column; align-items: center; gap: .3rem; font-size: .92rem; }
+.cmap .node { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: .5rem .8rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.cmap .root { border-color: var(--story-edge); background: var(--story); }
+.cmap .arrow { color: var(--muted); line-height: 1.1; font-size: 1.2rem; }
+.cmap small { color: var(--muted); font-size: .8rem; }
+.cmap .branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .5rem; width: 100%; }
+.k-x0 { color: var(--k-x0); fill: var(--k-x0); } .k-eps { color: var(--k-eps); fill: var(--k-eps); }
+.k-del { color: var(--k-del); fill: var(--k-del); } .k-c { color: var(--k-c); fill: var(--k-c); } .k-X { color: var(--k-X); fill: var(--k-X); }
+.need { background: var(--surface); border: 1px dashed var(--accent); border-radius: 8px; padding: .8rem 1.1rem; }
+.legend { font-size: .95rem; }
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+.ex-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.ex-nav button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .4rem .9rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.ex-nav button:disabled { opacity: .45; cursor: default; }
+.ex-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-count { font-family: var(--font-util); font-size: .85rem; color: var(--muted); min-width: 7.5em; text-align: center; }
+.ex-nav .ex-all { margin-left: auto; background: transparent; }
+.ex-steps { display: flex; flex-direction: column; gap: 1.2rem; }
+.ex-step { display: flex; flex-direction: column; gap: .7rem; }
+.ex-step h4 { margin: 0; font-size: 1rem; }
+.explorer.js:not(.all) .ex-step:not(.on) { display: none; }
+.explorer.all .ex-step + .ex-step { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.ex-row { padding: .5rem .8rem; border-radius: 6px; display: flex; flex-direction: column; gap: .3rem; }
+.r-num { background: var(--accent-soft); }
+.r-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+.r-words { background: var(--story); border-left: 3px solid var(--story-edge); }
+.two-col { display: grid; grid-template-columns: minmax(0,1fr); gap: .6rem; }
+.ex-row, .ex-step, .explorer { min-width: 0; }
+.frame { background: var(--surface); border: 1px dashed var(--exam-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.sp { display: flex; flex-direction: column; gap: .5rem; }
+.sp-head { display: none; }
+.sp-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .35rem; }
+.sp-story, .sp-formal { padding: .55rem .85rem; border-radius: 0 6px 6px 0; display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sp-story { background: var(--story); border-left: 3px solid var(--story-edge); font-size: .95rem; }
+.sp-formal { background: var(--exam); border-left: 3px solid var(--exam-edge); }
+@media (min-width: 620px) { .sp-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } .sp-row { grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: .5rem; } }
+@media (max-width: 619px) { .sp-row + .sp-row { margin-top: .4rem; } }
+.moves { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-family: var(--font-util); font-size: .78rem; color: var(--muted); }
+.moves a { text-decoration: none; color: var(--ink); border: 1px solid var(--story-edge); border-radius: 999px; padding: .15rem .55rem; }
+.moves a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.movecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
+.mcard { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: .8rem 1rem; display: flex; flex-direction: column; gap: .45rem; scroll-margin-top: 1rem; }
+.mcard h3 { margin: 0; font-size: 1rem; }
+ol.gq { gap: .8rem; }
+ol.gq details { margin-top: .35rem; }
+ol.gq summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+@media (max-width: 480px) { .math-display mjx-container { font-size: 86% !important; } }
+@media (min-width: 620px) { .two-col { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.tag { align-self: flex-start; font-family: var(--font-util); font-size: .74rem; line-height: 1.35; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--story-edge); color: var(--ink); }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .4rem 0 !important; }
+@media (max-width: 480px) { body { font-size: 16px; } }
+.ladder { background: var(--surface); border: 1px dashed var(--story-edge); border-radius: 8px; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+.ladder ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; }
+.ladder details { margin-top: .35rem; }
+.ladder summary { padding: .45rem .8rem; font-weight: 500; font-size: .92rem; }
+/* Site: navigation, cross-links, back button, index */
+nav.site { display: flex; flex-wrap: wrap; gap: .4rem .9rem; font-family: var(--font-util); font-size: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+nav.site a { text-decoration: none; padding: .35rem 0; }
+nav.site a:hover { text-decoration: underline; }
+nav.site.foot { border-bottom: 0; border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: 1.4rem; justify-content: space-between; font-size: .82rem; }
+a.xl, a.pl { text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a.pl { white-space: nowrap; }
+[id] { scroll-margin-top: 1.2rem; }
+.flash { animation: flash 2.4s ease-out 1; border-radius: 4px; }
+.mcard.flash { animation: flashcard 2.4s ease-out 1; }
+@keyframes flash { 0%, 40% { background: var(--accent-soft); box-shadow: 0 0 0 4px var(--accent-soft); } 100% { background: transparent; box-shadow: 0 0 0 4px transparent; } }
+@keyframes flashcard { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+ol.lessons { list-style: none; padding: 0; gap: .7rem; }
+.lcard { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--story-edge); border-radius: 0 8px 8px 0; padding: .8rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.lcard > a { text-decoration: none; display: flex; flex-direction: column; gap: .1rem; }
+.lcard .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lcard .ltitle { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); }
+.lcard > a:hover .ltitle { text-decoration: underline; }
+.lcard p { color: var(--muted); font-size: .93rem; }
+a.tool { text-decoration: none; color: var(--ink); gap: .3rem; }
+a.tool strong { color: var(--accent); }
+a.tool span { color: var(--muted); font-size: .93rem; }
+@media (prefers-reduced-motion: reduce) { .flash, .mcard.flash { animation: none; } }
+.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.toc > summary { font-family: var(--font-util); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.toc ol { list-style: none; padding: 0 1.1rem 1rem 1.1rem; gap: .3rem; font-size: .95rem; }
+.toc ol ol { padding: .25rem 0 .2rem 1rem; list-style: none; font-size: .88rem; gap: .15rem; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+details.sol { margin-top: .2rem; }
+details.sol > summary { padding: .55rem .9rem; font-weight: 500; font-size: .95rem; }
+.pdfbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .6rem 0; background: var(--bg); font-family: var(--font-util); font-size: .85rem; }
+.pdfbar button { min-height: 40px; min-width: 44px; padding: .3rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.pdfbar button[aria-pressed="true"] { background: var(--accent-soft); }
+.pdfbar input { width: 5.5em; min-height: 40px; padding: .2rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.muted { color: var(--muted); }
+.pdfpages { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.pdfpages.zoomed { overflow-x: auto; }
+.pdfpage { margin: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pdfpage canvas { background: #fff; border: 1px solid var(--rule); border-radius: 4px; max-width: none; }
+.pdfpages:not(.zoomed) .pdfpage canvas { max-width: 100%; height: auto; }
+.pdfpage figcaption { font-family: var(--font-util); font-size: .75rem; color: var(--muted); }
+.hub h2 { margin-top: 1rem; }
+.hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .7rem; }
+.soon { color: var(--muted); font-size: .93rem; }
+.pdfbar input[type="search"] { width: 12em; }
+.pdfwrap { position: relative; height: calc(100dvh - 10rem); min-height: 420px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+#viewerContainer { position: absolute; inset: 0; overflow: auto; background: var(--surface); }
+#viewerContainer .pdfViewer .page { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.pdfoutline { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; padding: .4rem .8rem; margin-bottom: .6rem; font-family: var(--font-util); font-size: .85rem; background: var(--surface); }
+.pdfoutline ul { list-style: none; margin: 0; padding-left: 1rem; }
+.pdfoutline > ul { padding-left: 0; }
+.pdfoutline li { margin: .25rem 0; }
+.examsrc { font-family: var(--font-util); font-size: .82rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+ul.doclist { padding-left: 1.2rem; }
+ul.doclist li { margin: .35rem 0; overflow-wrap: anywhere; }
+/* flashcards */
+.fc-controls { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; font-family: var(--font-util); font-size: .85rem; }
+.fc-controls select, .fc-controls button, .fc-btns button { font-family: var(--font-util); font-size: .85rem; min-height: 40px; padding: .35rem .8rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.fc-controls label { display: inline-flex; gap: .3rem; align-items: center; min-height: 40px; }
+.fc-controls button.primary, .fc-btns button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.fc-stage { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--story-edge); border-radius: 8px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .8rem; min-height: 12rem; }
+.fc-meta { font-family: var(--font-util); font-size: .75rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.fc-stage .q { font-weight: 600; }
+.fc-stage .a { border-top: 1px solid var(--rule); padding-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.fc-stage .a h3 { display: none; }
+.fc-btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+#fc-pool { display: none; }
+.fc-btns[hidden], .fc-btns button[hidden], .fc-stage .a[hidden] { display: none; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: .9rem; }
+.subject { text-decoration: none; color: var(--ink); border-top: 3px solid var(--story-edge); gap: .4rem; }
+.subject strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent); }
+.subject span:last-child { color: var(--muted); font-size: .95rem; }
+.subject .lnum { font-family: var(--font-util); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+a.subject:hover strong { text-decoration: underline; }
+.soon-tile { opacity: .7; border-top-color: var(--rule); }
+
+</style>
+
+<link rel="stylesheet" href="../assets/learning-app.css?v=fe0ad35d">
+<link rel="stylesheet" href="../assets/appearance.css?v=prh1123">
+<link rel="stylesheet" href="../assets/studyhub.css?v=onb1124">
+<script defer src="../assets/studyhub.js?v=lnk1125"></script>
+</head>
+<body class="studyhub-app sh-unified" data-subject="linalg">
+<header class="study-shell" data-lang="de"><div class="study-upper"><a href="../index.html" class="study-brand">StudyHub<span aria-hidden="true"> ✦</span></a><nav class="study-nav" aria-label="Hauptmenü"><span class="study-nav-item">Fächer</span><a class="study-nav-item" href="../FlashcardsAnalysis_designspace/Analysis_Lerplatform/index.html?lang=de">Lernkarten</a><a class="study-nav-item" href="../practice.html">Üben</a><span class="study-nav-item">Über</span></nav><div class="study-utilities"></div></div><nav class="study-modes" aria-label="Bereiche im Fach"><a href="linalg.html#lessons" data-mode="lessons" aria-current="page">Lektionen</a><a href="../linalg-moves.html?lang=de" data-mode="practice">Beweistechnik</a><a href="../linalg-plan.html?lang=de" data-mode="plan">Prüfungsplan</a><a href="../linalg-script.html?lang=de" data-mode="script">Skript</a></nav></header>
+
+<main>
+<header>
+<span class="eyebrow">Lineare Algebra I · Lektion 2</span>
+<h1>Die Schreiber der Freien Stadt</h1>
+<p class="lead">Aussagen und Wahrheitstafeln, logische Äquivalenz, Quantoren und ihre Verneinung, die Reihenfolge der Quantoren, Gleichheit; wie man jede Definition widerlegt.</p>
+</header>
+<details class="toc" open><summary>Inhalt</summary><ol>
+<ol>
+<li><a href="#recap-of-lesson-1-5">Rückblick auf Lektion 1 (5 Minuten)</a></li>
+</ol></li>
+<li><a href="#words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</a>
+</li>
+<li><a href="#s1-the-story-the-scribes-of">1. Die Geschichte: die Schreiber der Freien Stadt</a>
+</li>
+<li><a href="#s2-two-levels-objects-and-the">2. Zwei Ebenen: Objekte und die Sprache über sie</a>
+<ol>
+<li><a href="#the-score-and-the-performance">Die Partitur und die Aufführung</a></li>
+</ol></li>
+<li><a href="#s3-the-four-logical-operators">3. Die vier logischen Operatoren</a>
+<ol>
+<li><a href="#the-truth-table">Die Wahrheitstafel</a></li>
+<li><a href="#a-false-premise-implies-anything">Eine falsche Voraussetzung impliziert alles (Beispiel aus der Vorlesung)</a></li>
+<li><a href="#we-1">Musterbeispiel 1: $A$ ist wahr und $B$ falsch. Welcher Ausdruck ist wahr? (FS19, Frage I)</a></li>
+</ol></li>
+<li><a href="#s4-logical-equivalence">4. Logische Äquivalenz</a>
+<ol>
+<li><a href="#the-equivalences-you-ll-use">Die Äquivalenzen, die du ständig brauchst (Vorlesung S. 4–5, Handout Tautologien)</a></li>
+<li><a href="#proof-a">Beweis A: die deMorgan'sche Regel $\neg(A\wedge B)\iff\neg A\vee\neg B$, per Wahrheitstafel</a></li>
+<li><a href="#proof-b">Beweis B: die Kontraposition, $A\to B\iff\neg B\to\neg A$</a></li>
+<li><a href="#proof-c">Beweis C: Verneinung einer Implikation, $\neg(A\to B)\iff A\wedge\neg B$</a></li>
+<li><a href="#only-two-operators-are-needed">Es werden nur zwei Operatoren benötigt</a></li>
+<li><a href="#we-2">Musterbeispiel 2: Welcher Ausdruck ist zu $C\Leftrightarrow D$ äquivalent? (FS19, Frage II)</a></li>
+<li><a href="#we-3">Musterbeispiel 3: Welcher Ausdruck ist <em>nicht</em> äquivalent zu $\neg\big(\neg(A\vee B)\vee(B\wedge A)\big)\wedge B$? (HS18, Frage V)</a></li>
+<li><a href="#we-4">Musterbeispiel 4: Welcher Ausdruck ist für alle Aussagen $A$, $B$ zu $(A\Rightarrow B)\vee(B\Rightarrow A)$ äquivalent? (HS21, Frage II)</a></li>
+</ol></li>
+<li><a href="#s5-quantifiers">5. Quantoren</a>
+<ol>
+<li><a href="#free-and-bound-variables">Freie und gebundene Variablen</a></li>
+<li><a href="#quantifier-duality-and-negation">Dualität der Quantoren und Verneinung</a></li>
+<li><a href="#proof-d">Beweis D: die Verneinung eines beschränkten Quantors behält die Beschränkung</a></li>
+<li><a href="#we-5">Musterbeispiel 5: verneine „$R$ ist nullteilerfrei“ (Skript S. 17)</a></li>
+<li><a href="#the-empty-domain">Der leere Grundbereich</a></li>
+<li><a href="#the-order-of-quantifiers">Die Reihenfolge der Quantoren</a></li>
+<li><a href="#proof-e">Beweis E: $\exists\forall$ impliziert $\forall\exists$, aber nicht umgekehrt</a></li>
+<li><a href="#there-exists-exactly-one">„Es gibt genau eines“: $\exists!$</a></li>
+<li><a href="#we-6">Musterbeispiel 6: umschreiben mit nur $\exists$, $=$, $\neg$, $\wedge$ (Vorlesung S. 6)</a></li>
+<li><a href="#we-7">Musterbeispiel 7: „Alle Menschen machen dieselben Fehler“ (HS18, Frage VI)</a></li>
+<li><a href="#we-8">Musterbeispiel 8: Welche Aussage ist für jeden Körper $K$ sinnvoll und eindeutig? (HS21, Frage III)</a></li>
+</ol></li>
+<li><a href="#s6-equality">6. Gleichheit</a>
+<ol>
+<li><a href="#why-this-explains-well-defined">Warum das „wohldefiniert“ erklärt</a></li>
+<li><a href="#why-it-s-cool">Warum es cool ist</a></li>
+<li><a href="#for-wonder-one-operator-is">Zum Staunen: ein Operator genügt</a></li>
+</ol></li>
+<li><a href="#worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</a>
+<ol>
+<li><a href="#we-9">Musterbeispiel 9: verneine „$e$ ist ein Neutralelement von $(G,\circ)$“ und „$(G,\circ)$ hat ein Neutralelement“</a></li>
+<li><a href="#we-10">Musterbeispiel 10: verneine „$(a_n)$ konvergiert gegen $0$“ (aus der Analysis)</a></li>
+<li><a href="#we-11">Musterbeispiel 11: Ist $\forall x\,(A(x)\vee B(x))$ äquivalent zu $\forall x\,A(x)\vee\forall x\,B(x)$?</a></li>
+</ol></li>
+<li><a href="#exercises">Aufgaben</a>
+<ol>
+<li><a href="#ex-1">Aufgabe 1 (Quiz 1)</a></li>
+<li><a href="#ex-2">Aufgabe 2 (Quiz 5)</a></li>
+<li><a href="#ex-3">Aufgabe 3 (Handout Tautologien: die Kettenregel)</a></li>
+<li><a href="#ex-4">Aufgabe 4 (der Scheffer-Strich)</a></li>
+<li><a href="#ex-5">Aufgabe 5 (die Reihenfolge der Quantoren)</a></li>
+<li><a href="#ex-6">Aufgabe 6 (Definitionen aus Lektion 1 verneinen)</a></li>
+<li><a href="#ex-7">Aufgabe 7 (freie und gebundene Variablen)</a></li>
+<li><a href="#ex-8">Aufgabe 8 (wahr oder falsch, Altklausur-Stil)</a></li>
+</ol></li>
+<li><a href="#what-we-skipped">Was wir ausgelassen haben</a>
+</li>
+</ol></details>
+<aside class="badday" role="note"><span class="bd-ico" aria-hidden="true">🌧</span><div><strong>Schlechter Tag?</strong> Lies die Geschichte in Abschnitt 1 und beantworte die Wiederholungsfragen oben. Das zählt. Morgen machst du einfach hier weiter: ein verpasster oder leichter Tag ist kein Neustart.</div></aside>
+<style>.badday{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0;padding:.75rem 1rem;border-radius:12px;background:color-mix(in srgb,var(--accent,#5b5bd6) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent,#5b5bd6) 35%,transparent)}.badday .bd-ico{font-size:1.3rem;line-height:1.3}.badday strong{color:var(--accent,#5b5bd6)}</style>
+<dl class="meta">
+  <div><dt>Du bist fertig, wenn</dt><dd>du (1) die <strong>Wahrheitstafel</strong> von $\neg,\wedge,\vee,\to,\leftrightarrow$ aus dem Gedächtnis ausfüllen und erklären kannst, warum eine falsche Voraussetzung alles impliziert; (2) entscheiden kannst, ob zwei Ausdrücke äquivalent sind, entweder per Wahrheitstafel oder durch eine Kette benannter Äquivalenzen; (3) jeden Satz mit Quantoren auf einen Schlag <strong>verneinen</strong> kannst, auch die Definitionen aus <a class="xl" href="linalg-01.html">Lektion 1</a>; (4) eine Formel nur mit $\exists$ (oder nur mit $\forall$), $=$, $\neg$, $\wedge$ <strong>umschreiben</strong> kannst, wie in Quiz 1 und Quiz 5; (5) mit einem Beispiel sagen kannst, warum die <strong>Reihenfolge der Quantoren</strong> zählt.</dd></div>
+  <div><dt>Zeit</dt><dd>Etwa 60 Minuten. Das Wahrheitstafel-Werkzeug in Abschnitt 4 lässt dich jede Äquivalenz selbst prüfen.</dd></div>
+  <div><dt>Skript (Englisch, Seitenzahlen des Drucks)</dt><dd>Das Skript EN 2023 hat <strong>kein Logikkapitel</strong>; es benutzt die Sprache ab der ersten Seite. Diese Lektion folgt daher der Vorlesung und ihren Handouts. Stellen im Skript, an denen du sie in Aktion siehst:
+    <ul>
+      <li><strong><a class="pl" href="../linalg-script.html#p13">S. 13</a>, Definition 1.2.1:</strong> eine Abbildung in Quantoren, $\forall x\in X\ \exists!\,y\in Y: f(x)=y$.</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p17">S. 17</a>, Definition 1.3.5 und Anmerkung 1.3.6:</strong> „nullteilerfrei“ in Quantoren, und ihre Kontraposition.</li>
+      <li><strong><a class="pl" href="../linalg-script.html#p18">S. 18–19</a>, die Körperaxiome</strong>, geschrieben mit $\forall$ und $\exists$, zum Beispiel $\forall x\in K\ \exists x'\in K: x+x'=0$.</li>
+    </ul></dd></div>
+  <div><dt>In der Vorlesung</dt><dd>Prof. Halbeisens §1 „Die Sprache der Mathematik“, erste Hälfte (Notizen vom 21. Sep., Seiten 4–6): logische Operatoren, logische Äquivalenz, Wahrheitstafeln, Quantoren, Gleichheit. Er hat vier kurze Texte verteilt, die tiefer gehen: <em>Logik I</em> (Symbole, Terme, Formeln, freie und gebundene Variablen), <em>Logik II</em> (die logischen Axiome), <em>Syntax &amp; Semantik</em> und eine Liste der <em>Tautologien</em>. Diese Lektion verwendet die Teile, die du für seine Prüfung brauchst.</dd></div>
+</dl>
+
+<div class="exam"><span class="label">Warum es für die Prüfung wichtig ist</span>
+<p>Zwei von Halbeisens sechs Quizzen waren genau diese Lektion: „schreibe diese Formel nur mit $\exists$, $=$, $\neg$, $\wedge$, ohne doppelte Verneinungen“ (Quiz 1) und dasselbe mit $\forall$ (Quiz 5). Seine Serien sind voll von Aussagen in Quantoren, und er fragt gern nach Formeln „mit wenigen logischen Symbolen“. Die alten Prüfungen der Linearen Algebra I eröffnen ihren Multiple-Choice-Block mit Logik: „$A$ ist wahr und $B$ falsch, welcher Ausdruck ist wahr?“ und „welcher Ausdruck ist zu $C\Leftrightarrow D$ äquivalent?“ (FS19, I und II), „welcher Ausdruck ist <em>nicht</em> äquivalent zu …?“ und „Alle Menschen machen dieselben Fehler“ (HS18, V und VI), „welche Aussage ist für jeden Körper sinnvoll und eindeutig?“ (HS21, III). Alle werden unten durchgearbeitet. Vor allem gilt: Ab <a class="xl" href="../linalg-06.html">Lektion 6</a> wirst du in jedem zweiten Beweis „linear unabhängig“ und „erzeugt“ verneinen.</p></div>
+
+<div class="box"><h3 id="recap-of-lesson-1-5">Rückblick auf <a class="xl" href="linalg-01.html">Lektion 1</a> (5 Minuten)</h3>
+<p>Eine <strong>Gruppe</strong> ist eine Menge mit einer assoziativen Verknüpfung, einem Neutralelement und Inversen; das Neutralelement und jedes Inverse sind eindeutig. $\mathbb Z/n$ ist eine abelsche Gruppe, weil die Addition von Klassen wohldefiniert ist. Ein <strong>Ring</strong> hat zwei Verknüpfungen, eine abelsche Gruppe $+$ und ein assoziatives $\cdot$, das über $+$ verteilt; ein <strong>Körper</strong> verlangt ausserdem, dass jedes nicht-null Element ein multiplikatives Inverses hat. Prüfe dich selbst: Warum ist $\mathbb Z/6$ kein Körper?</p>
+<details><summary>Antwort</summary><div><p>$\bar2\cdot\bar3=\bar0$ mit $\bar2\ne\bar0\ne\bar3$: Nullteiler. Hätte $\bar2$ ein Inverses, so wäre $\bar3=\bar2^{-1}\cdot\bar2\cdot\bar3=\bar2^{-1}\cdot\bar0=\bar0$, was falsch ist.</p></div></details></div>
+
+<h2 id="words-for-this-lesson-fachbegriffe">Wörter für diese Lektion · Fachbegriffe</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Englisch</th><th>Deutsch</th></tr></thead>
+  <tbody>
+    <tr><td>statement</td><td>Aussage</td></tr>
+    <tr><td>logical operator: not, and, or, implies</td><td>logischer Operator: nicht, und, oder, impliziert</td></tr>
+    <tr><td>inclusive / exclusive or</td><td>inklusives / exklusives ODER</td></tr>
+    <tr><td>premise, conclusion (of an implication)</td><td>Voraussetzung (Prämisse), Folgerung (Konklusion)</td></tr>
+    <tr><td>logically equivalent</td><td>logisch äquivalent</td></tr>
+    <tr><td>truth table, truth value</td><td>Wahrheitstafel, Wahrheitswert</td></tr>
+    <tr><td>tautology</td><td>Tautologie</td></tr>
+    <tr><td>double negation rule</td><td>Doppelnegationsregel</td></tr>
+    <tr><td>De Morgan's laws</td><td>deMorgan'sche Regeln</td></tr>
+    <tr><td>contrapositive</td><td>Kontraposition</td></tr>
+    <tr><td>existential / universal quantifier</td><td>Existenzquantor / Allquantor</td></tr>
+    <tr><td>free / bound variable</td><td>freie / gebundene Variable</td></tr>
+    <tr><td>term, formula, sentence</td><td>Term, Formel, Satz</td></tr>
+    <tr><td>syntactic / semantic level, interpretation</td><td>syntaktische / semantische Ebene, Interpretation</td></tr>
+    <tr><td>reflexive, symmetric, transitive</td><td>reflexiv, symmetrisch, transitiv</td></tr>
+    <tr><td>Sheffer stroke (NAND)</td><td>Scheffer-Strich (Halbeisens Schreibweise)</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="s1-the-story-the-scribes-of">1. Die Geschichte: die Schreiber der Freien Stadt</h2>
+<div class="story">
+<p>Die Gilden der Freien Stadt haben nun Ränge, und Ränge bringen Streit. Wer ist wirklich eine Gruppe? Wer behauptet es nur? Das Stadtgericht entscheidet jeden Streit mit einer schriftlichen <em>Charta</em>, und das Gericht ist streng darin, wie Chartas abgefasst werden. Ein Schreiber darf nur vier Siegel benutzen: NICHT, UND, ODER und WENN–DANN. Dazu zwei Stempel: den Stempel „es gibt ein Mitglied, für das …“ und den Stempel „für jedes Mitglied …“. Jede Charta, so lang sie auch sei, muss aus diesen gebaut sein.</p>
+<p>Das Gericht besitzt ausserdem ein <em>Orakel</em>. Man gibt ihm eine Charta, die nur aus Siegeln besteht, und es probiert jede mögliche Art durch, wie die kleinen Klauseln ausgehen könnten, wahr oder falsch, und meldet, wann die ganze Charta gilt. Zwei Chartas, die das Orakel immer gleich beantwortet, zählen als <em>dieselbe Charta</em>, egal wie verschieden sie aussehen.</p>
+<p>Die gefürchtetste Schreiberin der Stadt hat eine Fähigkeit, die fast jeden Fall gewinnt: Zu jeder Charta schreibt sie ohne Nachdenken deren <em>genaue Widerlegung</em>. „Jedes Mitglied hat einen Partner, der es rückgängig macht“ wird unter ihrer Feder zu „es gibt ein Mitglied, das kein Partner rückgängig macht“. Du bist ihre Lehrlingin bzw. ihr Lehrling. Am Ende des heutigen Tages widerlegst du wie sie.</p>
+</div>
+<p>In der Mathematik: Eine Charta ist eine <strong>Aussage</strong>, die Siegel sind die <strong>logischen Operatoren</strong> $\neg,\wedge,\vee,\to$, die Stempel sind die <strong>Quantoren</strong> $\exists$ und $\forall$. Das Orakel ist die <strong>Wahrheitstafel</strong>, „dieselbe Charta“ ist <strong>logische Äquivalenz</strong>, und die Widerlegung ist die <strong>Verneinung</strong>. Warum die Lineare Algebra das braucht: Jede Definition ab jetzt (Untergruppe, Vektorraum, linear unabhängig, Basis, lineare Abbildung) ist ein Satz mit mehreren Quantoren. Um zu zeigen, dass etwas <em>keine</em> Basis ist, oder einen Beweis durch Widerspruch zu beginnen, musst du die Verneinung dieses Satzes korrekt aufschreiben, und das ist eine mechanische Fertigkeit, die man in einer Stunde lernen kann.</p>
+
+<h2 id="s2-two-levels-objects-and-the">2. Zwei Ebenen: Objekte und die Sprache über sie</h2>
+<p>Halbeisen eröffnet §1 mit einer Unterscheidung. Auf der einen Seite stehen die mathematischen <strong>Objekte</strong>: Zahlen, Funktionen, Mengen, Punkte, Geraden („wir tun so, als gäbe es diese Objekte“). Auf der anderen Seite steht die <strong>Sprache</strong> der Logik, in der wir sie beschreiben. Die erste ist die <em>semantische</em> Ebene, die zweite die <em>syntaktische</em>. Um wirklich zu verstehen, was Mathematik tut, müsste man sie sauber auseinanderhalten. Die Vorlesung sagt offen, dass sie das nicht tut (das passiert im Kurs über Grundlagen), aber das Handout <em>Syntax &amp; Semantik</em> gibt ein Bild, das man behalten sollte:</p>
+<div class="box"><h3 id="the-score-and-the-performance">Die Partitur und die Aufführung</h3>
+<p>Die Syntax ist wie eine musikalische <strong>Partitur</strong>: schwarz auf weiss legt sie fest, welche Töne zu spielen sind. Die Semantik ist die <strong>Aufführung</strong>: Sie muss der Partitur folgen, bringt sie aber zum Klingen. Die Gruppenaxiome sind eine Partitur; eine konkrete Gruppe wie $(\mathbb Z,+)$ ist eine Aufführung davon. Eine Formel auf dem Papier ist weder wahr noch falsch. Sie wird erst wahr oder falsch, wenn sie <em>interpretiert</em> wird, das heisst, wenn wir sagen, was ihre Symbole bedeuten.</p></div>
+<p>Das Handout <em>Logik I</em> baut die Sprache aus einem Alphabet auf, in drei Schichten. Du brauchst die Wörter, nicht die formalen Details:</p>
+<ul>
+  <li><strong>Symbole.</strong> Variablen $x,y,v_0,\dots$ (Platzhalter für Objekte), die Operatoren $\neg,\wedge,\vee,\to,\leftrightarrow$, die Quantoren $\exists,\forall$, und „$=$“. Jede Theorie fügt eigene Symbole hinzu: die Gruppentheorie eine Konstante $e$ und ein Operationssymbol $\circ$.</li>
+  <li><strong>Terme</strong> sind die <em>Namen</em> von Objekten: $x$, $e$, $x\circ(y\circ e)$. Ein Term ist wie ein Substantiv. Er sagt nichts, daher ist er nie wahr oder falsch.</li>
+
+  <li><strong>Formeln</strong> sind die <em>Sätze</em>: $x\circ e=x$, $\neg(x=y)$, $\forall x\,(x\circ e=x)$. Interpretiert wird eine Formel zu einer <strong>Aussage</strong>, die wahr oder falsch ist.</li>
+</ul>
+<p>Das erklärt eine Art Prüfungsfrage. „$x^2+1$“ ist ein Term, also ist „Ist $x^2+1$ wahr?“ Unsinn. „$x^2&gt;x$“ ist nur dann eine Formel, wenn die Sprache ein Symbol $&gt;$ hat, und ein allgemeiner Körper hat keines. Beispiel 8 unten ist genau diese Frage.</p>
+
+<h2 id="s3-the-four-logical-operators">3. Die vier logischen Operatoren</h2>
+<div class="box">
+<p><strong>Definition (logische Operatoren).</strong> Logische Operatoren sind ein- oder zweistellige Operatoren auf Aussagen $A,B,C,\dots$:</p>
+<ul>
+  <li>$\neg A$ liest man „NICHT $A$“ (Negation);</li>
+  <li>$A\wedge B$ liest man „$A$ UND $B$“;</li>
+  <li>$A\vee B$ liest man „$A$ ODER $B$“, das <em>einschliessende</em> Oder: es erlaubt beides;</li>
+  <li>$A\to B$ liest man „WENN $A$ DANN $B$“, auch „$A$ impliziert $B$“. $A$ ist die Voraussetzung, $B$ die Folgerung.</li>
+</ul>
+<p><strong>Abkürzungen.</strong> $A\leftrightarrow B$ steht für $(A\to B)\wedge(B\to A)$, gelesen „$A$ genau dann, wenn $B$“. Das ausschliessende Oder $A\veebar B$ steht für $(A\vee B)\wedge\neg(A\wedge B)$, „genau eines von $A$, $B$“ (selten gebraucht). Und $x\ne y$ steht für $\neg(x=y)$; ebenso $x\notin M$ für $\neg(x\in M)$.</p>
+</div>
+<p>Zwei Hinweise, die Punkte sparen. Erstens ist das mathematische „oder“ immer einschliessend. „$x=0$ oder $y=0$“ ist wahr, wenn beide $0$ sind. Zweitens ist „$\to$“ ein Symbol <em>innerhalb</em> einer Aussage, während der Doppelpfeil „$\iff$“ des nächsten Abschnitts eine Behauptung <em>über</em> zwei Aussagen ist. Die alten Prüfungen schreiben $\Rightarrow$ und $\Leftrightarrow$ für $\to$ und $\leftrightarrow$; innerhalb einer Formel meinen sie dasselbe.</p>
+
+<h3 id="the-truth-table">Die Wahrheitstafel</h3>
+<p>Wenn wir Aussagen interpretieren, wird jede wahr ($1$) oder falsch ($0$). Die Operatoren sind dadurch festgelegt, was sie mit den Wahrheitswerten tun:</p>
+<div class="table-wrap"><table style="text-align:center">
+  <thead><tr><th>$A$</th><th>$B$</th><th>$\neg A$</th><th>$A\wedge B$</th><th>$A\vee B$</th><th>$A\to B$</th><th>$A\leftrightarrow B$</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+    <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+    <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td><strong>0</strong></td><td>0</td></tr>
+    <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+  </tbody>
+</table></div>
+<p>Die Spalte, die man sich merken soll, ist $A\to B$: sie ist in genau <strong>einer</strong> Zeile falsch, nämlich „$A$ wahr, $B$ falsch“. Ein Versprechen „wenn es regnet, nehme ich einen Schirm mit“ ist nur gebrochen, wenn es regnet und ich keinen Schirm mitnehme. An einem trockenen Tag wird das Versprechen gehalten, egal, was ich trage.</p>
+<div class="box"><h3 id="a-false-premise-implies-anything">Eine falsche Voraussetzung impliziert alles (Beispiel aus der Vorlesung)</h3>
+<p>Sei $A$ die Aussage $0=1$ und $B$ die Aussage $1=1$, interpretiert in $\mathbb N$. Dann ist $A$ falsch. Beide Zeilen mit $A=0$ ergeben $1$ in der Spalte $A\to B$, also sind <em>beide</em></p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;0=1\ \to\ 1=1\quad\text{und}\\ &amp;0=1\ \to\ 1\ne1\end{aligned}$$</span>
+<p>wahre Aussagen. Das ist kein Trick. Deshalb ist „für alle $x\in\emptyset$, …“ immer wahr (Abschnitt 5), und deshalb funktioniert ein Beweis durch Widerspruch (<a class="xl" href="../linalg-03.html">Lektion 3</a>).</p></div>
+<p>Eine <strong>Tautologie</strong> ist eine Aussage, die unter jeder Interpretation wahr ist, deren Spalte in der Wahrheitstafel also nur aus $1$en besteht. Die einfachste ist $A\vee\neg A$: was $A$ auch ist, eines der beiden gilt. Halbeisens logische Axiome (Handout <em>Logik II</em>) beginnen genau mit dieser.</p>
+
+<div class="box"><h3 id="we-1">Musterbeispiel 1: $A$ ist wahr und $B$ falsch. Welcher Ausdruck ist wahr? (FS19, Frage I)</h3>
+<p>(a) $(\neg B\wedge\neg A)\vee(B\wedge A)$ (b) $(A\wedge(B\vee\neg A))\vee(B\vee\neg A)$ (c) $(\neg B\wedge A)\wedge((B\vee A)\wedge A)$ (d) $B\wedge(A\vee(B\wedge A)\vee\neg A)$. Versuch es zuerst im Kopf.</p>
+<ol class="gq">
+  <li>Was sind $\neg A$ und $\neg B$?
+  <details><summary>Antwort</summary><div><p>$\neg A=0$ und $\neg B=1$.</p></div></details></li>
+  <li>Welche Optionen fallen sofort weg, weil ein UND einen falschen Teil hat?
+  <details><summary>Antwort</summary><div><p>(d) beginnt mit $B\wedge\dots$ und $B=0$, also ist (d) gleich $0$. In (a) enthalten beide Klammern einen falschen Teil ($\neg A$ bzw. $B$), also ist (a) gleich $0\vee0=0$.</p></div></details></li>
+  <li>Werte (b) und (c) aus.
+  <details><summary>Antwort</summary><div><p>(b): $B\vee\neg A=0\vee0=0$, also ist (b) gleich $(1\wedge0)\vee0=0$. (c): $\neg B\wedge A=1\wedge1=1$ und $(B\vee A)\wedge A=1\wedge1=1$, also ist (c) gleich $1$. <strong>Antwort (c).</strong></p></div></details></li>
+</ol>
+<p class="small">Gewohnheit für die Prüfung: Schreib die Werte der kleinen Teile über die Formel und werte dann von innen nach aussen aus. Suche zuerst ein UND mit einer $0$ oder ein ODER mit einer $1$; sie entscheiden die ganze Klammer.</p></div>
+
+<h2 id="s4-logical-equivalence">4. Logische Äquivalenz</h2>
+<div class="box">
+<p><strong>Definition (logisch äquivalent).</strong> Zwei Aussagen $A$ und $B$ sind <strong>logisch äquivalent</strong>, geschrieben $A\iff B$, wenn sich sowohl $A\to B$ als auch $B\to A$ aus den logischen Axiomen beweisen lässt. Zum Beispiel gilt $A\iff A$ und $A\iff A\wedge A$ für jedes $A$.</p></div>
+<p>Das ist die Definition der Vorlesung, und sie ist eine Aussage über <em>Beweise</em> (die syntaktische Ebene). In der Praxis prüft man auf der semantischen Ebene: für Aussagen, die nur aus Operatoren gebaut sind, gilt $A\iff B$ genau dann, wenn $A$ und $B$ dieselbe Spalte in der Wahrheitstafel haben. Dass beides übereinstimmt, ist ein Satz der Logik (die Aussagenlogik ist vollständig), den wir als gegeben nehmen. Es gibt also zwei Wege, eine Äquivalenz zu zeigen, und du solltest beide beherrschen:</p>
+<ul>
+  <li><strong>Das Orakel:</strong> eine Wahrheitstafel mit einer Zeile für jede Kombination der Wahrheitswerte (4 Zeilen für zwei Buchstaben, 8 für drei).</li>
+  <li><strong>Der Schreiber:</strong> eine Kette bekannter Äquivalenzen, ein Schritt nach dem anderen, jeder benannt.</li>
+</ul>
+<p>Um zu zeigen, dass zwei Ausdrücke <em>nicht</em> äquivalent sind, genügt eine Zeile: nenne Werte für $A,B,\dots$, für die der eine wahr und der andere falsch ist.</p>
+
+<div class="box"><h3 id="the-equivalences-you-ll-use">Die Äquivalenzen, die du ständig brauchst (Vorlesung <a class="pl" href="../linalg-script.html#p4">S. 4–5</a>, Handout <em>Tautologien</em>)</h3>
+<div class="table-wrap"><table>
+  <thead><tr><th>Äquivalenz</th><th>Name</th></tr></thead>
+  <tbody>
+    <tr><td>$\neg\neg A\iff A$</td><td>Doppelnegation</td></tr>
+    <tr><td>$A\to B\iff\neg A\vee B$</td><td>Implikation als ODER</td></tr>
+    <tr><td>$A\to B\iff\neg(A\wedge\neg B)$</td><td>Implikation als UND</td></tr>
+    <tr><td>$\neg(A\wedge B)\iff\neg A\vee\neg B$</td><td>deMorgan</td></tr>
+    <tr><td>$\neg(A\vee B)\iff\neg A\wedge\neg B$</td><td>deMorgan</td></tr>
+    <tr><td>$A\wedge B\iff B\wedge A$</td><td>Kommutativität</td></tr>
+    <tr><td>$A\vee B\iff B\vee A$</td><td>Kommutativität</td></tr>
+    <tr><td>$A\wedge(B\vee C)\iff(A\wedge B)\vee(A\wedge C)$</td><td>Distributivität</td></tr>
+    <tr><td>$A\vee(B\wedge C)\iff(A\vee B)\wedge(A\vee C)$</td><td>Distributivität</td></tr>
+  </tbody>
+</table></div>
+<p>deMorgan gilt für beliebig viele Aussagen: $\neg(A_1\wedge\dots\wedge A_n)\iff\neg A_1\vee\dots\vee\neg A_n$ und $\neg(A_1\vee\dots\vee A_n)\iff\neg A_1\wedge\dots\wedge\neg A_n$. Klammern innerhalb eines reinen UND (oder eines reinen ODER) spielen keine Rolle (Assoziativität).</p></div>
+
+<h3 id="proof-a">Beweis A: deMorgan'sche Regel $\neg(A\wedge B)\iff\neg A\vee\neg B$, per Wahrheitstafel</h3>
+<div class="box"><p><strong>Behauptung.</strong> Für alle Aussagen $A,B$: $\neg(A\wedge B)$ und $\neg A\vee\neg B$ sind logisch äquivalent.</p></div>
+<p><strong>Die Idee.</strong> Beide Seiten hängen nur von den Wahrheitswerten von $A$ und $B$ ab. Es gibt vier Kombinationen. Werte beide Seiten in jeder davon aus; stimmen die beiden Spalten überein, sind die Aussagen äquivalent.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Wir vergleichen die Wahrheitstafeln beider Seiten.“</li>
+  <li><strong>Letzte Zeile:</strong> „Die Spalten stimmen in allen vier Zeilen überein, also gilt $\neg(A\wedge B)\iff\neg A\vee\neg B$.“</li>
+  <li><strong>Die Lücke:</strong> vier Zeilen, jede Seite ausgewertet mit der Tabelle aus Abschnitt 3.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Lehrlingin legt beide Chartas dem Orakel vor. Es probiert die vier Arten durch, wie die beiden Klauseln ausgehen können.</p></div><div class="sp-formal"><div class="table-wrap"><table style="text-align:center"><thead><tr><th>$A$</th><th>$B$</th><th>$A\wedge B$</th><th>$\neg(A\wedge B)$</th><th>$\neg A\vee\neg B$</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>0</td><td>1</td><td>$1\vee1=1$</td></tr><tr><td>0</td><td>1</td><td>0</td><td>1</td><td>$1\vee0=1$</td></tr><tr><td>1</td><td>0</td><td>0</td><td>1</td><td>$0\vee1=1$</td></tr><tr><td>1</td><td>1</td><td>1</td><td>0</td><td>$0\vee0=0$</td></tr></tbody></table></div></div></div>
+<div class="sp-row"><div class="sp-story"><p>„Nicht beide“ scheitert nur, wenn beide gelten; „einer von beiden scheitert“ scheitert ebenfalls nur dann. Das Orakel antwortet jedes Mal gleich: eine Charta.</p></div><div class="sp-formal"><p>Die Spalten von $\neg(A\wedge B)$ und $\neg A\vee\neg B$ stimmen in jeder Zeile überein. Also gilt $\neg(A\wedge B)\iff\neg A\vee\neg B$. <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_table">mit einer Wahrheitstafel prüfen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Beide Seiten hängen nur von den Wahrheitswerten von $A$ und $B$ ab. Sind $A$ und $B$ beide wahr, ist $A\wedge B$ wahr, also ist $\neg(A\wedge B)$ falsch, und $\neg A\vee\neg B$ ist falsch, da $\neg A$ und $\neg B$ beide falsch sind. In den anderen drei Fällen ist mindestens eines von $A,B$ falsch: dann ist $A\wedge B$ falsch, also ist $\neg(A\wedge B)$ wahr, und mindestens eines von $\neg A,\neg B$ ist wahr, also ist $\neg A\vee\neg B$ wahr. Die beiden Seiten haben in allen Fällen denselben Wahrheitswert. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+<li>Beide Seiten hängen nur von den Wahrheitswerten von $A$ und $B$ ab.</li>
+<li>Fall beide wahr: beide Seiten falsch.</li>
+<li>Die anderen drei Fälle: beide Seiten wahr. (Oder schreib die vierzeilige Wahrheitstafel auf.)</li>
+</ol>
+<p><strong>Kurz:</strong> eine Wahrheitstafel mit vier Zeilen.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Welche einzelne Zeile der Tafel ist die interessante, und warum?
+  <details><summary>Antwort</summary><div><p>Die Zeile $A=B=1$: sie ist die einzige Zeile, in der $A\wedge B$ wahr ist, also die einzige, in der beide Seiten falsch sind.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Beweise die andere deMorgan'sche Regel, $\neg(A\vee B)\iff\neg A\wedge\neg B$, auf dieselbe Weise.
+  <details><summary>Antwort</summary><div><p>Spalten: $\neg(A\vee B)$ ist $1,0,0,0$; $\neg A\wedge\neg B$ ist $(1\wedge1),(1\wedge0),$ $(0\wedge1),(0\wedge0)$ $=1,0,0,0$. Sie stimmen überein. In Worten: beide sind nur in der Zeile $A=B=0$ wahr.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Decke die Tafel zu und schreibe Beweis A nur aus dem Rahmen, entweder als Tabelle oder als Fallunterscheidung der Version „in einem Stück“.</li>
+</ol></div>
+
+<div class="explorer" id="tt-ex">
+<span class="label">Probier es aus: das Orakel (ein Wahrheitstafel-Prüfer)</span>
+<p>Gib einen Ausdruck ein oder zwei zum Vergleichen. Benutze die Buchstaben A–E, die Tasten und Klammern. Das Orakel listet jede Zeile auf; wo sich zwei Ausdrücke unterscheiden, ist die Zeile markiert. Tippen geht auch: <code>~</code> oder <code>!</code> für nicht, <code>&amp;</code> für und, <code>|</code> für oder, <code>-&gt;</code> und <code>&lt;-&gt;</code>.</p>
+
+<div class="ex-nav">
+  <label>Beispiel: <select id="tt-pre" aria-label="Beispiel wählen"><option value="">wählen …</option></select></label>
+</div>
+<p style="margin:.4em 0 .2em"><label for="tt-f1">Erster Ausdruck</label></p>
+<input id="tt-f1" type="text" autocomplete="off" spellcheck="false" style="width:100%;box-sizing:border-box;font-size:1.05em;padding:.35em .5em;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)" value="¬(A ∧ B)">
+<p style="margin:.6em 0 .2em"><label for="tt-f2">Zweiter Ausdruck (optional)</label></p>
+<input id="tt-f2" type="text" autocomplete="off" spellcheck="false" style="width:100%;box-sizing:border-box;font-size:1.05em;padding:.35em .5em;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)" value="¬A ∨ ¬B">
+<div class="ex-nav" id="tt-keys" style="margin-top:.5em;flex-wrap:wrap"></div>
+<p id="tt-msg" aria-live="polite"></p>
+<div class="table-wrap"><table id="tt-tab" style="text-align:center"></table></div>
+</div>
+<script>
+(function(){
+  var f1=document.getElementById('tt-f1'),f2=document.getElementById('tt-f2');
+  if(!f1) return;
+  var last=f1;
+  f1.addEventListener('focus',function(){last=f1;});f2.addEventListener('focus',function(){last=f2;});
+  var keys=['A','B','C','¬','∧','∨','→','↔','(',')','⌫'];
+  var K=document.getElementById('tt-keys');
+  keys.forEach(function(k){var b=document.createElement('button');b.type='button';b.textContent=k;b.style.minWidth='2.4em';b.style.fontSize='1.05em';
+    b.addEventListener('click',function(){var el=last,s=el.selectionStart==null?el.value.length:el.selectionStart,e=el.selectionEnd==null?s:el.selectionEnd;
+      if(k==='⌫'){if(s===e&&s>0)s--;el.value=el.value.slice(0,s)+el.value.slice(e);el.setSelectionRange(s,s);}
+      else{var ins=(k.length===1&&/[A-Z()]/.test(k))?k:' '+k+' ';el.value=el.value.slice(0,s)+ins+el.value.slice(e);el.setSelectionRange(s+ins.length,s+ins.length);}
+      el.focus();run();});K.appendChild(b);});
+  var pres=[['De Morgan','¬(A ∧ B)','¬A ∨ ¬B'],['Contrapositive','A → B','¬B → ¬A'],['Converse (not equivalent!)','A → B','B → A'],['Negated implication','¬(A → B)','A ∧ ¬B'],['Implication as AND','A → B','¬(A ∧ ¬B)'],['FS19 question II','C ↔ D','(¬C ∨ D) ∧ (¬D ∨ C)'],['HS18 question V','¬(¬(A ∨ B) ∨ (B ∧ A)) ∧ B','B ∧ A'],['HS21 question II','(A → B) ∨ (B → A)','A ∨ ¬A'],['Chain rule (tautology?)','((A → B) ∧ (B → C)) → (A → C)',''],['Distributivity','A ∨ (B ∧ C)','(A ∨ B) ∧ (A ∨ C)']];
+  var P=document.getElementById('tt-pre');
+  pres.forEach(function(p,i){var o=document.createElement('option');o.value=i;o.textContent=p[0];P.appendChild(o);});
+  P.addEventListener('change',function(){if(P.value==='')return;var p=pres[+P.value];f1.value=p[1];f2.value=p[2];run();});
+  function lex(s){var t=[],i=0;s=s.replace(/<->|<=>|⇔/g,'↔').replace(/->|=>|⇒/g,'→').replace(/[~!]/g,'¬').replace(/&|\^/g,'∧').replace(/\|/g,'∨').replace(/⊕/g,'⊻');
+    while(i<s.length){var c=s[i];if(/\s/.test(c)){i++;continue;}
+      if(/[A-Z]/.test(c)||/[01]/.test(c)||'¬∧∨→↔⊻()'.indexOf(c)>=0){t.push(c);i++;continue;}
+      throw 'I don\'t know the symbol “'+c+'”. Use capital letters A–E, the buttons, or ~ & | -> <->.';}
+    return t;}
+  function parse(s){var t=lex(s),p=0;if(!t.length)return null;
+    function peek(){return t[p];}
+    function iff(){var l=imp();while(peek()==='↔'){p++;var r=imp();l=(function(a,b){return function(v){return a(v)===b(v);};})(l,r);}return l;}
+    function imp(){var l=or();if(peek()==='→'){p++;var r=imp();return (function(a,b){return function(v){return !a(v)||b(v);};})(l,r);}return l;}
+    function or(){var l=and();while(peek()==='∨'||peek()==='⊻'){var op=t[p++];var r=and();l=(function(a,b,o){return o==='∨'?function(v){return a(v)||b(v);}:function(v){return a(v)!==b(v);};})(l,r,op);}return l;}
+    function and(){var l=not();while(peek()==='∧'){p++;var r=not();l=(function(a,b){return function(v){return a(v)&&b(v);};})(l,r);}return l;}
+    function not(){if(peek()==='¬'){p++;var a=not();return function(v){return !a(v);};}return atom();}
+    function atom(){var c=t[p++];if(c===undefined)throw 'The expression ends too early: something is missing after the last symbol.';
+      if(c==='('){var e=iff();if(t[p++]!==')')throw 'A bracket “(” is never closed.';return e;}
+      if(c==='0')return function(){return false;};if(c==='1')return function(){return true;};
+      if(/[A-Z]/.test(c))return function(v){return v[c];};
+      throw 'The symbol “'+c+'” cannot stand here.';}
+    var e=iff();if(p<t.length)throw (t[p]===')'?'There is a “)” without a matching “(”.':'The symbol “'+t[p]+'” cannot stand here. Missing an operator or a bracket?');
+    var vars=t.filter(function(c){return /[A-Z]/.test(c);});return {f:e,vars:vars};}
+  function run(){var msg=document.getElementById('tt-msg'),tab=document.getElementById('tt-tab');
+    var a,b;try{a=parse(f1.value);}catch(e){msg.innerHTML='<strong>First expression:</strong> '+e;tab.innerHTML='';return;}
+    try{b=parse(f2.value);}catch(e){msg.innerHTML='<strong>Second expression:</strong> '+e;tab.innerHTML='';return;}
+    if(!a){msg.textContent='Type an expression above.';tab.innerHTML='';return;}
+    var vs=[];a.vars.concat(b?b.vars:[]).forEach(function(c){if(vs.indexOf(c)<0)vs.push(c);});vs.sort();
+    if(vs.length>5){msg.textContent='At most 5 different letters, please (that is already 32 rows).';tab.innerHTML='';return;}
+    var n=vs.length,rows=1<<n,h='<tr>';vs.forEach(function(c){h+='<th>'+c+'</th>';});h+='<th>first</th>'+(b?'<th>second</th>':'')+'</tr>';
+    var all1=true,all0=true,diff=[];
+    for(var r=0;r<rows;r++){var v={};vs.forEach(function(c,i){v[c]=!!((r>>(n-1-i))&1);});
+      var x=a.f(v),y=b?b.f(v):null;if(!x)all1=false;if(x)all0=false;var d=b&&x!==y;if(d)diff.push(r);
+      h+='<tr'+(d?' style="background:color-mix(in srgb,var(--k-c) 25%,transparent);font-weight:600"':'')+'>';
+      vs.forEach(function(c){h+='<td>'+(v[c]?1:0)+'</td>';});h+='<td>'+(x?1:0)+'</td>'+(b?'<td>'+(y?1:0)+'</td>':'')+'</tr>';}
+    tab.innerHTML=h;
+    if(b){msg.innerHTML=diff.length?('<strong>Not equivalent.</strong> They differ in '+diff.length+' of '+rows+' rows (marked). One such row is a complete proof that they are not equivalent.'):('<strong>Equivalent:</strong> the two columns agree in all '+rows+' rows.');}
+    else{msg.innerHTML=all1?'<strong>A tautology:</strong> true in every row.':(all0?'<strong>Always false</strong> (a contradiction): false in every row.':'Neither a tautology nor always false: it depends on the letters.');}
+  }
+  f1.addEventListener('input',run);f2.addEventListener('input',run);run();
+})();
+</script>
+<p class="small">Das Orakel liest $\neg$ vor $\wedge$ vor $\vee$ vor $\to$ vor $\leftrightarrow$, und $A\to B\to C$ als $A\to(B\to C)$. Auf dem Papier verlass dich nicht auf solche Konventionen: <strong>schreib immer die Klammern</strong>, wie Halbeisen es tut.</p>
+
+<h3 id="proof-b">Beweis B: die Kontraposition, $A\to B\iff\neg B\to\neg A$</h3>
+<div class="box"><p><strong>Behauptung</strong> (Vorlesung <a class="pl" href="../linalg-script.html#p5">S. 5</a>, markiert mit „brauchen wir später“). Für alle Aussagen $A,B$: $A\to B$ und $\neg B\to\neg A$ sind logisch äquivalent.</p></div>
+<p><strong>Die Idee.</strong> Eine Implikation lässt sich als ODER schreiben. Schreib beide Seiten als ODER; sie werden dasselbe ODER, bis auf Reihenfolge und eine Doppelnegation. Diesmal gehen wir den Weg des Schreibers, eine Kette benannter Äquivalenzen, weil dieser Weg auch dann funktioniert, wenn Quantoren dazukommen.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Start:</strong> $A\to B$. <strong>Ziel:</strong> $\neg B\to\neg A$.</li>
+  <li><strong>Erlaubte Schritte:</strong> die Äquivalenzen der Box oben, einer pro Schritt, jeweils benannt.</li>
+  <li><strong>Die Lücke:</strong> Entfern zuerst das „$\to$“, da nur eine Regel es betrifft, und arbeite dann zurück.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Lehrlingin schreibt die Charta „wenn die Gilde tagt, läutet die Glocke“ um zu „die Gilde tagt nicht, oder die Glocke läutet“.</p></div><div class="sp-formal"><p>$A\to B\iff\neg A\vee B\quad$ (Implikation als ODER)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>ODER kümmert sich nicht um die Reihenfolge seiner Klauseln.</p></div><div class="sp-formal"><p>$\phantom{A\to B}\iff B\vee\neg A\quad$ (Kommutativität von $\vee$)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Eine doppelte Verneinung ist keine Verneinung, also darf „die Glocke läutet“ auch als „nicht: die Glocke läutet nicht“ geschrieben werden.</p></div><div class="sp-formal"><p>$\phantom{A\to B}\iff\neg\neg B\vee\neg A\quad$ (Doppelnegation)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jetzt lies das ODER zurück als WENN, mit „die Glocke läutet nicht“ als Voraussetzung: wenn die Glocke nicht läutet, tagte die Gilde nicht.</p></div><div class="sp-formal"><p>$\phantom{A\to B}\iff\neg B\to\neg A\quad$ (Implikation als ODER, mit Voraussetzung $\neg B$ und Folgerung $\neg A$). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_chain">eine Kette benannter Äquivalenzen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<span class="math-display" style="display:block">$$\begin{aligned}A\to B&amp;\iff\neg A\vee B\iff B\vee\neg A\\&amp;\iff\neg\neg B\vee\neg A\iff\neg B\to\neg A,\end{aligned}$$</span>
+<p>wobei der Reihe nach verwendet wird: Implikation als ODER, Kommutativität von $\vee$, Doppelnegation, Implikation als ODER (angewandt auf $\neg B\to\neg A$). <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Ist $A\to B$ zu seiner <em>Umkehrung</em> $B\to A$ äquivalent?
+  <details><summary>Antwort</summary><div><p>Nein. Eine Zeile genügt: $A=0$, $B=1$ macht $A\to B$ wahr und $B\to A$ falsch. (Probier „Umkehrung“ im Orakel.) Kontraposition und Umkehrung zu verwechseln ist der häufigste Logikfehler in Beweisen.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Zeige $A\to B\iff\neg(A\wedge\neg B)$ durch eine Kette.
+  <details><summary>Antwort</summary><div><p>$\neg(A\wedge\neg B)$ $\iff\neg A\vee\neg\neg B$ $\iff\neg A\vee B$ $\iff A\to B$ (deMorgan, Doppelnegation, Implikation als ODER).</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis B nur aus dem Rahmen, und benenne die Regel nach jedem $\iff$.</li>
+</ol></div>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+  <li>Ersetze die Implikation: $A\to B\iff\neg A\vee B$.</li>
+  <li>Vertausche die beiden Klauseln des ODER.</li>
+  <li>Schreib $B$ als $\neg\neg B$.</li>
+  <li>Lies das ODER als Implikation mit Voraussetzung $\neg B$ zurück.</li>
+</ol>
+<p><strong>Kurz:</strong> zum ODER, vertauschen, doppelte Verneinung, zurück zum WENN.</p></div>
+<p>Das Skript benutzt das sofort: „nullteilerfrei“ bedeutet $ab=0\to(a=0\vee b=0)$, und Anmerkung 1.3.6 (<a class="pl" href="../linalg-script.html#p17">S. 17</a>) rät, die Kontraposition im Gedächtnis zu behalten, $(a\ne0\wedge b\ne0)\to ab\ne0$. Beachte, wie $\neg(a=0\vee b=0)$ zu $a\ne0\wedge b\ne0$ wurde: das war deMorgan.</p>
+
+<h3 id="proof-c">Beweis C: Verneinung einer Implikation, $\neg(A\to B)\iff A\wedge\neg B$</h3>
+<div class="box"><p><strong>Behauptung.</strong> Für alle Aussagen $A,B$: $\neg(A\to B)\iff A\wedge\neg B$.</p></div>
+<p><strong>Die Idee.</strong> Eine Implikation scheitert in genau einer Zeile ihrer Wahrheitstafel: Voraussetzung wahr, Folgerung falsch. Also muss „die Implikation scheitert“ genau das sagen. Als Kette: Mach die Implikation zu einem ODER und wende deMorgan an.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Start:</strong> $\neg(A\to B)$. <strong>Ziel:</strong> $A\wedge\neg B$.</li>
+  <li><strong>Die Lücke:</strong> Die Verneinung steht vor einem Pfeil, und keine Regel bringt eine Verneinung durch einen Pfeil. Also entferne den Pfeil zuerst.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Um „wenn die Gilde tagt, läutet die Glocke“ zu widerlegen, schreibt die Schreiberin die Charta zuerst als ODER um.</p></div><div class="sp-formal"><p>$\neg(A\to B)\iff\neg(\neg A\vee B)\quad$ (Implikation als ODER)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Verneinung geht ins ODER hinein und macht daraus ein UND, indem sie beide Klauseln verneint.</p></div><div class="sp-formal"><p>$\phantom{\neg(A\to B)}\iff\neg\neg A\wedge\neg B\quad$ (deMorgan)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die doppelte Verneinung verschwindet. Die Widerlegung: „die Gilde tagte, und die Glocke läutete nicht“.</p></div><div class="sp-formal"><p>$\phantom{\neg(A\to B)}\iff A\wedge\neg B\quad$ (Doppelnegation). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_chain">eine Kette benannter Äquivalenzen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>$\neg(A\to B)$ $\iff\neg(\neg A\vee B)$ $\iff\neg\neg A\wedge\neg B$ $\iff A\wedge\neg B$, wobei der Reihe nach verwendet wird: Implikation als ODER, deMorgan, Doppelnegation. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+<li>Schreib $A\to B$ als $\neg A\vee B$ um.</li>
+<li>deMorgan, dann Doppelnegation.</li>
+</ol>
+<p><strong>Kurz:</strong> Implikation als ODER, deMorgan, Doppelnegation.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Verneine mit Worten „wenn $n$ gerade ist, dann ist $n^2$ gerade“.
+  <details><summary>Antwort</summary><div><p>„$n$ ist gerade, und $n^2$ ist ungerade.“ Eine verneinte Implikation ist <em>keine</em> andere Implikation.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Verneine $A\leftrightarrow B$ und vereinfache zu einem Ausdruck ohne Pfeile.
+  <details><summary>Antwort</summary><div><p>$\neg\big((A\to B)\wedge(B\to A)\big)$ $\iff\neg(A\to B)\vee\neg(B\to A)$ $\iff(A\wedge\neg B)\vee(B\wedge\neg A)$, das ist das ausschliessende Oder $A\veebar B$: genau eines von beiden gilt.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis C nur aus dem Rahmen.</li>
+</ol></div>
+
+<div class="box"><h3 id="only-two-operators-are-needed">Es werden nur zwei Operatoren benötigt</h3>
+<p>Mit Doppelnegation, Implikation als ODER und deMorgan lässt sich jeder Ausdruck nur mit $\neg$ und $\wedge$ (oder nur mit $\neg$ und $\vee$) schreiben:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}A\vee B&amp;\iff\neg\neg(A\vee B)\\&amp;\iff\neg(\neg A\wedge\neg B),\\A\to B&amp;\iff\neg(A\wedge\neg B),\\A\wedge B&amp;\iff\neg(\neg A\vee\neg B).\end{aligned}$$</span>
+<p>Das ist die erste Hälfte von Quiz 1 und Quiz 5. Die zweite Hälfte ist dasselbe Spiel mit Quantoren (Abschnitt 5).</p></div>
+
+<div class="box"><h3 id="we-2">Musterbeispiel 2: Welcher Ausdruck ist zu $C\Leftrightarrow D$ äquivalent? (FS19, Frage II)</h3>
+<p>(a) $(C\wedge D)\wedge(\neg C\wedge\neg D)$ (b) $(C\vee\neg C)\vee(D\vee\neg D)$ (c) $(C\vee D)\wedge(\neg C\vee\neg D)$ (d) $(\neg C\vee D)\wedge(\neg D\vee C)$</p>
+<ol class="gq">
+  <li>Entpacke die Abkürzung $\Leftrightarrow$ und entferne beide Pfeile.
+  <details><summary>Antwort</summary><div><p>$C\Leftrightarrow D$ ist $(C\to D)\wedge(D\to C)$ $\iff(\neg C\vee D)\wedge(\neg D\vee C)$. Das steht wörtlich da: (d).</p></div></details></li>
+  <li>Zur Sicherheit: was sind (a), (b), (c)?
+  <details><summary>Antwort</summary><div><p>(a) enthält $C\wedge\neg C$, ist also immer falsch. (b) enthält $C\vee\neg C$, ist also immer wahr. (c) sagt „mindestens eines, und nicht beide“: das ausschliessende Oder, die <em>Verneinung</em> von $C\Leftrightarrow D$. <strong>Antwort (d).</strong></p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-3">Musterbeispiel 3: Welcher Ausdruck ist <em>nicht</em> äquivalent zu $\neg\big(\neg(A\vee B)\vee(B\wedge A)\big)\wedge B$? (HS18, Frage V)</h3>
+<p>(a) $B\wedge A$ (b) $\neg\big(\neg(A\vee B)\vee(B\wedge A)\vee\neg B\big)$ (c) $(A\vee B)\wedge\neg(B\wedge A)\wedge B$ (d) $B\wedge\neg A$</p>
+<ol class="gq">
+  <li>Schieb die äussere Verneinung mit deMorgan in die grosse Klammer.
+  <details><summary>Antwort</summary><div><p>$\neg\big(\neg(A\vee B)\vee(B\wedge A)\big)$ $\iff\neg\neg(A\vee B)\wedge\neg(B\wedge A)$ $\iff(A\vee B)\wedge\neg(B\wedge A)$. Mit dem $\wedge B$ am Ende ergibt das (c).</p></div></details></li>
+  <li>Vereinfache (c) und beachte, dass $B$ wahr sein muss, damit es gilt.
+  <details><summary>Antwort</summary><div><p>Ist $B$ wahr, dann ist $A\vee B$ wahr, und $\neg(B\wedge A)$ ist $\neg A$. Also ist (c) genau dann wahr, wenn $B$ wahr und $A$ falsch ist: es ist $B\wedge\neg A$, also (d).</p></div></details></li>
+  <li>Prüfe (b) und finde mit einer einzigen Zeile den Aussenseiter.
+  <details><summary>Antwort</summary><div><p>(b) ist deMorgan auf das Ganze angewandt: $\neg(X\vee\neg B)\iff\neg X\wedge B$ mit $X=\neg(A\vee B)\vee(B\wedge A)$, das Original. (a) ist der Aussenseiter: mit $A=B=1$ ist (a) wahr, das Original falsch. <strong>Antwort (a).</strong> (Prüf es im Orakel mit dem Beispiel „HS18 Frage V“.)</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-4">Musterbeispiel 4: Welcher Ausdruck ist zu $(A\Rightarrow B)\vee(B\Rightarrow A)$ für alle Aussagen $A$, $B$ äquivalent? (HS21, Frage II)</h3>
+<p>(a) $A\Leftrightarrow B$ (b) $A\vee\neg A$ (c) $A\vee B$ (d) $(\neg A\vee B)\wedge(\neg B\vee A)$</p>
+<ol class="gq">
+  <li>Entferne beide Pfeile. Was erhältst du?
+  <details><summary>Antwort</summary><div><p>$(\neg A\vee B)\vee(\neg B\vee A)$. In einem reinen ODER spielen Klammern und Reihenfolge keine Rolle, also ist das $(A\vee\neg A)\vee(B\vee\neg B)$.</p></div></details></li>
+  <li>Was ist es also, und welche Option passt?
+  <details><summary>Antwort</summary><div><p>Es enthält $A\vee\neg A$, ist also eine <strong>Tautologie</strong>: in jeder Zeile wahr. Von den Optionen ist nur (b) $A\vee\neg A$ eine Tautologie. (a) und (d) sind dasselbe, $A\Leftrightarrow B$, falsch bei $A=1$, $B=0$; (c) ist falsch bei $A=B=0$. <strong>Antwort (b).</strong> In Worten: von zwei Aussagen folgt immer eine aus der anderen, denn ist $B$ wahr, dann gilt $A\to B$, und ist $B$ falsch, dann gilt $B\to A$.</p></div></details></li>
+</ol></div>
+
+<h2 id="s5-quantifiers">5. Quantoren</h2>
+<div class="need"><span class="label">Das brauchst du (<a class="xl" href="linalg-01.html#s3-neutral-elements-inverses-groups">Lektion 1</a>)</span>
+<ul>
+  <li><strong>Neutrales Element und Inverses:</strong> $e$ ist neutral in $(G,\circ)$, wenn $e\circ x=x\circ e=x$ für jedes $x$ gilt; $\bar x$ ist ein Inverses von $x$, wenn $x\circ\bar x=\bar x\circ x=e$. Heute werden diese Definitionen zu Sätzen mit $\forall$ und $\exists$.</li>
+</ul></div>
+<div class="box">
+<p><strong>Definition (Quantoren).</strong> Der <strong>Existenzquantor</strong> $\exists$ und der <strong>Allquantor</strong> $\forall$ sagen etwas über die Elemente eines Bereichs (einer Menge) aus, in dem sie interpretiert werden.</p>
+<ul>
+  <li>$\exists x\,A(x)$ liest man „es gibt ein $x$, so dass $A$ für $x$ gilt“;</li>
+  <li>$\forall x\,A(x)$ liest man „für alle $x$ gilt $A$ für $x$“.</li>
+</ul></div>
+<p><strong>Beschränkte Quantoren.</strong> Meist quantifizieren wir über eine Menge. Die Beispiele der Vorlesung:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\forall x\in\mathbb Z\,(x+0=x)\text{ steht für}\\ &amp;\quad\forall x\,(x\in\mathbb Z\to x+0=x),\\ &amp;\exists x\in\mathbb Z\,(x+x=0)\text{ steht für}\\ &amp;\quad\exists x\,(x\in\mathbb Z\wedge x+x=0).\end{aligned}$$</span>
+<p>Beachte das Muster: <strong>$\forall$ geht mit $\to$</strong>, <strong>$\exists$ geht mit $\wedge$</strong>. („$\exists x\,(x\in\mathbb Z\to x+x=0)$“ wäre aus dummen Gründen wahr: jedes $x$ ausserhalb von $\mathbb Z$ macht die Implikation wahr.)</p>
+<p><strong>Mehrere Variablen.</strong> $\forall a,b\in R$ ist eine Kurzform für $\forall a\in R\ \forall b\in R$. Das Skript schreibt nach den Quantoren einen Doppelpunkt, etwa $\forall a,b\in R: ab=0\Rightarrow(a=0)\vee(b=0)$ (<a class="pl" href="../linalg-script.html#p17">S. 17</a>); Halbeisen benutzt Klammern. Beides meint dasselbe.</p>
+
+<h3 id="free-and-bound-variables">Freie und gebundene Variablen</h3>
+<p>In $\forall x\,(x\circ e=x)$ ist die Variable $x$ durch den Quantor <strong>gebunden</strong>: sie ist ein Platzhalter innerhalb des Bereichs des Quantors, und die Aussage handelt von keinem bestimmten $x$. In $x\circ e=x$ allein ist $x$ <strong>frei</strong>: die Formel sagt etwas über ein bestimmtes, noch nicht gewähltes $x$ aus und ist erst wahr oder falsch, wenn $x$ festgelegt ist. Eine Formel ohne freie Variablen heisst <strong>Satz</strong>; nur Sätze haben einen eigenen Wahrheitswert. Das Handout <em>Logik I</em> gibt ein gutes Beispiel: in $\exists y\,(x=y)\vee\forall x\,(x=y)$ kommen sowohl $x$ als auch $y$ frei (in einer Hälfte) und gebunden (in der anderen) vor.</p>
+<p>Zwei Folgerungen. (1) Eine gebundene Variable kann <strong>umbenannt</strong> werden: $\exists x\,A(x)$ und $\exists y\,A(y)$ sagen dasselbe, solange $y$ nicht schon vorkommt (Handout <em>Tautologien</em>, Regel T). Die Vorlesung macht das in ihrem Beweis, dass es keine grösste Primzahl gibt, indem sie $p_0$ in $q$ umbenennt. (2) Eine Prüfungsantwort darf keine Variable frei lassen, die gebunden sein sollte: „$x=y^2$ für alle $y$“ ohne Angabe, woher $x$ kommt, ist keine Aussage.</p>
+
+<h3 id="quantifier-duality-and-negation">Dualität der Quantoren und Verneinung</h3>
+<div class="box">
+<p><strong>Dualität (Vorlesung <a class="pl" href="../linalg-script.html#p6">S. 6</a>).</strong> Für jede Formel $B(x)$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall x\,B(x)&amp;\iff\neg\exists x\,\neg B(x),\\ \exists x\,B(x)&amp;\iff\neg\forall x\,\neg B(x).\end{aligned}$$</span>
+<p>Verneint man beide Seiten (und hebt doppelte Verneinungen auf), erhält man die <strong>Verneinungsregeln</strong>:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\neg\forall x\,B(x)&amp;\iff\exists x\,\neg B(x),\\ \neg\exists x\,B(x)&amp;\iff\forall x\,\neg B(x).\end{aligned}$$</span>
+</div>
+<p>In Worten: „nicht jedes Mitglied zahlt“ heisst „irgendein Mitglied zahlt nicht“; „kein Mitglied ist ein Verräter“ heisst „jedes Mitglied ist kein Verräter“. Eine Verneinung, die durch einen Quantor wandert, <strong>kippt</strong> ihn. Mit der Dualität lässt sich alles entweder nur mit $\exists$ oder nur mit $\forall$ schreiben; zusammen mit Abschnitt 4 nur mit $\neg$, $\wedge$ und einem Quantor. Genau das verlangen Quiz 1 und Quiz 5.</p>
+
+<h3 id="proof-d">Beweis D: die Verneinung eines beschränkten Quantors behält die Beschränkung</h3>
+<div class="box"><p><strong>Behauptung.</strong> Für jede Menge $M$ und jede Formel $B(x)$: $\neg\forall x\in M\,B(x)\iff\exists x\in M\,\neg B(x)$.</p></div>
+<p><strong>Die Idee.</strong> Ein beschränkter Quantor ist eine Abkürzung. Entpack ihn, kipp den Quantor mit der Verneinungsregel und wende Beweis C auf die Implikation an, die dabei entsteht. Das $\to$ des $\forall$ wird zum $\wedge$ des $\exists$, und das ist genau wieder das beschränkte $\exists$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Entpacken:</strong> $\forall x\in M\,B(x)$ bedeutet $\forall x\,(x\in M\to B(x))$, und $\exists x\in M\,C(x)$ bedeutet $\exists x\,(x\in M\wedge C(x))$.</li>
+  <li><strong>Die Lücke:</strong> Nachdem der Quantor gekippt ist, steht eine verneinte Implikation da. Beweis C macht daraus ein UND.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Charta sagt: „jedes Gildenmitglied zahlt die Steuer“. Bevor sie widerlegt wird, schreibt die Schreiberin sie in einfachen Stempeln aus: für jede Person in der Stadt gilt, wenn sie Mitglied ist, dann zahlt sie.</p></div><div class="sp-formal"><p>$\neg\forall x\in M\,B(x)$ $\iff\neg\forall x\,(x\in M\to B(x))\quad$ (Definition des beschränkten $\forall$)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Die Verneinung springt über den Stempel und kippt ihn: es gibt jemanden in der Stadt, für den die Klausel scheitert.</p></div><div class="sp-formal"><p>$\iff\exists x\,\neg(x\in M\to B(x))\quad$ (Verneinungsregel für $\forall$)</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>„Wenn Mitglied, dann zahlt“ scheitert nur für ein Mitglied, das nicht zahlt. Also: irgendein Mitglied zahlt nicht.</p></div><div class="sp-formal"><p>$\iff\exists x\,(x\in M\wedge\neg B(x))\quad$ (Beweis C)<br>$\iff\exists x\in M\,\neg B(x)\quad$ (Definition des beschränkten $\exists$). <span class="qed">∎</span></p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_negate">jeden Quantor kippen, den Kern verneinen</a> <a class="mvl" href="../linalg-moves.html#m-la_chain">eine Kette benannter Äquivalenzen</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\neg\forall x\in M\,B(x)\\&amp;\iff\neg\forall x\,(x\in M\to B(x))\\&amp;\iff\exists x\,\neg(x\in M\to B(x))\\&amp;\iff\exists x\,(x\in M\wedge\neg B(x))\\&amp;\iff\exists x\in M\,\neg B(x),\end{aligned}$$</span>
+<p>wobei der Reihe nach verwendet wird: die Definition des beschränkten $\forall$, die Verneinungsregel für $\forall$, $\neg(A\to B)\iff A\wedge\neg B$, die Definition des beschränkten $\exists$. <span class="qed">∎</span></p>
+</div></details>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Ergänze: $\neg(x\in M\to B(x))\iff\underline{\qquad}$.
+  <details><summary>Antwort</summary><div><p>$x\in M\wedge\neg B(x)$ (Beweis C mit $A=x\in M$).</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Beweise die gespiegelte Version $\neg\exists x\in M\,B(x)\iff\forall x\in M\,\neg B(x)$.
+  <details><summary>Antwort</summary><div><span class="math-display" style="display:block">$$\begin{aligned}&amp;\neg\exists x\,(x\in M\wedge B(x))\\&amp;\iff\forall x\,\neg(x\in M\wedge B(x))\\&amp;\iff\forall x\,(x\notin M\vee\neg B(x))\\&amp;\iff\forall x\,(x\in M\to\neg B(x)),\end{aligned}$$</span><p>wobei die Verneinungsregel für $\exists$, deMorgan und Implikation als ODER verwendet werden. Die letzte Zeile ist $\forall x\in M\,\neg B(x)$.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis D nur aus dem Rahmen.</li>
+</ol></div>
+
+<div class="exam"><span class="label">So verneinst du unter Prüfungsdruck</span>
+<ol>
+  <li>Schreib die Aussage mit <strong>allen</strong> ihren Quantoren vorne, keiner versteckt in Worten („$\dots$ für alle $y$“ am Ende wird zu $\forall y$ vorne).</li>
+  <li>Geh die Verneinung von links nach rechts durch: jedes $\forall$ wird zu $\exists$, jedes $\exists$ wird zu $\forall$. Die Schranken ($\in M$, $&gt;0$) bleiben, wie sie sind.</li>
+  <li>Verneine den Kern: $\neg(A\to B)$ wird $A\wedge\neg B$; $\neg(A\wedge B)$ wird $\neg A\vee\neg B$; $\neg(A\vee B)$ wird $\neg A\wedge\neg B$; $\neg(x=y)$ wird $x\ne y$; in geordneten Mengen wird $\neg(x&lt;y)$ zu $x\ge y$.</li>
+  <li>Hebe doppelte Verneinungen auf und lies das Ergebnis in Worten laut vor als Kontrolle.</li>
+</ol>
+<p><strong>Kurz:</strong> jeden Quantor kippen, die Schranken behalten, den Kern verneinen.</p></div>
+
+<div class="box"><h3 id="we-5">Musterbeispiel 5: verneine „$R$ ist nullteilerfrei“ (Skript <a class="pl" href="../linalg-script.html#p17">S. 17</a>)</h3>
+<p>Ein Ring $R$ ist nullteilerfrei, wenn $\forall a,b\in R:\ ab=0\to(a=0\vee b=0)$ gilt. Versuch die Verneinung zuerst im Kopf.</p>
+<ol class="gq">
+  <li>Kipp die Quantoren, behalte die Schranke.
+  <details><summary>Antwort</summary><div><p>$\exists a,b\in R:$ $\neg\big(ab=0\to(a=0\vee b=0)\big)$.</p></div></details></li>
+  <li>Verneine den Kern mit Beweis C, dann deMorgan.
+  <details><summary>Antwort</summary><div><p>$\exists a,b\in R:$ $ab=0\wedge\neg(a=0\vee b=0)$, also $\exists a,b\in R:$ $ab=0\wedge a\ne0\wedge b\ne0$.</p></div></details></li>
+  <li>Sag es in Worten und gib ein Beispiel aus <a class="xl" href="linalg-01.html">Lektion 1</a>.
+  <details><summary>Antwort</summary><div><p>„Es gibt zwei Elemente ungleich null, deren Produkt null ist“: $R$ hat Nullteiler. In $\mathbb Z/6$: $a=\bar2$, $b=\bar3$. Um zu zeigen, dass ein Ring <em>nicht</em> nullteilerfrei ist, nennst du nur ein solches Paar, mehr nicht.</p></div></details></li>
+</ol></div>
+
+<h3 id="the-empty-domain">Der leere Bereich</h3>
+<p>Die Vorlesung fragt: ist $\forall x\in\emptyset\,(x\ne x)$ wahr oder falsch? Benutze die Dualität:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}\forall x\in\emptyset\,(x\ne x)&amp;\iff\neg\exists x\in\emptyset\,\neg(x\ne x)\\&amp;\iff\neg\exists x\in\emptyset\,(x=x).\end{aligned}$$</span>
+<p>Und „es gibt kein $x\in\emptyset$ mit $x=x$“ ist <strong>wahr</strong>, denn es gibt überhaupt kein $x\in\emptyset$. Also ist jedes „für alle“ über der leeren Menge wahr, wie absurd sein Kern auch ist (es ist eine falsche Voraussetzung, $x\in\emptyset$, die alles impliziert). Jedes „es gibt“ über der leeren Menge ist falsch. Das ist wichtig in <a class="xl" href="../linalg-06.html">Lektion 6</a>: die leere Menge von Vektoren ist linear unabhängig, weil die Definition eine Aussage mit „für alle“ ist.</p>
+
+<h3 id="the-order-of-quantifiers">Die Reihenfolge der Quantoren</h3>
+<p>Gleichartige Quantoren dürfen vertauscht werden: $\forall x\forall y$ bedeutet dasselbe wie $\forall y\forall x$, und ebenso für $\exists$. Gemischte Quantoren dürfen <strong>nicht</strong> vertauscht werden. Vergleiche in $\mathbb Z$:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\forall x\in\mathbb Z\ \exists y\in\mathbb Z\ (x+y=0)\\&amp;\quad\text{wahr: nimm }y=-x,\\&amp;\exists y\in\mathbb Z\ \forall x\in\mathbb Z\ (x+y=0)\\&amp;\quad\text{falsch.}\end{aligned}$$</span>
+<p>Im ersten Satz wird $y$ <em>nach</em> $x$ gewählt und darf von ihm abhängen: jede Zahl hat ihr eigenes Negatives. Im zweiten muss ein einziges $y$ für alle $x$ zugleich funktionieren. Das Körperaxiom des Skripts „$\forall x\in K\ \exists x'\in K: x+x'=0$“ (<a class="pl" href="../linalg-script.html#p18">S. 18</a>) ist von der ersten Art: jedes Element hat <em>sein eigenes</em> Inverses.</p>
+
+<h3 id="proof-e">Beweis E: $\exists\forall$ impliziert $\forall\exists$, aber nicht umgekehrt</h3>
+<div class="box"><p><strong>Behauptung.</strong> Für jede Formel $A(x,y)$ gilt: $\exists y\,\forall x\,A(x,y)\ \to$ $\forall x\,\exists y\,A(x,y)$ ist wahr. Die Umkehrung ist im Allgemeinen falsch.</p></div>
+<p><strong>Die Idee.</strong> Wenn ein $y$ für jedes $x$ funktioniert, dann ist für jedes gegebene $x$ dasselbe $y$ ein Zeuge. Die andere Richtung scheitert, sobald der Zeuge sich mit $x$ ändern muss, wie bei $x+y=0$ in $\mathbb Z$.</p>
+<div class="frame"><span class="label">Was die Definitionen erzwingen (vor jeder Idee)</span>
+<ul>
+  <li><strong>Erste Zeile:</strong> „Angenommen $\exists y\,\forall x\,A(x,y)$; wähle so ein $y_0$.“</li>
+  <li><strong>Zu zeigen:</strong> $\forall x\,\exists y\,A(x,y)$. Also: „Sei $x$ beliebig.“ Dann nenne ein $y$ mit $A(x,y)$.</li>
+  <li><strong>Die Lücke:</strong> welches $y$? Den einzigen Kandidaten, den wir haben, $y_0$. Für die Umkehrung: ein Gegenbeispiel.</li>
+</ul></div>
+<div class="sp">
+<div class="sp-head"><span class="label">Die Geschichte</span><span class="label">Was du schreibst</span></div>
+<div class="sp-row"><div class="sp-story"><p>Die Charta sagt: „es gibt einen Schlosser, der jede Tür öffnen kann“. Die Schreiberin notiert seinen Namen.</p></div><div class="sp-formal"><p>Angenommen $\exists y\,\forall x\,A(x,y)$. Wähle $y_0$ mit $\forall x\,A(x,y_0)$.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Jemand zeigt auf irgendeine Tür.</p></div><div class="sp-formal"><p>Sei $x$ beliebig.</p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Diese Tür hat einen Schlosser, der sie öffnet: immer derselbe Mann.</p></div><div class="sp-formal"><p>Nach der Wahl von $y_0$ gilt $A(x,y_0)$. Also $\exists y\,A(x,y)$, mit Zeuge $y=y_0$. Da $x$ beliebig war, folgt $\forall x\,\exists y\,A(x,y)$. <span class="qed">∎</span></p></div></div>
+<div class="sp-row"><div class="sp-story"><p>Aber „jede Tür hat <em>irgendeinen</em> Schlosser, der sie öffnet“ gibt noch keinen Generalschlüssel: jede Tür braucht vielleicht ihren eigenen.</p></div><div class="sp-formal"><p><strong>Die Umkehrung scheitert:</strong> in $\mathbb Z$ mit $A(x,y)$: $x+y=0$ ist $\forall x\,\exists y\,A$ wahr ($y=-x$). Aber $\exists y\,\forall x\,A$ ist falsch: für jedes $y$ nimm $x=1-y$; dann ist $x+y=1\ne0$.</p></div></div>
+</div>
+<p class="moves">Verwendete Züge: <a class="mvl" href="../linalg-moves.html#m-la_witness">einen Zeugen nennen</a> <a class="mvl" href="../linalg-moves.html#m-la_arbitrary">ein beliebiges Element nehmen</a> <a class="mvl" href="../linalg-moves.html#m-la_counter">ein Gegenbeispiel genügt</a></p>
+<details><summary>Der Beweis in einem Stück</summary><div>
+<p>Angenommen $\exists y\,\forall x\,A(x,y)$, und wähle $y_0$ mit $\forall x\,A(x,y_0)$. Sei $x$ beliebig. Dann gilt $A(x,y_0)$, also $\exists y\,A(x,y)$. Da $x$ beliebig war, folgt $\forall x\,\exists y\,A(x,y)$. Die Umkehrung scheitert: in $\mathbb Z$ gilt $\forall x\,\exists y\,(x+y=0)$ mit $y=-x$, aber $\exists y\,\forall x\,(x+y=0)$ ist falsch, denn für jedes $y$ liefert $x=1-y$ den Wert $x+y=1\ne0$. <span class="qed">∎</span></p>
+</div></details>
+<div class="exam"><span class="label">So reproduzierst du das unter Prüfungsdruck</span>
+<ol>
+<li>Nimm das $y_0$, das für alle $x$ funktioniert; für ein beliebiges $x$ funktioniert dasselbe $y_0$.</li>
+<li>Gegenbeispiel für die Umkehrung: $x+y=0$ in $\mathbb Z$.</li>
+</ol>
+<p><strong>Kurz:</strong> ein Zeuge für alle ist ein Zeuge für jeden; die Umkehrung scheitert mit $y=-x$.</p></div>
+<div class="ladder"><span class="label">Du bist dran: die Leiter des Beweisschreibens</span>
+<ol>
+  <li><strong>Stufe 1.</strong> Warum kommt „$x=1-y$“ im Gegenbeispiel <em>nach</em> $y$?
+  <details><summary>Antwort</summary><div><p>Wir widerlegen $\exists y\,\forall x$, d. h. wir beweisen seine Verneinung $\forall y\,\exists x\,(x+y\ne0)$. In dieser Reihenfolge wird $y$ zuerst gegeben, und wir dürfen $x$ in Abhängigkeit davon wählen.</p></div></details></li>
+  <li><strong>Stufe 2.</strong> Gib ein weiteres Gegenbeispiel zur Umkehrung, in $\mathbb N$ mit $A(x,y)$: $y&gt;x$.
+  <details><summary>Antwort</summary><div><p>$\forall x\,\exists y\,(y&gt;x)$ ist wahr ($y=x+1$). $\exists y\,\forall x\,(y&gt;x)$ ist falsch: für jedes $y$ liefert $x=y$ den Wert $y&gt;y$, und das ist falsch. „Jede Zahl hat eine grössere“ liefert keine „es gibt eine grösste“.</p></div></details></li>
+  <li><strong>Stufe 3.</strong> Schreib Beweis E (beide Teile) nur aus dem Rahmen.</li>
+</ol></div>
+
+<div class="box"><h3 id="there-exists-exactly-one">„Es gibt genau eines“: $\exists!$</h3>
+<p>Das Skript definiert eine Abbildung durch $\forall x\in X\ \exists!\,y\in Y: f(x)=y$ (<a class="pl" href="../linalg-script.html#p13">S. 13</a>): jedes Argument hat <strong>genau einen</strong> Wert. $\exists!$ ist eine Abkürzung:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\exists!\,y\,A(y)\quad\text{bedeutet}\\ &amp;\exists y\,\big(A(y)\wedge\forall z\,(A(z)\to z=y)\big).\end{aligned}$$</span>
+<p>„Es gibt eins, und jedes andere ist dasselbe.“ Einen Beweis von $\exists!$ führst du daher immer in zwei Teilen: <strong>Existenz</strong> (nenne ein $y$) und <strong>Eindeutigkeit</strong> (nimm zwei und zeige, dass sie gleich sind). Die Beweise A und B aus <a class="xl" href="linalg-01.html">Lektion 1</a> waren Eindeutigkeitsteile.</p></div>
+
+<div class="box"><h3 id="we-6">Musterbeispiel 6: umschreiben nur mit $\exists$, $=$, $\neg$, $\wedge$ (Vorlesung <a class="pl" href="../linalg-script.html#p6">S. 6</a>)</h3>
+<p>Schreib $\neg\forall x\forall y\,(x=y\to y\ne x)$ nur mit $\exists$, $=$, $\neg$, $\wedge$ um.</p>
+<ol class="gq">
+  <li>Schieb die Verneinung durch beide $\forall$.
+  <details><summary>Antwort</summary><div><p>$\exists x\exists y\,\neg(x=y\to y\ne x)$.</p></div></details></li>
+  <li>Verneine die Implikation (Beweis C) und entpacke $\ne$.
+  <details><summary>Antwort</summary><div><p>$\exists x\exists y\,\big(x=y\wedge\neg(y\ne x)\big)$, und $\neg(y\ne x)$ ist $\neg\neg(y=x)$, also $y=x$. Ergebnis: $\exists x\exists y\,(x=y\wedge y=x)$.</p></div></details></li>
+  <li>Ist das Ergebnis wahr (in jedem nichtleeren Bereich)?
+  <details><summary>Antwort</summary><div><p>Ja: nimm ein beliebiges $x$ und $y=x$. Also ist auch das Original, „nicht für alle $x,y$: wenn $x=y$, dann $y\ne x$“, wahr, und das ist eine Erleichterung: Gleichheit ist symmetrisch.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-7">Musterbeispiel 7: „Alle Menschen machen dieselben Fehler“ (HS18, Frage VI)</h3>
+<p>Welche Formel ist äquivalent? (a) $\forall x,y\in\{\text{people}\}$ $\exists f\in\{\text{mistakes}\}:$ $(x\text{ makes }f)\wedge(y\text{ makes }f)$ (b) $\forall x\in\{\text{people}\}$ $\exists f,g\in\{\text{mistakes}\}:$ $(x\text{ makes }f)\Leftrightarrow(x\text{ makes }g)$ (c) $\forall f\in\{\text{mistakes}\}$ $\exists x,y\in\{\text{people}\}:$ $(x\text{ makes }f)\Rightarrow(y\text{ makes }f)$ (d) $\forall x,y\in\{\text{people}\}$ $\forall f\in\{\text{mistakes}\}:$ $(x\text{ makes }f)\Rightarrow(y\text{ makes }f)$</p>
+<ol class="gq">
+  <li>Sag genau, was „dieselben Fehler“ für zwei Menschen $x$ und $y$ bedeutet.
+  <details><summary>Antwort</summary><div><p>Jeden Fehler, den $x$ macht, macht auch $y$ (und umgekehrt). In Formeln: $\forall f:$ $(x\text{ makes }f)\Rightarrow(y\text{ makes }f)$, für beide Reihenfolgen von $x,y$.</p></div></details></li>
+  <li>Quantifizier nun über alle Paare und vergleiche mit den Optionen.
+  <details><summary>Antwort</summary><div><p>$\forall x,y$ $\forall f:$ $(x\text{ makes }f)\Rightarrow(y\text{ makes }f)$. Da es für alle Paare gilt, gilt es auch für $(y,x)$, und das ergibt die andere Richtung. Das ist (d). (a) sagt nur, dass zwei beliebige Menschen <em>irgendeinen</em> Fehler gemeinsam haben. (b) ist immer wahr (nimm $f=g$). (c) ist immer wahr (nimm $x=y$). <strong>Antwort (d).</strong></p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-8">Musterbeispiel 8: Welche Aussage ist für jeden Körper $K$ sinnvoll und eindeutig? (HS21, Frage III)</h3>
+<p>Es spielt keine Rolle, ob die Aussage wahr ist. (a) $\forall x\in K\ \exists y\in K: x=y^2$. (b) $\exists x\in K: x^2&gt;x$. (c) $\forall x\in K\setminus\{0\}: e^x\ne1$. (d) $\exists x\in K: x-x=y-y\ \forall y\in K$.</p>
+<ol class="gq">
+  <li>Welche Symbole hat ein allgemeiner Körper?
+  <details><summary>Antwort</summary><div><p>$+$, $\cdot$, $0$, $1$ (und damit $-x$, $x^{-1}$, $x^2=x\cdot x$). Keine Ordnung „$&gt;$“, keine Exponentialfunktion.</p></div></details></li>
+  <li>Geh die Optionen durch.
+  <details><summary>Antwort</summary><div><p>(b) benutzt $&gt;$, was ein allgemeiner Körper (wie $\mathbb Z/5$) nicht hat: sinnlos. (c) benutzt $e^x$: in einem allgemeinen Körper sinnlos. (d) setzt „$\forall y\in K$“ ans Ende, so dass man nicht erkennt, ob $\exists x\,\forall y$ oder $\forall y\,\exists x$ gemeint ist, und nach Beweis E unterscheiden sich diese: mehrdeutig. (a) benutzt nur Körpersymbole und hat alle Quantoren vorne in einer klaren Reihenfolge. <strong>Antwort (a).</strong> (Sie ist in $\mathbb Q$ falsch, da $2$ kein Quadrat ist, und in $\mathbb C$ wahr; aber danach war nicht gefragt.)</p></div></details></li>
+</ol></div>
+
+<h2 id="s6-equality">6. Gleichheit</h2>
+<p>Die Vorlesung nennt drei beweisbare Eigenschaften von „$=$“:</p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\forall x\,(x=x)\quad\text{(reflexiv)}\\&amp;\forall x\forall y\,(x=y\to y=x)\\&amp;\quad\text{(symmetrisch)}\\&amp;\forall x\forall y\forall z\,\big((x=y\wedge y=z)\to x=z\big)\\&amp;\quad\text{(transitiv)}\end{aligned}$$</span>
+<p>„$=$“ ist also eine <strong>Äquivalenzrelation</strong>, wie in der Analysis (<a class="xl" href="../linalg-03.html">Lektion 3</a> behandelt Äquivalenzrelationen allgemein). Woher kommen diese Eigenschaften? Das Handout <em>Logik II</em> legt die Gleichheit durch drei logische Axiome fest. In Worten:</p>
+<ul>
+  <li>jedes Objekt ist sich selbst gleich: $t=t$;</li>
+  <li>Gleiches darf in einer Relation für Gleiches eingesetzt werden: gilt $t_1=t_1'$, …, $t_n=t_n'$ und $R(t_1,\dots,t_n)$, dann gilt $R(t_1',\dots,t_n')$;</li>
+  <li><strong>gleiche Eingaben geben gleiche Ausgaben</strong>: gilt $t_1=t_1'$, …, $t_n=t_n'$, dann gilt $F(t_1,\dots,t_n)=F(t_1',\dots,t_n')$ für jede Operation $F$.</li>
+</ul>
+<div class="box"><h3 id="why-this-explains-well-defined">Warum das „wohldefiniert“ erklärt</h3>
+<p>Das letzte Axiom ist das, was du jedes Mal benutzt, wenn du „dieselbe Operation auf beide Seiten einer Gleichung anwendest“. Es ist auch der Grund, warum in <a class="xl" href="linalg-01.html">Lektion 1</a> die Addition $\bar a+\bar b:=\overline{a+b}$ <em>bewiesen</em> werden musste, wohldefiniert zu sein. Die Formel hinzuschreiben ist leicht; aber damit $+$ überhaupt eine Operation auf $\mathbb Z/n$ ist, müssen gleiche Eingaben gleiche Ausgaben liefern: aus $\bar a=\overline{a'}$ und $\bar b=\overline{b'}$ folgt $\overline{a+b}=\overline{a'+b'}$. Genau das ist das Axiom „gleiche Eingaben geben gleiche Ausgaben“ für das neue Symbol $+$, und Beweis C aus <a class="xl" href="linalg-01.html">Lektion 1</a> hat es geprüft. Das Skript sagt dasselbe in seiner Definition einer Abbildung (<a class="pl" href="../linalg-script.html#p13">S. 13</a>): $\forall x\in X\ \exists!\,y\in Y: f(x)=y$, „und wir können zeigen, dass die Zuordnung eindeutig ist“.</p></div>
+
+<div class="box"><h3 id="why-it-s-cool">Warum es cool ist</h3>
+<p>Jede Definition in der Linearen Algebra ist ein Satz mit Quantoren, und die Verneinungsregeln verwandeln jede davon in die Beschreibung eines Gegenbeispiels, <em>noch bevor du eines gefunden hast</em>. „$M$ ist nicht linear unabhängig“ wird zu „ein Vektor aus $M$ ist eine Kombination der anderen“: jetzt weisst du genau, wonach du suchen musst. Die Logik wirkt auch in die andere Richtung: ein Beweis einer „für alle“-Aussage beginnt immer mit „sei $x$ beliebig“, und ein Beweis einer „es gibt“-Aussage endet immer mit der Nennung eines Zeugen. Die Hälfte der ersten Zeile jedes Beweises ist allein durch die Quantoren festgelegt.</p></div>
+
+<div class="box"><h3 id="for-wonder-one-operator-is">Zum Staunen: ein Operator genügt</h3>
+<p>Halbeisens Notizen erwähnen den <strong>Scheffer-Strich</strong> $A\mid B:=\neg(A\wedge B)$, „nicht beide“, in der Elektrotechnik NAND genannt. Abschnitt 4 hat gezeigt, dass $\neg$ und $\wedge$ für alles reichen. Aber $\neg A\iff A\mid A$ und $A\wedge B$ $\iff\neg(A\mid B)$ $\iff(A\mid B)\mid(A\mid B)$, also reicht der Strich allein. Das ist keine Spielerei: der Prozessor deines Handys ist im Innersten aus Milliarden Kopien genau einer NAND-Schaltung gebaut. Aufgabe 4 fragt dich nach $A\vee B$.</p></div>
+
+<h2 id="worked-examples-a-mixed-set">Musterbeispiele: eine gemischte Auswahl vor den Aufgaben</h2>
+<p>Versuch jedes im Kopf, bevor du die Schritte aufklappst.</p>
+
+<div class="box"><h3 id="we-9">Musterbeispiel 9: verneine „$e$ ist ein neutrales Element von $(G,\circ)$“ und „$(G,\circ)$ hat ein neutrales Element“</h3>
+<ol class="gq">
+  <li>Schreib beide Aussagen mit Quantoren.
+  <details><summary>Antwort</summary><div><p>„$e$ ist neutral“: $\forall x\in G\,(e\circ x=x\wedge x\circ e=x)$. Hier ist $e$ frei: es ist eine Aussage über ein bestimmtes $e$. „$G$ hat ein neutrales Element“: $\exists e\in G\ \forall x\in G$ $(e\circ x=x\wedge x\circ e=x)$.</p></div></details></li>
+  <li>Verneine beide.
+  <details><summary>Antwort</summary><div><p>„$e$ ist nicht neutral“: $\exists x\in G\,(e\circ x\ne x\vee x\circ e\ne x)$, d. h. ein Element wird von $e$ von links oder von rechts verändert. „$G$ hat kein neutrales Element“: $\forall e\in G\ \exists x\in G$ $(e\circ x\ne x\vee x\circ e\ne x)$: jeder Kandidat wird von einem Element entlarvt.</p></div></details></li>
+  <li>Wende es an: zeige, dass $(\mathbb N_{&gt;0},+)$ kein neutrales Element hat.
+  <details><summary>Antwort</summary><div><p>Sei $e\in\mathbb N_{&gt;0}$ beliebig. Nimm $x=1$: $e+1\ne1$, da $e\ge1$. Also ist $e$ nicht neutral, und da $e$ beliebig war, gibt es kein neutrales Element. Die Verneinung hat uns die Form des Beweises verraten: „sei $e$ beliebig, nenne ein $x$“.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-10">Musterbeispiel 10: verneine „$(a_n)$ konvergiert gegen $0$“ (aus der Analysis)</h3>
+<p>$\forall\varepsilon&gt;0\ \exists N\in\mathbb N\ \forall n\ge N:\ |a_n|&lt;\varepsilon$.</p>
+<ol class="gq">
+  <li>Kipp die drei Quantoren, behalte die Schranken.
+  <details><summary>Antwort</summary><div><p>$\exists\varepsilon&gt;0$ $\forall N\in\mathbb N$ $\exists n\ge N:$ $\neg(|a_n|&lt;\varepsilon)$.</p></div></details></li>
+  <li>Verneine den Kern und sag es in Worten.
+  <details><summary>Antwort</summary><div><p>$|a_n|\ge\varepsilon$. „Es gibt eine Toleranz $\varepsilon$, die immer wieder gebrochen wird, egal wie weit man geht.“ Beachte, dass die Schranke „$\varepsilon&gt;0$“ <em>nicht</em> zu „$\varepsilon\le0$“ wurde: Schranken bleiben.</p></div></details></li>
+</ol></div>
+
+<div class="box"><h3 id="we-11">Musterbeispiel 11: Ist $\forall x\,(A(x)\vee B(x))$ äquivalent zu $\forall x\,A(x)\vee\forall x\,B(x)$?</h3>
+<ol class="gq">
+  <li>Prüf es in $\mathbb Z$ mit $A(x)$: „$x$ ist gerade“ und $B(x)$: „$x$ ist ungerade“.
+  <details><summary>Antwort</summary><div><p>Links: jede ganze Zahl ist gerade oder ungerade, wahr. Rechts: „alle ganzen Zahlen sind gerade, oder alle sind ungerade“, falsch. Also <strong>nicht äquivalent</strong>.</p></div></details></li>
+  <li>Welche der vier Kombinationen funktionieren?
+  <details><summary>Antwort</summary><div><p>$\forall$ verteilt sich über $\wedge$: $\forall x\,(A\wedge B)\iff\forall x\,A\wedge\forall x\,B$. $\exists$ verteilt sich über $\vee$: $\exists x\,(A\vee B)\iff\exists x\,A\vee\exists x\,B$. Die beiden anderen gelten nur in einer Richtung: $\forall x\,A\vee\forall x\,B\to\forall x\,(A\vee B)$ und $\exists x\,(A\wedge B)\to\exists x\,A\wedge\exists x\,B$. Eine Falle, die in Wahr-falsch-Fragen auftaucht.</p></div></details></li>
+</ol></div>
+
+<h2 id="exercises">Aufgaben</h2>
+<p>Jede Lösung klappt sich unter ihrer Aufgabe auf. Die beiden Quizze sind am prüfungsnähesten.</p>
+
+<h3 id="ex-1">Aufgabe 1 (Quiz 1)</h3>
+<p>Schreib die folgende Formel nur mit dem Quantor $\exists$, dem Relationssymbol $=$ und den Operatoren $\neg$, $\wedge$, ohne doppelte Verneinungen $\neg\neg$:</p>
+<span class="math-display" style="display:block">$$\forall x\forall y\forall z\,\Big(\big(x=y\vee\neg(y=z)\big)\to\forall u\,(u\ne y)\Big).$$</span>
+<details class="hint"><summary>Tipp</summary><div><p>Benenne die Teile: $A:=x=y\vee\neg(y=z)$ und $B:=\forall u\,\neg(u=y)$. Behandle dann das Präfix $\forall x\forall y\forall z$, den Pfeil, $A$ und $B$ nacheinander.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> eliminiere $\forall$, $\to$, $\vee$ mit $\forall v\,C\iff\neg\exists v\,\neg C$, $\ C\to D\iff\neg(C\wedge\neg D)$, $\ C\vee D\iff\neg(\neg C\wedge\neg D)$; hebe jedes $\neg\neg$ auf. <strong>Züge:</strong> eine Kette benannter Äquivalenzen; jeden Quantor kippen, den Kern verneinen.</p>
+<p>Die Formel ist $\forall x\forall y\forall z\,(A\to B)$ mit $A$, $B$ wie im Tipp.</p>
+<p><strong>Präfix.</strong> Wir wenden $\forall v\,C\iff\neg\exists v\,\neg C$ dreimal an und heben dazwischen die beiden doppelten Verneinungen auf: $\forall x\forall y\forall z\,\Theta\iff\neg\exists x\exists y\exists z\,\neg\Theta$.</p>
+<p><strong>Der Pfeil.</strong> $\neg(A\to B)\iff A\wedge\neg B$ (Beweis C). Also brauchen wir $\neg\exists x\exists y\exists z\,(A\wedge\neg B)$.</p>
+<p><strong>Die Voraussetzung.</strong> $A=(x=y)\vee\neg(y=z)$ $\iff\neg\big(\neg(x=y)\wedge\neg\neg(y=z)\big)$ $\iff\neg\big(\neg(x=y)\wedge y=z\big)$.</p>
+<p><strong>Die Folgerung.</strong> $\neg B=\neg\forall u\,\neg(u=y)$ $\iff\exists u\,\neg\neg(u=y)$ $\iff\exists u\,(u=y)$.</p>
+<p><strong>Ergebnis.</strong></p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\neg\exists x\exists y\exists z\Big(\neg\big(\neg(x=y)\wedge y=z\big)\\&amp;\qquad\wedge\exists u\,(u=y)\Big).\end{aligned}$$</span>
+<p>Es kommen nur $\exists$, $=$, $\neg$, $\wedge$ vor, und jedes $\neg$ steht vor einem Quantor, einer Klammer oder einer Gleichung, nie vor einem weiteren $\neg$.</p>
+</div></details>
+
+<h3 id="ex-2">Aufgabe 2 (Quiz 5)</h3>
+<p>Schreib die folgende Formel nur mit dem Quantor $\forall$, dem Relationssymbol $=$ und den Operatoren $\neg$, $\wedge$, ohne doppelte Verneinungen:</p>
+<span class="math-display" style="display:block">$$\exists x\exists y\exists z\,\Big(\big(x=y\wedge y\ne z\big)\to\exists u\,(u\ne y)\Big).$$</span>
+<details class="hint"><summary>Tipp</summary><div><p>Arbeite von innen nach aussen: zuerst $\exists u\,(u\ne y)$, dann den Pfeil, dann die drei $\exists$, beginnend mit dem innersten.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> Regeln (R1) $C\to D\iff\neg(C\wedge\neg D)$, (R2) $\exists v\,C\iff\neg\forall v\,\neg C$, (R3) $\neg\neg C\iff C$, und $s\ne t$ ist $\neg(s=t)$. <strong>Züge:</strong> eine Kette benannter Äquivalenzen.</p>
+<p><strong>Innen.</strong> $\exists u\,(u\ne y)$ $\iff\neg\forall u\,\neg\neg(u=y)$ $\iff\neg\forall u\,(u=y)$ (R2, R3).</p>
+<p><strong>Der Pfeil.</strong> Mit $C:=x=y\wedge\neg(y=z)$ und $D:=\neg\forall u\,(u=y)$ liefert (R1)</p>
+<span class="math-display" style="display:block">$$\begin{aligned}C\to D&amp;\iff\neg\big(C\wedge\neg\neg\forall u\,(u=y)\big)\\&amp;\iff\neg\big(C\wedge\forall u\,(u=y)\big)=:\neg E.\end{aligned}$$</span>
+<p><strong>Die drei $\exists$.</strong> $\exists z\,\neg E$ $\iff\neg\forall z\,\neg\neg E$ $\iff\neg\forall z\,E$. Dann $\exists y\,\neg\forall z\,E$ $\iff\neg\forall y\,\neg\neg\forall z\,E$ $\iff\neg\forall y\forall z\,E$, und genauso $\exists x\,\neg\forall y\forall z\,E\iff\neg\forall x\forall y\forall z\,E$. Jedes Mal hebt die Verneinung aus (R2) die bereits vorhandene auf.</p>
+<p><strong>Ergebnis.</strong></p>
+<span class="math-display" style="display:block">$$\begin{aligned}&amp;\neg\forall x\forall y\forall z\Big(\big(x=y\wedge\neg(y=z)\big)\\&amp;\qquad\wedge\forall u\,(u=y)\Big).\end{aligned}$$</span>
+<p>Nur $\forall$, $=$, $\neg$, $\wedge$, und kein $\neg\neg$.</p>
+</div></details>
+
+<h3 id="ex-3">Aufgabe 3 (Handout <em>Tautologien</em>: die Kettenregel)</h3>
+<p>Zeige, dass $\big((A\to B)\wedge(B\to C)\big)\to(A\to C)$ eine Tautologie ist. Tu es ohne eine 8-zeilige Tafel: finde die einzigen Zeilen, die sie falsch machen könnten.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Eine Implikation ist nur falsch, wenn ihre Voraussetzung wahr und ihre Folgerung falsch ist. Wann ist $A\to C$ falsch?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> nimm an, die ganze Implikation ist falsch, und leite einen Widerspruch in den Wahrheitswerten her. <strong>Züge:</strong> mit einer Wahrheitstafel prüfen (nur die Zeilen, die zählen).</p>
+<p>Die ganze Aussage ist nur falsch, wenn ihre Voraussetzung $(A\to B)\wedge(B\to C)$ wahr und ihre Folgerung $A\to C$ falsch ist. $A\to C$ falsch heisst $A=1$, $C=0$. Dann erzwingt $A\to B$ wahr, dass $B=1$ ist (denn $A=1$), und $B\to C$ wahr erzwingt $C=1$ (denn $B=1$), ein Widerspruch zu $C=0$. Also macht keine Zeile sie falsch: sie ist eine Tautologie. (Prüf es: Beispiel „Kettenregel“ im Orakel.) Das ist die Regel hinter jeder Kette von Implikationen in einem Beweis.</p>
+</div></details>
+
+<h3 id="ex-4">Aufgabe 4 (der Scheffer-Strich)</h3>
+<p>Mit $A\mid B:=\neg(A\wedge B)$ schreibe $\neg A$, $A\wedge B$ und $A\vee B$ nur mit $\mid$ (und Klammern).</p>
+<details class="hint"><summary>Tipp</summary><div><p>Fang mit $\neg A$ an: was ist $A\mid A$? Dann ist $A\wedge B$ die Verneinung von $A\mid B$, und $A\vee B$ folgt aus deMorgan.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> zuerst mit $\neg$, $\wedge$ ausdrücken, dann ersetzen. <strong>Züge:</strong> eine Kette benannter Äquivalenzen.</p>
+<p>$\neg A\iff\neg(A\wedge A)=A\mid A$. Dann $A\wedge B$ $\iff\neg\neg(A\wedge B)=\neg(A\mid B)$ $\iff(A\mid B)\mid(A\mid B)$. Schliesslich nach deMorgan $A\vee B$ $\iff\neg(\neg A\wedge\neg B)=\neg A\mid\neg B$ $\iff(A\mid A)\mid(B\mid B)$. Prüf die letzte im Orakel, indem du <code>¬(¬(A∧A) ∧ ¬(B∧B))</code> gegen <code>A ∨ B</code> eingibst.</p>
+</div></details>
+
+<h3 id="ex-5">Aufgabe 5 (die Reihenfolge der Quantoren)</h3>
+<p>Wahr oder falsch? Gib einen Zeugen oder ein Gegenbeispiel an. (a) $\forall x\in\mathbb R\ \exists y\in\mathbb R:\ y&gt;x$. (b) $\exists y\in\mathbb R\ \forall x\in\mathbb R:\ y&gt;x$. (c) $\forall x\in\mathbb Q\ \exists y\in\mathbb Q:\ xy=1$. (d) $\exists y\in\mathbb Q\ \forall x\in\mathbb Q:\ xy=0$. (e) $\forall x\in\emptyset\ \exists y\in\emptyset:\ x=y$. (f) $\exists x\in\mathbb Z/6\ \forall y\in\mathbb Z/6:\ xy=\bar0$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Lies jede Aussage von links nach rechts laut: „für jedes … gibt es …“ lässt den Zeugen vom ersten Buchstaben abhängen; „es gibt … für jedes …“ nicht. Was behauptet $\forall x\in\emptyset$ bei (e)?</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> ein wahres $\forall\exists$ braucht einen Zeugen, der von $x$ abhängt; eine falsche Aussage braucht den Beweis ihrer Verneinung. <strong>Züge:</strong> einen Zeugen nennen; ein beliebiges Element nehmen; ein Gegenbeispiel genügt.</p>
+<p>(a) <strong>wahr:</strong> zu gegebenem $x$ nimm $y=x+1$. (b) <strong>falsch:</strong> ihre Verneinung $\forall y\ \exists x:\ y\le x$ gilt mit $x=y$. (c) <strong>falsch:</strong> $x=0$ hat kein $y$ mit $0\cdot y=1$. (Über $\mathbb Q\setminus\{0\}$ wird es wahr: das Körperaxiom.) (d) <strong>wahr:</strong> $y=0$. (e) <strong>wahr:</strong> ein „für alle“ über $\emptyset$. (f) <strong>wahr:</strong> $x=\bar0$. (Ein von null verschiedenes $x$ funktioniert nicht: $\bar2\cdot\bar1=\bar2$.)</p>
+</div></details>
+
+<h3 id="ex-6">Aufgabe 6 (Definitionen aus <a class="xl" href="linalg-01.html">Lektion 1</a> verneinen)</h3>
+<p>Verneine und sag das Ergebnis in Worten: (a) „$\varphi:G\to H$ ist ein Homomorphismus“, d. h. $\forall a,b\in G:\ \varphi(a\circ b)=\varphi(a)\star\varphi(b)$. (b) „$(G,\circ)$ ist abelsch“. (c) „jedes $x\in G$ hat ein Inverses“: $\forall x\in G\ \exists x'\in G:$ $(x\circ x'=e\wedge x'\circ x=e)$. (d) „$K$ ist ein Körper, in dem jedes Element ein Quadrat ist“: $\forall x\in K\ \exists y\in K:\ x=y^2$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Schieb das $\neg$ nach innen: $\forall$ wird zu $\exists$, $\exists$ wird zu $\forall$, $=$ wird zu $\ne$, und $\wedge$ wird zu $\vee$.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> jeden Quantor kippen, die Schranken behalten, den Kern verneinen. <strong>Züge:</strong> jeden Quantor kippen, den Kern verneinen.</p>
+<p>(a) $\exists a,b\in G:\ \varphi(a\circ b)\ne\varphi(a)\star\varphi(b)$: „irgendein Paar wird nicht respektiert“. Um zu zeigen, dass eine Abbildung kein Homomorphismus ist, nennst du ein solches Paar.</p>
+<p>(b) $\exists a,b\in G:\ a\circ b\ne b\circ a$: „zwei Elemente, die nicht kommutieren“.</p>
+<p>(c) $\exists x\in G$ $\forall x'\in G:$ $(x\circ x'\ne e\vee x'\circ x\ne e)$: „irgendein Mitglied wird von keinem Partner rückgängig gemacht“, die Widerlegung der Schreiberin aus der Geschichte. Beachte das $\vee$: ein Kandidat scheitert, wenn er auf <em>einer</em> der beiden Seiten scheitert.</p>
+<p>(d) $\exists x\in K\ \forall y\in K:\ x\ne y^2$: „irgendein Element ist kein Quadrat“. In $\mathbb Q$ nimm $x=2$.</p>
+</div></details>
+
+<h3 id="ex-7">Aufgabe 7 (freie und gebundene Variablen)</h3>
+<p>Sag für jede Formel, welche Variablen frei sind, und ob sie ein Satz ist. (a) $\forall x\,\exists y\,(x\circ y=e)$. (b) $\exists y\,(x\circ y=e)$. (c) $\exists y\,(x=y)\vee\forall x\,(x=y)$. (d) $\forall x\,\forall y\,(x=y\to y=x)$.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Eine Variable ist gebunden, wenn sie im Bereich eines Quantors über sie steht; markiere zuerst den Bereich jedes $\forall$ und $\exists$ mit Klammern.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> eine Variable ist gebunden, wo sie im Bereich eines Quantors über sie liegt; sonst frei. <strong>Züge:</strong> die Definition entpacken.</p>
+<p>(a) Keine freien Variablen: ein Satz („jedes Element hat ein Rechtsinverses“). (b) $x$ ist frei, $y$ gebunden: kein Satz; es sagt „dieses $x$ hat ein Rechtsinverses“. (c) In der linken Hälfte ist $x$ frei und $y$ gebunden; in der rechten ist $x$ gebunden und $y$ frei. Also kommen beide frei vor: kein Satz. Umbenennen der gebundenen Variablen macht es lesbar: $\exists v\,(x=v)\vee\forall w\,(w=y)$. (d) Ein Satz (Symmetrie von $=$, eine wahre Aussage).</p>
+</div></details>
+
+<h3 id="ex-8">Aufgabe 8 (wahr oder falsch, Altklausur-Stil)</h3>
+<p>(a) $A\to B\iff B\to A$. (b) $\neg(A\vee B)\iff\neg A\vee\neg B$. (c) $\forall x\,(A(x)\wedge B(x))$ $\iff\forall x\,A(x)\wedge\forall x\,B(x)$. (d) $\exists x\,(A(x)\wedge B(x))$ $\iff\exists x\,A(x)\wedge\exists x\,B(x)$. (e) „$0=1\to1\ne1$“ ist in $\mathbb N$ wahr. (f) Die Verneinung von „$\forall\varepsilon&gt;0\ \exists\delta&gt;0:\ P(\varepsilon,\delta)$“ ist „$\exists\varepsilon\le0\ \forall\delta\le0:\ \neg P(\varepsilon,\delta)$“.</p>
+<details class="hint"><summary>Tipp</summary><div><p>Prüfe jede Äquivalenz mit einem kleinen Beispiel: Universen mit zwei Elementen oder einfache Prädikate wie „$x$ ist gerade“ und „$x$ ist ungerade“ entscheiden die meisten Punkte.</p></div></details>
+<details><summary>Lösung</summary><div>
+<p><strong>Rahmen:</strong> „wahr“ braucht einen Grund, der jeden Fall abdeckt; „falsch“ braucht ein konkretes Gegenbeispiel.</p>
+<p>(a) <strong>falsch:</strong> das ist die Umkehrung; $A=0$, $B=1$ trennt sie. (b) <strong>falsch:</strong> deMorgan macht aus $\vee$ ein $\wedge$: $\neg A\wedge\neg B$; $A=1$, $B=0$ trennt sie. (c) <strong>wahr</strong> (Musterbeispiel 11). (d) <strong>falsch:</strong> in $\mathbb Z$ ist „ein $x$ ist gerade und ungerade“ falsch, „ein $x$ ist gerade und ein $x$ ist ungerade“ wahr. (e) <strong>wahr:</strong> falsche Voraussetzung. (f) <strong>falsch:</strong> Schranken bleiben; richtig ist $\exists\varepsilon&gt;0\ \forall\delta&gt;0:\ \neg P(\varepsilon,\delta)$.</p>
+</div></details>
+
+<div class="check">
+  <p><strong>Selbstkontrolle:</strong> Aufgaben 1–8 ergeben 8 Punkte, einen für jede Aufgabe, die du löst. Eine Prüfungsaufgabe gilt als gelöst, wenn du mindestens die Hälfte ihrer Punkte bekommen würdest, ein Wahr-falsch-Block, wenn höchstens ein Teil falsch ist. Mit 6 von 8 bist du fertig. Alles darüber ist Übung und zählt nicht gegen dich.</p>
+</div>
+
+<h2 id="what-we-skipped">Was wir ausgelassen haben</h2>
+<p>All das steht auch auf der <a class="xl" href="skipped.html#linalg-02">Auslassungsliste</a>.</p>
+<ul>
+  <li><strong>Die logischen Axiome</strong> des Handouts <em>Logik II</em> einzeln und formale Beweise aus ihnen: Halbeisen überlässt das dem Kurs über Grundlagen; du brauchst nur die obigen Äquivalenzen. <em>Priorität: optional.</em></li>
+  <li><strong>Die formalen Regeln zur Substitution</strong> (wann ein Term für eine Variable eingesetzt werden darf), ebenfalls in <em>Logik II</em>. <em>Priorität: optional.</em></li>
+  <li><strong>Die vollständige Liste der Tautologien</strong> im Handout <em>Tautologien</em>: jede, die du brauchst, steht in der Box von Abschnitt 4, in Aufgabe 3 oder in Musterbeispiel 11. <em>Priorität: niedrig.</em></li>
+</ul>
+<p><strong>Weiter:</strong> <a href="../linalg-03.html">Lektion 3</a>, Mengen, Abbildungen und Beweismethoden: wie die heutigen Äquivalenzen zum Beweis durch Kontraposition, durch Widerspruch und durch Induktion werden, und warum es mehr reelle Zahlen als natürliche gibt.</p>
+
+<nav class="site foot" aria-label="Lesson navigation">
+<a href="linalg-01.html">← Lektion 1: Die Gilden der Freien Stadt</a>
+<a href="linalg.html">Startseite Lineare Algebra</a>
+<a href="../linalg-03.html">Lektion 3: Das Gericht der Freien Stadt →</a>
+<span class="fb-row" style="flex-basis:100%;display:flex;justify-content:center;gap:.3rem 1.6rem;flex-wrap:wrap;margin-top:.2rem"><a class="fb-link" href="feedback.html">Feedback geben</a><a class="fb-link" href="https://polybox.ethz.ch/index.php/s/CnR5D8StWT4rmEL" target="_blank" rel="noopener" title="Lade deine Vorlesungsnotizen (Analysis, Lineare Algebra) auf das gemeinsame Polybox der Gruppe Lineare Algebra hoch">Notizen beitragen</a></span>
+</nav>
+</main>
+<script>
+(function () {
+  // Jump to the target after the formulas are typeset (they change the page height),
+  // opening any folded block that contains it, and flash it briefly.
+  function go() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    for (var d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS') d.open = true;
+    el.scrollIntoView({ block: 'start' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  // Coming back with the browser's back button: let the browser restore the reading position.
+  // shrink display formulas that are slightly too wide for a phone, instead of making them scroll
+  function fitMath(root) {
+    (root || document).querySelectorAll('.math-display').forEach(function (d) {
+      var c = d.querySelector('mjx-container'), svg = c && c.querySelector('svg');
+      if (!svg || !d.clientWidth) return;
+      svg.style.maxWidth = ''; svg.style.height = ''; c.style.minWidth = '';
+      var over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01 && over <= 1.45) { c.style.minWidth = '0'; svg.style.maxWidth = '100%'; svg.style.height = 'auto'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitMath(); });
+  document.addEventListener('toggle', function (e) { if (e.target.open) fitMath(e.target); }, true);
+  window.__siteMathDone = function () { fitMath(); if (location.hash && !window.__siteJumped && nav.type !== 'back_forward') { window.__siteJumped = true; go(); } };
+  window.addEventListener('hashchange', go);
+})();
+
+</script>
+</body>
+</html>
+
